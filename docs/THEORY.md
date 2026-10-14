@@ -286,6 +286,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **open** |
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
+| 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); method + test to follow as amendments | registered (M1 only) | **open** |
 
 ## Live sections
 
@@ -14292,6 +14293,40 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - (a) − (c) > 0.06 reads "as predicted";
   - (c) − (a) > 0.06 reads "FALSIFIED as stated".
 * score_s198 prints these three-way readings.
+
+## 199. CONTRACTION-TRAP: the seed lottery as a contractive pass map (the user's request, 2026-10-13 20:5x via Audit: "create a new architecture/mathematical method to combat seed stability. give mathematical backed reasoning"; opened 2026-10-13 21:23 EDT with measurement M1 only; the derivation, method, predictions and test are added as dated amendments before any §199 run)
+
+**The order parameter (descriptive, from existing eval fields; Audit-reproduced on 19 models).**
+* s182.path_indep runs K′ 16 passes from M_0 = 0 and from another item's 8-pass memory.
+* It separates converged from non-converged models with no overlap:
+  - converged (final 1k bin ≤ 0.239, 10 models): delta_cos_final 0.436–0.625, answer_agree 0.10–0.14;
+  - not converged (≥ 0.505, 9 models): delta_cos_final 0.688–0.978, agree 0.29–0.82.
+* The failed models do compute through the memory: s3's pooled n 3–8 accuracy at K′ 0 / 1 / 4 / 8 is 0.089 / 0.111 / 0.394 / 0.589. Their per-step accuracy falls with pass index (s3's conditional per-step aux success is 0.97, 0.92, 0.90, 0.86, 0.73, 0.72 at t 3–8; s1 / s2 stay ≥ 0.99).
+* **Reading:** the failed models compute contractively; they forget the start state, accumulated progress included.
+* **Not established:** cause vs consequence. Experiments' checkpoint probe (scratch/probe_pathindep.py) gives the trajectory.
+* **The init is deterministic** (g_add 0.30410686 in every seed; no torch randomness in the inject path). A "seed" is the data order, plus the k_window rng and rounding.
+
+**M1, pre-registered before ᾱ is computed (Audit's rank test, made within-n by Theory).**
+* **Models:** the 12 with 187-3 rows, model.pt and path_indep.
+  - Converged (9): s182_window s1 / s2, s184_reweight_s2, s185_rms s1 / s2, s187_nopass s1 / s2, s190_rmsnopass s1 / s2.
+  - Failed (3): s185_den_s1, s185_rms_s3, s188_rwwin_s1.
+* **Variables:**
+  - **x** = ᾱ_pass(model, n) = exp(mean over items (about 64 per n, the module's generator), the 6 delta heads and passes 1..n of log Π_{real tokens} α_t), at n ∈ {9, 10, 11, 12}, CPU fp32.
+  - **y** = onset(model, n) on the 187-3 rows: nesting ≤ 2, the first t with per-n mean handle < 0.80, else T + 1 (score_s194's rule).
+* **Statistic:** ρ̄ = the mean over n of the Spearman ρ_n across the 12 models, with average ranks for ties.
+  - Within n because α_eff^L and onset both fall with n by construction, so a pooled ρ would be positive with no mechanism.
+* **PREDICTED ρ̄ > 0** (more per-pass decay → earlier onset). **FALSIFIED** if ρ̄ ≤ 0 or ρ̄ < 0.3.
+* **Also reported:**
+  - the per-n ρ_n;
+  - the same test with x = the open-loop P = Π α_t(I − β_t k_t k_tᵀ) mean log singular value per pass;
+  - the converged-only (9-model) version, since 3 failed models make ρ̄ largely a group split.
+  - **A continuous alternative (Audit):** onsets take only about 4 distinct values (6–9), so ties are heavy and ρ_n is coarse.
+    - The same ρ̄ is computed with y′ = the mean handle at t 6..min(9, n), per model and n, from the same rows. A ρ̄ driven by ties shows up as a disagreement between the two.
+    - It is reported beside the main statistic, not as a second test.
+* **Disclosure:**
+  - When M1 was registered, Theory had seen the onsets of s185_rms s1 / s2 / s3 and s190_rmsnopass s1 / s2 (score_s194's rule). The other 7 models' rows exist but had not been tabulated.
+  - No ᾱ or P value had been computed by anyone.
+* **Descriptive; it is not the method's test.** A CPU subagent computes x; Theory scores M1 by script once x is in.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
