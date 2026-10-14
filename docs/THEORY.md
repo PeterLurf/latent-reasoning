@@ -283,7 +283,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **REPLICATES (2 seeds, descriptive): size-free early steps, AUX-DONE tracks n; s2 under-converged (entry-confounded)** |
 | 195 | (reserved: SELF-DEPTH-ANS, drafted; registers after §194) | — | — |
-| 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **open** |
+| 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **NO-EFFECT (never entered; final bin 1.394 vs control 1.031; path_indep 0.930 contractive, as 199-A predicted). §197 not registered as drafted (one-seed rescue weak; needs fresh seeds + derivation)** |
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **open** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, 199-A) | **open** |
@@ -14558,6 +14558,46 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **Limits:**
   - It reads Cor. 1.2's shortcut mechanism, not causation.
   - A NOPASS failed model (none exists) would be the contrasting arm: Cor. 1.2 predicts lag errors there.
+
+**§196 result (2026-10-13 23:09 EDT; s196_rmsgf_s3, b279, RTX 3090 / 595.84, 48k, 0 non-finite, about $3.06 realised; 208a3a6c; theory/score_s196.py). NO-EFFECT.**
+* **Basin entry:** entry(0.5) and entry(0.1) are both none; the final 1k bin is 1.394. The exact control s185_rms_s3 has none and 1.031, with a slope of −0.0006 per 1k over its last 6k.
+  - Grokfast's run ends **worse** than the control's.
+* **Quality:** not DEEP (K′8 pooled 0.468, K′16 0.436). DEPTH is 0.136, against RMS s1 0.587 / s2 0.662.
+  - acc_by_n at n 1–8: 0.935 / 0.997 / 0.846 / 0.667 / 0.501 / 0.333 / 0.274 / 0.188.
+* **The order parameter:** s182.path_indep delta_cos 0.930, agree 0.528 (contractive). The 41k checkpoint probe read 0.932.
+  - **As 199-A predicted** for Grokfast (contractive, delta_cos ≥ 0.69), and as the selection law classifies it: a symmetric √-amplifier, not a tilt.
+* **CLIP-1 re-check (descriptive):** on this log, detrended corr(gn_preclip, CE) by phase:
+
+  | phase | answer | aux |
+  |---|---|---|
+  | 1–12k | +0.66 | +0.83 |
+  | 12–24k | −0.03 | −0.04 |
+  | 24–48k | −0.09 | −0.10 |
+
+  - So on a non-entering run, the binding clip down-weights the high-error batches in the decision window.
+  - Caveat: gn_preclip here is measured after the Grokfast filter, so it includes the slow term λh.
+  - §194 s2 (which entered) had answer −0.33 / aux +0.67 at 1–12k.
+  - Two runs, descriptive. It supports a mechanism for relative clipping (THEORY_GENERAL_IMPROVEMENTS #8), not a claim.
+* **Next under §196's conditional:** NO-EFFECT was the trigger for §197 BUDGET-ANNEAL-S3. It is **not** registered as drafted:
+  - a one-seed s3 rescue reads positive with probability p(1 − ρ) ≈ 0.4–0.6 under no effect (G3; Audit-checked);
+  - the standing rule needs a derivation.
+  - The redesign is on fresh seeds, with the selection-law derivation (an escape lever: barrier ∝ K) and an OC block at realised $ (prediction P5: contractive first, then a crossing, with spread entry times).
+
+**199-M3 result (2026-10-13 23:09 EDT; 5225b140; 2070 fp32; 500 items n 6 / 7 / 8; theory/score_s199_m3.py). PREDICTED: LAGFRAC 0.000 in all three failed pass-token models.**
+* **Wrong outputs at t 5–8:** 667 for s185_rms_s3, 470 for den_s1, 480 for rwwin_s1. None equal an earlier step's target: lag1 = lag2+ = 0 everywhere, including s1 / s2's 5 / 4 misses.
+* **Experiments' hand decode of s3** (n 8):
+  - misses keep the right reduction step with a wrong value (t 7: "10 * 2" vs the target "6 * 2", where e_t was "5 * 10 * 2"; t 8: single digits 6 / 9 / 8 vs 5 / 4 / 1);
+  - the previous string is never output.
+* **Reading:** the contractive models' late errors are arithmetic errors at the right position, not stalls. That fits Cor. 1.2: with the pass token, the step decoder performs the reductions itself, and its one-shot depth runs out.
+  - Descriptive. It reads the mechanism, not causation.
+
+**Note 199-M3a (2026-10-13 23:09 EDT; before the finer split is computed; descriptive).** M3's "other" class is split into two.
+* **STRUCT-RIGHT:** the output token sequence has the target e_{t+1}'s length and identical non-number tokens (operators, brackets, " ="). It differs only in number tokens.
+* **STRUCT-WRONG:** anything else.
+* **Derived expectation (Cor. 1.2):** a decoder that computes the reductions itself, with the pass token and from a contractive state, gets the position and structure from the input and the token. Its failures are in values.
+  - **Expected** STRUCT-RIGHT ≥ 0.5 of the wrong outputs in each failed model.
+  - **Contrary** if < 0.5 in ≥ 2 of 3.
+  - Descriptive, same items and models as M3; output `eval_s199_lag.json` field `other_split` {struct_right, struct_wrong} by t.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

@@ -1,3 +1,28 @@
 {
- "reading": "pending (open)"
+ "cell_entry": {
+  "entry_0.5": null,
+  "entry_0.1": null,
+  "min_bin": 1.3943414431214332,
+  "last_bin": 1.3943414431214332
+ },
+ "ctrl_entry": {
+  "entry_0.5": null,
+  "entry_0.1": null,
+  "min_bin": 1.0255438113808633,
+  "last_bin": 1.0311523047685625
+ },
+ "ctrl_slope_last6k": -0.0006105631709098613,
+ "quality": {
+  "status": "done",
+  "pooled_k8": 0.4681666666666667,
+  "pooled_k16": 0.436,
+  "pooled_k32": 0.39566666666666667,
+  "stable": false,
+  "depth_9_12_n2": 0.13625,
+  "deep": false,
+  "think_necessary": true,
+  "gpu": "NVIDIA GeForce RTX 3090"
+ },
+ "depth": 0.13625,
+ "reading": "NO-EFFECT: entry(0.5/0.1) None/None, final bin 1.3943; control s3 entry None, final 1.0312, slope over last 6k -0.0006 per 1k; DEEP False, K'8 0.468, K'16 0.436, DEPTH 0.136 (RMS s1 0.587 / s2 0.662)"
 }
