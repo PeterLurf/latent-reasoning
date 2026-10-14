@@ -25,7 +25,7 @@ def main():
     items = max(abs(round(by_t[n][t] * nn[n]) - round(s173[n][t] * nn[n])) for n in s173 for t in range(len(s173[n])))   # 201-2: count-exact
     d_fp32 = {n: [round(fz[n][t] - by_t[n][t], 4) for t in range(len(by_t[n]))] for n in by_t if n in fz}
     out = {"bf16_acc_by_t": by_t, "maxdiff_bf16_vs_s173": d_s173, "max_abs_items_bf16_vs_s173": int(items), "pass": int(items) <= 5, "fp32_minus_bf16_by_t": d_fp32,
-           "maxabs_fp32_minus_bf16": max(abs(v) for r in d_fp32.values() for v in r), "card": torch.cuda.get_device_name(dev), "dm_flags": flags,
+           "maxabs_fp32_minus_bf16": max(abs(v) for r in d_fp32.values() for v in r), "card": torch.cuda.get_device_name(dev), "dm_flags": flags, "bs": 125,
            "def": "clarification 201-1: halt173.halt_fields at bf16 on the same items; pass iff within 0.005 of eval_s173_halt acc_by_t"}
     json.dump(out, open(os.path.join(rd, "eval_s201_bf16check.json"), "w", newline="\n"), indent=1)
     fp_ = os.path.join(rd, "eval_s201_freeze.json"); fj = json.load(open(fp_))           # 201-2: the re-check's max |delta| in items in the model's T1 JSON

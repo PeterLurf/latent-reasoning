@@ -23,7 +23,7 @@ def main():
     cells = [(n, t, abs(round(by_t[n][t] * nn[n]) - round(cl[n][t] * nn[n]))) for n in by_t for t in range(len(by_t[n])) if n in cl]
     mx = max(c[2] for c in cells); verdict = "RESOLVED-NUMERICAL" if mx <= 2 else "CODE-MISMATCH"
     out = {"halt173_fp32_acc_by_t": by_t, "fp32_crosscode_max_items": int(mx), "verdict": verdict, "cells_gt_0": [c for c in cells if c[2] > 0],
-           "card": torch.cuda.get_device_name(dev), "dm_flags_halt173": flags, "s201_t1_card": fj.get("card"),
+           "card": torch.cuda.get_device_name(dev), "dm_flags_halt173": flags, "bs": 250, "s201_t1_card": fj.get("card"),
            "def": "clarification 201-3: halt173.halt_fields in fp32 vs §201 T1 fp32 CLEAN acc_by_n_t, same items, max |k1 - k2| over all cells (n in NEST, t 0..2K)"}
     json.dump(out, open(os.path.join(rd, "eval_s201_fp32cross.json"), "w", newline="\n"), indent=1)
     fj["gates"].update({"fp32_crosscode_max_items": int(mx), "fp32_crosscode_verdict": verdict}); json.dump(fj, open(fp_, "w", newline="\n"), indent=1)
