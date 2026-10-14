@@ -142,7 +142,7 @@ def main():
         bt = s173.get("acc_by_t") or s173.get("halt", {}).get("acc_by_t"); dif = max(abs(bt[str(n)][t] - accs["CLEAN"][str(n)][t]) for n in H.NEST for t in range(len(bt[str(n)])) if str(n) in bt)
     out = {"arms": {A: {"acc": {k: {"pool_3_8": pool(A, int(k), range(3, 9)), "pool_9_10": pool(A, int(k), (9, 10))} for k in ("16", "24", "32")}, "acc_by_n_t": accs[A]} for A in ARMS},
            "gates": {"fb_identity": bool(fb_ok), "clean_vs_s173_maxdiff": dif, "s173_dtype": (s173 or {}).get("eval_dtype")},
-           "mechanism": mech, "card": torch.cuda.get_device_name(dev), "dtype": "float32 (no autocast)", "memcheck_peak_gib_n16": round(peak, 3), "n_items_per_n": n_items, "tmax": TMAX,
+           "mechanism": mech, "card": torch.cuda.get_device_name(dev), "dtype": "float32 (no autocast)", "memcheck_peak_gib_n16": round(peak, 3), "n_items_per_n": n_items, "bs": bs, "tmax": TMAX,
            "def": "§201 T1 (121eb9ef): oracle f = n + 1; FA / FD / FB reset after every write past f; pool_3_8 = mean of per-n accuracies n 3..8; acc_by_n_t index t = 0..32"}
     json.dump(out, open(os.path.join(rd, "eval_s201_freeze.json"), "w", newline="\n"), indent=1)
     np.savez_compressed(os.path.join(dump, run + "_test.npz"), n=np.concatenate([np.full(len(sets[n]), n) for n in NS]), t=np.concatenate([[it["t"] for it in sets[n]] for n in NS]),
