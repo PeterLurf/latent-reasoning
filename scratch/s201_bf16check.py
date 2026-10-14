@@ -29,7 +29,7 @@ def main():
            "def": "clarification 201-1: halt173.halt_fields at bf16 on the same items; pass iff within 0.005 of eval_s173_halt acc_by_t"}
     json.dump(out, open(os.path.join(rd, "eval_s201_bf16check.json"), "w", newline="\n"), indent=1)
     fp_ = os.path.join(rd, "eval_s201_freeze.json"); fj = json.load(open(fp_))           # 201-2: the re-check's max |delta| in items in the model's T1 JSON
-    fj["gates"].update({"bf16_recheck_max_abs_items": int(items), "bf16_recheck_pass": int(items) <= 5, "bf16_recheck_card": out["card"]})
+    fj["gates"].update({"bf16_recheck_max_items": int(items), "bf16_recheck_pass": int(items) <= 5, "bf16_recheck_card": out["card"]})
     json.dump(fj, open(fp_, "w", newline="\n"), indent=1)
     print(run, "bf16 check: maxdiff vs s173 %.4f pass %s; max |fp32 - bf16| %.4f" % (d_s173, out["pass"], out["maxabs_fp32_minus_bf16"]), flags, flush=True)
 
