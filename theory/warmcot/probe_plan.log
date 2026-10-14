@@ -1,0 +1,31 @@
+raw loaded 18
+raw feats 411
+raw op {"h6_last": {"lam": 0.1, "inner": 0.5770833333333333, "heldout": 0.58875, "valid": 0.49264705882352944}, "h6_mean": {"lam": 0.1, "inner": 0.65625, "heldout": 0.635, "valid": 0.553921568627451}, "top_last": {"lam": 0.1, "inner": 0.58125, "heldout": 0.57625, "valid": 0.4877450980392157}, "top_mean": {"lam": 0.1, "inner": 0.6083333333333333, "heldout": 0.59125, "valid": 0.5367647058823529}} 425
+raw slot {"h6_last": {"lam": 0.1, "inner": 0.6604166666666667, "heldout": 0.63875, "valid": 0.5661764705882353}, "h6_mean": {"lam": 0.1, "inner": 0.6333333333333333, "heldout": 0.64375, "valid": 0.5465686274509803}, "top_last": {"lam": 0.1, "inner": 0.64375, "heldout": 0.63875, "valid": 0.5367647058823529}, "top_mean": {"lam": 0.1, "inner": 0.6395833333333333, "heldout": 0.65125, "valid": 0.5612745098039216}} 446
+raw direct 0.0 0.0 599
+C loaded 599
+C feats 997
+C op {"h6_last": {"lam": 0.01, "inner": 0.6270833333333333, "heldout": 0.63625, "valid": 0.5171568627450981}, "h6_mean": {"lam": 0.1, "inner": 0.7020833333333333, "heldout": 0.66875, "valid": 0.5857843137254902}, "top_last": {"lam": 0.1, "inner": 0.6770833333333334, "heldout": 0.68125, "valid": 0.5514705882352942}, "top_mean": {"lam": 0.1, "inner": 0.71875, "heldout": 0.6775, "valid": 0.5955882352941176}} 1006
+C slot {"h6_last": {"lam": 0.1, "inner": 0.64375, "heldout": 0.645, "valid": 0.5686274509803921}, "h6_mean": {"lam": 0.1, "inner": 0.65, "heldout": 0.65125, "valid": 0.5563725490196079}, "top_last": {"lam": 0.1, "inner": 0.6458333333333334, "heldout": 0.64125, "valid": 0.5686274509803921}, "top_mean": {"lam": 0.1, "inner": 0.6416666666666667, "heldout": 0.6475, "valid": 0.5563725490196079}} 1024
+C direct 0.022 0.02 1806
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import runpy,sys; sys.argv=['probe_plan.py']; runpy.run_path('probe_plan.py', run_name='__main__')
+                                                  ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 294, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "probe_plan.py", line 178, in <module>
+    main()
+    ~~~~^^
+  File "probe_plan.py", line 170, in main
+    res[mk]["e1_exact_" + tag] = float(np.mean(ok)); res[mk]["e1_selfconsistent_value_" + tag] = float(np.mean(okv))
+                                       ~~~~~~~^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\_core\fromnumeric.py", line 3862, in mean
+    return _methods._mean(a, axis=axis, dtype=dtype,
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                          out=out, **kwargs)
+                          ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\numpy\_core\_methods.py", line 116, in _mean
+    arr = asanyarray(a)
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (500,) + inhomogeneous part.

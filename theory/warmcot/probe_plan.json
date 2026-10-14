@@ -1,0 +1,115 @@
+{
+ "raw": {
+  "probe_op": {
+   "h6_last": {
+    "lam": 0.1,
+    "inner": 0.5770833333333333,
+    "heldout": 0.58875,
+    "valid": 0.49264705882352944
+   },
+   "h6_mean": {
+    "lam": 0.1,
+    "inner": 0.65625,
+    "heldout": 0.635,
+    "valid": 0.553921568627451
+   },
+   "top_last": {
+    "lam": 0.1,
+    "inner": 0.58125,
+    "heldout": 0.57625,
+    "valid": 0.4877450980392157
+   },
+   "top_mean": {
+    "lam": 0.1,
+    "inner": 0.6083333333333333,
+    "heldout": 0.59125,
+    "valid": 0.5367647058823529
+   }
+  },
+  "probe_slot": {
+   "h6_last": {
+    "lam": 0.1,
+    "inner": 0.6604166666666667,
+    "heldout": 0.63875,
+    "valid": 0.5661764705882353
+   },
+   "h6_mean": {
+    "lam": 0.1,
+    "inner": 0.6333333333333333,
+    "heldout": 0.64375,
+    "valid": 0.5465686274509803
+   },
+   "top_last": {
+    "lam": 0.1,
+    "inner": 0.64375,
+    "heldout": 0.63875,
+    "valid": 0.5367647058823529
+   },
+   "top_mean": {
+    "lam": 0.1,
+    "inner": 0.6395833333333333,
+    "heldout": 0.65125,
+    "valid": 0.5612745098039216
+   }
+  },
+  "direct_eot": 0.0,
+  "direct_noeot": 0.0
+ },
+ "C": {
+  "probe_op": {
+   "h6_last": {
+    "lam": 0.01,
+    "inner": 0.6270833333333333,
+    "heldout": 0.63625,
+    "valid": 0.5171568627450981
+   },
+   "h6_mean": {
+    "lam": 0.1,
+    "inner": 0.7020833333333333,
+    "heldout": 0.66875,
+    "valid": 0.5857843137254902
+   },
+   "top_last": {
+    "lam": 0.1,
+    "inner": 0.6770833333333334,
+    "heldout": 0.68125,
+    "valid": 0.5514705882352942
+   },
+   "top_mean": {
+    "lam": 0.1,
+    "inner": 0.71875,
+    "heldout": 0.6775,
+    "valid": 0.5955882352941176
+   }
+  },
+  "probe_slot": {
+   "h6_last": {
+    "lam": 0.1,
+    "inner": 0.64375,
+    "heldout": 0.645,
+    "valid": 0.5686274509803921
+   },
+   "h6_mean": {
+    "lam": 0.1,
+    "inner": 0.65,
+    "heldout": 0.65125,
+    "valid": 0.5563725490196079
+   },
+   "top_last": {
+    "lam": 0.1,
+    "inner": 0.6458333333333334,
+    "heldout": 0.64125,
+    "valid": 0.5686274509803921
+   },
+   "top_mean": {
+    "lam": 0.1,
+    "inner": 0.6416666666666667,
+    "heldout": 0.6475,
+    "valid": 0.5563725490196079
+   }
+  },
+  "direct_eot": 0.022,
+  "direct_noeot": 0.02
+ },
+ "note": "recovered from probe_plan.log: the run crashed in the e1 section (empty-eqs bug, fixed); e1 re-run in probe_e1.py; majority baselines in probe_nl.json"
+}

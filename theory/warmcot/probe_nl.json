@@ -1,0 +1,217 @@
+{
+ "n_train": 2400,
+ "n_heldout": 800,
+ "n_valid": 408,
+ "lams": [
+  0.03,
+  0.1,
+  0.3,
+  1.0,
+  3.0
+ ],
+ "majority_op": {
+  "class": 2,
+  "train_share": 0.5595833333333333,
+  "heldout": 0.55625,
+  "valid": 0.49019607843137253
+ },
+ "majority_slot": {
+  "class": 0,
+  "train_share": 0.6579166666666667,
+  "heldout": 0.645,
+  "valid": 0.5661764705882353
+ },
+ "raw": {
+  "slot_tok_top": {
+   "lam": 0.03,
+   "inner": 0.6845637583892618,
+   "heldout": 0.6508795669824087,
+   "valid": 0.5782122905027933,
+   "n": [
+    2235,
+    739,
+    358
+   ],
+   "chance_heldout": 0.36255718796314196,
+   "first_number_heldout": 0.6170500676589986,
+   "first_number_valid": 0.5363128491620112
+  },
+  "slot_tok_h6": {
+   "lam": 0.03,
+   "inner": 0.6666666666666666,
+   "heldout": 0.6414073071718539,
+   "valid": 0.5893854748603352,
+   "n": [
+    2235,
+    739,
+    358
+   ],
+   "chance_heldout": 0.36255718796314196,
+   "first_number_heldout": 0.6170500676589986,
+   "first_number_valid": 0.5363128491620112
+  },
+  "probe_op": {
+   "h6_mean": {
+    "lam": 0.03,
+    "inner": 0.65625,
+    "heldout": 0.635,
+    "valid": 0.5441176470588235
+   },
+   "top_last": {
+    "lam": 0.1,
+    "inner": 0.58125,
+    "heldout": 0.57625,
+    "valid": 0.4877450980392157
+   },
+   "top_mean": {
+    "lam": 0.03,
+    "inner": 0.61875,
+    "heldout": 0.58375,
+    "valid": 0.5563725490196079
+   },
+   "nl_top_last": {
+    "lam": 0.3,
+    "inner": 0.5895833333333333,
+    "heldout": 0.555,
+    "valid": 0.5098039215686274
+   },
+   "nl_h6_last": {
+    "lam": 0.3,
+    "inner": 0.5770833333333333,
+    "heldout": 0.56375,
+    "valid": 0.5
+   }
+  },
+  "probe_slot": {
+   "h6_mean": {
+    "lam": 0.3,
+    "inner": 0.65625,
+    "heldout": 0.645,
+    "valid": 0.5465686274509803
+   },
+   "top_last": {
+    "lam": 1.0,
+    "inner": 0.65,
+    "heldout": 0.645,
+    "valid": 0.5661764705882353
+   },
+   "top_mean": {
+    "lam": 0.3,
+    "inner": 0.6520833333333333,
+    "heldout": 0.645,
+    "valid": 0.571078431372549
+   },
+   "nl_top_last": {
+    "lam": 3.0,
+    "inner": 0.65,
+    "heldout": 0.645,
+    "valid": 0.5661764705882353
+   },
+   "nl_h6_last": {
+    "lam": 0.3,
+    "inner": 0.65,
+    "heldout": 0.64625,
+    "valid": 0.5735294117647058
+   }
+  }
+ },
+ "C": {
+  "slot_tok_top": {
+   "lam": 0.1,
+   "inner": 0.70917225950783,
+   "heldout": 0.6562922868741543,
+   "valid": 0.6061452513966481,
+   "n": [
+    2235,
+    739,
+    358
+   ],
+   "chance_heldout": 0.36255718796314196,
+   "first_number_heldout": 0.6170500676589986,
+   "first_number_valid": 0.5363128491620112
+  },
+  "slot_tok_h6": {
+   "lam": 0.03,
+   "inner": 0.6935123042505593,
+   "heldout": 0.6508795669824087,
+   "valid": 0.5949720670391061,
+   "n": [
+    2235,
+    739,
+    358
+   ],
+   "chance_heldout": 0.36255718796314196,
+   "first_number_heldout": 0.6170500676589986,
+   "first_number_valid": 0.5363128491620112
+  },
+  "probe_op": {
+   "h6_mean": {
+    "lam": 0.1,
+    "inner": 0.7020833333333333,
+    "heldout": 0.66875,
+    "valid": 0.5857843137254902
+   },
+   "top_last": {
+    "lam": 0.3,
+    "inner": 0.6833333333333333,
+    "heldout": 0.6675,
+    "valid": 0.5563725490196079
+   },
+   "top_mean": {
+    "lam": 0.1,
+    "inner": 0.71875,
+    "heldout": 0.6775,
+    "valid": 0.5955882352941176
+   },
+   "nl_top_last": {
+    "lam": 0.03,
+    "inner": 0.7333333333333333,
+    "heldout": 0.66125,
+    "valid": 0.5220588235294118
+   },
+   "nl_h6_last": {
+    "lam": 0.03,
+    "inner": 0.6666666666666666,
+    "heldout": 0.63875,
+    "valid": 0.5514705882352942
+   }
+  },
+  "probe_slot": {
+   "h6_mean": {
+    "lam": 0.3,
+    "inner": 0.6604166666666667,
+    "heldout": 0.64625,
+    "valid": 0.5563725490196079
+   },
+   "top_last": {
+    "lam": 1.0,
+    "inner": 0.6604166666666667,
+    "heldout": 0.6475,
+    "valid": 0.5686274509803921
+   },
+   "top_mean": {
+    "lam": 0.3,
+    "inner": 0.6666666666666666,
+    "heldout": 0.65125,
+    "valid": 0.5612745098039216
+   },
+   "nl_top_last": {
+    "lam": 1.0,
+    "inner": 0.6541666666666667,
+    "heldout": 0.6475,
+    "valid": 0.571078431372549
+   },
+   "nl_h6_last": {
+    "lam": 0.1,
+    "inner": 0.66875,
+    "heldout": 0.6375,
+    "valid": 0.5637254901960784
+   }
+  },
+  "e1_exact_noeot": 0.346,
+  "e1_value_selfconsistent_noeot": 0.934,
+  "e1_exact_eot": 0.35,
+  "e1_value_selfconsistent_eot": 0.934
+ },
+ "sec": 1936
+}
