@@ -182,6 +182,10 @@ def load_model(run, dev, init=False):
     if "chunk_k" in a:
         from boxes.fixedchunk import FixedChunk
         kind, m = "fixedchunk", FixedChunk(g, 6, a.get("mem_write", "top"))
+    elif a.get("arm") == "readslots" and "n_max_train" in a:               # §198 (c): nested170's ReadSlotsN (note 198-3), not §171's multiplication ReadSlots
+        from boxes.nested170 import ReadSlotsN, mem_geometry
+        ml_, ha_, hd_ = mem_geometry(a); kind, m = "nested", ReadSlotsN(g, ml_, "top", ha_, hd_, a.get("add_norm") or None, int(a.get("n_slots") or 8))
+        m.nopass = bool(a.get("aux_nopass"))
     elif a.get("arm") == "readslots":
         from boxes.readslots171 import ReadSlots
         kind, m = "readslots", ReadSlots(g, a["n_slots"], 6, "top", bool(a.get("blind_decoder")))
@@ -359,6 +363,13 @@ def cap_add_state(m, S, C):
     return torch.cat([S[:, :ha] * f[:, None, None, None], S[:, ha:]], 1)
 
 
+def think_tokens(m, it):
+    """note 187-2 row field: the item's think-input token count. nested170's ReadSlotsN encodes on the model's device, so its count is read off the
+    tokenisation directly (EOT + the symbols, = encode's valid.sum() for one item); other models keep think_inputs on cpu (tokenisation only)."""
+    from boxes.nested170 import ReadSlotsN, ids
+    return 1 + len(ids(it["syms"])) if isinstance(m, ReadSlotsN) else int(m.think_inputs([it], "cpu")[1].sum())
+
+
 @torch.no_grad()
 def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None, items_out=False, items_n=(9, 10), items_tmax=None, items_only=False):
     """note 187-1 (Theory / Audit, descriptive): whole-string aux exact match on deep items is confounded by copy length out of distribution, so
@@ -400,12 +411,12 @@ def deepaux_fields(m, a, dev, amp, bs=100, tmax=12, n_items=1000, cap_c=None, it
 
     if items_only:                                                          # note 187-3: the per-item rows alone (no summary / probes)
         it_ = [it for it in TE if it["n"] in tuple(items_n)]
-        rows = [{"n": it["n"], "nest_depth": it["depth"], "n_syms": len(it["syms"]), "think_tokens": int(m.think_inputs([it], "cpu")[1].sum()), "handle_by_t": {}} for it in it_]
+        rows = [{"n": it["n"], "nest_depth": it["depth"], "n_syms": len(it["syms"]), "think_tokens": think_tokens(m, it), "handle_by_t": {}} for it in it_]
         handle(it_, items_tmax or tmax, rows); return {"_items": rows}
     out = {"handle_ext": handle(te12, tmax)}
     if items_out:                                                           # note 187-2 (amended): ALL n = 9 and n = 10 test items (1,000 each), a separate pass
         it910 = [it for it in TE if it["n"] in tuple(items_n)]
-        rows = [{"n": it["n"], "nest_depth": it["depth"], "n_syms": len(it["syms"]), "think_tokens": int(m.think_inputs([it], "cpu")[1].sum()), "handle_by_t": {}} for it in it910]
+        rows = [{"n": it["n"], "nest_depth": it["depth"], "n_syms": len(it["syms"]), "think_tokens": think_tokens(m, it), "handle_by_t": {}} for it in it910]
         handle(it910, items_tmax or tmax, rows); out["_items"] = rows
     print("deepaux handle_ext", {t: round(v["handle"], 3) for t, v in out["handle_ext"].items()}, flush=True)
     out["handle_le8_check"] = handle(te8, K)
