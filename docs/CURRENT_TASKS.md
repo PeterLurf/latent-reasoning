@@ -27,6 +27,10 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 17:5x 10-14 (Experiments): §200 A / B drained + committed (0.147 / 0.160; GSM-Symbolic local 01fcde1d); family ≈ $7.81, D not run. §199 s3 destroyed
+  16:45 (step 35.9k; family $5.93; ckpts deleted per Theory). §193 s2 b291 training on 89.221.67.136:16081 (55989781, STARTED 16:50; gen8 drain + gpu_watch).
+  §202 WARM-START: harness + gate_s202 PASS (091f4e12), Audit OK -> fill_generic_px s202 292 (W) then 293 (C+), DPH_MAX 0.28, 3090 only; guard
+  scratch/s202_guard.py (pair cap $4, logs/s202_guard.log). Local: T4 rms s1 (2070) / s184 s2 (4060) running; s193 T4 done (9aad31c2); 3070 free.
 * 16:3x 10-14 (Experiments, after the 13:45 LOCAL REBOOT killed every watcher / filler / local job): §200 A b287 + B b288 FINISHED on host
   (QUEUE_DONE 16:13 / 14:52 local); gen8 drains re-armed 16:27 (scratch/post_reboot_redrain_1014.sh). D b290's host 55966557 failed HOSTPROBE_SLOW
   (1.03 s/step) at 13:46 and idled -> DESTROYED 16:28 ($0.64); §200 family ≈ $7.88 > $7.50 cap, so D is NOT refilled (asked Audit). §199 s3 b285
