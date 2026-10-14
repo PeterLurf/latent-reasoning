@@ -1,0 +1,39 @@
+2026-10-14 05:59:53 b285: deploying on offer 48399578 (161.29.203.152, driver 595.84)
+2026-10-14 06:07:44 b285: did not start
+2026-10-14 06:07:45 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 06:17:49 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 06:17:50 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 06:27:54 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 06:27:55 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 06:37:58 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 06:38:00 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 06:48:04 b285: deploying on offer 51518831 (174.164.26.93, driver 595.84)
+2026-10-14 06:55:51 b285: did not start
+2026-10-14 06:55:53 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 07:05:56 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 07:05:58 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 07:16:03 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 07:16:04 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 07:26:16 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 07:26:22 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 07:36:26 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 07:36:27 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 07:46:30 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 07:46:32 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 07:56:35 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 07:56:37 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 08:06:40 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 08:06:41 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 08:16:46 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 08:16:48 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 08:26:52 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 08:26:53 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 08:36:56 b285: no matching offer (driver 595.84, <= $0.33); retry in 10 min
+2026-10-14 08:36:57 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 08:47:00 b285: deploying on offer 47952508 (90.39.240.26, driver 595.84)
+2026-10-14 08:54:59 b285: did not start
+2026-10-14 08:55:01 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
+2026-10-14 08:59:29 b285: deploying on offer 48414826 (222.230.13.166, driver 595.84, $0.2681/h)
+2026-10-14 09:03:37 b285: STARTED
+2026-10-14 09:06:58 b285: HOSTPROBE OK on 222.230.13.166:55656 - seed 3 running paired
+2026-10-14 09:14:00 b284: no matching offer (driver 570.172.08, <= $0.33); retry in 10 min
