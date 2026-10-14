@@ -278,7 +278,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 188 | REWEIGHT × WINDOW: §182 WINDOW + §184's --aux_reweight in one cell; JOINT = DEEP + THINK-NECESSARY + STABLE (K′16); a C6 claim needs LONG-STABLE (K′24 ≥ K′8 − 0.05) at 2 / 2 | registered | **closed: NEITHER (s1 never converged: loss ~0.90, clip rate 1.0; CONFOUNDED-BY-ENTRY)** |
 | 189 | RMS-REP: §185 RMS at seed 2 (descriptive replication); SUBSTITUTE = DEEP + THINK-NECESSARY + depth n 9–12 ≥ §184 s2 − 0.05 / DEEP-ONLY / NOT REPLICATED | registered | **closed: SUBSTITUTE (s2 DEEP, depth 0.662 vs §184 s2 0.665; two-seed 0.625 vs 0.576)** |
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
-| 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **open** |
+| 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **NAME-MEM (A 0.950; removal K′0/1 at chance; B 0.938). Descriptive: 11–14 0.745 at K′10, ≥ 0.91 at all depths at K′12 (post hoc), degrades K′14/16; p8_ctl 0.640 vs 0.816. GSM8K template lead's trigger fired (needs derivation + user approval)** |
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **closed: NOT-DEEP (s3 never entered the basin; clip rate 1.0). RMS seed-robustness refuted at 3 seeds** |
 | 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **open** |
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **REPLICATES (2 seeds, descriptive): size-free early steps, AUX-DONE tracks n; s2 under-converged (entry-confounded)** |
@@ -14493,6 +14493,32 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Wortsman 2203.05482.
 * **Our case is a hybrid:** a pretrained trunk plus an identical zero / copied memory branch (verified in deltamem: no random branch init). So both priors apply.
 * **The s1–s2 control decides which one holds here.** A low B(s1–s2) supports the pretrained-basin prior.
+
+**§191 result (2026-10-13 22:38 EDT; A s191_stepaux_relabel_s1, b271, RTX 3090 / 590.48.01, 12k steps, 0 non-finite; a7aced23; theory/score_s191.py). NAME-MEM: name memorisation was the barrier.**
+* **Registered reading:** A test 0.950 (n 4,053) ≥ 0.65 → **NAME-MEM**.
+  - Relabelled train fit at K′ 0 / 1 / 10: 0.502 / 0.503 / 0.982. The relabel swap rate is 0.501.
+  - Control B (TEXT-COT + relabel) reads 0.938 ≥ 0.70, so fidelity is OK.
+  - One seed.
+* **191-1 (2), removal (C1 on ProsQA):**
+  - A's test accuracy at K′ 0 is 0.46–0.51 at every depth 3–14, and at K′ 1 it is 0.45–0.54: chance (0.5).
+  - At K′ 10 it is 0.950. **The think passes carry the computation.** "Latent ≈ text" here is not a one-pass shortcut.
+* **191-1 (1), cost:**
+  - **Pending:** eval_timing191 (A and B on one 3090, Meter FLOPs plus timed s/item), queued after §199's slots.
+  - Training only, different hosts: A 83,823 s (about $5.5) vs B 16,180 s.
+  - Until the eval timing lands, no cost comparison is stated.
+* **Descriptive, not registered readings:**
+  - **Depth profile at K′ 10:** 0.955–0.998 at depths 3–10 (the training range). Beyond it: 0.909 / 0.840 / 0.729 / 0.500 at 11 / 12 / 13 / 14 (n 34 at depth 14), a per-depth mean of 0.745 over 11–14. B is flat at 0.93–0.96 (11–14 mean 0.945).
+  - **Passes set the reach. POST-HOC: the K′ was chosen after looking.**
+    - K′ 8 holds to about depth 8 (0.648 at 10).
+    - K′ 12 reads ≥ 0.912 at **every** depth 3–14 (11–14 mean 0.929, about text level).
+    - K′ 14 / 16 then degrade at depths ≥ 8 (worst 0.588 / 0.471). Post-completion passes corrupt the answer: the integrator failure of docs/THEORY_SEEDSTAB Thm 2. Not STABLE.
+  - **The input-length control p8_ctl:** A 0.640 vs B 0.816 (n 795). Part of the latent arm's accuracy is not robust to input length, so it is reported beside every "≈ text" statement.
+* **Consequences:**
+  - The conditional **GSM8K template-resampling lead's trigger has fired** (A reads NAME-MEM). It still needs:
+    - a registration with a derivation (standing rule; the mechanism is invariance by per-draw relabelling: under relabelling, surface names carry zero information about the answer given the structure, so a name-keyed solution has chance-level expected loss);
+    - TemplateGSM 2411.18104 only;
+    - **the user's approval for GSM8K-scale spend.**
+  - ProsQA's depth limit beyond training shows the same pass-count / post-completion pattern as nested arithmetic, so §199's CSR post-completion ceiling is also relevant here (unregistered).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
