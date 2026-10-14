@@ -15199,6 +15199,16 @@ Each registers separately, after T1 / T2.
 * **Output:** `<run>/eval_s201_snap.json` = {"policies": {NAME: {"acc_by_n", "mean_passes_by_n", "mean_tokens_by_n"}}, "qW_kw7_by_n", "parse_valid_by_n", "segment_k0_by_n", "best_fixed_k_train"}.
   - Reader: theory/score_s201_t4.py, fixture-checked before any output.
 
+**§201 ProsQA T2 (2026-10-14 13:01 EDT; note 201-6 (b), descriptive; f58abed4; §191 A, first 200 test items per depth, fp32, TMAX 24; the adaptations are in dump_meta).**
+* **Threshold** A = 0.788 (p̂ 0.151, C_FA 0.466, c_d 0.019). The best fixed K′ on train is 9. Nothing is censored at any depth.
+* **The halt tracks depth past training:** event-mean halt at d3..14 = 4.1 / 4.7 / 5.5 / 6.4 / 7.3 / 8.2 / 9.0 / 9.7 / **10.3 / 11.1 / 12.1 / 13.0**, about depth + 1 at every depth (training depths ≤ 10). The completion signal is size-free on ProsQA.
+* **Accuracy:**
+  - **in range, d3–10 mean:** halt 0.948 vs K′9 0.971 (−0.024);
+  - **beyond training, d11–14 mean:** halt **0.799** vs K′9 0.608 (+0.19);
+  - **vs K′24** (overthinking: 0.53–0.93), the halt is better at every depth.
+* **Reading:** on ProsQA the learned halt costs a little in range and gains much beyond it. It removes overthinking and recovers most of the deep-item loss, which matches §201's nested pattern on the RMS models.
+  - §191's post-hoc K′12 (≥ 0.91 at all depths, full items) remains the best fixed reference, chosen after looking. The halt needs no such choice.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
