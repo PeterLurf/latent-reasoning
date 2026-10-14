@@ -11,7 +11,7 @@ import time
 
 ROOT = "D:/Latent"; os.chdir(ROOT); CAP = 7.0; V = "C:/Users/peter/.local/vastai/vast.sh"; KEY = os.path.expanduser("~/.ssh/runpod_ed25519")
 CELLS = {287: "gsm_lat_aug_s1", 288: "gsm_lat_augrs_s1", 289: "gsm_txt_aug_s1", 290: "gsm_txt_augrs_s1"}; STEPS = 24000; EVAL_SETUP_H = 0.35
-B286 = {"dph": 1.0, "hours": 0.30}                                       # the fixed realised spend in $: b286 ~0.14 + slow hosts b287 / b288 / b290 ~0.15 (dph 1 x $)
+B286 = {"dph": 1.0, "hours": 0.78}                                       # fixed realised spend in $: b286 ~0.14 + slow hosts ~0.15 + C (landed) 0.48 (dph 1 x $)
 
 
 def log(s):
