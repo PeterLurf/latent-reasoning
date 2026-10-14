@@ -59,7 +59,7 @@ def rho_bar(models, X, xkey, ykind):
                 h = handle_curve(d, n); yv = sum(h[5:min(9, n)]) / len(h[5:min(9, n)])
             xs.append(xv); ys.append(yv)
         per[n] = spearman(xs, ys) if len(xs) >= 3 else None
-    vals = [v for v in per.values() if v is not None]
+    vals = [v for v in per.values() if v is not None]                     # M1a (Audit): a constant side (all ties) drops that n; reported, never silent
     return (sum(vals) / len(vals) if vals else None), per
 
 
@@ -73,10 +73,12 @@ def main():
         for xkey in ("alpha_pass", "p_mean_logsv"):
             for yk in ("onset", "handle_t6_9"):
                 rb, per = rho_bar(models, X, xkey, yk); res["%s/%s/%s" % (tag, xkey, yk)] = {"rho_bar": rb, "per_n": per}
-    m = res["all12/alpha_pass/onset"]["rho_bar"]
-    lab = "pending" if m is None else ("PREDICTED (rho_bar > 0, >= 0.3)" if m >= 0.3 - EPS else "FALSIFIED")
-    rd = "M1 %s: rho_bar %s (per n %s) | continuous y' %s | P-spectrum x %s | converged-only %s" % (
-        lab, None if m is None else round(m, 3), {n: None if v is None else round(v, 3) for n, v in res["all12/alpha_pass/onset"]["per_n"].items()},
+    m = res["all12/alpha_pass/onset"]["rho_bar"]; used = [n for n, v in res["all12/alpha_pass/onset"]["per_n"].items() if v is not None]
+    dropped = [n for n in NS if n not in used]
+    lab = "INSUFFICIENT (%d of 4 n usable; M1a needs >= 3)" % len(used) if len(used) < 3 else ("PREDICTED (rho_bar > 0, >= 0.3)" if m >= 0.3 - EPS else "FALSIFIED")
+    res["n_used"], res["n_dropped"] = used, dropped
+    rd = "M1 %s: rho_bar %s over n %s (dropped, a constant side: %s) (per n %s) | continuous y' %s | P-spectrum x %s | converged-only %s" % (
+        lab, None if m is None else round(m, 3), used, dropped or "none", {n: None if v is None else round(v, 3) for n, v in res["all12/alpha_pass/onset"]["per_n"].items()},
         res["all12/alpha_pass/handle_t6_9"]["rho_bar"], res["all12/p_mean_logsv/onset"]["rho_bar"], res["converged9/alpha_pass/onset"]["rho_bar"])
     res["reading"] = rd; print("READING:", rd)
     json.dump(res, open(os.path.join(ROOT, "theory", "results", "score_s199_m1.json"), "w", newline=chr(10)), indent=1, default=str)
