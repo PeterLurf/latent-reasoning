@@ -14953,6 +14953,18 @@ Each registers separately, after T1 / T2.
   - the 5-item tolerance is unchanged;
   - nothing from this model is read until the test reports.
 
+**Note 201-4 (2026-10-14 07:09 EDT; Audit; s184_reweight_s1 stays WITHHELD until 201-3 reads). Reproduction drift on the 3070.**
+* **Facts:**
+  - s184_reweight_s1's eval_s173_halt.json was made on the **RTX 3070, bf16** (2026-10-11).
+  - On the 11th, commit d2b76964 recorded halt173's bf16 re-run on the 3070 as **bitwise identical** to the earlier 3070 file.
+  - Today's bf16 re-check, also on the 3070 with halt173's own flags and the same items, differs by 7 items.
+  - s185_rms_s1's 3070 bf16 reference also reproduces at 5 items, not bitwise.
+* **Reading:** this is not card-to-card bf16 noise. Since 10-11, halt173 / deltamem (or the trunk path) has drifted, or the local environment has (torch / CUDA / driver).
+  - It matters beyond §201: every Audit reproduction that re-runs halt173 relies on it.
+* **Investigation (Experiments, $0, the 3070):** halt173 eval of s184_reweight_s1 in bf16 at **commit d2b76964** (a git worktree) vs **HEAD**, same items.
+  - The old commit reproduces its own 10-11 file bitwise → code drift since then; bisect the commits touching halt173 / deltamem / core / s5.
+  - The old commit does NOT reproduce it → environment drift. Record the torch / CUDA / driver versions then and now.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
