@@ -169,12 +169,19 @@
    "k32": -0.04018195602729341
   }
  },
+ "symbolic_drop": {
+  "A": 0.08608112206216831,
+  "B": 0.07336967399545109,
+  "C": 0.16585564821834722
+ },
+ "symbolic_B_le_A": true,
  "predictions": {
   "P1": "FALSIFIED",
   "P5": "FALSIFIED",
   "P7": "holds",
   "P4": "holds",
-  "P6": "LENGTH-ROBUST"
+  "P6": "LENGTH-ROBUST",
+  "P8": "FALSIFIED"
  },
  "reading": "R1 A-C below (0.147 vs 0.321) | R2 A not stage-2-eligible (0.147; PCCoT 0.4948) | A K'0 0.083 / K'1 0.125 / K'10 0.147 (200-1: one grid for R4 and LOOP-NOT-FORMED; no-CoT refs RiM 0.154, 0.16-0.19) | R2 B not stage-2-eligible (0.160; PCCoT 0.4948) | B K'0 0.069 / K'1 0.111 / K'10 0.160 (200-1: one grid for R4 and LOOP-NOT-FORMED; no-CoT refs RiM 0.154, 0.16-0.19) | R6 LENGTH-ROBUST (excess k16 0.001, k32 -0.040)"
 }

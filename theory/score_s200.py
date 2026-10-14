@@ -87,9 +87,16 @@ def main():
         g = E["B"]["struct"]["gap_mstrat"] - E["A"]["struct"]["gap_mstrat"]; pr["P4"] = "holds" if abs(g) <= 0.05 + EPS else ("FALSIFIED" if g < -0.05 - EPS else "outside (B gap larger)")
     if "R6" in out:
         x = out["R6"]["excess"]["k32"]; pr["P6"] = "SIZE-KEYED as conjectured" if x >= 0.04 - EPS else ("LENGTH-ROBUST" if x <= 0.015 + EPS else "mixed band: linear transfer FALSIFIED")
-    if all(E[k] and E[k].get("symbolic") for k in CELLS):
-        drop = {k: E[k]["acc"] - E[k]["symbolic"]["main"] for k in CELLS}
-        pr["P8"] = "holds" if all(v <= 0.03 + EPS for v in drop.values()) and drop["B"] <= drop["A"] + EPS else "FALSIFIED"; out["symbolic_drop"] = drop
+    def sym_main(e):                                                        # field-path fix 2026-10-14: symbolic.main is {acc, n, sd_over_templates}
+        m_ = e["symbolic"]["main"]; return m_["acc"] if isinstance(m_, dict) else m_
+    have = [k for k in CELLS if E[k] and E[k].get("symbolic")]
+    if have:                                                                # P8 is universal ("every arm"): any arm > 3 points falsifies it; "holds" needs all four
+        drop = {k: E[k]["acc"] - sym_main(E[k]) for k in have}; out["symbolic_drop"] = drop
+        ba = None if not ("A" in drop and "B" in drop) else drop["B"] <= drop["A"] + EPS; out["symbolic_B_le_A"] = ba
+        if any(v > 0.03 + EPS for v in drop.values()) or ba is False:
+            pr["P8"] = "FALSIFIED"
+        else:
+            pr["P8"] = "holds" if len(have) == len(CELLS) else "pending (%s missing)" % ",".join(k for k in CELLS if k not in have)
     out["predictions"] = pr; out["reading"] = " | ".join(lines) or "pending"
     print("READING:", out["reading"]); print("PREDICTIONS:", pr)
     for k in LAT:

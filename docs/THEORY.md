@@ -15277,7 +15277,7 @@ Each registers separately, after T1 / T2.
   - **P5 FALSIFIED:** THINK-NECESSARY fails for A.
   - **P6 reads LENGTH-ROBUST:** the size-keyed transfer from ProsQA does not hold here.
   - **P7 holds.**
-  - P2 and P8 are unreadable without D and the latent GSM-Symbolic evals.
+  - P2 is unreadable without D. P8: see the GSM-Symbolic note below (FALSIFIED).
 * **IDLE-PASSES (descriptive):** K′ = m + 2 is not above K′10 at any m. Extra idle passes do not hurt, so risk 0 did not materialise.
 * **Realised spend:** about $7.8, over the $7.50 cap, including $0.64 for D's idle slow host. D is not refilled; that is Audit's / the user's call.
 * **Reading:**
@@ -15285,6 +15285,15 @@ Each registers separately, after T1 / T2.
   - The text arm reaches 0.321.
   - This is the regime Literature's init survey predicts for an untested init (every published GPT-2 number starts CoT-supervised).
   - **The WARM-START trigger ("LOOP-NOT-FORMED or below") is met (below).**
+
+**§200 GSM-Symbolic, A / B landed (2026-10-14 17:35 EDT; Experiments 01fcde1d, local eval-only, 3070 bf16, eval_bs 64; theory/score_s200.py). P8 FALSIFIED: every landed arm drops far more than 3 points on template instances.**
+* **main / p1 / p2:** A 0.061 / 0.020 / 0.012; B 0.087 / 0.035 / 0.017; C 0.156 / 0.059 / 0.022.
+* **Drop (GSM8K test − Symbolic main):** A 0.086, B 0.073, C 0.166.
+  - P8's first clause is universal ("every arm"), so it is decided without D.
+  - Its second clause, B's drop ≤ A's, holds.
+  - B's test acc on the 3070 rerun is 2 of 1,319 items below the 3090 value, a bf16 card effect. That moves its drop by 0.0015.
+* **Scorer fix (field path, no rule change):** score_s200 read `symbolic.main` as a number, but the field is {acc, n, sd_over_templates}. It also required all four cells for P8. The fix reads `main.acc` and decides P8 as FALSIFIED on any arm > 3 points, "pending" while an arm is missing. Re-run diff vs the committed output: only the P8 fields changed. A fixture checks the pending branch.
+* **P-W8 comparator (descriptive):** A's aux exact by grounding is Q-steps 0.331 (n 281), R-steps 0.113 (n 363), unparsed 0.131 (n 1,054). Steps whose operands are earlier results are decoded about 3× worse than question-literal steps.
 
 ## 202. WARM-START-FROM-COT: does a CoT-trained trunk make §200's latent arm competitive at equal exposure? (the user's pre-approval relayed by Audit, 2026-10-14 ~12:0x, "ima preapprove wtv yall cooking up", ≤ $4; triggered by §200 reading BELOW; pre-registered 2026-10-14 16:41 EDT, before any §202 code or run)
 
