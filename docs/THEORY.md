@@ -15131,6 +15131,16 @@ Each registers separately, after T1 / T2.
 
 **Note 199-A5b (2026-10-14 10:57 EDT; disclosure, Audit).** 199-A5 and 199-A5a were both written **before s1's landing readout but after** Audit's 10:5x relay of s1's interim live log (not entered at 44.5k; bins about 1.41). The crowding qualifier is pre-landing, post-interim-log. It changes no verdict: the method reading is untouched either way.
 
+**Same-card eval timing (2026-10-14 11:03 EDT; note 201-6 (d), descriptive; RTX 4060 bf16, each run's own eval batch, the 198-2a / 191-1 protocol; eval_timing_4060.json in each run dir; it does not replace the 3090 numbers).**
+* **§191 (191-1 (1), cost):**
+  - A (latent step-aux) 0.0691 s/item at 9.84e11 FLOPs/item, against B (TEXT-COT) 0.702 s/item at 1.10e11 FLOPs/item.
+  - **The latent arm uses about 9× MORE FLOPs but about 10× LESS wall time per item.** Text CoT decodes about 91 tokens one at a time, while the latent passes process the input in parallel.
+  - The 191-1 wording "matches, costs more" applies to FLOPs only. In wall time the latent arm is cheaper. Both are stated whenever cost is quoted.
+  - Caveat: one CUDA allocator OOM-retry during B's batched generation may inflate B's time slightly. It cannot explain 10×.
+* **§198 (198-2a, eval phase, same card):** (a) injc 0.00398, (b) memhi 0.00397, (c) readslots 0.00209 s/item.
+  - (b) saves no wall time at nested lengths: kernel-launch overhead dominates there, as note 198-2 measured in training.
+  - (c) takes 0.53× of (a). (c) also FAILED on quality (§198 result), so this is a cost datum, not a recommendation.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
