@@ -288,7 +288,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **(a) comparator holds; (b) CHEAPER-WORSE (confounded by entry); (c) FAILS (entry 33k, not DEEP, depth 0.364); family ≈ $6.29; 198-3 pred 1 FALSIFIED (READ-SLOTS more path-independent)** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, M2, M3, 199-A) | **closed: M1 PREDICTED, M3 PREDICTED, M2 no pair connected; CSR (199-A) FLOOR-GAMED + harmful on its paired seed (1 of 3 seeds; s3 stopped, s2 cancelled); account untested** |
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **latent BELOW text (A 0.147 vs C 0.321); loop forms weakly but THINK-NECESSARY fails (K′1 ≈ K′10); recall share 0.48 (P1 falsified), resampling cut it to 0.15 at no test cost; D unavailable; WARM-START trigger met** |
-| 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails** |
+| 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails; T4 SNAP-CHAIN: SNAP-HURTS 4/4 (the pass-7 text write is exact ~0 beyond n 10; Prop 8 untested)** |
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **open** |
 
 ## Live sections
@@ -15260,6 +15260,32 @@ Each registers separately, after T1 / T2.
 **Note 201-8 (2026-10-14 13:35 EDT; before its output; descriptive).** T4 SNAP-CHAIN is also run on **s193_rmswin_s1** (RMS × WINDOW, the best beyond-range nested model) on the 3070, with the same policies, items and fields as note 201-7.
 * It is read with score_s201_t4's per-model logic as a **descriptive** extension. It is not in the registered four, and it enters no prediction (T4-a / b / c).
 * **Question:** does a text checkpoint extend this model's reach past its latent horizon (latent n 11 / 12: 0.598 / 0.244 at K′ 8 per §193)?
+
+**§201 T4 SNAP-CHAIN result (2026-10-14 17:58 EDT; note 201-7; the registered four: s190_rmsnopass_s1 + s185_rms_s2 6a4c5e39, s185_rms_s1 (2070) + s184_reweight_s2 (4060) re-run after the reboot (ec7d52c1, reproducing the pre-reboot partials); s193 9aad31c2 descriptive (201-8); fp32, bs 250; theory/score_s201_t4.py). SNAP-HURTS on all four. A text checkpoint does not extend reach, because the write itself fails beyond the trained range.**
+* **PRIMARY, per model (n 11–12 pooled; TIMEOUT7 vs LAT = max(LATENT-BEST, LATENT-HALT)):**
+
+  | model | TIMEOUT7 | LAT | label | q_W at pass 7 (n 11 / 12) |
+  |---|---|---|---|---|
+  | §190 s1 | 0.263 | 0.378 | SNAP-HURTS | 0.185 / 0.014 |
+  | rms s1 | 0.163 | 0.386 | SNAP-HURTS | 0 / 0 |
+  | rms s2 | 0.180 | 0.402 | SNAP-HURTS | 0 / 0 |
+  | §184 s2 | 0.369 | 0.440 | SNAP-HURTS | 0 / 0 |
+  | s193 (descriptive) | 0.172 | 0.417 | SNAP-HURTS | 0.003 / 0 |
+
+* **Predictions:**
+  - **T4-a not applicable:** §190 s1's q_W at 7 is 0.10, below its 0.6 precondition.
+  - **T4-b:** the order FIX7 ≥ FIX4 ≥ FIX2 is not monotone. Not falsified (FIX4 > FIX7 + 0.05 never occurs).
+  - **T4-c does not hold:** n 14 is helped in no model. Its falsifier (n 16 helped by ≥ 0.15) is not met either.
+  - **T4-d (descriptive):** per-segment K′ = 0 accuracy is near chance (0.08–0.20) except on §184 s2 at n 9–11 (0.94 / 0.61 / 0.27), whose answer decoder solves short written remainders directly.
+* **Why (descriptive):**
+  - Prop 8 needs a reliable write: n − k ≤ H_W, with the string rendered exactly at pass k.
+  - The models' own aux decoders render the pass-7 intermediate exactly at 0.83–0.99 for n 9 (except §184 s2), but at about 0 from n 11. Parse-valid stays 0.90–1.0, so the strings are well-formed but wrong.
+  - The latent state at pass 7 still carries enough to finish latently (LATENT-HALT 0.24–0.60 at n 11–12), but its rendering does not.
+  - **So H_W at the write is the binding horizon**, and it is set by the aux decoder's whole-string exactness beyond the trained length, not by the latent. Prop 8's reach claim is not tested, because its precondition failed.
+* **Reading for the user's "transition in and out of latent thinking":**
+  - EXIT to a text checkpoint helps only when the write is exact.
+  - With whole-string step targets trained to n ≤ 8, that fails exactly where a checkpoint is needed (n ≥ 10).
+  - The learned halt (T2) remains the working transition. A checkpoint would need a write that is exact beyond range, e.g. a factored or value-only write; the STEP-TARGET-FACTOR draft is related. That would need a new registration.
 
 **§200 result (2026-10-14 16:40 EDT; A gsm_lat_aug_s1 2f97a6db, B gsm_lat_augrs_s1 eb3da43d, C gsm_txt_aug_s1; D never ran (its host failed HOSTPROBE, then the reboot), so R1 B−D and R3's text pair are PENDING / unavailable; theory/score_s200.py). The latent arms read BELOW text. The loop forms weakly but is mostly one-pass. The registered latent-vs-text question reads against the latent method at this budget and init.**
 * **R1:** A − C = 0.147 − 0.321 → **below**. B − D is unavailable.

@@ -1,0 +1,74 @@
+{
+ "models": {
+  "s190_rmsnopass_s1": {
+   "label": "SNAP-HURTS",
+   "timeout7_11_12": 0.2625,
+   "LAT_11_12": 0.3775,
+   "passes_11_12": 10.249500000000001,
+   "qW7_11_12": 0.0995,
+   "fix": [
+    0.155,
+    0.2745,
+    0.228
+   ],
+   "T4b_order_holds": false,
+   "T4b_falsified": false,
+   "n14_helped": false,
+   "n16_helped": false
+  },
+  "s185_rms_s1": {
+   "label": "SNAP-HURTS",
+   "timeout7_11_12": 0.1625,
+   "LAT_11_12": 0.3855,
+   "passes_11_12": 9.099,
+   "qW7_11_12": 0.0,
+   "fix": [
+    0.1485,
+    0.1585,
+    0.1295
+   ],
+   "T4b_order_holds": false,
+   "T4b_falsified": false,
+   "n14_helped": false,
+   "n16_helped": false
+  },
+  "s185_rms_s2": {
+   "label": "SNAP-HURTS",
+   "timeout7_11_12": 0.1805,
+   "LAT_11_12": 0.4015,
+   "passes_11_12": 9.3,
+   "qW7_11_12": 0.0,
+   "fix": [
+    0.15150000000000002,
+    0.14150000000000001,
+    0.147
+   ],
+   "T4b_order_holds": false,
+   "T4b_falsified": false,
+   "n14_helped": false,
+   "n16_helped": false
+  },
+  "s184_reweight_s2": {
+   "label": "SNAP-HURTS",
+   "timeout7_11_12": 0.3695,
+   "LAT_11_12": 0.44,
+   "passes_11_12": 9.007,
+   "qW7_11_12": 0.0,
+   "fix": [
+    0.136,
+    0.14700000000000002,
+    0.14
+   ],
+   "T4b_order_holds": false,
+   "T4b_falsified": false,
+   "n14_helped": false,
+   "n16_helped": false
+  }
+ },
+ "predictions": {
+  "T4-a": "not applicable (qW7 < 0.6)",
+  "T4-b": "order not monotone (not falsified)",
+  "T4-c": "n14 not helped everywhere (n16 boundary holds)"
+ },
+ "reading": "s190_rmsnopass_s1 SNAP-HURTS (TIMEOUT7 0.263 vs LAT 0.378, passes 10.2, qW7 0.10; FIX2/4/7 0.155/0.275/0.228; n14 False n16 False) | s185_rms_s1 SNAP-HURTS (TIMEOUT7 0.163 vs LAT 0.386, passes 9.1, qW7 0.00; FIX2/4/7 0.148/0.159/0.130; n14 False n16 False) | s185_rms_s2 SNAP-HURTS (TIMEOUT7 0.180 vs LAT 0.402, passes 9.3, qW7 0.00; FIX2/4/7 0.152/0.142/0.147; n14 False n16 False) | s184_reweight_s2 SNAP-HURTS (TIMEOUT7 0.369 vs LAT 0.440, passes 9.0, qW7 0.00; FIX2/4/7 0.136/0.147/0.140; n14 False n16 False)"
+}
