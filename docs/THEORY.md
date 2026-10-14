@@ -15408,6 +15408,20 @@ Each registers separately, after T1 / T2.
   - $0, local.
 * **P-W2 is unchanged and read as registered.** If P-W2 fails while THINK-NECESSARY-DEEP passes, the result is worded as "serial on m ≥ 3, with the decoder finishing short items itself", not as "no loop".
 
+**Note 202-1, reference data: §200 A / B (2026-10-14 18:14 EDT; Experiments 8f79d127, scratch/s202_mkprime.py 77894efd; 3070 bf16, eval_bs 64; gate: pooled K′ 0 / 1 / 10 bitwise equal to the same card's acc_by_kprime, m-sum 1,319; descriptive; POST-HOC for §200, a reference only for W).**
+* **The m ≥ 3 stratum (n 879), from acc_by_m_kprime × n_by_m (Theory's recomputation):**
+
+  | cell | K′0 | K′1 | K′10 | K′0 / K′10 | K′1 / K′10 | deep K′10 − K′0 |
+  |---|---|---|---|---|---|---|
+  | A | 0.064 | 0.097 | 0.110 | 0.58 | **0.88** | 0.047 |
+  | B | 0.057 | 0.077 | 0.110 | 0.52 | **0.70** | 0.053 |
+
+* **THINK-NECESSARY-DEEP fails for both.** The one-pass shortcut is not confined to short items.
+  - The deep ratio is above D4's bound for a serial loop whose decoder finishes one step (≤ 0.38).
+  - So on deep items too, most of the accuracy comes from the decoder plus a one-pass summary (s ≥ 2 in D4's terms).
+* The deep loop gain (K′10 − K′0) is above T_D = 0.034 in both cells: a small multi-pass contribution exists.
+* W is read against A's row: the same script, the 3070, bs 64, with W's same-card eval-only as the gate reference.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
