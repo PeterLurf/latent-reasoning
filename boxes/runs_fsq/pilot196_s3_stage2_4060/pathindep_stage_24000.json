@@ -1,0 +1,103 @@
+{
+ "step": 24000,
+ "ckpt": "ckpt_24k_leg2_end.pt",
+ "path_indep": {
+  "answer_agree": 0.76,
+  "delta_cos_final": 0.8804513216018677,
+  "n_items": 500,
+  "acc_from_zero": 0.828,
+  "acc_from_donor": 0.708,
+  "kprime": 12,
+  "donor_passes": 6,
+  "items_n": [
+   3,
+   6
+  ],
+  "by_n": {
+   "3": {
+    "n_items": 122,
+    "answer_agree": 0.9098360655737705,
+    "delta_cos_final": 0.882004976272583
+   },
+   "4": {
+    "n_items": 130,
+    "answer_agree": 0.7846153846153846,
+    "delta_cos_final": 0.8723178505897522
+   },
+   "5": {
+    "n_items": 122,
+    "answer_agree": 0.7377049180327869,
+    "delta_cos_final": 0.9074365496635437
+   },
+   "6": {
+    "n_items": 126,
+    "answer_agree": 0.6111111111111112,
+    "delta_cos_final": 0.8612102270126343
+   }
+  }
+ },
+ "path_indep_all_n": {
+  "answer_agree": 0.892,
+  "delta_cos_final": 0.9085765480995178,
+  "n_items": 500,
+  "acc_from_zero": 0.906,
+  "acc_from_donor": 0.866,
+  "kprime": 12,
+  "donor_passes": 6,
+  "items_n": [
+   1,
+   6
+  ],
+  "by_n": {
+   "1": {
+    "n_items": 84,
+    "answer_agree": 1.0,
+    "delta_cos_final": 0.8554472923278809
+   },
+   "2": {
+    "n_items": 87,
+    "answer_agree": 0.9885057471264368,
+    "delta_cos_final": 0.8971120119094849
+   },
+   "3": {
+    "n_items": 81,
+    "answer_agree": 0.9876543209876543,
+    "delta_cos_final": 0.9356374740600586
+   },
+   "4": {
+    "n_items": 93,
+    "answer_agree": 0.8817204301075269,
+    "delta_cos_final": 0.92807936668396
+   },
+   "5": {
+    "n_items": 76,
+    "answer_agree": 0.8289473684210527,
+    "delta_cos_final": 0.9214923977851868
+   },
+   "6": {
+    "n_items": 79,
+    "answer_agree": 0.6455696202531646,
+    "delta_cos_final": 0.9145635962486267
+   }
+  }
+ },
+ "stage": {
+  "n_max": 6,
+  "K": 6,
+  "spec": "6:6"
+ },
+ "train_loss_bin_1k": {
+  "window": [
+   23000,
+   24000
+  ],
+  "n_records": 10,
+  "loss_mean": 0.2700191605036453,
+  "answer_ce_mean": 0.22727979245770621
+ },
+ "loss_seen_before_probe": "yes",
+ "gpu": "NVIDIA GeForce RTX 4060",
+ "eval_dtype": "torch.bfloat16",
+ "run": "boxes/runs_fsq/pilot196_s3_stage2_4060",
+ "def": "STAGE-MATCHED path_indep (headline test n 3..6 rng 18201 [:500] of that pool; path_indep_all_n = n 1..6, the same draw rule; derangement np.roll 1; 6-pass donor; K' 12; delta_cos as s182)"
+}

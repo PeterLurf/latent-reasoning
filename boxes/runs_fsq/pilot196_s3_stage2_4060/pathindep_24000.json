@@ -1,0 +1,101 @@
+{
+ "step": 24000,
+ "ckpt": "ckpt_24k_leg2_end.pt",
+ "path_indep": {
+  "answer_agree": 0.734,
+  "delta_cos_final": 0.9085652232170105,
+  "n_items": 500,
+  "acc_from_zero": 0.674,
+  "acc_from_donor": 0.6,
+  "kprime": 16,
+  "donor_passes": 8,
+  "items_n": [
+   3,
+   8
+  ],
+  "by_n": {
+   "3": {
+    "n_items": 84,
+    "answer_agree": 0.9642857142857143,
+    "delta_cos_final": 0.9090520143508911
+   },
+   "4": {
+    "n_items": 87,
+    "answer_agree": 0.8045977011494253,
+    "delta_cos_final": 0.9065810441970825
+   },
+   "5": {
+    "n_items": 81,
+    "answer_agree": 0.7160493827160493,
+    "delta_cos_final": 0.8836356401443481
+   },
+   "6": {
+    "n_items": 93,
+    "answer_agree": 0.6989247311827957,
+    "delta_cos_final": 0.9165909290313721
+   },
+   "7": {
+    "n_items": 76,
+    "answer_agree": 0.631578947368421,
+    "delta_cos_final": 0.9152641296386719
+   },
+   "8": {
+    "n_items": 79,
+    "answer_agree": 0.569620253164557,
+    "delta_cos_final": 0.9199013113975525
+   }
+  }
+ },
+ "path_indep_all_n": null,
+ "stage": null,
+ "train_loss_bin_1k": {
+  "window": [
+   23000,
+   24000
+  ],
+  "n_records": 10,
+  "loss_mean": 0.2700191605036453,
+  "answer_ce_mean": 0.22727979245770621
+ },
+ "loss_seen_before_probe": "yes",
+ "gpu": "NVIDIA GeForce RTX 4060",
+ "eval_dtype": "torch.bfloat16",
+ "run": "boxes/runs_fsq/pilot196_s3_stage2_4060",
+ "def": "nested170 s182.path_indep reproduced (items test n 3..8 rng 18201 [:500]; derangement np.roll 1; K' 16; delta_cos = mean cos of final delta-head states)",
+ "s175": {
+  "aux_acc_by_pass": {
+   "1": 0.735,
+   "2": 0.711340206185567,
+   "3": 0.6622340425531915,
+   "4": 0.5493630573248408,
+   "5": 0.4204322200392927,
+   "6": 0.26098191214470284
+  },
+  "aux_acc_by_role": {
+   "1": {
+    "handle": 0.992,
+    "copy": 0.9020242914979757
+   },
+   "2": {
+    "handle": 0.9564719358533792,
+    "copy": 0.886565956298894
+   },
+   "3": {
+    "handle": 0.8696808510638298,
+    "copy": 0.8759864712514093
+   },
+   "4": {
+    "handle": 0.7292993630573248,
+    "copy": 0.7989778534923339
+   },
+   "5": {
+    "handle": 0.6660117878192534,
+    "copy": 0.7048780487804878
+   },
+   "6": {
+    "handle": 0.4418604651162791,
+    "copy": 0.32340425531914896
+   }
+  }
+ }
+}
