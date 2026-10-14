@@ -17,7 +17,7 @@ import boxes.nested170 as N  # noqa: E402
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default="")
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", default=""); ap.add_argument("--fname", default="eval_timing.json", help="output file name in the run dir (note 201-6: eval_timing_4060.json for the local same-card timing)")
     ap.add_argument("--no_load", action="store_true", help="smoke only: skip model.pt (random init)"); o = ap.parse_args(); dev = o.device
     a = json.load(open(os.path.join(o.run, "args.json"))); DM.FAST_ADD = bool(a.get("fast_add")); K = int(a["think_k"]); bs = int(a.get("eval_bs") or 250)
     g = N.make_trunk(a, dev); ML, HA, HD = N.mem_geometry(a)
@@ -51,7 +51,7 @@ def main():
                            "arm": a["arm"], "cache_lower_train": bool(a.get("cache_lower")), "mem_layer": int(a.get("mem_layer") or 6), "eval_dtype": str(amp), "total_sec": sec,
                            "def": "198-2a: wall seconds per item for the K' = K answer path (think K passes + the main decoder; no aux decoder), n 3..8 test items, the "
                                   "run's eval batch, after one warm-up batch, cuda-synced", "no_load": bool(o.no_load)}}
-    json.dump(out, open(os.path.join(o.run, "eval_timing.json"), "w", newline="\n"), indent=1); print("EVAL_TIMING", o.run, out["eval_timing"]["s_per_item"], flush=True)
+    json.dump(out, open(os.path.join(o.run, o.fname), "w", newline="\n"), indent=1); print("EVAL_TIMING", o.run, out["eval_timing"]["s_per_item"], flush=True)
 
 
 if __name__ == "__main__":
