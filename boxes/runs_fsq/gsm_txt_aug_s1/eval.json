@@ -1,0 +1,136 @@
+{
+ "arm": "textcot",
+ "data": "gsm8k_aug",
+ "seed": 1,
+ "steps": 24000,
+ "think_k": 0,
+ "n": 1319,
+ "train_sec": 6116,
+ "n_nonfinite": 0,
+ "micro": 1,
+ "eval_dtype": "torch.bfloat16",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "595.84",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_only": false,
+ "transforms": {
+  "draws": 1536000,
+  "rs_tried": 0,
+  "rs_accepted": 0,
+  "rl_items": 0,
+  "rl_names": 0
+ },
+ "acc_def": "greedy after '###' (<= 12 tokens, stop at EOS / newline), bench.tasks.norm_number exact match; the text arm generates its CoT to '###' first",
+ "symbolic": null,
+ "cost": null,
+ "acc": 0.3214556482183472,
+ "acc_by_m": {
+  "0": 0.16666666666666666,
+  "1": 0.2923076923076923,
+  "2": 0.5294117647058824,
+  "3": 0.36813186813186816,
+  "4": 0.2,
+  "5": 0.13768115942028986,
+  "6": 0.017543859649122806,
+  "7": 0.047619047619047616,
+  "8": 0.0
+ },
+ "n_by_m": {
+  "0": 18,
+  "1": 65,
+  "2": 357,
+  "3": 364,
+  "4": 290,
+  "5": 138,
+  "6": 57,
+  "7": 21,
+  "8": 9
+ },
+ "mean_cot_tokens": 28.227445034116755,
+ "eval_partial": false,
+ "acc_valid_best": 0.35,
+ "valid_best_step": 24000,
+ "valid_hist": [
+  [
+   2000,
+   0.16
+  ],
+  [
+   4000,
+   0.21
+  ],
+  [
+   6000,
+   0.258
+  ],
+  [
+   8000,
+   0.292
+  ],
+  [
+   10000,
+   0.308
+  ],
+  [
+   12000,
+   0.316
+  ],
+  [
+   14000,
+   0.332
+  ],
+  [
+   16000,
+   0.348
+  ],
+  [
+   18000,
+   0.334
+  ],
+  [
+   20000,
+   0.344
+  ],
+  [
+   22000,
+   0.348
+  ],
+  [
+   24000,
+   0.35
+  ]
+ ],
+ "acc_test_validsel": 0.3214556482183472,
+ "struct": {
+  "gap_mstrat": 0.18828637420865582,
+  "seen_acc": 0.4529331514324693,
+  "unseen_acc": 0.13695090439276486,
+  "n_seen": 733,
+  "n_unseen": 387,
+  "n_nokey": 199,
+  "def": "theory/gsmtpl/seen_split.py's functional fingerprint (extra_stats.fingerprint at two random value vectors + m) seen in Aug train (unfiltered)"
+ },
+ "dedupe": {
+  "n_flagged": 3,
+  "acc_excl_flagged": 0.31990881458966564,
+  "def": "gsmlen/dedupe.py: lower-case, numbers -> #, word 8-grams; score = max over Aug train items of shared / test shingles (shingles in >= 5000 items skipped); flagged >= 0.5"
+ },
+ "filler": {
+  "base": 0.3214556482183472,
+  "def": "prepended to the question; exactly 16 / 32 GPT-2 tokens incl. the trailing space",
+  "k16": 0.30477634571645185,
+  "k32": 0.26914329037149354
+ },
+ "fit": {
+  "fit_fix": 0.829,
+  "n_fix": 1000,
+  "fit_rs": 0.4088495575221239,
+  "n_rs": 565,
+  "def": "fit_fix: 1000 train items (rng 20010) as drawn; fit_rs: one fresh R_x draw (rng 20011) of each recomputable one, accepted draws only"
+ },
+ "clip": {
+  "clip_rate": 0.06395833333333334,
+  "n_steps": 24000
+ },
+ "eval_sec": 78
+}
