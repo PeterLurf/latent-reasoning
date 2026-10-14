@@ -15548,6 +15548,19 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * A base: F-P + A eval-only, $2.82 / $3.70.
 * Approved ≤ $3.90. Realised $ replaces the projection.
 
+**Note 204-1 (2026-10-14 19:16 EDT; prior art plus one pre-stated external check; no rule change). Literature's D1 novelty pass, docs/LIT_STEPFACTOR_D1_2026-10-14.md (f527a2d0).**
+* **Not found in the literature.** CODI, SIM-CoT and PCCoT were read in full text, and RiM was checked.
+  - SIM-CoT teacher-forces its step decoder on the step string with no leak discussion.
+  - CODI names a *different* shortcut: copying the final result into the answer-token activations.
+  - RiM's within-step targets are teacher-forced, so D1 applies to them unremarked.
+* **Parent principle:** Bachmann & Nagarajan 2403.06963 ("The pitfalls of next-token prediction"). Under teacher forcing, later tokens become predictable from the revealed prefix (their "Clever Hans" failure). D1 is a specific instance.
+* **Claim line:** "to our knowledge the latent-CoT step-supervision literature does not note that teacher-forced step strings leave result tokens predictable from in-context operands, so they put no pressure on the latent to hold results. Shown formally (D1) and measured (0.880 vs 0.894); an instance of the teacher-forcing Clever Hans failure."
+* **External check (pre-stated before any output; $0, local, descriptive).** It runs only if the released SIM-CoT checkpoint (internlm/SIM_COT-GPT2-Coconut checkpoint_28; docs/GSM8K_REPRO.md) contains its step decoder.
+  - **Measurement:** on GSM8K-Aug valid, teacher-force each step string through SIM-CoT's step decoder, reading the true latent z_k vs a zeroed or mean latent. Report top-1 by token category: operands, operator, value.
+  - **D1 predicts:** value-token top-1 without z_k within 0.05 of top-1 with it, while operand top-1 drops by ≥ 0.20.
+  - **Falsifier (for this external instance):** value top-1 drops by ≥ 0.15 without z_k.
+  - If the decoder is not in the release, the check is N/A and is not substituted.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
