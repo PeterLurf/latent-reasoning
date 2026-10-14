@@ -1,5 +1,5 @@
 """fill_generic's offer choice as a helper (2026-10-14, §199 dual filler): RTX 3090 offers with driver == argv[1] (or any when '-') and price <=
-argv[2], minus excluded / live IPs, ranked (preferred IPs, driver 595.71, price). Prints "<offer id> <ip>" or nothing.
+argv[2], minus excluded / live IPs, ranked (preferred IPs, driver 595.71, price). Prints "<offer id> <ip> <dph>" or nothing.
     python scratch/offer_pick.py <driver|-> <dph max>"""
 import json
 import os
@@ -21,4 +21,4 @@ rows = [(0 if any(str(x.get("public_ipaddr", "")).startswith(p) for p in pf) els
         for x in d if (drv == "-" or str(x.get("driver_version", "")) == drv) and x.get("public_ipaddr") not in ex and x.get("public_ipaddr") not in used
         and "oid:%s" % x.get("id") not in ex and "mid:%s" % x.get("machine_id") not in ex]
 if rows:
-    b = sorted(rows)[0]; print(b[3], b[4])
+    b = sorted(rows)[0]; print(b[3], b[4], round(b[2], 4))

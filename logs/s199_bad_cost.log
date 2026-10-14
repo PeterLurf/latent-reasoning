@@ -1,0 +1,4 @@
+# §199 BAD-HOST billed cost (Audit 09:0x): date time queue offer id ip minutes $/h cost-$ (last field summed); the first three are estimates (~8 min at ~$0.30/h)
+2026-10-14 06:07:40 b285 offer 48399578 161.29.203.152 8min $0.30/h 0.04
+2026-10-14 06:55:47 b285 offer 51518831 174.164.26.93 8min $0.30/h 0.04
+2026-10-14 08:54:53 b285 offer 47952508 90.39.240.26 8min $0.30/h 0.04
