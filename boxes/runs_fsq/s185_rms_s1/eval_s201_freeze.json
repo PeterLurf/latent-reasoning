@@ -1759,7 +1759,7 @@
   "s173_dtype": "torch.bfloat16",
   "bf16_recheck_pass": true,
   "bf16_recheck_card": "NVIDIA GeForce RTX 3070",
-  "bf16_recheck_max_items": 5
+  "bf16_recheck_max_items": 0
  },
  "mechanism": {
   "CLEAN": {

@@ -1757,8 +1757,8 @@
   "fb_identity": true,
   "clean_vs_s173_maxdiff": 0.010000001430511468,
   "s173_dtype": "torch.bfloat16",
-  "bf16_recheck_max_items": 7,
-  "bf16_recheck_pass": false,
+  "bf16_recheck_max_items": 0,
+  "bf16_recheck_pass": true,
   "bf16_recheck_card": "NVIDIA GeForce RTX 3070"
  },
  "mechanism": {
