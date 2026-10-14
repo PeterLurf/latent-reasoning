@@ -19,7 +19,7 @@ import boxes.halt173 as H  # noqa: E402
 def main():
     run = sys.argv[1]; dev = sys.argv[2] if len(sys.argv) > 2 else "cuda:1"; rd = os.path.join(ROOT, "boxes", "runs_fsq", run)
     kind, m, a = H.load_model(rd, dev); flags = {"FAST_ADD": bool(DM.FAST_ADD), "CHUNK_DELTA": int(DM.CHUNK_DELTA)}
-    _, _, by_t, nn = H.halt_fields(kind, m, a, dev, torch.bfloat16, 1000, 250)
+    _, _, by_t, nn = H.halt_fields(kind, m, a, dev, torch.bfloat16, 1000, 125)   # 201-4: bs 125 = every s173 run's --bs (bs 250 flips chance-level ties in bf16)
     s173 = json.load(open(os.path.join(rd, "eval_s173_halt.json")))["acc_by_t"]; fz = json.load(open(os.path.join(rd, "eval_s201_freeze.json")))["arms"]["CLEAN"]["acc_by_n_t"]
     d_s173 = max(abs(by_t[n][t] - s173[n][t]) for n in s173 for t in range(len(s173[n])))
     items = max(abs(round(by_t[n][t] * nn[n]) - round(s173[n][t] * nn[n])) for n in s173 for t in range(len(s173[n])))   # 201-2: count-exact
