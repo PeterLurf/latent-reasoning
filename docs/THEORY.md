@@ -14892,6 +14892,20 @@ Each registers separately, after T1 / T2.
 * Otherwise the model's T1 and T2 readings are WITHHELD.
 * theory/score_s201.py's gate_ok() implements this. Fixture-checked: the boundary 0.0050000000000000044 passes, 5 bf16 items pass, 6 fail, a missing re-check fails, and fb_identity False fails.
 
+**Note 200-4 (2026-10-14 04:51 EDT; before A / B land; wording only, no reading changed; Audit's research pass).** R2 is budget-limited, and R1 is the method test.
+* **Disclosure:** Theory has seen cell C's landed numbers, via Audit:
+  - TEXT-COT test 0.321;
+  - valid 0.16 → 0.35, flat from 16k;
+  - train loss 0.08 and still falling;
+  - by m: 0.29 / 0.53 / 0.37 / 0.20 / 0.14 at m 1–5.
+  A / B have not landed.
+* **Reading context:**
+  - C sits about 10 points below the published GPT-2 CoT-SFT bars (42.7–44.1) and our bench Dilgren CoT checkpoint (41.8). The likely cause is the 4.0-epoch budget, which Literature is checking against the published training budgets.
+  - So R2 (≥ 52.28 vs PCCoT) is very likely out of reach for **either** arm at this budget. R2 has no "method fails" label, and a not-eligible R2 at 4 epochs is reported as **budget-limited**.
+  - **R1** (latent vs text at the same budget, in-house) is the registered method comparison and is unaffected.
+  - A SOTA-relevant number would need a matched-budget run at the published exposure: a new cost item for the user.
+* No threshold, cell or reading is changed.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
