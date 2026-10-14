@@ -1,0 +1,5 @@
+s191_stepaux_relabel_s1 test dump 2199 3840s
+s191_stepaux_relabel_s1 train dump 2000 7559s
+dump rc 0
+s191_stepaux_relabel_s1 T2 primary acc {'3': 0.905, '4': 0.925, '5': 0.95, '6': 0.955, '7': 0.94, '8': 0.975, '9': 0.96, '10': 0.97, '11': 0.9, '12': 0.84, '13': 0.807, '14': 0.647} A 0.788 best K' 9
+t2 rc 0
