@@ -14266,6 +14266,22 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * Over all nestings it reads n 12 0.908 vs n 9 0.966 (a gap of 0.058, outside the 0.05 margin).
 * So "§190's size-free early steps" holds **at shallow nesting only**. That fits the nesting-structural component (187-2). Every citation of it as 2 seeds says "(nesting ≤ 2)".
 
+**Note 198-3 (2026-10-13 21:20 EDT; before any §198 output: (a) / (b) training, (c) not started; descriptive, never a claim; Audit's falsifier form). The contraction account predicts READ-SLOTS is less contractive and less size-keyed.**
+* **Account (the §199 draft; Literature a0826ac6, Audit):**
+  - Across 19 final models, s182.path_indep separates converged from failed with no overlap: delta_cos_final 0.44–0.63 vs 0.69–0.98 (Audit-reproduced). The failed models compute through the memory, but contractively.
+  - Under INJECT, the delta heads decay by α **per token**, so one pass multiplies the delta state by about Π α_t over the L ≈ n_syms + 2 think tokens. L grows with n.
+  - READ-SLOTS (c) writes from M = 8 slot tokens per pass, whatever n is.
+* **Descriptive predictions, (c) vs (a), each reported with its falsifier:**
+  1. **Contraction:** (c)'s s182.path_indep delta_cos_final < (a)'s. *Falsified as stated* if (c) ≥ (a).
+  2. **Size-keying:** on 187-3 rows (n 9–12, nesting ≤ 2, t ≤ 12; handle onset = the first t with per-n mean handle < 0.80, else T + 1, as score_s194), define SIZE-KEY = onset(n 9) − onset(n 12).
+     - Prediction: (c)'s SIZE-KEY < (a)'s, and (c)'s t3–6 drop from n 9 to n 12 < (a)'s.
+     - *Falsified as stated* if (c)'s SIZE-KEY ≥ (a)'s.
+     - Reference values for the INJECT family: s185_rms s1 / s2 / s3 have SIZE-KEY 1 / 2 / 1; s190 s1 / s2 have 2 / 1.
+* **Limits:**
+  - One seed per cell. (c) and (a) also differ in the whole read path, so agreement is "consistent with", never evidence that the decay is the cause. Seed noise in SIZE-KEY is about ±1, as s1 and s2 show above.
+  - Neither prediction enters §198's labels.
+* **Precondition:** boxes/halt173.py's builder maps arm "readslots" to readslots171.ReadSlots, not nested170's ReadSlotsN, so the 187-3 rows for (c) need that builder extended (Experiments) and a load check before use. score_s198 prints both items as "pending" until their fields exist.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
