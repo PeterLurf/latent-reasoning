@@ -1,0 +1,14 @@
+s191_stepaux_relabel_s1 depth 3 {'CLEAN': 0.7939698492462312, 'FA': 0.8592964824120602, 'FD': 0.9045226130653267, 'FB': 0.9246231155778895} 587s
+s191_stepaux_relabel_s1 depth 4 {'CLEAN': 0.88, 'FA': 0.945, 'FD': 0.96, 'FB': 0.95} 1155s
+s191_stepaux_relabel_s1 depth 5 {'CLEAN': 0.925, 'FA': 0.98, 'FD': 0.975, 'FB': 0.98} 1747s
+s191_stepaux_relabel_s1 depth 6 {'CLEAN': 0.905, 'FA': 0.99, 'FD': 0.975, 'FB': 0.97} 2361s
+s191_stepaux_relabel_s1 depth 7 {'CLEAN': 0.835, 'FA': 0.97, 'FD': 0.975, 'FB': 0.975} 2983s
+s191_stepaux_relabel_s1 depth 8 {'CLEAN': 0.795, 'FA': 0.93, 'FD': 0.97, 'FB': 0.975} 3618s
+s191_stepaux_relabel_s1 depth 9 {'CLEAN': 0.69, 'FA': 0.845, 'FD': 0.97, 'FB': 0.97} 4285s
+s191_stepaux_relabel_s1 depth 10 {'CLEAN': 0.655, 'FA': 0.76, 'FD': 0.985, 'FB': 0.985} 4981s
+s191_stepaux_relabel_s1 depth 11 {'CLEAN': 0.595, 'FA': 0.61, 'FD': 0.93, 'FB': 0.93} 5646s
+s191_stepaux_relabel_s1 depth 12 {'CLEAN': 0.6, 'FA': 0.635, 'FD': 0.81, 'FB': 0.81} 6323s
+s191_stepaux_relabel_s1 depth 13 {'CLEAN': 0.5963855421686747, 'FA': 0.608433734939759, 'FD': 0.7108433734939759, 'FB': 0.7228915662650602} 6854s
+s191_stepaux_relabel_s1 depth 14 {'CLEAN': 0.5294117647058824, 'FA': 0.5882352941176471, 'FD': 0.5, 'FB': 0.5} 6978s
+s191_stepaux_relabel_s1 ProsQA T1 done {'fb_identity': True} 6978
+rc 0
