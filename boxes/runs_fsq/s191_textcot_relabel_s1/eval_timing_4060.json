@@ -1,0 +1,32 @@
+{
+ "eval_timing": {
+  "s_per_item": 0.7017781291007995,
+  "batch": 16,
+  "cot_eval_bs": 64,
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "n_items": 500,
+  "arm": "textcot",
+  "think_k": 0,
+  "eval_dtype": "torch.bfloat16",
+  "total_sec": 350.8890645503998,
+  "cache_lower": false,
+  "chunk_delta": 0,
+  "mean_cot_tokens": 90.504,
+  "no_load": false
+ },
+ "flops_per_item": 109883874816.0,
+ "meter": {
+  "tokens_processed": 563,
+  "flops": 109883874816.0,
+  "seq_passes": 93,
+  "written_tokens": 0,
+  "latent_passes": 0,
+  "gen_tokens": 0
+ },
+ "mean_lengths": {
+  "question_plus_eot": 457.498,
+  "pre": 457.498,
+  "answer": 8.21
+ },
+ "def": "191-1: wall s/item for the answer path on test500's items (rng 19101), the run's eval batch(es) and dtype, one warm-up batch, cuda-synced; Meter FLOPs per item at the mean lengths (stepaux: K passes over [EOT, question] + 2 candidate decodes; textcot: prompt + generated CoT + 2 candidates)"
+}

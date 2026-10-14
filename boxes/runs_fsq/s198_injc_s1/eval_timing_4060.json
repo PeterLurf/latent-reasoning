@@ -1,0 +1,16 @@
+{
+ "eval_timing": {
+  "s_per_item": 0.003979425191879273,
+  "batch": 250,
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "n_items": 6000,
+  "kprime": 8,
+  "arm": "inject",
+  "cache_lower_train": true,
+  "mem_layer": 6,
+  "eval_dtype": "torch.bfloat16",
+  "total_sec": 23.876551151275635,
+  "def": "198-2a: wall seconds per item for the K' = K answer path (think K passes + the main decoder; no aux decoder), n 3..8 test items, the run's eval batch, after one warm-up batch, cuda-synced",
+  "no_load": false
+ }
+}
