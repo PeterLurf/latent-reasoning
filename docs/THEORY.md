@@ -14282,6 +14282,17 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Neither prediction enters §198's labels.
 * **Precondition:** boxes/halt173.py's builder maps arm "readslots" to readslots171.ReadSlots, not nested170's ReadSlotsN, so the 187-3 rows for (c) need that builder extended (Experiments) and a load check before use. score_s198 prints both items as "pending" until their fields exist.
 
+**Amendment 198-3a (2026-10-13 21:22 EDT; before any §198 output; Audit). A seed-noise band on both 198-3 predictions, so neither reads noise.**
+* **SIZE-KEY** (integer onsets; same-recipe seed pairs differ by up to 1):
+  - |(a) − (c)| ≤ 1 reads **"within seed noise"**, neither support nor falsification;
+  - (a) − (c) ≥ 2 reads "as predicted";
+  - (c) − (a) ≥ 2 reads "FALSIFIED as stated".
+* **delta_cos_final** (Theory's addition, the same logic): the largest spread between converged same-recipe seed pairs is 0.059 (s182_window s1 / s2: 0.529 / 0.470; the others 0.001–0.037).
+  - |(a) − (c)| ≤ 0.06 reads "within seed noise";
+  - (a) − (c) > 0.06 reads "as predicted";
+  - (c) − (a) > 0.06 reads "FALSIFIED as stated".
+* score_s198 prints these three-way readings.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
