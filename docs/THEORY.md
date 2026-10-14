@@ -14645,6 +14645,8 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - Clause (ii), step 500's answer_ce / aux_ce bitwise, already establishes identical parameters and batch. So (iii) only checks the CSR term's accounting, and a bound well above rounding and far below any real change is right.
 * **s1 (b283):** |d500 − pred| = 3.6e-10, which passes on every basis.
 
+**Note 199-A3a (2026-10-13 23:29 EDT; Audit; no rule change).** Beside 199-A3's governing bound, the scorer reports the 2-ulp bound (2·ulp_fp32(|loss_ctrl_500|)/100 ≈ 4.8e-9, which assumes micro 1) as a **descriptive flag**: a residual between about 4.8e-9 and 3.5e-6 is flagged in the readout without changing the verdict. paired() also checks A4's existing same-micro requirement explicitly.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
