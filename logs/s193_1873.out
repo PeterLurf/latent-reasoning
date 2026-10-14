@@ -1,0 +1,3 @@
+[W1014 07:56:58.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 1006632960 bytes (free: 109051904, total: 8589410304).
+DONE deepaux_items_only boxes/runs_fsq/s193_rmswin_s1
+rc 0
