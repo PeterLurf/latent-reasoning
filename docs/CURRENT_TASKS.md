@@ -34,7 +34,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   Landed today: §198 a / b / c (family ~$6.29), §193 (~$7.81, 187-3 rows done), stage-2 pilot 24k (196-2 read UNCLEAR; ckpts deleted).
   §201: T1 / T2 on all 7 nested + control scored (fb1d39ed); T2-e scored (FD-on-signal = the soft halt); 201-6 queue: 4060 eval_timing_4060 (§198 / §191),
   2070 FD-on-signal on all models (+ s193), 3070 ProsQA dump -> T2. Owed: §198 (a) + §191 A / B eval_timing on a 3090.
-  USER: please delete D:/Latent_s200sym (scratch copy; a safety check blocked my rm).
+  USER: please delete D:/Latent_s200sym and D:/Latent_smk199 (scratch copies, ~1 GB; a safety check blocks my rm of drive-root dirs).
 * 01:2x 10-14 (Experiments): §200 GSM8K-AUG PILOT (user-approved Tier 1, $7 cap): harness 2d0964ab + name fix 64c98681, gate_s200 run 4 all 8 PASS,
   Audit OK. Timing host b286 (scratch/gen_q_b286.txt + .extra data sidecar) takes the FIRST free slot (chain_s200t_s199 in scratchpad: b286, then §199 s2
   570.172.08, then s3 595.84). b286's timing.json -> projection to Audit AND the user before any of the four §200 cells (A/B/C/D queues not built yet).
