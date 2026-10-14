@@ -15082,6 +15082,20 @@ Each registers separately, after T1 / T2.
 * **(d) eval_timing for §198 (a) / (b) / (c) and §191 A / B on ONE local card** (the 4060, bf16, the same items as 198-2a). A same-card relative cost, labelled with the card.
   - It does not replace 198-2a's 3090 numbers. It is the fair within-card ratio beside them.
 
+**§201 T2-e and 201-3 record (2026-10-14 09:56 EDT; 42ee8a98; 2070 fp32; the recomputed t̂ was asserted equal to the committed T2 primary).**
+* **201-3, s184_reweight_s1:** fp32_crosscode_max_items **0**, so RESOLVED-NUMERICAL (on record; 201-5 had already released it).
+* **T2-e (registered: FA-on-signal ≥ the hard halt at every n on rms s1 / s2): FALSIFIED.** Freezing the additive state from the halt t̂ is far below the hard halt at K′24:
+  - rms s1, n 4 / 6 / 8 / 10: 0.941 / 0.744 / 0.439 / 0.242, against the hard halt's 1.000 / 1.000 / 0.993 / 0.800;
+  - rms s2: 0.990 / 0.920 / 0.615 / 0.283.
+  - This agrees with T1: the delta writes drive post-completion decay.
+* **FD-on-signal (descriptive, motivated after T1):** freezing only the **delta** state from the halt equals the hard halt within 0.001–0.008 at every n 2–16 on both seeds (e.g. rms s1 n 10: 0.795 vs 0.800; n 8: 0.994 vs 0.993).
+  - So "stop the delta writes once the halt fires, keep reading, and let the additive heads continue" is accuracy-equivalent to halting. It is the deployable soft-halt form.
+  - The other 5 models plus s193 follow under note 201-6 (c).
+
+**§200 C GSM-Symbolic (descriptive until all four cells land; local 4060 eval-only, reproducing the landed test acc exactly):** main 0.156 (per-template SD 0.253), p1 0.059, p2 0.022, against GSM8K test 0.321.
+* That is a 16.5-point drop on template instances, where P8 predicts ≤ 3 points for every arm. If it holds at landing, P8 reads FALSIFIED for C.
+* It fits C's recall gap: fit_fix 0.829 vs fit_rs 0.409.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
