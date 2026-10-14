@@ -14764,6 +14764,26 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - This also bears on overthinking: the converged models' post-completion hold (β ↓) is a learned version of Thm 3's post-completion contraction. The remaining drift after completion sits in the additive integrator and in α.
   - §199-A's CSR acts on the read displacement of both channels, so it is unaffected. Its per-head-type λ logs (csr_lam_pre_med_add / _del) will show which channel it moves.
 
+**Clarification 200-2 (2026-10-14 00:09 EDT; before §200's gates are final and before any run; Experiments' data layer, boxes/gsm8k_data.py). Two numbers corrected. The rules are unchanged.**
+* **Filter:**
+  - §200's rule ("a wrong or unparsable equation filtered out") drops 4,053 of 384,622 items (**1.05%**): 2,959 wrong (0.769%, the "0.77%" §200 quoted) plus 1,094 unparsed-only.
+  - 380,567 train items remain. Round-trip: 10,000 / 10,000 re-render identically.
+* **R_x coverage is 60.5% (230,312 items), not the draft's 77.2%.**
+  - The parse refuses ambiguous operands: one that equals a question literal and also a number-word value, or a previous result and also a literal, or that fails an identity re-render (e.g. "05", "135.00"), or that has nothing to resample. This is so that constants and earlier results are never substituted.
+  - Draws preserve the digit count, the decimals and integrality, and stay distinct from the other numbers in the question.
+  - Equations are recomputed in order. A draw is rejected on an evaluation error, a sign flip, or an inexactly rendered number.
+  - Acceptance is 91.5%. A full check of 27,684 accepted draws: every equation evaluates exactly, and the answer equals the last result.
+* **The effect:** about 55% of train items get new numbers per draw, against the draft's ~71% of numerals.
+  - The R_x **dose** in B / D is lower; its definition is unchanged.
+  - Theorem X's bound holds per resampled item regardless of the dose. P1 / P2 / P8 read as registered; a lower dose makes P2's RS-NEUTRAL more likely, not less.
+* **Implementation choices accepted:**
+  - per draw, R_x first and then R_ν (names never touch digits);
+  - the R_ν whitelist rules, with the pool reviewed by Audit;
+  - GSM-Symbolic as a local eval-only pass after landing (never committed);
+  - a single shared 3090 eval_timing job for all arms;
+  - path_indep in prosqa168s2's form (K′ 16 from zero vs an 8-pass derangement donor, 500 test items);
+  - the FILLER-N strings: exactly 16 / 32 GPT-2 tokens, no digits or names, prepended identically for every arm.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
