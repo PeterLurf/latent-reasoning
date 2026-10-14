@@ -15209,6 +15209,17 @@ Each registers separately, after T1 / T2.
 * **Reading:** on ProsQA the learned halt costs a little in range and gains much beyond it. It removes overthinking and recovers most of the deep-item loss, which matches §201's nested pattern on the RMS models.
   - §191's post-hoc K′12 (≥ 0.91 at all depths, full items) remains the best fixed reference, chosen after looking. The halt needs no such choice.
 
+**Clarification 199-A6 (2026-10-14 13:20 EDT; s1 landed, but none of its probes, gradshare or P-A1 fields have been read by Theory). A lost registered input.**
+* s1's ckpt_model_16000.pt was lost in transfer (an Experiments error, reported to Audit). Its registered P-A5 input `pathindep_16000.json` cannot be produced. model.pt, log.jsonl and the 4k / 8k / 12k checkpoints exist.
+* **Rule:**
+  - The P-A5 falsifier needs **both** registered inputs (8k and 16k), so with one missing it is not decidable.
+  - If P-A1 is met, the run did not enter, and the 8k probe reads non-contractive, the seed reads **P-A5-UNDECIDABLE (16k probe missing)**. It is never FALSIFIER.
+  - FLOOR-GAMED stays decidable from 8k alone, since it requires a contractive probe at either checkpoint.
+  - INSUFFICIENT-DOSE and ENTERED read as registered.
+* **The 12k probe is NOT substituted** for 16k: that would be a post-loss rule change. It is reported descriptively.
+* The method reading (CSR as registered vs its paired control) does not depend on P-A5 and is unaffected.
+* score_s199_a.py implements this. Fixture-checked: 16k missing with 8k non-contractive → UNDECIDABLE; 16k missing with 8k contractive → FLOOR-GAMED.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

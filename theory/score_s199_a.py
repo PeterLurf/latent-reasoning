@@ -82,6 +82,8 @@ def seed_read(s):
     p8, p16 = probe(cell, 8000), probe(cell, 16000); entered_not = ent["last_bin"] >= 0.5 - EPS
     if p8 and p16 and noncontractive(p8) and noncontractive(p16) and entered_not:
         lab = "FALSIFIER (P-A5)"
+    elif a1 and entered_not and p8 and noncontractive(p8) and p16 is None:   # 199-A6: a lost registered input -> P-A5 undecidable, never a falsifier
+        lab = "P-A5-UNDECIDABLE (16k probe missing)"
     elif not a1:
         lab = "INSUFFICIENT-DOSE"
     elif a1 and a2 and a3:
