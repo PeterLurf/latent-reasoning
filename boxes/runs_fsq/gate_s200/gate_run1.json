@@ -1,0 +1,134 @@
+{
+ "g1": {
+  "filter": {
+   "lines": 384622,
+   "kept": 380567,
+   "wrong": 2959,
+   "unparsed": 1094,
+   "malformed": 2
+  },
+  "filtered_frac": 0.01054,
+  "roundtrip_10k": 10000,
+  "test_n": 1319,
+  "test_equals_gsm8k_order": true,
+  "valid_n": 500,
+  "filler_tokens": [
+   16,
+   32
+  ],
+  "filler_no_digits": true,
+  "transforms_raise_on_test_valid": 4
+ },
+ "g1_pass": true,
+ "g2": {
+  "items": 10000,
+  "relabelled": 6486,
+  "eqs_ans_same": 6486,
+  "injective": 6486,
+  "consistent": 6486,
+  "same_gender": 6486,
+  "length_same_words": 6486,
+  "pool_sizes": [
+   211,
+   223
+  ]
+ },
+ "g2_pass": true,
+ "g3": {
+  "parse": {
+   "ambiguous_q_word": 30095,
+   "ok": 230312,
+   "no_q_literal": 2927,
+   "q_not_unique": 33192,
+   "ungrounded": 26585,
+   "not_exact": 12267,
+   "identity_render": 15225,
+   "answer_not_last": 7202,
+   "ambiguous_r_q": 20955,
+   "rhs_or_dollar": 1735,
+   "no_equation": 72
+  },
+  "recomputable_frac": 0.6052,
+  "identity_failures_excluded": 15225,
+  "accept_rate": 0.9181,
+  "checked_accepted": 10000,
+  "bad": {},
+  "answer_maxprob_median_100": 0.04,
+  "answer_maxprob_p90": 0.4910000000000002
+ },
+ "g3_pass": true,
+ "g4": {
+  "loss_rel_diff": 0.0,
+  "same_keys": true,
+  "grad_rel": 6.1689714207362165e-15,
+  "n_grads": 160,
+  "dtype": "torch.float64"
+ },
+ "g4_pass": true,
+ "g5": {
+  "answer": {
+   "mem_wo": 64870.015625,
+   "mem_gate": 0.047323308885097504,
+   "trunk_any": 172428.30098724365
+  },
+  "aux": {
+   "mem_wo": 43081.34765625,
+   "mem_gate": 0.030128883197903633,
+   "trunk_any": 136933.84239912033
+  }
+ },
+ "g5_pass": true,
+ "g6": {
+  "ans_ok_cases": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "greedy_mem_batched_eq_single": true,
+  "greedy_plain_batched_eq_single": true,
+  "cot_batched_eq_loop": true,
+  "sample": [
+   "ishiishiishiishi abackishi abackishi aback aback aback aback",
+   " Scrib Scrib Scrib Scrib Scrib Philippines Scrib Scrib Scrib Philippines Philippines Philippines",
+   "xualxualxualxualxualxualxualxualxualxualxualxual"
+  ]
+ },
+ "g6_pass": true,
+ "g7": {
+  "plain_rc": 0,
+  "plain_err": "",
+  "plain_eval": true,
+  "mem_rc": 0,
+  "mem": {
+   "checks": [
+    {
+     "micro": 16,
+     "peak_gib": 5.627969421446323
+    }
+   ],
+   "micro": 16,
+   "peak_gib": 5.627969421446323,
+   "longest_question_tokens": 179,
+   "longest_m": 5,
+   "K": 10,
+   "aux": true
+  }
+ },
+ "g7_pass": false,
+ "g8": {
+  "static_flagged_ge_0.5": 3,
+  "static_max": 1.0,
+  "resampled_draw_scan": {
+   "n_draws": 20000,
+   "n_ge_0.5_vs_test": 3,
+   "max_score": 0.8888888888888888,
+   "exact_test_question": 0,
+   "def": "20k train items (rng 20001), each relabelled + resampled once; score = shared 8-grams / draw 8-grams vs the best test item"
+  }
+ },
+ "g8_pass": true,
+ "all_pass": false
+}
