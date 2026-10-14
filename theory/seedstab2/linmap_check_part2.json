@@ -1,0 +1,22 @@
+{
+ "pair3_*_perhead": [
+  1.0,
+  1.0
+ ],
+ "erase3_+_linear": [
+  1.0,
+  1.0
+ ],
+ "erase3_+_perhead": [
+  1.0,
+  1.0
+ ],
+ "erase3_*_linear": [
+  1.0,
+  1.0
+ ],
+ "erase3_*_perhead": [
+  1.0,
+  1.0
+ ]
+}

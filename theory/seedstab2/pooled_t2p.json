@@ -1,0 +1,70 @@
+{
+ "s185_rms_s1": {
+  "pooled_t2p": 0.607798819683069,
+  "class": "conv"
+ },
+ "s185_rms_s2": {
+  "pooled_t2p": 0.6120373058635725,
+  "class": "conv"
+ },
+ "s190_rmsnopass_s1": {
+  "pooled_t2p": 0.7318451666552389,
+  "class": "conv"
+ },
+ "s190_rmsnopass_s2": {
+  "pooled_t2p": 0.5241593839792789,
+  "class": "conv"
+ },
+ "s187_nopass_s1": {
+  "pooled_t2p": 0.5089008317774519,
+  "class": "conv"
+ },
+ "s187_nopass_s2": {
+  "pooled_t2p": 0.5778468601378252,
+  "class": "conv"
+ },
+ "s182_window_s1": {
+  "pooled_t2p": 0.5026843768833181,
+  "class": "conv"
+ },
+ "s182_window_s2": {
+  "pooled_t2p": 0.7010455078561955,
+  "class": "conv"
+ },
+ "s184_reweight_s2": {
+  "pooled_t2p": 0.5931054134680814,
+  "class": "conv"
+ },
+ "s185_rms_s3": {
+  "pooled_t2p": 0.14523877233991045,
+  "class": "fail"
+ },
+ "s199_csr_s1": {
+  "pooled_t2p": 0.11980785544846953,
+  "class": "fail"
+ },
+ "s185_den_s1": {
+  "pooled_t2p": 0.20514269744517877,
+  "class": "fail"
+ },
+ "s188_rwwin_s1": {
+  "pooled_t2p": 0.20825092222906835,
+  "class": "fail"
+ },
+ "s196_rmsgf_s3": {
+  "pooled_t2p": 0.11076575444390727,
+  "class": "fail"
+ },
+ "s182_hold_s1": {
+  "pooled_t2p": 0.1658660623629944,
+  "class": "fail"
+ },
+ "s182_nofade_s1": {
+  "pooled_t2p": 0.22294434106098995,
+  "class": "fail"
+ },
+ "_t57_cells_ge_030": [
+  24,
+  27
+ ]
+}
