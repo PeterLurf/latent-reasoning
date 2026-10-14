@@ -290,6 +290,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **latent BELOW text (A 0.147 vs C 0.321); loop forms weakly but THINK-NECESSARY fails (K′1 ≈ K′10); recall share 0.48 (P1 falsified), resampling cut it to 0.15 at no test cost; D unavailable; WARM-START trigger met** |
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails; T4 SNAP-CHAIN: SNAP-HURTS 4/4 (the pass-7 text write is exact ~0 beyond n 10; Prop 8 untested)** |
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **open** |
+| 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | pending G-use |
+| 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | waits for §202 |
 
 ## Live sections
 
@@ -15421,6 +15423,118 @@ Each registers separately, after T1 / T2.
   - So on deep items too, most of the accuracy comes from the decoder plus a one-pass summary (s ≥ 2 in D4's terms).
 * The deep loop gain (K′10 − K′0) is above T_D = 0.034 in both cells: a small multi-pass contribution exists.
 * W is read against A's row: the same script, the 3070, bs 64, with W's same-card eval-only as the gate reference.
+
+## 203. SVR (shallow value readout): a seed-stability successor to CSR (the user's novel-method request; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $10.10; pre-registered 2026-10-14 19:13 EDT, before any §203 code or run)
+
+**Registered text:**
+* docs/THEORY_SEEDSTAB2_DRAFT_2026-10-14.md **at cee1d8d9** (rev 3 plus the gate-results appendix) is the registered text for every definition used below: §4.1 SVR, §4.3 the use tests, §5 Goodhart, §6 gradient flow, §7 cells / fields / predictions / labels / gates / engineering.
+* That file is now frozen. Changes go here as dated amendments.
+* Derivation by Opus subagent; Theory reviewed it twice.
+  - Rev 1's per-head-normalised readout could compute mod-11 ops (theory/seedstab2/perhead_norm.json), so the readout map is now linear.
+  - Audit's two points (presence ≠ use; the separator's direction) are in rev 3.
+* Tags as there. All data are POST-HOC.
+
+**Method.**
+* A training-only cosine readout (11-way, τ = 10, **no bias**) on the delta-head reads of S_t (G-pre PASSED, so delta heads only).
+* Inputs: the reads at the answer decoder's own " =" query (stop-gradient), each head scaled by a stop-gradient EMA constant. The argmax is a linear functional of S_t.
+* Target: v_t, the value of reduction t, for t ≤ n.
+* Loss weight: w·γ(step), with w = 1. The weight is exactly 0 while the loop is open, so the cells are bitwise identical to their controls to step 2000.
+* No pass token, no item text, dropped at test (model.pt excludes svr.*). C1 is kept.
+
+**Why (claims as tagged in the draft).**
+* **G1 (PROVED):** targets read through the pass-aware full-trunk aux decoder are met by the contractive class, because the reader reduces.
+* **G2 (PROVED):** displacement floors, bands and ceilings are met without content. This is CSR's FLOOR-GAMED.
+* **Lemma L (PROVED, rev 2 map):** the readout cannot reduce superposed operand codes.
+* **S1 / S2 (PROVED):** a stalled state pays a floor that is not diluted by target length.
+* **Lemma 4 correction (PROVED):** the NOPASS penalty is about 2 ln 2/(L+1) per pass pair.
+* **CERT (DERIVED under the empirical one-pass ceiling A1′, with guards g1 / g2).**
+* **The tilt (DERIVED / CONJECTURE).** SVR is a tilt, not a removal (Prop R).
+
+**Cells (RTX 3090; 48k; s185 RMS recipe exactly + `--svr 1.0,10` + `--keep_ckpt_steps 4000,8000,12000,16000`).**
+* `s203_svr_s1` / `s2` / `s3`, each paired with s185_rms_s{seed}:
+  - log records 100–2000 bitwise equal on loss, answer_ce and aux_ce;
+  - the control's driver (s1 / s2 570.172.08, s3 595.84);
+  - micro 1. Otherwise UNPAIRED.
+* **C8k** `s203_c8k_s1` / `s2` / `s3`: each control's args run to 8k on its driver, keeping ckpt_model_8000.pt. PAIRED-C8k if records 100–8000 are bitwise equal to the s185 log.
+* C16k is not run (optional in the draft, outside this approval).
+
+**Launch condition (pre-launch, $0; the user's scope).**
+* **G-pre: PASSED** (cee1d8d9). DELTA separates the 16 models: t2 0.633 > 0.345, t3 0.452 > 0.239.
+* **G-use** (draft §7 rule, fixed at 17c06299 before any G-use output), on the 9 converged final models:
+  - **≥ 7 / 9 USED → launch**;
+  - **≤ 4 / 9 → do not launch**;
+  - **5–6 / 9 → back to the user.** This tightens the draft's "launch with the fact reported", per the user's scope via Audit.
+* The ALL-heads diagnostic (cee1d8d9, POST-HOC, added after model 1's delta-only ABL-NULL) is reported beside it. If the registered count is ≤ 6 / 9 while ALL reads USED, both go to the user.
+* Then: the gates G0–G6, G-abl and G-swap (draft §7), Audit's diff review, the pairing check, and a running cost guard at $10.10.
+
+**Readings and predictions (definitions as in the draft §7; theory/score_s203.py, fixture-checked before launch):**
+* **Per-seed labels (final model):** ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED / ENTERED-UNMET / INSUFFICIENT-DOSE / USE-UNCLEAR / PRECOMPUTE-GAMED / ONE-PASS-COMPUTE.
+  - MET = DELIVERED (svr_acc_t2p ≥ 0.35 over 47001–48000) or CERT (svr_acc_h5p ≥ 0.30 there, with g1 K′=1 at n 3–8 ≤ 0.20 and g2 the pass-1 deep probe ≤ 0.21).
+  - USED = the §4.3 (a) ablation differential, or the (b) swap follows.
+* **Arm:**
+  - SUPPORTED = 3 / 3 ENTERED-AND-USED, with CERT and P-V4, and no HARMFUL;
+  - FAILED = any HARMFUL, or s3 MET-NOT-ENTERED, or any MET-NOT-USED;
+  - otherwise MIXED.
+* **P-V0** (8k dose, paired): SVR − C8k step_recover mean over t 2–4 ≥ +0.15 in 3 / 3. A miss reads EARLY-DOSE-MISSED.
+* **C8k-expect / direction:** EARLY-MARKER vs NO-EARLY vs AMBIGUOUS. The 2×2 is read with the s3 SVR outcome, under the draft's wording limit: no 8k presence ≠ non-causal.
+* **P-V2:** entry(0.5) ≤ 24k and final bin < 0.1. **P-V3 / HARMFUL:** s1 or s2 never enters (their controls entered at 19k).
+* **P-V4:** acc_from_zero ≥ 0.95 and (delta_cos ≤ 0.65 or acc_from_donor ≥ 0.9). **P-V5** and OP-8k are descriptive.
+* **Account falsifier:** MET-NOT-ENTERED with USED, path-dependent (final delta_cos ≤ 0.65), and NOT-CROWDED (G_svr/G_task < 1 at 4k and 8k).
+* **Claim limits:**
+  - P(3 / 3 | p = 2 / 3) = 0.30, and P(s3 enters | no effect) ≈ 0.6;
+  - the mechanism labels carry the reading;
+  - a P(enter) claim needs a second-stage panel (the user's call).
+
+**Cost:** about $8.5 central, $10.1 high (3 cells $6.6–8.7 + C8k $1.1–1.4). Approved ≤ $10.10, and the guard alerts at it. Realised $ replaces the projection at landing.
+
+## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
+
+**Registered text:**
+* docs/THEORY_STEPFACTOR_DRAFT_2026-10-14.md **at 3ec408c6**, including D5b, is the registered text for every definition below: §5 cells / readings, §6 predictions, §7 cost, §8 engineering and gates.
+* That file is now frozen. Changes go here as dated amendments.
+* Derivation by Opus subagent, reviewed by Theory. D1, the plan leak and D5's code premise were checked against theory/stepfactor/diag_A.json and the code.
+* All data are POST-HOC.
+
+**Mechanism (claims as tagged there).**
+* **D1 (PROVED + DATA):** under teacher forcing the string target's value tokens are memory-free. Value top-1 is 0.92 with M = 0, so the string never asks the memory for results.
+* **D2:** the plan is a parse of the question, so it is parallel. A reads step t from M_1 at 0.86–0.92 of M_t.
+* **D4:** the pooled THINK-NECESSARY tests decoder self-computation; the m ≥ 3 stratum is added. ProsQA's floor-corrected one-pass ratio is 0.004 vs GSM8K's 0.66–0.72: the state-vs-plan contrast.
+* **D5 / D5b:**
+  - the additive read without RMS is a free pass counter (∝ t);
+  - RMS removes it exactly at γ = 0;
+  - the delta transient stays a clock at t ≤ 2 (probe 0.67, chance 0.25, on A).
+  - So NOPASS + RMS closes the pass index only from t ≈ 3.
+
+**Branch (by §202's registered W-LIFT; final checkpoints; RTX 3090; seed 1; the base's flags otherwise exactly):**
+* **WARM-HELPS:** base = W's recipe (C's model.pt via --init_from, 12k).
+  - **F-P** `gsm_lat_factor_warm_s1` (`--aux_target factor`: value from memory with no expression in context, a 17-class operator head, 2 candidate-restricted pointers; pass token kept) vs **W**.
+  - **F-NR** `gsm_lat_factor_nr_warm_s1` (F-P + `--aux_nopass` + `--add_norm rms`, read as ONE joint change) vs **F-P**.
+* **NEUTRAL or WARM-HURTS:** base = A's recipe (raw GPT-2, 24k). F-P `gsm_lat_factor_s1` vs **A** only.
+* **§202 voided / not landed:** nothing runs.
+* **If W passes the pooled THINK-NECESSARY itself:** F-P is re-scoped as an accuracy / serial-depth lever (one cell) and goes back to the user.
+* **Comparators:** an eval-only re-run for the new fields at the original --eval_bs 64 on a 3090. The registered fields must match their eval.json bitwise.
+
+**Readings (draft §5.4; theory/score_s204.py, fixture-checked before launch):**
+* ACC LIFTS / MATCHES / HURTS at T = 0.028; F-NR − F-P is read the same way.
+* LOOP-FORMED.
+* THINK-NECESSARY (pooled, as registered) and SHORTCUT-RATIO.
+* **THINK-NECESSARY-DEEP** and SERIAL-GAIN-DEEP on m ≥ 3 (n 879, T_D 0.034, from acc_by_m_kprime with per-item rows).
+* VALUE-EXACT(t) by grounding; PLAN-ACC(t).
+* Leak diagnostics: PLAN-LEAK / VALUE-LEAK, PROBE-LEAK, COUNTER-SWAP and CLOCK, each against the M_0 floor.
+* The descriptive fields as listed there.
+
+**Predictions:** P-F1–P-F9 as in the draft §6, with central values and P's. Audit's two predictions are registered beside:
+* **P-F4a**, VALUE-EXACT(3) ≥ 0.5: the derivation predicts it fails, P ≈ 0.05.
+* **P-F5a**, pooled THINK-NECESSARY: P ≈ 0.4 (W base) / 0.2 (A base).
+
+The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HURTS) is registered as written. No derivation predicts SOTA; one-seed readings are worded "on seed 1".
+
+**Gates:** draft §8.5 (gates 1–11, including the plain path bitwise in both aux paths, the bitwise default for `ProsMem(g, add_norm=None)`, per-term grad flow, mem_check and the CLOCK probe), plus Audit's diff review and a cost guard at $3.90.
+
+**Cost:**
+* W base: F-P + F-NR + W eval-only, $2.97 central / $3.85 high.
+* A base: F-P + A eval-only, $2.82 / $3.70.
+* Approved ≤ $3.90. Realised $ replaces the projection.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
