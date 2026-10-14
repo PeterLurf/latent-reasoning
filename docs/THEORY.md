@@ -15393,6 +15393,21 @@ Each registers separately, after T1 / T2.
 * W $1.37 central / $1.82 high, C+ $0.33 / $0.41, so **$1.70 / $2.23**, within the user's ≤ $4 pre-approval. Audit is to confirm C+ is in scope as the control.
 * Realised $ replaces the projection at landing.
 
+**Note 202-1 (2026-10-14 18:10 EDT; before any §202 output, W and C+ still filling; descriptive, no rule change). THINK-NECESSARY-DEEP, read beside P-W2.**
+* **Why (docs/THEORY_STEPFACTOR_DRAFT_2026-10-14.md D4; DERIVED under A-DEC plus a calc on the test m-mix):**
+  - Take a strictly serial loop whose answer decoder finishes the last operation itself (it sees the question).
+  - It gives a pooled K′1/K′10 of 0.51–0.78, because m ≤ 2 items (33% of the test) are already solvable after one pass.
+  - So the pooled rule (P-W2) tests how much the decoder computes itself as much as whether the loop is serial. On m ≥ 3 the same loop's ratio is ≤ 0.38.
+* **Reading (descriptive):**
+  - **THINK-NECESSARY-DEEP:** the registered THINK-NECESSARY rule on the m ≥ 3 test items (n 879; m = the gold equation count, as acc_by_m).
+  - **SHORTCUT-RATIO:** K′1/K′10, pooled and on m ≥ 3, for W and for A (the reference). The m ≥ 3 threshold is T_D = 0.034 (T · √(1319/879)).
+* **Source:**
+  - A new eval-only field, `acc_by_m_kprime` (K′ 0 / 1 / 10 by m).
+  - It is run on W's and A's final model.pt **on one card, at the same --eval_bs 64 and dtype for both** (the bf16 batch-size rule), so the pair is like-for-like.
+  - It adds a field only. The registered fields are not touched.
+  - $0, local.
+* **P-W2 is unchanged and read as registered.** If P-W2 fails while THINK-NECESSARY-DEEP passes, the result is worded as "serial on m ≥ 3, with the decoder finishing short items itself", not as "no loop".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
