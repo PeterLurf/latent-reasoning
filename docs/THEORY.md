@@ -14520,6 +14520,23 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
     - **the user's approval for GSM8K-scale spend.**
   - ProsQA's depth limit beyond training shows the same pass-count / post-completion pattern as nested arithmetic, so §199's CSR post-completion ceiling is also relevant here (unregistered).
 
+**199-M2 result (2026-10-13 23:00 EDT; cc3061a7; RTX 2070, fp32, the full λ grid with path_indep at every λ; endpoints match eval.json s182 within fp32 drift; theory/score_s199_m2.py). By the letter CONNECTED. In substance NO pair is linearly connected, so M2 cannot answer the separate-basin question.**
+* **Barriers** (above the endpoint-loss line, TRAIN-DIST; TEST beside): s1–s2 **2.59** (2.82), s1–s3 3.19 (3.26), s2–s3 3.23 (3.14). Every argmax is at λ 0.5.
+  - The rule reads CONNECTED because s3's barriers are ≤ 1.5 × s1–s2's (3.88).
+* **The label's name misleads, and is always reported with this qualifier.**
+  - CONNECTED here means only "s3 is no more separated from s1 / s2 than s1 is from s2".
+  - The same-class control is itself **not** connected: the s1–s2 midpoint has TRAIN L 2.59 and acc_from_zero 0.25, so the average of two working seeds is broken.
+  - The rule assumed a connected control (Neyshabur 2008.11687's pretrained-basin prior). The data follow Frankle 1912.05671's instability from init instead: this model's memory branch starts from a zero / copied init, and SGD noise breaks its symmetry early (199-M2a anticipated either).
+* **What it does show (descriptive):**
+  1. **Converged seeds sit in different linear basins.** The "path-dependent class" is a class of solutions, not one basin. This fits G3's low same-seed outcome correlation ρ, and it means no free "seed soup".
+  2. **Every broken interpolant is contractive.**
+     - On s1–s2, delta_cos rises from 0.625 / 0.589 at the ends to 0.810 at the midpoint, and agree rises to 0.42. delta_cos crosses 0.65 at λ 0.14 and 0.81.
+     - On s1–s3 and s2–s3 the rise is monotone to 0.978, crossing once at λ ≈ 0.11.
+     - So contraction is also the signature of a **generically broken** model, not only of the failed seeds' basin.
+     - This weakens delta_cos as evidence of a *distinct* contractive trap, and adds weight to 199-A's cause-vs-consequence caveat.
+     - It does not touch §199-A's test: P-A5 is causal by design (a non-contractive order parameter at 8k / 16k with non-entry falsifies), and CSR's predictions stand as registered.
+* **Methodology lesson:** an LMC criterion needs its control pair verified as connected first, or one stated reading for "no pair connected". Noted for future registrations.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

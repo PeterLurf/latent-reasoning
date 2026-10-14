@@ -1,0 +1,48 @@
+{
+ "reading": "M2 CONNECTED :: s1-s2 B_train 2.5863 (argmax lam 0.5), B_test 2.8206, dcos crosses 0.65 at [0.13975619603587058, 0.8061273822218316] | s1-s3 B_train 3.1919 (argmax lam 0.5), B_test 3.2581, dcos crosses 0.65 at [0.10614449165075698] | s2-s3 B_train 3.2253 (argmax lam 0.5), B_test 3.1399, dcos crosses 0.65 at [0.1206187737399234]",
+ "pairs": {
+  "s1-s2": {
+   "B_train": 2.5862719777259153,
+   "argmax_lam": 0.5,
+   "B_test": 2.8206005361512534,
+   "L_end_train": [
+    0.00023644788222915137,
+    0.000291112883282753
+   ],
+   "dcos_cross_0.65": [
+    0.13975619603587058,
+    0.8061273822218316
+   ],
+   "gpu": "NVIDIA GeForce RTX 2070",
+   "dtype": "float32 (no autocast)"
+  },
+  "s1-s3": {
+   "B_train": 3.191858358796542,
+   "argmax_lam": 0.5,
+   "B_test": 3.2580999088017872,
+   "L_end_train": [
+    0.00023644788222915137,
+    1.0193042577781048
+   ],
+   "dcos_cross_0.65": [
+    0.10614449165075698
+   ],
+   "gpu": "NVIDIA GeForce RTX 2070",
+   "dtype": "float32 (no autocast)"
+  },
+  "s2-s3": {
+   "B_train": 3.2253396602739963,
+   "argmax_lam": 0.5,
+   "B_test": 3.1398953433071686,
+   "L_end_train": [
+    0.000291112883282753,
+    1.0193042577781048
+   ],
+   "dcos_cross_0.65": [
+    0.1206187737399234
+   ],
+   "gpu": "NVIDIA GeForce RTX 2070",
+   "dtype": "float32 (no autocast)"
+  }
+ }
+}
