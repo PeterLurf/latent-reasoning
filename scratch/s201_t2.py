@@ -113,6 +113,9 @@ def main():
            "fit": {"n_train_items": int(len(ntr)), "train_n_hist": {str(v): int((ntr == v).sum()) for v in sorted(set(ntr.tolist()))}, "n_features": int(Xtr.shape[-1]),
                    "features": "maxprob, entropy, top2 margin, change t-1, change t-2, aux bit, aux prob, beta x6, retention x6, d beta x6, d retention x6, rel inc add read, rel inc delta read",
                    "row_t_def": "row t = the write that produced S_t; no look-ahead (MIN-BETA / RET-JUMP use one: t+1)"}}
+    mp = os.path.join(DUMP, run + "_meta.json")                             # optional dump sidecar (e.g. the ProsQA adaptations, note 201-6) recorded in the JSON
+    if os.path.exists(mp):
+        out["dump_meta"] = json.load(open(mp))
     json.dump(out, open(os.path.join(ROOT, "boxes", "runs_fsq", run, "eval_s201_halt.json"), "w", newline="\n"), indent=1)
     print(run, "T2 primary acc", {k: round(v, 3) for k, v in primary["acc_by_n"].items()}, "A %.3f" % A, "best K'", best_k, flush=True)
 
