@@ -15600,7 +15600,7 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - That pattern fits an off-distribution prefix (the decoder never saw an all-zero latent pair) rather than result tokens that depend on the latent.
   - MEAN is the in-distribution "no item information" condition. Under it, SIM-CoT's step decoder reads results from the in-context operands (0.915 vs 0.939) and needs the latent only for operand and plan identity.
   - Our own D1 measurement used M = 0, which is a natural in-distribution state for DeltaMem (the pass-0 memory). That is unlike SIM-CoT's input-embedding prefix.
-* **Stage 5 (merged steps, n 82, descriptive):** value 0.707 / 0.350 / 0.713. MEAN again matches TRUE.
+* **Stage 5 (merged steps, n 82, descriptive):** value 0.707 / 0.350 / 0.713. MEAN again matches TRUE. *(Correction 19:38, Audit: n 82 is the item count; the stage-5 value-token count is 157.)*
 * **Wording:** "on the released SIM-CoT GPT-2 checkpoint, replacing the step latents with their mean leaves value-token accuracy at 0.915 (vs 0.939) while operand accuracy falls to 0.05–0.09", with the ZERO falsification reported beside it.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
