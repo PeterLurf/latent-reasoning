@@ -1,0 +1,102 @@
+{
+ "device": "cpu",
+ "dtype": "float32 (no autocast)",
+ "init_from": "boxes/runs_fsq/gsm_txt_aug_s1/model.pt",
+ "copy_init": {
+  "tensors": {
+   "qkv.weight": {
+    "equal_C": true,
+    "differs_raw": true
+   },
+   "qkv.bias": {
+    "equal_C": true,
+    "differs_raw": true
+   },
+   "ln.weight": {
+    "equal_C": true,
+    "differs_raw": true
+   },
+   "ln.bias": {
+    "equal_C": true,
+    "differs_raw": true
+   },
+   "ln_w.weight": {
+    "equal_C": true,
+    "differs_raw": true
+   },
+   "ln_w.bias": {
+    "equal_C": true,
+    "differs_raw": true
+   }
+  },
+  "trunk_equals_C_state_dict": true,
+  "pass": true
+ },
+ "init_identity": {
+  "by_kprime": {
+   "0": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "1": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "2": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "4": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "6": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "8": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "10": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "12": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   },
+   "16": {
+    "acc": 0.02,
+    "answers_equal_plain": 200,
+    "n": 200,
+    "max_abs_hidden_diff": 0.0
+   }
+  },
+  "direct_eot_plain": 0.02,
+  "probe_plan_C_direct_eot": 0.022,
+  "g_add_init": 0.00029062756220810115,
+  "acc_constant_over_kprime": true,
+  "answers_equal_plain_all": true,
+  "hidden_bitwise_all": true,
+  "items": "Aug valid[:200]",
+  "pass": true
+ },
+ "pass": true
+}
