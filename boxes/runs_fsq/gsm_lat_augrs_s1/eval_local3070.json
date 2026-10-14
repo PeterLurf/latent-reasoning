@@ -1,0 +1,301 @@
+{
+ "arm": "stepaux",
+ "data": "gsm8k_aug",
+ "seed": 1,
+ "steps": 24000,
+ "think_k": 10,
+ "n": 1319,
+ "train_sec": 36325,
+ "n_nonfinite": 0,
+ "micro": 1,
+ "eval_dtype": "torch.bfloat16",
+ "train_gpu": "NVIDIA GeForce RTX 3070",
+ "train_driver": "591.86",
+ "eval_gpu": "NVIDIA GeForce RTX 3070",
+ "eval_only": true,
+ "transforms": {
+  "draws": 0,
+  "rs_tried": 0,
+  "rs_accepted": 0,
+  "rl_items": 0,
+  "rl_names": 0
+ },
+ "acc_def": "greedy after '###' (<= 12 tokens, stop at EOS / newline), bench.tasks.norm_number exact match; the text arm generates its CoT to '###' first",
+ "symbolic": {
+  "main": {
+   "acc": 0.0866,
+   "n": 5000,
+   "sd_over_templates": 0.1848687101702178
+  },
+  "p1": {
+   "acc": 0.0346,
+   "n": 5000,
+   "sd_over_templates": 0.07058923430665613
+  },
+  "p2": {
+   "acc": 0.0172,
+   "n": 2500,
+   "sd_over_templates": 0.0478347154271874
+  }
+ },
+ "cost": null,
+ "acc": 0.15845337376800606,
+ "acc_by_m": {
+  "0": 0.1111111111111111,
+  "1": 0.12307692307692308,
+  "2": 0.2857142857142857,
+  "3": 0.15384615384615385,
+  "4": 0.09655172413793103,
+  "5": 0.050724637681159424,
+  "6": 0.07017543859649122,
+  "7": 0.047619047619047616,
+  "8": 0.1111111111111111
+ },
+ "n_by_m": {
+  "0": 18,
+  "1": 65,
+  "2": 357,
+  "3": 364,
+  "4": 290,
+  "5": 138,
+  "6": 57,
+  "7": 21,
+  "8": 9
+ },
+ "eval_partial": false,
+ "acc_valid_best": 0.156,
+ "valid_best_step": 20000,
+ "valid_hist": [
+  [
+   2000,
+   0.042
+  ],
+  [
+   4000,
+   0.064
+  ],
+  [
+   6000,
+   0.082
+  ],
+  [
+   8000,
+   0.102
+  ],
+  [
+   10000,
+   0.106
+  ],
+  [
+   12000,
+   0.122
+  ],
+  [
+   14000,
+   0.128
+  ],
+  [
+   16000,
+   0.118
+  ],
+  [
+   18000,
+   0.15
+  ],
+  [
+   20000,
+   0.156
+  ],
+  [
+   22000,
+   0.144
+  ],
+  [
+   24000,
+   0.148
+  ]
+ ],
+ "acc_test_validsel": 0.15845337376800606,
+ "struct": {
+  "gap_mstrat": 0.13058572491689624,
+  "seen_acc": 0.22510231923601637,
+  "unseen_acc": 0.05167958656330749,
+  "n_seen": 733,
+  "n_unseen": 387,
+  "n_nokey": 199,
+  "def": "theory/gsmtpl/seen_split.py's functional fingerprint (extra_stats.fingerprint at two random value vectors + m) seen in Aug train (unfiltered)"
+ },
+ "dedupe": {
+  "n_flagged": 3,
+  "acc_excl_flagged": 0.1580547112462006,
+  "def": "gsmlen/dedupe.py: lower-case, numbers -> #, word 8-grams; score = max over Aug train items of shared / test shingles (shingles in >= 5000 items skipped); flagged >= 0.5"
+ },
+ "filler": {
+  "base": 0.15845337376800606,
+  "def": "prepended to the question; exactly 16 / 32 GPT-2 tokens incl. the trailing space",
+  "k16": 0.14025777103866566,
+  "k32": 0.13191811978771797
+ },
+ "fit": {
+  "fit_fix": 0.499,
+  "n_fix": 1000,
+  "fit_rs": 0.34690265486725663,
+  "n_rs": 565,
+  "def": "fit_fix: 1000 train items (rng 20010) as drawn; fit_rs: one fresh R_x draw (rng 20011) of each recomputable one, accepted draws only"
+ },
+ "acc_by_kprime": {
+  "0": 0.06899166034874905,
+  "1": 0.11144806671721001,
+  "2": 0.12054586808188021,
+  "4": 0.14404852160727824,
+  "6": 0.14783927217589082,
+  "8": 0.155420773313116,
+  "10": 0.15845337376800606,
+  "12": 0.15314632297194844,
+  "16": 0.14329037149355572
+ },
+ "idle": {
+  "0": {
+   "n": 18,
+   "k_m2": 0.1111111111111111,
+   "k10": 0.1111111111111111
+  },
+  "1": {
+   "n": 65,
+   "k_m2": 0.12307692307692308,
+   "k10": 0.12307692307692308
+  },
+  "2": {
+   "n": 357,
+   "k_m2": 0.2605042016806723,
+   "k10": 0.2857142857142857
+  },
+  "3": {
+   "n": 364,
+   "k_m2": 0.1401098901098901,
+   "k10": 0.15384615384615385
+  },
+  "4": {
+   "n": 290,
+   "k_m2": 0.07241379310344828,
+   "k10": 0.09655172413793103
+  },
+  "5": {
+   "n": 138,
+   "k_m2": 0.050724637681159424,
+   "k10": 0.050724637681159424
+  },
+  "6": {
+   "n": 57,
+   "k_m2": 0.07017543859649122,
+   "k10": 0.07017543859649122
+  },
+  "7": {
+   "n": 21,
+   "k_m2": 0.047619047619047616,
+   "k10": 0.047619047619047616
+  },
+  "8": {
+   "n": 9,
+   "k_m2": 0.1111111111111111,
+   "k10": 0.1111111111111111
+  }
+ },
+ "aux_exact_by_pass": {
+  "1": 0.32382892057026474,
+  "2": 0.1829787234042553,
+  "3": 0.05397727272727273,
+  "4": 0.03255813953488372,
+  "5": 0.0,
+  "6": 0.0,
+  "7": 0.0,
+  "8": 0.0
+ },
+ "aux_n_by_pass": {
+  "1": 491,
+  "2": 470,
+  "3": 352,
+  "4": 215,
+  "5": 101,
+  "6": 46,
+  "7": 16,
+  "8": 7
+ },
+ "aux_exact_by_grounding": {
+  "Q": {
+   "acc": 0.34519572953736655,
+   "n": 281,
+   "by_pass": {
+    "1": 0.3942307692307692,
+    "2": 0.2558139534883721,
+    "3": 0.12,
+    "4": 0.2
+   },
+   "n_by_pass": {
+    "1": 208,
+    "2": 43,
+    "3": 25,
+    "4": 5
+   }
+  },
+  "R": {
+   "acc": 0.0881542699724518,
+   "n": 363,
+   "by_pass": {
+    "2": 0.16666666666666666,
+    "3": 0.036036036036036036,
+    "4": 0.01639344262295082,
+    "5": 0.0,
+    "6": 0.0
+   },
+   "n_by_pass": {
+    "2": 162,
+    "3": 111,
+    "4": 61,
+    "5": 22,
+    "6": 7
+   }
+  },
+  "unparsed": {
+   "acc": 0.1347248576850095,
+   "n": 1054,
+   "by_pass": {
+    "1": 0.27208480565371024,
+    "2": 0.1811320754716981,
+    "3": 0.05555555555555555,
+    "4": 0.03355704697986577,
+    "5": 0.0,
+    "6": 0.0,
+    "7": 0.0,
+    "8": 0.0
+   },
+   "n_by_pass": {
+    "1": 283,
+    "2": 265,
+    "3": 216,
+    "4": 149,
+    "5": 79,
+    "6": 39,
+    "7": 16,
+    "8": 7
+   }
+  },
+  "def": "\u00a7202 P-W8: the aux_exact_by_pass items split by step t's operand grounding (gsm8k_data.parse_recomputable on the test raw item): R = any operand is a previous result, Q = question literals / constants only, unparsed = item not recomputable"
+ },
+ "path_indep": {
+  "answer_agree": 0.494,
+  "acc_from_zero": 0.128,
+  "acc_from_donor": 0.094,
+  "delta_cos_final": 0.9043561220169067,
+  "n_items": 500,
+  "kprime": 16,
+  "donor_passes": 8,
+  "derangement": "np.roll(sample order, 1)",
+  "items": "test, rng 16802 permutation[:extras_n]"
+ },
+ "clip": {
+  "clip_rate": null,
+  "n_steps": 0
+ },
+ "eval_sec": 359
+}
