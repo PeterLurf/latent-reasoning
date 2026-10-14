@@ -1,0 +1,55 @@
+{
+ "reading": "M3 PREDICTED (all < 0.5) :: s185_rms_s3 LAGFRAC 0.0 (lag1 0.0) over 667 wrong / 1503 | s185_den_s1 LAGFRAC 0.0 (lag1 0.0) over 470 wrong / 1503 | s188_rwwin_s1 LAGFRAC 0.0 (lag1 0.0) over 480 wrong / 1503 | s185_rms_s1 LAGFRAC 0.0 (lag1 0.0) over 5 wrong / 1503 | s185_rms_s2 LAGFRAC 0.0 (lag1 0.0) over 4 wrong / 1503",
+ "models": {
+  "s185_rms_s3": {
+   "wrong": 667,
+   "lagfrac": 0.0,
+   "lag1_share": 0.0,
+   "n": 1503,
+   "correct": 836,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 667
+  },
+  "s185_den_s1": {
+   "wrong": 470,
+   "lagfrac": 0.0,
+   "lag1_share": 0.0,
+   "n": 1503,
+   "correct": 1033,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 470
+  },
+  "s188_rwwin_s1": {
+   "wrong": 480,
+   "lagfrac": 0.0,
+   "lag1_share": 0.0,
+   "n": 1503,
+   "correct": 1023,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 480
+  },
+  "s185_rms_s1": {
+   "wrong": 5,
+   "lagfrac": 0.0,
+   "lag1_share": 0.0,
+   "n": 1503,
+   "correct": 1498,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 5
+  },
+  "s185_rms_s2": {
+   "wrong": 4,
+   "lagfrac": 0.0,
+   "lag1_share": 0.0,
+   "n": 1503,
+   "correct": 1499,
+   "lag1": 0,
+   "lag2plus": 0,
+   "other": 4
+  }
+ }
+}
