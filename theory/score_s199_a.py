@@ -32,10 +32,20 @@ def log_records(d):
 
 
 def paired(cell, ctrl):
+    """199-A2 (Audit's ruling): (i) records 100..400 bitwise on (loss, answer_ce, aux_ce); (ii) step 500's answer_ce / aux_ce bitwise; (iii) step 500's
+    loss_cell - loss_ctrl == 0.1 * csr_loss_500 / 100 within 1e-6 relative (the record's loss is the mean of steps 401..500's totals; CSR is on from
+    step 500 inclusive; csr_loss is that step's own batch value). Any other residual -> UNPAIRED."""
     def early(d):
-        return {r["step"]: (r.get("loss"), r.get("answer_ce"), r.get("aux_ce")) for r in log_records(d) if "loss" in r and 100 <= r["step"] <= 500}
+        return {r["step"]: r for r in log_records(d) if "loss" in r and 100 <= r["step"] <= 500}
     a, b = early(cell), early(ctrl)
-    return bool(a) and set(a) == set(b) and all(a[k] == b[k] for k in a), {"cell": a, "ctrl": b}
+    if not a or set(a) != set(b) or 500 not in a:
+        return False, {"why": "record steps differ or step 500 missing"}
+    f = ("loss", "answer_ce", "aux_ce")
+    ok1 = all(a[k][x] == b[k][x] for k in a if k <= 400 for x in f)
+    ok2 = a[500]["answer_ce"] == b[500]["answer_ce"] and a[500]["aux_ce"] == b[500]["aux_ce"]
+    cs = a[500].get("csr_loss"); pred = None if cs is None else 0.1 * cs / 100; d500 = a[500]["loss"] - b[500]["loss"]
+    ok3 = pred is not None and abs(d500 - pred) <= 1e-6 * max(abs(b[500]["loss"]), 1e-12)
+    return bool(ok1 and ok2 and ok3), {"i_100_400": ok1, "ii_500_ce": ok2, "iii_500_loss": ok3, "d500": d500, "pred": pred}
 
 
 def pa1(d):

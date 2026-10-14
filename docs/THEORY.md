@@ -14610,6 +14610,21 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
 * **So the §191 result's "not robust to input length" should read:** the latent arm partly uses input length as a proxy for depth (A 0.640 vs B 0.816 on that mismatch). The registered NAME-MEM reading is unchanged.
 * **Also:** §191 A's 6.99 s/step anchor is a **cached** figure (args: cache_lower true, ckpt_passes true, chunk_delta 64, micro 4). Theory's message to Audit had said "uncached".
 
+**Clarification 199-A2 (2026-10-13 23:17 EDT; after b283 started, before its step-500 record is read; Experiments; an inconsistency in Theory's own 199-A, resolved without a code change).** The A4 launch check at the CSR start step.
+* **The inconsistency:**
+  - A2 makes CSR active "from step 500" (code: csr_on = step ≥ start, gate g1b).
+  - A4 asks for bitwise equality of loss / answer_ce / aux_ce "at steps 100–500".
+  - The step-500 log record's `loss` is the mean of steps 401–500's totals, so it carries + w·csr₅₀₀/100 (w = 0.1). As registered, the two cannot both hold.
+* **A4 now reads** (option (a), no code change):
+  - (i) every record at steps 100–400 is bitwise equal on loss, answer_ce and aux_ce;
+  - (ii) at step 500, answer_ce and aux_ce are bitwise equal (they exclude the CSR term);
+  - (iii) at step 500, loss_cell − loss_ctrl equals 0.1·csr_loss₅₀₀/100 to within fp32 rounding (|Δ| ≤ 1e-6 relative).
+  - All three → PAIRED. **Any other residual → UNPAIRED.** csr_loss is the step-500 batch's own value: csr_acc is cleared every step (nested170).
+  - The same rule applies to s2 and s3 (Audit's ruling).
+* **The gradient wording, corrected (Audit):** the approved code applies CSR from step 500 **inclusive**. Its gradient enters step 500's update, so the first parameter difference appears at step 501.
+  - 199-A's "nonzero … at step 501" is off by one against the code. It means "the CSR gradient is present from step 500's update". Gate g2 tested exactly that.
+* **Unchanged:** everything else in 199-A. score_s199_a.py's pairing check now implements (i)–(iii).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
