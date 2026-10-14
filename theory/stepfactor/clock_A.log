@@ -1,0 +1,14 @@
+D:\Latent\theory\stepfactor\clock_A.py:112: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:821.)
+  res = {"model": RUN + "/model.pt", "dtype": "cpu fp32", "n_items": N_ITEMS, "g_add": float(torch.exp(m.mem.s_add)), "g_del": float(torch.exp(m.mem.s_del)),
+trained delta 0.6675 0.3725 193
+trained add_raw 0.705 0.4725 231
+trained add_rms 0.5125 0.3413 268
+trained add_rms+delta 0.665 0.4175 331
+trained rel del {'1': [0.40827, 0.40099], '2': [0.20465, 0.19957], '3': [0.13441, 0.13131], '4': [0.10022, 0.09889], '5': [0.08072, 0.07955], '6': [0.06841, 0.06707], '7': [0.06024, 0.05866]} | rel add {'1': [0.87885, 0.87765], '2': [0.47335, 0.47217], '3': [0.32432, 0.32328], '4': [0.24753, 0.24714], '5': [0.20096, 0.20074], '6': [0.16977, 0.16955], '7': [0.14749, 0.14739]} | rel add rms {'1': [0.20127, 0.19971], '2': [0.10905, 0.10891], '3': [0.07893, 0.07763], '4': [0.06333, 0.06211], '5': [0.05396, 0.05279], '6': [0.04769, 0.04644], '7': [0.04325, 0.04183]}
+open delta 0.675 0.375 513
+open add_raw 0.7675 0.4988 550
+open add_rms 0.25 0.125 551
+open add_rms+delta 0.655 0.3725 609
+open rel del {'1': [0.41617, 0.41068], '2': [0.20145, 0.19343], '3': [0.11887, 0.11451], '4': [0.07849, 0.07563], '5': [0.05624, 0.05472], '6': [0.0422, 0.04133], '7': [0.03269, 0.03192]} | rel add {'1': [1.0, 1.0], '2': [0.5, 0.5], '3': [0.33333, 0.33333], '4': [0.25, 0.25], '5': [0.2, 0.2], '6': [0.16667, 0.16667], '7': [0.14286, 0.14286]} | rel add rms {'1': [0.0, 0.0], '2': [0.0, 0.0], '3': [0.0, 0.0], '4': [0.0, 0.0], '5': [0.0, 0.0], '6': [0.0, 0.0], '7': [0.0, 0.0]}
+DONE 609
