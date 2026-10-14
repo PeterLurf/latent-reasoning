@@ -1,0 +1,12 @@
+import sys, re, html
+s = open(sys.argv[1], encoding="utf-8", errors="replace").read()
+s = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", s, flags=re.S|re.I)
+s = re.sub(r"<math[^>]*alttext=\"([^\"]*)\"[^>]*>.*?</math>", lambda m: " $" + html.unescape(m.group(1)) + "$ ", s, flags=re.S)
+s = re.sub(r"<(br|p|div|h[1-6]|li|tr|table|section|figcaption)[^>]*>", "\n", s, flags=re.I)
+s = re.sub(r"<t[dh][^>]*>", " | ", s, flags=re.I)
+s = re.sub(r"<[^>]+>", "", s)
+s = html.unescape(s)
+s = re.sub(r"[ \t]+", " ", s)
+s = re.sub(r"\n\s*\n+", "\n", s)
+open(sys.argv[2], "w", encoding="utf-8", newline="\n").write(s)
+print(len(s))
