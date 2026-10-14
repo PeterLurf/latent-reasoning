@@ -1,0 +1,7 @@
+# THEORY §200 GSM8K-AUG PILOT timing (contract 58947b26; gate_s200 all PASS; Audit OK on the harness, timing host may take the first free slot): --time_steps 200 for A (latent), B (latent + R_x + R_nu) and C (TEXT-COT), plus a 2-step latent run with the FULL eval (eval_sec for the projection). ONE RTX 3090. Projection -> Audit -> the user before any §200 cell. Data via EXTRA_120 / .extra
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s200_time_lat_aug boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --bs 64 --lr 1e-4 --seed 1 --auto_micro --time_steps 200 --log_every 20
+boxes/runs_fsq/s200_time_lat_augrs boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --bs 64 --lr 1e-4 --seed 1 --auto_micro --relabel_names --resample_numbers --time_steps 200 --log_every 20
+boxes/runs_fsq/s200_time_txt_aug boxes.gsm8k_stepaux --arm textcot --steps 24000 --bs 64 --lr 1e-4 --seed 1 --auto_micro --time_steps 200 --log_every 20
+boxes/runs_fsq/s200_evaltime_lat boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --bs 64 --lr 1e-4 --seed 1 --auto_micro --steps 2 --valid_every 2 --log_every 1

@@ -28,6 +28,7 @@ import extra_stats as ES  # noqa: E402
 import boxes.gsm8k_data as G  # noqa: E402
 
 ENC = tiktoken.get_encoding("gpt2"); OUT = G.AUG
+EXCLUDE = {"Marvel", "Jan", "Eve", "Austin", "Madison", "Charlotte", "Jackson", "Jordan", "Victoria", "Logan"}   # Audit (2d0964ab review): non-name / place uses
 MALE = re.compile(r"\b(he|him|his|himself)\b", re.I); FEMALE = re.compile(r"\b(she|her|hers|herself)\b", re.I)
 FILL16 = "The morning was calm and quiet, and the road ran along the river."
 FILL32 = FILL16 + " Birds sang in the tall trees while a soft wind moved slowly over the hills."   # k32 extends k16
@@ -63,7 +64,7 @@ def names(R):
     pool = {}
     for gd, k in (("male", "male"), ("female", "female")):
         c = [w for w, s in stats.items() if s[k] / (s["male"] + s["female"]) >= 0.85 and s["lower_ratio"] <= 0.02]
-        pool[gd] = sorted(c, key=lambda w: -stats[w]["items"])[:250]
+        pool[gd] = sorted((w for w in c if w not in EXCLUDE), key=lambda w: -stats[w]["items"])[:250]
     return pool, stats
 
 
@@ -71,7 +72,7 @@ def main():
     R, cnt = G.load_aug("train"); pool, stats = names(R)
     json.dump({"male": pool["male"], "female": pool["female"], "stats": {w: stats[w] for w in pool["male"] + pool["female"]},
                "rule": "capitalised non-initial word (audit_aug.CAP, STOP removed); >= 20 single-name items; one gender's pronoun share >= 0.85; lower-case "
-                       "occurrences <= 2% of capitalised; top 250 per gender by item count", "filter_counts": cnt},
+                       "occurrences <= 2% of capitalised; minus Audit's exclusions (non-name / place uses); top 250 per gender by item count", "excluded": sorted(EXCLUDE), "filter_counts": cnt},
               open(os.path.join(OUT, "s200_names.json"), "w", newline="\n", encoding="utf-8"), indent=1)
     print("names", len(pool["male"]), len(pool["female"]), pool["male"][:15], pool["female"][:15], flush=True)
     T, _ = G.load_aug("test", filter_bad=False); assert len(T) == 1319
