@@ -74,10 +74,11 @@ def main():
         desc.append("(%s) delta_cos %s, SIZE-KEY %s" % (k, "pending" if pi is None else "%.3f (agree %.3f)" % (pi["delta_cos_final"], pi["answer_agree"]),
                                                        "pending" if sk is None else "%d (onsets %s, t3-6 drop %.3f)" % (sk["size_key"], sk["onset_by_n"], sk["t3_6_drop"])))
     pa, pc = res["a"]["note198_3"], res["c"]["note198_3"]
+    band = lambda dlt, tol: "within seed noise" if abs(dlt) <= tol + EPS else ("as predicted" if dlt > 0 else "FALSIFIED as stated")   # noqa: E731  (198-3a; dlt = a - c)
     if pa["path_indep"] and pc["path_indep"]:
-        desc.append("pred 1 (c delta_cos < a): %s" % ("as predicted" if pc["path_indep"]["delta_cos_final"] < pa["path_indep"]["delta_cos_final"] else "FALSIFIED as stated"))
+        desc.append("pred 1 (c delta_cos < a; band 0.06): %s" % band(pa["path_indep"]["delta_cos_final"] - pc["path_indep"]["delta_cos_final"], 0.06))
     if pa["size"] and pc["size"]:
-        desc.append("pred 2 (c SIZE-KEY < a): %s" % ("as predicted" if pc["size"]["size_key"] < pa["size"]["size_key"] else "FALSIFIED as stated"))
+        desc.append("pred 2 (c SIZE-KEY < a; band 1): %s" % band(pa["size"]["size_key"] - pc["size"]["size_key"], 1))
     out["note198_3"] = " | ".join(desc); print("NOTE 198-3 (descriptive, one seed per cell, not a label):", out["note198_3"])
     out["reading"] = " | ".join(lines); print("READING:", out["reading"])
     errs = S187.ERRORS
