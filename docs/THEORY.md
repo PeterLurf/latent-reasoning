@@ -14887,6 +14887,11 @@ Each registers separately, after T1 / T2.
 * No rule change: chance-level cells are not excluded (Experiments' option (i) is not taken).
 * The same count-exact reading applies to every §201 model. All of rms_s1's differences above 2.5 items are at chance-level cells (n 4 / 6 at t 0, the zero state; n 8 at t 1; n 16), which is consistent with bf16 near-ties.
 
+**Clarification 201-2a (2026-10-14 02:05 EDT; before any T1 reading is scored; Audit).** The scorer applies 201-1 / 201-2's gate in integers.
+* Pass if fb_identity is True and round(clean_vs_s173_maxdiff × 1000) ≤ 5, or else if `gates.bf16_recheck_max_items` (an integer item count) ≤ 5.
+* Otherwise the model's T1 and T2 readings are WITHHELD.
+* theory/score_s201.py's gate_ok() implements this. Fixture-checked: the boundary 0.0050000000000000044 passes, 5 bf16 items pass, 6 fail, a missing re-check fails, and fb_identity False fails.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
