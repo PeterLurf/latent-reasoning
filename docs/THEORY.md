@@ -15129,6 +15129,8 @@ Each registers separately, after T1 / T2.
 * If the diagnostic reads NOT-CROWDED, a FALSIFIER label stands unqualified.
 * FLOOR-GAMED / INSUFFICIENT-DOSE readings carry the diagnostic beside them.
 
+**Note 199-A5b (2026-10-14 10:57 EDT; disclosure, Audit).** 199-A5 and 199-A5a were both written **before s1's landing readout but after** Audit's 10:5x relay of s1's interim live log (not entered at 44.5k; bins about 1.41). The crowding qualifier is pre-landing, post-interim-log. It changes no verdict: the method reading is untouched either way.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
