@@ -27,11 +27,11 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
-* 22:2x 10-13 (Experiments): §199-A CSR code in nested170 UNCOMMITTED - gate_csr run 1 found a NaN slice bug (pre range past K-1; fixed, identical at K 8) + a g3 fixture error;
-  run 2 aborted (g1b at think_k 2 structurally 0); run 3 (g1b/g1c at think_k 4, g5 on the 2070) running -> commit -> Audit diff review -> s199 queues
-  (DRIVER_EQ: s1/s2 570.172.08 x2 offers, s3 595.84 x1). b282 launcher STOPPED 22:13 (dirty tree); re-arm after commit. If a host dies before the commit,
-  hold its requeue. halt173 readslots think_tokens fix + gate_halt_readslots re-run. path_indep cadence: scratch/probe_cadence.sh (injc 19k->28k,
-  memhi 12k->30k, every 2k, 3070) + --stage probes of the pilot's 9k / 10k copies (scratchpad pilot_ck; delete after).
+* 22:5x 10-13 (Experiments): §199-A CSR committed 478a572f (gate_csr run 3 all PASS; runs 1-2 kept), Audit OK; queues b283-b285 (3d883121);
+  chain_s199b (scratchpad) runs launch_when_slot s199 283 284 (DRIVER_EQ 570.172.08) then 285 (595.84) as slots free; A4 bitwise check 100-500 per cell;
+  ckpt_model 4/8/12/16k come with the drain -> probe -> delete. b282 §198c STARTED 22:41 (89.221.67.136, $0.227/h) - family cost recompute pending.
+  §191 A LANDED a7aced23 (Theory: NAME-MEM 14c71ca3); eval_timing191 (A+B, ~$0.15) when a slot frees. path_indep cadence (probe_cadence.sh; b280 host
+  uploads ~1.2 MB/s, ~20 min per fetch). 199-M2 LMC (scratch/lmc199.py, 2070 fp32, full lam grid) -> boxes/runs_fsq/s199_lmc/.
 * Live cells (check git status on each dir every turn; drain waiters cap at 2 h):
   - b251 §182 s182_nofade_s1 LANDED 20:35 (3a0253c7; Theory 384a00c2: not DEEP, not STABLE, pooled 0.786); post-hocs normcap / auxdone / tshift on the 4060 backlog
   - rq253 §182 s182_window_s1 (89.221.67.136, from 12:29, ~26 h) / b254 §182 s182_hold_s1 (77.29.35.113, from 12:48, ~28 h) - user-approved
