@@ -67,6 +67,7 @@ def main():
                 r1 = out.get("R1_%s%s" % (lat, txt))
                 r2 = ("ABOVE-PCCOT-1SEED; " if E[lat]["acc"] >= ABOVE - EPS else "") + ("STAGE-2-ELIGIBLE" if E[lat]["acc"] >= PCCOT - EPS and r1 in ("above", "matches") else "not stage-2-eligible")
             out["R2_%s" % lat] = r2; lines.append("R2 %s %s (%.3f; PCCoT 0.4948)" % (lat, r2, E[lat]["acc"]))
+            kp_ = E[lat]["acc_by_kprime"]; lines.append("%s K'0 %.3f / K'1 %.3f / K'10 %.3f (200-1: one grid for R4 and LOOP-NOT-FORMED; no-CoT refs RiM 0.154, 0.16-0.19)" % (lat, kp_["0"], kp_["1"], kp_["10"]))
     if all(E[k] for k in CELLS):                                            # R3
         rl = "LOOP-NOT-FORMED" if (lnf["A"] or lnf["B"]) else three(E["B"]["acc"] - E["A"]["acc"], "RS-HELPS", "RS-HURTS")
         rt = three(E["D"]["acc"] - E["C"]["acc"], "RS-HELPS", "RS-HURTS")
