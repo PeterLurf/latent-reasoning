@@ -1,0 +1,17 @@
+{
+ "steps": 28287,
+ "step_level_hist": {
+  "1": 14648,
+  "2": 9807,
+  "3": 3024,
+  "4": 680,
+  "5": 98,
+  "6": 21,
+  "7": 8,
+  "8": 1
+ },
+ "value_target_serial_step_share": 0.482164952098137,
+ "string_R_operand_token_share": 0.08070765256964801,
+ "string_serial_token_share_all": 0.022311965724359895,
+ "string_serial_token_share_content": 0.04155943334987972
+}
