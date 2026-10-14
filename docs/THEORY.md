@@ -14599,6 +14599,11 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - **Contrary** if < 0.5 in ≥ 2 of 3.
   - Descriptive, same items and models as M3; output `eval_s199_lag.json` field `other_split` {struct_right, struct_wrong} by t.
 
+**Amendment 199-M3b (2026-10-13 23:11 EDT; before 199-M3a's split is computed; Audit).**
+* **Candidate gap:** M3's lag candidates were e_2..e_t (cands[k] = e_{k+2}), so the unreduced input expression **e_1** was never a candidate. A model that echoes the input unreduced, the purest stall, would have been classed "other".
+* **Added descriptive class ECHO-INPUT** (an output equal to e_1), computed in the same pass as 199-M3a and reported beside STRUCT-RIGHT / STRUCT-WRONG.
+* **"Never stalls" in the M3 result is qualified** ("never re-emits e_2..e_t") until ECHO-INPUT is in. M3's registered LAGFRAC label is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
