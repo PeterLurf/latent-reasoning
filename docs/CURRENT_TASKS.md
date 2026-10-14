@@ -28,7 +28,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
 * 23:4x 10-13 (Experiments): fleet 5 = b277 §193, b280 §198a, b281 §198b, b282 §198c (STARTED 22:41, family proj ~$6.5), b283 §199 s1 (STARTED 23:13,
-  570.172.08; A4 PAIRED under 199-A2, e4fb6c7b). s2 / s3: chain_s199c (DRIVER_EQ 570.172.08 then 595.84) waits for slots (~06:00); scratchpad a4_arm_s23.sh
+  570.172.08; A4 PAIRED under 199-A2, e4fb6c7b). Pairing rule = score_s199_a.paired() (step-500 tolerance 1e-6 x |loss_ctrl|, Audit
+  settled); a4_check.json's pred-relative residual is descriptive only. s2 / s3: chain_s199c (DRIVER_EQ 570.172.08 then 595.84) waits for slots (~06:00); scratchpad a4_arm_s23.sh
   starts their A4 checks at STARTED (logs/a4_s199_s{2,3}.out). §199 ckpt_model 4/8/12/16k come with the drain -> probe_pathindep -> delete.
   Landed tonight: §191 A (a7aced23; NAME-MEM), §196 (208a3a6c; NO-EFFECT). Local $0 notes done: 199-M2 LMC (cc3061a7), 199-M3/M3a/M3b lag split
   (5225b140, ad1645bd). eval_timing191 (~$0.15) when a slot frees. path_indep cadence (probe_cadence.sh, 3070). Pilot 12k eval waiter armed.
