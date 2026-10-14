@@ -79,15 +79,12 @@
   "Joey",
   "Eric",
   "Kyle",
-  "Jordan",
   "Timmy",
   "Ken",
   "Charles",
   "Rob",
   "Joseph",
-  "Jackson",
   "Patrick",
-  "Marvel",
   "Joshua",
   "Jonathan",
   "Steven",
@@ -140,7 +137,6 @@
   "Timothy",
   "Stephen",
   "Kenny",
-  "Austin",
   "Craig",
   "Eddie",
   "Juan",
@@ -154,7 +150,6 @@
   "Joel",
   "Carter",
   "Hank",
-  "Logan",
   "Trevor",
   "Jaden",
   "Owen",
@@ -303,7 +298,6 @@
   "Becky",
   "Stella",
   "Marie",
-  "Madison",
   "Gina",
   "Sasha",
   "Lana",
@@ -316,7 +310,6 @@
   "Melanie",
   "Diana",
   "Rita",
-  "Eve",
   "Natalie",
   "Tara",
   "Nicole",
@@ -351,8 +344,6 @@
   "Rosa",
   "Alyssa",
   "Erin",
-  "Victoria",
-  "Charlotte",
   "Elena",
   "Wendy",
   "Isabella",
@@ -388,7 +379,6 @@
   "Emilia",
   "Rosie",
   "Haley",
-  "Jan",
   "Meg",
   "Christina",
   "Veronica",
@@ -991,13 +981,6 @@
    "female": 1,
    "lower_ratio": 0.0
   },
-  "Jordan": {
-   "items": 219,
-   "single": 119,
-   "male": 80,
-   "female": 13,
-   "lower_ratio": 0.0
-  },
   "Timmy": {
    "items": 213,
    "single": 116,
@@ -1033,26 +1016,12 @@
    "female": 0,
    "lower_ratio": 0.0
   },
-  "Jackson": {
-   "items": 201,
-   "single": 113,
-   "male": 91,
-   "female": 0,
-   "lower_ratio": 0.0
-  },
   "Patrick": {
    "items": 197,
    "single": 108,
    "male": 82,
    "female": 2,
    "lower_ratio": 0.0
-  },
-  "Marvel": {
-   "items": 195,
-   "single": 57,
-   "male": 49,
-   "female": 3,
-   "lower_ratio": 0.015873015873015872
   },
   "Joshua": {
    "items": 190,
@@ -1418,13 +1387,6 @@
    "female": 0,
    "lower_ratio": 0.0
   },
-  "Austin": {
-   "items": 69,
-   "single": 30,
-   "male": 20,
-   "female": 0,
-   "lower_ratio": 0.0
-  },
   "Craig": {
    "items": 68,
    "single": 32,
@@ -1515,13 +1477,6 @@
    "male": 33,
    "female": 0,
    "lower_ratio": 0.006060606060606061
-  },
-  "Logan": {
-   "items": 59,
-   "single": 31,
-   "male": 26,
-   "female": 0,
-   "lower_ratio": 0.0
   },
   "Trevor": {
    "items": 59,
@@ -2545,13 +2500,6 @@
    "female": 80,
    "lower_ratio": 0.0
   },
-  "Madison": {
-   "items": 157,
-   "single": 102,
-   "male": 0,
-   "female": 80,
-   "lower_ratio": 0.0
-  },
   "Gina": {
    "items": 154,
    "single": 93,
@@ -2635,13 +2583,6 @@
    "male": 0,
    "female": 51,
    "lower_ratio": 0.0
-  },
-  "Eve": {
-   "items": 124,
-   "single": 43,
-   "male": 2,
-   "female": 23,
-   "lower_ratio": 0.014814814814814815
   },
   "Natalie": {
    "items": 118,
@@ -2879,20 +2820,6 @@
    "single": 50,
    "male": 2,
    "female": 36,
-   "lower_ratio": 0.0
-  },
-  "Victoria": {
-   "items": 75,
-   "single": 54,
-   "male": 0,
-   "female": 39,
-   "lower_ratio": 0.0
-  },
-  "Charlotte": {
-   "items": 74,
-   "single": 30,
-   "male": 0,
-   "female": 25,
    "lower_ratio": 0.0
   },
   "Elena": {
@@ -3138,13 +3065,6 @@
    "single": 27,
    "male": 1,
    "female": 20,
-   "lower_ratio": 0.0
-  },
-  "Jan": {
-   "items": 52,
-   "single": 31,
-   "male": 2,
-   "female": 21,
    "lower_ratio": 0.0
   },
   "Meg": {
@@ -3477,7 +3397,19 @@
    "lower_ratio": 0.0
   }
  },
- "rule": "capitalised non-initial word (audit_aug.CAP, STOP removed); >= 20 single-name items; one gender's pronoun share >= 0.85; lower-case occurrences <= 2% of capitalised; top 250 per gender by item count",
+ "rule": "capitalised non-initial word (audit_aug.CAP, STOP removed); >= 20 single-name items; one gender's pronoun share >= 0.85; lower-case occurrences <= 2% of capitalised; minus Audit's exclusions (non-name / place uses); top 250 per gender by item count",
+ "excluded": [
+  "Austin",
+  "Charlotte",
+  "Eve",
+  "Jackson",
+  "Jan",
+  "Jordan",
+  "Logan",
+  "Madison",
+  "Marvel",
+  "Victoria"
+ ],
  "filter_counts": {
   "lines": 384622,
   "kept": 380567,

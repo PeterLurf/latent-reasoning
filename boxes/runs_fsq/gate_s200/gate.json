@@ -22,15 +22,15 @@
  "g1_pass": true,
  "g2": {
   "items": 10000,
-  "relabelled": 6486,
-  "eqs_ans_same": 6486,
-  "injective": 6486,
-  "consistent": 6486,
-  "same_gender": 6486,
-  "length_same_words": 6486,
+  "relabelled": 6454,
+  "eqs_ans_same": 6454,
+  "injective": 6454,
+  "consistent": 6454,
+  "same_gender": 6454,
+  "length_same_words": 6454,
   "pool_sizes": [
-   211,
-   223
+   206,
+   218
   ]
  },
  "g2_pass": true,
