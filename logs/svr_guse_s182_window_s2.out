@@ -1,0 +1,5 @@
+s182_window_s2 V_probe {'rank': 10, 'acc_test_pooled': 0.7216727889234247, 'acc_test_ablated': 0.09296411415654139, 'chance': 0.09090909090909091, 'majority': 0.09296411415654139, 'n_fit': 15950, 'n_test': 3539, 'gate_G_abl': True}
+s182_window_s2 IDENT {'equal_items': 2400, 'n': 2400, 'pass': True}
+s182_window_s2 ABL {'base_acc': 0.9995833333333334, 'drop_V': 0.0, 'drop_rank': [0.0, 0.0, 0.0, 0.0, 0.0], 'drop_energy': [0.005, 0.006666666666666667, 0.005, 0.00375, 0.00125], 'Delta_E': -0.004333333333333333, 'Delta_E_ci95': (-0.006085416666666667, -0.0027500000000000003), 'Delta_rank': 0.0, 'Delta_rank_ci95': (0.0, 0.0), 'drop_V_above_all_10': False, 'reading': 'ABL-NULL'}
+s182_window_s2 SWAP {'n_items': 2252, 'n_undefined_cf': 48, 'F': 0.0, 'F_null': 0.0, 'F_minus_null': 0.0, 'F_minus_null_ci95': (0.0, 0.0), 'own_acc_noswap': 0.9995559502664298, 'own_acc_sameswap': 0.9995559502664298, 'own_acc_diffswap': 0.9995559502664298, 'donor_match_op_height': 1.0, 'disruption': 0.0, 'reading': 'IGNORES'}
+s182_window_s2 USE NOT-USED 224 s

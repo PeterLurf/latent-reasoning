@@ -1,0 +1,10 @@
+s185_rms_s1 rc 0
+s185_rms_s2 rc 0
+s190_rmsnopass_s1 rc 0
+s190_rmsnopass_s2 rc 0
+s187_nopass_s1 rc 0
+s187_nopass_s2 rc 0
+s182_window_s1 rc 0
+s182_window_s2 rc 0
+s184_reweight_s2 rc 0
+DONE
