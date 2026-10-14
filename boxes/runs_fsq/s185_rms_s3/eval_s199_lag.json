@@ -29,6 +29,29 @@
    "other": 122
   }
  },
+ "other_split": {
+  "5": {
+   "echo_input": 0,
+   "struct_right": 108,
+   "struct_wrong": 0
+  },
+  "6": {
+   "echo_input": 0,
+   "struct_right": 211,
+   "struct_wrong": 0
+  },
+  "7": {
+   "echo_input": 0,
+   "struct_right": 226,
+   "struct_wrong": 0
+  },
+  "8": {
+   "echo_input": 0,
+   "struct_right": 122,
+   "struct_wrong": 0
+  }
+ },
+ "other_split_def": "notes 199-M3a / M3b: a partition of 'other' - echo_input (= e_1, the unreduced input + EOT, the s175 exact-match rule) first; struct_right = the greedy tokens' first len(e_{t+1}) entries end in EOT and equal e_{t+1} at every non-number position (number token = GPT-2 text stripped all digits; numbers may differ); struct_wrong = the rest",
  "items": "test n in {6, 7, 8}, rng 18201 permutation[:500] of that pool (n=6: 157, n=7: 183, n=8: 160)",
  "think_k": 8,
  "t_range": [
@@ -38,8 +61,8 @@
  "gpu": "NVIDIA GeForce RTX 2070",
  "dtype": "float32 (no autocast)",
  "nopass": false,
- "memcheck_peak_gib": 0.598,
- "sec": 38,
+ "memcheck_peak_gib": 0.608,
+ "sec": 49,
  "def": "note 199-M3: greedy aux output at pass t vs the item's e_2..e_{n+1}; precedence correct (e_{t+1}) > lag1 (e_t) > lag2plus (e_{t'+1}, t' <= t-2) > other; match = the first len(c) greedy tokens == c (ids + EOT), as s175",
  "sanity_eval_json_aux_acc_by_pass": {
   "5": 0.7544204322200393,
