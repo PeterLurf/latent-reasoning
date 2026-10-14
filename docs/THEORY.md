@@ -14784,6 +14784,16 @@ The grid holds the memory after `real` passes fixed and gives the aux prompt the
   - path_indep in prosqa168s2's form (K′ 16 from zero vs an 8-pass derangement donor, 500 test items);
   - the FILLER-N strings: exactly 16 / 32 GPT-2 tokens, no digits or names, prepended identically for every arm.
 
+**Correction 200-3 (2026-10-14 00:25 EDT; before any §200 run; the overthinking plan's check, verified by Theory). Risk 0's ProsQA evidence is withdrawn.**
+* §191 A's depth-3 accuracy is 0.930 / 0.945 / 0.955 / 0.955 / 0.960 at K′ 4 / 6 / 8 / 10 / 12, falling only from K′ 14 (0.940, then 0.915 at K′ 16).
+* So the depth-3 shortfall at K′ 10 is not drift from idle post-completion passes. Risk 0 is still a risk on the integrator account (docs/THEORY_OVERTHINK_2026-10-14.md Part I), but this datum does not support it.
+* The IDLE-PASSES readout stands as the measurement.
+
+**Note 199-A4 (2026-10-14 00:25 EDT; before any §199 cell lands; descriptive caveat from the overthinking derivation, docs/THEORY_OVERTHINK_2026-10-14.md). The limits of CSR's ceiling, for reading P-A4.**
+* λ_post = log 0.5 bounds post-completion read drift to at most one last code distance (Thm A1(ii)). Certifying correct decoding needs a ceiling ≤ log(1/3), so P-A4's STABLE is not guaranteed by the target even where it is met.
+* Under K = 8, items with n = 8 get **no** ceiling term, yet they carry most of the K′16 loss in the controls.
+* So P-A4 (descriptive) is read per n, with n = 8 marked "untargeted".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
