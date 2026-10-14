@@ -1,4 +1,4 @@
-# SEEDSTAB2: a successor to CSR. SVR, a shallow pass-free value readout (draft rev 2, 2026-10-14)
+# SEEDSTAB2: a successor to CSR. SVR, a shallow pass-free value readout (draft rev 3, 2026-10-14)
 
 > **Theory review (2026-10-14 18:30 EDT):** rev 1 reviewed. Per-head RMS normalisation let the readout compute mod-11 ops (perhead_norm.json: 1.000 vs 0.16-0.35), which broke Lemma L / CERT; rev 2 fixes the map and recalibrates the bars. Checked against raw files: D7 step_recover (14 of 16 runs, exact), pooled_t2p (conv 0.50-0.73 / fail 0.11-0.22), linmap_check numbers, Prop O's code premise (deltamem.py:278-280). **Not registered.** It is a new spend decision (about $8.5 central / $10.1 high for 3 seeds + C8k), so it goes to the user via Audit. G-pre (delta-only step_recover separates the 16 models at t = 2, 3) is a $0 gate to run first.
 
@@ -6,6 +6,20 @@ Opus math subagent for Theory. Read-only use of the repo. CPU checks (≤ 3 thre
 `heights.py/.json`, `lp_sumdecomp.py/.json`, `direct_height.py/.json`, `h4_split.json`, `race_toy.py/.json`; rev 2: `linmap_check.py/.log/.json` (+ `linmap_merge.py`), `pooled_t2p.py/.json`.
 
 ## Changelog
+
+**rev 3 (2026-10-14, after Audit's review, relayed by Theory).**
+1. **Presence ≠ use (C7).** SVR can make v_t decodable while the answer path ignores it.
+   - New §5 Goodhart row.
+   - New §4.3: two eval-only causal tests, both with derivations:
+     - **(a) SVR-subspace ablation.** It is scored on the energy-matched differential: Prop U1 (exactness) and U2 (why the differential isolates use, conservatively). Redundancy is treated in U3.
+     - **(b) Donor swap at pass 2.** It is a rank-1 delta-rule write at the item's own answer query. Prop U4 explains why this is the clean tensor; U5 covers what the follow rate reads.
+   - New use labels: **ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED**.
+   - The **account falsifier now rests on USED**, not on presence. The input-swap diagnostic stays descriptive.
+   - New $0 pre-launch gate **G-use**: is D7's separator *used* in the 9 converged final models?
+2. **Direction of the separator.** C8k pre-states whether presence is an early natural marker.
+   - A 2 × 2 reading table covers C8k outcome × SVR outcome, with the wording limit that no presence at 8k does not show presence is non-causal. Only the intervention tests causation.
+   - The cost of dropping C8k for one seed is quantified (Prop U6): under exchangeability the false-EARLY rate rises from 1/3 to 1/2, P-V0 falls to 2 pairs, and one control's 8k use-tests are lost.
+3. **Cost:** unchanged. The new tests are eval-only on kept checkpoints ($0 local). C8k already provides the controls' 8k checkpoints; the controls' final models exist.
 
 **rev 2 (2026-10-14, after Theory's review).**
 1. **MUST-FIX 1: the feature map is now linear in the state.**
@@ -67,10 +81,15 @@ Opus math subagent for Theory. Read-only use of the repo. CPU checks (≤ 3 thre
    - **Certificate:** final-bin h ≥ 5 accuracy ≥ 0.30 certifies state-carried progress (Prop G3).
      - It is DERIVED under A1′. A1′ is empirical: K′=1 DATA support it, and the erase3 CHECK shows the architecture does not guarantee it.
      - CERT counts only if the K′=1 / pass-1 guard passes.
-5. **Honest limit.** SVR is a **tilt, not a removal** (Prop R).
+5. **Presence is not use (rev 3).**
+   - Every decodability claim is backed by an eval-only causal test (§4.3): subspace ablation and a pass-2 donor swap.
+   - Credit goes to **ENTERED-AND-USED** only. MET-NOT-USED is the C7 failure (decodable but unused).
+   - The account falsifier is MET-NOT-ENTERED with USED.
+   - C8k decides whether presence is an early natural marker (the 2 × 2 table in §7). Only the SVR cells test whether imposing presence causes entry.
+6. **Honest limit.** SVR is a **tilt, not a removal** (Prop R).
    - Toy (CHECK, illustrative): P moves from 0.62 to 0.90 at w = 1, and to 0.83 under full gaming. An equal-weight absorbable drive gives 0.81.
    - **No candidate examined has a guarantee of P → 1.**
-6. **Design.**
+7. **Design.**
    - 3 seeds on RTX 3090: RMS + `--svr 1.0,10`, paired with s185 RMS s1/s2/s3. Bitwise to step 2000.
    - **Plus C8k:** each control re-run to 8k with a checkpoint.
    - About $8.5 central, $10.1 high (at Audit's $10 line).
@@ -298,9 +317,99 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 
 **C1 preserved (PROVED).** The input is identical every pass. The memory remains the only cross-pass channel. SVR is read-only and dropped at test: the head and its buffer are excluded from model.pt. All C1 tests are unchanged.
 
+### 4.3 Presence is not use: two causal readings (rev 3; eval-only, $0)
+
+**Why this is needed.**
+- DELIVERED and CERT show that v_t is *linearly decodable* from the delta read at q_eq.
+- They do not show the answer path uses it. SVR could create a register that only the probe reads: the decodable-but-unused class, the C7 rule. §4.2's "harmless" argument (a deep value needs earlier values from the state) shows the *computation* is iterative under A1′. It does not show that *this* subspace carries what the answer uses.
+
+**The subspace.**
+- V := span{C⁻¹(ŵ_c − ŵ̄) : c ∈ Z_11} ⊂ r-space of the probed heads (384-d, delta), with C = diag(c_h ⊗ 1_64). Here ŵ_c are the head's unit rows and ŵ̄ their mean. The rank is k ≤ 10. P_V is its orthogonal projector (QR).
+- **These are the dual vectors C⁻¹ŵ, not Cŵ.** Since f = C⁻¹r, ⟨ŵ_c − ŵ̄, f⟩ = ⟨C⁻¹(ŵ_c − ŵ̄), r⟩.
+- **Controls and the final controls have no head.** They use V_probe instead: the same construction from a fresh step_recover-protocol probe on the delta reads at q_eq (standardisation σ; dual vectors diag(1/σ)(w_c − w̄)), fit on t = 2..4 (8k) or t = 2..8 (final).
+- SVR cells report both V and V_probe.
+
+**(a) SUBSPACE ABLATION.**
+- **Operator.** At every delta read of the model's own forward (think reads of passes 1..K at all think tokens, and the answer decoder's read at all prompt tokens), r ← r − P_V r on the concatenated probed-head read.
+  - It is applied to Δq̂ before the scalar gain e^{s_del}, which is equivalent.
+  - Implementation: an eval-only module hook in read_fixed, like READ_CLAMP (deltamem.py 23, 165–167). Off means unchanged, with a bitwise gate.
+- **Prop U1 (PROVED).** After the operator, ⟨C⁻¹(ŵ_c − ŵ̄), r′⟩ = 0 for every c at every read. So the head's logits are equal across classes (uniform prediction), and r′ is the minimal-norm change of r with that property (the orthogonal projection).
+  - Gate G-abl: the head's accuracy on ablated q_eq reads = chance ± 0.02.
+- **Controls.**
+  - (i) K = 5 Haar-random rank-k subspaces of the same r-space (rng 19950).
+  - (ii) K = 5 **energy-matched** (norm-matched) random subspaces. Draw 200 candidates, each the span of k Gaussian vectors with covariance Σ^β, β ∈ {0.5, 1, 2}. Σ is the pooled second moment of r over all read sites on 512 fit items. Keep the 5 whose removed energy E(R) = tr(P_R Σ) is closest to E(V).
+- **Outcome.**
+  - Final model: answer accuracy, n 3–8 at K′ 8, on 2,400 test items (400 per n, rng 18202).
+  - 8k: the aux handle accuracy at t = 3–5 (aux_eval's role field) on the same items, because pre-entry answers sit near chance.
+  - Paired bootstrap (2,000 resamples). The SE of a paired difference is about 0.014.
+- **Prop U2 (why the differential, not the raw drop, isolates use; DERIVED(A_add, A_g)).**
+  - **A_add:** drop(P) = U(P) + G(P).
+    - U(P) is the accuracy lost because P removes item-specific information the answer path decodes.
+    - G(P) is generic damage: the trunk sees an off-distribution read, with energy and mean removed.
+  - **A_g:** G depends on P only through the removed energy E(P).
+  - **Then:** Δ_E := drop(V) − mean_j drop(R_E,j) = U(V) − mean_j U(R_E,j) ≤ U(V).
+  - **Why the raw drop fails.** It contains G(V), and G(V) is large exactly when V carries much read energy, which V does: it is where the values are stored. A raw drop can therefore be large for an unused but energetic register.
+  - **Rank-matched control.** A uniform random subspace removes little energy (E(R) ≈ k/d of the total) and little used information (≈ k/d ≈ 2.6% at k 10, d 384). So Δ_rank ≥ Δ_E in practice, and it guards against A_g failing.
+  - **Conservative.** The energy-matched subspaces lean toward high-variance directions and may remove used information themselves, which pushes Δ_E down. A USED call on Δ_E is therefore conservative.
+- **Prop U3 (redundancy; DERIVED).**
+  - Suppose the answer path can get the same information from W ⊄ V: other delta directions, the additive read, or a recomputation of v_2 from x at later passes. Then U(V) counts only the information unique to V, and fully redundant use gives Δ_E ≈ 0.
+  - **So the ablation tests necessity, not use.** The swap (b) covers use when V is redundant.
+- **Readings.**
+  - **ABL-USED:** Δ_E ≥ 0.10, Δ_rank ≥ 0.10, drop(V) above all 10 random drops, and Δ_E's 95% lower bound > 0.05.
+  - **ABL-NULL:** Δ_E ≤ 0.03 and its upper bound ≤ 0.06.
+  - Otherwise ABL-UNCLEAR.
+
+**(b) DONOR SWAP at pass 2.**
+- **Which tensor.** The delta **state**, by one rank-1 delta-rule write at the item's own answer query, made after pass 2:
+  - Δ_h ← Δ_h + δ_h q̂_hᵀ, with δ = P_V(r_d − r);
+  - r = Δ_2 q̂_eq(x) is the item's own read (concatenated over heads);
+  - r_d = Δ_2^{(d)} q̂_eq(x_d) is the donor's read at its own query.
+  - Passes 3..K then run unchanged, through `override=(2, S′)` in InjectN.think / inject_answers (nested170.py 245–252, 752–766). No code change is needed.
+- **Prop U4 (PROVED).**
+  - (i) E = δq̂ᵀ is the minimal-Frobenius-norm solution of Eq̂ = δ (‖q̂‖ = 1). So the read at q̂_eq takes the donor's V-component and keeps its own V^⊥ component. A read at another query q′ moves by δ(q̂·q′) only.
+  - (ii) E equals one delta-rule step with α = β = 1, key q̂_eq and value Δq̂ + δ, since Δ(I − q̂q̂ᵀ) + (Δq̂ + δ)q̂ᵀ = Δ + δq̂ᵀ. It is the memory's own operation: in passes 3+ the α decay and β erase act on it exactly as on the model's own writes.
+  - **Why not the alternatives:**
+    - swapping the whole state also transplants the donor's structural progress, so the test would read state dominance, not v_2;
+    - swapping the reads of later passes misaligns tokens (items differ in length) and does not persist through the recurrence;
+    - a value-space projection of the whole donor state, P_V Δ_d, keeps the donor's key geometry, so the item's queries would read it misaligned.
+- **Donors and items.**
+  - Donors: same n, and the same operator and height at reduction 2 where available, with v_2^d ≠ v_2.
+  - Items: n 3–8, restricted to those where the root depends on v_2. Compute answer′ exactly by re-evaluating x's tree with node 2 set to v_2^d, and keep items with answer′ ≠ answer.
+  - **Disruption control:** same-value donors (v_2^d = v_2).
+- **Outcomes.**
+  - F_ans = P(answer = answer′), on the final model.
+  - F_3 = P(the pass-3 readout = v_3′), on items where reduction 3 consumes v_2. Read at 8k and final, with the trained head for SVR cells and V_probe's probe for controls.
+  - F_null is the same rate under the same-value control (the base rate of landing on that particular wrong value).
+- **Prop U5 (what the follow rate reads; DERIVED, linear-evidence model).**
+  - Model the answer's evidence for value c as a_c = w_V·e_V(c) + w_W·e_W(c) + noise. The swap replaces e_V with the donor's.
+  - F > F_null iff w_V > 0, and F increases with w_V/(w_V + w_W).
+  - **Consequences:**
+    - FOLLOWS with ABL-NULL = **used but redundant**;
+    - IGNORES with ABL-USED = the subspace is needed, but the pass-2 slot is overwritten or recomputed from x later (re-anchoring), so the carried copy is not the one used.
+- **Readings.**
+  - **FOLLOWS:** F − F_null ≥ 0.15 and its 95% lower bound > 0.05.
+  - **IGNORES:** F − F_null ≤ 0.05.
+  - **SWAP-DISRUPTIVE (void):** the same-value control lowers own accuracy by > 0.05.
+
+**Use label (final model).**
+- **USED** := ABL-USED or FOLLOWS.
+- **NOT-USED** := ABL-NULL and IGNORES.
+- Otherwise USE-UNCLEAR.
+- The 8k use-reads are descriptive. For C8k controls with no presence (expected), V_probe is noise and the 8k use-reads are N/A.
+
+**Prop U6 (what dropping one C8k control costs; PROVED under exchangeability).**
+- EARLY-MARKER (§7) needs both converged controls (s1, s2) above s3.
+- Under no class effect at 8k, the three 8k values are exchangeable:
+  - P(s1 and s2 both exceed s3) = P(s3 lowest of 3) = 1/3;
+  - with one converged control, P(s1 > s3) = 1/2.
+  - So the false-EARLY rate rises from ≤ 1/3 to ≤ 1/2 (the 0.15 margin lowers both).
+- NO-EARLY becomes a single pairwise comparison, which cannot separate a recipe property from a seed property.
+- P-V0 falls from 3 pairs to 2, and that control's 8k ablation / swap is lost.
+- The saving is about $0.4. **Recommendation: keep all three.**
+
 ---
 
-## 5. Goodhart analysis (rev 2)
+## 5. Goodhart analysis (rev 2; C7 row added in rev 3)
 
 | route to meet SVR without task progress | status | why / detector |
 |---|---|---|
@@ -315,7 +424,8 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 | EMA constants as a channel | **blocked** | stop-gradient; previous steps' batch statistics; no per-item or current-state dependence |
 | Readout amplifies a vanishing clock | **bounded** | S1: margin ≤ 2τδ_t |
 | Query-side precompute | **bounded** | q is stop-gradient (SVR cannot shape it) and is part of a one-shot pass, so A1′ applies |
-| Encoding v_t without using it | **harmless** | for h ≥ 5 the value needs earlier values from the state (A1′), wherever the copy lives |
+| Encoding v_t without using it (as a computation) | **bounded** | for h ≥ 5 the value needs earlier values from the state (A1′), so the *computation* is iterative wherever the copy lives. The copy's *use* is the next row |
+| **Decodable-but-unused register (C7; rev 3, Audit)**: SVR's subspace holds v_t, but the answer path ignores it (a side copy, e.g. W_o or the answer read discarding V) | **not blocked by the objective; tested causally** | SVR's loss is satisfied by presence alone, so no term forbids an unused register. Detector: §4.3 subspace ablation (energy-matched differential, U2) and pass-2 donor swap (U4 / U5) on the final model. **MET-NOT-USED** = (DELIVERED or CERT) and ABL-NULL and IGNORES. A method failure on mechanism: entry is not credited to SVR. Pre-launch $0 G-use checks whether D7's natural separator is itself used |
 | Memorising items; pass-index leak | **blocked** | fresh draws; no token, prompt or item text in the probe |
 | Learning only the per-item value set | **bounded** | the floor H(p̂_x) (S2) |
 
@@ -344,7 +454,7 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 
 ---
 
-## 7. Predictions, design and cost (rev 2)
+## 7. Predictions, design and cost (rev 2; rev 3 additions: use tests, labels, separator direction)
 
 **Cells.**
 - `s20x_svr_s1/s2/s3` = s185_rms_s{seed}/args.json + `--svr 1.0,10` + `--keep_ckpt_steps 4000,8000,12000,16000`. RTX 3090, 48k, uncached, fast_add, micro 1.
@@ -365,6 +475,16 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
   - C's one-shot mechanism transfers to x′ (acc_xswap ≈ acc_clean). P's does not (≈ chance), because v_t(x′) needs x′'s progress.
   - **A_x:** C overwrites the probed keys freshly each pass (failed models' β ≈ 0.85–0.9, D4).
   - Readout: the trained head for SVR cells; a fresh step_recover-protocol probe (fit on clean states) for both arms.
+- **Use tests (rev 3; §4.3 (a) ablation and (b) pass-2 donor swap)** on these checkpoints:
+  - SVR cells at 8k and final, with V and V_probe;
+  - C8k controls at 8k, with V_probe;
+  - the s185 controls' final models, with V_probe.
+  - The final-model reads are registered. The 8k reads are descriptive.
+- **G-use (pre-launch, $0, registered now).**
+  - Run §4.3 (a) + (b) with V_probe on the 9 converged final models of D7; the 7 failed models serve as comparators, where V_probe is near noise.
+  - **Expectation:** USED in ≥ 7 of 9, i.e. the natural separator is used, not just decodable.
+  - **If ≤ 4 of 9 are USED:** D7's separator is mostly decodable-but-unused in natural models. SVR's rationale then fails before any spend, so **do not launch**; return to Theory.
+  - 5–6 of 9: launch, with that fact reported beside every SVR reading.
 
 **Registered predictions.**
 
@@ -382,19 +502,52 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 | P-V5 (arm-level, descriptive) | tight, earlier entries | entry SD ≤ 2k; mean ≤ 19k | — |
 | OP-8k (descriptive per T1) | below CSR s1's 8k reading | delta_cos_8k < 0.910 and agree_8k < 0.902 | not a falsifier |
 
-**Labels.**
-- **SUPPORTED:** DELIVERED, CERT, P-V2 and P-V4 in 3/3, with no HARMFUL.
-- **FAILED:** any HARMFUL, or s3 not entered while DELIVERED.
-- **PRECOMPUTE-GAMED:** §5.
-- **ONE-PASS-COMPUTE:** guard g1 or g2 fails. CERT is void, and the cell is reported as a method failure on mechanism, whatever its entry.
-- **INSUFFICIENT-DOSE:** not entered and not DELIVERED.
+**Per-seed labels (rev 3; final model; "MET" = DELIVERED or CERT, where CERT includes guards g1 / g2).**
+
+| label | definition | meaning |
+|---|---|---|
+| **ENTERED-AND-USED** | P-V2 (entered), MET, and USED (§4.3) | method credit for the seed. With CERT it reads "certified and used"; without CERT, "used, uncertified" |
+| **MET-NOT-USED** | MET, ABL-NULL and IGNORES, whatever the entry | **decodable-but-unused (C7)**: SVR made a register the answer path ignores. A method failure on mechanism; any entry is not credited to SVR |
+| **MET-NOT-ENTERED** | MET and USED, but not entered (final bin ≥ 0.5) | used values in the state without entry. This is the **account falsifier** if also NOT-CROWDED and path-dependent (final delta_cos ≤ 0.65); the strong form also has CERT |
+| ENTERED-UNMET | entered without MET | entry not attributable to SVR's mechanism |
+| INSUFFICIENT-DOSE | not MET and not entered | method not delivered |
+| USE-UNCLEAR | MET, with an ABL-UNCLEAR or SWAP-DISRUPTIVE reading that leaves USED / NOT-USED undecided | reported, no credit |
+| PRECOMPUTE-GAMED, ONE-PASS-COMPUTE | §5, §4.2 | method failures on mechanism; CERT void |
+
+**Arm labels.**
+- **SUPPORTED:** 3/3 ENTERED-AND-USED, with CERT and P-V4, and no HARMFUL.
+- **FAILED:** any HARMFUL, or s3 MET-NOT-ENTERED, or any MET-NOT-USED.
 - **MIXED:** otherwise.
 
 **Account vs method.**
-- **Account falsifier:** final bin ≥ 0.5 (not entered) **and** CERT met **and** the input-swap diagnostic reads P-like (acc_xswap ≤ acc_clean − 0.15) **and** path-dependent (final delta_cos ≤ 0.65) **and** NOT-CROWDED.
-  - Values carried in the state without entry means the reader shortcut was not the barrier.
-- **Method failures** (the account is left untested): INSUFFICIENT-DOSE, PRECOMPUTE-GAMED, HARMFUL.
+- **Account falsifier (rev 3: on USED, not presence):**
+  - MET-NOT-ENTERED, i.e. not entered **and** USED **and** MET;
+  - **and** path-dependent (final delta_cos ≤ 0.65);
+  - **and** NOT-CROWDED.
+  - Used values carried in the state without entry would mean the reader shortcut was not the barrier.
+  - The input-swap diagnostic is reported beside it, not required.
+- **Method failures** (the account is left untested): INSUFFICIENT-DOSE, MET-NOT-USED, PRECOMPUTE-GAMED, ONE-PASS-COMPUTE, HARMFUL.
 - **Crowding:** G_svr/G_task ≥ 1 on the memory branch at 4k or 8k reads CROWDED.
+
+**Direction of the separator (rev 3, Audit): pre-stated readings.**
+- D7 is post-hoc on *final* models, so presence may be a consequence of entry, as 199-T1's order parameter co-moved with the loss.
+- C8k reads presence at 8k in natural runs:
+  - **EARLY-MARKER:** s1 and s2 each exceed s3 by ≥ 0.15 on the step_recover mean over t = 2..4, and each is ≥ 0.45.
+  - **NO-EARLY:** the registered C8k-expect (all three ≤ 0.35, \|s1 − s3\|, \|s2 − s3\| ≤ 0.10).
+  - Otherwise AMBIGUOUS, reported as such.
+- The SVR outcome is read on the decisive seed s3, whose control failed:
+  - **SVR-CAUSAL:** the s3 cell is ENTERED-AND-USED, and s1 / s2 are not HARMFUL;
+  - **SVR-NULL:** the s3 cell is MET-NOT-ENTERED, MET-NOT-USED or INSUFFICIENT-DOSE.
+- **Wording limit:** no presence at 8k does **not** show that presence is non-causal. Absence at 8k only says presence is not an early *natural* marker. Causation is tested only by the intervention.
+  - Even the intervention tests one causal path: SVR-imposed, *used* presence → entry.
+  - A null can also mean too weak a dose, the wrong form, or crowding.
+
+| | **SVR-CAUSAL** | **SVR-NULL** |
+|---|---|---|
+| **NO-EARLY** (expected) | Presence is a late property of natural entry. Imposing it, in used form, is followed by entry in a seed whose control failed. SVR's rationale reads as stated: "it imposes the property entered seeds end up with", and imposing it helps. Weak alone: P(s3 enters \| no effect) ≈ 0.6, so the USE / CERT mechanism labels carry the weight | Neither an early marker nor, when imposed, sufficient. This fits presence as a consequence of entry, **but does not prove it**. Read the sub-label: MET-NOT-ENTERED with USED is the account falsifier; MET-NOT-USED is a method failure (C7); INSUFFICIENT-DOSE means the intervention never happened |
+| **EARLY-MARKER** | The strongest case: presence precedes natural entry, and imposing it causes entry | Presence marks the eventual basin early, but imposing it does not cause entry. Presence is then a correlate of another cause (e.g. progress-gated β, D4), or SVR's imposed form differs (MET-NOT-USED). MET-NOT-ENTERED with USED is still the account falsifier |
+
+- **If C8k is dropped for one seed** (the cost-saving option): EARLY-MARKER rests on one converged control, its false-positive rate under exchangeability rises from ≤ 1/3 to ≤ 1/2 (Prop U6), and NO-EARLY becomes a single comparison. Keep all three.
 
 **Claim limits.**
 - P(3/3 | p = 2/3) = 0.30.
@@ -404,9 +557,12 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 **Cost.**
 - SVR cells: about 43–46k s each at $0.179–0.228 /h, so $2.2–2.9 each; 3 cells $6.6–8.7.
 - **C8k:** 3 × 8k × ~0.89 s ≈ 2.0 h each, $1.1–1.4 in total.
-- **Total about $8.5 central, $10.1 high**, at Audit's $10 line. If it binds, Audit can drop C8k for one entering seed (s1 or s2), keeping s3's pair. P-V0 then reads on 2 seeds.
+- **Total about $8.5 central, $10.1 high**, at Audit's $10 line.
+  - If it binds, Audit can drop C8k for one entering seed (s1 or s2), keeping s3's pair.
+  - This saves about $0.4. P-V0 then reads on 2 seeds, EARLY-MARKER's false-positive rate rises from 1/3 to 1/2 (Prop U6), and that seed's 8k use-tests are lost. Not recommended.
 - C16k: +$1.2, optional.
-- G-pre, checkpoint evals and gradshare: $0 local.
+- G-pre, G-use, checkpoint evals, the use tests (§4.3) and gradshare: $0 local.
+  - The use tests need only kept checkpoints. C8k already provides the controls' 8k checkpoints, and their final models exist. **Total cost is unchanged.**
 
 **Engineering contract (nested170.py; described, not edited).**
 1. **Flag** `--svr w,tau`. Assert: inject arm, uncached loss_items path (no --k_window, --anneal, --cache_lower, --ckpt_passes or --csr), aux_step > 0.
@@ -431,6 +587,12 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
    - ckpt_last.pt holds both, for resume.
    - Eval field `svr_eval` (descriptive).
 7. **Eval scripts:** an input-swap mode in the checkpoint probe (or a scratch repro script).
+8. **Use tests (rev 3; eval-only, fp32, local).**
+   - **(a) Ablation:** a module-level `deltamem.READ_PROJ` (None = off). When set, read_fixed replaces the concatenated probed-head delta read Δq̂ by Δq̂ − P_V Δq̂ before the gain.
+     - It applies to every read site: think and answer. An additive-head block applies only if G-pre selects all heads; it acts on the raw φ(q)ᵀA before RMS.
+     - The subspaces (V, V_probe, 5 Haar, 5 energy-matched) and Σ are built in the eval script and saved with it.
+   - **(b) Swap:** the eval script computes S_2 (item) and S_2^{(d)} (donor), applies the rank-1 edit of §4.3 (b), and passes `override=(2, S′)` to inject_answers (nested170.py 752–766). No training-code change is needed. Counterfactual answers come from re-evaluating x's tree with node 2's value replaced.
+   - Outputs: `<run>/eval_svr_use_<step>.json`, holding {abl: {V, V_probe, haar[5], energy[5]: acc and E}, swap: {F_ans, F_3, F_null, same_value_acc}, items, seeds, gpu, dtype}.
 
 **Gates.**
 - **G-pre:** the delta-only step_recover rule (§4.1).
@@ -448,10 +610,16 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 - **G4:** mem_check.
 - **G5:** strict model.pt load into a flags-off InjectN.
 - **G6:** the pairing checks (cells and C8k).
+- **G-abl (rev 3):**
+  - READ_PROJ off gives bitwise-equal answers;
+  - with P_V on, the SVR head's accuracy on ablated q_eq reads is chance ± 0.02 (U1);
+  - a fixture recovers a planted used vs unused vs redundant subspace in a synthetic linear readout (U2 / U3 / U5).
+- **G-swap (rev 3):** the rank-1 edit reproduces the donor's V-component at q̂_eq to 1e-5 and leaves the V^⊥ component unchanged (U4). The same-value control is not SWAP-DISRUPTIVE on one final control model.
+- **G-use (rev 3, pre-launch):** §7 rule on the 9 converged final models.
 
 ---
 
-## 8. Claim status (rev 2)
+## 8. Claim status (rev 2; U-rows added in rev 3)
 
 | claim | status |
 |---|---|
@@ -471,6 +639,13 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 | Thm T | kernel PROVED; mapping DERIVED / CONJECTURE; toy CHECK |
 | Prop R (tilt, not removal) | PROVED |
 | D7 separator; D9 ceiling; D12 K′1 depth | DATA, POST-HOC |
+| U1: projecting out V zeroes the head's class evidence, minimally | PROVED |
+| U2: the energy-matched differential isolates use, conservatively; the raw drop does not | DERIVED(A_add, A_g) |
+| U3: under redundancy the ablation tests necessity, not use | DERIVED |
+| U4: the rank-1 edit at q̂_eq is the minimal-norm state change and a delta-rule step | PROVED |
+| U5: the follow rate exceeds its null iff V carries causal weight; FOLLOWS with ABL-NULL = used but redundant | DERIVED (linear-evidence model) |
+| U6: dropping one C8k control raises the false-EARLY rate from ≤ 1/3 to ≤ 1/2 | PROVED (exchangeability) |
+| "D7's separator is used in natural converged models" (G-use, ≥ 7 of 9) | CONJECTURE (registered expectation; $0 test before launch) |
 | "SVR raises P(enter) to ≥ 0.9" | CONJECTURE |
 
 **Novelty: PARTLY KNOWN.** All verified via export.arxiv.org, 2026-10-14.
@@ -494,12 +669,16 @@ M3-REPLACE's risk is the representational burden: every token of e_{t+1}, copies
 
 ---
 
-## 9. Risks (rev 2)
+## 9. Risks (rev 2; 2a added in rev 3)
 
 1. **Tilt only (Prop R).**
    - The effect size is uncalibrated: the toy gives 0.62 → 0.83–0.90. Three seeds cannot show a change in P.
    - Escalations: SVR + NOPASS; SVR-WINDOW; M3-REPLACE.
-2. **Presence may follow entry rather than cause it (T1 analogue).** Then P-V0 misses and DELIVERED may only come with entry. C8k and the 16k descriptives show this.
+2. **Presence may follow entry rather than cause it (T1 analogue).** Then P-V0 misses, and DELIVERED may only come with entry. C8k and the 16k descriptives show this. The 2 × 2 table (§7) states what each combination means; only the SVR cells test causation.
+2a. **Presence without use (C7, rev 3).** SVR's loss is met by a register the answer path ignores.
+   - This is tested on the final model (§4.3) and, before launch, on the natural converged models (G-use).
+   - Two limits: the ablation misses redundant use (U3), which the swap covers (U5); the swap can be overwritten by re-anchoring, which the ablation covers.
+   - Residual: a used-but-redundant V that is also overwritten after pass 2 reads ABL-NULL + IGNORES, i.e. a false MET-NOT-USED. The 8k / final pair and F_3 reduce, but do not remove, that risk.
 3. **Precompute gaming in 2–6k.** 57% of t ≥ 2 targets have h ≤ 2. Detector registered. Fallback: SVR on h ≥ 3 targets only.
 4. **Reachability (rev 2).**
    - CERT at the final bin rests on the post-hoc late-t probe values, the sample-starvation argument and height-flatness under P. None of these is height-resolved or pre-entry.
