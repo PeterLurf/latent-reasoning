@@ -287,7 +287,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 197 | (reserved: BUDGET-ANNEAL-S3, drafted; registers only if §196 reads NO-EFFECT) | — | — |
 | 198 | CHEAP-THINK (the user's request): an all-cached family; (a) cached INJECT, (b) MEM-HIGH l_m 9, (c) READ-SLOTS + RMS + step aux; CHEAPER-EQUAL / CHEAPER-WORSE / UNCLEAR-ENTRY / FAILS vs (a); $10 cap | registered | **(a) comparator holds; (b) CHEAPER-WORSE (confounded by entry); (c) FAILS (entry 33k, not DEEP, depth 0.364); family ≈ $6.29; 198-3 pred 1 FALSIFIED (READ-SLOTS more path-independent)** |
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, M2, M3, 199-A) | **closed: M1 PREDICTED, M3 PREDICTED, M2 no pair connected; CSR (199-A) FLOOR-GAMED + harmful on its paired seed (1 of 3 seeds; s3 stopped, s2 cancelled); account untested** |
-| 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **open** |
+| 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **latent BELOW text (A 0.147 vs C 0.321); loop forms weakly but THINK-NECESSARY fails (K′1 ≈ K′10); recall share 0.48 (P1 falsified), resampling cut it to 0.15 at no test cost; D unavailable; WARM-START trigger met** |
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails** |
 
 ## Live sections
@@ -15259,6 +15259,31 @@ Each registers separately, after T1 / T2.
 **Note 201-8 (2026-10-14 13:35 EDT; before its output; descriptive).** T4 SNAP-CHAIN is also run on **s193_rmswin_s1** (RMS × WINDOW, the best beyond-range nested model) on the 3070, with the same policies, items and fields as note 201-7.
 * It is read with score_s201_t4's per-model logic as a **descriptive** extension. It is not in the registered four, and it enters no prediction (T4-a / b / c).
 * **Question:** does a text checkpoint extend this model's reach past its latent horizon (latent n 11 / 12: 0.598 / 0.244 at K′ 8 per §193)?
+
+**§200 result (2026-10-14 16:40 EDT; A gsm_lat_aug_s1 2f97a6db, B gsm_lat_augrs_s1 eb3da43d, C gsm_txt_aug_s1; D never ran (its host failed HOSTPROBE, then the reboot), so R1 B−D and R3's text pair are PENDING / unavailable; theory/score_s200.py). The latent arms read BELOW text. The loop forms weakly but is mostly one-pass. The registered latent-vs-text question reads against the latent method at this budget and init.**
+* **R1:** A − C = 0.147 − 0.321 → **below**. B − D is unavailable.
+* **R2:** neither latent cell is stage-2-eligible (0.147 / 0.160 vs PCCoT 0.4948). Budget-limited per 200-4 regardless.
+* **LOOP-NOT-FORMED: no.** K′10 − K′0 = 0.064 (A) and 0.091 (B), so a loop forms.
+  - K′0 is 0.083 / 0.069 (the no-CoT references: RiM 0.154, 0.16–0.19).
+* **R4 THINK-NECESSARY fails for both:** K′1 = 0.125 (A) and 0.111 (B), above 0.5 × K′10. Most of the latent accuracy is reached in one pass.
+  - aux exact by pass t 1–5 (A): 0.322 / 0.172 / 0.077 / 0.028 / 0. The step decoder writes the first equation about a third of the time, and the chain fails after it.
+* **R6:** LENGTH-ROBUST (excess at k32 −0.040). The latent arm is hurt less than text.
+* **R7:** STABLE-12 and STABLE-16 (K′12 0.148, K′16 0.136 vs K′10 0.147).
+* **R3 (latent pair only, descriptive since the text pair is missing):** B − A = +0.013, i.e. RS-NEUTRAL on test.
+* **Predictions:**
+  - **P1 FALSIFIED:** A's recall share 0.655 − 0.175 = **0.48** (bar ≤ 0.05). Resampling cut it to 0.15 in B (0.501 − 0.347) at no test cost, which matches Theorem X on recall without moving test accuracy.
+  - **P4 holds:** the struct gap B − A is +0.035.
+  - **P5 FALSIFIED:** THINK-NECESSARY fails for A.
+  - **P6 reads LENGTH-ROBUST:** the size-keyed transfer from ProsQA does not hold here.
+  - **P7 holds.**
+  - P2 and P8 are unreadable without D and the latent GSM-Symbolic evals.
+* **IDLE-PASSES (descriptive):** K′ = m + 2 is not above K′10 at any m. Extra idle passes do not hurt, so risk 0 did not materialise.
+* **Realised spend:** about $7.8, over the $7.50 cap, including $0.64 for D's idle slow host. D is not refilled; that is Audit's / the user's call.
+* **Reading:**
+  - From raw GPT-2 at 4 Aug epochs, the latent arm learns a weak, mostly one-pass loop that is heavily recall-driven (recall share 0.48), and sits at about no-CoT level (0.147).
+  - The text arm reaches 0.321.
+  - This is the regime Literature's init survey predicts for an untested init (every published GPT-2 number starts CoT-supervised).
+  - **The WARM-START trigger ("LOOP-NOT-FORMED or below") is met (below).**
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
