@@ -292,6 +292,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **W-LIFT NEUTRAL (W 0.146 vs A 0.147); R1-W below (C+ 0.336); LOOP-FORMED, THINK-NECESSARY fails; the CoT trunk is forgotten by 2k (cot_valid 0.07-0.13); §204 -> A base** |
 | 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | waits for §202 |
+| 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
+| 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | registered | pending (harness + gates) |
 
 ## Live sections
 
@@ -15967,6 +15969,99 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - Ratio = acc(M_1) / acc(M_t), on ℓ ≥ 2 R-steps, t ∈ {2, 3, 4}.
   - Separate L2-logistic probes per t and per source, fit on 4,000 Aug-train items with λ from an inner 80 / 20 split, **reported on Aug valid**; test is descriptive.
   - The value (first value token) probe and each target's raw accuracies go beside it.
+
+## 205. IIT-SERIAL: a whole-state interchange loss for seed stability (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; FULL / default design; cap $18; pre-registered 2026-10-15 01:49 EDT, before any §205 training run)
+
+**Registered text:**
+* docs/THEORY_IITSERIAL_DRAFT_2026-10-14.md **at 13d7bb87** is the registered text for every definition below: the loss §2, derivation §3, Goodhart §4, gradient flow §5, C1 §6, design / labels / predictions §7, and the addenda (G-ALIGN by n, motivation, measured cost / OC / censoring, slow-host bound).
+* That file is now frozen. Changes go here as dated amendments.
+* Derivation by Opus subagent, reviewed by Theory and Audit.
+* Code: --iit (27d05cef / 62343096), Audit-reviewed. G-TIME and G-MEM done (≈ $0.12).
+
+**Why (data, POST-HOC):**
+* 203-4 CONTRAST-SURVIVES: converged seeds follow a whole-state swap (clean hybrid ≥ 0.80); failed seeds ignore it (≤ 0.18).
+* 203-8: failed seeds follow a swapped input instead (0.90–0.99), Huginn-like recomputation.
+* 203-7: seed selection by loss features does not work.
+* The loss trains state USE, not presence, coordinate-free. It is PROVED not to be meetable by accuracy alone (y_hyb ≠ y on every used pair), and a δ-contractive model pays a floor.
+
+**Cells (RTX 3090, 48k):**
+* `s205_iit_s1` / `s2` / `s3` = s185_rms_s{seed}'s args exactly + `--iit 1.0,0.5,16` (w_IIT 1, w_SIIT 0.5, B_I 16; swap after τ = 1; weight ∝ γ(step), so bitwise to step 2000) + `--keep_ckpt_steps 4000,8000,12000,16000`. ckpt_model_8000.pt is kept (retention default).
+* **Pairing:** log records 100–2000 bitwise equal to s185_rms_s{seed} on loss / answer_ce / aux_ce, on that control's driver (s1 / s2 570.172.08, s3 595.84). Otherwise UNPAIRED.
+* Seeds run in parallel on separate hosts (one filler at a time).
+* **Pre-launch gates passed:** G-ALIGN (203-3), G-TIME, G-MEM. G-HYB, G-GRAD and G-PLAIN are per the code review.
+
+**Readings** (draft §7; theory/score_s205.py, fixture-checked before landing):
+* **Per seed:**
+  - **MET** = iit_eval clean-ccc hybrid ≥ 0.8 at τ = 1;
+  - **ENTERED** = entry(0.5) ≤ 24k and final 1k bin < 0.1;
+  - labels ENTERED-AND-MET / MET-NOT-ENTERED / ENTERED-NOT-MET / NEITHER;
+  - **HARMFUL:** s1 or s2 never enters;
+  - **ONE-PASS-COMPUTE:** g1 > 0.20 or g2 > 0.21;
+  - **CLEAN-CONTRACTIVE:** MET with acc_from_donor > 0.2 or delta_cos > 0.65.
+* **Arm:**
+  - **SUPPORTED** = 3 / 3 ENTERED-AND-MET, none HARMFUL / ONE-PASS-COMPUTE / CLEAN-CONTRACTIVE;
+  - **FAILED** = any HARMFUL, any MET-NOT-ENTERED, or 0 / 3 MET;
+  - else MIXED.
+* **Account falsifier:** MET-NOT-ENTERED in any seed.
+* **Predictions** P-I1–P-I7 as in the draft. **Descriptive:** the 8k direction tests (203-4 swap-follow, 203-6 input swap) on ckpt_model_8000.pt, and the deep-n push on the good class (draft addendum).
+
+**OC block (rule a):**
+* MET is trained directly, so ENTERED is the informative label.
+* P(3 / 3 entered) ≈ 0.27–0.30 with no effect on entry vs ≈ 0.86 with an effect (p 0.95), each × P(MET 3 / 3) ≈ 0.6. **The likelihood ratio is about 3, so this is a pilot; a positive needs a second-stage panel** (the user's call).
+* s3 is the informative seed: P(s3 enters | no effect) ≈ 0.6.
+
+**Censoring (rule b):**
+* A seed that never reaches entry(0.5) by 48k, dies or is aborted is NOT ENTERED: a failure, not missing.
+* The event-only mean entry step is reported beside it.
+
+**Cost:** measured 1.464 s/step after turn-on, about 18.8 h per seed. That is about $14 typical for 3 seeds and **≤ $18 (slow-host bound; the approved cap)**, with a running guard at $18. Realised $ replaces the projection.
+
+## 206. JOINT-COT-L1: CODI's joint CoT CE and L1 coupling on the warm-started latent arm (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; the PAIR J0 + J1; cap $6; pre-registered 2026-10-15 01:49 EDT, before any §206 code or run)
+
+**Registered text:**
+* docs/THEORY_JOINTCOT_DRAFT_2026-10-14.md **at a005c7c7** (including the Audit-review addendum) is the registered text for every definition below: mechanism §2, coupling site §3, Goodhart §4, gradient flow §5, design / readings / OC / censoring §6, predictions §7, cost §8, engineering §9.
+* That file is now frozen. Changes go here as dated amendments.
+* Derivation by Opus subagent, reviewed by Theory and Audit.
+* CODI details per Literature bc8be322: per-layer teacher-std normalisation, the last-step-dropped teacher, LoRA in CODI (not used here).
+
+**Why (data, POST-HOC):**
+* §202: W's CoT trunk is forgotten in the open-loop window (cot_valid 0.07 at 2k vs C's 0.35), and W is "faster, same ceiling".
+* CODI's no-L1 joint arm (24.5 vs 43.7) says the coupling, not shared weights, carries the gain.
+* PROVED (code) in the draft:
+  - the teacher CE cannot change what the memory carries;
+  - layers 1–6 sit before the memory read, so the coupling uses layers 7–12 only;
+  - m ≤ 1 items are excluded from T2.
+
+**Cells (RTX 3090, seed 1, 12k, W's flags exactly, init C's model.pt, full fine-tuning at lr 1e-4):**
+* **J0** `gsm_lat_jcot_s1` = W + `--joint_cot 2`: T1 CE (C's full CoT) + T2 answer CE (last-step-dropped CoT, m ≥ 2), γ_T 2.
+* **J1** `gsm_lat_jcotl1_s1` = J0 + `--kd_beta 1 --kd_layers 7-12 --kd_teacher drop --kd_norm teacher_std --kd_loss l1`: the student decoder's "###" vs the teacher's "###", with sg on the teacher.
+* The same seed-1 batch sequence as W.
+* Comparators W, C+, A, C are landed ($0). W's deep fields are re-run on J's eval card and bs.
+* **Launch only after:** the harness (boxes/gsm8k_jcot.py + a flag-gated stepaux hook); gates (plain path bitwise, per-term gradflow including the sg check, mem_check at the joint shape); Audit's diff review; a running guard at $6.
+
+**Readings** (draft §6.2; theory/score_s206.py, fixture-checked before landing; T 0.028, T_D 0.034):
+* **COUPLE** = J1 − J0: HELPS / NEUTRAL / HURTS. **The method reading.**
+* **PROTECT** = J0 − W, worded as the "joint-CE effect (trunk protection + extra text-CoT exposure)".
+* **TOTAL** = J1 − W; J1 − A; R1-J = J1 − C+.
+* **COT-RETAIN:** min cot_valid ≥ 0.30.
+* **LOOP-FORMED; THINK-NECESSARY** (pooled) and **-DEEP; DEEP-MULTIPASS** (deep K′10 − K′1 ≥ T_D).
+* **K0-GUARD:** K′0(J1) ≤ 0.139.
+* **KD-ROUTE:** memory share ≥ 0.10.
+* **SHORTCUT reading (registered):** COUPLE-HELPS with K′0 rising by ≥ T is read as a shortcut, not a success.
+* **Predictions** P-J0a–P-J1g as in the draft §7. Central J1 ≈ 0.185; COUPLE central +0.03.
+
+**OC block (rule a; draft §6.3):**
+* COUPLE ≥ T at the central +0.03 has P ≈ 0.55.
+* False pass: 0.3% / 5.5% / 18% at a per-run seed SD of 0 / 1 / 2 points.
+* **A single-seed COUPLE-HELPS is worded "on seed 1"; a rate claim needs ≥ 3 seeds per cell** (stage 2, a new decision; about +$2–3 per cell).
+
+**Censoring (rule b; draft §6.4):**
+* A missing 2k record = cot_valid below the bar.
+* KD-ROUTE never reached = failure ("> 12k").
+* A cell dying before 12k = every reading a failure.
+* Event-only values are reported beside each.
+
+**Cost:** pair $4.04 central / $6.00 high (the approved cap $6). The conditional J1-LoRA cell (only if COT-RETAIN fails) is a separate decision.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
