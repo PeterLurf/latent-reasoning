@@ -27,6 +27,12 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 20:3x 10-14 (Experiments): §202 W b292 (222.230.13.166:55189, 595.84, $0.243) ~4.4k/12k, lands ~22:40; C+ b293 (171.5.176.46:45132, 595.71.05,
+  $0.208) ~10k/12k; guard done (pair $1.61). Each has a gen8 drain + gpu_watch (b291 / b292 / b293). The 18:00 W launch shipped no .extra
+  (MODULE_MISSING bench.tasks) -> relaunched with EXTRA_120 (memory note). §203 SVR: G-pre PASS, G-use NOT-USED 9/9 (+ ALL-heads add-on 9/9) ->
+  DO NOT LAUNCH (Theory 2b5b09e1 / a9182a47). §204 STEPFACTOR harness final 7f707887, gates PASS (scratch/gate_s204/gate.json), Audit-approved;
+  launches after §202 lands on the branch its rule picks; its .extra must add bench/data/gsm8k_aug/s204_op_vocab.json. Note 204-1 SIM-CoT D1
+  done (00d08bc4). Local cards idle (no registered local work).
 * 17:5x 10-14 (Experiments): §200 A / B drained + committed (0.147 / 0.160; GSM-Symbolic local 01fcde1d); family ≈ $7.81, D not run. §199 s3 destroyed
   16:45 (step 35.9k; family $5.93; ckpts deleted per Theory). §193 s2 b291 training on 89.221.67.136:16081 (55989781, STARTED 16:50; gen8 drain + gpu_watch).
   §202 WARM-START: harness + gate_s202 PASS (091f4e12), Audit OK -> fill_generic_px s202 292 (W) then 293 (C+), DPH_MAX 0.28, 3090 only; guard
