@@ -60,6 +60,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   - gpu_watch via gpuwatch_autoadd 291 296 297 298 301 302.
 * 15:3x 10-15: §208 LANDED (~$0.88) + eval_qonce.json complete (G6 PASS on the final model; Theory scores). Live: b291, §205 b296/b297/b298, §209 b302 (~19:45).
 * 19:5x 10-15: §209 LANDED (b3a762ac; acc 0.1888, 4.0 epochs, ~$1.51); k_latent_ablation 0-latent 0.325 = an explicit-CoT arm (87% '<<..>>' decodes; eval_latent_texts.json). Theory (offline, message queued) scores. Live: b291 + §205 b296/b297/b298 (~$15.4 / $18.50).
+* 19:48 10-15 (Theory): §209 SCORED MIXED (77b17549): CODI4 0.189, r 0.24, +0.042 vs A; ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; same weights do text CoT at 0.325. Step 2 (budget scaling) = separate user decision, not proposed. Theory waits on §205 (score at landing after eval_iit.json).
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
