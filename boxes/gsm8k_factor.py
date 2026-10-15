@@ -7,7 +7,9 @@ gsm8k_stepaux's stepaux arm, in a NEW module so prosqa168s2.ProsMem (shared with
       calls them (L6).
   factor_targets(raw, tpl, op_vocab) (pure data, §8.3): per step t, the value ids ENC(" " + rhs) + [EOT] (None unless the rhs is one number token
       string), the operator class (signature = the LHS's "+-*/%()" characters; index in op_vocab, else OTHER = len(op_vocab)), and pointers j = 0, 1
-      (recomputable items only, from parse_recomputable's ops in LHS order): (target first token, candidate first tokens C_t).
+      (recomputable items only, from parse_recomputable's ops in LHS order): (target first token, candidate first tokens C_t); "coll" = C_t's sources
+      include two different values sharing a first BPE token (pointer accuracy is over first-token classes; note 204-3 adds a collision-free field).
+      Value fields compare by STRING (decoded greedy value .strip() == the gold RHS; note 204-3); value_exact_tokid keeps token-id equality.
   factor_loss(m, S, its, t, dev, mode): per-item L_aux,t = the mean of the present terms (value: token-mean LM CE teacher-forced after the prompt;
       op: CE over 17; pointers: CE over C_t with logits <W_pj h_last, wte[c]> (wte detached)); mode 'value' = the value term only.
   aux_suite(...): the §8.4 eval fields (value exact by pass / grounding, op / pointer accuracy, the string arm's in-string proxies) from M_t, M_1, M_0,
@@ -65,9 +67,16 @@ def factor_targets(raw, tpl, op_vocab):
     for t, e in enumerate(raw["eqs"]):
         lhs, _, rhs = e.partition("="); rhs = rhs.strip(); sig = signature(e)
         st = {"v": (ENC.encode(" " + rhs) + [EOT]) if RHS_RE.fullmatch(rhs) else None, "op": op_vocab.index(sig) if sig in op_vocab else len(op_vocab),
-              "p": [None, None], "rhs": rhs, "g": "unparsed"}
+              "p": [None, None], "rhs": rhs, "g": "unparsed", "coll": None}
         if tpl is not None:
             eqt = tpl["eqt"][t]; prev = {ENC.encode(tpl["eqt"][j]["rtok"])[0] for j in range(t)}; st["g"] = "R" if any(o[3] == "r" for o in eqt["ops"]) else "Q"
+            vals = {}                                                       # note 204-3: C_t's first-token collision (two different values, one first token)
+            for _, _, tok, val in tpl["qn"]:
+                for tk in {ENC.encode(tok)[0], ENC.encode(tok.replace(",", ""))[0]}:
+                    vals.setdefault(tk, set()).add(round(val, 6))
+            for j in range(t):
+                vals.setdefault(ENC.encode(tpl["eqt"][j]["rtok"])[0], set()).add(round(tpl["eqt"][j]["r0"], 6))
+            st["coll"] = any(len(v_) > 1 for v_ in vals.values())
             for j in range(2):
                 if j < len(eqt["ops"]):
                     tg = ENC.encode(eqt["ops"][j][2])[0]; st["p"][j] = (tg, sorted(qlit | prev | {tg}))
@@ -112,12 +121,13 @@ class FactorMem(ProsMem):
             nt = self.g.logits(fwd_read(self.g, self.g.embed(x), self.mem, S)[:, -1]).float().argmax(-1); x = torch.cat([x, nt[:, None]], 1)
         return x[:, len(pre):].cpu().numpy()
 
-    def heads(self, h_last, cands):
-        """(op logits (b, 17), [pointer logits over each item's C_t (list of 1-d tensors)] for j = 0, 1)."""
-        wte = self.g.w("wte.weight").detach(); out = []
-        for w_ in (self.w_p1, self.w_p2):
-            q_ = w_(h_last); out.append([wte[torch.tensor(c_, device=q_.device)] @ q_[i] if c_ is not None else None for i, c_ in enumerate(cands)])
-        return self.w_op(h_last), out
+    def op_logits(self, h_last):
+        return self.w_op(h_last)
+
+    def ptr_logits(self, h_last, cands, j):
+        """pointer j (0 / 1): <W_pj h_last, wte[c]> over each item's candidate first tokens (wte detached) -> list of 1-d tensors (None = masked)."""
+        wte = self.g.w("wte.weight").detach(); q_ = (self.w_p1, self.w_p2)[j](h_last)
+        return [wte[torch.tensor(c_, device=q_.device)] @ q_[i] if c_ is not None else None for i, c_ in enumerate(cands)]
 
 
 def factor_loss(m, S, its, t, dev, mode="factor"):
@@ -134,17 +144,15 @@ def factor_loss(m, S, its, t, dev, mode="factor"):
             terms[i].append(ce[r_])
         log["val"] = (float(ce.detach().sum()), len(vi))
     if mode == "factor":
-        hl = h[:, P].float(); lo, lp = m.heads(hl, [f_["p"][0][1] if f_["p"][0] is not None else None for f_ in fts])
-        ceo = Fn.cross_entropy(lo, torch.tensor([f_["op"] for f_ in fts], device=dev), reduction="none")
+        hl = h[:, P].float(); ceo = Fn.cross_entropy(m.op_logits(hl).float(), torch.tensor([f_["op"] for f_ in fts], device=dev), reduction="none")
         for i in range(len(its)):
             terms[i].append(ceo[i])
         log["op"] = (float(ceo.detach().sum()), len(its))
-        _, lp2 = m.heads(hl, [f_["p"][1][1] if f_["p"][1] is not None else None for f_ in fts])
-        for j, lpj in ((0, lp), (1, lp2)):
-            s_, n_ = 0.0, 0
+        for j in range(2):
+            lpj = m.ptr_logits(hl, [f_["p"][j][1] if f_["p"][j] is not None else None for f_ in fts], j); s_, n_ = 0.0, 0
             for i, f_ in enumerate(fts):
                 if f_["p"][j] is not None:
-                    tg, cs = f_["p"][j]; c_ = Fn.cross_entropy(lpj[i][None], torch.tensor([cs.index(tg)], device=dev)); terms[i].append(c_); s_ += float(c_.detach()); n_ += 1
+                    tg, cs = f_["p"][j]; c_ = Fn.cross_entropy(lpj[i].float()[None], torch.tensor([cs.index(tg)], device=dev)); terms[i].append(c_); s_ += float(c_.detach()); n_ += 1
             log["ptr%d" % (j + 1)] = (s_, n_)
     return [torch.stack(tt).mean() if tt else None for tt in terms], log
 
@@ -169,10 +177,10 @@ def head_preds(m, S, its, t, dev):
     """(op argmax, [pointer argmax token or None] x 2) reading S with the prompt (factor arm)."""
     pre = m.aux_prompt(t); x = torch.tensor([pre] * len(its), device=dev); hl = fwd_read(m.g, m.g.embed(x), m.mem, S)[:, -1].float(); fts = [it["ft"][t - 1] for it in its]
     out = [None, None]
-    lo, lp1 = m.heads(hl, [f_["p"][0][1] if f_["p"][0] is not None else None for f_ in fts]); _, lp2 = m.heads(hl, [f_["p"][1][1] if f_["p"][1] is not None else None for f_ in fts])
-    for j, lpj in ((0, lp1), (1, lp2)):
+    for j in range(2):
+        lpj = m.ptr_logits(hl, [f_["p"][j][1] if f_["p"][j] is not None else None for f_ in fts], j)
         out[j] = [(fts[i]["p"][j][1][int(lpj[i].argmax())] if lpj[i] is not None else None) for i in range(len(its))]
-    return lo.argmax(-1).tolist(), out
+    return m.op_logits(hl).argmax(-1).tolist(), out
 
 
 STR_RE = re.compile(r"<<([^=<>]*)=([^<>]*)>>")
@@ -209,9 +217,9 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
                 fts = [it["ft"][t - 1] for it in its]
                 if arm in ("value", "factor"):
                     gv = greedy_value(m, S, t)
-                    for f_, g_ in zip(fts, gv):
+                    for f_, g_ in zip(fts, gv):                             # note 204-3: STRING equality (cross-arm); token-id equality kept as _tokid
                         if f_["v"] is not None:
-                            add(src, "value_exact", t, f_["g"], g_ == f_["v"][:-1])
+                            add(src, "value_exact", t, f_["g"], ENC.decode(g_).strip() == f_["rhs"]); add(src, "value_exact_tokid", t, f_["g"], g_ == f_["v"][:-1])
                     if arm == "factor":
                         op_, (p1, p2) = head_preds(m, S, its, t, dev)
                         for r_, f_ in enumerate(fts):
@@ -219,6 +227,8 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
                             for j, pj in ((0, p1), (1, p2)):
                                 if f_["p"][j] is not None:
                                     add(src, "ptr%d_acc" % (j + 1), t, f_["g"], pj[r_] == f_["p"][j][0])
+                                    if not f_["coll"]:                      # note 204-3: collision-free items only
+                                        add(src, "ptr%d_acc_nocollide" % (j + 1), t, f_["g"], pj[r_] == f_["p"][j][0])
                 else:                                                       # string arm: the in-string proxies of its greedy " <<lhs=rhs>>"
                     gen = m.aux_greedy(S, t, max(len(it["step_ids"][t - 1]) + 1 for it in its))
                     for r_, (it, f_) in enumerate(zip(its, fts)):
@@ -227,7 +237,9 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
                         add(src, "op_in_string", t, None, bool(mm) and signature(mm.group(1) + "=") == signature(it["eqs"][t - 1]))
                         if f_["p"][0] is not None:
                             num = re.match(r"[\d,.]+", mm.group(1).lstrip("( ")) if mm else None
-                            add(src, "ptr1_in_string", t, f_["g"], bool(num) and ENC.encode(num.group(0))[0] == f_["p"][0][0])
+                            ok_ = bool(num) and ENC.encode(num.group(0))[0] == f_["p"][0][0]; add(src, "ptr1_in_string", t, f_["g"], ok_)
+                            if not f_["coll"]:
+                                add(src, "ptr1_in_string_nocollide", t, f_["g"], ok_)
     out = {}
     for src, d_ in R.items():
         o_ = out.setdefault(src, {})
