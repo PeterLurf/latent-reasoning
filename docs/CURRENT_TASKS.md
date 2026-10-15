@@ -44,6 +44,10 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   08:24: §206 J1 LANDED (05b0c763; acc 0.138, cot_valid_final 0.344, kd_route share_mem 0.073; ~$1.63); W ref -> gsm_lat_warm_s1/eval_s206ref.json (= W). J0 ~10:15; Theory scores.
   09:05: §204 F-P LANDED (49c54350; acc 0.1387, validsel 0.1471; ~$2.56); A ref -> gsm_lat_aug_s1/eval_s204ref.json. CLOCK / PROBE-LEAK eval-only via boxes/stepfactor_probe.py
   (e02a54cb; clock reproduces clock_A.json): clock F-P (CPU) + probe A then F-P (3070 fp32) running -> <run>/eval_s204_clock.json / eval_s204_probe.json; then commit + tell Theory.
+  10:40: §206 COMPLETE - J0 LANDED (f4b6b432; acc 0.1440, cot_valid_final 0.358; ~$1.61; pair ~$3.24 / $6); Theory scores. §204 add-ons committed (1c4b8215).
+  §207 GSM-SWAP done on A / B / W / F-P / J1 / J0 (scratch/gsm_swap.py; 7fd4fa69 + f4b6b432): all RECOMPUTES-FROM-INPUT except B MIXED (0.799; ratio-form question with Theory).
+  §205 s1: no 570.172.08 offer in 6 h (none on the market at any price); options (wait / unpaired on 595.84 / 2 seeds) + the $0.06 margin sent to Audit for the user;
+  s205_fill_s1b keeps retrying meanwhile. Live cloud: b291 (§193 s2), b297 / b298 (§205 s2 / s3).
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
