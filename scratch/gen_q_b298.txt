@@ -1,0 +1,4 @@
+# THEORY §205 IIT-SERIAL FULL, seed 3 (registered de56ca30, text 13d7bb87; user-approved via Audit 01:4x, cap $18): s185_rms_s3's args exactly + --iit 1.0,0.5,16 + --keep_ckpt_steps 4000,8000,12000,16000 (ckpt_model_8000.pt kept, note 203-7). RTX 3090 on the control's driver (bitwise pairing on records 100-2000). --iit: 27d05cef / 62343096, Audit-approved; G-TIME 20efb91d. Eval fields beyond the on-host eval (iit_eval / siit_eval / untrained-family swap / g1 g2) are computed locally post-landing.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s205_iit_s3 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 3 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --ckpt_every 1000 --auto_micro --iit 1.0,0.5,16 --keep_ckpt_steps 4000,8000,12000,16000
