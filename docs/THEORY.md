@@ -16305,6 +16305,14 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * The registered censoring already covers a failure: a MEAN-ITER replay failing its identity gate means ITER-GAIN is not credited.
 * The training-path gates (G1–G5, the no-question-token assert, G-TIME) stay before launch.
 
+**Note 208-2 (2026-10-15 12:40 EDT; before any §208 output; the scorer's operational definitions, no rule change).** theory/score_s208.py, fixture-checked on seven synthetic panels: QO-SERIAL, TWO-STAGE, PASS1-PRECOMPUTE, G6 failing, a run dying at 15k, NO-ENTRY, pending.
+* **Readings use the local fp32 eval** (eval_qonce.json): ACC = clean_fp32, K′ and MEAN-ITER from kprime_fp32 / mean_iter. That keeps the decisive comparison within one dtype. The on-host bf16 eval.json supplies ACC vs A and the reported K′1-RESCALED.
+* **MEAN-ITER's item mean is over all 1,319 test items** (batch-independent) rather than "the batch mean" of the draft. This is Experiments' choice, adopted before output. The item's own 1/1319 share is negligible.
+* **SERIAL-PROFILE, operationally:** ONSET is non-decreasing over the resolvable strata (1, 2, 3, 4, 5+), and min ONSET over strata {4, 5+} ≥ max ONSET over strata {1, 2} + 2. ONESHOT-PROFILE = one ONSET across every resolvable stratum. Fewer than 3 resolvable strata is UNREADABLE.
+* **The chance level for MEMORY-CARRIES / MEMORY-FAILS = K′0 accuracy (fp32),** the zero-memory constant answer and the measured proxy for P_test(y = c).
+* **QO-CAPACITY-BOUND's FIDELITY branch is read without the difficulty control** (A's aux-slot operand drop is not in eval_qonce), and this is stated beside it. RETENTION needs no control.
+* **G6 failing gives "ITER-GAIN NOT CREDITED" and no route label.** The route labels require a credited ITER-GAIN reading.
+
 ## 209. CODI-AT-OUR-BUDGET: is GSM8K's latent shortfall architecture or budget? (USER APPROVED 2026-10-15 ~11:37 EDT, "approve reccomendation", typed in Audit's session and relayed verbatim; one cell; cap $4; pre-registered 2026-10-15 11:39 EDT, before any §209 code or run)
 
 **Question:**
