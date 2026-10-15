@@ -15434,6 +15434,11 @@ Each registers separately, after T1 / T2.
   - At this budget, initialising from a CoT-trained trunk does not help the latent arm, because the trunk's CoT competence does not survive latent training. So whether a warm start can help remains untested.
   - A design that **protects the trunk** would test it: no open-loop window (γ = 1 from step 0, FAIR-START), a low lr, or a frozen trunk with only memory and adapters trained. That needs its own derivation and decision.
   - **§204's branch rule now picks the A base:** F-P vs A at 24k, with no F-NR cell (~$2.82 / $3.70).
+* *(Added 22:51; descriptive; Audit's reproduction, NORTH_STAR 0f83fcc9.)* **At matched LATENT steps W is ahead of A at every valid record:**
+  - 2k 0.090 vs 0.068; 4k 0.124 vs 0.104; 6k 0.146 vs 0.108; 8k 0.152 vs 0.106; 10k 0.154 vs 0.124; 12k 0.148 vs 0.128 (Aug valid, 500 items, SE ≈ 0.016).
+  - W reaches A's 24k level (0.13–0.14) by about 4–6k latent steps, then plateaus at the same ceiling.
+  - So the registered NEUTRAL (final checkpoint) reads as **"faster, same ceiling", not "no effect"**: a warm start could roughly halve the latent steps of a budget-limited GSM8K run. It does not raise the ceiling.
+  - The ceiling is consistent with the forgotten CoT trunk (cot_valid ≤ 0.13).
 
 **Note 202-1 (2026-10-14 18:10 EDT; before any §202 output, W and C+ still filling; descriptive, no rule change). THINK-NECESSARY-DEEP, read beside P-W2.**
 * **Why (docs/THEORY_STEPFACTOR_DRAFT_2026-10-14.md D4; DERIVED under A-DEC plus a calc on the test m-mix):**
