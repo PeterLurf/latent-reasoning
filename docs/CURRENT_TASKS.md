@@ -27,6 +27,12 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 02:3x 10-15 (Experiments): §205 IIT-SERIAL: s205_fill (one filler, driver-pinned) - b298 s3 RUNNING on 209.226.246.174:53250 (56051379, 595.84,
+  STARTED 01:53, HOSTPROBE OK); b296 s1 / b297 s2 wait for a 570.172.08 offer <= $0.28 (retry every 10 min); guard s205 cap $18. gpu_watch is now driven
+  by scratch/gpuwatch_autoadd.sh (291 295 296 297 298; restarts gpu_watch by its own pid when a cell STARTs or the watcher exits). §206 JOINT-COT: harness
+  in boxes/gsm8k_jcot.py + flag-gated stepaux hook (uncommitted until gates finish) with the §9 diagnostics (KD-ROUTE per log step, TEACHER-CONTEXT,
+  term norms / kappa_hat every 500, T2-ACC, KD-GEN, KD-ANS, eval.json kd_route / kd_ans / kd_gen / t2_acc / cot_valid_final); queues b299 (J0) / b300 (J1)
+  written as .txt.hold - launch only after Audit's diff review; guard $6; must not run a second filler beside s205_fill.
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
