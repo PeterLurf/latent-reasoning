@@ -353,6 +353,236 @@ def p1(R_, TE, K, fit_bs=64, steps=50):
     return out
 
 
+# ---------------------------------------------------------------- P2 (pilot scope, Theory 2026-10-14 21:4x): t = 2; one lr chosen on rms s1's validation
+# pairs; k in {16, 64}; on-support refit for the best k; Haar + exact-energy + shuffled controls; resample necessity; G-DISRUPT; step cap 2,000.
+def label(f):
+    """draft §3.5 -> UR-FOUND[-REDUNDANT] / ILLUSION-SUSPECT / USED-UNVERIFIED / NONE-FOUND / FIT-FAILURE / N/A / PARTIAL."""
+    if not f.get("eligible", True):
+        return "N/A"
+    c3 = f["iia_star"] >= 0.70 and f["iia_star"] - max(f["ctrl_max"], f["b0"]) >= 0.50 and f["shuffled"] <= 0.20
+    if c3:
+        if not f["supp_pass"]:
+            return "USED-UNVERIFIED"
+        if f["iia_on"] >= f["iia_star"] - 0.15 and f["per_n_floor_ok"]:
+            ex = f.get("necessity_excess")
+            return "UR-FOUND" + ("-REDUNDANT" if ex is not None and ex < 0.10 else "")
+        if f["iia_on"] < f["iia_star"] - 0.30:
+            return "ILLUSION-SUSPECT"
+        return "PARTIAL"
+    if f["iia_max_all_k"] < 0.30:
+        return "NONE-FOUND" if f["gfit"] else "FIT-FAILURE"
+    return "PARTIAL"
+
+
+def gate_smoke_label():
+    """G-SMOKE: label() on theory/dasused/toy_illusion.json (G-SUPP and the per-n floor set to pass; necessity excess vs the Haar mean)."""
+    toy = json.load(open(os.path.join(ROOT, "theory", "dasused", "toy_illusion.json")))["models"]; want = {"USED": "UR-FOUND", "UNUSED": "ILLUSION-SUSPECT", "USED-LOW": "UR-FOUND"}; got = {}
+    for nm, d in toy.items():
+        if nm not in want:
+            continue
+        f = {"iia_star": d["iia"], "ctrl_max": max(d["haar_iia_max"], d["energy_iia_max"]), "b0": d["b0"], "shuffled": d.get("shuffled_iia", 0.0), "supp_pass": True,
+             "iia_on": d["iia_on_support"], "per_n_floor_ok": True, "necessity_excess": d.get("necessity_resample_on_support_excess"),
+             "iia_max_all_k": max(v["iia"] for v in d["by_k"].values()), "gfit": True}
+        got[nm] = label(f)
+    return {"got": got, "want": want, "pass": all(got.get(k_) == v for k_, v in want.items())}
+
+
+def collect(R_, items, t):
+    return np.concatenate([S.float().cpu().numpy() for S in R_.states(items, t)]) if items else None
+
+
+@torch.no_grad()
+def iia_eval(R_, items, Sr, Sd, ycf, t, K, Rm, mode="patch", So=None):
+    """answers after the patch (mode patch: (I - RR^T) S_r + RR^T S_d; mode resample: S_r + RR^T (S_o - S_r)) -> predictions."""
+    out = []
+    for i in range(0, len(items), R_.bs):
+        sl = slice(i, i + R_.bs); a_ = torch.tensor(Sr[sl], device=R_.dev); b_ = torch.tensor((So if mode == "resample" else Sd)[sl], device=R_.dev)
+        out.append(R_.answers(items[sl], K, override=(t, [patch(a_, b_, Rm)])))
+    return np.concatenate(out) if out else np.zeros(0, int)
+
+
+SM = {"steps": 2000, "every": 100, "n_fit": 4000, "n_val": 500, "n_supp": 6000, "n_B": None}     # --smoke shrinks these (functional test only)
+
+
+def fit_rot(R_, K, t, fit, val, k, lr, init=None, steps=None, bs=64, micro=1, every=None, patience=3, Vs=None):
+    """Adam on R (or on W' with R = orth(Vs W') for the on-support refit); early stop on validation IIA; returns (R (D, k) detached, steps, val_best)."""
+    steps = steps or SM["steps"]; every = every or SM["every"]; torch.manual_seed(20381 + k); rng = np.random.default_rng(20391 + k); its, Sr, Sd, y = fit; D = Sr[0].size
+    if Vs is None:
+        rot = Rot(D, k, R_.dev, init=init, gen=torch.Generator().manual_seed(20381 + k)); getR = rot.R
+    else:
+        rot = Rot(Vs.shape[1], k, R_.dev, init=init); getR = lambda: torch.linalg.qr(Vs @ rot.W).Q  # noqa: E731
+    opt = torch.optim.Adam(rot.parameters(), lr=lr); best, bestR, bad, st = -1.0, None, 0, 0
+    for st in range(1, steps + 1):
+        b = rng.integers(0, len(its), bs); opt.zero_grad()
+        for idx in np.array_split(b, micro):
+            R = getR(); X = torch.tensor(Sr[idx], device=R_.dev); Y = torch.tensor(Sd[idx], device=R_.dev); Xf, Yf = X.flatten(1), Y.flatten(1)
+            Sp = ((Xf - (Xf @ R) @ R.T) + (Yf @ R) @ R.T).view_as(X)
+            lg = cont_logits(R_, [its[i] for i in idx], Sp, t, K); loss = torch.nn.functional.cross_entropy(lg, torch.tensor(y[idx], device=R_.dev)) * (len(idx) / len(b)); loss.backward()
+        opt.step()
+        if st % every == 0 or st == steps:
+            with torch.no_grad():
+                Rd = getR().detach()
+            v = float((iia_eval(R_, val[0], val[1], val[2], val[3], t, K, Rd) == val[3]).mean())
+            if v > best + 1e-4:
+                best, bestR, bad = v, Rd.clone(), 0
+            else:
+                bad += 1
+                if bad >= patience:
+                    break
+    return (bestR if bestR is not None else getR().detach()), st, best
+
+
+def build_A(R_, TE_syms, excl, t, K, n_fit=4000, n_val=500, max_raw=20000):
+    """draft §2.4 fit set A: train_items (rng 20301, the run's exclusion set), n in [t+1, 8]; matched donors rng 20303; ccc pairs until n_fit + n_val."""
+    rng, rd_ = np.random.default_rng(20301), np.random.default_rng(20303); acc = []; raw = 0
+    while len(acc) < n_fit + n_val and raw < max_raw:
+        batch = [it for it in N.train_items(rng, 500, 8, excl) if t + 1 <= it["n"] <= 8]; raw += len(batch); prs = []
+        for it in batch:
+            pr, _ = make_pair(it, t, rd_)
+            if pr is not None and tuple(pr[0]["syms"]) not in TE_syms:
+                prs.append((it, pr))
+        if not prs:
+            continue
+        rec = [p[0] for p in prs]; don = [p[1][0] for p in prs]; hyb = [p[1][2] for p in prs]; yc = np.array([p[1][1] for p in prs])
+        y = np.array([N.value(it["root"]) for it in rec]); yd = np.array([d["t"] for d in don])
+        ok = (R_.answers(rec, K) == y) & (R_.answers(don, K) == yd) & (R_.answers(hyb, K) == yc)
+        acc += [(rec[i], don[i], yc[i]) for i in np.where(ok)[0]]
+    acc = acc[:n_fit + n_val]; return acc[:n_fit], acc[n_fit:], raw
+
+
+def support(R_, excl, t, n_items=6000):
+    """draft §3.3: clean S_t on n_items fresh items (rng 20311), centred; eigen-decomposition via the Gram matrix -> (mu, V (D, r), lam (r,)) on the GPU."""
+    rng = np.random.default_rng(20311); its = []
+    while len(its) < n_items:
+        its += [it for it in N.train_items(rng, 1000, 8, excl) if t + 1 <= it["n"] <= 8]
+    its = its[:n_items]; X = torch.tensor(collect(R_, its, t).reshape(n_items, -1), device=R_.dev); mu = X.mean(0, keepdim=True); X = X - mu
+    G = (X @ X.T).double().cpu(); lam, U = torch.linalg.eigh(G); keep = lam > lam.max() * 1e-12; lam, U = lam[keep], U[:, keep]
+    V = (X.T @ (U.float().to(R_.dev) / lam.sqrt().float().to(R_.dev))); lam = (lam / (n_items - 1)).float().to(R_.dev)
+    order = torch.argsort(lam, descending=True); return mu, V[:, order], lam[order], X
+
+
+def energy(Xc, R):
+    return float((Xc @ R).pow(2).sum() / (Xc.shape[0] - 1))
+
+
+def exact_energy_ctrl(V, lam, Xc, k, Estar, rng, eps_rel=1e-6, n=5):
+    """draft §3.4 Prop E: R(beta) = orth((Sigma + eps I)^{beta/2} G), bisection on beta in [-12, 12] to |E - E*| / E* <= 1e-3 (redraw if not bracketed)."""
+    eps = float(lam[0]) * eps_rel; out = []; draws = 0; lg_l = torch.log(lam.double() + eps); lg_e = float(np.log(eps))
+    while len(out) < n and draws < 50:
+        draws += 1; Gm = torch.tensor(rng.standard_normal((V.shape[0], k)), device=V.device, dtype=torch.float32); VG = V.T @ Gm; Gp = Gm - V @ VG   # Gp: G's part outside span(V)
+
+        def R_of(beta):
+            """orth((Sigma + eps I)^{beta/2} G) = orth(V diag((lam+eps)^{b/2}) V^T G + eps^{b/2} (I - V V^T) G), computed with the coefficients divided by
+            their maximum in log space (QR is scale-invariant), so beta in [-12, 12] never overflows float32."""
+            la = (beta / 2) * lg_l; le = (beta / 2) * lg_e; mx = max(float(la.max()), le)
+            M = V @ (torch.exp(la - mx).float()[:, None] * VG) + float(np.exp(le - mx)) * Gp; return torch.linalg.qr(M).Q
+        lo, hi = -12.0, 12.0; Elo, Ehi = energy(Xc, R_of(lo)), energy(Xc, R_of(hi))
+        if not (np.isfinite(Elo) and np.isfinite(Ehi) and Elo <= Estar <= Ehi):
+            continue
+        for _ in range(60):
+            mid = (lo + hi) / 2; Rm = R_of(mid); E = energy(Xc, Rm)
+            if abs(E - Estar) / Estar <= 1e-3:
+                break
+            lo, hi = (mid, hi) if E < Estar else (lo, mid)
+        out.append((Rm, abs(E - Estar) / Estar))
+    return out                                                              # fewer than n after 50 draws -> G-EN reads the shortfall
+
+
+def p2(R_, TE, K, ra, run, lr_select, fit_micro=1):
+    t = 2; excl = {tuple(it["syms"]) for it in TE if it["n"] >= int(ra.get("excl_min_n", 1))}; r_sp = np.random.default_rng(17300)
+    for _ in range(int(ra.get("serial_pool") or 2200)):
+        r__, _t = N.generate(r_sp, 8); excl.add(tuple(N.render(r__)))
+    TE_syms = {tuple(it["syms"]) for it in TE}; out = {"t": t, "scope": "pilot (Theory 2026-10-14): t 2; one lr from rms s1 val; k 16 / 64; on-support refit for best k; step cap 2000"}
+    for p_ in R_.m.parameters():
+        p_.requires_grad_(False)
+    out["gates"] = {"SMOKE_label": gate_smoke_label()}
+    # B (as P0b, rng [20302, 2]) + same-value controls
+    rng, rng_s = np.random.default_rng([20302, t]), np.random.default_rng([20302, t, 1]); B = []
+    for it in TE:
+        if t + 1 <= it["n"] <= 8:
+            pr, _ = make_pair(it, t, rng); ps, _ = make_pair(it, t, rng_s, same=True) if pr is not None else (None, None)
+            if pr is not None:
+                B.append((it, pr, ps))
+    rec = [b[0] for b in B]; don = [b[1][0] for b in B]; hyb = [b[1][2] for b in B]; ycf = np.array([b[1][1] for b in B]); y = np.array([N.value(it["root"]) for it in rec])
+    yd = np.array([d["t"] for d in don]); nn = np.array([it["n"] for it in rec])
+    ccc = (R_.answers(rec, K) == y) & (R_.answers(don, K) == yd) & (R_.answers(hyb, K) == ycf); ix = np.where(ccc)[0]
+    nc = {n_: int((nn[ix] == n_).sum()) for n_ in sorted(set(nn.tolist()))}; strata = [n_ for n_, c_ in nc.items() if c_ >= 100]
+    ix = np.array([i for i in ix if nn[i] in strata], dtype=int)[:SM["n_B"]]; out["B"] = {"n_pairs": len(B), "n_ccc_by_n": {str(k_): v for k_, v in nc.items()}, "eligible_strata": strata, "n_ccc_eligible": int(len(ix))}
+    if len(ix) < 100:
+        out["label"] = "N/A"; return out
+    Bi = [rec[i] for i in ix]; BSr, BSd = collect(R_, Bi, t), collect(R_, [don[i] for i in ix], t); Bycf, By, Bn = ycf[ix], y[ix], nn[ix]
+    sv = [B[i][2] for i in ix]; sv_ok = np.array([s is not None for s in sv]); BSs = collect(R_, [s[0] for s in sv if s is not None], t)
+    # A (fit / val) and G-DISJ
+    A_fit, A_val, raw = build_A(R_, TE_syms, excl, t, K, SM["n_fit"], SM["n_val"]); out["A"] = {"n_fit": len(A_fit), "n_val": len(A_val), "raw_recipients": raw}
+    disj = not ({tuple(a[0]["syms"]) for a in A_fit + A_val} & TE_syms) and not ({tuple(a[1]["syms"]) for a in A_fit + A_val} & {tuple(d["syms"]) for d in don})
+    out["gates"]["DISJ"] = {"pass": bool(disj)}
+    pack = lambda L: ([a[0] for a in L], collect(R_, [a[0] for a in L], t), collect(R_, [a[1] for a in L], t), np.array([a[2] for a in L]))  # noqa: E731
+    fit, val = pack(A_fit), pack(A_val); D = fit[1][0].size; SH = fit[1].shape[1:]
+    M = torch.tensor((fit[2] - fit[1]).reshape(len(fit[0]), -1), device=R_.dev); torch.manual_seed(20381); _, _, Vp = torch.svd_lowrank(M, q=64 + 16, niter=4)   # seeded: reproducible PCA init; Vp = Vp[:, :64].contiguous(); del M
+    # lr (rms s1 chooses; the others read it)
+    if lr_select:
+        cand = {}
+        for lr in (1e-3, 3e-3):
+            _, st, vb = fit_rot(R_, K, t, fit, val, 16, lr, init=Vp[:, :16], micro=fit_micro); cand[str(lr)] = {"val": vb, "steps": st}
+        lr = float(max(cand, key=lambda k_: cand[k_]["val"])); out["lr_selection"] = cand
+    else:
+        lr = float(json.load(open(os.path.join(ROOT, "boxes", "runs_fsq", "s185_rms_s1", "eval_dasused.json")))["p2"]["lr"]); out["lr_from"] = "s185_rms_s1 p2.lr"
+    out["lr"] = lr; fits = {}; Rk = {}
+    for k in (16, 64):
+        init = Vp[:, :16] if k == 16 else torch.cat([Rk[16], Vp[:, :48]], 1)
+        Rk[k], st, vb = fit_rot(R_, K, t, fit, val, k, lr, init=init, micro=fit_micro)
+        pred = iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Rk[k]); trn = iia_eval(R_, fit[0][:1000], fit[1][:1000], fit[2][:1000], fit[3][:1000], t, K, Rk[k])
+        fits[str(k)] = {"iia_ccc": float((pred == Bycf).mean()), "n_ccc": int(len(ix)), "iia_ccc_by_n": {str(n_): float((pred == Bycf)[Bn == n_].mean()) for n_ in strata if (Bn == n_).any()},
+                        "iia_train": float((trn == fit[3][:1000]).mean()), "val_best": vb, "steps": st, "init": "pca" if k == 16 else "k16 + pca pad", "lr": lr}
+        print(run, "P2 k", k, fits[str(k)], flush=True)
+    out["k"] = fits; kstar = max((16, 64), key=lambda k_: (fits[str(k_)]["iia_ccc"], -k_)); Rs = Rk[kstar]; iia_star = fits[str(kstar)]["iia_ccc"]
+    out.update({"best_k": kstar, "iia_star": iia_star})
+    gfit = fits["64"]["iia_train"] >= fits["16"]["iia_train"] - 0.05; out["gates"]["FIT"] = {"pass": bool(gfit)}
+    # support, on-support refit, controls
+    mu, V, lam, Xc = support(R_, excl, t, SM["n_supp"]); tot = float(lam.sum()); out["support"] = {"eps_profile": {}}
+    hold = torch.tensor(BSr[:1000].reshape(min(1000, len(BSr)), -1), device=R_.dev) - mu
+    for eps in (1e-3, 1e-4, 1e-5, 1e-6):
+        r_ = int((lam > lam[0] * eps).sum()); Vs = V[:, :r_]; cap = float((hold @ Vs).pow(2).sum() / hold.pow(2).sum()); out["support"]["eps_profile"][str(eps)] = {"m": r_, "heldout_capture": cap}
+    r_ = int((lam > lam[0] * 1e-6).sum()); Vs = V[:, :r_]; cap = out["support"]["eps_profile"]["1e-06"]["heldout_capture"]; supp_pass = cap >= 0.999
+    Rproj = torch.linalg.qr(Vs @ (Vs.T @ Rs)).Q; pproj = iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Rproj)
+    Ron_W, st_on, vb_on = fit_rot(R_, K, t, fit, val, kstar, lr, init=(Vs.T @ Rs), micro=fit_micro, Vs=Vs); Ron = Ron_W
+    pon = iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Ron); dd = torch.tensor((BSd - BSr)[:1000].reshape(min(1000, len(BSr)), -1), device=R_.dev) @ Rs @ Rs.T
+    omega = float(((dd - (dd @ Vs) @ Vs.T).pow(2).sum()) / dd.pow(2).sum())
+    out["support"].update({"eps": 1e-6, "m": r_, "heldout_capture": cap, "G_SUPP": supp_pass, "iia_proj": float((pproj == Bycf).mean()), "iia_on": float((pon == Bycf).mean()),
+                           "iia_on_by_n": {str(n_): float((pon == Bycf)[Bn == n_].mean()) for n_ in strata if (Bn == n_).any()}, "omega": omega, "on_steps": st_on, "on_val": vb_on})
+    Es = energy(Xc, Rs); rng_h = np.random.default_rng(20321); haar = []
+    for _ in range(5):
+        Q = torch.linalg.qr(torch.tensor(rng_h.standard_normal((D, kstar)), device=R_.dev, dtype=torch.float32)).Q; haar.append(Q)
+    en = exact_energy_ctrl(V, lam, Xc, kstar, Es, np.random.default_rng(20322)); ctrl = [float((iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Q) == Bycf).mean()) for Q in haar + [e[0] for e in en]]
+    perm = np.random.default_rng(20331).permutation(len(fit[3])); fit_sh = (fit[0], fit[1], fit[2], fit[3][perm]); vperm = np.random.default_rng(20332).permutation(len(val[3]))
+    Rsh, _, _ = fit_rot(R_, K, t, fit_sh, (val[0], val[1], val[2], val[3][vperm]), 16, lr, init=Vp[:, :16], micro=fit_micro); bperm = np.random.default_rng(20333).permutation(len(Bycf))
+    shuf = float((iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Rsh) == Bycf[bperm]).mean())
+    out["controls"] = {"haar_iia_ccc": ctrl[:5], "energy_iia_ccc": ctrl[5:], "energy_rel_err": [e[1] for e in en], "E_star": Es, "E_total": tot, "var_share": Es / tot,
+                       "shuffled_iia_ccc": shuf, "G_EN": len(en) == 5 and all(e[1] <= 0.2 for e in en)}
+    out["gates"]["EN"] = {"pass": out["controls"]["G_EN"]}
+    # necessity (resample, R_on and the 10 controls), G-DISRUPT, locus
+    So = BSr[np.random.default_rng(20341).permutation(len(BSr))]
+    def nec(Rm):
+        return 1.0 - float((iia_eval(R_, Bi, BSr, None, By, t, K, Rm, mode="resample", So=So) == By).mean())
+    n_on = nec(Ron); n_ctrl = [nec(Q) for Q in haar + [e[0] for e in en]]
+    out["necessity"] = {"resample": {"R_on": n_on, "R_star": nec(Rs), "random_mean": float(np.mean(n_ctrl)), "excess": n_on - float(np.mean(n_ctrl))}}
+    sidx = np.where(sv_ok)[0]; dis = {}
+    for nm, Rm in (("R_star", Rs), ("R_on", Ron)):
+        pr = iia_eval(R_, [Bi[i] for i in sidx], BSr[sidx], BSs, By[sidx], t, K, Rm); dis[nm] = 1.0 - float((pr == By[sidx]).mean())
+    out["gates"]["DISRUPT"] = {"own_acc_drop": dis, "n": int(len(sidx)), "pass": all(v <= 0.05 for v in dis.values())}
+    HA = R_.m.mem.h_add; blk = int(np.prod(SH[1:])); Rr = Ron.view(*SH, -1)
+    out["locus"] = {"mass_add": float(Rr[:HA].pow(2).sum() / Ron.shape[1]), "mass_delta": float(Rr[HA:HA + R_.m.mem.h_del].pow(2).sum() / Ron.shape[1]),
+                    "mass_z": float(Rr[HA + R_.m.mem.h_del:].pow(2).sum() / Ron.shape[1]) if SH[0] > HA + R_.m.mem.h_del else 0.0}
+    b0 = 0.0; per_n_ok = all(v_ >= 0.5 for v_ in fits[str(kstar)]["iia_ccc_by_n"].values())
+    f = {"iia_star": iia_star, "ctrl_max": max(ctrl), "b0": b0, "shuffled": shuf, "supp_pass": supp_pass, "iia_on": out["support"]["iia_on"], "per_n_floor_ok": per_n_ok,
+         "necessity_excess": out["necessity"]["resample"]["excess"], "iia_max_all_k": max(v["iia_ccc"] for v in fits.values()), "gfit": gfit, "eligible": True}
+    valid = all(out["gates"][g]["pass"] for g in ("DISJ", "EN", "DISRUPT"))
+    out["label"] = label(f) if valid else "VOID"; out["label_inputs"] = f; out["b0"] = b0
+    if SM["steps"] == 2000:
+        np.save(os.path.join(ROOT, "boxes", "runs_fsq", run, "dasused_R_t2_on.npy"), Ron.cpu().numpy().astype(np.float16))
+    return out
+
+
 def shares(got, own, don, hyb, mask):
     n_ = int(mask.sum())
     if not n_:
@@ -383,6 +613,8 @@ def run_serial(R, rec, don, hyb_v, hyb_it, ts, K, tag, rows):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B"])
     ap.add_argument("--bs", type=int, default=250); ap.add_argument("--memcheck", action="store_true"); ap.add_argument("--time_steps", type=int, default=0)
+    ap.add_argument("--lr_select", action="store_true", help="P2: choose the lr on this model's validation pairs (rms s1 only)"); ap.add_argument("--fit_micro", type=int, default=1)
+    ap.add_argument("--smoke", action="store_true", help="P2 functional smoke (tiny sizes; written to p2_smoke, never read)")
     a = ap.parse_args()
     rd = os.path.join(ROOT, "boxes", "runs_fsq", a.run); kind, m, ra = H.load_model(rd, a.device); assert kind == "nested", kind
     DM.FAST_ADD = bool(ra.get("fast_add")); DM.CHUNK_DELTA = 0; DM.READ_CLAMP = None; K = int(ra["think_k"]); t0 = time.time(); R = Runner(m, a.device, a.bs)
@@ -397,7 +629,12 @@ def main():
         print(a.run, "memcheck peak %.2f GiB (bs %d, K %d)" % (torch.cuda.max_memory_allocated(a.device) / 2 ** 30, a.bs, K), flush=True); return
     fp = os.path.join(rd, "eval_dasused.json"); res = json.load(open(fp)) if os.path.exists(fp) else {}
     res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}
-    if a.stage == "P1":                                                     # draft §7 P1: G-MEM + G-GRAD + --time_steps
+    if a.stage == "P2":                                                     # pilot-scoped P2 (t = 2)
+        if a.smoke:
+            SM.update({"steps": 20, "every": 10, "n_fit": 200, "n_val": 60, "n_supp": 400, "n_B": 300})
+        tb = time.time(); r2 = p2(R, TE, K, ra, a.run, a.lr_select, a.fit_micro); res["p2_smoke" if a.smoke else "p2"] = {**r2, **meta, "sm": dict(SM), "sec": round(time.time() - tb), "done": not a.smoke}
+        print(a.run, "P2 label", r2.get("label"), {k_: r2.get(k_) for k_ in ("best_k", "iia_star", "lr")}, flush=True)
+    elif a.stage == "P1":                                                   # draft §7 P1: G-MEM + G-GRAD + --time_steps
         tb = time.time(); res["p1"] = {**p1(R, TE, K, steps=a.time_steps or 50), **meta, "sec": round(time.time() - tb), "done": True}; print(a.run, "P1", res["p1"], flush=True)
     elif a.stage == "P0" and res.get("serial_cond", {}).get("done") and not res.get("p0b", {}).get("done"):   # P0a done: the P0 remainder (draft §7)
         tb = time.time(); res["p0b"] = {**p0b(R, TE, K, rows), **meta, "sec": round(time.time() - tb), "done": True}
