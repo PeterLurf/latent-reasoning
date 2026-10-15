@@ -353,3 +353,6 @@
   - The user summary states it.
 * **Design variant, for the user beside the main design, not chosen by Theory; CUTOFF CHOSEN POST-PILOT** (from the per-n values of these same models; the main design stays the pre-pilot one): restrict IIT pairs to n where the pooled converged pilot meets >= 0.6 (n <= 7 on these two models) and report the deep-n effect descriptively.
   - Cost is unchanged or lower, since fewer pairs means fewer extra forwards.
+
+## Addendum: motivation from seed selection (Theory, 22:12)
+* THEORY note 203-7: early loss features do not select seeds beyond curve saturation, and GPU numerics carry ≥ about 70%% of the outcome (replay_x). Summers & Dinneen 2103.04514 (verified): one-bit nondeterminism gives seed-level model diversity, i.e. training instability. So reliability has to come from changing the dynamics, not from selecting seeds or pinning numerics. That is the motivation for an objective like IIT-SERIAL, which penalises the failed class's state-ignoring solution directly (note 203-4).
