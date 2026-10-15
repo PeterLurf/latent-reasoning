@@ -13,7 +13,7 @@ import subprocess
 import time
 
 ROOT = "D:/Latent"; os.chdir(ROOT); V = "C:/Users/peter/.local/vastai/vast.sh"; KEY = os.path.expanduser("~/.ssh/runpod_ed25519")
-CELLS = {296: "s205_iit_s1", 297: "s205_iit_s2", 298: "s205_iit_s3"}; STEPS = 48000; CAP = 18.0; EVAL_SETUP_H = 0.35; PMAX = 0.24; G0 = 3000
+CELLS = {296: "s205_iit_s1", 297: "s205_iit_s2", 298: "s205_iit_s3"}; STEPS = 48000; CAP = 18.5; EVAL_SETUP_H = 0.35; PMAX = 0.28; G0 = 3000   # user 2026-10-15 ~12:0x (via Audit): family cap $18.50; s1 UNPAIRED, any non-580 driver
 MARKS = tuple(range(4000, STEPS + 1, 4000)); S1 = 296; S1_STOP_BEFORE = 4000
 
 

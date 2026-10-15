@@ -19,6 +19,6 @@ used = {l.split()[0] for l in open("scratch/live_hosts.txt") if l.strip()}
 pf = [l.strip() for l in open("scratch/vast_prefer_ips.txt") if l.strip() and not l.startswith("#")] if os.path.exists("scratch/vast_prefer_ips.txt") else []
 rows = [(0 if any(str(x.get("public_ipaddr", "")).startswith(p) for p in pf) else 1, 0 if str(x.get("driver_version", "")).startswith("595.71") else 1, x["dph_total"], x["id"], x.get("public_ipaddr"))
         for x in d if (drv == "-" or str(x.get("driver_version", "")) == drv) and x.get("public_ipaddr") not in ex and x.get("public_ipaddr") not in used
-        and "oid:%s" % x.get("id") not in ex and "mid:%s" % x.get("machine_id") not in ex]
+        and "oid:%s" % x.get("id") not in ex and "mid:%s" % x.get("machine_id") not in ex and not str(x.get("driver_version", "")).startswith("580")]   # 580.x: broken hosts (fill_generic's rule)
 if rows:
     b = sorted(rows)[0]; print(b[3], b[4], round(b[2], 4))
