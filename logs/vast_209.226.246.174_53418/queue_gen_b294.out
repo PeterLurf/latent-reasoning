@@ -1,0 +1,8 @@
+04:57:18 gpt2 bin from the HF hub: ok
+NVIDIA GeForce RTX 3090, 595.84
+04:57:21 modules import: boxes.nested170 
+HOSTCHECK PASS (5 s)
+04:59:52 HOSTPROBE 0.6651 s/step (limit 1.2; b225 reference 0.657)
+04:59:52 start boxes/runs_fsq/iit_gtime_s1
+05:04:42 evaluated boxes/runs_fsq/iit_gtime_s1 rc 0
+05:04:42 QUEUE_DONE
