@@ -27,6 +27,11 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
+  gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
+  gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
+  (8d766901), refit shows Adam scale destroys the 0.71 PCA init (65b97269). JOINT-COT-L1 harness drafted in scratch/_tmp/gsm8k_jcot_draft.py (not
+  committed / not importable) pending the user's approval + Theory's registration. Local cards idle by design.
 * 00:1x 10-15 (Experiments): §202 W LANDED 0.146 (e3c4ff16; W-LIFT NEUTRAL) -> §204 A-base b295 (A eval-only ref + F-P gsm_lat_factor_s1; Audit GO;
   guard scratch/cost_guard.py s204 3.90) filling: 4 STUCK_LOADING hosts so far (~$0.16; reason now logged, d71f41e5). IIT-SERIAL --iit done + Audit
   OK (27d05cef / 62343096); G-TIME b294 queued behind b295 (one filler). DAS-USED: P0 all 16, P1 pilots, k-ladder on rms s1 -> no compact used
