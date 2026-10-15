@@ -351,5 +351,5 @@
   - On deep items (n >= 7) the loss also pushes the good class, which itself recomputes h from the text on about 30-50% of deep pairs.
   - Whether that helps (more state use at depth) or fights (as CSR's floor did) is not settled by G-ALIGN.
   - The user summary states it.
-* **Design variant, for the user beside the main design, not chosen by Theory:** restrict IIT pairs to n where the pooled converged pilot meets >= 0.6 (n <= 7 on these two models) and report the deep-n effect descriptively.
+* **Design variant, for the user beside the main design, not chosen by Theory; CUTOFF CHOSEN POST-PILOT** (from the per-n values of these same models; the main design stays the pre-pilot one): restrict IIT pairs to n where the pooled converged pilot meets >= 0.6 (n <= 7 on these two models) and report the deep-n effect descriptively.
   - Cost is unchanged or lower, since fewer pairs means fewer extra forwards.
