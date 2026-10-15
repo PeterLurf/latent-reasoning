@@ -1,0 +1,68 @@
+items 600 468 26 313
+raw tr done
+raw va done
+raw T1 1 {"sigma_T": 1.9844, "sigma_S0": 2.0432, "L1_init": 0.1415, "L1_const": 0.0722, "L1_lin": 0.0397, "R2_lin": 0.8368, "lam": 100.0, "top5_share": 0.0543}
+raw T1 2 {"sigma_T": 2.2272, "sigma_S0": 2.2702, "L1_init": 0.1853, "L1_const": 0.0698, "L1_lin": 0.04, "R2_lin": 0.8293, "lam": 100.0, "top5_share": 0.0307}
+raw T1 3 {"sigma_T": 2.3908, "sigma_S0": 2.5704, "L1_init": 0.2354, "L1_const": 0.0726, "L1_lin": 0.0463, "R2_lin": 0.7798, "lam": 100.0, "top5_share": 0.0311}
+raw T1 4 {"sigma_T": 2.4643, "sigma_S0": 2.5464, "L1_init": 0.2584, "L1_const": 0.0791, "L1_lin": 0.0531, "R2_lin": 0.7295, "lam": 100.0, "top5_share": 0.0218}
+raw T1 5 {"sigma_T": 2.6523, "sigma_S0": 2.7212, "L1_init": 0.2866, "L1_const": 0.0865, "L1_lin": 0.0641, "R2_lin": 0.6439, "lam": 100.0, "top5_share": 0.02}
+raw T1 6 {"sigma_T": 2.965, "sigma_S0": 2.991, "L1_init": 0.2712, "L1_const": 0.0856, "L1_lin": 0.0644, "R2_lin": 0.6103, "lam": 100.0, "top5_share": 0.0177}
+raw T1 7 {"sigma_T": 3.3187, "sigma_S0": 3.2247, "L1_init": 0.2681, "L1_const": 0.0868, "L1_lin": 0.0651, "R2_lin": 0.583, "lam": 100.0, "top5_share": 0.0155, "logitlens_top1_teacher": 0.0}
+raw T1 8 {"sigma_T": 3.9118, "sigma_S0": 3.7584, "L1_init": 0.2503, "L1_const": 0.0869, "L1_lin": 0.0647, "R2_lin": 0.5547, "lam": 100.0, "top5_share": 0.0153, "logitlens_top1_teacher": 0.0}
+raw T1 9 {"sigma_T": 4.5389, "sigma_S0": 4.356, "L1_init": 0.2463, "L1_const": 0.0926, "L1_lin": 0.0651, "R2_lin": 0.5655, "lam": 100.0, "top5_share": 0.0164, "logitlens_top1_teacher": 0.0}
+raw T1 10 {"sigma_T": 5.4028, "sigma_S0": 5.4526, "L1_init": 0.2393, "L1_const": 0.1137, "L1_lin": 0.0741, "R2_lin": 0.5953, "lam": 100.0, "top5_share": 0.0085, "logitlens_top1_teacher": 0.0}
+raw T1 11 {"sigma_T": 7.6093, "sigma_S0": 7.7185, "L1_init": 0.2064, "L1_const": 0.1233, "L1_lin": 0.0806, "R2_lin": 0.5801, "lam": 100.0, "top5_share": 0.0098, "logitlens_top1_teacher": 0.0}
+raw T1 12 {"sigma_T": 17.6245, "sigma_S0": 16.3853, "L1_init": 0.1177, "L1_const": 0.0933, "L1_lin": 0.0561, "R2_lin": 0.6238, "lam": 100.0, "top5_share": 0.0402, "logitlens_top1_teacher": 0.0, "ans_top1_teacher": 0.0, "ans_top1_S0": 0.0, "ans_top1_lin_imitation": 0.0}
+raw T2 1 {"sigma_T": 1.9906, "sigma_S0": 2.0432, "L1_init": 0.1172, "L1_const": 0.0792, "L1_lin": 0.0413, "R2_lin": 0.8434, "lam": 100.0, "top5_share": 0.0496}
+raw T2 2 {"sigma_T": 2.2266, "sigma_S0": 2.2702, "L1_init": 0.1662, "L1_const": 0.0771, "L1_lin": 0.0434, "R2_lin": 0.8279, "lam": 100.0, "top5_share": 0.0263}
+raw T2 3 {"sigma_T": 2.4029, "sigma_S0": 2.5704, "L1_init": 0.216, "L1_const": 0.0816, "L1_lin": 0.0515, "R2_lin": 0.7668, "lam": 100.0, "top5_share": 0.0275}
+raw T2 4 {"sigma_T": 2.4777, "sigma_S0": 2.5464, "L1_init": 0.2376, "L1_const": 0.0903, "L1_lin": 0.0601, "R2_lin": 0.7065, "lam": 100.0, "top5_share": 0.0185}
+raw T2 5 {"sigma_T": 2.6645, "sigma_S0": 2.7212, "L1_init": 0.2672, "L1_const": 0.0977, "L1_lin": 0.0709, "R2_lin": 0.6252, "lam": 100.0, "top5_share": 0.0166}
+raw T2 6 {"sigma_T": 2.9575, "sigma_S0": 2.991, "L1_init": 0.2552, "L1_const": 0.0971, "L1_lin": 0.0714, "R2_lin": 0.5943, "lam": 100.0, "top5_share": 0.0101}
+raw T2 7 {"sigma_T": 3.2966, "sigma_S0": 3.2247, "L1_init": 0.2507, "L1_const": 0.0995, "L1_lin": 0.0733, "R2_lin": 0.5664, "lam": 100.0, "top5_share": 0.014, "logitlens_top1_teacher": 0.0}
+raw T2 8 {"sigma_T": 3.8903, "sigma_S0": 3.7584, "L1_init": 0.235, "L1_const": 0.0977, "L1_lin": 0.0725, "R2_lin": 0.5365, "lam": 100.0, "top5_share": 0.0143, "logitlens_top1_teacher": 0.0}
+raw T2 9 {"sigma_T": 4.4856, "sigma_S0": 4.356, "L1_init": 0.2332, "L1_const": 0.1042, "L1_lin": 0.0736, "R2_lin": 0.5459, "lam": 100.0, "top5_share": 0.0141, "logitlens_top1_teacher": 0.0}
+raw T2 10 {"sigma_T": 5.3697, "sigma_S0": 5.4526, "L1_init": 0.2276, "L1_const": 0.1232, "L1_lin": 0.0809, "R2_lin": 0.5834, "lam": 100.0, "top5_share": 0.0091, "logitlens_top1_teacher": 0.0}
+raw T2 11 {"sigma_T": 7.6186, "sigma_S0": 7.7185, "L1_init": 0.1957, "L1_const": 0.1294, "L1_lin": 0.0847, "R2_lin": 0.5774, "lam": 100.0, "top5_share": 0.0103, "logitlens_top1_teacher": 0.0}
+raw T2 12 {"sigma_T": 17.6203, "sigma_S0": 16.3853, "L1_init": 0.1125, "L1_const": 0.097, "L1_lin": 0.0582, "R2_lin": 0.6293, "lam": 100.0, "top5_share": 0.0404, "logitlens_top1_teacher": 0.0, "ans_top1_teacher": 0.0, "ans_top1_S0": 0.0, "ans_top1_lin_imitation": 0.0}
+raw counter 7 {"R2_counter": 0.8125, "L1_passvar": 0.15336093306541443, "L1_passvar_after_counter": 0.0689597874879837, "n": 313}
+raw counter 8 {"R2_counter": 0.8153313994407654, "L1_passvar": 0.13864347338676453, "L1_passvar_after_counter": 0.06095731630921364, "n": 313}
+raw counter 9 {"R2_counter": 0.8136403560638428, "L1_passvar": 0.13894695043563843, "L1_passvar_after_counter": 0.061841823160648346, "n": 313}
+raw counter 10 {"R2_counter": 0.8184847831726074, "L1_passvar": 0.12414401769638062, "L1_passvar_after_counter": 0.05458129197359085, "n": 313}
+raw counter 11 {"R2_counter": 0.7850668430328369, "L1_passvar": 0.10436200350522995, "L1_passvar_after_counter": 0.04888763278722763, "n": 313}
+raw counter 12 {"R2_counter": 0.8185784816741943, "L1_passvar": 0.0517314113676548, "L1_passvar_after_counter": 0.023801973089575768, "n": 313}
+raw model done
+C tr done
+C va done
+C T1 1 {"sigma_T": 2.1415, "sigma_S0": 2.2238, "L1_init": 0.2237, "L1_const": 0.1213, "L1_lin": 0.0787, "R2_lin": 0.692, "lam": 100.0, "top5_share": 0.0398}
+C T1 2 {"sigma_T": 2.551, "sigma_S0": 2.5021, "L1_init": 0.2285, "L1_const": 0.1395, "L1_lin": 0.0937, "R2_lin": 0.5929, "lam": 100.0, "top5_share": 0.0468}
+C T1 3 {"sigma_T": 2.8734, "sigma_S0": 3.0037, "L1_init": 0.2695, "L1_const": 0.153, "L1_lin": 0.1131, "R2_lin": 0.5069, "lam": 100.0, "top5_share": 0.0375}
+C T1 4 {"sigma_T": 2.8074, "sigma_S0": 2.905, "L1_init": 0.3133, "L1_const": 0.176, "L1_lin": 0.1357, "R2_lin": 0.4621, "lam": 100.0, "top5_share": 0.0319}
+C T1 5 {"sigma_T": 2.8793, "sigma_S0": 2.8915, "L1_init": 0.3532, "L1_const": 0.2044, "L1_lin": 0.167, "R2_lin": 0.3834, "lam": 100.0, "top5_share": 0.031}
+C T1 6 {"sigma_T": 2.9428, "sigma_S0": 2.9713, "L1_init": 0.3841, "L1_const": 0.2221, "L1_lin": 0.1765, "R2_lin": 0.4092, "lam": 100.0, "top5_share": 0.0292}
+C T1 7 {"sigma_T": 3.0104, "sigma_S0": 3.0288, "L1_init": 0.4226, "L1_const": 0.2455, "L1_lin": 0.1973, "R2_lin": 0.396, "lam": 100.0, "top5_share": 0.0277, "logitlens_top1_teacher": 0.0}
+C T1 8 {"sigma_T": 3.6974, "sigma_S0": 3.4244, "L1_init": 0.5087, "L1_const": 0.3356, "L1_lin": 0.2666, "R2_lin": 0.3861, "lam": 100.0, "top5_share": 0.0208, "logitlens_top1_teacher": 0.1026}
+C T1 9 {"sigma_T": 5.1523, "sigma_S0": 4.4069, "L1_init": 0.5896, "L1_const": 0.3998, "L1_lin": 0.3585, "R2_lin": 0.1983, "lam": 1000.0, "top5_share": 0.0166, "logitlens_top1_teacher": 0.7457}
+C T1 10 {"sigma_T": 6.9811, "sigma_S0": 5.2646, "L1_init": 0.6249, "L1_const": 0.4899, "L1_lin": 0.468, "R2_lin": 0.0872, "lam": 1000.0, "top5_share": 0.0167, "logitlens_top1_teacher": 0.9444}
+C T1 11 {"sigma_T": 8.8503, "sigma_S0": 7.0127, "L1_init": 0.6144, "L1_const": 0.4982, "L1_lin": 0.4824, "R2_lin": 0.0608, "lam": 1000.0, "top5_share": 0.0148, "logitlens_top1_teacher": 0.9573}
+C T1 12 {"sigma_T": 11.0452, "sigma_S0": 12.0547, "L1_init": 0.6247, "L1_const": 0.5003, "L1_lin": 0.4833, "R2_lin": 0.1135, "lam": 1000.0, "top5_share": 0.0472, "logitlens_top1_teacher": 0.9615, "ans_top1_teacher": 0.9615, "ans_top1_S0": 0.0235, "ans_top1_lin_imitation": 0.0192}
+C T2 1 {"sigma_T": 2.1565, "sigma_S0": 2.2238, "L1_init": 0.181, "L1_const": 0.1289, "L1_lin": 0.0807, "R2_lin": 0.6979, "lam": 100.0, "top5_share": 0.0372}
+C T2 2 {"sigma_T": 2.5536, "sigma_S0": 2.5021, "L1_init": 0.1883, "L1_const": 0.1489, "L1_lin": 0.0962, "R2_lin": 0.6111, "lam": 100.0, "top5_share": 0.0459}
+C T2 3 {"sigma_T": 2.9193, "sigma_S0": 3.0037, "L1_init": 0.22, "L1_const": 0.1632, "L1_lin": 0.1119, "R2_lin": 0.5559, "lam": 100.0, "top5_share": 0.0344}
+C T2 4 {"sigma_T": 2.8298, "sigma_S0": 2.905, "L1_init": 0.2581, "L1_const": 0.188, "L1_lin": 0.1341, "R2_lin": 0.5236, "lam": 100.0, "top5_share": 0.0296}
+C T2 5 {"sigma_T": 2.8846, "sigma_S0": 2.8915, "L1_init": 0.3064, "L1_const": 0.2146, "L1_lin": 0.1679, "R2_lin": 0.4335, "lam": 100.0, "top5_share": 0.0283}
+C T2 6 {"sigma_T": 2.9703, "sigma_S0": 2.9713, "L1_init": 0.3341, "L1_const": 0.2338, "L1_lin": 0.1801, "R2_lin": 0.4472, "lam": 100.0, "top5_share": 0.0269}
+C T2 7 {"sigma_T": 3.0368, "sigma_S0": 3.0288, "L1_init": 0.369, "L1_const": 0.2598, "L1_lin": 0.207, "R2_lin": 0.4064, "lam": 100.0, "top5_share": 0.0271, "logitlens_top1_teacher": 0.0043}
+C T2 8 {"sigma_T": 3.6798, "sigma_S0": 3.4244, "L1_init": 0.4412, "L1_const": 0.3558, "L1_lin": 0.2741, "R2_lin": 0.4174, "lam": 100.0, "top5_share": 0.0206, "logitlens_top1_teacher": 0.0064}
+C T2 9 {"sigma_T": 4.9959, "sigma_S0": 4.4069, "L1_init": 0.5049, "L1_const": 0.3986, "L1_lin": 0.347, "R2_lin": 0.2417, "lam": 1000.0, "top5_share": 0.0178, "logitlens_top1_teacher": 0.0192}
+C T2 10 {"sigma_T": 6.6559, "sigma_S0": 5.2646, "L1_init": 0.5516, "L1_const": 0.4668, "L1_lin": 0.4363, "R2_lin": 0.1215, "lam": 1000.0, "top5_share": 0.0194, "logitlens_top1_teacher": 0.0235}
+C T2 11 {"sigma_T": 8.4869, "sigma_S0": 7.0127, "L1_init": 0.5389, "L1_const": 0.4644, "L1_lin": 0.4408, "R2_lin": 0.0918, "lam": 1000.0, "top5_share": 0.0138, "logitlens_top1_teacher": 0.0214}
+C T2 12 {"sigma_T": 12.3661, "sigma_S0": 12.0547, "L1_init": 0.4597, "L1_const": 0.3945, "L1_lin": 0.3758, "R2_lin": 0.1091, "lam": 1000.0, "top5_share": 0.0338, "logitlens_top1_teacher": 0.0235, "ans_top1_teacher": 0.0235, "ans_top1_S0": 0.0235, "ans_top1_lin_imitation": 0.0256}
+C counter 7 {"R2_counter": 0.18340742588043213, "L1_passvar": 0.32538363337516785, "L1_passvar_after_counter": 0.2945457398891449, "n": 313}
+C counter 8 {"R2_counter": 0.1718239188194275, "L1_passvar": 0.3652740716934204, "L1_passvar_after_counter": 0.33411067724227905, "n": 313}
+C counter 9 {"R2_counter": 0.15410923957824707, "L1_passvar": 0.39006736874580383, "L1_passvar_after_counter": 0.3609377145767212, "n": 313}
+C counter 10 {"R2_counter": 0.11981731653213501, "L1_passvar": 0.3864707052707672, "L1_passvar_after_counter": 0.36379846930503845, "n": 313}
+C counter 11 {"R2_counter": 0.10950314998626709, "L1_passvar": 0.3606376349925995, "L1_passvar_after_counter": 0.3416493833065033, "n": 313}
+C counter 12 {"R2_counter": 0.08951860666275024, "L1_passvar": 0.22011719644069672, "L1_passvar_after_counter": 0.21045668423175812, "n": 313}
+C model done
+DONE
