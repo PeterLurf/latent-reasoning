@@ -583,6 +583,49 @@ def p2(R_, TE, K, ra, run, lr_select, fit_micro=1):
     return out
 
 
+def ladder(R_, TE, K, ra, ks=(16, 64, 256, 1024), lr=3e-3):
+    """Theory 2026-10-14 23:3x (descriptive pilot, rms s1): k-ladder at t = 2, each k warm-started from the previous k's R + PCA directions of S_d - S_r,
+    lr 3e-3 (P2's selected), step cap 2,000 for k <= 64 and 5,000 for k >= 256 (early stop on validation IIA, patience 3 x 100 steps). Per k: train IIA
+    (1,000 fit pairs), val best, B IIA_ccc (pooled over eligible strata; by n), steps; G-FIT (train IIA non-decreasing in k within 0.05).
+    Rule (fixed before output): B IIA_ccc < 0.5 at k = 1024 -> 'no compact used subspace <= 1024-d found (distributed or fit-limited)'; some k >= 0.7 ->
+    'compact subspace at k' (controls then run on that k)."""
+    t = 2; excl = {tuple(it["syms"]) for it in TE if it["n"] >= int(ra.get("excl_min_n", 1))}; r_sp = np.random.default_rng(17300)
+    for _ in range(int(ra.get("serial_pool") or 2200)):
+        r__, _t = N.generate(r_sp, 8); excl.add(tuple(N.render(r__)))
+    TE_syms = {tuple(it["syms"]) for it in TE}
+    for p_ in R_.m.parameters():
+        p_.requires_grad_(False)
+    rng = np.random.default_rng([20302, t]); B = []
+    for it in TE:
+        if t + 1 <= it["n"] <= 8:
+            pr, _ = make_pair(it, t, rng)
+            if pr is not None:
+                B.append((it, pr))
+    rec = [b[0] for b in B]; don = [b[1][0] for b in B]; hyb = [b[1][2] for b in B]; ycf = np.array([b[1][1] for b in B]); y = np.array([N.value(it["root"]) for it in rec])
+    yd = np.array([d["t"] for d in don]); nn = np.array([it["n"] for it in rec])
+    ccc = (R_.answers(rec, K) == y) & (R_.answers(don, K) == yd) & (R_.answers(hyb, K) == ycf); ix = np.where(ccc)[0]
+    nc = {n_: int((nn[ix] == n_).sum()) for n_ in sorted(set(nn.tolist()))}; strata = [n_ for n_, c_ in nc.items() if c_ >= 100]; ix = np.array([i for i in ix if nn[i] in strata], dtype=int)
+    Bi = [rec[i] for i in ix]; BSr, BSd = collect(R_, Bi, t), collect(R_, [don[i] for i in ix], t); Bycf, Bn = ycf[ix], nn[ix]
+    A_fit, A_val, raw = build_A(R_, TE_syms, excl, t, K)
+    pack = lambda L: ([a[0] for a in L], collect(R_, [a[0] for a in L], t), collect(R_, [a[1] for a in L], t), np.array([a[2] for a in L]))  # noqa: E731
+    fit, val = pack(A_fit), pack(A_val); kmax = max(ks)
+    M = torch.tensor((fit[2] - fit[1]).reshape(len(fit[0]), -1), device=R_.dev); torch.manual_seed(20381); _, _, Vp = torch.svd_lowrank(M, q=kmax + 16, niter=4); Vp = Vp[:, :kmax].contiguous(); del M
+    out = {"t": t, "lr": lr, "n_ccc": int(len(ix)), "strata": strata, "A": {"n_fit": len(A_fit), "n_val": len(A_val), "raw": raw}, "k": {}}; prev = None
+    for k in ks:
+        init = Vp[:, :k] if prev is None else torch.cat([prev, Vp[:, :k - prev.shape[1]]], 1)
+        Rk, st, vb = fit_rot(R_, K, t, fit, val, k, lr, init=init, steps=2000 if k <= 64 else 5000)
+        pred = iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Rk); trn = iia_eval(R_, fit[0][:1000], fit[1][:1000], fit[2][:1000], fit[3][:1000], t, K, Rk)
+        out["k"][str(k)] = {"iia_ccc": float((pred == Bycf).mean()), "iia_ccc_by_n": {str(n_): float((pred == Bycf)[Bn == n_].mean()) for n_ in strata if (Bn == n_).any()},
+                            "iia_train": float((trn == fit[3][:1000]).mean()), "val_best": vb, "steps": st, "step_cap": 2000 if k <= 64 else 5000,
+                            "init": "pca" if prev is None else "k%d + pca pad" % prev.shape[1]}
+        print("LADDER k", k, out["k"][str(k)], flush=True); prev = Rk
+    tr = [out["k"][str(k)]["iia_train"] for k in ks]; out["G_FIT"] = {"train_by_k": tr, "pass": all(tr[i + 1] >= tr[i] - 0.05 for i in range(len(tr) - 1))}
+    best = max(ks, key=lambda k_: out["k"][str(k_)]["iia_ccc"]); bi = out["k"][str(best)]["iia_ccc"]
+    out["reading"] = ("compact subspace at k=%d (IIA_ccc %.3f >= 0.7; controls next)" % (best, bi) if bi >= 0.7 else
+                      "no compact used subspace <= 1024-d found (distributed or fit-limited)" if out["k"][str(kmax)]["iia_ccc"] < 0.5 else "intermediate (0.5-0.7)")
+    return out
+
+
 def shares(got, own, don, hyb, mask):
     n_ = int(mask.sum())
     if not n_:
@@ -611,7 +654,7 @@ def run_serial(R, rec, don, hyb_v, hyb_it, ts, K, tag, rows):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B"])
+    ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B", "ladder"])
     ap.add_argument("--bs", type=int, default=250); ap.add_argument("--memcheck", action="store_true"); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--lr_select", action="store_true", help="P2: choose the lr on this model's validation pairs (rms s1 only)"); ap.add_argument("--fit_micro", type=int, default=1)
     ap.add_argument("--smoke", action="store_true", help="P2 functional smoke (tiny sizes; written to p2_smoke, never read)")
@@ -628,16 +671,19 @@ def main():
         torch.cuda.reset_peak_memory_stats(a.device); R.answers(SPOOL[:a.bs], K, override=(2, R.states(SPOOL[:a.bs], 2)))
         print(a.run, "memcheck peak %.2f GiB (bs %d, K %d)" % (torch.cuda.max_memory_allocated(a.device) / 2 ** 30, a.bs, K), flush=True); return
     fp = os.path.join(rd, "eval_dasused.json"); res = json.load(open(fp)) if os.path.exists(fp) else {}
-    res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}
-    if a.stage == "P2":                                                     # pilot-scoped P2 (t = 2)
+    res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}; touched = set()
+    if a.stage == "ladder":                                                 # Theory 2026-10-14 23:3x: rms s1 k-ladder (descriptive pilot)
+        tb = time.time(); res["ladder"] = {**ladder(R, TE, K, ra), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("ladder")
+        print(a.run, "LADDER", {k_: res["ladder"]["k"][k_]["iia_ccc"] for k_ in res["ladder"]["k"]}, res["ladder"]["reading"], flush=True)
+    elif a.stage == "P2":                                                   # pilot-scoped P2 (t = 2)
         if a.smoke:
             SM.update({"steps": 20, "every": 10, "n_fit": 200, "n_val": 60, "n_supp": 400, "n_B": 300})
-        tb = time.time(); r2 = p2(R, TE, K, ra, a.run, a.lr_select, a.fit_micro); res["p2_smoke" if a.smoke else "p2"] = {**r2, **meta, "sm": dict(SM), "sec": round(time.time() - tb), "done": not a.smoke}
+        tb = time.time(); r2 = p2(R, TE, K, ra, a.run, a.lr_select, a.fit_micro); res["p2_smoke" if a.smoke else "p2"] = {**r2, **meta, "sm": dict(SM), "sec": round(time.time() - tb), "done": not a.smoke}; touched.add("p2_smoke" if a.smoke else "p2")
         print(a.run, "P2 label", r2.get("label"), {k_: r2.get(k_) for k_ in ("best_k", "iia_star", "lr")}, flush=True)
     elif a.stage == "P1":                                                   # draft §7 P1: G-MEM + G-GRAD + --time_steps
-        tb = time.time(); res["p1"] = {**p1(R, TE, K, steps=a.time_steps or 50), **meta, "sec": round(time.time() - tb), "done": True}; print(a.run, "P1", res["p1"], flush=True)
+        tb = time.time(); res["p1"] = {**p1(R, TE, K, steps=a.time_steps or 50), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("p1"); print(a.run, "P1", res["p1"], flush=True)
     elif a.stage == "P0" and res.get("serial_cond", {}).get("done") and not res.get("p0b", {}).get("done"):   # P0a done: the P0 remainder (draft §7)
-        tb = time.time(); res["p0b"] = {**p0b(R, TE, K, rows), **meta, "sec": round(time.time() - tb), "done": True}
+        tb = time.time(); res["p0b"] = {**p0b(R, TE, K, rows), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("p0b")
     elif a.stage == "P0":
         rec, don, hyb_v, hyb_it = serial_items_h(SPOOL, np.random.default_rng(17200)); r0, d0, h0 = N.serial_items(SPOOL, np.random.default_rng(17200))
         gate_si = len(r0) == len(rec) and all(x is y for x, y in zip(r0, rec)) and [d["syms"] for d in d0] == [d["syms"] for d in don] and list(h0) == list(hyb_v)
@@ -658,7 +704,9 @@ def main():
                               "def": "notes 203-2 / 203-2a: whole-state swap of the donor's S_t, K passes; clean = recipient, donor and hybrid item correct without a swap; "
                                      "(ii) eligibility per t: bare root leaf, h != root, height(root) >= 2t+1, hybrid not in {own, donor}; n < 100 -> na",
                               "pool_i": "SPOOL n 8 rng 17300 (2,200), serial_items rng 17200", "pool_ii": "test items n 3-8 (all), rng 20371", **meta, "sec": round(time.time() - t0), "done": True}
-    json.dump(res, open(fp, "w", newline="\n"), indent=1)
+        touched.add("serial_cond")
+    cur = json.load(open(fp)) if os.path.exists(fp) else {}                # merge-on-write: another stage may have written this file meanwhile
+    cur.update({k_: v_ for k_, v_ in res.items() if k_ not in cur or k_ in touched or k_ in ("run", "K", "add_norm", "meta")}); json.dump(cur, open(fp, "w", newline="\n"), indent=1)
     rp = os.path.join(rd, "eval_dasused_rows.npz"); old = dict(np.load(rp)) if os.path.exists(rp) else {}; old.update(rows); np.savez_compressed(rp, **old)
     print(a.run, "P0 done", round(time.time() - t0), "s", flush=True)
 
