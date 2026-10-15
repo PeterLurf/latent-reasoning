@@ -1,0 +1,298 @@
+{
+ "n_clean_items": 5999,
+ "clean_acc_pool": 0.9998333333333334,
+ "M-CONS": {
+  "acc": 0.2947157859643274,
+  "n": 5999,
+  "by_n": {
+   "3": {
+    "acc": 0.699,
+    "n": 1000
+   },
+   "4": {
+    "acc": 0.406,
+    "n": 1000
+   },
+   "5": {
+    "acc": 0.227,
+    "n": 1000
+   },
+   "6": {
+    "acc": 0.164,
+    "n": 1000
+   },
+   "7": {
+    "acc": 0.13413413413413414,
+    "n": 999
+   },
+   "8": {
+    "acc": 0.138,
+    "n": 1000
+   }
+  }
+ },
+ "M-UNCONS": {
+  "acc": 0.15952658776462744,
+  "n": 5999,
+  "by_n": {
+   "3": {
+    "acc": 0.315,
+    "n": 1000
+   },
+   "4": {
+    "acc": 0.174,
+    "n": 1000
+   },
+   "5": {
+    "acc": 0.126,
+    "n": 1000
+   },
+   "6": {
+    "acc": 0.134,
+    "n": 1000
+   },
+   "7": {
+    "acc": 0.11511511511511512,
+    "n": 999
+   },
+   "8": {
+    "acc": 0.093,
+    "n": 1000
+   }
+  }
+ },
+ "M-CONS-ANS": {
+  "acc": 0.1688614769128188,
+  "n": 5999,
+  "by_n": {
+   "3": {
+    "acc": 0.293,
+    "n": 1000
+   },
+   "4": {
+    "acc": 0.198,
+    "n": 1000
+   },
+   "5": {
+    "acc": 0.142,
+    "n": 1000
+   },
+   "6": {
+    "acc": 0.142,
+    "n": 1000
+   },
+   "7": {
+    "acc": 0.11511511511511512,
+    "n": 999
+   },
+   "8": {
+    "acc": 0.123,
+    "n": 1000
+   }
+  }
+ },
+ "M-CONS-KN": {
+  "acc": 0.29271545257542925,
+  "n": 5999,
+  "by_n": {
+   "3": {
+    "acc": 0.701,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.816,
+     "3": 7.371
+    }
+   },
+   "4": {
+    "acc": 0.408,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.814,
+     "3": 7.203,
+     "4": 10.482
+    }
+   },
+   "5": {
+    "acc": 0.219,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.75,
+     "3": 7.063,
+     "4": 10.287,
+     "5": 13.541
+    }
+   },
+   "6": {
+    "acc": 0.156,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.85,
+     "3": 7.11,
+     "4": 10.318,
+     "5": 13.423,
+     "6": 16.646
+    }
+   },
+   "7": {
+    "acc": 0.13413413413413414,
+    "n": 999,
+    "clean_acc_kn": 0.999,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.7967967967967966,
+     "3": 7.105105105105105,
+     "4": 10.26026026026026,
+     "5": 13.41041041041041,
+     "6": 16.5995995995996,
+     "7": 19.763763763763762
+    }
+   },
+   "8": {
+    "acc": 0.138,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.71,
+     "3": 7.025,
+     "4": 10.215,
+     "5": 13.337,
+     "6": 16.446,
+     "7": 19.642,
+     "8": 22.637
+    }
+   }
+  },
+  "def": "note 203-5b POST-HOC: think loop stops at K' = n; items clean at K' = n; descriptive"
+ },
+ "M-UNCONS-KN": {
+  "acc": 0.12618769794965828,
+  "n": 5999,
+  "by_n": {
+   "3": {
+    "acc": 0.197,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.816,
+     "3": 7.371
+    }
+   },
+   "4": {
+    "acc": 0.14,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.814,
+     "3": 7.203,
+     "4": 10.482
+    }
+   },
+   "5": {
+    "acc": 0.111,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.75,
+     "3": 7.063,
+     "4": 10.287,
+     "5": 13.541
+    }
+   },
+   "6": {
+    "acc": 0.115,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.85,
+     "3": 7.11,
+     "4": 10.318,
+     "5": 13.423,
+     "6": 16.646
+    }
+   },
+   "7": {
+    "acc": 0.1001001001001001,
+    "n": 999,
+    "clean_acc_kn": 0.999,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.7967967967967966,
+     "3": 7.105105105105105,
+     "4": 10.26026026026026,
+     "5": 13.41041041041041,
+     "6": 16.5995995995996,
+     "7": 19.763763763763762
+    }
+   },
+   "8": {
+    "acc": 0.094,
+    "n": 1000,
+    "clean_acc_kn": 1.0,
+    "masked_tokens_mean_by_pass": {
+     "1": 0.0,
+     "2": 3.71,
+     "3": 7.025,
+     "4": 10.215,
+     "5": 13.337,
+     "6": 16.446,
+     "7": 19.642,
+     "8": 22.637
+    }
+   }
+  },
+  "def": "note 203-5b POST-HOC: think loop stops at K' = n; items clean at K' = n; descriptive"
+ },
+ "uncons_shortfall_tokens": 343508,
+ "gates": {
+  "PLAIN": {
+   "equal": 6000,
+   "n": 6000,
+   "pass": true
+  },
+  "FILLER": {
+   "token": 5633,
+   "text": " ?",
+   "single": true,
+   "outside_vocab": true
+  },
+  "SPAN": {
+   "n_items": 10000,
+   "mismatch": 0,
+   "pass": true
+  }
+ },
+ "masked_tokens_mean_by_pass": {
+  "1": 0.0,
+  "2": 3.7894649108184697,
+  "3": 7.14619103183864,
+  "4": 10.099683280546758,
+  "5": 12.454742457076179,
+  "6": 14.277546257709618,
+  "7": 15.55692615435906,
+  "8": 16.2703783963994
+ },
+ "masked_tokens_note": "M-CONS / M-UNCONS / M-CONS-ANS mask the same count per pass (M-UNCONS short by uncons_shortfall_tokens in total); M-CONS-ANS also masks the decoder with pass K's think mask; the KN arms log their own per pass",
+ "readable": true,
+ "items": "test n 3-8, rng 20381 permutation, clean-correct at K' = K",
+ "card": "NVIDIA GeForce RTX 3070",
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "bs": 250,
+ "K": 8,
+ "torch": "2.14.0+cu130",
+ "script_git": "a17b1c611e73b7cf0a16f5fa36c1d8d8b5ab87fb",
+ "sec": 159,
+ "def": "THEORY note 203-5 / 203-5a; see scratch/maskswap.py"
+}

@@ -3,12 +3,12 @@
  "K": 8,
  "add_norm": "rms",
  "meta": {
-  "card": "NVIDIA GeForce RTX 3070",
+  "card": "NVIDIA GeForce RTX 4060",
   "dtype": "bf16 autocast trunk, fp32 memory branch",
   "bs_eval": 250,
   "torch": "2.14.0+cu130",
   "driver": "591.86",
-  "script_git": "d76cd49a267aa86855321e474e26ca61edec9716"
+  "script_git": "58514020b98e3b5c040c99a7dbf53be8b9757f9b"
  },
  "serial_cond": {
   "s170": {
@@ -1177,5 +1177,238 @@
   "script_git": "d76cd49a267aa86855321e474e26ca61edec9716",
   "sec": 299,
   "done": true
+ },
+ "p1": {
+  "D": 49152,
+  "k": 64,
+  "fit_bs": 64,
+  "t": 2,
+  "n": 8,
+  "ckpt_passes": true,
+  "peak_gib_micro1": 1.4438114166259766,
+  "grad": {
+   "R_grad_norm": 5.633080959320068,
+   "model_params_frozen": true,
+   "pass": true
+  },
+  "fit_micro": 1,
+  "G_MEM": {
+   "pass": true,
+   "limit_gib": 6.5
+  },
+  "s_per_step": 0.9036181974411011,
+  "time_steps": 50,
+  "card": "NVIDIA GeForce RTX 3070",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "58514020b98e3b5c040c99a7dbf53be8b9757f9b",
+  "sec": 48,
+  "done": true
+ },
+ "p2_smoke": {
+  "t": 2,
+  "scope": "pilot (Theory 2026-10-14): t 2; one lr from rms s1 val; k 16 / 64; on-support refit for best k; step cap 2000",
+  "gates": {
+   "SMOKE_label": {
+    "got": {
+     "USED": "UR-FOUND",
+     "UNUSED": "ILLUSION-SUSPECT",
+     "USED-LOW": "UR-FOUND"
+    },
+    "want": {
+     "USED": "UR-FOUND",
+     "UNUSED": "ILLUSION-SUSPECT",
+     "USED-LOW": "UR-FOUND"
+    },
+    "pass": true
+   },
+   "DISJ": {
+    "pass": true
+   },
+   "FIT": {
+    "pass": true
+   },
+   "EN": {
+    "pass": true
+   },
+   "DISRUPT": {
+    "own_acc_drop": {
+     "R_star": 0.8927335640138409,
+     "R_on": 0.20415224913494812
+    },
+    "n": 289,
+    "pass": false
+   }
+  },
+  "B": {
+   "n_pairs": 4483,
+   "n_ccc_by_n": {
+    "3": 550,
+    "4": 778,
+    "5": 786,
+    "6": 799,
+    "7": 783,
+    "8": 775
+   },
+   "eligible_strata": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "n_ccc_eligible": 300
+  },
+  "A": {
+   "n_fit": 200,
+   "n_val": 60,
+   "raw_recipients": 431
+  },
+  "lr_selection": {
+   "0.001": {
+    "val": 0.11666666666666667,
+    "steps": 20
+   },
+   "0.003": {
+    "val": 0.11666666666666667,
+    "steps": 20
+   }
+  },
+  "lr": 0.001,
+  "k": {
+   "16": {
+    "iia_ccc": 0.08666666666666667,
+    "n_ccc": 300,
+    "iia_ccc_by_n": {
+     "3": 0.08666666666666667
+    },
+    "iia_train": 0.23,
+    "val_best": 0.11666666666666667,
+    "steps": 20,
+    "init": "pca",
+    "lr": 0.001
+   },
+   "64": {
+    "iia_ccc": 0.08333333333333333,
+    "n_ccc": 300,
+    "iia_ccc_by_n": {
+     "3": 0.08333333333333333
+    },
+    "iia_train": 0.375,
+    "val_best": 0.15,
+    "steps": 20,
+    "init": "k16 + pca pad",
+    "lr": 0.001
+   }
+  },
+  "best_k": 16,
+  "iia_star": 0.08666666666666667,
+  "support": {
+   "eps_profile": {
+    "0.001": {
+     "m": 89,
+     "heldout_capture": 0.9503395557403564
+    },
+    "0.0001": {
+     "m": 284,
+     "heldout_capture": 0.9733344316482544
+    },
+    "1e-05": {
+     "m": 399,
+     "heldout_capture": 0.9768596291542053
+    },
+    "1e-06": {
+     "m": 399,
+     "heldout_capture": 0.9768596291542053
+    }
+   },
+   "eps": 1e-06,
+   "m": 399,
+   "heldout_capture": 0.9768596291542053,
+   "G_SUPP": false,
+   "iia_proj": 0.056666666666666664,
+   "iia_on": 0.11,
+   "iia_on_by_n": {
+    "3": 0.11
+   },
+   "omega": 0.2786312699317932,
+   "on_steps": 20,
+   "on_val": 0.1
+  },
+  "controls": {
+   "haar_iia_ccc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "energy_iia_ccc": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "energy_rel_err": [
+    0.0003609784414062762,
+    0.00020625187240617366,
+    0.00019065868848065214,
+    0.00021898253947580235,
+    0.0007970602855842672
+   ],
+   "E_star": 829689.4375,
+   "E_total": 5519483.0,
+   "var_share": 0.15032013641495046,
+   "shuffled_iia_ccc": 0.08333333333333333,
+   "G_EN": true
+  },
+  "necessity": {
+   "resample": {
+    "R_on": 0.45333333333333337,
+    "R_star": 0.92,
+    "random_mean": 0.000666666666666671,
+    "excess": 0.4526666666666667
+   }
+  },
+  "locus": {
+   "mass_add": 0.9976412057876587,
+   "mass_delta": 0.0023588768672198057,
+   "mass_z": 0.0
+  },
+  "label": "VOID",
+  "label_inputs": {
+   "iia_star": 0.08666666666666667,
+   "ctrl_max": 0.0,
+   "b0": 0.0,
+   "shuffled": 0.08333333333333333,
+   "supp_pass": false,
+   "iia_on": 0.11,
+   "per_n_floor_ok": false,
+   "necessity_excess": 0.4526666666666667,
+   "iia_max_all_k": 0.08666666666666667,
+   "gfit": true,
+   "eligible": true
+  },
+  "b0": 0.0,
+  "card": "NVIDIA GeForce RTX 4060",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "58514020b98e3b5c040c99a7dbf53be8b9757f9b",
+  "sm": {
+   "steps": 20,
+   "every": 10,
+   "n_fit": 200,
+   "n_val": 60,
+   "n_supp": 400,
+   "n_B": 300
+  },
+  "sec": 214,
+  "done": false
  }
 }
