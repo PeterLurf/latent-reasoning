@@ -252,6 +252,7 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64, lotus
         for fld, v in d_.items():
             if fld.endswith("_by_grounding"):
                 o_[fld] = {g_: {t: float(np.mean(x)) for t, x in sorted(vv.items(), key=lambda kv: int(kv[0]))} for g_, vv in v.items()}
+                o_["n_" + fld] = {g_: {t: len(x) for t, x in sorted(vv.items(), key=lambda kv: int(kv[0]))} for g_, vv in v.items()}   # Theory 10-15: exact R-pooling weights
             else:
                 o_[fld] = {t: float(np.mean(x)) for t, x in sorted(v.items(), key=lambda kv: int(kv[0]))}; o_["n_" + fld] = {t: len(x) for t, x in v.items()}
     return out
