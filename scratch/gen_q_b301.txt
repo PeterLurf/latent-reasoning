@@ -1,0 +1,4 @@
+# THEORY §208 QUESTION-ONCE (registered c8403076; QONCE draft 1c2dc4d3 §12 / §16; user-approved via Audit ~11:0x-11:15, cap $3.20): §200 A's flags exactly + --ans_bottleneck --question_once --aux_nopass (no RMS). RTX 3090, seed 1, 24k. Harness 759b3396 (gates scratch/gate_s208/gate.json). G7 = HOSTPROBE + the first 200 steps with the running guard at $3.20. LAUNCH ONLY after Audit's diff review. Data via .extra (incl. the s204 op vocab)
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_lat_ansbn_qonce_nopass_s1 boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --bs 64 --lr 1e-4 --seed 1 --valid_every 2000 --ckpt_every 1000 --auto_micro --ans_bottleneck --question_once --aux_nopass
