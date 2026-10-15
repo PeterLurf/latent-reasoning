@@ -1,0 +1,61 @@
+{
+ "def": "DAS-USED draft \u00a74 CHECK on the code (boxes/deltamem.py add_read and the delta-rule step, read-only): (M1) an additive head's read is invariant to\nrescaling that head's state under add_norm 'rms' (up to the 1e-6 regulariser), invariant to the JOINT rescaling (A, z) under 'den', and linear under None;\n(M2) after a rescale c of the additive state, the next write W gives the read of c A + W: the first downstream read is unchanged (rms), the second is not\n(the mix of old content and the new write changes); (M4) the delta rule at a shared key: S'k = alpha (1 - beta) S k + beta v, so beta = 1 replaces the old\ncontent (no magnitude layering) and beta < 1 layers it with ratio alpha (1 - beta).",
+ "M1_rms": {
+  "0.5": {
+   "max_rel_change": 6.014636688943395e-08,
+   "ratio_norm": 0.9999999583178892
+  },
+  "2.0": {
+   "max_rel_change": 1.5036593543258243e-08,
+   "ratio_norm": 1.0000000104205287
+  },
+  "10.0": {
+   "max_rel_change": 1.9848303495727324e-08,
+   "ratio_norm": 1.0000000137550977
+  }
+ },
+ "M1_den": {
+  "0.5": {
+   "max_rel_change": 2.841475972775934e-09,
+   "ratio_norm": 0.9999999976479331
+  },
+  "2.0": {
+   "max_rel_change": 1.4207379982393545e-09,
+   "ratio_norm": 1.0000000011760335
+  },
+  "10.0": {
+   "max_rel_change": 2.557328682495253e-09,
+   "ratio_norm": 1.0000000021168602
+  }
+ },
+ "M1_None": {
+  "0.5": {
+   "max_rel_change": 0.5,
+   "ratio_norm": 0.5
+  },
+  "2.0": {
+   "max_rel_change": 1.0,
+   "ratio_norm": 2.0
+  },
+  "10.0": {
+   "max_rel_change": 9.000000000000002,
+   "ratio_norm": 10.0
+  }
+ },
+ "M2_rms_c0.5": {
+  "first_read_rel_change": 6.014636688523996e-08,
+  "second_read_rel_change_mean": 0.17019543680093793
+ },
+ "M2_rms_c2.0": {
+  "first_read_rel_change": 1.5036593554703693e-08,
+  "second_read_rel_change_mean": 0.08980528850035996
+ },
+ "M4_beta1.0": {
+  "max_abs_err_vs_formula": 8.881784197001252e-16,
+  "old_content_weight": 0.0
+ },
+ "M4_beta0.5": {
+  "max_abs_err_vs_formula": 8.881784197001252e-16,
+  "old_content_weight": 0.495
+ }
+}
