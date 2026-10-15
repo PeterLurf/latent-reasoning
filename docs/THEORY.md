@@ -15624,6 +15624,30 @@ Each registers separately, after T1 / T2.
   - One card (3070), bf16, the original eval bs; card / dtype / bs recorded.
 * **Consequence:** only TOLERANCE-SEPARATES motivates a SOURCE-DAMPED training variant. That would be its own derivation and the user's call, presented beside IIT-SERIAL, not instead of it.
 
+**Note 203-6 (2026-10-14 21:14 EDT; pre-stated before any output; descriptive, $0 eval-only; Literature a44a9948). INPUT-SWAP, the mirror of the SERIAL state swap: does a model follow its carried state or its re-presented input?**
+* **Why:** Wang & Reid 2609.01924 (Huginn): an injection swap from recurrence k flips the output to the new input's answer in 30 / 30 configurations, i.e. "continuous recomputation from the re-injected input". They call for matched small looped models with and without that behaviour. 203-4 shows our failed seeds ignore a swapped state. This test checks the other side.
+* **Manipulation:**
+  - Think passes 1..k run on the recipient's input x_r.
+  - Passes k + 1..K and the answer decoder run on a donor's input x_d. The donor is structure-matched: the same tree shape, with the leaves of nodes reduced at passes ≤ k differing so that their values differ.
+  - The memory is carried unchanged.
+  - k ∈ {1, 2}. Items are test n 3–8 (≤ 1,000 per n, rng 20401). Eligibility: height(root) ≥ 2k + 1.
+* **Targets** (all exact from the trees):
+  - y_d, the donor's own answer;
+  - **y_mir**, the mirror hybrid: the donor's tree with the nodes reduced at passes ≤ k set to the recipient's values;
+  - y_r, the recipient's answer.
+  - Kept: y_mir ∉ {y_d, y_r}.
+* **Readings,** on clean-ccc pairs (the model answers x_r, x_d and the mirror item correctly clean; minimum 100 per model), at k = 1 (primary) and k = 2:
+  - **STATE-FOLLOW** = P(answer = y_mir);
+  - **INPUT-FOLLOW** = P(answer = y_d).
+* **Predicted, as the 2 × 2 with 203-4:**
+  - converged: STATE-FOLLOW ≥ 0.6 and INPUT-FOLLOW ≤ 0.3, the mirror of their SERIAL hybrid ≥ 0.70;
+  - failed: INPUT-FOLLOW ≥ 0.8, the mirror of their SERIAL own-answer ≥ 0.87.
+  - **DISSOCIATES:** both hold for every readable model with ≥ 5 failed readable. **NO-DISSOCIATION:** the converged models' INPUT-FOLLOW is ≥ 0.6, i.e. they also recompute from the input. Otherwise AMBIGUOUS.
+* **Gates:**
+  - with x_d = x_r, answers are bitwise equal to the clean eval at the same bs / card;
+  - the structure match and y_mir are checked on 10k generator items (the swapped values change the mirror answer);
+  - one card (3070), bf16, the original eval bs, recorded.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
