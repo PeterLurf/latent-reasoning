@@ -16166,6 +16166,18 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * The plain path is bitwise.
 * A new script; no boxes/*.py edits.
 
+**Note 207-1 (2026-10-15 09:58 EDT; before any §207 output; interpretation guard, Audit).**
+* **CARRIES-STATE means "the answer lives in the memory"** (serial use OR pass-1 precompute), not "serial use".
+  - §204 showed a pass-1 precompute: VALUE-LEAK ≈ 0.9, PROBE-LEAK ≥ 0.92.
+  - A model that writes its whole answer at pass 1 follows a donor state at t = 2 and keeps its own answer under an input swap from k = 1.
+* **Disambiguation (pre-stated):**
+  - **SERIAL-CARRY** if CARRIED(2) − CARRIED(1) ≥ 0.10. More passes on the own input carry more.
+  - **PASS1-CARRY** if |CARRIED(2) − CARRIED(1)| ≤ 0.05. The answer is already in the memory after pass 1.
+  - Otherwise CARRY-AMBIGUOUS.
+  - The same contrast is reported for OWN-KEPT under STATE-SWAP: OWN-KEPT(1) vs (2), so a serial user loses more when swapped later.
+* **K′1 / K′10** is reported beside it.
+* **No §207 label is read as the nested "converged" signature without SERIAL-CARRY.**
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
