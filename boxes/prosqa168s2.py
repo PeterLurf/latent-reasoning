@@ -115,14 +115,34 @@ def pad(seqs, fill=EOS):
 
 class ProsMem(torch.nn.Module):
     """GPT-2 + §170's DeltaMem-R; think = [EOT, question]; decoder = [EOT, question, "\\n"] + answer, read-only; aux = §175's step decoder."""
+    ans_bn = False                                                          # §208 AB (set_ab_qo): the answer decoder reads [EOT, '###'] + memory only
+    qo = False                                                              # §208 QO: think passes >= 2 read the fixed filler x_f, not the question
+    qo_ids = None
+
     def __init__(self, g):
         super().__init__(); self.g = g; self.mem = DM.DeltaMem(g, 6, "top")
+
+    def set_ab_qo(self, ans_bn=False, qo=False, filler_ids=None):
+        """§208 (GSM8K only; FactorMem inherits it): AB = no question tokens in the answer decoder; QO = the question at pass 1 only."""
+        assert not qo or ans_bn, "--question_once needs --ans_bottleneck"
+        self.ans_bn, self.qo = bool(ans_bn), bool(qo); self.qo_ids = [int(t_) for t_ in filler_ids] if qo else None; return self
+
+    def pass_inputs(self, x, mask, h_low=None):
+        """§208 the one think-input helper -> f(t) = (x_t, mask_t, h_low_t). Without QO: the inputs unchanged (the same objects) at every t. QO: t = 1 the
+        question; t >= 2 the filler x_f broadcast to the batch rows, mask all true, its lower blocks computed once per call (when h_low is used)."""
+        if not self.qo:
+            return lambda t: (x, mask, h_low)
+        xf = torch.tensor([self.qo_ids] * x.shape[0], device=x.device); mf = torch.ones(xf.shape, dtype=mask.dtype, device=x.device); hf = None
+        if h_low is not None:
+            self._hl_src_f = xf; hf = DM.gpt_lower(self.g, self.g.embed(xf), self.mem.layer)
+        return lambda t: (x, mask, h_low) if t == 1 else (xf, mf, hf)
 
     def think_inputs(self, its, dev):
         ids_, m_ = pad([[EOT] + it["q"] for it in its]); return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev)
 
     def write(self, S, x, mask, h_low=None):
-        assert h_low is None or x is self._hl_src, "--cache_lower: every pass must see the identical input the lower blocks were cached on"
+        assert h_low is None or x is self._hl_src or (self.qo and x is getattr(self, "_hl_src_f", None)), \
+            "--cache_lower: every pass must see the identical input the lower blocks were cached on (§208 QO: per source, question / filler)"
         return DM.gpt_forward_mem(self.g, self.g.embed(x), self.mem, S, mask=mask, h_low=h_low)[1]
 
     def lower(self, x):
@@ -131,21 +151,29 @@ class ProsMem(torch.nn.Module):
 
     def think(self, S, x, mask, K, cache=False):
         hl = self.lower(x) if (cache and K) else None
+        if self.qo and K:                                                   # §208 QO: pass t's input from pass_inputs (question at 1, filler after)
+            pin = self.pass_inputs(x, mask, hl)
+            for t in range(1, K + 1):
+                S = self.write(S, *pin(t))
+            return S
         for _ in range(K):
             S = self.write(S, x, mask, hl)
         return S
 
     def dec_loss(self, S, its, dev):
-        seqs = [[EOT] + it["pre"] + it["a1"] + [EOS] for it in its]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
+        seqs = [[EOT] + it["a1"] + [EOS] for it in its] if self.ans_bn else [[EOT] + it["pre"] + it["a1"] + [EOS] for it in its]   # §208 AB: no question
+        assert not self.ans_bn or all(q[1] == ANS and len(q) == len(it["a1"]) + 2 for q, it in zip(seqs, its)), "§208 AB: decoder rows are [EOT, ANS, answer, EOS]"
+        ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev)
         lab = np.full(ids_.shape, -100)
         for r, (it, q) in enumerate(zip(its, seqs)):
-            n0 = 1 + len(it["pre"]); lab[r, n0:len(q)] = q[n0:]
+            n0 = 1 if self.ans_bn else 1 + len(it["pre"]); lab[r, n0:len(q)] = q[n0:]
         h = fwd_read(self.g, self.g.embed(x), self.mem, S); lg = self.g.logits(h[:, :-1]).float()
         return Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), torch.tensor(lab, device=dev)[:, 1:].reshape(-1), ignore_index=-100)
 
     @torch.no_grad()
     def margins(self, S, its, dev):
         """log p(a1) - log p(a2) after [EOT, question, "\\n"], reading S (each item's memory used for both answers)."""
+        assert not self.ans_bn, "§208 --ans_bottleneck is GSM8K-only"
         seqs, spans = [], []
         for it in its:
             for a_ in (it["a1"], it["a2"]):
