@@ -15551,6 +15551,25 @@ Each registers separately, after T1 / T2.
   - **The class-contrast readings of 203-2 (CONTRAST-SURVIVES / CAPABILITY-EXPLAINED / AMBIGUOUS) are read on this n 3–8 extension, at t = 1 and t = 2.** The n = 8 s170 re-run is the reproduction gate, and its numbers are descriptive.
   - **Pre-stated (DAS-USED rev 2, P1b):** on clean n 3–4 pairs at t = 1, failed hybrid ≤ 0.2 with own-answer share ≥ 0.6, and converged hybrid ≥ 0.6.
 
+**Note 203-3: the conditioned SERIAL pilot, P0a (2026-10-14 20:46 EDT; notes 203-2 / 203-2a; Experiments 90bc1bdb, scratch/dasused.py f4bd12e3; 3070, bf16 trunk with an fp32 memory branch, bs 250). Gates: SI exact; S170 reproduction max |Δ| 0.017. On the pilot four, the swap contrast survives capability conditioning: failed seeds IGNORE a swapped state and recompute from the input.**
+* **n 3–8 extension, clean-ccc pairs (recipient, donor and hybrid item all solved without a swap):** hybrid / own answer (n)
+
+  | model | t = 1 | t = 2 |
+  |---|---|---|
+  | rms s1 (converged) | 0.817 / 0.134 (2,261) | 0.864 / 0.095 (807) |
+  | window s1 (converged) | 0.701 / 0.219 (1,900) | 0.800 / 0.161 (534) |
+  | rms s3 (failed) | 0.003 / 0.993 (1,120) | 0.028 / 0.908 (109) |
+  | hold s1 (failed) | 0.003 / 0.979 (1,353) | 0.036 / 0.870 (169) |
+
+* **P1b (pre-stated) holds:** at clean n 3–4, t = 1, the failed hybrid is 0.00 with own 0.98–0.99, and the converged hybrid is 0.78–0.90.
+* **IIT-SERIAL's G-ALIGN passes:** the converged clean hybrid is ≥ 0.6 at t = 1 and t = 2 in both pilot converged models.
+* **Reading (descriptive, pilot only):**
+  - On items the failed models can solve, a donor's pass-1 or pass-2 state does not move their answer at all: they return their own answer 87–99% of the time.
+  - Their later passes overwrite or ignore the carried state and recompute from the re-presented input. That is the contractive class's mechanism, as Part I predicts.
+  - Converged models carry the state.
+  - The registered CONTRAST-SURVIVES needs ≥ 5 failed models, so it waits for P0 on all 16 (Stage-B P0).
+* The s170 n = 8 pool: the failed models are N/A there (< 100 clean pairs: 35 and 69). Descriptive only.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
