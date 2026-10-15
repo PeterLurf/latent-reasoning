@@ -22,6 +22,7 @@ Opus subagent for Theory, after the ANSWER-BOTTLENECK draft (docs/THEORY_ANSBOTT
 6. **Precedent:** §165 (problem once, constant passes, blind decoder) gave 0.0 under FINAL-only, before the step aux existed. QO + step aux is untested.
 7. **Prior:** ACC 0.075 (HURTS 0.72); ITER-GAIN P 0.35; QO-SERIAL P 0.14. Labels: PASS1 0.45 / TWO-STAGE 0.15 / SERIAL 0.14; CAPACITY-BOUND 0.35 alongside.
 8. **Recommendation: AB+QO alone, one cell vs A, $2.0 central / $3.0 high.** AB becomes a later control only if ITER-GAIN passes. **Main risk:** a lossy copy (ρ < 0.72) caps the iteration route below PASS1.
+9. **Aux prompt (§16): use NOPASS (`--aux_nopass`), no RMS.** Under QO, RMS no longer removes the filler-pass counter (PROVED), and K′1-RESCALED is replaced by MEAN-ITER(1). P(serial): 0.14 pass token / **0.16 NOPASS** / 0.17 NOPASS+RMS.
 
 ---
 
@@ -464,3 +465,58 @@ Opus subagent for Theory, after the ANSWER-BOTTLENECK draft (docs/THEORY_ANSBOTT
 6. **§179's blind-decoder CAPACITY failure** (multiplication) is a standing risk for AB and AB+QO. GSM8K's mostly one-token answer is lighter. The AB draft should cite §179 (Theory's edit).
 7. **One seed, two changes vs A.** ACC attribution between AB and QO is by probes only. Stage 2 (≥ 3 seeds plus the AB control) is a separate decision.
 8. **The filler string is reused** from the FILLER-N eval. Its eval is flagged (QO-3). A learned filler is out of scope.
+
+---
+
+## 16. Addendum (2026-10-15 11:05 EDT; Audit's design point via Theory): the aux prompt under QO
+
+**The question.** A's recipe keys the aux prompt on the pass token, [EOT, " Step", " t", " :"]. §204 showed that with the token the chain is stored at pass 1 and read out by pass identity (VALUE-LEAK ≈ 0.9, PROBE-LEAK ≥ 0.92). Under QO pass 1 is the only pass that sees q, so a token-keyed aux rewards writing every step there, which is PASS1-PRECOMPUTE. Three options:
+* (i) the pass token, as drafted;
+* (ii) NOPASS ([EOT, " Step", " :"], §204's `--aux_nopass`);
+* (iii) NOPASS + `--add_norm rms` (F-NR-style).
+
+**16.1 What each option makes the memory do under QO (DERIVED; PROVED where marked).**
+* **(i) Pass token.**
+  - The aux reader knows t from its prompt, so a static M (the pass-1 table, held) satisfies every aux target. The aux puts no pressure on F to change the state.
+  - The pass-token full-trunk reader can also compute the remaining reductions itself from the copy (SEEDSTAB2 class C: e_3 decoded at ≥ 0.97 while v_2 is absent). The computation moves into the aux decoder, not F.
+  - **A direct PASS1 enabler.**
+* **(ii) NOPASS.** The aux at passes t and t+1 has identical inputs, so M_t ≠ M_{t+1} is required wherever targets differ.
+  - The penalty (Lemma 4, corrected) is ≥ 2 ln 2 at the first differing token. In token-mean units that is ≈ 2 ln 2/(L+1) ≈ **0.14 nats per pass pair** at GSM8K's L ≈ 8.8, against A's final aux_ce of 0.34: **a weak tilt** (SEEDSTAB2 §2).
+  - **But QO manufactures a free clock (PROVED at γ = 0):**
+    - passes ≥ 2 write the filler's constant content, so S_add(t) = W₁(q) + (t−1)·A_f and the additive read is r₁(q) + (t−1)·r_f;
+    - a fixed, **item-independent** direction r_f grows linearly in t, decodable by a linear probe regardless of the item;
+    - the delta channel adds the geometric transient (D5b(c)): S_d(t) = S_d(1)·P_f^{t−1} + C_f(I + … + P_f^{t−2});
+    - and pass 1 vs pass 2 is trivially separable, since the two inputs differ.
+  - So under (ii) the store-at-pass-1-plus-index solution survives on the clock: NOPASS's tilt is spent on the clock, not on content (the 187-10 mechanism).
+  - **NOPASS is LESS effective under QO than in §204's setting.** There the free additive clock was t·r₁(q), an item-confounded magnitude. Here it is a clean additive offset.
+* **(iii) NOPASS + RMS.**
+  - **D5b(a)'s PROVED removal does not transfer (PROVED):** RMS cancels the γ = 0 counter only when r_t = t·r₁. Under QO, r_t = r₁ + (t−1)r_f is not proportional to r₁, so N(r_t) still moves with t.
+  - What remains is a direction clock whose consecutive change is O(1/t) (D5b(b)'s algebra). It is separable at t ≤ 3 and fades after. So the Lemma 4 tilt starts to bind from t ≈ 3–4, the deep items' later steps (as D5b(d) for §204), with the delta transient also fading there.
+  - **QO-specific cost (DERIVED|γ = 0):** under RMS the item part of the additive read shrinks by ≈ 1/(1 + (t−1)ρ_f), where ρ_f = ‖r_f‖/‖r₁‖ ≈ 0.4–0.6 from the token counts (17 filler vs ≈ 43 question tokens). At K that is ≈ 0.2. Without RMS the offset is item-independent at fixed K, so a bias cancels it.
+  - So (iii) trades a deep-step tilt against additive-channel retention. 199-E1's converged models compute in the delta heads, so the retention cost may be partly benign.
+
+**16.2 Readings unaffected; one correction (PROVED).**
+* The aux is a read-only forward (fwd_read, no write; AB draft F5), so QO-1 holds under all three options: F stays item-independent, and **ITER-GAIN needs no comparator under NOPASS (and NOPASS + RMS)**. MEAN-ITER, ONSET, the transplant and the probes are unchanged.
+* **Correction to §5.2 (applies to every option):** the AB draft's K′1-RESCALED, the decoder on (K·S_add(1), S_del(1)), relies on S_add(K) = K·S_add(1), which is **false under QO** (S_add(K) = S_add(1) + (K−1)·A_f at γ = 0).
+  - Under QO the matched one-pass control is **MEAN-ITER(1)**. Its additive part is exactly S_add(1) + the item-mean of the filler increments, the γ = 0 identity.
+  - ITER-GAIN = ACC − max(MEAN-ITER(1), K′1) ≥ T (deep ≥ T_D). K′1-RESCALED is reported for continuity only and not used in any rule.
+* **Added descriptive readout:** CLOCK pair accuracy on the aux-visible read (note 204-7's definition) for 2v3, 3v4 and 5v6, to measure QO's clock per option.
+
+**16.3 The three-way P table (one seed; CONJECTURE; the differences are within subjective noise).**
+
+| option | P(PASS1) | P(ITER-GAIN) | P(serial = QO-SERIAL) | main reason |
+|---|---|---|---|---|
+| (i) pass token | 0.45 | 0.35 | 0.14 | token-indexed table read + the class-C reader: a direct PASS1 enabler |
+| (ii) NOPASS | 0.42 | 0.36 | 0.16 | the token edge is removed, but QO's linear offset clock substitutes |
+| (iii) NOPASS + RMS | 0.40 | 0.34 | 0.17 | the clock fades from t ≈ 3 (deep-step tilt), at a QO-specific dilution cost (lower ITER-GAIN) |
+
+* **Our own nested record is weak support:** NOPASS 4/4 converged (POST-HOC, P = 0.15), §187's depth claim failed 2/2, and NOPASS had no within-depth cost (aux handle ≥ 0.992).
+
+**16.4 Recommendation: ONE cell with (ii) NOPASS.**
+* The derivation prefers (ii) and (iii) over (i): the pass token is a PASS1 enabler with no benefit under QO, and §187 shows NOPASS costs nothing in-distribution.
+* **It cannot separate (ii) from (iii)** (P(serial) 0.16 vs 0.17). So take the smaller change set. RMS's defining property (exact counter removal) fails under QO, it adds a QO-specific retention cost, and it would be a third change against A.
+* If Theory weights the deep-step clock fade above the dilution cost, (iii) is the defensible alternative at the same cost. The user then chooses between two single cells.
+* **The cell becomes** `gsm_lat_ansbn_qonce_nopass_s1` = §200 A's flags + `--ans_bottleneck --question_once --aux_nopass`.
+  - Engineering: `--aux_nopass` routes through FactorMem (gsm8k_stepaux.py:202–203), so the AB and QO helpers (§12.2; AB draft §11.1) must exist in FactorMem as well as ProsMem.
+  - G1 gains a check that `--aux_nopass` alone (with the string target) reproduces §204's NOPASS path bitwise.
+* **Cost is unchanged** ($2.0 central / $3.0 high). NOPASS shortens the aux prompt from 4 to 3 tokens and RMS is a per-head normalisation: both negligible.
