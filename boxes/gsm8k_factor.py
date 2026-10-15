@@ -174,19 +174,23 @@ def greedy_value(m, S, t, L=12):
 
 @torch.no_grad()
 def head_preds(m, S, its, t, dev):
-    """(op argmax, [pointer argmax token or None] x 2) reading S with the prompt (factor arm)."""
+    """(op argmax, [pointer argmax token or None] x 2, per-item plan CE = the mean teacher-forced CE of the present plan heads (op, ptr1, ptr2))
+    reading S with the prompt (factor arm)."""
     pre = m.aux_prompt(t); x = torch.tensor([pre] * len(its), device=dev); hl = fwd_read(m.g, m.g.embed(x), m.mem, S)[:, -1].float(); fts = [it["ft"][t - 1] for it in its]
-    out = [None, None]
+    out = [None, None]; lo = m.op_logits(hl).float(); ce = [[float(c_)] for c_ in Fn.cross_entropy(lo, torch.tensor([f_["op"] for f_ in fts], device=dev), reduction="none")]
     for j in range(2):
         lpj = m.ptr_logits(hl, [f_["p"][j][1] if f_["p"][j] is not None else None for f_ in fts], j)
         out[j] = [(fts[i]["p"][j][1][int(lpj[i].argmax())] if lpj[i] is not None else None) for i in range(len(its))]
-    return m.op_logits(hl).argmax(-1).tolist(), out
+        for i, f_ in enumerate(fts):
+            if lpj[i] is not None:
+                ce[i].append(float(Fn.cross_entropy(lpj[i].float()[None], torch.tensor([f_["p"][j][1].index(f_["p"][j][0])], device=dev))))
+    return lo.argmax(-1).tolist(), out, [float(np.mean(c_)) for c_ in ce]
 
 
 STR_RE = re.compile(r"<<([^=<>]*)=([^<>]*)>>")
 
 
-def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
+def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64, lotus=False):
     """§8.4: for passes t <= min(m, tmax, K), from M_t / M_1 (pass-token arms) / M_0 and COUNTER-SWAP's (t S_add(M_1), S_del(M_1)), (S_add(M_t),
     S_del(M_1)), (S_add(M_1), S_del(M_t)): value exact (factor / value arms: greedy value; string arm: value-in-string), op accuracy (factor: W_op;
     string: greedy signature), pointer-1/2 accuracy (factor: heads; string: first operand's first token), by pass and by grounding (R / Q / unparsed).
@@ -221,9 +225,9 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
                         if f_["v"] is not None:
                             add(src, "value_exact", t, f_["g"], ENC.decode(g_).strip() == f_["rhs"]); add(src, "value_exact_tokid", t, f_["g"], g_ == f_["v"][:-1])
                     if arm == "factor":
-                        op_, (p1, p2) = head_preds(m, S, its, t, dev)
+                        op_, (p1, p2), pce = head_preds(m, S, its, t, dev)
                         for r_, f_ in enumerate(fts):
-                            add(src, "op_acc", t, None, op_[r_] == f_["op"])
+                            add(src, "op_acc", t, None, op_[r_] == f_["op"]); add(src, "plan_ce", t, None, pce[r_])   # note 204-6: plan-head CE
                             for j, pj in ((0, p1), (1, p2)):
                                 if f_["p"][j] is not None:
                                     add(src, "ptr%d_acc" % (j + 1), t, f_["g"], pj[r_] == f_["p"][j][0])
@@ -241,6 +245,8 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
                             if not f_["coll"]:
                                 add(src, "ptr1_in_string_nocollide", t, f_["g"], ok_)
     out = {}
+    if lotus:                                                               # note 204-5 LOTUS-SEP (test extras only)
+        out["lotus_sep"] = lotus_sep(m, D, think_states_fn, K, dev, arm, tmax, bs)
     for src, d_ in R.items():
         o_ = out.setdefault(src, {})
         for fld, v in d_.items():
@@ -248,6 +254,43 @@ def aux_suite(m, D, think_states_fn, K, dev, arm, op_vocab, tmax=8, bs=64):
                 o_[fld] = {g_: {t: float(np.mean(x)) for t, x in sorted(vv.items(), key=lambda kv: int(kv[0]))} for g_, vv in v.items()}
             else:
                 o_[fld] = {t: float(np.mean(x)) for t, x in sorted(v.items(), key=lambda kv: int(kv[0]))}; o_["n_" + fld] = {t: len(x) for t, x in v.items()}
+    return out
+
+
+@torch.no_grad()
+def lotus_sep(m, D, think_states_fn, K, dev, arm, tmax=8, bs=64):
+    """note 204-5 LOTUS-SEP: on LEVEL-1 steps (every operand a question literal / constant: grounding Q; unparsed items excluded), decode step t from
+    M_1 (one think pass) with the prompt P_t: value exact (string equality; value / factor arms; the string arm's value_in_string) and plan accuracy (the
+    mean of the present op / ptr1 / ptr2 hits; the string arm: op_in_string / ptr1_in_string), pooled over t <= min(m, tmax, K), items m <= 2 vs m >= 4."""
+    acc = {"value_le2": [], "value_ge4": [], "plan_le2": [], "plan_ge4": []}
+    for i0 in range(0, len(D), bs):
+        ch = D[i0:i0 + bs]; M1 = think_states_fn(ch, 1)
+        for t in range(1, min(K, tmax) + 1):
+            ix = [j for j, it in enumerate(ch) if t <= it["m"] and (it["m"] <= 2 or it["m"] >= 4) and it["ft"][t - 1]["g"] == "Q"]
+            if not ix:
+                continue
+            its = [ch[j] for j in ix]; S = M1[ix]; fts = [it["ft"][t - 1] for it in its]; grp = ["le2" if it["m"] <= 2 else "ge4" for it in its]
+            if arm in ("value", "factor"):
+                for f_, g_, gr in zip(fts, greedy_value(m, S, t), grp):
+                    if f_["v"] is not None:
+                        acc["value_" + gr].append(ENC.decode(g_).strip() == f_["rhs"])
+                if arm == "factor":
+                    op_, (p1, p2), _ = head_preds(m, S, its, t, dev)
+                    for r_, (f_, gr) in enumerate(zip(fts, grp)):
+                        hits = [op_[r_] == f_["op"]] + [pj[r_] == f_["p"][j][0] for j, pj in ((0, p1), (1, p2)) if f_["p"][j] is not None]
+                        acc["plan_" + gr].append(float(np.mean(hits)))
+            else:
+                gen = m.aux_greedy(S, t, max(len(it["step_ids"][t - 1]) + 1 for it in its))
+                for r_, (it, f_, gr) in enumerate(zip(its, fts, grp)):
+                    txt = ENC.decode([int(v) for v in gen[r_] if int(v) != EOT]); mm = STR_RE.search(txt)
+                    acc["value_" + gr].append(bool(mm) and mm.group(2).strip() == f_["rhs"])
+                    hits = [bool(mm) and signature(mm.group(1) + "=") == signature(it["eqs"][t - 1])]
+                    if f_["p"][0] is not None:
+                        num = re.match(r"[\d,.]+", mm.group(1).lstrip("( ")) if mm else None; hits.append(bool(num) and ENC.encode(num.group(0))[0] == f_["p"][0][0])
+                    acc["plan_" + gr].append(float(np.mean(hits)))
+    out = {k: (float(np.mean(v)) if v else None) for k, v in acc.items()}; out.update({"n_" + k: len(v) for k, v in acc.items()})
+    out["def"] = ("note 204-5: level-1 steps (grounding Q), decoded from M_1 with P_t; value = string equality (string arm: value_in_string); plan = mean of the "
+                  "present op / ptr1 / ptr2 hits (string arm: op_in_string / ptr1_in_string); items m <= 2 vs m >= 4; pooled over t <= min(m, 8, K)")
     return out
 
 

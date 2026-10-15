@@ -142,6 +142,8 @@ def main():
     ap.add_argument("--aux_target", default="string", choices=["string", "value", "factor"], help="§204: the aux target (string = today's path; boxes/gsm8k_factor.py)")
     ap.add_argument("--aux_nopass", action="store_true", help="§204: the aux prompt [EOT, ' Step', ' :'] (no pass token) in training and every aux eval")
     ap.add_argument("--add_norm", default="", choices=["", "rms"], help="§204 F-NR: DeltaMem's additive reads RMS-normalised per head (the §185 path); '' = off")
+    ap.add_argument("--eval_out", default="eval.json", help="§204: the eval file name (e.g. eval_s204ref.json for a comparator's eval-only re-run); its item files "
+                    "then get the same stem (<stem>_items.json, <stem>_items_kprime.json, <stem>_args.json) so a landed run's files are never overwritten")
     ap.add_argument("--op_vocab", default="", help="§204 --aux_target factor: the frozen operator-signature list (default bench/data/gsm8k_aug/s204_op_vocab.json)")
     ap.add_argument("--resume", default=None); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
@@ -270,7 +272,9 @@ def main():
             "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
             "recomputable_items": int(sum(t is not None for t in TPL)) if TPL is not None else None, **(init_meta or {}),
             **({"op_vocab_path": a.op_vocab or os.path.relpath(GF.OPV_PATH, ROOT).replace(os.sep, "/"), "op_vocab_sha256": opv_sha} if SA else {})}
-    json.dump(info, open(os.path.join(a.out, "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
+    STEM = None if a.eval_out == "eval.json" else a.eval_out[:-5] if a.eval_out.endswith(".json") else a.eval_out
+    assert STEM is None or a.eval_only, "--eval_out is for --eval_only re-runs"
+    json.dump(info, open(os.path.join(a.out, (STEM + "_args.json") if STEM else "args_eval.json" if a.eval_only else (("args_resume_%d.json" % int(time.time())) if a.resume else "args.json")), "w", newline="\n"), indent=1)
     if SA and not a.resume and not a.eval_only:                             # note 147-2: g_add calibration at step 0
         its = [enc(Rtr[i]) for i in np.random.default_rng(16801).permutation(len(Rtr))[:32]]; x, msk = m.think_inputs(its, dev); m.mem.norms = []
         with torch.no_grad(), ac():
@@ -387,7 +391,7 @@ def main():
            "eval_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "eval_only": bool(a.eval_only), "transforms": dict(tr_n),
            "acc_def": "greedy after '###' (<= %d tokens, stop at EOS / newline), bench.tasks.norm_number exact match; the text arm generates its CoT to '###' first" % ANS_MAX,
            "symbolic": None, "cost": None}
-    EVF = "eval.json"
+    EVF = a.eval_out
 
     def _partial(tag):
         res["eval_partial_through"] = tag; res["eval_partial"] = True; json.dump(res, open(os.path.join(a.out, EVF), "w", newline="\n"), indent=1)
@@ -396,7 +400,7 @@ def main():
     if not SA:
         res["mean_cot_tokens"] = float(np.mean(answers.cot_len))
     json.dump([{"i": i, "pred": p_, "gold": it["ans"], "ok": bool(c_)} for i, (p_, it, c_) in enumerate(zip(P, Dte, C))],
-              open(os.path.join(a.out, "eval_items.json"), "w", newline="\n"), indent=0); _partial("acc")
+              open(os.path.join(a.out, (STEM + "_items.json") if STEM else "eval_items.json"), "w", newline="\n"), indent=0); _partial("acc")
     if vhist:
         bst = max(vhist, key=lambda sv: (sv[1], sv[0])); res.update({"acc_valid_best": bst[1], "valid_best_step": bst[0], "valid_hist": vhist})
         vb = os.path.join(a.out, "model_validbest.pt")
@@ -437,7 +441,7 @@ def main():
         res["acc_by_kprime"] = {str(kp): (res["acc"] if kp == K else float(np.mean(Ck[kp].tolist()))) for kp in KPRIMES}; _partial("acc_by_kprime")
         res["acc_by_m_kprime"] = {str(kp): {str(k_): float(Ck[kp][mt == k_].mean()) for k_ in sorted(set(mt.tolist()))} for kp in KPRIMES}   # §204 §8.4 / note 202-1
         json.dump([{"i": i, "m": int(mt[i]), **{"k%d" % kp: bool(Ck[kp][i]) for kp in KPRIMES}} for i in range(len(Dte))],
-                  open(os.path.join(a.out, "eval_items_kprime.json"), "w", newline="\n"), indent=0)
+                  open(os.path.join(a.out, (STEM + "_items_kprime.json") if STEM else "eval_items_kprime.json"), "w", newline="\n"), indent=0)
         idle = {}
         for k_ in sorted(set(mt.tolist())):
             Dm = [it for it in Dte if it["m"] == k_]
@@ -472,7 +476,7 @@ def main():
                              "acc_from_donor": acc_of(ex, P1), "delta_cos_final": float(Fn.cosine_similarity(S0[:, hd].float().flatten(1), S1[:, hd].float().flatten(1), dim=1).mean()),
                              "n_items": len(ex), "kprime": 16, "donor_passes": 8, "derangement": "np.roll(sample order, 1)", "items": "test, rng 16802 permutation[:extras_n]"}
         _partial("path_indep")
-        res["aux_suite"] = {"test_extras": GF.aux_suite(m, ex, lambda its_, k_: think_states(its_, k_), K, dev, a.aux_target, OPV, bs=bs),   # §204 §8.4
+        res["aux_suite"] = {"test_extras": GF.aux_suite(m, ex, lambda its_, k_: think_states(its_, k_), K, dev, a.aux_target, OPV, bs=bs, lotus=True),   # §204 §8.4
                             "aug_valid": GF.aux_suite(m, Dva, lambda its_, k_: think_states(its_, k_), K, dev, a.aux_target, OPV, bs=bs),
                             "items": {"test_extras": "test, rng 16802 permutation[:extras_n] (n %d)" % len(ex), "aug_valid": "Aug valid, all (n %d)" % len(Dva)},
                             "arm": a.aux_target, "nopass": bool(a.aux_nopass), "tmax": 8,
@@ -480,6 +484,7 @@ def main():
                                    "greedy value after the aux prompt, decoded and compared with the gold RHS as a STRING (note 204-3); value_exact_tokid = token-id "
                                    "equality), op_acc / ptr1_acc / ptr2_acc (factor heads), or the string arm's value_in_string / op_in_string / ptr1_in_string from its "
                                    "greedy ' <<lhs=rhs>>'; ptr*_nocollide = items whose candidate set has no first-BPE-token collision; *_by_grounding = R / Q / unparsed"}
+        res["aux_suite"]["lotus_sep"] = res["aux_suite"]["test_extras"].pop("lotus_sep")   # note 204-5: aux_suite["lotus_sep"] (test extras)
         _partial("aux_suite")
     if a.symbolic_dir:                                                      # eval-only: GSM-Symbolic (fetched at eval time; never committed)
         sy = {}
