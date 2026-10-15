@@ -5,5 +5,78 @@
   "comparator": "gsm_lat_aug_s1",
   "F-NR": null
  },
- "reading": "pending (F-P or comparator eval-only not landed)"
+ "comparator_registered_fields_equal": true,
+ "F": {
+  "acc": 0.13874147081122062,
+  "K0": 0.07278241091736164,
+  "K1": 0.1023502653525398,
+  "K10": 0.13874147081122062,
+  "loop_formed": true,
+  "think_necessary": false,
+  "shortcut_ratio": 0.7377049180327868,
+  "deep_K0": 0.048919226393629126,
+  "deep_K1": 0.07622298065984073,
+  "deep_K10": 0.09442548350398179,
+  "deep_ratio": 0.8072289156626508,
+  "think_necessary_deep": false,
+  "serial_gain_deep": 0.018202502844141058
+ },
+ "C": {
+  "acc": 0.1470811220621683,
+  "K0": 0.08263836239575435,
+  "K1": 0.12509476876421532,
+  "K10": 0.1470811220621683,
+  "loop_formed": true,
+  "think_necessary": false,
+  "shortcut_ratio": 0.8505154639175259,
+  "deep_K0": 0.06257110352673492,
+  "deep_K1": 0.09670079635949944,
+  "deep_K10": 0.10921501706484642,
+  "deep_ratio": 0.8854166666666667,
+  "think_necessary_deep": false,
+  "serial_gain_deep": 0.012514220705346982
+ },
+ "F_reads": {
+  "value_exact_by_t": {
+   "1": 0.3380855397148676,
+   "2": 0.1574468085106383,
+   "3": 0.10795454545454546,
+   "4": 0.04672897196261682,
+   "5": 0.0297029702970297,
+   "6": 0.0,
+   "7": 0.0,
+   "8": 0.0
+  },
+  "value_exact_3": 0.10795454545454546,
+  "value_R_t23_Mt": 0.1399485454635495,
+  "value_R_t23_M0": 0.03660838454025801,
+  "value_R_t23_M1": 0.1258306156927406,
+  "value_R_all": 0.11503540549358118,
+  "value_Q_all": 0.14967364715971193,
+  "plan_acc_1": {
+   "op_acc": 0.6374745417515275,
+   "ptr1_acc": 0.6971153846153846,
+   "ptr2_acc": 0.6941747572815534
+  },
+  "plan_leak": {
+   "2": 0.9946703812494324,
+   "3": 0.926556980793551
+  },
+  "plan_ce_t3p": 1.59180444877773
+ },
+ "ACC": "MATCHES",
+ "acc_delta": -0.008339651250947683,
+ "LOTUS_SEP": "INCONCLUSIVE",
+ "predictions": {
+  "P-F1": "holds",
+  "P-F2": "holds (PROBE-LEAK pending)",
+  "P-F3": "FALSIFIED",
+  "P-F4a (Audit)": "FALSIFIED (predicted by the derivation)",
+  "P-F5": "holds",
+  "P-F5a (Audit)": "FALSIFIED",
+  "P-F6": "deep ratio lower but DEEP not passed",
+  "P-F7": "holds",
+  "P-F9": "between"
+ },
+ "reading": "ACC MATCHES (F-P 0.139 vs comp 0.147, -0.008) | SHORTCUT-RATIO F 0.738 vs comp 0.851; deep ratio F 0.807 vs comp 0.885; THINK-NECESSARY False / DEEP False; SERIAL-GAIN-DEEP +0.006 (not more serial) | LOTUS-SEP INCONCLUSIVE"
 }
