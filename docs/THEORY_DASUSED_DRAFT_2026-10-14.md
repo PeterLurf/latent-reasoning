@@ -598,3 +598,11 @@
 6. **bf16 and card class:** a fixed bs of 250, one card class, and the identity gate against the run's own path on that card. Do not compare to eval.json fields produced on 3090s.
 7. **Cost creep:** about 40 GPU-h locally. The pilot gates Stage B. Keep the 3 – 4 CPU-thread limit for the CPU-side SVDs, to protect GPU queues.
 8. **Interpretation:** UR-FOUND shows the model's own on-support route *for this counterfactual family*, up to first order (A_lin). It does not show uniqueness, and it does not by itself justify a training target (T1–T3, GH1).
+
+---
+
+## Pilot P2 scope (Theory, 2026-10-14 23:22 EDT; fixed after rms s1 k16 B IIA_ccc 0.091 (chance) and before any k >= 64 output)
+* **k-ladder on rms s1 only:** k in {64, 256, 1024}, warm-started from the previous k + PCA, lr 3e-3; up to 5,000 steps for k >= 256 only if train IIA is still rising at the 2,000 cap. Report train / val / B IIA_ccc per k, plus G-FIT.
+* **Stopping rule:** B IIA_ccc < 0.5 at k = 1024 reads "no compact used subspace <= 1024-d found (distributed or fit-limited)", and the DAS fits stop: no P2 on the other 3 pilots, no Stage B.
+* **If some k reaches >= 0.7 with clean controls,** that k runs on the other 3 pilots.
+* **Rationale:** IIT-SERIAL is coordinate-free and does not need DAS. The whole-state swap (0.915 on the same pairs; notes 203-3 / 203-4) carries the causal reading, so DAS-USED is now descriptive (compact vs distributed).
