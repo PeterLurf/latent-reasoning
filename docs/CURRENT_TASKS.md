@@ -48,6 +48,16 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   §207 GSM-SWAP done on A / B / W / F-P / J1 / J0 (scratch/gsm_swap.py; 7fd4fa69 + f4b6b432): all RECOMPUTES-FROM-INPUT except B MIXED (0.799; ratio-form question with Theory).
   §205 s1: no 570.172.08 offer in 6 h (none on the market at any price); options (wait / unpaired on 595.84 / 2 seeds) + the $0.06 margin sent to Audit for the user;
   s205_fill_s1b keeps retrying meanwhile. Live cloud: b291 (§193 s2), b297 / b298 (§205 s2 / s3).
+* 12:4x 10-15 (Experiments):
+  - §205 s1 UNPAIRED (user via Audit ~11:0x-11:15, cap $18.50): b296 on 85.90.17.171:18155 (595.71.05, $0.2228/h, STARTED 11:19, admitted at $3.73);
+    s205_rate_guard (cap 18.5, CHECK every 4k) + s205_fill_s1c (done). Family ~$15.4.
+  - §208 QUESTION-ONCE (759b3396 harness, Audit APPROVED): b301 gsm_lat_ansbn_qonce_nopass_s1 on 194.14.47.19:22364 (STARTED 12:00; 0.42 s/step,
+    ~$0.89; lands ~14:55). Guard s208 $3.20. G6 PASS on the smoke QO model (scratch/qonce_eval.py); post-landing: python scratch/qonce_read.py
+    boxes/runs_fsq/gsm_lat_ansbn_qonce_nopass_s1 all --device cuda:1 (fp32; G6 re-run first) -> eval_qonce.json; Theory writes score_s208.
+    Until §208 lands: NO edits to pass_inputs / ans_prefix / modules §208 imports (note 208-1).
+  - §209 CODI-AT-OUR-BUDGET (boxes/codi_port.py, Audit APPROVED; gates scratch/gate_s209/gate.json): b302 gsm_codi_4ep_s1 on 190.226.72.134:40613
+    (STARTED 12:29; micro 32 x 4; 2.14 s/step -> ~7.3 h, lands ~20:00); guard s209 $4 (GUARD_STOP). Train counts: scratch/gate_s209/train_counts.json.
+  - gpu_watch via gpuwatch_autoadd 291 296 297 298 301 302.
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
