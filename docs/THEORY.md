@@ -15469,6 +15469,17 @@ Each registers separately, after T1 / T2.
 * The deep loop gain (K′10 − K′0) is above T_D = 0.034 in both cells: a small multi-pass contribution exists.
 * W is read against A's row: the same script, the 3070, bs 64, with W's same-card eval-only as the gate reference.
 
+**Note 202-2 (2026-10-14 23:13 EDT; descriptive; an epoch-matched statement for every GSM8K comparison; Audit's research pass).**
+* **Our exposure:**
+  - A / B / C: 24k × 64 ≈ 1.54M items, about 4.0 epochs of GSM8K-Aug (385k). Note 200-4 already calls R2 budget-limited at this budget.
+  - W: 4 epochs text (as C) + about 2 epochs latent. C+: about 6 epochs text.
+* **CODI 2502.21074's GPT-2 number (43.7; no-L1 ablation 24.5):** 40 epochs, about 36 h on an A100 at lr 3e-3. Audit re-read this from the v3 full text; Literature is confirming.
+* **Budget evidence of our own:**
+  - §202 "faster, same ceiling": W reached A's 24k level by 4–6k latent steps.
+  - C+ still rose at 12k (valid 0.35 at its final step).
+  - C's train loss was still falling (note 200-4).
+* **So part of our latent / text gap to the published bars (0.15 vs 0.437) may be budget.** Every SOTA-relevant comparison is stated with its epochs. An in-house latent-vs-text comparison (R1) stays at equal budget, as registered.
+
 ## 203. SVR (shallow value readout): a seed-stability successor to CSR (the user's novel-method request; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $10.10; pre-registered 2026-10-14 19:13 EDT, before any §203 code or run)
 
 **Registered text:**
