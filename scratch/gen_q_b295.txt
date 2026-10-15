@@ -1,0 +1,5 @@
+# THEORY §204 STEP-TARGET-FACTOR, A-base branch (§202 W-LIFT not WARM-HELPS -> F-P vs A; registered f6f8d51d, contract 3ec408c6 §8 + notes 204-3..7; harness 7f707887 + ae289bcb; user approval <= $3.90 via Audit). Line 1: A's eval-only re-run for the paired §204 diagnostics (bs 64, a 3090) in its own dir gsm_lat_aug_s1_ref (A's model.pt / args / log shipped via .extra; renamed locally to gsm_lat_aug_s1/eval_s204ref.json; acc / acc_by_kprime checked vs A's eval.json). Line 2: F-P = A's line exactly + --aux_target factor (24k). LAUNCH ONLY after Theory's branch call + Audit's OK; .extra carries the op vocab.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_lat_aug_s1_ref boxes.gsm8k_stepaux --arm stepaux --think_k 10 --cache_lower --fast_add --chunk_delta 64 --bs 64 --seed 1 --eval_only
+boxes/runs_fsq/gsm_lat_factor_s1 boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 24000,24000 --cache_lower --fast_add --chunk_delta 64 --steps 24000 --bs 64 --lr 1e-4 --seed 1 --valid_every 2000 --ckpt_every 1000 --auto_micro --aux_target factor
