@@ -1,0 +1,63 @@
+{
+ "strata": [
+  [
+   5,
+   10
+  ],
+  [
+   7,
+   6
+  ]
+ ],
+ "pairs": 92,
+ "n_sim": 400,
+ "n_perm": 500,
+ "rule": {
+  "feature_part": "two-sided permutation p < 0.05 and C >= 0.72",
+  "beat_part": "paired rank-swap p < 0.05 (one-sided) and dC >= 0.10 vs the primary null"
+ },
+ "scenarios": {
+  "A no effect (feature 0.5, null 0.5, rho 0.5)": {
+   "P_feature_part_rev1": 0.02,
+   "P_reversed_rev1": 0.0375,
+   "P_beats_null": 0.0625,
+   "P_USEFUL_rev2": 0.005,
+   "mc_se_USEFUL": 0.0035
+  },
+  "B confound only (feature 0.8 = the null's signal: null 0.8, rho 0.7)": {
+   "P_feature_part_rev1": 0.7925,
+   "P_reversed_rev1": 0.0,
+   "P_beats_null": 0.0325,
+   "P_USEFUL_rev2": 0.03,
+   "mc_se_USEFUL": 0.0085
+  },
+  "C real effect, uninformative null (feature 0.8, null 0.5, rho 0.3)": {
+   "P_feature_part_rev1": 0.765,
+   "P_reversed_rev1": 0.0,
+   "P_beats_null": 0.715,
+   "P_USEFUL_rev2": 0.6225,
+   "mc_se_USEFUL": 0.0242
+  },
+  "D real effect beyond a partly informative null (feature 0.8, null 0.65, rho 0.5)": {
+   "P_feature_part_rev1": 0.7775,
+   "P_reversed_rev1": 0.0,
+   "P_beats_null": 0.4025,
+   "P_USEFUL_rev2": 0.3475,
+   "mc_se_USEFUL": 0.0238
+  },
+  "E real effect 0.9, null 0.65, rho 0.5": {
+   "P_feature_part_rev1": 0.9925,
+   "P_reversed_rev1": 0.0,
+   "P_beats_null": 0.8175,
+   "P_USEFUL_rev2": 0.8125,
+   "mc_se_USEFUL": 0.0195
+  },
+  "F marginal effect 0.7, null 0.5, rho 0.3": {
+   "P_feature_part_rev1": 0.395,
+   "P_reversed_rev1": 0.0,
+   "P_beats_null": 0.4225,
+   "P_USEFUL_rev2": 0.2375,
+   "mc_se_USEFUL": 0.0213
+  }
+ }
+}

@@ -1,0 +1,8 @@
+[(8, 8)] confound (0.8, null 0.8, rho 0.7) P(USEFUL rev2) = 0.027
+[(8, 8)] C 0.8, null 0.5 P(USEFUL rev2) = 0.300
+[(8, 8)] C 0.8, null 0.65 P(USEFUL rev2) = 0.207
+[(8, 8)] C 0.9, null 0.65 P(USEFUL rev2) = 0.567
+[(12, 12)] confound (0.8, null 0.8, rho 0.7) P(USEFUL rev2) = 0.033
+[(12, 12)] C 0.8, null 0.5 P(USEFUL rev2) = 0.627
+[(12, 12)] C 0.8, null 0.65 P(USEFUL rev2) = 0.340
+[(12, 12)] C 0.9, null 0.65 P(USEFUL rev2) = 0.720

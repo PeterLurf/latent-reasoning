@@ -1,8 +1,671 @@
 {
+ "panels_saturation": {
+  "panels": [
+   {
+    "seed": 3000,
+    "n": 40,
+    "n_success": 18,
+    "slope_C": 0.47,
+    "slope_p": 0.7871064467766117,
+    "verdict_rev1": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "verdict_rev2": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "null_power_C": 0.838,
+    "null_exp_C": 0.763,
+    "beat_power_dC_p": [
+     -0.308,
+     0.9985007496251874
+    ],
+    "beat_exp_dC_p": [
+     -0.232,
+     0.9250374812593704
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3001,
+    "n": 40,
+    "n_success": 22,
+    "slope_C": 0.556,
+    "slope_p": 0.5622188905547226,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.832,
+    "null_exp_C": 0.77,
+    "beat_power_dC_p": [
+     -0.276,
+     0.9800099950024987
+    ],
+    "beat_exp_dC_p": [
+     -0.214,
+     1.0
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3002,
+    "n": 40,
+    "n_success": 25,
+    "slope_C": 0.342,
+    "slope_p": 0.11294352823588207,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.824,
+    "null_exp_C": 0.652,
+    "beat_power_dC_p": [
+     -0.166,
+     0.9400299850074962
+    ],
+    "beat_exp_dC_p": [
+     0.005,
+     0.5112443778110944
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3003,
+    "n": 40,
+    "n_success": 27,
+    "slope_C": 0.349,
+    "slope_p": 0.1359320339830085,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.823,
+    "null_exp_C": 0.629,
+    "beat_power_dC_p": [
+     -0.171,
+     0.9225387306346826
+    ],
+    "beat_exp_dC_p": [
+     0.023,
+     0.45027486256871563
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3004,
+    "n": 40,
+    "n_success": 24,
+    "slope_C": 0.342,
+    "slope_p": 0.10794602698650675,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.868,
+    "null_exp_C": 0.658,
+    "beat_power_dC_p": [
+     -0.211,
+     0.9675162418790605
+    ],
+    "beat_exp_dC_p": [
+     0.0,
+     0.5002498750624688
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3005,
+    "n": 40,
+    "n_success": 18,
+    "slope_C": 0.437,
+    "slope_p": 0.5397301349325337,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.858,
+    "null_exp_C": 0.721,
+    "beat_power_dC_p": [
+     -0.295,
+     0.9985007496251874
+    ],
+    "beat_exp_dC_p": [
+     -0.158,
+     0.8085957021489255
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3006,
+    "n": 40,
+    "n_success": 28,
+    "slope_C": 0.312,
+    "slope_p": 0.08695652173913043,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.938,
+    "null_exp_C": 0.681,
+    "beat_power_dC_p": [
+     -0.25,
+     0.9910044977511244
+    ],
+    "beat_exp_dC_p": [
+     0.006,
+     0.4947526236881559
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3007,
+    "n": 40,
+    "n_success": 21,
+    "slope_C": 0.523,
+    "slope_p": 0.8515742128935532,
+    "verdict_rev1": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "verdict_rev2": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "null_power_C": 0.728,
+    "null_exp_C": 0.646,
+    "beat_power_dC_p": [
+     -0.205,
+     0.9090454772613693
+    ],
+    "beat_exp_dC_p": [
+     -0.123,
+     0.9850074962518741
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3008,
+    "n": 40,
+    "n_success": 20,
+    "slope_C": 0.505,
+    "slope_p": 0.9820089955022488,
+    "verdict_rev1": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "verdict_rev2": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "null_power_C": 0.828,
+    "null_exp_C": 0.793,
+    "beat_power_dC_p": [
+     -0.323,
+     0.9900049975012494
+    ],
+    "beat_exp_dC_p": [
+     -0.288,
+     1.0
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 3009,
+    "n": 40,
+    "n_success": 27,
+    "slope_C": 0.291,
+    "slope_p": 0.06296851574212893,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.828,
+    "null_exp_C": 0.543,
+    "beat_power_dC_p": [
+     -0.119,
+     0.8275862068965517
+    ],
+    "beat_exp_dC_p": [
+     0.166,
+     0.20539730134932535
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   }
+  ],
+  "rev1_useful_any_direction": 0,
+  "rev1_significant": "0",
+  "rev2_useful_slope": 0,
+  "rev2_useful_any_feature": 0
+ },
+ "panels_saturation_strong": {
+  "panels": [
+   {
+    "seed": 5000,
+    "n": 60,
+    "n_success": 41,
+    "slope_C": 0.281,
+    "slope_p": 0.00849575212393803,
+    "verdict_rev1": "DETECTABLE BUT BELOW THE USEFUL BAR",
+    "verdict_rev2": "DETECTABLE BUT BELOW THE USEFUL BAR",
+    "null_power_C": 0.836,
+    "null_exp_C": 0.655,
+    "beat_power_dC_p": [
+     -0.117,
+     0.9325337331334332
+    ],
+    "beat_exp_dC_p": [
+     0.064,
+     0.3238380809595202
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5001,
+    "n": 60,
+    "n_success": 39,
+    "slope_C": 0.319,
+    "slope_p": 0.02048975512243878,
+    "verdict_rev1": "DETECTABLE BUT BELOW THE USEFUL BAR",
+    "verdict_rev2": "DETECTABLE BUT BELOW THE USEFUL BAR",
+    "null_power_C": 0.822,
+    "null_exp_C": 0.657,
+    "beat_power_dC_p": [
+     -0.141,
+     0.9795102448775612
+    ],
+    "beat_exp_dC_p": [
+     0.025,
+     0.4062968515742129
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5002,
+    "n": 60,
+    "n_success": 42,
+    "slope_C": 0.368,
+    "slope_p": 0.11494252873563218,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.87,
+    "null_exp_C": 0.722,
+    "beat_power_dC_p": [
+     -0.238,
+     0.9980009995002499
+    ],
+    "beat_exp_dC_p": [
+     -0.089,
+     0.7641179410294853
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5003,
+    "n": 60,
+    "n_success": 46,
+    "slope_C": 0.334,
+    "slope_p": 0.07246376811594203,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.742,
+    "null_exp_C": 0.618,
+    "beat_power_dC_p": [
+     -0.076,
+     0.8190904547726137
+    ],
+    "beat_exp_dC_p": [
+     0.048,
+     0.3598200899550225
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5004,
+    "n": 60,
+    "n_success": 45,
+    "slope_C": 0.243,
+    "slope_p": 0.00399800099950025,
+    "verdict_rev1": "USEFUL-REVERSED (opposite of the pre-stated direction; prospective use needs a new registration)",
+    "verdict_rev2": "EXPLAINED BY CURVE MECHANICS (does not beat the primary saturation null)",
+    "null_power_C": 0.898,
+    "null_exp_C": 0.601,
+    "beat_power_dC_p": [
+     -0.141,
+     0.9460269865067467
+    ],
+    "beat_exp_dC_p": [
+     0.157,
+     0.15442278860569716
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5005,
+    "n": 60,
+    "n_success": 43,
+    "slope_C": 0.4,
+    "slope_p": 0.23788105947026486,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.753,
+    "null_exp_C": 0.721,
+    "beat_power_dC_p": [
+     -0.153,
+     0.974512743628186
+    ],
+    "beat_exp_dC_p": [
+     -0.121,
+     0.8415792103948025
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5006,
+    "n": 60,
+    "n_success": 42,
+    "slope_C": 0.432,
+    "slope_p": 0.4432783608195902,
+    "verdict_rev1": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "verdict_rev2": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+    "null_power_C": 0.765,
+    "null_exp_C": 0.711,
+    "beat_power_dC_p": [
+     -0.197,
+     0.9895052473763118
+    ],
+    "beat_exp_dC_p": [
+     -0.143,
+     0.8590704647676162
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5007,
+    "n": 60,
+    "n_success": 43,
+    "slope_C": 0.247,
+    "slope_p": 0.0024987506246876563,
+    "verdict_rev1": "USEFUL-REVERSED (opposite of the pre-stated direction; prospective use needs a new registration)",
+    "verdict_rev2": "EXPLAINED BY CURVE MECHANICS (does not beat the primary saturation null)",
+    "null_power_C": 0.91,
+    "null_exp_C": 0.655,
+    "beat_power_dC_p": [
+     -0.156,
+     0.9870064967516242
+    ],
+    "beat_exp_dC_p": [
+     0.099,
+     0.2353823088455772
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5008,
+    "n": 60,
+    "n_success": 46,
+    "slope_C": 0.424,
+    "slope_p": 0.3918040979510245,
+    "verdict_rev1": "INCONCLUSIVE",
+    "verdict_rev2": "INCONCLUSIVE",
+    "null_power_C": 0.86,
+    "null_exp_C": 0.764,
+    "beat_power_dC_p": [
+     -0.283,
+     0.9970014992503748
+    ],
+    "beat_exp_dC_p": [
+     -0.188,
+     0.8930534732633684
+    ],
+    "other_features_rev2": {
+     "level:loss": "INCONCLUSIVE",
+     "lfa:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lff:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))"
+    },
+    "outcome_equals_basin": null
+   },
+   {
+    "seed": 5009,
+    "n": 60,
+    "n_success": 45,
+    "slope_C": 0.228,
+    "slope_p": 0.00399800099950025,
+    "verdict_rev1": "USEFUL-REVERSED (opposite of the pre-stated direction; prospective use needs a new registration)",
+    "verdict_rev2": "EXPLAINED BY CURVE MECHANICS (does not beat the primary saturation null)",
+    "null_power_C": 0.774,
+    "null_exp_C": 0.62,
+    "beat_power_dC_p": [
+     -0.003,
+     0.5287356321839081
+    ],
+    "beat_exp_dC_p": [
+     0.151,
+     0.08445777111444278
+    ],
+    "other_features_rev2": {
+     "level:loss": "NOT USEFUL (95% CI inside (0.28, 0.72))",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "DETECTABLE BUT BELOW THE USEFUL BAR"
+    },
+    "outcome_equals_basin": null
+   }
+  ],
+  "rev1_useful_any_direction": 3,
+  "rev1_significant": "5",
+  "rev2_useful_slope": 0,
+  "rev2_useful_any_feature": 0
+ },
+ "panels_basin": {
+  "panels": [
+   {
+    "seed": 4000,
+    "n": 40,
+    "n_success": 21,
+    "slope_C": 0.845,
+    "slope_p": 0.0009995002498750624,
+    "verdict_rev1": "USEFUL (pre-stated direction)",
+    "verdict_rev2": "USEFUL (pre-stated direction); beats both saturation nulls",
+    "null_power_C": 0.0,
+    "null_exp_C": 0.283,
+    "beat_power_dC_p": [
+     0.845,
+     0.0004997501249375312
+    ],
+    "beat_exp_dC_p": [
+     0.561,
+     0.0004997501249375312
+    ],
+    "other_features_rev2": {
+     "level:loss": "USEFUL (pre-stated direction); beats both saturation nulls",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": 1.0
+   },
+   {
+    "seed": 4001,
+    "n": 40,
+    "n_success": 23,
+    "slope_C": 0.749,
+    "slope_p": 0.013493253373313344,
+    "verdict_rev1": "USEFUL (pre-stated direction)",
+    "verdict_rev2": "USEFUL (pre-stated direction); beats both saturation nulls",
+    "null_power_C": 0.0,
+    "null_exp_C": 0.179,
+    "beat_power_dC_p": [
+     0.749,
+     0.0004997501249375312
+    ],
+    "beat_exp_dC_p": [
+     0.569,
+     0.0004997501249375312
+    ],
+    "other_features_rev2": {
+     "level:loss": "USEFUL (pre-stated direction); beats both saturation nulls",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": 1.0
+   },
+   {
+    "seed": 4002,
+    "n": 40,
+    "n_success": 20,
+    "slope_C": 0.879,
+    "slope_p": 0.0009995002498750624,
+    "verdict_rev1": "USEFUL (pre-stated direction)",
+    "verdict_rev2": "USEFUL (pre-stated direction); beats both saturation nulls",
+    "null_power_C": 0.0,
+    "null_exp_C": 0.263,
+    "beat_power_dC_p": [
+     0.879,
+     0.0004997501249375312
+    ],
+    "beat_exp_dC_p": [
+     0.616,
+     0.0004997501249375312
+    ],
+    "other_features_rev2": {
+     "level:loss": "USEFUL (pre-stated direction); beats both saturation nulls",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": 1.0
+   },
+   {
+    "seed": 4003,
+    "n": 40,
+    "n_success": 19,
+    "slope_C": 0.94,
+    "slope_p": 0.0004997501249375312,
+    "verdict_rev1": "USEFUL (pre-stated direction)",
+    "verdict_rev2": "USEFUL (pre-stated direction); beats both saturation nulls",
+    "null_power_C": 0.0,
+    "null_exp_C": 0.181,
+    "beat_power_dC_p": [
+     0.94,
+     0.0004997501249375312
+    ],
+    "beat_exp_dC_p": [
+     0.759,
+     0.0004997501249375312
+    ],
+    "other_features_rev2": {
+     "level:loss": "USEFUL (pre-stated direction); beats both saturation nulls",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": 1.0
+   },
+   {
+    "seed": 4004,
+    "n": 40,
+    "n_success": 17,
+    "slope_C": 0.89,
+    "slope_p": 0.0004997501249375312,
+    "verdict_rev1": "USEFUL (pre-stated direction)",
+    "verdict_rev2": "USEFUL (pre-stated direction); beats both saturation nulls",
+    "null_power_C": 0.0,
+    "null_exp_C": 0.246,
+    "beat_power_dC_p": [
+     0.89,
+     0.0004997501249375312
+    ],
+    "beat_exp_dC_p": [
+     0.644,
+     0.0004997501249375312
+    ],
+    "other_features_rev2": {
+     "level:loss": "USEFUL (pre-stated direction); beats both saturation nulls",
+     "lfa:loss": "INCONCLUSIVE",
+     "lff:loss": "INCONCLUSIVE"
+    },
+    "outcome_equals_basin": 1.0
+   }
+  ],
+  "rev1_useful_any_direction": 5,
+  "rev1_significant": "5",
+  "rev2_useful_slope": 5,
+  "rev2_useful_any_feature": 5
+ },
+ "paired_calibration": {
+  "draws": 40,
+  "mean_dC": -0.015818030562617658,
+  "reject_rate_alpha0.05": 0.025
+ },
+ "paired_exact": {
+  "dC": 1.0,
+  "C_feature_ranks": 1.0,
+  "C_null_ranks": 0.0,
+  "pairs": 2,
+  "p_one_sided": 0.125,
+  "exact": true
+ },
  "planted": {
   "C": 1.0,
   "p": 0.0004997501249375312,
-  "verdict": "USEFUL (pre-stated direction)",
+  "verdict": "USEFUL (pre-stated direction); beats both saturation nulls",
+  "note": "the rev-1 planted hare is a decay-rate difference, i.e. curve mechanics; only C and p are checked",
   "excluded": [],
   "lfa_present": true,
   "dedupe_last_wins": true

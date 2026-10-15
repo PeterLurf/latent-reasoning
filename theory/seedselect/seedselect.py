@@ -36,7 +36,7 @@ RES = os.path.join(ROOT, "theory", "results")
 
 # ------------------------------------------------------------------ FROZEN SPEC (any change requires a new freeze)
 SPEC = {
-    "version": "seedselect-draft-2026-10-14",
+    "version": "seedselect-draft-2026-10-14-rev2",
     "windows": {   # [t0, t1] in steps, inclusive on logged record steps; records are block means over the preceding interval
         "R1": [500, 2000], "R2": [300, 900], "R3": [2100, 8000], "R3b": [2100, 6000]},
     "detrend_knots": {"R3": [6000], "R3b": []},   # hinge (u - knot)+ added to {1, u, u^2}; u = step / 1000
@@ -46,11 +46,24 @@ SPEC = {
     "primary": {"reading": "R1", "feature": "slope:loss", "test": "two-sided", "alpha": 0.05},
     # success score = sign * feature (higher score = predicted success). Signs pre-stated per reading (section 3 of the draft).
     "signs": {
-        "R1": {"slope:loss": +1, "level:loss": +1, "lfa:loss": +1, "lff:loss": +1},
-        "R2": {"slope:loss": -1, "level:loss": -1, "lfa:loss": +1, "lff:loss": +1},
+        "R1": {"slope:loss": +1, "level:loss": +1, "lfa:loss": +1, "lff:loss": +1, "null_power:loss": -1, "null_exp:loss": -1},
+        "R2": {"slope:loss": -1, "level:loss": -1, "lfa:loss": +1, "lff:loss": +1, "null_power:loss": -1, "null_exp:loss": -1},
         "R3": {"slope:loss": +1, "slope:aux_ce": +1, "slope:answer_ce": +1, "level:aux_ce": +1, "lfa:answer_ce": +1,
-               "lfa:aux_ce": +1, "vw:write_grad_norm": -1, "composite": +1},
+               "lfa:aux_ce": +1, "vw:write_grad_norm": -1, "composite": +1, "null_power:loss": -1, "null_exp:loss": -1},
     },
+    # rev 2 (Audit): CURVE-MECHANICS NULL. Fit the window's raw loss with a saturating form by least squares (grid over the
+    # shape parameter, closed-form a, b), extrapolate to the outcome's reference steps. PRIMARY form: power law
+    # f(u) = a + b u^(-c); SECONDARY: exponential saturation f(u) = a + b exp(-u / tau); u = step / 1000.
+    # Null value: ratio targets r = max(f(t_b), eps) / max(f(t_a), eps) (lower = predicted success, sign -1);
+    # level targets f(t) (lower = predicted success, sign -1).
+    "null": {"primary": "power", "secondary": "exp", "c_grid": [0.02, 8.0, 400], "tau_grid_k": [0.05, 100.0, 400], "eps": 1e-3,
+             "targets": {"R1": ["ratio", 2600, 4000], "R2": ["ratio", 1000, 2000], "R3": ["level", 48000], "R3b": ["level", 48000]}},
+    # rev 2 (Audit): REGISTERED BEAT-THE-NULL RULE. USEFUL also needs the feature (in its realised direction) to beat the
+    # PRIMARY null: one-sided paired within-stratum rank-swap permutation on dC = C(feature) - C(null), p < 0.05, and dC >= 0.10.
+    # Beating the secondary (exp) null too is reported as "robust to the null form".
+    "beat_null": {"alpha": 0.05, "min_delta_C": 0.10, "applies_to": ["R1", "R2"], "n_perm": 100000},
+    # rev 2: R1c (non-loss outcome: long_acc >= 0.99) is registered only if it has >= 30 within-stratum pairs; else descriptive.
+    "R1c_register_min_pairs": 30,
     "composite_R3": ["slope:aux_ce", "vw:write_grad_norm"],
     "thresholds": {"useful_C": 0.72, "useless_ci": [0.28, 0.72]},
     "n_perm": 100000, "n_boot": 4000, "seed": 20261014,
@@ -97,6 +110,46 @@ def basis(u, knots):
     return np.stack(cols, 1)
 
 
+def fit_saturating(u, v, form):
+    """Least-squares saturating fit of raw values v at times u (thousand steps). Grid over the shape parameter (log-spaced),
+    closed-form linear least squares for (a, b) at each grid value; the minimum-SSE grid value wins (ties: the first).
+    Returns (a, b, shape, sse)."""
+    if form == "power":
+        lo, hi, n = SPEC["null"]["c_grid"]; grid = np.exp(np.linspace(math.log(lo), math.log(hi), int(n)))
+        G = u[None, :] ** (-grid[:, None])
+    else:
+        lo, hi, n = SPEC["null"]["tau_grid_k"]; grid = np.exp(np.linspace(math.log(lo), math.log(hi), int(n)))
+        G = np.exp(-u[None, :] / grid[:, None])
+    gm = G.mean(1, keepdims=True); vm = v.mean()
+    var = ((G - gm) ** 2).sum(1); cov = ((G - gm) * (v - vm)[None, :]).sum(1)
+    b = np.where(var > 1e-300, cov / np.maximum(var, 1e-300), 0.0); a = vm - b * gm[:, 0]
+    sse = ((v[None, :] - a[:, None] - b[:, None] * G) ** 2).sum(1)
+    k = int(np.argmin(sse))
+    return float(a[k]), float(b[k]), float(grid[k]), float(sse[k])
+
+
+def predict_saturating(params, form, u):
+    a, b, sh, _ = params
+    return a + b * (u ** (-sh) if form == "power" else math.exp(-u / sh))
+
+
+def null_value(v, grid, reading):
+    """The curve-mechanics null for one run (both forms). v: raw window values, grid: steps."""
+    tgt = SPEC["null"]["targets"].get(reading)
+    if tgt is None:
+        return {}
+    u = grid / 1000.0; eps = SPEC["null"]["eps"]; out = {}
+    for form in ("power", "exp"):
+        prm = fit_saturating(u, v, form)
+        if tgt[0] == "ratio":
+            fa = predict_saturating(prm, form, tgt[1] / 1000.0); fb = predict_saturating(prm, form, tgt[2] / 1000.0)
+            out["null_%s:loss" % form] = float(max(fb, eps) / max(fa, eps))
+        else:
+            out["null_%s:loss" % form] = float(predict_saturating(prm, form, tgt[1] / 1000.0))
+        out["_fit_%s" % form] = {"a": prm[0], "b": prm[1], "shape": prm[2], "rmse": math.sqrt(prm[3] / len(v))}
+    return out
+
+
 def features(series_by_field, reading, interval):
     t0, t1 = SPEC["windows"][reading]; knots = SPEC["detrend_knots"].get(reading, [])
     out, why = {}, {}
@@ -107,6 +160,10 @@ def features(series_by_field, reading, interval):
         if np.any(v <= 0):
             why[f] = "non-positive value"; continue
         y = np.log(v); u = grid / 1000.0; N = len(y)
+        if f == "loss":
+            nv = null_value(v, grid, reading)
+            out.update({k: x for k, x in nv.items() if not k.startswith("_")})
+            why.update({k: x for k, x in nv.items() if k.startswith("_")})
         X1 = np.stack([np.ones_like(u), u], 1); b = np.linalg.lstsq(X1, y, rcond=None)[0]
         out["slope:" + f] = float(b[1])                                     # d ln(value) / d(1000 steps)
         last = grid > (t1 - 1000)
@@ -199,6 +256,51 @@ def boot_ci(strata, n_boot, rng):
     return [float(np.percentile(vals, 2.5)), float(np.percentile(vals, 97.5))] if vals else None
 
 
+def rank01(x):
+    """Within-stratum average ranks scaled to [0, 1] (ties averaged)."""
+    x = np.asarray(x, float); n = len(x)
+    order = np.argsort(x, kind="mergesort"); r = np.empty(n); r[order] = np.arange(n, dtype=float)
+    for v in np.unique(x):
+        m = x == v
+        if m.sum() > 1:
+            r[m] = r[m].mean()
+    return r / max(1, n - 1)
+
+
+def paired_beat_null(strata, n_perm, rng):
+    """strata: list of (xf, xn, y) on the same units: signed feature, signed null, outcome. Both scores are replaced by
+    within-stratum ranks; dC = C(feature ranks) - C(null ranks). Null hypothesis: the two scores are exchangeable within
+    each unit (paired design), so each unit's two ranks are swapped with probability 1/2. One-sided p for dC > 0;
+    exact enumeration over swap masks when 2^N <= 4096, else Monte Carlo."""
+    R = [(rank01(xf), rank01(xn), np.asarray(y, float)) for xf, xn, y in strata if len(y) >= 2]
+    if not R:
+        return None
+
+    def dC(RR):
+        cf, n_ = pooled_C([(a, y) for a, _, y in RR]); cn, _ = pooled_C([(b, y) for _, b, y in RR])
+        return (None if cf is None else cf - cn), cf, cn, n_
+    obs, cf, cn, npairs = dC(R)
+    if obs is None:
+        return None
+    N = sum(len(y) for _, _, y in R); cnt = 0; n = 0
+    if 2 ** N <= 4096:
+        for mask_all in range(2 ** N):
+            RR = []; off = 0
+            for a, b, y in R:
+                m = np.array([(mask_all >> (off + i)) & 1 for i in range(len(y))], bool); off += len(y)
+                RR.append((np.where(m, b, a), np.where(m, a, b), y))
+            d, _, _, _ = dC(RR); n += 1; cnt += d >= obs - 1e-12
+        p = cnt / n; exact = True
+    else:
+        for _ in range(n_perm):
+            RR = []
+            for a, b, y in R:
+                m = rng.random(len(y)) < 0.5; RR.append((np.where(m, b, a), np.where(m, a, b), y))
+            d, _, _, _ = dC(RR); n += 1; cnt += d >= obs - 1e-12
+        p = (cnt + 1) / (n + 1); exact = False
+    return {"dC": float(obs), "C_feature_ranks": float(cf), "C_null_ranks": float(cn), "pairs": npairs, "p_one_sided": p, "exact": exact}
+
+
 def verdict(res, ci):
     th = SPEC["thresholds"]
     if res is None:
@@ -218,19 +320,53 @@ def verdict(res, ci):
 def load_units():
     L = json.load(open(os.path.join(HERE, "labels.json")))
     lab, dup_cand = L["labels"], L["duplicate_candidates"]
-    units = {"R1": [], "R1b": [], "R2": [], "R3": [], "R3ord": []}
+    units = {"R1": [], "R1b": [], "R1c": [], "R2": [], "R3": [], "R3ord": [], "R3ord_event_only": []}
+    # CONSERVATIVE CENSORING (user standing rule 2026-10-14, note 200-6), applied to every label:
+    #  (C1) a run that reached its registered end without the event is a FAILURE (nested: entry(0.5) None at 48k;
+    #       fsq120: FLAG4 true at 4k, FLAG true at 2k, long_acc < 0.99 at 24k);
+    #  (C2) a run whose own trajectory triggered its stop (the 123-3 plateau stop) is a FAILURE in every reading whose
+    #       population contains it (R2: flagged; R1 / R1b / R1c condition on escape, so it is outside them);
+    #  (C3) a run without the outcome's reference step because of a DESIGN stop (stop_after, section 129 phase 1, never
+    #       started) or an infrastructure end (*.void*) is EXCLUDED and listed: the stop was fixed before, and
+    #       independently of, the outcome, so excluding it cannot bias a within-stratum concordance.
+    excluded = []
     final_gid = lab["s120_s5_final_s1"]["gid"]           # the FINAL S5 recipe group (normalised recipe equal to section 120's)
-    SAME = {"s128_s5_s1", "s128_s5_s3"}                   # 131-8 SAME_TRAJECTORY: counted once, as the earlier run
+    SAME = {"s128_s5_s1", "s128_s5_s3", "s127_s5_skip_s2"}   # 131-8 / 131-1(b) SAME_TRAJECTORY: counted once
+    # training GPU for runs whose args lack train_gpu (note 123-7, deploy logs); 3090 and 3090 Ti are one class (125-2)
+    GPU_DOC = {"s120_s5_final_s1": "3090", "s120_s5_final_s2": "3090", "s120_s5_trace_s1": "4090", "s120_s5_trace_s2": "3090",
+               "s123_s5_dither050_s1": "4090", "s123_s5_dither050_s2": "4090"}
+    inv_runs = json.load(open(os.path.join(HERE, "inventory.json")))["runs"]
+
+    def gclass(k, g):
+        if k in GPU_DOC:
+            return GPU_DOC[k]
+        if g is None and k.startswith(("s120_", "s123_")):
+            return "3090"
+        return "3090" if g in ("3090", "3090ti") else g
     for k, v in lab.items():
-        # R1b (descriptive): 24k FINAL S5 runs with eval long_acc, 2k escapers; 3090 and 3090 Ti are one class (125-2)
+        # R1b (descriptive): 24k FINAL S5 runs with eval long_acc, 2k escapers
         if v.get("gid") == final_gid and v.get("long_acc") is not None and v.get("flag2k") is False and k not in SAME and v.get("complete"):
-            cls = "3090" if v.get("gpu") in (None, "3090", "3090ti") else v.get("gpu")
+            cls = gclass(k, v.get("gpu"))
             units["R1b"].append({"id": k, "src": os.path.join(RUNS, k, "log.jsonl"), "stratum": "R1b|%s" % cls,
+                                 "success": bool(v["exact"]), "interval": 100, "seed": v["seed"], "card": cls})
+        # R1c (rev 2, the non-loss outcome): every fsq120 S5 recipe with eval long_acc, 2k escapers, complete 24k;
+        # strata = (recipe group, card class); registered only if >= R1c_register_min_pairs pairs, else descriptive
+        if v.get("gid") == final_gid and v.get("flag2k") is False and v.get("long_acc") is None and not k.startswith(("flag4proto_", "rampproto", "proto")):
+            excluded.append((k, "R1b/R1c", "C3: escaper without eval long_acc (design stop: %s)" % v.get("stopped")))
+        ir = inv_runs.get(k, {})
+        if v.get("family") == "fsq120" and ir.get("sub") == "s5" and v.get("long_acc") is not None and v.get("flag2k") is False \
+                and k not in SAME and v.get("complete"):
+            cls = gclass(k, v.get("gpu"))
+            units["R1c"].append({"id": k, "src": os.path.join(RUNS, k, "log.jsonl"), "stratum": "R1c|%s|%s" % (v["gid"], cls),
                                  "success": bool(v["exact"]), "interval": 100, "seed": v["seed"], "card": cls})
         if v.get("family") == "fsq120" and (v.get("gid") == final_gid or k.startswith(("replay130/", "replay_x/"))):
             src = os.path.join(RES, k + ".jsonl") if k.startswith("replay") else os.path.join(RUNS, k, "log.jsonl")
             card = v["gpu"]; panel = k.split("/")[0] if "/" in k else k.split("_s")[0]
             # R1: proto escapers with FLAG4 (fsq120.py, 100-step logs); outcome success = FLAG4 False
+            if k.startswith(("flag4proto_", "rampproto_plain_")) and v.get("flag2k") is None:
+                excluded.append((k, "R1/R2", "C3: no 2k record (design stop or never started)"))
+            if k.startswith(("flag4proto_", "rampproto_plain_")) and v.get("flag2k") is False and v.get("flag4k") is None:
+                excluded.append((k, "R1", "C3: escaper without a 4k record (design stop)"))
             if k.startswith(("flag4proto_", "rampproto_plain_")) and v.get("flag2k") is False and v.get("flag4k") is not None:
                 units["R1"].append({"id": k, "src": src, "stratum": "R1|%s" % card, "success": not v["flag4k"], "interval": 100, "seed": v["seed"], "card": card})
             # R2: 2k plateau FLAG (123-3), replays (50-step) and flag4proto (100-step); proto136_d8 / rampproto excluded (dup / selected)
@@ -248,7 +384,11 @@ def load_units():
         for k in ks:
             e = lab[k].get("entry_0.5")
             units["R3ord"].append({"id": k, "src": os.path.join(RUNS, k, "log.jsonl"), "stratum": "R3ord|%s" % st,
-                                   "entry": e if e is not None else float("inf"), "interval": 100})
+                                   "entry": e if e is not None else float("inf"), "interval": 100})   # C1: never entered = worst
+            if e is not None:                                   # the event-only reading reported beside it (rule (a))
+                units["R3ord_event_only"].append({"id": k, "src": os.path.join(RUNS, k, "log.jsonl"), "stratum": "R3ordE|%s" % st,
+                                                  "entry": e, "interval": 100})
+    units["_excluded"] = excluded
     return units, dup_cand, lab
 
 
@@ -335,6 +475,45 @@ def score_reading(units, reading, fields, rng, two_sided, signs, comp=None):
         ci = boot_ci(st, SPEC["n_boot"], rng) if res and res["pairs"] >= 10 else None
         out["features"][ft] = {"result": res, "ci95": ci, "verdict": verdict(res, ci) if (res and res["pairs"] >= 10) else "descriptive (pairs < 10)",
                                "strata": {sid: {"n": int(len(y)), "outcomes": sorted(set(y.tolist()))[:3]} for sid, (_, y) in zip(st_ids, st)}}
+    # rev 2: beat-the-null (curve mechanics). Units with both the feature and the null; within-stratum paired test.
+    bn = SPEC["beat_null"]
+    for ft, info in out["features"].items():
+        if ft.startswith("null_") or info.get("result") is None:
+            continue
+        d = +1 if info["result"]["C"] >= 0.5 else -1            # the feature's realised direction
+        info["beat_null"] = {}
+        for nf in ("null_power:loss", "null_exp:loss"):
+            if nf not in signs:
+                continue
+            st3 = []
+            for sid in strata_ids:
+                rr = [r for r in rows if r["stratum"] == sid and r["features"].get(nf) is not None
+                      and (r["features"].get(ft) is not None or ft == "composite")]
+                if ft == "composite":
+                    rr = [r for r in rr if all(r["features"].get(c) is not None for c in comp)]
+                if len(rr) < 2:
+                    continue
+                y = np.array([(1.0 if r["success"] else 0.0) if "success" in r else -float(r["entry"]) for r in rr], float)
+                if len(set(y.tolist())) < 2:
+                    continue
+                if ft == "composite":
+                    xf = np.zeros(len(rr))
+                    for c in comp:
+                        xc = np.array([signs[c] * r["features"][c] for r in rr]); xf += xc.argsort().argsort() / max(1, len(rr) - 1)
+                else:
+                    xf = np.array([signs[ft] * r["features"][ft] for r in rr])
+                st3.append((d * xf, np.array([signs[nf] * r["features"][nf] for r in rr]), y))
+            info["beat_null"][nf] = paired_beat_null(st3, bn["n_perm"], rng)
+        bp, be = info["beat_null"].get("null_power:loss"), info["beat_null"].get("null_exp:loss")
+        beats = bool(bp and bp["p_one_sided"] < bn["alpha"] and bp["dC"] >= bn["min_delta_C"])
+        robust = bool(be and be["p_one_sided"] < bn["alpha"] and be["dC"] >= bn["min_delta_C"])
+        info["beats_primary_null"], info["beats_secondary_null"] = beats, robust
+        info["verdict_rev1"] = info["verdict"]
+        if info["verdict"].startswith("USEFUL"):
+            if beats:
+                info["verdict"] = info["verdict"] + ("; beats both saturation nulls" if robust else "; beats the primary (power) null only, NOT robust to the null form")
+            else:
+                info["verdict"] = "EXPLAINED BY CURVE MECHANICS (does not beat the primary saturation null)"
     out["rows"] = rows
     return out
 
@@ -390,11 +569,12 @@ def run(real=True, units=None, dup_cand=None, lab=None, tag="run"):
     rng = np.random.default_rng(SPEC["seed"])
     if real:
         units, dup_cand, lab = load_units()
-    drop, dup_rep = gate_dups({r: units[r] for r in ("R1", "R1b", "R2", "R3", "R3ord")}, dup_cand) if real else ({}, [])
+    excl_c3 = units.pop("_excluded", [])
+    drop, dup_rep = gate_dups({r: units[r] for r in ("R1", "R1b", "R1c", "R2", "R3", "R3ord")}, dup_cand) if real else ({}, [])
     for r in units:
         units[r] = [u for u in units[r] if u["id"] not in drop.get(r, set())]
     gates = {"G2_duplicates": dup_rep, "G2_dropped": {r: sorted(v) for r, v in drop.items()},
-             "G3_units": {r: len(v) for r, v in units.items()}}
+             "G3_units": {r: len(v) for r, v in units.items()}, "G7_censoring_C3_excluded": excl_c3}
     out = {"spec_hash": SPEC_HASH, "mode": tag, "time": time.strftime("%Y-%m-%d %H:%M:%S"), "gates": gates}
     if real:
         out["Gdiv"] = gdiv(lab)
@@ -402,6 +582,10 @@ def run(real=True, units=None, dup_cand=None, lab=None, tag="run"):
     out["R1"] = score_reading(units["R1"], "R1", ["loss"], rng, True, SPEC["signs"]["R1"])
     if units.get("R1b"):
         out["R1b"] = score_reading(units["R1b"], "R1", ["loss"], rng, False, SPEC["signs"]["R1"])
+    if units.get("R1c"):
+        out["R1c"] = score_reading(units["R1c"], "R1", ["loss"], rng, False, SPEC["signs"]["R1"])
+        pr_c = out["R1c"]["features"].get(SPEC["primary"]["feature"], {}).get("result") or {}
+        out["R1c"]["registered"] = bool(pr_c.get("pairs", 0) >= SPEC["R1c_register_min_pairs"])
     out["R2"] = score_reading(units["R2"], "R2", ["loss"], rng, True, SPEC["signs"]["R2"])
     out["R2m"] = matched_cross_card(out["R2"]["rows"], lab) if real else None
     if units.get("R3"):
@@ -409,6 +593,7 @@ def run(real=True, units=None, dup_cand=None, lab=None, tag="run"):
         for r3 in ("R3", "R3b"):
             out[r3 + "_binary"] = score_reading(units["R3"], r3, f3, rng, False, SPEC["signs"]["R3"], comp=SPEC["composite_R3"])
             out[r3 + "_ordinal"] = score_reading(units["R3ord"], r3, f3, rng, False, SPEC["signs"]["R3"], comp=SPEC["composite_R3"])
+            out[r3 + "_ordinal_event_only"] = score_reading(units["R3ord_event_only"], r3, f3, rng, False, SPEC["signs"]["R3"], comp=SPEC["composite_R3"])
     for rd, res_ in out.items():                          # Holm across a reading's secondary features (the primary excluded)
         if not isinstance(res_, dict) or "features" not in res_:
             continue
@@ -438,16 +623,119 @@ def synth_logs(tmp, n_s, n_f, planted, interval, steps, field_noise=0.02, seed=0
     return units
 
 
+def _flag4(vals):
+    """§131's FLAG4 on a {step: loss} dict (nearest logged steps)."""
+    g = lambda t: vals[min(vals, key=lambda s: abs(s - t))]  # noqa: E731
+    return bool(g(4000) >= 0.9 * g(2600) and g(4000) >= 0.25 * g(100))
+
+
+def synth_panel(tmp, kind, n_units, seed, noise=0.015, interval=100, steps=4000):
+    """rev 2 selftest panels. Half the units are power-law curves and half exponential saturation (so the primary null
+    is misspecified for half), mixed within each of two strata. FLAG4 is computed from each synthetic curve itself.
+      "saturation": no basin variable. FLAG4 varies only through curve mechanics (asymptote, amplitude, decay shape).
+      "basin": a narrow mechanics spread plus a basin variable. Failures carry an extra early descent inside the window
+               (a hare term that does not saturate there) and plateau after 2.1k; successes keep descending after 2.1k."""
+    rng = np.random.default_rng(seed); units = []
+    for i in range(n_units):
+        form = "power" if i % 2 == 0 else "exp"
+        if kind == "saturation":            # wide mechanics, balanced outcomes
+            a = rng.uniform(0.2, 2.5); b = rng.uniform(0.5, 3.5)
+            sh = rng.uniform(0.4, 3.0) if form == "power" else rng.uniform(0.4, 3.0)
+            fail = None; h = 0.0
+        elif kind == "saturation_strong":   # mechanics in which the window slope alone predicts FLAG4 (the confound bites)
+            a = rng.uniform(0.05, 2.0); b = rng.uniform(0.5, 4.0)
+            sh = rng.uniform(0.2, 2.5) if form == "power" else rng.uniform(0.4, 4.0)
+            fail = None; h = 0.0
+        else:
+            a = rng.uniform(1.0, 1.4); b = rng.uniform(1.8, 2.2)
+            sh = rng.uniform(0.8, 1.2) if form == "power" else rng.uniform(1.5, 2.5)
+            fail = bool(rng.random() < 0.5); h = rng.uniform(0.35, 0.55) if fail else 0.0
+        base = lambda u: a + b * (u ** (-sh) if form == "power" else math.exp(-u / sh))  # noqa: E731
+        vals = {}
+        for s in range(interval, steps + 1, interval):
+            u = s / 1000.0; L = base(u) * math.exp(-h * min(1.0, max(0.0, (s - 500) / 1500.0)))
+            if kind == "basin" and s > 2100:
+                L = (base(2.0) * math.exp(-h)) * (1 + 0.02 * (s - 2000) / 2000.0) if fail else base(u) * math.exp(-(s - 2100) / 1800.0)
+            vals[s] = max(1e-3, L * (1 + rng.normal(0, noise)))
+        vals[100] = 3.0 * vals[2000]     # a bounded early loss (real S5: about 8.5 at 100 vs 3-5 at 2k), so FLAG4's floor clause behaves as in the data
+        succ = not _flag4(vals)
+        path = os.path.join(tmp, "%s%d.jsonl" % (kind, i))
+        with open(path, "w", newline="\n") as fh:
+            for s in sorted(vals):
+                fh.write(json.dumps({"step": s, "loss": vals[s]}) + "\n")
+        units.append({"id": "%s%d" % (kind, i), "src": path, "stratum": "S|x" if i % 4 < 2 else "S|y", "success": succ,
+                      "interval": interval, "seed": i, "card": "x", "basin_fail": fail})
+    return units
+
+
 def selftest():
     ok = True; rep = {}
     with tempfile.TemporaryDirectory(dir=HERE, prefix="_selftest_") as tmp:
+        SPEC_n, SPEC_b, SPEC_bn = SPEC["n_perm"], SPEC["n_boot"], SPEC["beat_null"]["n_perm"]
+        try:
+            SPEC["n_perm"], SPEC["n_boot"], SPEC["beat_null"]["n_perm"] = 2000, 200, 2000
+            # rev 2 panels: saturation-only (the feature must NOT pass the rev-2 rule) and basin beyond saturation (it must)
+            for kind, n_pan in (("saturation", 10), ("saturation_strong", 10), ("basin", 5)):
+                pans = []
+                for j in range(n_pan):
+                    sd = {"saturation": 3000, "saturation_strong": 5000, "basin": 4000}[kind] + j
+                    u = synth_panel(tmp, kind, 60 if kind == "saturation_strong" else 40, sd)
+                    o = score_reading(u, "R1", ["loss"], np.random.default_rng(sd), True, SPEC["signs"]["R1"])
+                    fs = o["features"]; sl = fs["slope:loss"]
+                    pans.append({
+                        "seed": sd, "n": len(u), "n_success": sum(x["success"] for x in u),
+                        "slope_C": round(sl["result"]["C"], 3), "slope_p": sl["result"]["p"], "verdict_rev1": sl.get("verdict_rev1"),
+                        "verdict_rev2": sl["verdict"],
+                        "null_power_C": round(fs["null_power:loss"]["result"]["C"], 3), "null_exp_C": round(fs["null_exp:loss"]["result"]["C"], 3),
+                        "beat_power_dC_p": [round(sl["beat_null"]["null_power:loss"]["dC"], 3), sl["beat_null"]["null_power:loss"]["p_one_sided"]],
+                        "beat_exp_dC_p": [round(sl["beat_null"]["null_exp:loss"]["dC"], 3), sl["beat_null"]["null_exp:loss"]["p_one_sided"]],
+                        "other_features_rev2": {k: v["verdict"] for k, v in fs.items() if not k.startswith("null_") and k != "slope:loss"},
+                        "outcome_equals_basin": (sum((not x["success"]) == x["basin_fail"] for x in u) / len(u)) if kind == "basin" else None})
+                    for f_ in os.listdir(tmp):
+                        os.remove(os.path.join(tmp, f_))
+                rep["panels_" + kind] = {
+                    "panels": pans,
+                    "rev1_useful_any_direction": sum(p_["verdict_rev1"].startswith("USEFUL") for p_ in pans),
+                    "rev1_significant": sum(p_["slope_p"] < 0.05 for p_ in pans),
+                    "rev2_useful_slope": sum(p_["verdict_rev2"].startswith("USEFUL") for p_ in pans),
+                    "rev2_useful_any_feature": sum(p_["verdict_rev2"].startswith("USEFUL") or any(v.startswith("USEFUL") for v in p_["other_features_rev2"].values()) for p_ in pans)}
+            # paired beat-null calibration: feature and null are exchangeable noisy copies of one latent predictor
+            rej = 0; dcs = []
+            for k in range(40):
+                g = np.random.default_rng(500 + k); st3 = []
+                for _ in range(2):
+                    z = g.normal(0, 1, 20); y = (z + g.normal(0, 1, 20) > 0).astype(float)
+                    st3.append((z + g.normal(0, 0.7, 20), z + g.normal(0, 0.7, 20), y))
+                r_ = paired_beat_null(st3, 400, g); dcs.append(r_["dC"]); rej += r_["p_one_sided"] < 0.05
+            rep["paired_calibration"] = {"draws": 40, "mean_dC": float(np.mean(dcs)), "reject_rate_alpha0.05": rej / 40}
+            # exact path of the paired test: 3 units, feature perfect, null reversed -> dC = 1, p = 1/8 (2^3 masks)
+            r_ = paired_beat_null([(np.array([1.0, 2.0, 0.0]), np.array([-1.0, 0.0, 1.0]), np.array([1.0, 1.0, 0.0]))], 10, np.random.default_rng(0))
+            rep["paired_exact"] = r_
+        finally:
+            SPEC["n_perm"], SPEC["n_boot"], SPEC["beat_null"]["n_perm"] = SPEC_n, SPEC_b, SPEC_bn
+        ps, pss, pb = rep["panels_saturation"], rep["panels_saturation_strong"], rep["panels_basin"]
+        bal = lambda P, lo, hi: all(lo <= p_["n_success"] / p_["n"] <= hi for p_ in P["panels"])  # noqa: E731
+        ok &= bal(ps, 0.2, 0.8) and bal(pss, 0.15, 0.85) and bal(pb, 0.2, 0.8)
+        for P in (ps, pss):                                    # mechanics only: the rev-2 rule must not pass
+            ok &= P["rev2_useful_slope"] <= 1 and P["rev2_useful_any_feature"] <= 2
+        # ... while the rev-1 test is fooled there (the panel bites): falsely significant in >= 3 of 10 panels, which has
+        # binomial probability 0.012 at a nominal alpha of 0.05. (First set as "rev-1 USEFUL >= 5"; changed after the first
+        # strong-panel run read 3 USEFUL-REVERSED + 2 DETECTABLE; the rev-2 requirements were never changed. Disclosed.)
+        ok &= pss["rev1_significant"] >= 3
+        ok &= pb["rev2_useful_slope"] >= 4 and all(p_["verdict_rev2"].startswith(("USEFUL (pre-stated", "INCONCLUSIVE", "DETECTABLE")) for p_ in pb["panels"])
+        ok &= all(p_["outcome_equals_basin"] >= 0.9 for p_ in pb["panels"])
+        ok &= rep["paired_calibration"]["reject_rate_alpha0.05"] <= 0.15 and abs(rep["paired_calibration"]["mean_dC"]) < 0.05
+        ok &= rep["paired_exact"]["exact"] and abs(rep["paired_exact"]["p_one_sided"] - 1 / 8) < 1e-9
         SPEC_n, SPEC_b = SPEC["n_perm"], SPEC["n_boot"]
         try:
             SPEC["n_perm"], SPEC["n_boot"] = 2000, 200
             u = synth_logs(tmp, 12, 12, 0.8, 100, 4000, seed=1)
-            o = run(real=False, units={"R1": u, "R1b": [], "R2": [], "R3": [], "R3ord": []}, dup_cand={}, lab={}, tag="selftest-planted")
+            SPEC["beat_null"]["n_perm"] = 2000
+            o = run(real=False, units={"R1": u, "R1b": [], "R1c": [], "R2": [], "R3": [], "R3ord": []}, dup_cand={}, lab={}, tag="selftest-planted")
+            SPEC["beat_null"]["n_perm"] = SPEC_bn
             pr = o["R1"]["features"]["slope:loss"]["result"]; ser0, _ = read_series(u[0]["src"], ["loss"])
             rep["planted"] = {"C": pr["C"], "p": pr["p"], "verdict": o["R1"]["features"]["slope:loss"]["verdict"],
+                              "note": "the rev-1 planted hare is a decay-rate difference, i.e. curve mechanics; only C and p are checked",
                               "excluded": o["R1"]["excluded"], "lfa_present": "lfa:loss" in o["R1"]["features"],
                               "dedupe_last_wins": ser0["loss"].get(100) == 9.0}
             for f_ in os.listdir(tmp):
