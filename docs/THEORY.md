@@ -16069,6 +16069,17 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - The arm reading counts s1 as registered; the HARMFUL clause is read on s2 (and on s1 only if it runs paired).
 * **The §205 cap is raised from $18.00 to $18.50** (user-approved).
 
+**Note 205-3 (2026-10-15 19:58 EDT; before any §205 output; scorer check on the real eval pass, no rule change).** Experiments' post-landing pass (scratch/s205_eval_iit.py) writes note 205-1's fields: iit_eval.tau{1,2,3} {hybrid_ccc, own, n_ccc}, siit_eval {keep_ccc, n_ccc}, and g2_pass1_deep_probe as a float.
+* **End-to-end check:** theory/score_s205.py was run on a scratch copy, with the s185 controls' logs, eval.json and eval_iit_ctrl.json standing in as the three §205 cells. Every field read resolved.
+* **The no-effect panel reads MIXED, not SUPPORTED:**
+  - s1 ENTERED-AND-MET (hybrid_ccc τ1 0.819, n 2257);
+  - s2 ENTERED-NOT-MET (0.735);
+  - s3 NEITHER (0.003, no entry).
+* **Stated before output:**
+  - A successful control seed already meets MET (s1 0.819), so MET on an entering seed is weak evidence by itself. The discriminating cell is s3: its control never enters.
+  - τ3 is thin (n_ccc 1–49; eligibility needs height ≥ 7 within n ≤ 8), so it is reported with its n and read as descriptive only.
+  - own + donor can exceed 1 (make_pairs does not force y_d ≠ y). Only hybrid_ccc enters a label.
+
 ## 206. JOINT-COT-L1: CODI's joint CoT CE and L1 coupling on the warm-started latent arm (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; the PAIR J0 + J1; cap $6; pre-registered 2026-10-15 01:49 EDT, before any §206 code or run)
 
 **Registered text:**
