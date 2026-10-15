@@ -142,6 +142,12 @@ def main():
     ap.add_argument("--aux_target", default="string", choices=["string", "value", "factor"], help="§204: the aux target (string = today's path; boxes/gsm8k_factor.py)")
     ap.add_argument("--aux_nopass", action="store_true", help="§204: the aux prompt [EOT, ' Step', ' :'] (no pass token) in training and every aux eval")
     ap.add_argument("--add_norm", default="", choices=["", "rms"], help="§204 F-NR: DeltaMem's additive reads RMS-normalised per head (the §185 path); '' = off")
+    ap.add_argument("--joint_cot", type=float, default=0.0, help="§206 JOINT-COT (boxes/gsm8k_jcot.py): gamma_T on the teacher CE (T1 full CoT + T2 answer CE); 0 = off")
+    ap.add_argument("--kd_beta", type=float, default=0.0, help="§206: beta on the L1 coupling of the decoder's '###' states to the teacher's (needs --joint_cot); 0 = off")
+    ap.add_argument("--kd_layers", default="7-12"); ap.add_argument("--kd_teacher", default="drop", choices=["drop", "full"])
+    ap.add_argument("--kd_norm", default="teacher_std", choices=["teacher_std", "none"]); ap.add_argument("--kd_loss", default="l1", choices=["l1", "smoothl1"])
+    ap.add_argument("--kd_m_min", type=int, default=2)
+    ap.add_argument("--jc_norms_every", type=int, default=500, help="§206: per-term trunk grad norms every N steps (draft §9: 500; smokes set it lower)")
     ap.add_argument("--eval_out", default="eval.json", help="§204: the eval file name (e.g. eval_s204ref.json for a comparator's eval-only re-run); its item files "
                     "then get the same stem (<stem>_items.json, <stem>_items_kprime.json, <stem>_args.json) so a landed run's files are never overwritten")
     ap.add_argument("--op_vocab", default="", help="§204 --aux_target factor: the frozen operator-signature list (default bench/data/gsm8k_aug/s204_op_vocab.json)")
@@ -162,6 +168,11 @@ def main():
     if a.resample_numbers:
         TPL = [G.parse_recomputable(r)[0] for r in Rtr]
     FT = SA and a.aux_target in ("value", "factor"); GF = None; OPV, opv_sha = [], None   # §204: factor / value targets (training items only when FT)
+    JC = SA and a.joint_cot > 0; GJ = None; KDL = (); jc_hist = []           # §206 JOINT-COT (boxes/gsm8k_jcot.py, imported only when on)
+    assert not a.kd_beta or JC, "--kd_beta needs --joint_cot (the teacher forward supplies the targets)"
+    if JC:
+        import boxes.gsm8k_jcot as GJ
+        KDL = GJ.parse_layers(a.kd_layers)
     if SA:
         import boxes.gsm8k_factor as GF
         OPV, opv_sha = GF.load_op_vocab(a.op_vocab or None)
@@ -212,7 +223,15 @@ def main():
         return 0.0 if not SA else (a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc)))
     aux_hist = []; aux_terms = {}                                           # §204: per-term aux CE sums / counts between log records
 
-    def loss_items(its, step):
+    def loss_items(its, step, parts=None):
+        if SA and JC:                                                       # §206: teacher first (its own backward; z kept detached), then the student
+            if parts is not None:                                           # §206 term_norms: the targets only (L_T's norm is taken first, its graph freed)
+                with torch.no_grad():
+                    _, _, jz, jrows = GJ.teacher(g, its, dev, ac, KDL, a.kd_teacher, a.kd_m_min)
+            else:
+                L1_, L2_, jz, jrows = GJ.teacher(g, its, dev, ac, KDL, a.kd_teacher, a.kd_m_min)   # z captured in J0 too (TEACHER-CONTEXT; same forward)
+                lt_ = L1_ + (L2_ if L2_ is not None else 0.0); (a.joint_cot * lt_ / a.micro).backward()
+                jc_hist.append({"t1_ce": float(L1_.detach()), "t2_ce": float(L2_.detach()) if L2_ is not None else None, "tctx": GJ.teacher_context(jz)})
         if SA:
             x, msk = m.think_inputs(its, dev); per = [[] for _ in its]; lam_ = lam(step)
             with ac():
@@ -236,10 +255,21 @@ def main():
                         ce = Fn.cross_entropy(lg_a.transpose(1, 2), y_a, ignore_index=-100, reduction="none").sum(1) / (y_a != -100).sum(1)
                         for r_, i in enumerate(idx):
                             per[i].append(ce[r_])
-                la = m.dec_loss(S, its, dev)
+                kd_ = None
+                if JC and a.kd_beta and jrows:                              # §206: the decoder's '###' states captured (same CE, bitwise) + beta * L_KD
+                    la, hcap = GJ.dec_layers(m, S, its, dev, KDL); kd_, kdl_, sgt_, sgs_ = GJ.kd_loss(jz, hcap, jrows, a.kd_norm, a.kd_loss)
+                    if parts is None:
+                        jc_hist[-1].update({"kd": float(kd_.detach()), "kd_l": kdl_, "sigT": sgt_, "sigS": sgs_})
+                    else:
+                        parts["KD"] = kd_
+                else:
+                    la = m.dec_loss(S, its, dev)
+            if parts is not None:                                           # §206 term_norms: the student term L_S = answer CE + lambda aux
+                parts["S"] = la + lam_ * torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean() if lam_ and any(per) else la; return None
+            lk_ = la if kd_ is None else la + a.kd_beta * kd_                # answer_ce stays the decoder CE alone (beta L_KD logged as kd)
             if not lam_ or not any(per):
-                aux_hist.append((float(la), None)); return la
-            aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean(); aux_hist.append((float(la.detach()), float(aux.detach()))); return la + lam_ * aux
+                aux_hist.append((float(la), None)); return lk_
+            aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean(); aux_hist.append((float(la.detach()), float(aux.detach()))); return lk_ + lam_ * aux
         seqs = [it["pre"] + it["cot"] + it["a1"] + [EOS] for it in its]; ids_, _ = pad(seqs); lab = np.full(ids_.shape, -100)
         for r, (q, it) in enumerate(zip(seqs, its)):
             n0 = len(it["pre"]); lab[r, n0:len(q)] = q[n0:]
@@ -250,7 +280,7 @@ def main():
 
     def mem_check(micro):
         torch.cuda.reset_peak_memory_stats(dev); its = [it_long] * (a.bs // micro); params.train()
-        loss_items(its, 1).backward(); params.zero_grad(set_to_none=True)
+        loss_items(its, 1).backward(); params.zero_grad(set_to_none=True); jc_hist.clear()
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 3 * sum(p_.numel() * 4 for p_ in params.parameters()) / 2 ** 30
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.eval_only):
         mc = []
@@ -328,6 +358,37 @@ def main():
 
     def valid_acc():
         params.eval(); v = acc_of(Dva, answers(Dva)); params.train(); return v
+    if JC:                                                                  # §206 diagnostics (draft §9) on fixed batches; no training rng is drawn
+        KDV = [it for it in Dva if it["m"] >= a.kd_m_min]; KDV128 = KDV[:128]; KDT = [it for it in map(enc, Rtr[:600]) if it["m"] >= a.kd_m_min][:128]
+
+        def kd_route(D, Ks=None):
+            """KD-ROUTE: the coupling loss reading S_0 / S_1 / S_K (no grad) -> ({S0, S1, SK, share_mem, share_multipass, n}, per-item {Kp: (n,)}, z, sigma)."""
+            w_ = params.training; params.eval(); o_, Z_, sg_ = GJ.route(m, D, dev, ac, KDL, think_states, Ks or (0, 1, K), a.kd_teacher, a.kd_norm, a.kd_loss, bs)
+            params.train(w_)
+            if Ks:
+                return None, o_, Z_, sg_
+            s0, s1, sk = (float(o_[k_].mean()) for k_ in (0, 1, K))
+            return {"S0": s0, "S1": s1, "SK": sk, "share_mem": (s0 - sk) / s0, "share_multipass": (s1 - sk) / s0, "n": len(D)}, o_, Z_, sg_
+
+        def t2_eval(D):
+            """T2-ACC on D (m >= kd_m_min): greedy answer after pre + lines[:m-1] + '###' (ans_ok), and the T2 forward's first-token top-1 / tf exact."""
+            w_ = params.training; params.eval(); P_ = greedy_after(Fwd(g), GJ.t2_prefixes(D), dev, ac, bs); t1_, tf_ = [], []
+            with torch.no_grad():
+                for i in range(0, len(D), bs):
+                    st_ = {}; GJ.teacher(g, D[i:i + bs], dev, ac, (), "drop", 0, st_); t1_ += st_["t2_top1"]; tf_ += st_["t2_tf_exact"]
+            params.train(w_); return {"acc": acc_of(D, P_), "top1": float(np.mean(t1_)) if t1_ else None, "tf_exact": float(np.mean(tf_)) if tf_ else None, "n": len(D)}
+
+        def term_norms(its, step):
+            """per-term trunk (g) grad norms on one chunk, separate backwards (.grad untouched; the teacher graph freed before the student's):
+            unscaled L_T = L_T1 + L_T2, L_S = answer CE + lambda aux, L_KD; kappa_hat = |g_S| / |g_T| (draft M1c)."""
+            tp = [p_ for p_ in g.parameters() if p_.requires_grad]; nrm = lambda gr: float(torch.sqrt(sum((x_.float() ** 2).sum() for x_ in gr if x_ is not None)))  # noqa: E731
+            L1_, L2_, _, _ = GJ.teacher(g, its, dev, ac, (), a.kd_teacher, a.kd_m_min)
+            r_ = {"gn_trunk_LT": nrm(torch.autograd.grad(L1_ + (L2_ if L2_ is not None else 0.0), tp, allow_unused=True))}; del L1_, L2_
+            parts = {}; loss_items(its, step, parts); ks = [k_ for k_ in ("S", "KD") if k_ in parts]
+            for j, k_ in enumerate(ks):
+                r_["gn_trunk_L" + k_] = nrm(torch.autograd.grad(parts[k_], tp, retain_graph=j < len(ks) - 1, allow_unused=True))
+            r_["kappa_hat"] = r_["gn_trunk_LS"] / max(r_["gn_trunk_LT"], 1e-12); return r_
+    tn_pend = {}
     for step in range(step0, last_ + 1):
         for gr in opt.param_groups:
             gr["lr"] = lr_at(a.lr, gr, step, a.steps)
@@ -337,7 +398,8 @@ def main():
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
         idx = rng.integers(0, len(Rtr), a.bs); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro
         for k in range(a.micro):
-            lk = loss_items([draw(i) for i in idx[k * ch:(k + 1) * ch]], step); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
+            its_ = [draw(i) for i in idx[k * ch:(k + 1) * ch]]; its0 = its_ if k == 0 else its0                    # noqa: F821
+            lk = loss_items(its_, step); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if SA:
             wg.append(write_grad_norm(m))
         gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0); gn_hist.append(float(gn))
@@ -345,12 +407,25 @@ def main():
             n_nonfinite += 1; opt.zero_grad(); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush()
         else:
             opt.step(); hist.append(tot)
+        if JC and a.jc_norms_every and step % a.jc_norms_every == 0:                                         # §206 §9: per-term trunk grad norms every 500 steps (after the update)
+            tn_pend = term_norms(its0, step)
         if step % a.log_every == 0 or step == last_:
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []
             if SA:
                 rec.update({"aux_lambda": lam(step), "answer_ce": float(np.mean([x_[0] for x_ in aux_hist])) if aux_hist else None,
                             "aux_ce": float(np.mean([x_[1] for x_ in aux_hist if x_[1] is not None])) if any(x_[1] is not None for x_ in aux_hist) else None,
                             "gamma": float(m.mem.gamma), "fade": float(m.mem.fade), "write_grad_norm": float(np.mean(wg)) if wg else None}); aux_hist.clear(); wg = []
+                if JC and jc_hist:                                          # §206: teacher CEs, L_KD (per layer), sigma_T and sigma_S / sigma_T per layer
+                    t2_ = [h_["t2_ce"] for h_ in jc_hist if h_["t2_ce"] is not None]; kd_h = [h_ for h_ in jc_hist if "kd" in h_]
+                    rec.update({"t1_ce": float(np.mean([h_["t1_ce"] for h_ in jc_hist])), "t2_ce": float(np.mean(t2_)) if t2_ else None})
+                    if kd_h:
+                        rec.update({"kd": float(np.mean([h_["kd"] for h_ in kd_h])), **{"kd_l%d" % l: float(np.mean([h_["kd_l"][l] for h_ in kd_h])) for l in KDL},
+                                    **{"sigT_l%d" % l: float(np.mean([h_["sigT"][l] for h_ in kd_h])) for l in KDL},
+                                    **{"sigS_over_T_l%d" % l: float(np.mean([h_["sigS"][l] / max(h_["sigT"][l], 1e-9) for h_ in kd_h])) for l in KDL}})
+                    rec.update({"tctx_l%d" % l: float(np.mean([h_["tctx"][l] for h_ in jc_hist if l in h_["tctx"]])) for l in KDL})
+                    jc_hist.clear()
+                if JC:                                                      # §206 KD-ROUTE every log step (onset = the first record with share_mem >= 0.10)
+                    rec.update({"kdr_" + k_: v_ for k_, v_ in kd_route(KDV128)[0].items()}); rec.update(tn_pend); tn_pend = {}
                 if FT:                                                      # §204: the per-term aux CE (item-mean over the record's draws)
                     rec.update({"aux_%s_ce" % k_: (s_ / n_ if n_ else None) for k_, (s_, n_) in aux_terms.items()}); aux_terms.clear()
             if gn_hist:
@@ -362,6 +437,10 @@ def main():
             tv = time.time(); va = valid_acc(); vhist.append((step, va)); r5 = {"step": step, "valid_acc": va, "valid_sec": round(time.time() - tv, 1)}
             if SA and a.cot_valid:                                          # §202 COT-RETAIN(t): descriptive, never used for selection
                 tc = time.time(); r5.update({"cot_valid_acc": cot_valid_acc(), "cot_valid_sec": round(time.time() - tc, 1)})
+            if JC:                                                          # §206: T2-ACC, KD-GEN = kd_valid / kd_train (S_K, the fixed 128-item batches)
+                tc = time.time(); t2_ = t2_eval(KDV); kv_ = kd_route(KDV128, (K,))[1][K].mean().item(); kt_ = kd_route(KDT, (K,))[1][K].mean().item()
+                r5.update({"t2_valid_acc": t2_["acc"], "t2_valid_top1": t2_["top1"], "t2_valid_tf_exact": t2_["tf_exact"], "kd_valid": kv_, "kd_train": kt_,
+                           "kd_gen": kv_ / max(kt_, 1e-12), "jc_valid_sec": round(time.time() - tc, 1)})
             if va >= max(v for _, v in vhist):                               # ties: the later step
                 torch.save(params.state_dict(), os.path.join(a.out, "model_validbest.pt")); r5["valid_best"] = True
             log.write(json.dumps(r5) + "\n"); log.flush(); print(r5, flush=True)
@@ -486,6 +565,14 @@ def main():
                                    "greedy ' <<lhs=rhs>>'; ptr*_nocollide = items whose candidate set has no first-BPE-token collision; *_by_grounding = R / Q / unparsed"}
         res["aux_suite"]["lotus_sep"] = res["aux_suite"]["test_extras"].pop("lotus_sep")   # note 204-5: aux_suite["lotus_sep"] (test extras)
         _partial("aux_suite")
+    if JC:                                                                  # §206 eval.json (additive; draft §9): the final model
+        res["kd_route"] = kd_route(KDV128)[0]; _, o_, Z_, sg_ = kd_route(KDV, (K,)); okv = np.array([ans_ok(p_, it["ans"]) for p_, it in zip(answers(KDV), KDV)])
+        pi_ = o_[K].cpu().numpy(); kt_ = kd_route(KDT, (K,))[1][K].mean().item()
+        res["kd_ans"] = {"right": float(pi_[okv].mean()) if okv.any() else None, "wrong": float(pi_[~okv].mean()) if (~okv).any() else None,
+                         "n_right": int(okv.sum()), "n_wrong": int((~okv).sum()), "all": float(pi_.mean()), "l1_const": GJ.l1_const(Z_, sg_), "set": "Aug valid m >= kd_m_min, S_K"}
+        res["kd_gen"] = {"kd_valid": res["kd_route"]["SK"], "kd_train": kt_, "ratio": res["kd_route"]["SK"] / max(kt_, 1e-12)}
+        res["t2_acc"] = {"valid": t2_eval(KDV), "test": t2_eval([it for it in Dte if it["m"] >= a.kd_m_min])}
+        res["cot_valid_final"] = cot_valid_acc(); params.eval(); _partial("jcot")
     if a.symbolic_dir:                                                      # eval-only: GSM-Symbolic (fetched at eval time; never committed)
         sy = {}
         for nm in ("main", "p1", "p2"):
