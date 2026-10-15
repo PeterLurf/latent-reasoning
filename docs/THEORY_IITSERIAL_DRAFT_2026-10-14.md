@@ -338,3 +338,18 @@
 4. **Cost** is set by the launch-bound loop. G-TIME may put it at the high end ($13.5); the half-rate variant is the fallback.
 5. **Seed lottery:** one s3 entry is weak evidence (P(enter | no effect) ≈ 0.6 once perturbed). The mechanism labels carry the reading.
 6. **One-pass precompute of intermediates** (G1b) is not penalised by the loss itself. It relies on g1 / g2.
+
+---
+
+## Addendum: G-ALIGN pilot data by n (Theory, 2026-10-14 20:48 EDT; THEORY note 203-3, Audit-reproduced from the rows)
+* **G-ALIGN as drafted (pooled clean-ccc hybrid >= 0.6) PASSES on both converged pilot models** (rms s1 0.817 / 0.864 at t 1 / 2; window s1 0.701 / 0.800).
+* **By n it does not hold everywhere.** The converged class's own clean hybrid at t = 1 falls with depth:
+  - rms s1: n 3..8 = 0.88 / 0.90 / 0.84 / 0.77 / 0.69 / 0.64;
+  - window s1: 0.82 at n 3, falling to 0.46 at n 8.
+  - The failed seeds are <= 0.01 at every n, with own answer 0.87-0.99. So composition by n does not explain the contrast (Audit).
+* **Consequence for the method and its summary:**
+  - On deep items (n >= 7) the loss also pushes the good class, which itself recomputes h from the text on about 30-50% of deep pairs.
+  - Whether that helps (more state use at depth) or fights (as CSR's floor did) is not settled by G-ALIGN.
+  - The user summary states it.
+* **Design variant, for the user beside the main design, not chosen by Theory:** restrict IIT pairs to n where the pooled converged pilot meets >= 0.6 (n <= 7 on these two models) and report the deep-n effect descriptively.
+  - Cost is unchanged or lower, since fewer pairs means fewer extra forwards.
