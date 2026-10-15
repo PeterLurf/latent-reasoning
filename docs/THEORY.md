@@ -15691,6 +15691,8 @@ Each registers separately, after T1 / T2.
   - The fsq120 prospective check (~$5–10) is not motivated.
   - The nested route stays as the draft stated: a $0 full-state 8k checkpoint in future runs, plus a STATE feature (the 203-4 swap-follow rate). That is untested before entry.
   - Per the OC block, a non-pass rules out only strong detectors (P(USEFUL | real C 0.8) = 0.62).
+* *(Added 21:52; descriptive; Audit's independent reproduction of R1 from the raw logs: slope max |diff| 2e-15, FLAG4 28 / 28, C 0.2826, p ≈ 0.07.)* Several power / exponential null fits sit on their grid bounds (e.g. s602: shape 0.02, τ 100k, a ≈ −41 / b ≈ 45). For those runs the "null" is close to linear extrapolation. The reading is unchanged, because the feature fails to beat even this null.
+* **Retention (Audit-approved under the data-retention rule):** every future nested run keeps ckpt_model_8000.pt beside its eval files, listed in its retention note, from the next nested launch (IIT-SERIAL included). It serves the direction tests: the 203-4 swap-follow and the 203-6 input swap at 8k.
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
