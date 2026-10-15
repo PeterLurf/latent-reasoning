@@ -16353,6 +16353,20 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 
 **Next (not registered here):** budget scaling (~20 epochs) of whichever design wins, as a separate decision with its own cost.
 
+**Note 209-1 (2026-10-15 11:40 EDT; before any §209 code or run; design pins, Audit's review).**
+* **Label:** the cell is "CODI recipe, γ 2 (the 4-epoch prior), not CODI's published γ 1".
+* **Hyperparameters follow CODI's paper / released config except the budget (the one registered change):**
+  - LoRA r 128 / α 32 on CODI's target modules;
+  - AdamW at lr 3e-3, cosine with 3% warm-up;
+  - **batch size 128 (CODI's), not our 64**;
+  - 6 latents plus the projection (MLP + LN);
+  - the teacher's last step dropped;
+  - weights per CODI's GPT-2 config, with γ = 2 as labelled.
+  - Any deviation needed for the 3090 (e.g. gradient accumulation to reach an effective bs of 128) is stated in args.json and must leave the effective batch at 128.
+* **Epochs are counted by examples seen:** 4.0 epochs = 4 × |GSM8K-Aug train| examples (≈ 1.54M), i.e. about 12.0k optimizer steps at an effective bs of 128.
+  - The same exposure in examples as §200's 24k × 64. The scorer's `epochs` field is examples seen / |train|.
+* **The registered decision bars are unchanged:** 0.251 / 0.175 (Audit had quoted "≥ ~0.30" informally; the registered bar is 0.251).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
