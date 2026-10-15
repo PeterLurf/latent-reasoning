@@ -27,6 +27,11 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 00:1x 10-15 (Experiments): §202 W LANDED 0.146 (e3c4ff16; W-LIFT NEUTRAL) -> §204 A-base b295 (A eval-only ref + F-P gsm_lat_factor_s1; Audit GO;
+  guard scratch/cost_guard.py s204 3.90) filling: 4 STUCK_LOADING hosts so far (~$0.16; reason now logged, d71f41e5). IIT-SERIAL --iit done + Audit
+  OK (27d05cef / 62343096); G-TIME b294 queued behind b295 (one filler). DAS-USED: P0 all 16, P1 pilots, k-ladder on rms s1 -> no compact used
+  subspace <= 1024-d (35bf38de) -> DAS fits STOP (no P2 for the other pilots, no Stage B); 4060 rms s1 P2 finishing (archive). Notes 203-5 / 203-6
+  CONSUMED-MASK + INPUT-SWAP on all 16 (bb3799b7; note 203-8). Local 3070 / 2070 free.
 * 21:4x 10-14 (Experiments): §202 C+ LANDED 0.336 (997ff5bd, ~$0.37); W b292 ~8k/12k, lands ~22:55. §204 harness final (7f707887 +
   ae289bcb: plan_ce, lotus_sep, --eval_out). DAS-USED pilot (scratch/dasused.py): P0a conditioned SERIAL on all 16 (12dd5cd4; note 203-4
   CONTRAST-SURVIVES), P0b on the 4 pilots (5d3e7396). 3070 batch (logs/local_batch_2130.out): P1 x4 pilots, then scratch/maskswap.py (notes 203-5 /
