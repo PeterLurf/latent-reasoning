@@ -291,7 +291,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails; T4 SNAP-CHAIN: SNAP-HURTS 4/4 (the pass-7 text write is exact ~0 beyond n 10; Prop 8 untested)** |
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **W-LIFT NEUTRAL (W 0.146 vs A 0.147); R1-W below (C+ 0.336); LOOP-FORMED, THINK-NECESSARY fails; the CoT trunk is forgotten by 2k (cot_valid 0.07-0.13); §204 -> A base** |
 | 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
-| 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | waits for §202 |
+| 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | **ACC MATCHES (F-P 0.139 vs A 0.147); SHORTCUT-RATIO 0.74 vs 0.85 (P-F5 holds); VALUE-SERIAL FALSIFIED (values readable from M_1: one-pass chain); THINK-NECESSARY / DEEP fail** |
 | 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | registered | pending (harness + gates) |
 
@@ -15969,6 +15969,34 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - Ratio = acc(M_1) / acc(M_t), on ℓ ≥ 2 R-steps, t ∈ {2, 3, 4}.
   - Separate L2-logistic probes per t and per source, fit on 4,000 Aug-train items with λ from an inner 80 / 20 split, **reported on Aug valid**; test is descriptive.
   - The value (first value token) probe and each target's raw accuracies go beside it.
+
+**§204 result (2026-10-15 09:16 EDT; A base per §202's W-LIFT NEUTRAL; F-P gsm_lat_factor_s1 49c54350, 3090 595.84, 24k, realised about $2.56 (4 STUCK hosts about $0.16); comparator A's eval-only re-run on the same host, acc and acc_by_kprime bitwise equal to A's eval.json; final checkpoints; theory/score_s204.py). The factored target does not change accuracy and lowers the one-pass share, but values are still computed in pass 1: VALUE-SERIAL is falsified by its own falsifier.**
+* **ACC: MATCHES** (F-P 0.139 vs A 0.147, −0.008). The valid-selected F-P checkpoint is 0.147 (best at 18k; descriptive).
+* **SHORTCUT-RATIO** (pooled K′1 / K′10): F-P 0.738 vs A 0.851, **−0.113**. **The deep ratio** (m ≥ 3): 0.807 vs 0.885 (−0.078).
+* **THINK-NECESSARY** (pooled) and **-DEEP: both fail.** SERIAL-GAIN-DEEP: F-P 0.018 vs A 0.013, +0.006 < T_D, so not more serial.
+* **Predictions:**
+
+  | prediction | status | value |
+  |---|---|---|
+  | P-F1 (PLAN-ACC(1): pointer 1 ≥ proxy + 0.05, operator ≥ proxy) | holds | pointer 0.697 vs A's string proxy 0.635; operator 0.637 vs 0.605 |
+  | P-F2 (PLAN-PARALLEL) | holds | PLAN-LEAK(2) 0.995, (3) 0.927; PROBE-LEAK pending (eval-only) |
+  | P-F3 (VALUE-SERIAL) | **FALSIFIED** | see below |
+  | P-F4 (central only) | — | VALUE-EXACT by pass 0.338 / 0.157 / 0.108, vs the central 0.35 / 0.22 / 0.13 |
+  | P-F4a (Audit: VALUE-EXACT(3) ≥ 0.5) | FALSIFIED, as the derivation predicted | 0.108 |
+  | P-F5 (SHORTCUT-RATIO ≤ comparator − 0.10) | holds | −0.113 |
+  | P-F5a (Audit: pooled THINK-NECESSARY) | FALSIFIED (predicted P ≈ 0.2) | |
+  | P-F6 (THINK-NECESSARY-DEEP passes) | not met; its falsifier is not triggered | deep ratio −0.078, i.e. lower by more than 0.05 |
+  | P-F7 (ACC MATCHES or LIFTS) | holds | |
+  | P-F9 (VALUE-EXACT on Q-steps ≥ R-steps + 0.10) | between | gap 0.035 |
+
+  - **P-F3 in detail:** on ℓ ≥ 2 R-steps at t 2–3, VALUE-EXACT from M_t is 0.140 ≥ the M_0 floor 0.037 + 0.10. But VALUE-LEAK from M_1 is 0.126, and that is ≥ 0.7 × 0.140 = 0.098, its registered falsifier. **A one-pass chain:** step t's value is readable from pass 1's memory at nearly the M_t level. So the think pass computes later values within pass 1 (A-OP fails in practice).
+* **LOTUS-SEP (note 204-5): INCONCLUSIVE** by the rule. VALUE-SERIAL fails, while values ARE carried (0.140 > floor + 0.05).
+  - Descriptive lotus_sep: pass-1 value on level-1 steps is 0.389 at m ≤ 2 vs 0.233 at m ≥ 4 (plan 0.713 vs 0.540).
+* **Recall share** 0.629 − 0.165 = 0.46 (A 0.48).
+* **Reading:**
+  - Factoring the per-pass target (a teacherless value, an operator and pointers) makes the latent arm somewhat less one-pass-dominated and gives better operand selection. It does not force serial computation: the model writes the values, as well as the plan, at pass 1 and reads them out by the pass token. Accuracy is unchanged at this budget.
+  - This is the pass-token leak D5 / D5b predicted for F-P. Its closing arm (F-NR, NOPASS + RMS) ran only on the W base, so on this branch it is untested. A new decision.
+* **Spend:** about $2.56 of the $3.90 cap.
 
 ## 205. IIT-SERIAL: a whole-state interchange loss for seed stability (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; FULL / default design; cap $18; pre-registered 2026-10-15 01:49 EDT, before any §205 training run)
 
