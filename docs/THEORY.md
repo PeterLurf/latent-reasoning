@@ -15780,6 +15780,19 @@ Each registers separately, after T1 / T2.
     - It is a second signature of "converged = carries state across passes; failed = recomputes late from the text".
     - Descriptive and post hoc. A $0 check is M-UNCONS restricted to passes ≤ n / 2 (not queued).
 
+**Note 203-9: the DAS-USED pilot P2 k-ladder, rms s1 (2026-10-15 00:12 EDT; descriptive; Experiments 35bf38de; 3070, t = 2, lr 3e-3, B n_ccc 4,471; stopping rule fixed in the DAS draft at f89bc03e before any k ≥ 64 output). No compact used subspace of S_2 up to 1024-d was found: distributed or fit-limited. The DAS fits stop.**
+* **B IIA_ccc at k = 16 / 64 / 256 / 1024:** 0.105 / 0.091 / 0.096 / 0.086, about 0.08–0.12 at every n, i.e. the base rate. The whole-state swap on the same pairs reads 0.915.
+* **Fit diagnostics:**
+  - train IIA 0.225 / 0.241 / 0.200 / 0.463; validation best 0.094–0.110;
+  - every fit early-stopped on flat validation (400–900 steps of the 2,000 / 5,000 caps);
+  - G-FIT passes by its letter.
+  - k = 1024's train 0.463 against val 0.110 is memorisation of the fit pairs, not a transferable subspace.
+* **Reading:**
+  - By the pre-fixed rule: **"no compact used subspace ≤ 1024-d found (distributed or fit-limited)".**
+  - No P2 on the other 3 pilots and no Stage B.
+  - The causal content sits at the whole-state level (203-3 / 203-4: swap-follow 0.80–0.97 in converged models), spread over far more than 1024 of S's 49,152 dimensions, or in a form linear DAS cannot fit here.
+  - That fits the draft's GL(64) × O(64) symmetry argument for a coordinate-free target: IIT-SERIAL acts on the whole state and does not need a compact subspace.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
