@@ -1,5 +1,7 @@
 # DAS-USED: find the causally used representation of the intermediate values (draft rev 1, 2026-10-14)
 
+> **Theory review (2026-10-14 20:18 EDT):** the whole-state SERIAL separator was checked against raw eval.json s170.serial["2"]: hybrid 0.53-0.96 in the 9 converged models vs 0.07-0.12 in the 7 failed (failed hybrid = donor = chance). Proof-tagged claims were taken as tagged and not re-derived. IIT 2112.00826 is not verified (Literature). Not registered; a $0 4-model pilot comes first.
+
 > **Status: draft, not registered.** Opus math subagent for Theory; Theory reviews. Eval-only, $0, on the 16 final models of D7. All data are POST-HOC.
 > Read-only use of the repo. CPU checks (3 threads, Idle priority, no GPU, no .pt written) are in `theory/dasused/`: `qoverlap.py/.json` (F-Q), `magcheck.py/.json` (M1, M2, M4), `toy_illusion.py/.json/.log` (§3 controls, §6 toy).
 > Coordinator constraints folded in (2026-10-14): G-use is NOT-USED 9/9 (§203 result); energy-matched controls must reach the target energy and gate on |E_R − E*|/E* ≤ 0.2; probe-after-ablation validity = "predictions constant or accuracy ≤ majority + 0.02"; necessity by mean or resample ablation, zero only as a descriptive bound.
