@@ -1,0 +1,181 @@
+{
+ "script": "theory/ansbottle/pairs_calc.py",
+ "draws_per_recipient": 16,
+ "kprime0_chance": {
+  "test_max_answer_freq": 0.030326004548900682,
+  "test_mode": "5",
+  "train_mode": "20",
+  "train_mode_freq_train": 0.02389329605562227,
+  "train_mode_freq_test": 0.024260803639120546,
+  "train_answer_entropy_nats": 5.82128716409996,
+  "test_xent_under_train_marginal_nats_per_item": 5.735290482724439,
+  "mean_labelled_tokens_per_item": 3.10841546626232,
+  "chance_answer_ce_per_token": 1.8450849138325696,
+  "note": "an item-independent decoder: accuracy <= test_max_answer_freq; its best answer CE ~ the test cross-entropy under the train marginal (Good-Turing mixture with a token-unigram backoff); per token = summed item NLL / summed labelled tokens ('###' costs ~0)"
+ },
+ "answer_tokens_test": {
+  "share_1_token": 0.9059893858984079,
+  "share_2_tokens": 0.08112206216830932,
+  "mean": 1.10841546626232
+ },
+ "literals_test": {
+  "n_recomputable": 570,
+  "share_recomputable": 0.43214556482183475,
+  "mean_used_literals_recomputable": 2.819298245614035,
+  "mean_distinct_question_numbers_recomputable": 2.956140350877193,
+  "mean_m_recomputable": 3.0280701754385966
+ },
+ "template_swap_test": {
+  "n_pairs": 7552,
+  "step1": {
+   "kept": 0.7898569915254238,
+   "strict": 0.7089512711864406,
+   "eq_don": 0.1460540254237288,
+   "eq_own": 0.06408898305084745
+  },
+  "step2": {
+   "kept": 0.3599046610169492,
+   "strict": 0.3222987288135593,
+   "eq_don": 0.628177966101695,
+   "eq_own": 0.011917372881355932
+  },
+  "level1": {
+   "kept": 0.6647245762711864,
+   "strict": 0.5892478813559322,
+   "eq_don": 0.297801906779661,
+   "eq_own": 0.03747351694915254
+  },
+  "level2": {
+   "kept": 0.2387447033898305,
+   "strict": 0.20802436440677965,
+   "eq_don": 0.7502648305084746,
+   "eq_own": 0.010990466101694915
+  },
+  "hyb12_differ": 0.2733050847457627,
+  "step_level_agree1": 0.7244438559322034,
+  "strict_both_t1_t2_and_differ": 0.23689088983050846,
+  "by_m": {
+   "m1": {
+    "n": 101,
+    "step1_strict": 0.0,
+    "step2_strict": 0.0,
+    "level1_strict": 0.0
+   },
+   "m2": {
+    "n": 2955,
+    "step1_strict": 0.6558375634517767,
+    "step2_strict": 0.0,
+    "level1_strict": 0.6558375634517767
+   },
+   "m3": {
+    "n": 2467,
+    "step1_strict": 0.7316578840697203,
+    "step2_strict": 0.3923794081880827,
+    "level1_strict": 0.4977705715443859
+   },
+   "m4": {
+    "n": 1354,
+    "step1_strict": 0.7666174298375185,
+    "step2_strict": 0.6853766617429837,
+    "level1_strict": 0.6166912850812407
+   },
+   "m5+": {
+    "n": 675,
+    "step1_strict": 0.8488888888888889,
+    "step2_strict": 0.797037037037037,
+    "level1_strict": 0.6651851851851852
+   }
+  },
+  "share_recipients_with_a_strict_t1_donor": 0.7666666666666667
+ },
+ "template_swap_train_redraw": {
+  "n_pairs": 23758,
+  "step1": {
+   "kept": 0.6611667648791986,
+   "strict": 0.6084687263237646,
+   "eq_don": 0.2896287566293459,
+   "eq_own": 0.04920447849145551
+  },
+  "step2": {
+   "kept": 0.17581446249684318,
+   "strict": 0.1640710497516626,
+   "eq_don": 0.814546679013385,
+   "eq_own": 0.009638858489771866
+  },
+  "level1": {
+   "kept": 0.5487414765552656,
+   "strict": 0.5020203720851923,
+   "eq_don": 0.4282346998905632,
+   "eq_own": 0.023023823554171225
+  },
+  "level2": {
+   "kept": 0.12543143362235878,
+   "strict": 0.11625557706877683,
+   "eq_don": 0.8713275528243118,
+   "eq_own": 0.003241013553329405
+  },
+  "hyb12_differ": 0.1327131913460729,
+  "step_level_agree1": 0.8023823554171227,
+  "strict_both_t1_t2_and_differ": 0.1168027611751831,
+  "by_m": {
+   "m1": {
+    "n": 4356,
+    "step1_strict": 0.0,
+    "step2_strict": 0.0,
+    "level1_strict": 0.0
+   },
+   "m2": {
+    "n": 10457,
+    "step1_strict": 0.7173185426030411,
+    "step2_strict": 0.0,
+    "level1_strict": 0.7173185426030411
+   },
+   "m3": {
+    "n": 6453,
+    "step1_strict": 0.7794824112815745,
+    "step2_strict": 0.34232140089880675,
+    "level1_strict": 0.4123663412366341
+   },
+   "m4": {
+    "n": 1976,
+    "step1_strict": 0.7930161943319838,
+    "step2_strict": 0.6821862348178138,
+    "level1_strict": 0.7353238866396761
+   },
+   "m5+": {
+    "n": 516,
+    "step1_strict": 0.6937984496124031,
+    "step2_strict": 0.6608527131782945,
+    "level1_strict": 0.6046511627906976
+   }
+  },
+  "n_templates_sampled": 3000,
+  "n_recomputable_templates": 1828
+ },
+ "expected_readable_pairs": {
+  "A_correct_recomputable_test_recipients": 102,
+  "test_pool_pr0.080_pd0.060": 22.85341040108503,
+  "test_pool_pr0.080_pd0.100": 31.539503781694687,
+  "test_pool_pr0.080_pd0.175": 40.123498126352516,
+  "test_pool_pr0.120_pd0.060": 34.280115601627536,
+  "test_pool_pr0.120_pd0.100": 47.30925567254202,
+  "test_pool_pr0.120_pd0.175": 60.185247189528766,
+  "test_pool_pr0.147_pd0.060": 41.993141611993735,
+  "test_pool_pr0.147_pd0.100": 57.95383819886398,
+  "test_pool_pr0.147_pd0.175": 73.72692780717274,
+  "train_redraw_1828_templates_p0.060": 308.5776717878252,
+  "train_redraw_1828_templates_p0.100": 644.4299542440112,
+  "train_redraw_1828_templates_p0.175": 1188.1718664779974
+ },
+ "literal_only_swap": {
+  "n_recipients": 1385,
+  "share_found_within_300": 0.9862815884476535,
+  "median_tries": 2.0,
+  "share_own_ne_don": 0.9787701317715959,
+  "t1_kept": 0.7950635751682872,
+  "t1_strict": 0.6581899775617053,
+  "t1_hyb_eq_own": 0.13612565445026178,
+  "note": "donor = another recomputable train template (different operator signature, same number of used literals) carrying the recipient's used literal values in slot order; hybrid = the recipient chain with v_1 := the donor's v_1 (A-SLOT)"
+ },
+ "sec": 31.4
+}
