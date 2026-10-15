@@ -15761,6 +15761,13 @@ Each registers separately, after T1 / T2.
 * **Consequences:**
   - IIT-SERIAL targets exactly the failed class's behaviour; its G-ALIGN passed.
   - SOURCE-DAMPED (training-time masking) is NOT motivated by CONSUMED-MASK, which did not separate. An input-swap-based training term (penalise following a swapped input on consumed content) would be the analogue, and needs its own derivation.
+* *(Added 23:08; descriptive; Audit's reproduction.)*
+  - **M-UNCONS is not dose-matched.** Late passes have few unconsumed tokens left. Total token shortfall vs M-CONS: 343k on rms s1 / s2, rmsnopass s1, nopass s1 / s2 and reweight s2; 312k on rmsnopass s2; 658k / 739k on window s1 / s2; 156k–499k on the failed models. So the specificity control is weaker than registered, and the MASK-DISRUPTS vs filler-OOD reading of the converged drop is uncertain.
+  - **M-UNCONS separates the classes in the REVERSE direction:** failed models retain 0.55–0.85, converged models 0.16–0.43.
+    - The KN arms (K′ = n) take the failed models' tolerance away (0.15–0.25), so it comes from the clean passes after n, where M-UNCONS masks nothing. That is late recomputation from the text.
+    - The converged models are hurt by masking upcoming operands during passes ≤ n. Post hoc, they read and write ahead and then carry the state.
+    - It is a second signature of "converged = carries state across passes; failed = recomputes late from the text".
+    - Descriptive and post hoc. A $0 check is M-UNCONS restricted to passes ≤ n / 2 (not queued).
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
