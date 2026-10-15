@@ -1,0 +1,50 @@
+{
+ "out": "boxes/runs_fsq/gsm_codi_4ep_s1",
+ "device": "cuda:0",
+ "seed": 1,
+ "epochs": 4.0,
+ "eff_bs": 128,
+ "micro": 32,
+ "lr": 0.003,
+ "wd": 0.1,
+ "warmup": 0.03,
+ "clip": 2.0,
+ "gamma": 2.0,
+ "n_latent": 6,
+ "log_every": 50,
+ "valid_every": 0,
+ "ckpt_every": 500,
+ "train_n": 0,
+ "test_n": 0,
+ "valid_n": 0,
+ "max_steps": 0,
+ "mem_check": false,
+ "auto_micro": true,
+ "mem_budget": 21.0,
+ "eval_only": false,
+ "no_ablation": false,
+ "label": "CODI recipe, gamma 2 (4-epoch prior), not CODI's published gamma 1",
+ "train_items": 382859,
+ "train_filter_dropped": {
+  "tokens": 0,
+  "answer": 1761
+ },
+ "steps_total": 11965,
+ "warmup_steps": 359,
+ "accumulation": 4,
+ "effective_bs": 128,
+ "lora_params": 18874368,
+ "prj_params": 1182720,
+ "lora": {
+  "r": 128,
+  "alpha": 32,
+  "dropout": 0.1,
+  "targets": [
+   "c_attn",
+   "c_proj",
+   "c_fc"
+  ]
+ },
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "codi_source": "github zhenyi4/codi (src/model.py, train.py, scripts/train_gpt2_gsm8k-aug.sh)"
+}
