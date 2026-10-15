@@ -356,3 +356,29 @@
 
 ## Addendum: motivation from seed selection (Theory, 22:12)
 * THEORY note 203-7: early loss features do not select seeds beyond curve saturation, and GPU numerics carry ≥ about 70%% of the outcome (replay_x). Summers & Dinneen 2103.04514 (verified): one-bit nondeterminism gives seed-level model diversity, i.e. training instability. So reliability has to come from changing the dynamics, not from selecting seeds or pinning numerics. That is the motivation for an objective like IIT-SERIAL, which penalises the failed class's state-ignoring solution directly (note 203-4).
+
+## Addendum: measured cost, OC block, censoring (Theory, 2026-10-15 01:08 EDT; standing rules (a) / (b) of 2026-10-14)
+**G-TIME (measured; Experiments, 3090 595.84, HOSTPROBE 0.665; about $0.12 realised, hosts destroyed):**
+* 0.80 s/step at γ = 0 (±0.1) vs 1.46 at γ = 1, so **+83%% per step after turn-on** (+65 to +100%%): the draft's high case, not its central +45%%.
+* G-MEM: 18.0 GiB peak at micro 1, B_I 16.
+* Per 48k seed: about 18.8 h (2k at 0.80 + the ramp at ~1.13 + 42k at 1.46).
+
+| variant | per seed | 3 seeds at $0.20 / 0.25 / 0.28 per h |
+|---|---|---|
+| default (every step) | 18.8 h | **$11.3 / $14.1 / $15.8** |
+| half-rate (every 2nd step, ×2 weight) | 15.4 h | **$9.2 / $11.6 / $12.9** |
+| n ≤ 7 variant (CUTOFF CHOSEN POST-PILOT) | ≈ default, slightly lower | ≈ $11–15 |
+
+* **All variants are above Audit's $10 line at the typical host rate, so the decision is the user's.**
+* A second-stage seed panel (to make a P(enter) claim) costs about $4.7 per seed (default) or $3.9 (half-rate).
+
+**OC block (rule (a); per-seed entry; MET is trained directly by the loss, so the informative label is ENTERED):**
+* **No effect on entry:** s1 / s2 enter with p ≈ 2/3 each once perturbed, and s3 with p ≈ 0.6. P(SUPPORTED) ≤ P(3/3 entered) ≈ 0.27–0.30.
+* **A real effect (p → 0.95 per seed):** P(3/3 entered) ≈ 0.86.
+* Both are multiplied by P(MET in 3/3) ≈ 0.6 (P-I1). **Likelihood ratio ≈ 3: one 3-seed panel is a pilot.** A positive needs the second-stage panel.
+* The informative single seed is s3 (control never entered): P(s3 enters | no effect) ≈ 0.6.
+
+**Censoring (rule (b)):**
+* A seed that never reaches entry(0.5) by 48k is NOT ENTERED: a failure, not missing.
+* A run that dies or is aborted counts as not entered.
+* The event-only mean entry step of the entered seeds is reported beside it.
