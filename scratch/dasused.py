@@ -79,6 +79,88 @@ def serial_items_h(items, rng):
     return rec, don, hyb, hyb_it
 
 
+# ---------------------------------------------------------------- P0b: the B sets (draft §2.1-2.5)
+def red_paths(root):
+    """the paths (in the ORIGINAL tree) of nested170.reductions' nodes, in order (reductions replace nodes in place, so paths stay valid)."""
+    nd = N._copy(root); out = []
+    while nd.op is not None:
+        path = N._leftmost_ready(nd); tg = nd
+        for p_ in path:
+            tg = getattr(tg, p_)
+        out.append(tuple(path)); tg.v = N.apply(tg.op, tg.l.v, tg.r.v); tg.op = tg.l = tg.r = None
+    return out
+
+
+def at(nd, path):
+    for p_ in path:
+        nd = getattr(nd, p_)
+    return nd
+
+
+def reexpand(nd, v, rng):
+    """node nd (an op node) re-expanded top-down at value v by the generator's conditional (Alg. 1): (a, b) uniform among PAIRS[(op, v)]."""
+    prs = N.PAIRS[(nd.op, v)]; a_, b_ = prs[int(rng.integers(0, len(prs)))]
+    for ch, w in ((nd.l, a_), (nd.r, b_)):
+        if ch.op is None:
+            ch.v = w
+        else:
+            reexpand(ch, w, rng)
+
+
+def forced(root, path, v):
+    """F_t(x, v): the tree with the node at path replaced by a leaf of value v -> value (KeyError on division by 0)."""
+    d = N._copy(root)
+    if not path:
+        return v
+    setattr(at(d, path[:-1]), path[-1], N.Node(v=v))
+    return N.value(d)
+
+
+def late_leaf(root, paths, t):
+    """the late leaf: the root's leaf child if it has one, else the leaf operand of the latest reduction > t whose node lies outside node t's subtree."""
+    for side in ("l", "r"):
+        if getattr(root, side).op is None:
+            return (side,)
+    pt = paths[t - 1]
+    for p in reversed(paths[t:]):
+        if p[:len(pt)] == pt:
+            continue
+        nd = at(root, p)
+        for side in ("l", "r"):
+            if getattr(nd, side).op is None:
+                return p + (side,)
+    return None
+
+
+def make_pair(it, t, rng, same=False):
+    """draft §2.3: (donor item, y', hybrid item) or None. same=True: the same-value control (v_t^d = v_t)."""
+    root = it["root"]; paths = red_paths(root)
+    if len(paths) < t + 1:
+        return None, "n<t+1"
+    pt = paths[t - 1]; ll = late_leaf(root, paths, t)
+    if ll is None:
+        return None, "no_late_leaf"
+    try:
+        y = N.value(root); vt = N.reductions(root)[t - 1]
+        vd = vt if same else int(rng.choice([x for x in range(N.P) if x != vt]))
+        d = N._copy(root); reexpand(at(d, pt), vd, rng); lf = at(d, ll); lf.v = int(rng.choice([x for x in range(N.P) if x != lf.v]))
+        yd = N.value(d); yc = forced(root, pt, vd)
+        hb = N._copy(root); par = at(hb, pt[:-1]) if pt else None
+        if pt:
+            setattr(par, pt[-1], N._copy(at(d, pt)))
+        else:
+            hb = N._copy(d)
+        yh = N.value(hb)
+    except KeyError:
+        return None, "div0"
+    if not same and len({y, yc, yd}) < 3:
+        return None, "not_distinct"
+    if same and (yc != y or yd == y):
+        return None, "same_ctrl_invalid"
+    don = {"syms": N.render(d), "t": yd, "root": d, "n": it["n"]}; hyb = {"syms": N.render(hb), "t": yh, "root": hb, "n": it["n"]}
+    return (don, yc, hyb, {"vt": vt, "vd": vd, "path": pt, "late": ll}), "ok"
+
+
 class Runner:
     def __init__(self, m, dev, bs):
         self.m, self.dev, self.bs = m, dev, bs
