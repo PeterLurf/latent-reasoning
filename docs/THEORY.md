@@ -15649,6 +15649,15 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **Consequence:** only WIDTH-CANDIDATE motivates a width cell. DECODER-SHORTCUT motivates a read-geometry change (the answer reading memory at more layers) as its own derivation.
 * Descriptive, one seed. It changes no §204 rule.
 
+**Note 204-6 (2026-10-14 20:27 EDT; before any §204 output; the scorer's definitions, no rule change). theory/score_s204.py, fixture-checked on both branches, the F-NR outcomes and the pending paths.**
+* **PLAN-LEAK(t)** "plan-head accuracy" is the mean of the present plan heads' accuracies (op_acc, ptr1_acc, ptr2_acc), from M_1 with P_t divided by the same from M_t. Each head is reported beside it.
+* **Comparator input:** `<comp>/eval_s204ref.json`, its eval-only re-run with the §204 fields on the same items and rng. Its acc and acc_by_kprime must equal its eval.json (checked and reported).
+* **Eval-only add-ons, read if present:** `<run>/eval_s204_probe.json` {"probe_leak": {"plan": {t: ratio}}} and `<run>/eval_s204_clock.json` {"pair_acc": {"3v4": acc}}.
+* **Fields requested before launch (eval, additive):**
+  - `aux_suite[set][src]["plan_ce"]` = {t: the mean teacher-forced CE over the plan heads}, for P-F8 / F-NR HURTS "plan-head CE at t ≥ 3";
+  - `aux_suite["lotus_sep"]` = {value_le2, value_ge4, plan_le2, plan_ge4}: pass-1 value exact and plan-head accuracy on level-1 steps, items m ≤ 2 vs m ≥ 4 (note 204-5).
+* **The R-stratum pooling over t** is weighted by the stratum's own counts if logged, otherwise by the pass's counts.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
