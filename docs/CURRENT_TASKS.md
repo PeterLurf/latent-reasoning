@@ -33,6 +33,9 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   in boxes/gsm8k_jcot.py + flag-gated stepaux hook (uncommitted until gates finish) with the §9 diagnostics (KD-ROUTE per log step, TEACHER-CONTEXT,
   term norms / kappa_hat every 500, T2-ACC, KD-GEN, KD-ANS, eval.json kd_route / kd_ans / kd_gen / t2_acc / cot_valid_final); queues b299 (J0) / b300 (J1)
   written as .txt.hold - launch only after Audit's diff review; guard $6; must not run a second filler beside s205_fill.
+* 02:3x 10-15 (Experiments): §206 LAUNCHED (Audit APPROVED; a1634095): s206_fill -> b300 J1 (line 1 = W eval-only ref -> rename
+  gsm_lat_warm_s1_ref/eval.json to gsm_lat_warm_s1/eval_s206ref.json after the drain; delete the _ref model.pt) then b299 J0; 570.172.08 reserved for
+  s205_fill (disjoint offers). Guard s206 $6 (G8 = J1 step 200; J0 mirrored on J1; GUARD_STOP destroys both). Scorer theory/score_s206.py (Theory).
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
