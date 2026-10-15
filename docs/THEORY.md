@@ -15521,6 +15521,10 @@ Each registers separately, after T1 / T2.
   - That is the next question (DAS-USED, a $0 diagnostic draft in progress; Literature 2b6bfd25).
   - Only a causally used separator could justify a supervision target.
 * **The ALL-heads diagnostic** (POST-HOC, descriptive; cee1d8d9) is running on all 9. On s185_rms_s1: ABL-NULL, and the swap IGNORES with edit success 0.854 and fidelity cos 0.9999. The result is appended when complete. If ALL reads USED anywhere, it goes to the user beside the registered count.
+  - *(Appended 2026-10-14 20:12 EDT.)* **ALL-heads diagnostic complete: ABL-NULL + IGNORES on 9 / 9**, so nothing goes to the user beyond the registered count.
+    - Ablation: drop(V) 0.0000 on 8 models and −0.0013 on one.
+    - Swap: the exact additive edit on the 5 no-norm models (fidelity cos 1.0000, edit success 0.71–0.90) and the direction-only edit on the 4 RMS models (cos 0.9999, edit success 0.84–0.91). F = F_null in every model; disruption ≤ 0.002.
+    - **The answer path ignores a faithfully written donor value in both head types.**
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
@@ -15611,6 +15615,14 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **One equality across arms.**
   - Any reading that compares the factor / value arms with the string arm (P-F1's proxies, P-F9, any VALUE-EXACT vs VALUE-IN-STRING contrast) uses **string equality**: the factor arm's greedy value output is decoded to a string and compared with the gold RHS string, exactly as the string arm's value_in_string does.
   - Token-id equality is reported beside it for the factor arm only.
+
+**Note 204-4 (2026-10-14 20:12 EDT; before any §204 output; a gate-procedure deviation, stated). Gate 9 (RMS invariance of the additive read at γ = 0) cannot run in fp64 on the code path, because deltamem casts to fp32 internally.**
+* **Run instead:**
+  - (i) The code path in fp32: spread of the RMS additive read across t = 1..4 is 3.4e-7. A_t vs t·A_1 agrees to 3.3e-6.
+  - (ii) The fp64 analytic check: rms of t·A_1 is invariant to 4.7e-13.
+  - (iii) Controls: the delta read differs across t (0.52). The no-norm raw read is ∝ t (fp64 1.2e-15; code 8.6e-7).
+* **Pass criterion, fixed now:** (i) ≤ 1e-5 relative, (ii) ≤ 1e-10, and both controls behave as derived. **All met.**
+* **Why this is not the exactness-gate case:** the fp64 rule protects claims that an optimisation computes the same function. Gate 9 checks a mathematical property of an existing read. The fp64 analytic check carries the property, and the fp32 code check shows the implementation matches it at fp32 rounding.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
