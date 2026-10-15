@@ -16178,6 +16178,33 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **K′1 / K′10** is reported beside it.
 * **No §207 label is read as the nested "converged" signature without SERIAL-CARRY.**
 
+**§207 result, 5 of 6 models (2026-10-15 10:05 EDT; Experiments 7fd4fa69, scratch/gsm_swap.py, 3070 bf16 bs 64; G-PLAIN bitwise on all 5; J0 pending). Every GSM8K latent model recomputes from the input: a swapped input takes over and a carried answer never survives. The nested failed-seed mode, on GSM8K.**
+* **Results** on clean-correct recipients (n 180–209):
+
+  | model | ZERO-STATE own | STATE-SWAP(2) own (OWN-KEPT) | INPUT-SWAP(1) donor (INPUT-FOLLOW) | INPUT-SWAP(1) own (CARRIED) | reading |
+  |---|---|---|---|---|---|
+  | A | 0.309 | 0.866 | 0.907 | 0.005 | RECOMPUTES-FROM-INPUT |
+  | B | 0.196 | 0.799 | 0.876 | 0.000 | MIXED by the literal 0.8 (see below) |
+  | W | 0.510 | 0.880 | 0.917 | 0.000 | RECOMPUTES-FROM-INPUT |
+  | F-P | 0.342 | 0.826 | 0.870 | 0.000 | RECOMPUTES-FROM-INPUT |
+  | J1 | 0.289 | 0.867 | 0.917 | 0.000 | RECOMPUTES-FROM-INPUT |
+
+  - INPUT-SWAP(2) donor: 0.81–0.85.
+  - STATE-SWAP(2) own: similar at m ≤ 2 and m ≥ 3.
+* **B's borderline, stated:** the registered text reads "OWN-KEPT(2) ≥ 0.8 × OWN-KEPT clean (= 1 on clean items, so ≥ 0.8)".
+  - On the arm-batch layout B's clean (IDENTITY) is 0.995, a bf16 layout flip of 1 item in 209. The ratio form would then be ≥ 0.796, which B's 0.799 meets.
+  - Choosing the ratio after seeing the output would be post hoc, so **B is MIXED by the literal threshold, and the ratio reading is reported beside it.** The difference is one item.
+* **Note 207-1:** CARRIED is 0.000–0.005 at k = 1, so no model carries its answer in memory at all. CARRIES-STATE, SERIAL-CARRY and PASS1-CARRY all do not apply.
+* **Prediction:** central RECOMPUTES for A / B / W / F-P holds for A / W / F-P (B borderline). **"J1 MIXED" is FALSIFIED: J1 recomputes too,** despite its lower K′1 / K′10 (0.64).
+* **Descriptive:**
+  - **A misleading memory is far better than none.** OWN-KEPT under a swapped state is 0.80–0.88, against 0.20–0.51 with ZERO-STATE.
+  - So the models need a memory to be present, an in-distribution scaffold, but ignore its item-specific content and recompute the answer from the re-read question.
+  - INPUT-SWAP-THINK (the decoder keeps x_r) own is 0.13–0.45: when only the think passes see the donor question, the answer degrades, so the think passes matter as computation on the current input, not as a carried state.
+* **Reading:**
+  - GSM8K's one-pass dominance is the nested failed seeds' "recompute from the input" mode (203-4 / 203-8; Huginn 2609.01924), in every GSM8K latent recipe tried (raw, resampled, warm-started, factored, joint-CoT plus coupling).
+  - On GSM8K the latent memory is a scaffold, not a carrier. This is the most direct account yet of why the latent arm sits below text.
+  - It points at an interchange-type objective for GSM8K (the IIT-SERIAL logic) as the matching lever. That would be its own derivation, as GSM8K lacks an exact hybrid target.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
