@@ -58,6 +58,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   - §209 CODI-AT-OUR-BUDGET (boxes/codi_port.py, Audit APPROVED; gates scratch/gate_s209/gate.json): b302 gsm_codi_4ep_s1 on 190.226.72.134:40613
     (STARTED 12:29; micro 32 x 4; 2.14 s/step -> ~7.3 h, lands ~20:00); guard s209 $4 (GUARD_STOP). Train counts: scratch/gate_s209/train_counts.json.
   - gpu_watch via gpuwatch_autoadd 291 296 297 298 301 302.
+* 15:3x 10-15: §208 LANDED (~$0.88) + eval_qonce.json complete (G6 PASS on the final model; Theory scores). Live: b291, §205 b296/b297/b298, §209 b302 (~19:45).
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
