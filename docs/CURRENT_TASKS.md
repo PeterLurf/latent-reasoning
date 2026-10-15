@@ -59,6 +59,7 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
     (STARTED 12:29; micro 32 x 4; 2.14 s/step -> ~7.3 h, lands ~20:00); guard s209 $4 (GUARD_STOP). Train counts: scratch/gate_s209/train_counts.json.
   - gpu_watch via gpuwatch_autoadd 291 296 297 298 301 302.
 * 15:3x 10-15: §208 LANDED (~$0.88) + eval_qonce.json complete (G6 PASS on the final model; Theory scores). Live: b291, §205 b296/b297/b298, §209 b302 (~19:45).
+* 19:5x 10-15: §209 LANDED (b3a762ac; acc 0.1888, 4.0 epochs, ~$1.51); k_latent_ablation 0-latent 0.325 = an explicit-CoT arm (87% '<<..>>' decodes; eval_latent_texts.json). Theory (offline, message queued) scores. Live: b291 + §205 b296/b297/b298 (~$15.4 / $18.50).
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
