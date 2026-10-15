@@ -293,8 +293,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | **ACC MATCHES (F-P 0.139 vs A 0.147); SHORTCUT-RATIO 0.74 vs 0.85 (P-F5 holds); VALUE-SERIAL FALSIFIED (values readable from M_1: one-pass chain); THINK-NECESSARY / DEEP fail** |
 | 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
-| 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | registered | pending (harness + gates) |
-| 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | registered (descriptive) | pending |
+| 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
+| 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 
 ## Live sections
 
@@ -16126,6 +16126,27 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **The direct path weakened, not strengthened:** K′0 0.071 (W 0.111), so the K0-GUARD holds. Pooled K′1 / K′10 = 0.64 (W 0.88). **DEEP-MULTIPASS +0.035** (deep K′10 − K′1, just ≥ T_D 0.034; W 0.005).
 * **KD-GEN 0.98** (P-J1i holds). **T2 top-1 0.534** (C 0.024; P-J1j holds). Recall share holds.
 * **Interim reading:** with the joint CE and coupling, the latent arm is less one-pass-dominated and keeps its CoT trunk, but does not gain accuracy at 12k. The coupling's memory route is small. Whether J1 − J0 is NEUTRAL or HURTS decides the coupling's reading.
+
+**§206 result (2026-10-15 10:43 EDT; J0 gsm_lat_jcot_s1 f4b6b432 (3090 595.71.05) and J1 gsm_lat_jcotl1_s1 05b0c763 (3090 595.91.07); 12k, seed 1, final checkpoints; theory/score_s206.py; the pair cost about $3.24 of $6). COUPLE NEUTRAL: CODI's L1 coupling does not lift the warm-started latent arm, and the coupling never entered the memory.**
+* **COUPLE** (J1 − J0) = 0.138 − 0.144 = **−0.006, NEUTRAL** (P-J1b FALSIFIED).
+  - KD-ROUTE share_mem is 0.073 < 0.10 (onset > 12k).
+  - By the registered falsifier this is the branch where **the coupling never entered the memory (G1)**, not a falsification of what the coupling transmits (M2).
+* **PROTECT** (J0 − W, the joint-CE effect: protection + extra text exposure) = **−0.002, NEUTRAL** (P-J0b holds).
+* **TOTAL** (J1 − W) = **−0.008, NEUTRAL**; J1 − A −0.009; R1-J below (C+ 0.336). P-J1c FALSIFIED.
+* **COT-RETAIN fails narrowly in both cells** (P-J0a / P-J1a FALSIFIED by the letter).
+  - The minimum is at 2k: J0 0.284, J1 0.270. Then 0.29–0.36 (J0 final 0.358, J1 0.344), against W's collapse to 0.07–0.13.
+  - The joint CE largely keeps the CoT trunk, but not ≥ 0.30 at the first record.
+  - **By the registered rule this triggers the conditional J1-LoRA cell (draft §6.5) as a separate decision.** It is not run.
+* **Deep stratum (m ≥ 3):**
+  - DEEP-MULTIPASS: J1 +0.035 (≥ T_D 0.034, so P-J1e holds) vs J0 +0.018 and W +0.005.
+  - K0-GUARD holds (J1 K′0 0.071). THINK-NECESSARY pooled and deep fail in both.
+  - Descriptive: J1's deep multi-pass gain exceeds J0's by 0.017, but COUPLE is NEUTRAL, so it is not credited to the coupling.
+* **Other predictions:** P-J1d (R1-J below) holds. P-J1h (recall share J1 0.27; J0 0.24, vs A 0.48) holds. P-J1i (KD-GEN 0.98) holds. P-J1j (T2 top-1 0.534 vs C 0.024) holds. P-J1g (KD-ROUTE ≥ 0.10) FALSIFIED.
+* **§207 on J0 (descriptive, completing §207):** OWN-KEPT(2) 0.851, INPUT-FOLLOW(1) 0.931, CARRIED(1) 0.005, so RECOMPUTES-FROM-INPUT. Like every other GSM8K latent model (B MIXED by a 0.001 miss).
+* **Reading:**
+  - On the warm base at about 4 + 2 epochs, the joint teacher CE keeps most of the CoT trunk and lowers memorisation, but neither it nor CODI's L1 coupling at "###" (layers 7–12) lifts accuracy.
+  - The coupling's loss is not reduced through the memory, consistent with §207: the answer decoder recomputes from the question, so a pre-answer state target is met by the decoder, not the memory.
+  - The next matching lever is not a stronger coupling but closing the decoder's question channel. That is ANSWER-BOTTLENECK / QUESTION-ONCE (drafts in progress).
 
 ## 207. GSM-SWAP: is GSM8K's one-pass dominance the failed nested seeds' "recompute from the input" mode? (descriptive, $0 eval-only on kept models; Audit's lead; pre-stated 2026-10-15 09:57 EDT, before any output)
 
