@@ -16059,7 +16059,7 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **g1** = the mean over n 3–8 of eval.json s170.acc_by_n_kprime["1"].
 * **PAIRED** = log records 100–2000 equal on loss / answer_ce / aux_ce, compared with the s185 control's log.
 
-**Note 205-2 (2026-10-15 11:16 EDT; operational; the user's approval relayed by Audit, ~12:0x 2026-10-15, "Approve both").**
+**Note 205-2 (2026-10-15 11:16 EDT; operational; the user's approval relayed by Audit, "Approve both"; time relayed as "~12:0x", inconsistent with Theory's 11:16 clock, and Audit is confirming it).**
 * **Driver unavailability:** no 570.172.08 offer has appeared since 02:43. s1's control driver is unavailable, so **s205_iit_s1 runs UNPAIRED on another driver,** as the registration allows (unpaired if the bitwise pairing on records 100–2000 fails).
 * **Limit, stated now:**
   - s1's trajectory differs from its control from step 0 by numerics as well as by the loss (GPU / driver numerics carry ≥ about 70% of the outcome, note 203-7). So **s1 cannot cleanly test HARMFUL**: a non-entry could be numerics.
@@ -16240,7 +16240,7 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - **Presence ≠ use again:** the memory carries a generic "has thought" signal the decoder depends on (zero-state 0.20–0.51 vs donor-state 0.80–0.88), but no item-specific content it uses. Cf. §203 G-use and note 204-2's ZERO vs MEAN.
   - **This reconciles §204:** VALUE-LEAK shows the values are DECODABLE from M_1 by the aux decoder, while §207 shows the answer decoder does not USE them; it recomputes from the question.
 
-## 208. QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS: can memory-only passes compute GSM8K? (USER APPROVED 2026-10-15 ~12:0x, "Approve both", typed in Audit's session and relayed verbatim; one cell; cap $3.20; pre-registered 2026-10-15 11:16 EDT, before any §208 code or run)
+## 208. QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS: can memory-only passes compute GSM8K? (USER APPROVED 2026-10-15, "Approve both", typed in Audit's session and relayed verbatim; time relayed as "~12:0x", but Theory's clock read 11:16 EDT at registration, so the relayed time is off and Audit is confirming it; one cell; cap $3.20; pre-registered 2026-10-15 11:16 EDT, before any §208 code or run)
 
 **Registered text:**
 * docs/THEORY_QONCE_DRAFT_2026-10-15.md **at 1c2dc4d3** (including §16, the aux-prompt choice) is the registered text for every definition below.
