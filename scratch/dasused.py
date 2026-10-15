@@ -626,6 +626,57 @@ def ladder(R_, TE, K, ra, ks=(16, 64, 256, 1024), lr=3e-3):
     return out
 
 
+def pca_swap(R_, TE, K, ra, ks=(1024, 4096, 16384), n_diff=20000):
+    """note 203-9 amendment (Theory, descriptive, forward only): on rms s1's B ccc pairs at t = 2, swap ONLY the top-k principal components of
+    S_d - S_r (S' = S_r + U_k U_k^T (S_d - S_r)), PCA from a SEPARATE pool of n_diff pairs built like B (rng 20501, disjoint from B; Theory's note 203-9), uncentred, NO optimisation.
+    Method: exact PCA via the n_diff x n_diff Gram matrix (float64 eigh on the CPU), U = D^T V Lambda^{-1/2}; k_eff = min(k, rank). Reported per k:
+    ycf (IIA_ccc), own, ydonor and the captured share of the B pairs' difference energy. Rule (fixed): >= 0.8 at some k <= 4096 -> COMPACT-FIT-LIMITED;
+    < 0.5 at 16384 -> DISTRIBUTED; else INTERMEDIATE."""
+    t = 2; excl = {tuple(it["syms"]) for it in TE if it["n"] >= int(ra.get("excl_min_n", 1))}; r_sp = np.random.default_rng(17300)
+    for _ in range(int(ra.get("serial_pool") or 2200)):
+        r__, _t = N.generate(r_sp, 8); excl.add(tuple(N.render(r__)))
+    TE_syms = {tuple(it["syms"]) for it in TE}; rng = np.random.default_rng([20302, t]); B = []
+    for it in TE:
+        if t + 1 <= it["n"] <= 8:
+            pr, _ = make_pair(it, t, rng)
+            if pr is not None:
+                B.append((it, pr))
+    rec = [b[0] for b in B]; don = [b[1][0] for b in B]; hyb = [b[1][2] for b in B]; ycf = np.array([b[1][1] for b in B]); y = np.array([N.value(it["root"]) for it in rec])
+    yd = np.array([d["t"] for d in don]); nn = np.array([it["n"] for it in rec])
+    ccc = (R_.answers(rec, K) == y) & (R_.answers(don, K) == yd) & (R_.answers(hyb, K) == ycf); ix = np.where(ccc)[0]
+    nc = {n_: int((nn[ix] == n_).sum()) for n_ in sorted(set(nn.tolist()))}; strata = [n_ for n_, c_ in nc.items() if c_ >= 100]; ix = np.array([i for i in ix if nn[i] in strata], dtype=int)
+    Bi = [rec[i] for i in ix]; BSr, BSd = collect(R_, Bi, t), collect(R_, [don[i] for i in ix], t); Bycf, By, Byd = ycf[ix], y[ix], yd[ix]
+    rp = np.random.default_rng(20501); pool = []; raw = 0                      # note 203-9: a SEPARATE pool built like B (make_pair at t, B's eligibility),
+    while len(pool) < n_diff:                                               # fresh train_items disjoint from B (TE), rng 20501; no ccc filter
+        for it in N.train_items(rp, 1000, 8, excl | TE_syms):
+            if t + 1 <= it["n"] <= 8:
+                raw += 1; pr, _ = make_pair(it, t, rp)
+                if pr is not None:
+                    pool.append((it, pr[0]))
+    pool = pool[:n_diff]; A_fit = pool
+    Dm = np.concatenate([collect(R_, [a[1] for a in pool[i:i + 2000]], t).reshape(-1, BSr[0].size) - collect(R_, [a[0] for a in pool[i:i + 2000]], t).reshape(-1, BSr[0].size)
+                         for i in range(0, len(pool), 2000)]).astype(np.float32)
+    Dt = torch.from_numpy(Dm); G = (Dt @ Dt.T).double(); lam, V = torch.linalg.eigh(G); order = torch.argsort(lam, descending=True); lam, V = lam[order], V[:, order]
+    rank = int((lam > lam[0] * 1e-10).sum()); out = {"t": t, "n_ccc": int(len(ix)), "strata": strata, "n_diff": len(pool), "raw_items": raw, "rank": rank,
+                                                  "method": "exact PCA (not randomized: the exact Gram eigendecomposition is feasible at n_diff and strictly more accurate) of the uncentred state differences of a separate pool of n_diff pairs built like B (make_pair, rng 20501, fresh train_items disjoint from TE; no ccc filter), Gram matrix in float64 (CPU eigh)", "k": {}}
+    dB = (BSd - BSr).reshape(len(ix), -1)
+    for k in ks:
+        ke = min(k, rank); U = (Dt.T @ (V[:, :ke].float() / lam[:ke].sqrt().float())).contiguous()        # (D, ke), orthonormal columns
+        Ug = U.to(R_.dev); got = []; cap_num = cap_den = 0.0
+        for i in range(0, len(ix), R_.bs):
+            sl = slice(i, i + R_.bs); a_ = torch.tensor(BSr[sl], device=R_.dev); d_ = torch.tensor(dB[sl], device=R_.dev)
+            pd = (d_ @ Ug) @ Ug.T; cap_num += float(pd.pow(2).sum()); cap_den += float(d_.pow(2).sum())
+            Sp = (a_.flatten(1) + pd).view_as(a_)
+            got.append(R_.answers(Bi[sl], K, override=(t, [Sp])))
+        got = np.concatenate(got); del Ug
+        out["k"][str(k)] = {"k_eff": ke, "ycf_iia_ccc": float((got == Bycf).mean()), "own": float((got == By).mean()), "ydonor": float((got == Byd).mean()),
+                            "captured_energy_B": cap_num / cap_den, "ycf_by_n": {str(n_): float((got == Bycf)[nn[ix] == n_].mean()) for n_ in strata}}
+        print("PCASWAP k", k, out["k"][str(k)], flush=True)
+    v = {int(k): out["k"][k]["ycf_iia_ccc"] for k in out["k"]}
+    out["reading"] = ("COMPACT-FIT-LIMITED" if any(v[k] >= 0.8 for k in v if k <= 4096) else "DISTRIBUTED" if v.get(16384, 1.0) < 0.5 else "INTERMEDIATE")
+    return out
+
+
 def shares(got, own, don, hyb, mask):
     n_ = int(mask.sum())
     if not n_:
@@ -654,7 +705,7 @@ def run_serial(R, rec, don, hyb_v, hyb_it, ts, K, tag, rows):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B", "ladder"])
+    ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B", "ladder", "pcaswap"])
     ap.add_argument("--bs", type=int, default=250); ap.add_argument("--memcheck", action="store_true"); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--lr_select", action="store_true", help="P2: choose the lr on this model's validation pairs (rms s1 only)"); ap.add_argument("--fit_micro", type=int, default=1)
     ap.add_argument("--smoke", action="store_true", help="P2 functional smoke (tiny sizes; written to p2_smoke, never read)")
@@ -672,7 +723,10 @@ def main():
         print(a.run, "memcheck peak %.2f GiB (bs %d, K %d)" % (torch.cuda.max_memory_allocated(a.device) / 2 ** 30, a.bs, K), flush=True); return
     fp = os.path.join(rd, "eval_dasused.json"); res = json.load(open(fp)) if os.path.exists(fp) else {}
     res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}; touched = set()
-    if a.stage == "ladder":                                                 # Theory 2026-10-14 23:3x: rms s1 k-ladder (descriptive pilot)
+    if a.stage == "pcaswap":                                                # note 203-9 amendment: forward-only PCA swap
+        tb = time.time(); res["pca_swap"] = {**pca_swap(R, TE, K, ra), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("pca_swap")
+        print(a.run, "PCASWAP", {k_: v_["ycf_iia_ccc"] for k_, v_ in res["pca_swap"]["k"].items()}, res["pca_swap"]["reading"], flush=True)
+    elif a.stage == "ladder":                                                 # Theory 2026-10-14 23:3x: rms s1 k-ladder (descriptive pilot)
         tb = time.time(); res["ladder"] = {**ladder(R, TE, K, ra), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("ladder")
         print(a.run, "LADDER", {k_: res["ladder"]["k"][k_]["iia_ccc"] for k_ in res["ladder"]["k"]}, res["ladder"]["reading"], flush=True)
     elif a.stage == "P2":                                                   # pilot-scoped P2 (t = 2)
