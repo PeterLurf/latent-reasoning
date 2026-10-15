@@ -15733,6 +15733,35 @@ Each registers separately, after T1 / T2.
 * **Retention (Audit-approved under the data-retention rule):** every future nested run keeps ckpt_model_8000.pt beside its eval files, listed in its retention note, from the next nested launch (IIT-SERIAL included). It serves the direction tests: the 203-4 swap-follow and the 203-6 input swap at 8k.
 * *(Added 22:12.)* **Related work for the numerics finding:** Summers & Dinneen 2103.04514 (ICML 2021; ID verified on the arXiv abstract page) report that every source of nondeterminism, down to a one-bit change in the initial parameters, gives model diversity similar to a full seed change, and attribute this to end-to-end training instability (EMPIRICAL, image classifiers). That fits the replay_x label result (GPU numerics carry ≥ about 70% of the outcome), and it backs changing the DYNAMICS (IIT-SERIAL; SOURCE-DAMPED if 203-5 / 203-6 dissociate) over selecting seeds or controlling numerics.
 
+**Note 203-8: CONSUMED-MASK (203-5 / 5a / 5b) and INPUT-SWAP (203-6 / 6a), all 16 D7 models (2026-10-14 23:06 EDT; Experiments bb3799b7; 3070 bf16 bs 250; gates PLAIN / SPAN / SAME / MIRROR 16 / 16). Read by the letter: CONSUMED-MASK NO-SEPARATION; INPUT-SWAP AMBIGUOUS, by one model by 0.026. Descriptively the input swap is a near-complete dissociation: failed seeds follow the re-presented input, as in Huginn.**
+* **CONSUMED-MASK (registered M-CONS; retained accuracy on each model's clean items):**
+  - converged 0.157–0.384 (minimum nopass s2);
+  - failed 0.087–0.133 (maximum rmsgf s3; all 7 readable);
+  - **gap 0.024 ≤ 0.10, so NO-SEPARATION.**
+  - Audit's predictions: converged drop ≤ 0.15 is **FALSIFIED** (converged models lose 62–84%); failed drop ≥ 0.40 holds.
+  - **Specificity:** the converged models also drop under M-UNCONS (0.16–0.43), the registered **MASK-DISRUPTS / filler-OOD** candidate (203-5a).
+  - Caveat (203-5b): the registered rule masks the root span at passes > n. Read with that.
+  - **Descriptive KN arms** (POST-HOC, stopped at K′ = n, so the root is never masked):
+    - M-CONS-KN: converged 0.166–0.391 vs failed 0.121–0.165;
+    - M-UNCONS-KN: converged 0.110–0.165 vs failed 0.145–0.246.
+    - The converged models need the not-yet-consumed text more than the consumed text, but masking itself costs them most of their accuracy.
+    - The failed models' high M-UNCONS retention at full K (0.55–0.85) disappears at K′ = n (0.15–0.25). Their tolerance came from the clean extra passes after n, where M-UNCONS masks nothing. That is consistent with recomputation from the text in later passes.
+  - **Reading:** the masking manipulation is dominated by generic disruption in both classes (filler off-distribution or memory-addressing damage), so it does not test what it was meant to. It is not used for a method decision.
+* **INPUT-SWAP, k = 1, clean-ccc pairs:**
+  - converged STATE-FOLLOW (y_mir) 0.611–0.919 (minimum window s1), INPUT-FOLLOW (y_d) 0.038–0.326;
+  - failed INPUT-FOLLOW 0.899–0.993, STATE-FOLLOW 0.001–0.034 (all 7 readable);
+  - the K′ 0 decoder-only floor on x_d is 0.083–0.112 everywhere.
+  - **DISSOCIATES fails by the letter only on window s1's INPUT-FOLLOW 0.326 (bound ≤ 0.30). NO-DISSOCIATION does not fire (converged INPUT-FOLLOW max 0.326 < 0.6). So the reading is AMBIGUOUS.**
+  - **Think-only variant (decoder keeps x_r):** converged y_mir 0.55–0.74, failed ≤ 0.035. The memory, not the decoder's text, carries the converged models' answer.
+  - k = 2 (descriptive): converged y_mir 0.62–0.93; failed y_d 0.54–0.92.
+* **The 2 × 2 with 203-4 (descriptive, as the registered labels do not both pass):**
+  - **Failed seeds follow the input.** They ignore a swapped state (SERIAL own ≥ 0.87) and follow a swapped input (INPUT-FOLLOW ≥ 0.90): "continuous recomputation from the re-injected input", Wang & Reid's Huginn result (2609.01924), reproduced in our failed class.
+  - **Converged seeds follow the state** in both swaps.
+  - So the seed lottery picks between two solutions of one architecture: a state-carrying loop, or an input-recomputing one that is the Huginn-like mode.
+* **Consequences:**
+  - IIT-SERIAL targets exactly the failed class's behaviour; its G-ALIGN passed.
+  - SOURCE-DAMPED (training-time masking) is NOT motivated by CONSUMED-MASK, which did not separate. An input-swap-based training term (penalise following a swapped input on consumed content) would be the analogue, and needs its own derivation.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
