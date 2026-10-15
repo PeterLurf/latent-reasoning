@@ -1068,10 +1068,11 @@ def main():
           for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch]); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if IITW is not None and m is not None and float(m.mem.gamma) > 0:   # IIT-SERIAL: its own graph after the main backward (draft §2.4); weight gamma(step)
-            l_iit, li_ = IIT.iit_loss(m, its, dev, ac, K, iit_rng, a.iit_tau, a.iit_nmax, int(IITW[2]), IITW[0], IITW[1]); iit_calls[0] += 1
+            from boxes.deltas5 import write_grad_norm as _wgn               # Audit: the main loss's write-grad norm BEFORE the IIT backward (comparable to controls)
+            li_pre = _wgn(m); l_iit, li_ = IIT.iit_loss(m, its, dev, ac, K, iit_rng, a.iit_tau, a.iit_nmax, int(IITW[2]), IITW[0], IITW[1]); iit_calls[0] += 1
             if l_iit is not None:
                 (float(m.mem.gamma) * l_iit).backward()
-            iit_hist.append(li_)
+            li_["wgn_pre_iit"] = li_pre; li_["peak_gib"] = torch.cuda.max_memory_allocated(dev) / 2 ** 30 if dev.startswith("cuda") else None; iit_hist.append(li_)
         if m is not None:
             from boxes.deltas5 import write_grad_norm
             wwin.append(write_grad_norm(m))
@@ -1119,7 +1120,9 @@ def main():
             if IITW is not None:                                            # IIT-SERIAL in-training fields (iit_ce / siit_ce per record; calls so far)
                 hs_ = [h_ for h_ in iit_hist if h_.get("iit_pairs")]
                 rec.update({"iit_ce": float(np.mean([h_["iit_ce"] for h_ in hs_])) if hs_ else None, "siit_ce": float(np.mean([h_["siit_ce"] for h_ in hs_])) if hs_ else None,
-                            "iit_pairs_mean": float(np.mean([h_["iit_pairs"] for h_ in iit_hist])) if iit_hist else None, "iit_calls": iit_calls[0]}); iit_hist.clear()
+                            "iit_pairs_mean": float(np.mean([h_["iit_pairs"] for h_ in iit_hist])) if iit_hist else None, "iit_calls": iit_calls[0],
+                            "write_grad_norm_pre_iit": float(np.mean([h_["wgn_pre_iit"] for h_ in iit_hist])) if iit_hist else None,
+                            "peak_gib_since_start": max([h_["peak_gib"] for h_ in iit_hist if h_.get("peak_gib") is not None], default=None)}); iit_hist.clear()
             if m is not None and wwin:
                 md_ = float(np.median(wlast)) if wlast else 0.0; mx_ = float(np.max(wwin)); late = step > a.write_mix_start * sc
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}

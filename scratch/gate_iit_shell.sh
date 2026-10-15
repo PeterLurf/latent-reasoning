@@ -13,7 +13,7 @@ python - <<'PY'
 import json
 L = lambda d: [{k: v for k, v in json.loads(l).items() if k not in ("sec",)} for l in open("scratch/_tmp/iit_gate/%s/log.jsonl" % d) if l.strip()]
 pre, post, iit = L("pre"), L("post"), L("iit")
-strip = lambda r: {k: v for k, v in r.items() if not k.startswith(("iit_", "siit_"))}
+strip = lambda r: {k: v for k, v in r.items() if not k.startswith(("iit_", "siit_")) and k not in ("write_grad_norm_pre_iit", "peak_gib_since_start")}
 print("G-PLAIN post == pre:", post == pre, len(pre))
 g0 = [r for r in iit if r.get("gamma", 1) == 0 and "loss" in r]; print("G3 gamma0 records:", [(r["step"], r.get("iit_calls")) for r in iit if "loss" in r])
 print("G3 flag-on == flag-off through gamma 0:", [strip(r) for r in iit if "loss" in r and r.get("gamma") == 0] == [r for r in post if "loss" in r and r.get("gamma") == 0])
