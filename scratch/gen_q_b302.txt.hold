@@ -1,0 +1,4 @@
+# THEORY §209 CODI-AT-OUR-BUDGET (registered; note 209-1; user-approved via Audit ~11:37, cap $4): CODI's GPT-2 small recipe ported (boxes/codi_port.py) on our GSM8K-Aug train, 4.0 epochs by examples seen (effective bs 128 = micro x accumulation via --auto_micro), gamma 2 ("CODI recipe, gamma 2 (4-epoch prior), not CODI's published gamma 1"). RTX 3090, seed 1, final checkpoint. Preflight eval32 at step 0 (the eval path on the host's transformers); G6 = HOSTPROBE + the first 200 steps under the $4 guard. LAUNCH ONLY after Audit's diff review. Data / tokenizer / CODI test json via .extra
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_codi_4ep_s1 boxes.codi_port --epochs 4.0 --eff_bs 128 --micro 64 --auto_micro --seed 1 --gamma 2.0 --ckpt_every 500
