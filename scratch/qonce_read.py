@@ -277,7 +277,7 @@ def main():
     torch.set_num_threads(3); dev = a.device; T0 = time.time(); g, m, A = QE.build(a.run, dev); K = int(A["think_k"])
     OUTP = os.path.join(a.run, "eval_qonce.json"); res = json.load(open(OUTP)) if os.path.exists(OUTP) else {}
     res.update({"model": os.path.join(a.run, "model.pt"), "dtype": "fp32", "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "K": K})
-    R, _ = G.load_aug("test", filter_bad=False); D = [G.encode(r, ENC, EOS) for r in R]; parts = ["g6", "clean", "meaniter", "transplant", "probes", "clock"] if a.what == "all" else [a.what]
+    R, _ = G.load_aug("test", filter_bad=False); D = [G.encode(r, ENC, EOS) for r in R]; parts = ["g6", "clean", "meaniter", "transplant", "probes", "clock", "aop"] if a.what == "all" else [a.what]
 
     def dump(tag):
         res.setdefault("sec", {})[tag] = round(time.time() - T0); json.dump(res, open(OUTP, "w", newline="\n"), indent=1, default=str); print("WROTE", tag, round(time.time() - T0), flush=True)
@@ -310,6 +310,8 @@ def main():
             res["probes"] = probes(g, m, K, dev); dump("probes")
         elif part == "clock":
             res["clock"] = clock(g, m, K, dev); dump("clock")
+        elif part == "aop":                                                 # Theory 208-2: A's operand top-1 by n_lit (scratch/a_operand_top1.py, computed on A)
+            ao = json.load(open("D:/Latent/scratch/gate_s208/A_operand_top1.json")); res["A_operand_top1_by_nlit"] = ao["A_operand_top1_by_nlit"]; res["A_operand_top1_detail"] = ao; dump("aop")
 
 
 if __name__ == "__main__":

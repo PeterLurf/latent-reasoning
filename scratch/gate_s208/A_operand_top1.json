@@ -1,0 +1,33 @@
+{
+ "A_operand_top1_by_nlit": {
+  "le2": 0.6594827586206896,
+  "ge4": 0.5178571428571429
+ },
+ "detail": {
+  "q": {
+   "le2": 0.6594827586206896,
+   "ge4": 0.5178571428571429,
+   "n_le2": 232,
+   "n_ge4": 168,
+   "all": 0.6420612813370473
+  },
+  "r": {
+   "le2": 0.2731707317073171,
+   "ge4": 0.12631578947368421,
+   "n_le2": 205,
+   "n_ge4": 95,
+   "all": 0.20618556701030927
+  },
+  "all": {
+   "le2": 0.4782608695652174,
+   "ge4": 0.376425855513308,
+   "n_le2": 437,
+   "n_ge4": 263,
+   "all": 0.46633416458852867
+  }
+ },
+ "model": "D:/Latent/boxes/runs_fsq/gsm_lat_aug_s1/model.pt",
+ "device": "cuda:1",
+ "dtype": "fp32",
+ "items": "recomputable Aug-valid items (240); operand = the first token of each question-literal operand (kind q), M_t with the pass-t aux prompt, t <= m"
+}
