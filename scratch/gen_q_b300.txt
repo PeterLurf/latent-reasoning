@@ -1,0 +1,5 @@
+# THEORY §206 JOINT-COT cell J1 (registered de56ca30, text a005c7c7; user-approved via Audit 01:4x, pair cap $6): J0 + --kd_beta 1 --kd_layers 7-12 --kd_teacher drop --kd_norm teacher_std --kd_loss l1. RTX 3090, seed 1 (W's batch sequence). LAUNCH ONLY after Audit's diff review + gates. Line 1: W's eval-only re-run on J1's card and eval bs (64) in gsm_lat_warm_s1_ref (W's model.pt / args / log shipped via .extra; renamed locally to gsm_lat_warm_s1/eval_s206ref.json for Theory's deep / K' fields). Line 2: J1. Data via .extra; C's model.pt ships as a file argument
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_lat_warm_s1_ref boxes.gsm8k_stepaux --arm stepaux --think_k 10 --cache_lower --fast_add --chunk_delta 64 --bs 64 --seed 1 --eval_only
+boxes/runs_fsq/gsm_lat_jcotl1_s1 boxes.gsm8k_stepaux --arm stepaux --think_k 10 --aux_fade 12000,12000 --cache_lower --fast_add --chunk_delta 64 --steps 12000 --bs 64 --lr 1e-4 --seed 1 --valid_every 2000 --ckpt_every 1000 --auto_micro --init_from boxes/runs_fsq/gsm_txt_aug_s1/model.pt --cot_valid --joint_cot 2 --kd_beta 1 --kd_layers 7-12 --kd_teacher drop --kd_norm teacher_std --kd_loss l1

@@ -147,6 +147,7 @@ def main():
     ap.add_argument("--kd_layers", default="7-12"); ap.add_argument("--kd_teacher", default="drop", choices=["drop", "full"])
     ap.add_argument("--kd_norm", default="teacher_std", choices=["teacher_std", "none"]); ap.add_argument("--kd_loss", default="l1", choices=["l1", "smoothl1"])
     ap.add_argument("--kd_m_min", type=int, default=2)
+    ap.add_argument("--kdr_every", type=int, default=0, help="§206: KD-ROUTE every N steps at log records (0 = every log record); Audit: the valid cadence if it costs > ~10%% of s/step")
     ap.add_argument("--jc_norms_every", type=int, default=500, help="§206: per-term trunk grad norms every N steps (draft §9: 500; smokes set it lower)")
     ap.add_argument("--eval_out", default="eval.json", help="§204: the eval file name (e.g. eval_s204ref.json for a comparator's eval-only re-run); its item files "
                     "then get the same stem (<stem>_items.json, <stem>_items_kprime.json, <stem>_args.json) so a landed run's files are never overwritten")
@@ -374,8 +375,8 @@ def main():
             """T2-ACC on D (m >= kd_m_min): greedy answer after pre + lines[:m-1] + '###' (ans_ok), and the T2 forward's first-token top-1 / tf exact."""
             w_ = params.training; params.eval(); P_ = greedy_after(Fwd(g), GJ.t2_prefixes(D), dev, ac, bs); t1_, tf_ = [], []
             with torch.no_grad():
-                for i in range(0, len(D), bs):
-                    st_ = {}; GJ.teacher(g, D[i:i + bs], dev, ac, (), "drop", 0, st_); t1_ += st_["t2_top1"]; tf_ += st_["t2_tf_exact"]
+                for i in range(0, len(D), 16):                              # 16-item chunks: full-vocab logits over the T2 sequence
+                    u_, v_ = GJ.t2_stats(g, D[i:i + 16], dev, ac); t1_ += u_; tf_ += v_
             params.train(w_); return {"acc": acc_of(D, P_), "top1": float(np.mean(t1_)) if t1_ else None, "tf_exact": float(np.mean(tf_)) if tf_ else None, "n": len(D)}
 
         def term_norms(its, step):
@@ -408,7 +409,7 @@ def main():
         else:
             opt.step(); hist.append(tot)
         if JC and a.jc_norms_every and step % a.jc_norms_every == 0:                                         # §206 §9: per-term trunk grad norms every 500 steps (after the update)
-            tn_pend = term_norms(its0, step)
+            tk_ = time.time(); tn_pend = term_norms(its0, step); tn_pend["tn_sec"] = round(time.time() - tk_, 2)
         if step % a.log_every == 0 or step == last_:
             rec = {"step": step, "loss": float(np.mean(hist)) if hist else None, "sec": round(time.time() - t0)}; hist = []
             if SA:
@@ -424,8 +425,10 @@ def main():
                                     **{"sigS_over_T_l%d" % l: float(np.mean([h_["sigS"][l] / max(h_["sigT"][l], 1e-9) for h_ in kd_h])) for l in KDL}})
                     rec.update({"tctx_l%d" % l: float(np.mean([h_["tctx"][l] for h_ in jc_hist if l in h_["tctx"]])) for l in KDL})
                     jc_hist.clear()
-                if JC:                                                      # §206 KD-ROUTE every log step (onset = the first record with share_mem >= 0.10)
-                    rec.update({"kdr_" + k_: v_ for k_, v_ in kd_route(KDV128)[0].items()}); rec.update(tn_pend); tn_pend = {}
+                if JC and (not a.kdr_every or step % a.kdr_every == 0 or step == last_):   # §206 KD-ROUTE (onset = the first record with share_mem >= 0.10)
+                    tk_ = time.time(); rec.update({"kdr_" + k_: v_ for k_, v_ in kd_route(KDV128)[0].items()}); rec["kdr_sec"] = round(time.time() - tk_, 2)
+                if JC:
+                    rec.update(tn_pend); tn_pend = {}
                 if FT:                                                      # §204: the per-term aux CE (item-mean over the record's draws)
                     rec.update({"aux_%s_ce" % k_: (s_ / n_ if n_ else None) for k_, (s_, n_) in aux_terms.items()}); aux_terms.clear()
             if gn_hist:

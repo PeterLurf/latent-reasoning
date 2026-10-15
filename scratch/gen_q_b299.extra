@@ -5,3 +5,4 @@ bench/data/gsm8k_aug/valid.txt
 bench/data/gsm8k_aug/test.txt
 bench/data/gsm8k_aug/s200_names.json
 bench/data/gsm8k_aug/s200_test_meta.json
+bench/data/gsm8k_aug/s204_op_vocab.json
