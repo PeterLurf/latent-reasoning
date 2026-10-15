@@ -1,0 +1,142 @@
+{
+ "def": "IIT-SERIAL draft (docs/THEORY_IITSERIAL_DRAFT_2026-10-14.md \u00a73) CHECK on the generator (nested170 Alg. 1, read-only): which share of TRAINING items\n(nested170.train_items, n ~ U{1..8}, the run's exclusion set) yields a defined IIT-SERIAL pair, and a defined SIIT pair.\n  eligibility: (e1) the root has a bare-number child a (the late leaf); (e2) the first leftmost-ready handle h is not the root; (e3) n >= 3 (then\n  height(root) >= 3, checked here). IIT donor (as nested170.serial_items): h's operands re-drawn uniformly among the pairs giving v' != v_1, and a",
+ "n_items": 100000,
+ "by_n": {
+  "1": {
+   "items": 1665,
+   "e1": 1665,
+   "e1e2": 0,
+   "elig": 0,
+   "h_root_ge3": 0,
+   "iit_defined": 0,
+   "iit_kept": 0,
+   "cf_eq_own": 0,
+   "cf_eq_donor": 0,
+   "siit_kept": 0,
+   "kept_h5": 0
+  },
+  "2": {
+   "items": 13605,
+   "e1": 13605,
+   "e1e2": 13605,
+   "elig": 0,
+   "h_root_ge3": 0,
+   "iit_defined": 0,
+   "iit_kept": 0,
+   "cf_eq_own": 0,
+   "cf_eq_donor": 0,
+   "siit_kept": 0,
+   "kept_h5": 0
+  },
+  "3": {
+   "items": 14132,
+   "e1": 9535,
+   "e1e2": 9535,
+   "elig": 9535,
+   "h_root_ge3": 9535,
+   "iit_defined": 9535,
+   "iit_kept": 8891,
+   "cf_eq_own": 399,
+   "cf_eq_donor": 314,
+   "siit_kept": 9136,
+   "kept_h5": 0
+  },
+  "4": {
+   "items": 13956,
+   "e1": 6919,
+   "e1e2": 6919,
+   "elig": 6919,
+   "h_root_ge3": 6919,
+   "iit_defined": 6919,
+   "iit_kept": 6405,
+   "cf_eq_own": 318,
+   "cf_eq_donor": 239,
+   "siit_kept": 6601,
+   "kept_h5": 0
+  },
+  "5": {
+   "items": 14262,
+   "e1": 5534,
+   "e1e2": 5534,
+   "elig": 5534,
+   "h_root_ge3": 5534,
+   "iit_defined": 5534,
+   "iit_kept": 5074,
+   "cf_eq_own": 296,
+   "cf_eq_donor": 194,
+   "siit_kept": 5238,
+   "kept_h5": 1652
+  },
+  "6": {
+   "items": 13963,
+   "e1": 4618,
+   "e1e2": 4618,
+   "elig": 4618,
+   "h_root_ge3": 4618,
+   "iit_defined": 4618,
+   "iit_kept": 4212,
+   "cf_eq_own": 265,
+   "cf_eq_donor": 189,
+   "siit_kept": 4353,
+   "kept_h5": 2770
+  },
+  "7": {
+   "items": 14279,
+   "e1": 4056,
+   "e1e2": 4056,
+   "elig": 4056,
+   "h_root_ge3": 4056,
+   "iit_defined": 4056,
+   "iit_kept": 3713,
+   "cf_eq_own": 216,
+   "cf_eq_donor": 159,
+   "siit_kept": 3840,
+   "kept_h5": 3303
+  },
+  "8": {
+   "items": 14138,
+   "e1": 3544,
+   "e1e2": 3544,
+   "elig": 3544,
+   "h_root_ge3": 3544,
+   "iit_defined": 3544,
+   "iit_kept": 3202,
+   "cf_eq_own": 220,
+   "cf_eq_donor": 148,
+   "siit_kept": 3324,
+   "kept_h5": 3149
+  }
+ },
+ "total": {
+  "items": 100000,
+  "e1": 49476,
+  "e1e2": 47811,
+  "elig": 34206,
+  "h_root_ge3": 34206,
+  "iit_defined": 34206,
+  "iit_kept": 31497,
+  "cf_eq_own": 1714,
+  "cf_eq_donor": 1243,
+  "siit_kept": 32492,
+  "kept_h5": 10874
+ },
+ "share_of_training_items": {
+  "e1_root_has_leaf_child": 0.49476,
+  "eligible_e1e2e3": 0.34206,
+  "iit_kept": 0.31497,
+  "siit_kept": 0.32492,
+  "iit_kept_tau2_height5": 0.10874
+ },
+ "among_eligible": {
+  "iit_defined": 1.0,
+  "iit_kept": 0.9208033678302052,
+  "siit_kept": 0.9498918318423668,
+  "height_root_ge3": 1.0
+ },
+ "among_defined": {
+  "cf_eq_own": 0.050108168157633165,
+  "cf_eq_donor": 0.036338654037303394,
+  "cf_ne_own_and_ne_donor": 0.9208033678302052
+ },
+ "kept_per_batch_of_64": 20.15808
+}

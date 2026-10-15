@@ -15544,6 +15544,13 @@ Each registers separately, after T1 / T2.
   - Descriptive: on clean pairs, also the failed models' clean-pair recipient rate, i.e. whether the swap disrupts items they otherwise solve.
 * **Consequence:** CONTRAST-SURVIVES supports a whole-state interchange loss (IIT-SERIAL, being drafted) as a target that separates the basins. CAPABILITY-EXPLAINED weakens it to "converged models use their state; failed models' failure is not specific to state use".
 
+**Note 203-2a (2026-10-14 20:38 EDT; before any 203-2 output; a correction plus a protocol extension).**
+* **Correction.** Note 203-2's "why" is wrong as written. The s170 SERIAL pool is the dedicated **n = 8** pool (nested170.py:668), and on n = 8 the failed models solve only 0.19–0.49 clean (s185_rms_s3: 0.23). So their post-swap recipient share (0.12–0.31) is close to their clean accuracy on that pool, and the uncontrolled contrast is largely capability, as Audit said. Theory's counter cited n 3–5 accuracies, which are irrelevant to an n = 8 pool.
+* **Extension (adopted from DAS-USED rev 2, P0 (ii)).** The same donor construction, on test items with n 3–8 (≤ 1,000 per n, rng 20371), swapping at t ∈ {1, 2}. Eligibility: the root has a bare leaf, h ≠ root, and height(root) ≥ 2t + 1, with the hybrid answer ∉ {own, donor}.
+  - CLEAN means the model answers the recipient, the donor **and the hybrid item** correctly without a swap.
+  - **The class-contrast readings of 203-2 (CONTRAST-SURVIVES / CAPABILITY-EXPLAINED / AMBIGUOUS) are read on this n 3–8 extension, at t = 1 and t = 2.** The n = 8 s170 re-run is the reproduction gate, and its numbers are descriptive.
+  - **Pre-stated (DAS-USED rev 2, P1b):** on clean n 3–4 pairs at t = 1, failed hybrid ≤ 0.2 with own-answer share ≥ 0.6, and converged hybrid ≥ 0.6.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
@@ -15675,6 +15682,16 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - `aux_suite[set][src]["plan_ce"]` = {t: the mean teacher-forced CE over the plan heads}, for P-F8 / F-NR HURTS "plan-head CE at t ≥ 3";
   - `aux_suite["lotus_sep"]` = {value_le2, value_ge4, plan_le2, plan_ge4}: pass-1 value exact and plan-head accuracy on level-1 steps, items m ≤ 2 vs m ≥ 4 (note 204-5).
 * **The R-stratum pooling over t** is weighted by the stratum's own counts if logged, otherwise by the pass's counts.
+
+**Note 204-7 (2026-10-14 20:38 EDT; before any §204 output; definitions for the post-landing eval-only readings, no rule change).**
+* **CLOCK** (eval_s204_clock.json):
+  - The registered "pair_acc" (CLOCK-REBUILT at 3v4 ≥ 0.90) uses **the model's own decoder-visible read**: the delta read plus the additive read **as the model computes it**, with learned gains and the model's own RMS for F-NR, raw for F-P and the comparator.
+  - The delta-only, raw-additive and gain-1 RMS-additive feature sets are reported under pair_acc_by_feature.
+* **PROBE-LEAK** (eval_s204_probe.json):
+  - "plan" = the mean of the operator-signature and pointer-1 probe accuracies. Pointer-1 is a class over its first token id, top 200 + OTHER.
+  - Ratio = acc(M_1) / acc(M_t), on ℓ ≥ 2 R-steps, t ∈ {2, 3, 4}.
+  - Separate L2-logistic probes per t and per source, fit on 4,000 Aug-train items with λ from an inner 80 / 20 split, **reported on Aug valid**; test is descriptive.
+  - The value (first value token) probe and each target's raw accuracies go beside it.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
