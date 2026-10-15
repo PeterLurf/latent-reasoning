@@ -42,6 +42,8 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   cost_guard s205 replaced by s205_rate_guard.py (CHECK every 4k; family > $18 -> stop s1 before its 4k, else ALERT). If no s1 offer by ~10:30, tell Audit
   (s1 is a converged-control seed; Audit takes 2-seed vs more $ to the user).
   08:24: §206 J1 LANDED (05b0c763; acc 0.138, cot_valid_final 0.344, kd_route share_mem 0.073; ~$1.63); W ref -> gsm_lat_warm_s1/eval_s206ref.json (= W). J0 ~10:15; Theory scores.
+  09:05: §204 F-P LANDED (49c54350; acc 0.1387, validsel 0.1471; ~$2.56); A ref -> gsm_lat_aug_s1/eval_s204ref.json. CLOCK / PROBE-LEAK eval-only via boxes/stepfactor_probe.py
+  (e02a54cb; clock reproduces clock_A.json): clock F-P (CPU) + probe A then F-P (3070 fp32) running -> <run>/eval_s204_clock.json / eval_s204_probe.json; then commit + tell Theory.
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
