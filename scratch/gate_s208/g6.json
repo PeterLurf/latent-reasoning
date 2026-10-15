@@ -1,0 +1,53 @@
+{
+ "run": "scratch/_tmp/s208ref/qo_smoke",
+ "n": 64,
+ "K": 10,
+ "dtype": "fp32",
+ "device": "cuda:1",
+ "per_item_maps_reproduce_SK": {
+  "1": {
+   "add_rel": 6.793930396042924e-08,
+   "del_rel": 9.900901432047249e-07
+  },
+  "2": {
+   "add_rel": 1.3587860792085849e-07,
+   "del_rel": 9.900901432047249e-07
+  },
+  "3": {
+   "add_rel": 6.793930396042924e-08,
+   "del_rel": 9.318495131083182e-07
+  },
+  "4": {
+   "add_rel": 6.793930396042924e-08,
+   "del_rel": 9.318495131083182e-07
+  },
+  "6": {
+   "add_rel": 6.793930396042924e-08,
+   "del_rel": 9.609698281565215e-07
+  },
+  "8": {
+   "add_rel": 6.793930396042924e-08,
+   "del_rel": 8.44488624807127e-07
+  }
+ },
+ "repeated_item_mean_map_eq_item_map": {
+  "add": 1.1204468108871879e-07,
+  "del": 6.634441547248571e-07,
+  "maps_identical_across_rows": true
+ },
+ "transplant_t1_eq_clean_r": {
+  "state_bitwise": true,
+  "answers_equal": true
+ },
+ "transplant_r_eq_d_eq_clean_d": {
+  "state_rel": 1.3587859371000377e-07,
+  "answers_equal": true
+ },
+ "swap_eq_clean_pre_bitwise": {
+  "1": true,
+  "2": true,
+  "5": true
+ },
+ "pass": true,
+ "sec": 4
+}
