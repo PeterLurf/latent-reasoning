@@ -18,6 +18,7 @@ plain trunk's TEXT-COT accuracy on Aug valid at each valid eval -> cot_valid_acc
 import os
 os.environ["BOXES_NB"] = "5"
 import argparse  # noqa: E402
+from collections import Counter  # noqa: E402
 import json  # noqa: E402
 import math  # noqa: E402
 import sys  # noqa: E402
@@ -147,6 +148,9 @@ def main():
     ap.add_argument("--kd_layers", default="7-12"); ap.add_argument("--kd_teacher", default="drop", choices=["drop", "full"])
     ap.add_argument("--kd_norm", default="teacher_std", choices=["teacher_std", "none"]); ap.add_argument("--kd_loss", default="l1", choices=["l1", "smoothl1"])
     ap.add_argument("--kd_m_min", type=int, default=2)
+    ap.add_argument("--ans_bottleneck", action="store_true", help="§208 AB: the answer decoder reads [EOT, '###'] + memory only (no question tokens)")
+    ap.add_argument("--question_once", action="store_true", help="§208 QO (needs --ans_bottleneck): think pass 1 reads [EOT, question], passes >= 2 the fixed filler")
+    ap.add_argument("--qo_filler", default="k16", help="§208 QO: the filler = [EOT] + s200_test_meta filler[<key>] (k16: 17 tokens)")
     ap.add_argument("--kdr_every", type=int, default=0, help="§206: KD-ROUTE every N steps at log records (0 = every log record); Audit: the valid cadence if it costs > ~10%% of s/step")
     ap.add_argument("--jc_norms_every", type=int, default=500, help="§206: per-term trunk grad norms every N steps (draft §9: 500; smokes set it lower)")
     ap.add_argument("--eval_out", default="eval.json", help="§204: the eval file name (e.g. eval_s204ref.json for a comparator's eval-only re-run); its item files "
@@ -171,6 +175,9 @@ def main():
     FT = SA and a.aux_target in ("value", "factor"); GF = None; OPV, opv_sha = [], None   # §204: factor / value targets (training items only when FT)
     JC = SA and a.joint_cot > 0; GJ = None; KDL = (); jc_hist = []           # §206 JOINT-COT (boxes/gsm8k_jcot.py, imported only when on)
     assert not a.kd_beta or JC, "--kd_beta needs --joint_cot (the teacher forward supplies the targets)"
+    assert not a.question_once or a.ans_bottleneck, "--question_once needs --ans_bottleneck"
+    assert not (a.ans_bottleneck and (JC or not SA)), "§208 --ans_bottleneck: stepaux arm only, not with --joint_cot (GJ.dec_layers builds the plain sequence)"
+    KPR = tuple(sorted(set(KPRIMES) | {3})) if a.question_once else KPRIMES   # §208 §12.2: K' 3 added under QO
     if JC:
         import boxes.gsm8k_jcot as GJ
         KDL = GJ.parse_layers(a.kd_layers)
@@ -205,6 +212,13 @@ def main():
         a0_ = json.load(open(os.path.join(a.out, "args.json")))
         assert (a0_.get("add_norm") or "") == a.add_norm and (a0_.get("aux_target") or "string") == a.aux_target and bool(a0_.get("aux_nopass")) == a.aux_nopass, \
             "--eval_only: --add_norm / --aux_target / --aux_nopass must match the run's args.json"
+        assert bool(a0_.get("ans_bottleneck")) == a.ans_bottleneck and bool(a0_.get("question_once")) == a.question_once and             (not a.question_once or a0_.get("qo_filler", "k16") == a.qo_filler), "--eval_only: §208 --ans_bottleneck / --question_once / --qo_filler must match args.json"
+    if a.ans_bottleneck:                                                    # §208: the AB / QO switches on the model (ProsMem or FactorMem; default off)
+        m.set_ab_qo(True, a.question_once, [EOT] + ENC.encode(meta["filler"][a.qo_filler]))
+
+    def ans_prefix(it):
+        """§208 AB draft §11.2: the one answer-decoder prefix for every answer path: [EOT, '###'] under --ans_bottleneck, else [EOT] + question + '###'."""
+        return [EOT, ANS] if a.ans_bottleneck else [EOT] + it["pre"] + [ANS]
     if SA:                                                                  # §204 §8.4: the eval items carry the factor targets (all stepaux arms, for the paired diagnostics)
         for y_, r_ in zip(Dte, Rte):
             with_ft(y_, r_)
@@ -236,13 +250,13 @@ def main():
         if SA:
             x, msk = m.think_inputs(its, dev); per = [[] for _ in its]; lam_ = lam(step)
             with ac():
-                S = m.mem.zero_state(len(its), dev); hl = m.lower(x) if a.cache_lower else None
+                S = m.mem.zero_state(len(its), dev); hl = m.lower(x) if a.cache_lower else None; pin = m.pass_inputs(x, msk, hl)   # §208: pass t's input
                 for t in range(1, K + 1):
                     if a.ckpt_passes and torch.is_grad_enabled():
                         from torch.utils.checkpoint import checkpoint
-                        S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False)
+                        S = checkpoint(m.write, S, *pin(t), use_reentrant=False)
                     else:
-                        S = m.write(S, x, msk, hl)
+                        S = m.write(S, *pin(t))
                     idx = [i for i, it in enumerate(its) if t <= it["depth"]]
                     if lam_ and idx and FT:                                 # §204: L_aux,t = the mean of the present factor / value terms
                         lt_, lg_t = GF.factor_loss(m, S[idx], [its[i] for i in idx], t, dev, a.aux_target)
@@ -338,7 +352,7 @@ def main():
         """predicted answer strings: stepaux = greedy after [EOT, question, \\n, ###] reading M_Kp; textcot = greedy CoT to '###' then greedy."""
         if SA:
             S = think_states(D, K if Kp is None else Kp, M0)
-            return greedy_after(Fwd(g, m.mem, S), [[EOT] + it["pre"] + [ANS] for it in D], dev, ac, bs)
+            return greedy_after(Fwd(g, m.mem, S), [ans_prefix(it) for it in D], dev, ac, bs)
         return cot_answers(D)
 
     def cot_answers(D):
@@ -519,10 +533,18 @@ def main():
                 "each recomputable one, accepted draws only" % len(Dfit)})
     res["fit"] = fit; _partial("fit")
     if SA:
-        Ck = {kp: (C if kp == K else np.array([ans_ok(p_, it["ans"]) for p_, it in zip(answers(Dte, kp), Dte)])) for kp in KPRIMES}
-        res["acc_by_kprime"] = {str(kp): (res["acc"] if kp == K else float(np.mean(Ck[kp].tolist()))) for kp in KPRIMES}; _partial("acc_by_kprime")
-        res["acc_by_m_kprime"] = {str(kp): {str(k_): float(Ck[kp][mt == k_].mean()) for k_ in sorted(set(mt.tolist()))} for kp in KPRIMES}   # §204 §8.4 / note 202-1
-        json.dump([{"i": i, "m": int(mt[i]), **{"k%d" % kp: bool(Ck[kp][i]) for kp in KPRIMES}} for i in range(len(Dte))],
+        Pk = {kp: (P if kp == K else answers(Dte, kp)) for kp in KPR}; Ck = {kp: np.array([ans_ok(p_, it["ans"]) for p_, it in zip(Pk[kp], Dte)]) for kp in KPR}
+        res["acc_by_kprime"] = {str(kp): (res["acc"] if kp == K else float(np.mean(Ck[kp].tolist()))) for kp in KPR}; _partial("acc_by_kprime")
+        res["acc_by_m_kprime"] = {str(kp): {str(k_): float(Ck[kp][mt == k_].mean()) for k_ in sorted(set(mt.tolist()))} for kp in KPR}   # §204 §8.4 / note 202-1
+        if a.ans_bottleneck:                                                # §208 AB draft §11.2: bn (K'0 constant; K'1-RESCALED for continuity only, note 16.2)
+            S1_ = think_states(Dte, 1); S1_[:, :m.mem.h_add] = S1_[:, :m.mem.h_add] * K; C1r = np.array([ans_ok(p_, it["ans"]) for p_, it in zip(answers(Dte, 0, S1_.cpu()), Dte)])
+            res["bn"] = {"k0_answer": Counter(Pk[0]).most_common(1)[0][0], "k0_distinct": len(set(Pk[0])), "k0_acc": float(Ck[0].mean()), "acc_k1_rescaled": float(C1r.mean()),
+                         "acc_k1_rescaled_by_m": {str(k_): float(C1r[mt == k_].mean()) for k_ in sorted(set(mt.tolist()))},
+                         "acc_by_m_kprime_grid": {str(kp): res["acc_by_m_kprime"][str(kp)] for kp in (0, 1, 2, 4, 6, 8, 10) if str(kp) in res["acc_by_m_kprime"]},
+                         "n_by_m": res["n_by_m"], "question_once": bool(a.question_once), "qo_filler": a.qo_filler if a.question_once else None,
+                         "def": "§208: k0_* = the K'0 (zero memory) answers; acc_k1_rescaled = the decoder on (K x S_add(1), S_del(1)) (AB draft; not a rule under QO, note 16.2)"}
+            del S1_; _partial("bn")
+        json.dump([{"i": i, "m": int(mt[i]), **{"k%d" % kp: bool(Ck[kp][i]) for kp in KPR}} for i in range(len(Dte))],
                   open(os.path.join(a.out, (STEM + "_items_kprime.json") if STEM else "eval_items_kprime.json"), "w", newline="\n"), indent=0)
         idle = {}
         for k_ in sorted(set(mt.tolist())):
@@ -537,9 +559,9 @@ def main():
         for i in range(0, len(ex), bs):
             ch = ex[i:i + bs]; x, msk = m.think_inputs(ch, dev)
             with torch.no_grad(), ac():
-                S = m.mem.zero_state(len(ch), dev)
+                S = m.mem.zero_state(len(ch), dev); pin = m.pass_inputs(x, msk)   # §208: pass t's input (no lower cache on this path)
                 for t in range(1, K + 1):
-                    S = m.write(S, x, msk); ix = [j for j, it in enumerate(ch) if t <= it["depth"]]
+                    S = m.write(S, *pin(t)); ix = [j for j, it in enumerate(ch) if t <= it["depth"]]
                     if ix:
                         gen = m.aux_greedy(S[ix], t, max(len(ch[j]["step_ids"][t - 1]) + 1 for j in ix))
                         for r_, j in enumerate(ix):
@@ -552,7 +574,7 @@ def main():
         res["aux_exact_by_grounding"]["def"] = ("§202 P-W8: the aux_exact_by_pass items split by step t's operand grounding (gsm8k_data.parse_recomputable on the test raw item): "
                                                 "R = any operand is a previous result, Q = question literals / constants only, unparsed = item not recomputable")
         S8 = think_states(ex, 8); donor = torch.tensor(np.roll(np.arange(len(ex)), 1)); S0 = think_states(ex, 16); S1 = think_states(ex, 16, S8[donor].cpu())
-        P0 = greedy_after(Fwd(g, m.mem, S0), [[EOT] + it["pre"] + [ANS] for it in ex], dev, ac, bs); P1 = greedy_after(Fwd(g, m.mem, S1), [[EOT] + it["pre"] + [ANS] for it in ex], dev, ac, bs)
+        P0 = greedy_after(Fwd(g, m.mem, S0), [ans_prefix(it) for it in ex], dev, ac, bs); P1 = greedy_after(Fwd(g, m.mem, S1), [ans_prefix(it) for it in ex], dev, ac, bs)
         hd = slice(m.mem.h_add, m.mem.h_add + m.mem.h_del)
         res["path_indep"] = {"answer_agree": float(np.mean([norm_number(p_ or "") == norm_number(q_ or "") for p_, q_ in zip(P0, P1)])), "acc_from_zero": acc_of(ex, P0),
                              "acc_from_donor": acc_of(ex, P1), "delta_cos_final": float(Fn.cosine_similarity(S0[:, hd].float().flatten(1), S1[:, hd].float().flatten(1), dim=1).mean()),

@@ -1,0 +1,135 @@
+{
+ "g2a": {
+  "passes_seen": 10,
+  "pass1_is_question": true,
+  "passes_ge2_are_filler": true,
+  "dec_rows_assert_ok": true,
+  "filler_len": 17,
+  "pass": true
+ },
+ "g2b": {
+  "MK_bitwise": true,
+  "dec_loss_equal": true,
+  "answers_equal": true,
+  "pass": true
+ },
+ "g2c": {
+  "plain_MK_differs": true,
+  "max_abs": 4450.681640625,
+  "pass": true
+ },
+ "route": {
+  "ab_only_think_eq_plain": true,
+  "factor_nopass_qo_eq_pros_qo": true,
+  "factor_aux_prompt": [
+   50256,
+   5012,
+   1058
+  ],
+  "aux_prompt_nopass": true,
+  "pass": true
+ },
+ "g5": {
+  "k0_distinct": 1,
+  "k0_answer": " 20",
+  "filler_cache_bitwise": true,
+  "pass": true
+ },
+ "g3": {
+  "param_names_found": [
+   "block0",
+   "block11",
+   "gate",
+   "ln",
+   "ln_w",
+   "qkv_kv",
+   "qkv_q",
+   "s_add",
+   "s_del",
+   "wo"
+  ],
+  "full_gamma1": {
+   "qkv_kv": 0.06449901595405952,
+   "qkv_q": 0.017049549792792162,
+   "gate": 0.011695913821463842,
+   "ln": 0.009441765458374243,
+   "ln_w": 0.015515645087049645,
+   "wo": 4.4673281405262335,
+   "s_add": 0.00012044604955008253,
+   "s_del": 0.0025979839265346527,
+   "block0": 1.3553158918317665,
+   "block11": 1.5835213608545764
+  },
+  "q_embed_grad": 0.00392698310315609,
+  "m1_detached": {
+   "q_embed_grad": 0.0,
+   "q_embed_grad_none": true,
+   "qkv_kv": 0.05538699146101567,
+   "gate": 0.010965877745468809,
+   "ln_w": 0.01369591311734062
+  },
+  "sk_detached": {
+   "qkv_kv": 0.0,
+   "gate": 0.0,
+   "ln_w": 0.0
+  },
+  "gamma0": {
+   "ln_w": 0.0,
+   "qkv_kv": 0.07965406033822064
+  },
+  "qo2_gamma0_unchanged": true,
+  "qo2_gamma1_changes": true,
+  "qo2_max_abs": {
+   "gamma0": 0.0,
+   "gamma1": 2407.184814453125
+  },
+  "pass": true
+ },
+ "ast": {
+  "decorators": {
+   "set_ab_qo": [],
+   "pass_inputs": [],
+   "write": [],
+   "lower": [],
+   "think": [],
+   "dec_loss": []
+  },
+  "pass": true
+ },
+ "pass_all": true,
+ "g1_plain_path": {
+  "card": "RTX 3070 (cuda:1) bf16",
+  "method": "scratch/s208_g1.sh pre / post: A's flags, 200 steps bs 8 K 10 sched 0.05 (fade / gamma 0.5 / aux active) + end eval; pre taken on the pre-edit code",
+  "plain": "log / eval / items / items_kprime / s200_init / state_dict sums equal",
+  "aux_nopass_alone": "equal (\u00a7204's NOPASS path, string target)",
+  "A_eval_only_eval_bs64": "eval.json + item files byte-equal; acc 0.14708 / K'1 0.12509",
+  "pass": true
+ },
+ "g4_mem": {
+  "card": "RTX 3070, --mem_check --micro 16 (4 items), composite longest item",
+  "A_flags": 6.2742,
+  "AB_QO_NOPASS": 4.1813,
+  "pass": true
+ },
+ "smoke_qo": {
+  "run": "scratch/_tmp/s208ref/qo_smoke (200 steps, AB + QO + NOPASS, 3070 bf16)",
+  "bn_k0_distinct": 1,
+  "kprimes": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   6,
+   8,
+   10,
+   12,
+   16
+  ],
+  "eval_only_with_flags_equal": true,
+  "eval_only_without_flags_asserts": true
+ },
+ "deferred_per_note_208_1": "G6 (MEAN-ITER / transplant replay identities) + the \u00a75 eval-only script: built in NEW files while the cell trains; G6 must pass on the smoke QO model before the cell lands",
+ "g7_time": "pending: HOSTPROBE + the first 200 steps of the cell, guard $3.20",
+ "pass_all_prelaunch_local": true
+}
