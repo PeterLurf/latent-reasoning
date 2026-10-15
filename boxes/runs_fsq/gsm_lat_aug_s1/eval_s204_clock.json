@@ -1,0 +1,159 @@
+{
+ "pair_acc": {
+  "1v2": 0.91,
+  "2v3": 0.87,
+  "3v4": 0.72
+ },
+ "pair_acc_by_feature": {
+  "model_read": {
+   "1v2": 0.91,
+   "2v3": 0.87,
+   "3v4": 0.72
+  },
+  "delta": {
+   "1v2": 0.895,
+   "2v3": 0.77,
+   "3v4": 0.66
+  },
+  "add_raw": {
+   "1v2": 0.865,
+   "2v3": 0.82,
+   "3v4": 0.725
+  },
+  "add_rms_gain1": {
+   "1v2": 0.76,
+   "2v3": 0.67,
+   "3v4": 0.6
+  }
+ },
+ "probe": {
+  "model_read": {
+   "t1-4": {
+    "acc": 0.7475,
+    "chance": 0.25,
+    "lambda": 0.0001,
+    "cv_acc": 0.7325,
+    "centroid_acc": 0.4875,
+    "pair_acc": {
+     "1v2": 0.91,
+     "2v3": 0.87,
+     "3v4": 0.72
+    }
+   },
+   "t1-8": {
+    "acc": 0.465,
+    "chance": 0.125,
+    "lambda": 0.1,
+    "cv_acc": 0.4525,
+    "centroid_acc": 0.3375,
+    "pair_acc": {
+     "1v2": 0.855,
+     "2v3": 0.77,
+     "3v4": 0.685,
+     "4v5": 0.695,
+     "5v6": 0.64,
+     "6v7": 0.615,
+     "7v8": 0.605
+    }
+   }
+  },
+  "delta": {
+   "t1-4": {
+    "acc": 0.6675,
+    "chance": 0.25,
+    "lambda": 0.1,
+    "cv_acc": 0.655,
+    "centroid_acc": 0.6425,
+    "pair_acc": {
+     "1v2": 0.895,
+     "2v3": 0.77,
+     "3v4": 0.66
+    }
+   },
+   "t1-8": {
+    "acc": 0.3725,
+    "chance": 0.125,
+    "lambda": 0.01,
+    "cv_acc": 0.395,
+    "centroid_acc": 0.375,
+    "pair_acc": {
+     "1v2": 0.86,
+     "2v3": 0.7,
+     "3v4": 0.605,
+     "4v5": 0.585,
+     "5v6": 0.57,
+     "6v7": 0.55,
+     "7v8": 0.545
+    }
+   }
+  },
+  "add_raw": {
+   "t1-4": {
+    "acc": 0.705,
+    "chance": 0.25,
+    "lambda": 0.01,
+    "cv_acc": 0.6675,
+    "centroid_acc": 0.43,
+    "pair_acc": {
+     "1v2": 0.865,
+     "2v3": 0.82,
+     "3v4": 0.725
+    }
+   },
+   "t1-8": {
+    "acc": 0.4725,
+    "chance": 0.125,
+    "lambda": 0.01,
+    "cv_acc": 0.4887,
+    "centroid_acc": 0.2862,
+    "pair_acc": {
+     "1v2": 0.82,
+     "2v3": 0.755,
+     "3v4": 0.715,
+     "4v5": 0.675,
+     "5v6": 0.665,
+     "6v7": 0.64,
+     "7v8": 0.625
+    }
+   }
+  },
+  "add_rms_gain1": {
+   "t1-4": {
+    "acc": 0.5125,
+    "chance": 0.25,
+    "lambda": 0.1,
+    "cv_acc": 0.5575,
+    "centroid_acc": 0.4325,
+    "pair_acc": {
+     "1v2": 0.76,
+     "2v3": 0.67,
+     "3v4": 0.6
+    }
+   },
+   "t1-8": {
+    "acc": 0.3413,
+    "chance": 0.125,
+    "lambda": 0.01,
+    "cv_acc": 0.3525,
+    "centroid_acc": 0.2675,
+    "pair_acc": {
+     "1v2": 0.73,
+     "2v3": 0.635,
+     "3v4": 0.625,
+     "4v5": 0.61,
+     "5v6": 0.585,
+     "6v7": 0.57,
+     "7v8": 0.58
+    }
+   }
+  }
+ },
+ "model_read_def": "post-gain delta read + additive read as computed (add_norm None: raw)",
+ "protocol": "clock_A.py (200 Aug-valid items rng 20214, fit / test 100 / 100 rng 20215, trained regime, prompt [EOT, ' Step', ' :'] 3 positions)",
+ "model": "boxes/runs_fsq/gsm_lat_aug_s1\\model.pt",
+ "device": "cpu",
+ "dtype": "fp32",
+ "gamma": 1.0,
+ "fade": 1.0,
+ "sec": 252
+}
