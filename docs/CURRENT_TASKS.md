@@ -38,6 +38,9 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   s205_fill (disjoint offers). Guard s206 $6 (G8 = J1 step 200; J0 mirrored on J1; GUARD_STOP destroys both). Scorer theory/score_s206.py (Theory).
   03:0x: J1 b300 on 46.63.50.129:51033 (56055329, STARTED 02:36; G8 PASS 1.608 s/step, $1.57 / cell; W ref acc = landed), J0 b299 on 171.5.176.46:45477
   (56058113, STARTED 03:01); §205 s2 b297 on 218.150.198.117:51947 (STARTED 02:45); s1 b296 still waiting for 570.172.08. All in gpu_watch + gen8 drains.
+  04:3x: §205 spend cut (Audit): post-gamma rates -> family ~$17.8 vs $18. s205_fill replaced by s205_fill_s1.sh (b296 only, <= $0.24/h);
+  cost_guard s205 replaced by s205_rate_guard.py (CHECK every 4k; family > $18 -> stop s1 before its 4k, else ALERT). If no s1 offer by ~10:30, tell Audit
+  (s1 is a converged-control seed; Audit takes 2-seed vs more $ to the user).
 * 01:3x 10-15 (Experiments): §204 b295 RUNNING on 66.203.214.60:50792 (56040673, 595.84): A ref re-run done (bitwise = A; renamed to
   gsm_lat_aug_s1/eval_s204ref.json after the drain); F-P gsm_lat_factor_s1 started 00:25, lands ~12:30; guard s204 projects $2.55 / $3.90; gen8 drain +
   gpu_watch (b291 + b295). IIT-SERIAL G-TIME DONE (20efb91d: +83% s/step, 18.0 GiB micro 1, ~$4.7 / 48k seed). DAS closed: PCA swap COMPACT-FIT-LIMITED
