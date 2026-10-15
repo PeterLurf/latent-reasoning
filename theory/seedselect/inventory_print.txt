@@ -1,0 +1,875 @@
+
+== fsq120/000  n=108  diff_vs_s120_s5_final_s1={}
+   flag4proto_s5_s601_3070              s=601  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s602_3070              s=602  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s603_3070              s=603  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s604_3070              s=604  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s605_3070              s=605  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s606_3070              s=606  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s607_3070              s=607  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s608_3070              s=608  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s609_3070              s=609  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s610_3070              s=610  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s611_3070              s=611  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s611_4060              s=611  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s612_3070              s=612  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s612_4060              s=612  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s613_3070              s=613  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s613_4060              s=613  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s614_3070              s=614  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s614_4060              s=614  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s615_3070              s=615  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s615_4060              s=615  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s616_3070              s=616  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s616_4060              s=616  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s617_3070              s=617  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s617_4060              s=617  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s618_3070              s=618  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s618_4060              s=618  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s619_3070              s=619  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s619_4060              s=619  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   flag4proto_s5_s620_4060              s=620  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s501_2070                s=501  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s502_2070                s=502  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s503_2070                s=503  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s504_2070                s=504  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s505_2070                s=505  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s506_2070                s=506  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s507_2070                s=507  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s508_2070                s=508  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s509_2070                s=509  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s510_2070                s=510  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s511_2070                s=511  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s512_2070                s=512  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s513_2070                s=513  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s514_2070                s=514  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s515_2070                s=515  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s516_2070                s=516  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s517_2070                s=517  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s518_2070                s=518  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s519_2070                s=519  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s520_2070                s=520  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s521_2070                s=521  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s522_2070                s=522  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s523_2070                s=523  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d8_s524_2070                s=524  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s14_3070             s=14   gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s16_3070             s=16   gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s27_3070             s=27   gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s28_3070             s=28   gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s31_3070             s=31   gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s3_4060              s=3    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s4_4060              s=4    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s601_4060            s=601  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s602_4060            s=602  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s603_4060            s=603  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s604_4060            s=604  gpu=4060    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s605_4060            s=605  gpu=4060    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s606_3070            s=606  gpu=3070    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s607_3070            s=607  gpu=3070    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s608_3070            s=608  gpu=3070    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_plain_s8_4060              s=8    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s120_s5_final_s1                     s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s120_s5_final_s2                     s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_ctrl_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_ctrl_s4                      s=4    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s127_s5_ctrl_s4_full                 s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s128_s5_s1                           s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9985, "exact": true, "complete": true, "stopped": null}
+   s128_s5_s102                         s=102  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s128_s5_s104                         s=104  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_s5_s2                           s=2    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s128_s5_s3                           s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s128_s5_s4                           s=4    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s129_s5_s1                           s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s101                         s=101  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s102                         s=102  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s103                         s=103  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s104                         s=104  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s2                           s=2    gpu=3090    max=4000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s129_s5_s201                         s=201  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s202                         s=202  gpu=3090    max=26000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s129_s5_s202_clock                   s=202  gpu=3090    max=4000   int=100  dup=0 res=0 STOP | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s129_s5_s203                         s=203  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s204                         s=204  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s2_clock                     s=2    gpu=3090    max=4000   int=100  dup=0 res=0 STOP | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s129_s5_s3                           s=3    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "not flagged (\u00a7129 phase 1)"}
+   s129_s5_s301                         s=301  gpu=3090    max=4000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s129_s5_s301_clock                   s=301  gpu=3090    max=4000   int=100  dup=0 res=0 STOP | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s129_s5_s4                           s=4    gpu=3090    max=26000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s129_s5_s4_clock                     s=4    gpu=3090    max=4000   int=100  dup=0 res=0 STOP | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s130chk_s5_s12_a4000                 s=12   gpu=a4000   max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9975, "exact": true, "complete": true, "stopped": null}
+   s130chk_s5_s17_a4000                 s=17   gpu=a4000   max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s130chk_s5_s30_a4000                 s=30   gpu=a4000   max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s130chk_s5_s34_a4000                 s=34   gpu=a4000   max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s130chk_s5_s5_4060ti                 s=5    gpu=4060ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s130chk_s5_s6_4060ti                 s=6    gpu=4060ti  max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s130chk_s5_s7_4060ti                 s=7    gpu=4060ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s131x_s5_s401_2080ti                 s=401  gpu=2080ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.987, "exact": false, "complete": true, "stopped": null}
+   s131x_s5_s402_2080ti                 s=402  gpu=2080ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s131x_s5_s403_2080ti                 s=403  gpu=2080ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9985, "exact": true, "complete": true, "stopped": null}
+   s131x_s5_s404_2080ti                 s=404  gpu=2080ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/001  n=20  diff_vs_s120_s5_final_s1={"d_q": 16}
+   proto133_fsq16_s5_s501_4060          s=501  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s502_4060          s=502  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s503_4060          s=503  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s504_4060          s=504  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s505_4060          s=505  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s506_4060          s=506  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s507_4060          s=507  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s508_4060          s=508  gpu=4060    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s509_2070          s=509  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s510_2070          s=510  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s511_2070          s=511  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s512_2070          s=512  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s513_2070          s=513  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s514_2070          s=514  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s515_2070          s=515  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_fsq16_s5_s516_2070          s=516  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s133_fsq16_s1                        s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+   s133_fsq16_s2                        s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s133_fsq16_s3                        s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s133_fsq16_s4                        s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/002  n=21  diff_vs_s120_s5_final_s1={"d_q": 16, "soft_beta": 0.1}
+   proto133_soft16_s5_s501_3070         s=501  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s502_3070         s=502  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s503_3070         s=503  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s504_3070         s=504  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s505_3070         s=505  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s506_3070         s=506  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s507_3070         s=507  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s508_3070         s=508  gpu=3070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s509_2070         s=509  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s510_2070         s=510  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s511_2070         s=511  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s512_2070         s=512  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s513_2070         s=513  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s514_2070         s=514  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s515_2070         s=515  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto133_soft16_s5_s516_2070         s=516  gpu=2070    max=4500   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s133_soft16_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s133_soft16_s102                     s=102  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s133_soft16_s2                       s=2    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_soft16_s3                       s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s133_soft16_s4                       s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/003  n=24  diff_vs_s120_s5_final_s1={"d_q": 4}
+   proto136_d4_s501_2070                s=501  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s502_2070                s=502  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s503_2070                s=503  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s504_2070                s=504  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s505_2070                s=505  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s506_2070                s=506  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s507_2070                s=507  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s508_2070                s=508  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s509_2070                s=509  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s510_2070                s=510  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s511_2070                s=511  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s512_2070                s=512  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s513_2070                s=513  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s514_2070                s=514  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s515_2070                s=515  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s516_2070                s=516  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s517_2070                s=517  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s518_2070                s=518  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s519_2070                s=519  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s520_2070                s=520  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s521_2070                s=521  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s522_2070                s=522  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s523_2070                s=523  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto136_d4_s524_2070                s=524  gpu=2070    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/004  n=5  diff_vs_s120_s5_final_s1={"arm": "<absent>", "contract_T0": 2, "family": "mult_col", "task": "4x4", "train_items": 807983, "train_items_raw": 808000, "train_n": 0, "train_removed_test_overlap": 17}
+   proto137_4x4_s501_4060               s=501  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto137_4x4_s502_3070               s=502  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto137_4x4_s503_4060               s=503  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto137_4x4_s504_3070               s=504  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s137_col_4x4_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/005  n=9  diff_vs_s120_s5_final_s1={"arm": "<absent>", "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "pair_flags": "column_start", "task": "4x4", "train_items": 807983, "train_items_raw": 808000, "train_n":
+   proto140_4x4_s501_4060               s=501  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s502_3070               s=502  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s503_4060               s=503  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s504_3070               s=504  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s505_4060               s=505  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s506_3070               s=506  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s507_4060               s=507  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto140_4x4_s508_3070               s=508  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s140_pair_4x4_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/006  n=5  diff_vs_s120_s5_final_s1={"arm": "<absent>", "contract_T0": 2, "family": "mult_col", "repeat_index": true, "repeat_tokens": [" A", " B", " C", " D"], "repeats": 4, "task": "4x4", "train_items": 807983, "train_items_raw": 808000, "train_n": 0, "train_removed_test_overlap": 17}
+   proto141_r4f8_4x4_s501_4060          s=501  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto141_r4f8_4x4_s502_3070          s=502  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto141_r4f8_4x4_s503_4060          s=503  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto141_r4f8_4x4_s504_3070          s=504  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s141_r4f8_4x4_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/007  n=5  diff_vs_s120_s5_final_s1={"arm": "<absent>", "contract_T0": 2, "d_q": 16, "family": "mult_col", "repeat_index": true, "repeat_tokens": [" A", " B", " C", " D"], "repeats": 4, "soft_beta": 0.1, "task": "4x4", "train_items": 807983, "train_items_raw": 808000, "train_n": 0, "train_remove
+   proto141_r4s16_4x4_s501_4060         s=501  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto141_r4s16_4x4_s502_3070         s=502  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto141_r4s16_4x4_s503_4060         s=503  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto141_r4s16_4x4_s504_3070         s=504  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s141_r4s16_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/008  n=2  diff_vs_s120_s5_final_s1={"family": "sum4", "lmax_fixed": 1, "sum_mod": 100}
+   proto144_L1_f8_s601_3070             s=601  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_L1_f8_s602_3070             s=602  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/009  n=2  diff_vs_s120_s5_final_s1={"d_q": 64, "dither": 0.25, "family": "sum4", "fsq_dither": "<absent>", "lmax_fixed": 1, "no_round": true, "sum_mod": 100}
+   proto144_L1_n64_s601_3070            s=601  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_L1_n64_s602_3070            s=602  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/010  n=15  diff_vs_s120_s5_final_s1={"family": "sum4", "sum_mod": 10000}
+   proto144_f8_8k_s509_3070             s=509  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_8k_s510_3070             s=510  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_8k_s511_3070             s=511  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_8k_s512_3070             s=512  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s501_3070                s=501  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s502_3070                s=502  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s503_3070                s=503  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s504_3070                s=504  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s505_4060                s=505  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s506_4060                s=506  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s507_4060                s=507  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s508_4060                s=508  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s513_4060                s=513  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_f8_s515_4060                s=515  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s144_f8_noflag_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/011  n=16  diff_vs_s120_s5_final_s1={"d_q": 64, "dither": 0.25, "family": "sum4", "fsq_dither": "<absent>", "no_round": true, "sum_mod": 10000}
+   proto144_n64_8k_s509_3070            s=509  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_8k_s510_3070            s=510  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_8k_s511_3070            s=511  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_8k_s512_3070            s=512  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s501_3070               s=501  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s502_3070               s=502  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s503_3070               s=503  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s504_3070               s=504  gpu=3070    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s505_4060               s=505  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s506_4060               s=506  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s507_4060               s=507  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s508_4060               s=508  gpu=4060    max=5000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s514_4060               s=514  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto144_n64_s516_4060               s=516  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s144_n64_noflag_s1                   s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s144_n64_s301                        s=301  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/012  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6,
+   proto147_5x5_s501_3070               s=501  gpu=3070    max=12000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/013  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"},
+   proto147_5x5_s502_4060               s=502  gpu=4060    max=12000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/014  n=4  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "code", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6, "me
+   proto150_digitsoft_s501_4060         s=501  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto150_digitsoft_s502_4060         s=502  gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto150_digitsoft_s503_2070         s=503  gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   proto150_digitsoft_s504_2070         s=504  gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/015  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "code", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6, "me
+   proto150_fullsoft_s505_2070          s=505  gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/016  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "code", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "fl
+   proto150_fullsoft_s506_2070          s=506  gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/017  n=1  diff_vs_s120_s5_final_s1={"add_reset": "column", "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " 
+   proto154_shift_s501_3070             s=501  gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/018  n=1  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "answer_sep": "pause", "arm": "plain", "cotenant_runs": 1, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 1, "r_switch": 2000, "sep_token":
+   proto156_pause_s1_4060               s=1    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+
+== fsq120/019  n=1  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "answer_sep": null, "arm": "plain", "cotenant_runs": 1, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 1, "r_switch": 2000, "sep_token": nu
+   proto156_plain_s1_4060               s=1    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+
+== fsq120/020  n=1  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "answer_sep": "interleave", "arm": "plain", "cotenant_runs": 1, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 1, "r_switch": 2000, "sep_to
+   proto156_sep_s1_4060                 s=1    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+
+== fsq120/021  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "ccq_feature_norm": "l2 per head (additive: phi = elu + 1, then l2, in write and read)", "ccq_lambda_init_bias": -4.6, "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "disti
+   proto157_ccq_s1_3070                 s=1    gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/022  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   proto157_multiread_s1_2070           s=1    gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/023  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   proto157_periodic_s1_3070            s=1    gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/024  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"},
+   proto158_free_s1_4060                s=1    gpu=4060    max=8000   int=100  dup=20 res=2 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/025  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   proto160_ar_s1_2070                  s=1    gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/026  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flu
+   proto161_mix_s1_4060                 s=1    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/027  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": 12, "col_index_tokens": [" A", " B", " C", " D", " E", " F", " G", " H", " I", " J", " K", " 
+   proto161_mixidx_s1_3070              s=1    gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/028  n=1  diff_vs_s120_s5_final_s1={"arm": "direct", "carrier": "direct", "edit_n": 1000, "l_max": 64, "long_len": 512, "mem_layer": 6, "mem_write": null, "probe_n_fit": 8000, "probe_n_score": 2000, "rec_every": 4000, "segments": "direct: [start text, items' 6-token texts, ' ='] -> state text",
+   proto162_direct_s1_2070              s=1    gpu=2070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+
+== fsq120/029  n=2  diff_vs_s120_s5_final_s1={"arm": "direct", "carrier": "direct", "edit_n": 1000, "edit_p": 0, "l_max": 64, "long_len": 512, "mem_layer": 6, "mem_write": null, "probe_n_fit": 8000, "probe_n_score": 2000, "rec_every": 4000, "segments": "direct: [start text, items' 6-token texts, ' ='] ->
+   proto162_direct_s2_4060              s=2    gpu=4060    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+   proto162_direct_s3_3070              s=3    gpu=3070    max=8000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+
+== fsq120/030  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench\\data\\mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2,
+   proto163_mix2d_s1_4060               s=1    gpu=4060    max=8000   int=100  dup=21 res=1 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/031  n=15  diff_vs_s120_s5_final_s1={"p_hard_end": 8000, "p_hard_start": 6000}
+   rampproto_late_s14_3070              s=14   gpu=3070    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s16_3070              s=16   gpu=3070    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s27_3070              s=27   gpu=3070    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s28_3070              s=28   gpu=3070    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s31_3070              s=31   gpu=3070    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s3_4060               s=3    gpu=4060    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s4_4060               s=4    gpu=4060    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s601_4060             s=601  gpu=4060    max=8900   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s602_4060             s=602  gpu=4060    max=8900   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s603_4060             s=603  gpu=4060    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s604_4060             s=604  gpu=4060    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s605_4060             s=605  gpu=4060    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s606_3070             s=606  gpu=3070    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s607_3070             s=607  gpu=3070    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   rampproto_late_s8_4060               s=8    gpu=4060    max=8900   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/032  n=6  diff_vs_s120_s5_final_s1={"family": "ff"}
+   s120_ff_final_s1                     s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s120_ff_final_s2                     s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_ff_s1                           s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_ff_s2                           s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_ff_s3                           s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_ff_s4                           s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/033  n=2  diff_vs_s120_s5_final_s1={"arm": "trace", "family": "ff"}
+   s120_ff_trace_s1                     s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9952499086520895, "exact": true, "complete": true, "stopped": null}
+   s120_ff_trace_s2                     s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/034  n=2  diff_vs_s120_s5_final_s1={"arm": "trace"}
+   s120_s5_trace_s1                     s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s120_s5_trace_s2                     s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/035  n=1  diff_vs_s120_s5_final_s1={"dither": 0.0, "family": "ff", "fsq_dither": "<absent>", "no_round": true}
+   s123_ff_dither000_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/036  n=1  diff_vs_s120_s5_final_s1={"dither": 0.25, "family": "ff", "fsq_dither": "<absent>", "no_round": true}
+   s123_ff_dither025_s1                 s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/037  n=2  diff_vs_s120_s5_final_s1={"family": "ff", "fsq_dither": 0.25}
+   s123_ff_fsqdither_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s123_ff_fsqdither_s2                 s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/038  n=2  diff_vs_s120_s5_final_s1={"dither": 0.0, "fsq_dither": "<absent>", "no_round": true}
+   s123_s5_dither000_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s123_s5_dither000_s2                 s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/039  n=2  diff_vs_s120_s5_final_s1={"dither": 0.1, "fsq_dither": "<absent>", "no_round": true}
+   s123_s5_dither010_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s123_s5_dither010_s2                 s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/040  n=2  diff_vs_s120_s5_final_s1={"dither": 0.25, "fsq_dither": "<absent>", "no_round": true}
+   s123_s5_dither025_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s123_s5_dither025_s2                 s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/041  n=4  diff_vs_s120_s5_final_s1={"dither": 0.5, "fsq_dither": "<absent>", "no_round": true}
+   s123_s5_dither050_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s123_s5_dither050_s1_3090            s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s123_s5_dither050_s2                 s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s123_s5_dither050_s2_3090            s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/042  n=2  diff_vs_s120_s5_final_s1={"fsq_dither": 0.25}
+   s123_s5_fsqdither_s1                 s=1    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s123_s5_fsqdither_s2                 s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/043  n=1  diff_vs_s120_s5_final_s1={"std": true}
+   s125_s5_std_s2                       s=2    gpu=None    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/044  n=2  diff_vs_s120_s5_final_s1={"anneal": true}
+   s126_s5_anneal_s2                    s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s126_s5_anneal_s2_fp32cast           s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/045  n=4  diff_vs_s120_s5_final_s1={"raw_h": true}
+   s126_s5_rawh_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s126_s5_rawh_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.846, "exact": false, "complete": true, "stopped": null}
+   s126_s5_rawh_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s126_s5_rawh_s4                      s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/046  n=2  diff_vs_s120_s5_final_s1={"family": "ff", "skip_dec": true}
+   s127_ff_skip_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s127_ff_skip_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/047  n=4  diff_vs_s120_s5_final_s1={"lr_new": 10.0}
+   s127_s5_lr10_s1                      s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s127_s5_lr10_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_lr10_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_lr10_s4                      s=4    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+
+== fsq120/048  n=5  diff_vs_s120_s5_final_s1={"skip_dec": true}
+   s127_s5_skip_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+   s127_s5_skip_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_skip_s2_rerun                s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_skip_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_skip_s4                      s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/049  n=4  diff_vs_s120_s5_final_s1={"std2": true}
+   s127_s5_std2_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_std2_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_std2_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_std2_s4                      s=4    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+
+== fsq120/050  n=1  diff_vs_s120_s5_final_s1={"var_est": "ema", "var_res": true, "var_w": 1.0}
+   s127_s5_var_s2                       s=2    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+
+== fsq120/051  n=2  diff_vs_s120_s5_final_s1={"var_est": "batch", "var_res": true, "var_w": 1.0}
+   s127_s5_var_s2_rerun                 s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s127_s5_var_s4                       s=4    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+
+== fsq120/052  n=4  diff_vs_s120_s5_final_s1={"family": "cyc"}
+   s128_cyc_s1                          s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_cyc_s2                          s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_cyc_s3                          s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_cyc_s4                          s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/053  n=4  diff_vs_s120_s5_final_s1={"family": "mod"}
+   s128_mod_s1                          s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_mod_s2                          s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_mod_s3                          s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_mod_s4                          s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/054  n=4  diff_vs_s120_s5_final_s1={"family": "rdfa"}
+   s128_rdfa_s1                         s=1    gpu=3090ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_rdfa_s2                         s=2    gpu=3090ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_rdfa_s3                         s=3    gpu=3090ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s128_rdfa_s4                         s=4    gpu=3090ti  max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/055  n=4  diff_vs_s120_s5_final_s1={"cert_n": 20, "family": "table", "k": 4, "m": 2, "max_tokens": 40000, "segment_tokens": 35}
+   s132_k4_s1                           s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9865, "exact": false, "complete": true, "stopped": null}
+   s132_k4_s2                           s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s132_k4_s3                           s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s132_k4_s4                           s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/056  n=1  diff_vs_s120_s5_final_s1={"cert_n": 3, "family": "table", "k": 4, "m": 2, "max_tokens": 40000, "sched_scale": 0.1, "segment_tokens": 35, "steps": 300}
+   s132_k4_smoke                        s=1    gpu=3090    max=300    int=100  dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": 0.09, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/057  n=1  diff_vs_s120_s5_final_s1={"cert_n": 20, "family": "table", "k": 6, "m": 3, "max_tokens": 4800, "segment_tokens": 75}
+   s132proto_k6_s1_4060                 s=1    gpu=4060    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+
+== fsq120/058  n=3  diff_vs_s120_s5_final_s1={"cert_n": 20, "family": "table", "k": 6, "m": 3, "max_tokens": 2400, "segment_tokens": 75}
+   s132proto_k6_s2_4060                 s=2    gpu=4060    max=2000   int=100  dup=0 res=0 | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s132proto_k6_s3_4060                 s=3    gpu=4060    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+   s132proto_k6_s4_4060                 s=4    gpu=4060    max=2000   int=100  dup=0 res=0 | {"flag2k": false, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": null}
+
+== fsq120/059  n=6  diff_vs_s120_s5_final_s1={"d_q": 64, "dither": 0.0, "fsq_dither": "<absent>", "no_round": true}
+   s133_cont64_s1                       s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_cont64_s101                     s=101  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_cont64_s104                     s=104  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s133_cont64_s2                       s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s133_cont64_s201                     s=201  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.997, "exact": true, "complete": true, "stopped": null}
+   s133_cont64_s3                       s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/060  n=6  diff_vs_s120_s5_final_s1={"d_q": 64}
+   s133_fsq64_s1                        s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_fsq64_s101                      s=101  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_fsq64_s104                      s=104  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s133_fsq64_s2                        s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s133_fsq64_s201                      s=201  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.998, "exact": true, "complete": true, "stopped": null}
+   s133_fsq64_s3                        s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/061  n=6  diff_vs_s120_s5_final_s1={"d_q": 64, "dither": 0.25, "fsq_dither": "<absent>", "no_round": true}
+   s133_noise64_s1                      s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_noise64_s101                    s=101  gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_noise64_s104                    s=104  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s133_noise64_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s133_noise64_s201                    s=201  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.998, "exact": true, "complete": true, "stopped": null}
+   s133_noise64_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/062  n=2  diff_vs_s120_s5_final_s1={"carrier_ln": true, "d_q": 64, "dither": 0.0, "fsq_dither": "<absent>", "no_round": true}
+   s133_pin64_s1                        s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_pin64_s101                      s=101  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/063  n=2  diff_vs_s120_s5_final_s1={"d_q": 64, "soft_beta": 0.1}
+   s133_soft64_s1                       s=1    gpu=3090    max=2000   int=100  dup=0 res=0 STOP | {"flag2k": true, "flag4k": null, "long_acc": null, "exact": null, "complete": false, "stopped": "plateau (123-3 flag at 2k)"}
+   s133_soft64_s101                     s=101  gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.902, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/064  n=1  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "family": "cyc"}
+   s134_copy_cyc_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/065  n=1  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "family": "ff"}
+   s134_copy_ff_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/066  n=3  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "family": "mod"}
+   s134_copy_mod_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s134_copy_mod_s2                     s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s134_copy_mod_s3                     s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/067  n=1  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "family": "rdfa"}
+   s134_copy_rdfa_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/068  n=4  diff_vs_s120_s5_final_s1={"copy_frac": 0.1}
+   s134_copy_s5_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s134_copy_s5_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+   s134_copy_s5_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s134_copy_s5_s4                      s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.998, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/069  n=4  diff_vs_s120_s5_final_s1={"tsd": "base", "tsd_layer": 10, "tsd_tau": 0.1, "tsd_teacher": "boxes/runs_fsq/s135_teacher_s5", "tsd_w": 1.0}
+   s135_base_s5_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s135_base_s5_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s135_base_s5_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s135_base_s5_s4                      s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/070  n=4  diff_vs_s120_s5_final_s1={"tsd": "teacher", "tsd_layer": 10, "tsd_tau": 0.1, "tsd_teacher": "boxes/runs_fsq/s135_teacher_s5", "tsd_w": 1.0}
+   s135_tsd_s5_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s135_tsd_s5_s2                       s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s135_tsd_s5_s3                       s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s135_tsd_s5_s4                       s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/071  n=4  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "grow": "8:64", "grow_noise": 0.0, "grow_staged": false, "grow_trigger": "2.5"}
+   s136_cgrow_s5_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+   s136_cgrow_s5_s2                     s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s136_cgrow_s5_s3                     s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s136_cgrow_s5_s4                     s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9985, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/072  n=4  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "grow": "8:64", "grow_noise": 0.25, "grow_staged": false, "grow_trigger": "2.5"}
+   s136_cnoise_s5_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s136_cnoise_s5_s2                    s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9985, "exact": true, "complete": true, "stopped": null}
+   s136_cnoise_s5_s3                    s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s136_cnoise_s5_s4                    s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/073  n=4  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "grow": "8:64", "grow_noise": 0.0, "grow_staged": true, "grow_trigger": "2.5"}
+   s136_cstaged_s5_s1                   s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s136_cstaged_s5_s2                   s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+   s136_cstaged_s5_s3                   s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.994, "exact": true, "complete": true, "stopped": null}
+   s136_cstaged_s5_s4                   s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9985, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/074  n=4  diff_vs_s120_s5_final_s1={"d_q": 4, "grow": "4:64", "grow_noise": 0.0, "grow_staged": false, "grow_trigger": "2.5"}
+   s136_grow4_s5_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s136_grow4_s5_s2                     s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s136_grow4_s5_s3                     s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s136_grow4_s5_s4                     s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/075  n=4  diff_vs_s120_s5_final_s1={"grow": "8:64", "grow_noise": 0.0, "grow_staged": false, "grow_trigger": "plateau"}
+   s136_growp_s5_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9965, "exact": true, "complete": true, "stopped": null}
+   s136_growp_s5_s2                     s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s136_growp_s5_s3                     s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s136_growp_s5_s4                     s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/076  n=1  diff_vs_s120_s5_final_s1={"d_q": 64, "nested": true}
+   s136_nested_s5_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/077  n=1  diff_vs_s120_s5_final_s1={"d_q": 768, "dither": 0.0, "fsq_dither": "<absent>", "no_round": true}
+   s138_full_cont_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/078  n=1  diff_vs_s120_s5_final_s1={"d_q": 768}
+   s138_full_fsq_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/079  n=1  diff_vs_s120_s5_final_s1={"d_q": 768, "dither": 0.0, "fsq_dither": "<absent>", "hinge": true, "hinge_eps_frac": 0.1, "hinge_rows": 0.25, "no_round": true}
+   s138_full_hinge_s1                   s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/080  n=1  diff_vs_s120_s5_final_s1={"d_q": 768, "dither": 0.25, "fsq_dither": "<absent>", "no_round": true}
+   s138_full_noise_s1                   s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/081  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "copy_frac": 0.1, "copy_gate_4k": false, "cotenant_runs": 3, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "distill_teacher": "boxes/
+   s139_ap_4x4_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/082  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "copy_frac": 0.1, "copy_gate_4k": false, "cotenant_runs": 3, "d_q": 16, "distill": true, "distill_end": 4000, "distill_full": 3000, "distill_layer": 8, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "distill_teacher": "boxes/runs
+   s139_b_4x4_s1                        s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/083  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "contract_T0": 2, "d_q": 16, "family": "mult_col", "repeat_index": false, "repeat_tokens": null, "repeats": 1, "soft_beta": 0.1, "task": "4x4", "train_items": 807983, "train_items_raw": 808000, "train_n": 0, "train_removed_test_overlap": 17
+   s141_r1s16_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/084  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 64, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "distill_teacher": "boxes/runs_mult/m98_tc_4
+   s142_a_4x4_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/085  n=4  diff_vs_s120_s5_final_s1={"copy_frac": 0.1, "grow": "8:64", "grow2": 768, "grow2_lr_scale": 0.0833, "grow2_min_step": 6000, "grow_noise": 0.25, "grow_staged": false, "grow_trigger": "2.5"}
+   s143_fullgrow_s5_s1                  s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+   s143_fullgrow_s5_s2                  s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s143_fullgrow_s5_s3                  s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s143_fullgrow_s5_s4                  s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.9995, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/086  n=1  diff_vs_s120_s5_final_s1={"family": "sum4", "sum_mod": 100}
+   s144_f8_m2_s1                        s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/087  n=1  diff_vs_s120_s5_final_s1={"family": "sum4", "sum_mod": 1000}
+   s144_f8_m3_s1                        s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/088  n=1  diff_vs_s120_s5_final_s1={"d_q": 64, "dither": 0.25, "family": "sum4", "fsq_dither": "<absent>", "no_round": true, "sum_mod": 100}
+   s144_n64_m2_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/089  n=1  diff_vs_s120_s5_final_s1={"d_q": 64, "dither": 0.25, "family": "sum4", "fsq_dither": "<absent>", "no_round": true, "sum_mod": 1000}
+   s144_n64_m3_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/090  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carry_from": "first", "carry_slots": 4, "contract_T0": 2, "d_q": 64, "dither": 0.25, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "fsq_dither": "<absent>", "no_round":
+   s145_slot4_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/091  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6,
+   s147_delta_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.743, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/092  n=1  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "arm": "loop4", "cotenant_runs": 2, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 4, "r_switch": 2000, "swap_n": 500, "task": "4x4", "trai
+   s148_loop4_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/093  n=1  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "arm": "plain", "cotenant_runs": 2, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 1, "r_switch": 2000, "swap_n": 500, "task": "4x4", "trai
+   s148_plain_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": true, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/094  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "code", "carry_from": "first", "carry_slots": 4, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6, "me
+   s150_digit_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/095  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "code", "carry_from": "first", "carry_slots": 4, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6, "me
+   s150_full_4x4_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/096  n=4  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"}, "flush_token": " =", "mem_add_heads": 6, "mem_delta_heads": 6,
+   s151_delta_4x4_s1                    s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.837, "exact": false, "complete": true, "stopped": null}
+   s151_delta_4x4_s2                    s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.889, "exact": false, "complete": true, "stopped": null}
+   s151_delta_4x4_s3                    s=3    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.856, "exact": false, "complete": true, "stopped": null}
+   s151_delta_4x4_s4                    s=4    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.846, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/097  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "distill_teacher": "b
+   s152_a96k_4x4_s1                     s=1    gpu=3090    max=96000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.079, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/098  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "distill_teacher": "b
+   s152_a_4x4_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.331, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/099  n=1  diff_vs_s120_s5_final_s1={"arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "distill_teacher": "b
+   s152_ctrl_4x4_s1                     s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.012, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/100  n=1  diff_vs_s120_s5_final_s1={"add_reset": "column", "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " 
+   s154_shift_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.653, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/101  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"},
+   s155_r9_4x4_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/102  n=4  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"},
+   s155_r_4x4_s1                        s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s155_r_4x4_s2                        s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.998, "exact": true, "complete": true, "stopped": null}
+   s155_r_4x4_s3                        s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.997, "exact": true, "complete": true, "stopped": null}
+   s155_r_4x4_s4                        s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.999, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/103  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"},
+   s155_rg0_4x4_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.587, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/104  n=1  diff_vs_s120_s5_final_s1={"add_reset": "column", "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " 
+   s155_shiftr_4x4_s1                   s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/105  n=3  diff_vs_s120_s5_final_s1={"add_reset": "column", "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " 
+   s155_shiftr_4x4_s2                   s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s155_shiftr_4x4_s3                   s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s155_shiftr_4x4_s4                   s=4    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/106  n=1  diff_vs_s120_s5_final_s1={"answer_sep": "interleave", "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_p
+   s156_asep_4x4_s1                     s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.06, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/107  n=2  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "answer_sep": "pause", "arm": "plain", "cotenant_runs": 2, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 1, "r_switch": 2000, "sep_token":
+   s156_pause_4x4_s1                    s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+   s156_pause_4x4_s2                    s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/108  n=2  diff_vs_s120_s5_final_s1={"answer": "8 digits LSB first", "answer_sep": "interleave", "arm": "plain", "cotenant_runs": 2, "deep_sup": true, "eta": 0.25, "family": "mult_direct", "loop": "4-7", "prompt": "a(LSB) ' *' b(LSB) ' ='", "r_eval_max": 16, "r_max": 1, "r_switch": 2000, "sep_to
+   s156_sep_4x4_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": 0.002, "exact": false, "complete": true, "stopped": null}
+   s156_sep_4x4_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": true, "flag4k": false, "long_acc": 0.004, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/109  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "ccq_feature_norm": "l2 per head (additive: phi = elu + 1, then l2, in write and read)", "ccq_lambda_init_bias": -4.6, "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "disti
+   s157_ccq_4x4_s1                      s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.064, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/110  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   s157_multiread_4x4_s1                s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.009, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/111  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   s157_periodic_4x4_s1                 s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.035, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/112  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flush": " =", "new_column": " ;", "same_column": " ,"},
+   s158_free_4x4_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.982, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/113  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flu
+   s159_r_5x5_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/114  n=3  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench/data/mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "
+   s159_r_5x5_s2                        s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s159_r_5x5_s3                        s=3    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s159_r_5x5_s4                        s=4    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/115  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   s160_ar9_4x4_s1                      s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.045, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/116  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   s160_ar_4x4_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.056, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/117  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   s160_ctrlr9_4x4_s1                   s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.085, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/118  n=1  diff_vs_s120_s5_final_s1={"answer_sep": null, "arm": "<absent>", "carrier": "deltamem", "copy_gate_4k": false, "cotenant_runs": 1, "d_q": 16, "distill": false, "distill_end": 4000, "distill_full": 3000, "distill_layer": null, "distill_probe_dir": "boxes/runs_fsq/s139_teacher_probe", "
+   s160_ctrlr_4x4_s1                    s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.055, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/119  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench/data/mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "
+   s161_mix9_4x4_s1                     s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.989, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/120  n=3  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "family": "mult_pair", "flag_tokens": {"flu
+   s161_mix_4x4_s1                      s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.996, "exact": true, "complete": true, "stopped": null}
+   s161_mix_4x4_s2                      s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": true, "long_acc": 0.997, "exact": true, "complete": true, "stopped": null}
+   s161_mix_4x4_s3                      s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.996, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/121  n=3  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": 12, "col_index_tokens": [" A", " B", " C", " D", " E", " F", " G", " H", " I", " J", " K", " 
+   s161_mixidx_4x4_s1                   s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.989, "exact": false, "complete": true, "stopped": null}
+   s161_mixidx_4x4_s2                   s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.997, "exact": true, "complete": true, "stopped": null}
+   s161_mixidx_4x4_s3                   s=3    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.991, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/122  n=2  diff_vs_s120_s5_final_s1={"arm": "direct", "carrier": "direct", "edit_n": 1000, "edit_p": 0, "l_max": 64, "long_len": 512, "mem_layer": 6, "mem_write": null, "probe_n_fit": 8000, "probe_n_score": 2000, "rec_every": 4000, "segments": "direct: [start text, items' 6-token texts, ' ='] ->
+   s162_direct_s1                       s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+   s162_direct_s2                       s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": null, "exact": null, "complete": true, "stopped": null}
+
+== fsq120/123  n=2  diff_vs_s120_s5_final_s1={"arm": "delta", "carrier": "deltamem", "edit_n": 1000, "edit_p": 0, "l_max": 32, "long_len": 512, "mem_layer": 6, "mem_write": "top", "probe_n_fit": 8000, "probe_n_score": 2000, "rec_every": 4000, "segments": "[EOT, start text], [EOT, item text] per item, dec
+   s162_long_s1                         s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s162_long_s2                         s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/124  n=2  diff_vs_s120_s5_final_s1={"arm": "delta", "carrier": "deltamem", "edit_n": 1000, "edit_p": 0, "l_max": 8, "long_len": 512, "mem_layer": 6, "mem_write": "top", "probe_n_fit": 8000, "probe_n_score": 2000, "rec_every": 4000, "segments": "[EOT, start text], [EOT, item text] per item, deco
+   s162_short_s1                        s=1    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+   s162_short_s2                        s=2    gpu=3090    max=24000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/125  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench/data/mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "
+   s163_mix2d_4x4_s1                    s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 0.997, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/126  n=2  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench/data/mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2, "
+   s163_mix2d_4x4_s2                    s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+   s163_mix2d_4x4_s3                    s=3    gpu=3090    max=48000  int=100  dup=0 res=0 | {"flag2k": false, "flag4k": false, "long_acc": 1.0, "exact": true, "complete": true, "stopped": null}
+
+== fsq120/127  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench\\data\\mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2,
+   s166_mult_fitted_s3                  s=3    gpu=2070    max=1000   int=100  dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": 0.844, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/128  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench\\data\\mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2,
+   s166_mult_plain_s3                   s=3    gpu=2070    max=1000   int=100  dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": 0.964, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/129  n=1  diff_vs_s120_s5_final_s1={"add_reset": null, "add_rotary": null, "arm": "<absent>", "bench5": "bench\\data\\mult_5x5_test.txt", "c7_state_only": false, "carrier": "deltamem", "carry_from": "first", "carry_slots": 0, "col_index_offset": null, "col_index_tokens": null, "contract_T0": 2,
+   s166_mult_pt0_s3                     s=3    gpu=2070    max=0      int=None dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": 0.998, "exact": true, "complete": false, "stopped": null}
+
+== fsq120/130  n=1  diff_vs_s120_s5_final_s1={"arm": "delta", "carrier": "deltamem", "edit_n": 1000, "edit_p": 0, "init_mode": "zero", "init_p": 0.5, "l_max": 32, "long_len": 512, "mem_layer": 6, "mem_write": "top", "post_train_from": "s162_long_s2", "probe_n_fit": 3000, "probe_n_score": 2000, "pt_lr": 5
+   s166_s5_plain_s2                     s=2    gpu=3070    max=300    int=100  dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== fsq120/131  n=1  diff_vs_s120_s5_final_s1={"arm": "delta", "carrier": "deltamem", "edit_n": 1000, "edit_p": 0, "init_mode": "pass", "init_p": 0.5, "l_max": 32, "long_len": 512, "mem_layer": 6, "mem_write": "top", "post_train_from": "s162_long_s2", "probe_n_fit": 3000, "probe_n_score": 2000, "pt_lr": 5
+   s166_s5_sp_s2                        s=2    gpu=3070    max=300    int=100  dup=0 res=0 | {"flag2k": null, "flag4k": null, "long_acc": 0.0, "exact": false, "complete": true, "stopped": null}
+
+== nested/132  n=1  diff_vs_s185_rms_s1={"n_max_train": 4, "think_k": 4}
+   pilot196_s3_small_4060               s=3    gpu=4060    max=12000  int=100  dup=0 res=1 | {"entry_0.5": 10000, "entry_0.1": null, "last_bin": 0.1621, "last_bin_end": 12000, "complete": false, "entered": null}
+
+== nested/133  n=1  diff_vs_s185_rms_s1={"anneal": "4:4:12000,6:6:48000", "n_max_train": 6, "think_k": 6}
+   pilot196_s3_stage2_4060              s=3    gpu=4060    max=24000  int=100  dup=0 res=1 | {"entry_0.5": 20000, "entry_0.1": null, "last_bin": 0.27, "last_bin_end": 24000, "complete": false, "entered": null}
+
+== nested/134  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "6000,8000", "steps": 8000}
+   proto175_auxk8_s1_2070               s=1    gpu=2070    max=8000   int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.877, "last_bin_end": 8000, "complete": true, "entered": false}
+
+== nested/135  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0, "k_window": "0,2", "steps": 8000, "think_k": 10}
+   proto177_kmatch_s1b_4060             s=1    gpu=4060    max=8000   int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.0026, "last_bin_end": 8000, "complete": true, "entered": false}
+
+== nested/136  n=1  diff_vs_s185_rms_s1={"add_norm": "den", "sched_scale": 0.1667, "steps": 8000}
+   proto185_den_s1_3070                 s=1    gpu=3070    max=8000   int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.324, "last_bin_end": 8000, "complete": true, "entered": false}
+
+== nested/137  n=1  diff_vs_s185_rms_s1={"sched_scale": 0.1667, "steps": 8000}
+   proto185_rms_s1_4060                 s=1    gpu=4060    max=8000   int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.3263, "last_bin_end": 8000, "complete": true, "entered": false}
+
+== nested/138  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_nopass": true, "aux_reweight": true, "sched_scale": 0.1667, "steps": 8000}
+   proto187_nopass_s1_2070              s=1    gpu=2070    max=8000   int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.9677, "last_bin_end": 8000, "complete": true, "entered": false}
+
+== nested/139  n=3  diff_vs_s185_rms_s1={"add_norm": "", "arm": "textcot", "aux_fade": "36000,48000", "aux_step": 0.0, "mem_write": null, "think_k": 0, "write_mix_end": null, "write_mix_start": null}
+   s170_cot_s1                          s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 1000, "entry_0.1": 2000, "last_bin": 0.0, "last_bin_end": 48000, "complete": true, "entered": true}
+   s170_cot_s2                          s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 1000, "entry_0.1": 2000, "last_bin": 0.0, "last_bin_end": 48000, "complete": true, "entered": true}
+   s170_timing_cot                      s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": 1000, "entry_0.1": null, "last_bin": 0.375, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/140  n=3  diff_vs_s185_rms_s1={"add_norm": "", "arm": "direct", "aux_fade": "36000,48000", "aux_step": 0.0, "mem_write": null, "think_k": 0, "write_mix_end": null, "write_mix_start": null}
+   s170_direct_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.5667, "last_bin_end": 48000, "complete": true, "entered": false}
+   s170_direct_s2                       s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.4101, "last_bin_end": 48000, "complete": true, "entered": false}
+   s170_timing_direct                   s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4326, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/141  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0, "think_k": 0}
+   s170_k0_s1                           s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.5492, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/142  n=6  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0}
+   s170_k8_s1                           s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.4547, "last_bin_end": 48000, "complete": true, "entered": false}
+   s170_timeab_k8_fast                  s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.456, "last_bin_end": 1000, "complete": false, "entered": null}
+   s170_timeab_k8_loop                  s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4605, "last_bin_end": 1000, "complete": false, "entered": null}
+   s170_timing_k8                       s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4605, "last_bin_end": 1000, "complete": false, "entered": null}
+   s177_timing2_k8                      s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.456, "last_bin_end": 1000, "complete": false, "entered": null}
+   s177_timing_k8                       s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.456, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/143  n=3  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0, "think_k": 16}
+   s170_timeab_k16_fast                 s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4634, "last_bin_end": 1000, "complete": false, "entered": null}
+   s170_timeab_k16_loop                 s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4595, "last_bin_end": 1000, "complete": false, "entered": null}
+   s170_timing_k16                      s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4595, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/144  n=2  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000"}
+   s175_auxk8_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 0.5052, "last_bin_end": 48000, "complete": true, "entered": false}
+   s175_auxk8_s1_pathindep_2070         s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 0.5052, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/145  n=3  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0, "k_window": "0,2", "think_k": 10}
+   s177_kmatch_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.1265, "last_bin_end": 48000, "complete": true, "entered": false}
+   s177_timing2_kmatch                  s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4529, "last_bin_end": 1000, "complete": false, "entered": null}
+   s177_timing_kmatch                   s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.4555, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/146  n=2  diff_vs_s185_rms_s1={"add_norm": "", "arm": "direct", "aux_fade": "36000,48000", "aux_step": 0.0, "lr": 0.0005, "mem_write": null, "steps": 96000, "think_k": 0, "warmup": 1000, "write_mix_end": null, "write_mix_start": null}
+   s178_direct_s1                       s=1    gpu=3090    max=96000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.3082, "last_bin_end": 96000, "complete": true, "entered": false}
+   s178_timing_direct                   s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 6.1827, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/147  n=2  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0, "lr": 0.0005, "steps": 96000, "think_k": 0, "warmup": 1000}
+   s178_k0_s1                           s=1    gpu=3090    max=96000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 2.3043, "last_bin_end": 96000, "complete": true, "entered": false}
+   s178_timing_k0                       s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 6.183, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/148  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_fade": "36000,48000", "aux_step": 0.0, "lr": 0.0005, "steps": 96000, "warmup": 1000}
+   s178_timing_k8                       s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 6.1819, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/149  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_hold": true, "k_window": "1,4", "think_k": 12}
+   s182_hold_s1                         s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.06, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/150  n=1  diff_vs_s185_rms_s1={"add_norm": ""}
+   s182_nofade_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 0.5603, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/151  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_hold": true, "k_window": "1,4", "think_k": 12, "write_mix_end": 1, "write_mix_start": 0}
+   s182_timing_hold                     s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 5.9451, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/152  n=1  diff_vs_s185_rms_s1={"add_norm": "", "write_mix_end": 1, "write_mix_start": 0}
+   s182_timing_nofade                   s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 4.4011, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/153  n=1  diff_vs_s185_rms_s1={"add_norm": "", "k_window": "1,4", "think_k": 12, "write_mix_end": 1, "write_mix_start": 0}
+   s182_timing_window                   s=1    gpu=3090    max=200    int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 4.3872, "last_bin_end": 1000, "complete": false, "entered": null}
+
+== nested/154  n=2  diff_vs_s185_rms_s1={"add_norm": "", "k_window": "1,4", "think_k": 12}
+   s182_window_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 25000, "entry_0.1": null, "last_bin": 0.2389, "last_bin_end": 48000, "complete": true, "entered": true}
+   s182_window_s2                       s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 17000, "entry_0.1": 22000, "last_bin": 0.0007, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/155  n=2  diff_vs_s185_rms_s1={"add_norm": "", "aux_reweight": true}
+   s184_reweight_s1                     s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 42000, "entry_0.1": null, "last_bin": 0.1101, "last_bin_end": 48000, "complete": true, "entered": true}
+   s184_reweight_s2                     s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 20000, "entry_0.1": 27000, "last_bin": 0.003, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/156  n=1  diff_vs_s185_rms_s1={"add_norm": "den"}
+   s185_den_s1                          s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 0.6415, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/157  n=4  diff_vs_s185_rms_s1={}
+   s185_rms_s1                          s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 19000, "entry_0.1": 29000, "last_bin": 0.0057, "last_bin_end": 48000, "complete": true, "entered": true}
+   s185_rms_s2                          s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 19000, "entry_0.1": 28000, "last_bin": 0.0027, "last_bin_end": 48000, "complete": true, "entered": true}
+   s185_rms_s3                          s=3    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.0312, "last_bin_end": 48000, "complete": true, "entered": false}
+   s198_injc_s1                         s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 18000, "entry_0.1": 23000, "last_bin": 0.0006, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/158  n=2  diff_vs_s185_rms_s1={"add_norm": "", "aux_nopass": true, "aux_reweight": true}
+   s187_nopass_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 19000, "entry_0.1": 34000, "last_bin": 0.0136, "last_bin_end": 48000, "complete": true, "entered": true}
+   s187_nopass_s2                       s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 28000, "entry_0.1": 32000, "last_bin": 0.0046, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/159  n=1  diff_vs_s185_rms_s1={"add_norm": "", "aux_reweight": true, "k_window": "1,4", "think_k": 12}
+   s188_rwwin_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 0.9012, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/160  n=2  diff_vs_s185_rms_s1={"aux_nopass": true}
+   s190_rmsnopass_s1                    s=1    gpu=3090    max=48000  int=100  dup=2 res=1 | {"entry_0.5": 22000, "entry_0.1": 25000, "last_bin": 0.0018, "last_bin_end": 48000, "complete": true, "entered": true}
+   s190_rmsnopass_s2                    s=2    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 26000, "entry_0.1": null, "last_bin": 0.2281, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/161  n=1  diff_vs_s185_rms_s1={"k_window": "1,4", "think_k": 12}
+   s193_rmswin_s1                       s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 22000, "entry_0.1": 29000, "last_bin": 0.0047, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/162  n=1  diff_vs_s185_rms_s1={"gf_alpha": 0.98, "gf_lamb": 2.0, "grokfast": "ema"}
+   s196_rmsgf_s3                        s=3    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.3943, "last_bin_end": 48000, "complete": true, "entered": false}
+
+== nested/163  n=1  diff_vs_s185_rms_s1={"mem_layer": 9}
+   s198_memhi_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 24000, "entry_0.1": 48000, "last_bin": 0.0988, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/164  n=1  diff_vs_s185_rms_s1={"arm": "readslots", "n_slots": 8}
+   s198_rsaux_s1                        s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": 33000, "entry_0.1": null, "last_bin": 0.2086, "last_bin_end": 48000, "complete": true, "entered": true}
+
+== nested/165  n=1  diff_vs_s185_rms_s1={"csr": "0.1,-0.0513,-0.6931,0.05,500"}
+   s199_csr_s1                          s=1    gpu=3090    max=48000  int=100  dup=0 res=0 | {"entry_0.5": null, "entry_0.1": null, "last_bin": 1.3948, "last_bin_end": 48000, "complete": true, "entered": false}
+
+replays: Counter({('replay_x', '2070', 'none'): 60, ('replay130', '4060', 'bf16'): 40, ('replay_x', '3070', 'bf16'): 40, ('replay_x', '4060', 'bf16'): 40, ('replay130', '3070', 'bf16'): 17})
+replay130 flag recompute agreement: Counter({True: 57})
+duplicate candidates: 52
+voids: 45

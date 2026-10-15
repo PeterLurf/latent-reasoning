@@ -1,0 +1,46 @@
+{
+ "spec_hash": "d85ded6c65b1b975e190010ffd52fedf1caf160b169100138f0c6c20c7c11fc6",
+ "selftest": {
+  "planted": {
+   "C": 1.0,
+   "p": 0.0004997501249375312,
+   "verdict": "USEFUL (pre-stated direction)",
+   "excluded": [],
+   "lfa_present": true,
+   "dedupe_last_wins": true
+  },
+  "null_calibration": {
+   "draws": 40,
+   "mean_C": 0.4822916666666667,
+   "sd_C": 0.12332940355976511,
+   "reject_rate_alpha0.05": 0.025
+  },
+  "exact_binary": {
+   "C": 1.0,
+   "pairs": 2,
+   "p": 0.3333333333333333,
+   "exact": true,
+   "two_sided": false,
+   "n_arrangements": 3
+  },
+  "exact_ordinal": {
+   "C": 1.0,
+   "pairs": 6,
+   "p": 0.020833333333333332,
+   "exact": true,
+   "two_sided": false,
+   "n_arrangements": 48
+  },
+  "resume_gate": [
+   [
+    "res",
+    "resumed inside the window"
+   ]
+  ],
+  "window_gate": {
+   "loss": "window incomplete"
+  },
+  "PASS": true
+ },
+ "time": "2026-10-14 20:59:08"
+}
