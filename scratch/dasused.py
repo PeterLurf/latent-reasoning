@@ -282,6 +282,77 @@ def p0b(R_, TE, K, rows):
     return out
 
 
+# ---------------------------------------------------------------- P1 / P2: the DAS fit core (draft §3, §7; das167's Rot, adapted to nested170)
+class Rot(torch.nn.Module):
+    """R = QR(W).Q, an orthonormal (D, k) basis of a free (D, k) parameter (das167.Rot)."""
+    def __init__(self, D, k, dev, init=None, gen=None):
+        super().__init__()
+        self.W = torch.nn.Parameter(init.clone().to(dev) if init is not None else (torch.randn(D, k, generator=gen) / D ** 0.5).to(dev))
+
+    def R(self):
+        return torch.linalg.qr(self.W).Q
+
+
+def cont_logits(R_, items, Sp, t, K, ckpt=True):
+    """the patched state Sp (b, ...) after pass t -> passes t+1..K (frozen model, gradient to Sp) -> the decoder's 11 value logits at ' ='.
+    No @torch.no_grad anywhere on this path (gradient-flow rule)."""
+    from torch.utils.checkpoint import checkpoint
+    m = R_.m; x, msk = m.think_inputs(items, R_.dev); S = Sp
+    with R_.ac():
+        for _ in range(t + 1, K + 1):
+            S = checkpoint(m.write, S, x, msk, use_reentrant=False) if ckpt else m.write(S, x, msk)
+        return m.dec_logits(S, items, R_.dev)[:, N.NUM_IDS].float()
+
+
+def fit_step(R_, rot, items, Sr, Sd, ycf, t, K, micro=1, ckpt=True):
+    """one DAS step on a fit batch (gradient accumulation over `micro` chunks): CE(patched logits, y') -> loss (backward done)."""
+    tot = 0.0
+    for idx in np.array_split(np.arange(len(items)), micro):
+        R = rot.R(); X, Y = Sr[idx].flatten(1).float(), Sd[idx].flatten(1).float()
+        Sp = ((X - (X @ R) @ R.T) + (Y @ R) @ R.T).view_as(Sr[idx])
+        lg = cont_logits(R_, [items[i] for i in idx], Sp, t, K, ckpt)
+        loss = torch.nn.functional.cross_entropy(lg, torch.tensor(ycf[idx], device=R_.dev)) * (len(idx) / len(items)); loss.backward(); tot += float(loss)
+    return tot
+
+
+def p1(R_, TE, K, fit_bs=64, steps=50):
+    """draft §7 P1: G-MEM at this model's largest shape (t = 2, the longest n = 8 B rows, fit batch fit_bs, pass checkpointing) for fit_micro 1 / 2,
+    G-GRAD at the first step, and --time_steps (s/step at the passing micro). k = 64 (the largest registered rank)."""
+    m = R_.m
+    for p_ in m.parameters():
+        p_.requires_grad_(False)
+    rng = np.random.default_rng([20302, 2]); B = []
+    for it in TE:
+        if it["n"] == 8:
+            pr, _ = make_pair(it, 2, rng)
+            if pr is not None:
+                B.append((it, pr))
+        if len(B) >= fit_bs:
+            break
+    items = [b[0] for b in B]; don = [b[1][0] for b in B]; ycf = np.array([b[1][1] for b in B])
+    Sr, Sd = R_.states(items, 2)[0].detach(), R_.states(don, 2)[0].detach(); D = Sr[0].numel(); out = {"D": int(D), "k": 64, "fit_bs": fit_bs, "t": 2, "n": 8, "ckpt_passes": True}
+    for micro in (1, 2):
+        rot = Rot(D, 64, R_.dev, gen=torch.Generator().manual_seed(20381 + 64)); torch.cuda.reset_peak_memory_stats(R_.dev); torch.cuda.empty_cache()
+        try:
+            fit_step(R_, rot, items, Sr, Sd, ycf, 2, K, micro=micro); pk = torch.cuda.max_memory_allocated(R_.dev) / 2 ** 30
+        except torch.OutOfMemoryError:
+            pk = float("inf")
+        out["peak_gib_micro%d" % micro] = pk
+        if micro == 1 or "grad" not in out:
+            gn = float(rot.W.grad.norm()) if rot.W.grad is not None else 0.0
+            out["grad"] = {"R_grad_norm": gn, "model_params_frozen": all((not p_.requires_grad) and p_.grad is None for p_ in m.parameters()), "pass": gn > 0}
+        if pk <= 6.5:
+            out["fit_micro"] = micro; break
+        del rot; torch.cuda.empty_cache()
+    out["G_MEM"] = {"pass": "fit_micro" in out, "limit_gib": 6.5}
+    if "fit_micro" in out:
+        rot = Rot(D, 64, R_.dev, gen=torch.Generator().manual_seed(20381 + 64)); opt = torch.optim.Adam(rot.parameters(), lr=1e-3); torch.cuda.synchronize(); t0 = time.time()
+        for _ in range(steps):
+            opt.zero_grad(); fit_step(R_, rot, items, Sr, Sd, ycf, 2, K, micro=out["fit_micro"]); opt.step()
+        torch.cuda.synchronize(); out["s_per_step"] = (time.time() - t0) / steps; out["time_steps"] = steps
+    return out
+
+
 def shares(got, own, don, hyb, mask):
     n_ = int(mask.sum())
     if not n_:
@@ -311,7 +382,8 @@ def run_serial(R, rec, don, hyb_v, hyb_it, ts, K, tag, rows):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B"])
-    ap.add_argument("--bs", type=int, default=250); ap.add_argument("--memcheck", action="store_true"); a = ap.parse_args()
+    ap.add_argument("--bs", type=int, default=250); ap.add_argument("--memcheck", action="store_true"); ap.add_argument("--time_steps", type=int, default=0)
+    a = ap.parse_args()
     rd = os.path.join(ROOT, "boxes", "runs_fsq", a.run); kind, m, ra = H.load_model(rd, a.device); assert kind == "nested", kind
     DM.FAST_ADD = bool(ra.get("fast_add")); DM.CHUNK_DELTA = 0; DM.READ_CLAMP = None; K = int(ra["think_k"]); t0 = time.time(); R = Runner(m, a.device, a.bs)
     meta = {"card": torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu", "dtype": DTYPE if R.amp is not None else "fp32", "bs_eval": a.bs,
@@ -325,7 +397,9 @@ def main():
         print(a.run, "memcheck peak %.2f GiB (bs %d, K %d)" % (torch.cuda.max_memory_allocated(a.device) / 2 ** 30, a.bs, K), flush=True); return
     fp = os.path.join(rd, "eval_dasused.json"); res = json.load(open(fp)) if os.path.exists(fp) else {}
     res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}
-    if a.stage == "P0" and res.get("serial_cond", {}).get("done") and not res.get("p0b", {}).get("done"):   # P0a done: the P0 remainder (draft §7)
+    if a.stage == "P1":                                                     # draft §7 P1: G-MEM + G-GRAD + --time_steps
+        tb = time.time(); res["p1"] = {**p1(R, TE, K, steps=a.time_steps or 50), **meta, "sec": round(time.time() - tb), "done": True}; print(a.run, "P1", res["p1"], flush=True)
+    elif a.stage == "P0" and res.get("serial_cond", {}).get("done") and not res.get("p0b", {}).get("done"):   # P0a done: the P0 remainder (draft §7)
         tb = time.time(); res["p0b"] = {**p0b(R, TE, K, rows), **meta, "sec": round(time.time() - tb), "done": True}
     elif a.stage == "P0":
         rec, don, hyb_v, hyb_it = serial_items_h(SPOOL, np.random.default_rng(17200)); r0, d0, h0 = N.serial_items(SPOOL, np.random.default_rng(17200))
