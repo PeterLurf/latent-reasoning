@@ -27,6 +27,11 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 21:4x 10-14 (Experiments): §202 C+ LANDED 0.336 (997ff5bd, ~$0.37); W b292 ~8k/12k, lands ~22:55. §204 harness final (7f707887 +
+  ae289bcb: plan_ce, lotus_sep, --eval_out). DAS-USED pilot (scratch/dasused.py): P0a conditioned SERIAL on all 16 (12dd5cd4; note 203-4
+  CONTRAST-SURVIVES), P0b on the 4 pilots (5d3e7396). 3070 batch (logs/local_batch_2130.out): P1 x4 pilots, then scratch/maskswap.py (notes 203-5 /
+  203-6 CONSUMED-MASK + INPUT-SWAP) x15 (window s1 done) until ~23:30. Pending: P2 DAS fits (scope / timing question to Theory), --iit (IIT-SERIAL,
+  flag-gated nested170 edit after local jobs stop importing it; Audit gradflow review before the <= $0.25 G-TIME host). §200 D SKIPPED (user).
 * 20:3x 10-14 (Experiments): §202 W b292 (222.230.13.166:55189, 595.84, $0.243) ~4.4k/12k, lands ~22:40; C+ b293 (171.5.176.46:45132, 595.71.05,
   $0.208) ~10k/12k; guard done (pair $1.61). Each has a gen8 drain + gpu_watch (b291 / b292 / b293). The 18:00 W launch shipped no .extra
   (MODULE_MISSING bench.tasks) -> relaunched with EXTRA_120 (memory note). §203 SVR: G-pre PASS, G-use NOT-USED 9/9 (+ ALL-heads add-on 9/9) ->
