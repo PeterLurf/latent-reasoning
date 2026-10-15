@@ -198,6 +198,90 @@ class Runner:
         return np.concatenate(out) if out else np.zeros(0, dtype=int)
 
 
+def patch(Sr, Sd, R):
+    """the DAS patch on the flattened state: (S_r - R R^T S_r) + R R^T S_d. R None / (D, 0) -> S_r exactly; R == "I" -> (S_r - S_r) + S_d = S_d exactly."""
+    if isinstance(R, str) and R == "I":
+        return (Sr - Sr) + Sd
+    if R is None or R.shape[1] == 0:
+        return Sr - torch.zeros_like(Sr) + torch.zeros_like(Sr)
+    X, Y = Sr.flatten(1).float(), Sd.flatten(1).float(); Rf = R.float()
+    return ((X - (X @ Rf) @ Rf.T) + (Y @ Rf) @ Rf.T).view_as(Sr).to(Sr.dtype)
+
+
+@torch.no_grad()
+def patched_answers(R_, rec, don, t, K, Rm):
+    """per chunk: S_t of the recipients and the donors, patched with Rm, K passes total (override after pass t) -> answers."""
+    out = []
+    for i in range(0, len(rec), R_.bs):
+        cr, cd = rec[i:i + R_.bs], don[i:i + R_.bs]; Sr, Sd = R_.states(cr, t)[0], R_.states(cd, t)[0]
+        out.append(R_.answers(cr, K, override=(t, [patch(Sr, Sd, Rm)])))
+    return np.concatenate(out) if out else np.zeros(0, dtype=int)
+
+
+def share4(got, y, yc, yd, mask):
+    n_ = int(mask.sum())
+    if not n_:
+        return {"n": 0}
+    g = got[mask]
+    return {"n": n_, "ycf": float((g == yc[mask]).mean()), "ydonor": float((g == yd[mask]).mean()), "yown": float((g == y[mask]).mean()),
+            "other": float(((g != yc[mask]) & (g != yd[mask]) & (g != y[mask])).mean())}
+
+
+def p0b(R_, TE, K, rows):
+    """draft §7 P0 (rest): B sets at points t = 1, 2, 3 (every TE item n in [t+1, 8], one matched donor each, rng [20302, t]; same-value control
+    donors rng [20302, t, 1]); gates CF / HYB / distinct / IDENT / WHOLE / CAP; clean answers of x / x_d / x_hyb -> ccc; the whole-state matched swap
+    at each point; liveness (point-2 donors, whole-state swap at tau = 1..4)."""
+    out = {"points": {}, "gates": {}}; Kt = K
+    sm = R_.answers(TE[:4], K); out["gates"]["SMOKE_plain"] = bool(len(sm) == 4)
+    for t in (1, 2, 3):
+        rng, rng_s = np.random.default_rng([20302, t]), np.random.default_rng([20302, t, 1]); B, cnt = [], {}
+        for it in TE:
+            if not (t + 1 <= it["n"] <= 8):
+                continue
+            pr, why = make_pair(it, t, rng); cnt[why] = cnt.get(why, 0) + 1
+            if pr is None:
+                continue
+            ps, why_s = make_pair(it, t, rng_s, same=True)
+            B.append((it, pr, ps))
+        rec = [b[0] for b in B]; don = [b[1][0] for b in B]; hyb = [b[1][2] for b in B]; info = [b[1][3] for b in B]
+        y = np.array([N.value(it["root"]) for it in rec]); yc = np.array([b[1][1] for b in B]); yd = np.array([d["t"] for d in don]); nn = np.array([it["n"] for it in rec])
+        g_cf = all(forced(it["root"], inf["path"], inf["vt"]) == yy for it, inf, yy in zip(rec, info, y))
+        g_hyb = all(N.eval_tokens(h["syms"]) == c and h["t"] == c for h, c in zip(hyb, yc)); g_dist = bool(((y != yc) & (y != yd) & (yc != yd)).all())
+        c_x, c_d, c_h = R_.answers(rec, Kt), R_.answers(don, Kt), R_.answers(hyb, Kt); ccc = (c_x == y) & (c_d == yd) & (c_h == yc)
+        whole = patched_answers(R_, rec, don, t, Kt, "I"); blk = {"n_pairs": len(B), "drops": cnt, "n_same_ctrl": int(sum(b[2] is not None for b in B))}
+        if t == 2:                                                          # G-IDENT / G-WHOLE on every B recipient at the primary point
+            plain = c_x; ident = patched_answers(R_, rec, don, t, Kt, torch.zeros(1, 0)); sd_whole = []
+            for i in range(0, len(rec), R_.bs):
+                sd_whole.append(R_.answers(rec[i:i + R_.bs], Kt, override=(t, R_.states(don[i:i + R_.bs], t))))
+            sd_whole = np.concatenate(sd_whole)
+            out["gates"]["IDENT"] = {"equal": int((ident == plain).sum()), "n": len(rec), "pass": bool((ident == plain).all())}
+            out["gates"]["WHOLE"] = {"equal": int((whole == sd_whole).sum()), "n": len(rec), "pass": bool((whole == sd_whole).all())}
+            live = {}
+            for tau in range(1, 5):
+                if tau < Kt:
+                    gl = patched_answers(R_, rec, don, tau, Kt, "I")
+                    live[str(tau)] = {"all": share4(gl, y, yc, yd, np.ones(len(rec), bool)), "ccc": share4(gl, y, yc, yd, ccc),
+                                      "by_n": {str(n_): share4(gl, y, yc, yd, ccc & (nn == n_)) for n_ in sorted(set(nn.tolist()))}}
+            blk["liveness"] = live
+        ns = sorted(set(nn.tolist())); nccc = {str(n_): int((ccc & (nn == n_)).sum()) for n_ in ns}
+        blk.update({"gates": {"CF": bool(g_cf), "HYB": bool(g_hyb), "DISTINCT": g_dist},
+                    "clean_acc_by_n": {str(n_): {"x": float((c_x == y)[nn == n_].mean()), "x_d": float((c_d == yd)[nn == n_].mean()), "x_hyb": float((c_h == yc)[nn == n_].mean()),
+                                                 "n": int((nn == n_).sum())} for n_ in ns},
+                    "n_ccc_by_n": nccc, "eligible_strata": [n_ for n_, c_ in nccc.items() if c_ >= 100], "n_ccc": int(ccc.sum()),
+                    "b0_by_n": {str(n_): float((c_x == yc)[nn == n_].mean()) for n_ in ns},
+                    "whole_state": {**share4(whole, y, yc, yd, ccc), "n_ccc": int(ccc.sum()), "all": share4(whole, y, yc, yd, np.ones(len(rec), bool)),
+                                    "by_n": {str(n_): share4(whole, y, yc, yd, ccc & (nn == n_)) for n_ in ns}}})
+        out["points"][str(t)] = blk
+        rows["B_t%d" % t] = np.stack([np.arange(len(rec)), nn, y, yc, yd, c_x, c_d, c_h, whole, ccc.astype(int)], 1)
+        rows["B_t%d_hash" % t] = np.array([int(hashlib.sha1(" ".join(map(str, it["syms"])).encode()).hexdigest()[:12], 16) for it in rec], dtype=np.int64)
+        print("P0b t", t, "pairs", len(B), "drops", cnt, "gates", blk["gates"], "n_ccc", blk["n_ccc"], "whole", {k_: blk["whole_state"][k_] for k_ in ("ycf", "ydonor", "yown", "n")}, flush=True)
+    out["gates"]["CAP"] = "ccc counts and eligible strata written before any IIA (P0)"; out["gates"]["DISJ"] = "pending P2 (A is built there); B recipients are TE items"
+    out["row_cols"] = ["pair", "n", "y", "y_cf", "y_d", "clean_x", "clean_xd", "clean_xhyb", "whole_swap", "ccc"]
+    out["def"] = ("draft §2.3-2.5 / §7 P0: matched donor = node t re-expanded at v_t^d != v_t by Alg. 1 + the late leaf resampled; y, y', y_d distinct; hybrid = x with "
+                  "node t's subtree from x_d; ccc = x, x_d, x_hyb solved clean (K' = K); whole_state = S_t swapped whole (R = I) -> shares of y' / y_d / y on ccc pairs")
+    return out
+
+
 def shares(got, own, don, hyb, mask):
     n_ = int(mask.sum())
     if not n_:
@@ -241,7 +325,9 @@ def main():
         print(a.run, "memcheck peak %.2f GiB (bs %d, K %d)" % (torch.cuda.max_memory_allocated(a.device) / 2 ** 30, a.bs, K), flush=True); return
     fp = os.path.join(rd, "eval_dasused.json"); res = json.load(open(fp)) if os.path.exists(fp) else {}
     res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}
-    if a.stage == "P0":
+    if a.stage == "P0" and res.get("serial_cond", {}).get("done") and not res.get("p0b", {}).get("done"):   # P0a done: the P0 remainder (draft §7)
+        tb = time.time(); res["p0b"] = {**p0b(R, TE, K, rows), **meta, "sec": round(time.time() - tb), "done": True}
+    elif a.stage == "P0":
         rec, don, hyb_v, hyb_it = serial_items_h(SPOOL, np.random.default_rng(17200)); r0, d0, h0 = N.serial_items(SPOOL, np.random.default_rng(17200))
         gate_si = len(r0) == len(rec) and all(x is y for x, y in zip(r0, rec)) and [d["syms"] for d in d0] == [d["syms"] for d in don] and list(h0) == list(hyb_v)
         ts_i = [(t, [True] * len(rec)) for t in (1, 2, 4, 6) if t < K]
