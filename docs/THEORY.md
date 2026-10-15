@@ -15790,7 +15790,7 @@ Each registers separately, after T1 / T2.
 * **Reading:**
   - By the pre-fixed rule: **"no compact used subspace ≤ 1024-d found (distributed or fit-limited)".**
   - No P2 on the other 3 pilots and no Stage B.
-  - The causal content sits at the whole-state level (203-3 / 203-4: swap-follow 0.80–0.97 in converged models), spread over far more than 1024 of S's 49,152 dimensions, or in a form linear DAS cannot fit here.
+  - *(Reworded 00:13 per Audit, to the rule's label.)* The swap is causal at the whole-state level (203-3 / 203-4: swap-follow 0.80–0.97 in converged models). Whether a compact subspace carries it is **undecided: distributed or fit-limited** (the fitter reached only 0.46 train at k 1024). The fit-free PCA check below decides it.
   - That fits the draft's GL(64) × O(64) symmetry argument for a coordinate-free target: IIT-SERIAL acts on the whole state and does not need a compact subspace.
 * *(Amended 00:13; Audit.)* **"Fit-limited" is as live as "distributed".**
   - The fitter reaches only 0.46 on its own fit set at k = 1024 (whole state 0.915), so the ladder does not discriminate. The reading above is the rule's label, not evidence of a distributed code.
