@@ -15998,6 +15998,9 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - This is the pass-token leak D5 / D5b predicted for F-P. Its closing arm (F-NR, NOPASS + RMS) ran only on the W base, so on this branch it is untested. A new decision.
 * **Spend:** about $2.56 of the $3.90 cap.
 * *(Added 09:17; Audit's independent reproduction.)* **Weighting caveat:** aux_suite logs no R-stratum counts (n_*_by_grounding). So the R-step t2 / t3 pooling (0.126 / 0.140) weights the passes by their all-grounding counts (470 : 352), per note 204-6's fallback. Equal weights give 0.118 / 0.130. The VALUE-LEAK / VALUE-EXACT ratio is about 0.90 either way, ≥ 0.7, so **P-F3 FALSIFIED is robust**. A later reading that needs exact R weights requires aux_suite to log n_*_by_grounding.
+* *(Added 09:28; eval-only add-ons 1c4b8215.)* **PROBE-LEAK** (plan = mean(op-sig, ptr1) probes, M_1 / M_t, Aug-valid R-steps, n 195 / 123 / 50 at t 2 / 3 / 4): F-P 0.944 / 0.962 / 1.19 and A 0.923 / 1.113 / 0.95, so ≥ 0.8 in both cells. **P-F2 holds in full** (PLAN-PARALLEL).
+  - Caveat: ptr1 probes sit near their M_0 floor (e.g. F-P t2: 0.103 / 0.108 / 0.031), so the ratio is driven by the op probe (0.585 / 0.621 / 0.272). Ratios above 1 come from small denominators. Several λ picks hit the 1e-4 grid edge (the spec is frozen, so it is not changed).
+  - **CLOCK** (descriptive; the registered CLOCK-REBUILT applies only to F-NR, not run): pair accuracy 1v2 / 2v3 / 3v4 on the model's own read is F-P 0.865 / 0.76 / 0.70 vs A 0.91 / 0.87 / 0.72.
 
 ## 205. IIT-SERIAL: a whole-state interchange loss for seed stability (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; FULL / default design; cap $18; pre-registered 2026-10-15 01:49 EDT, before any §205 training run)
 
