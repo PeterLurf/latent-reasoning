@@ -126,5 +126,120 @@
  },
  "use_label": "NOT-USED",
  "sec": 245,
- "def": "SVR G-use (THEORY_SEEDSTAB2 draft rev 3 \u00a74.3, V_probe): see scratch/svr_guse.py's docstring"
+ "def": "SVR G-use (THEORY_SEEDSTAB2 draft rev 3 \u00a74.3, V_probe): see scratch/svr_guse.py's docstring",
+ "all_heads": {
+  "label": "DESCRIPTIVE post-hoc add-on (Theory 2026-10-14, after s185_rms_s1's delta-only ABL-NULL); registered rule unchanged",
+  "K": 8,
+  "K_ablation": 8,
+  "bs": 250,
+  "card": "NVIDIA GeForce RTX 4060",
+  "dtype": "torch.bfloat16",
+  "add_norm": "rms",
+  "v_probe_all": {
+   "rank": 10,
+   "acc_test_pooled": 0.8140717716869172,
+   "acc_test_ablated": 0.09805029669398135,
+   "chance": 0.09090909090909091,
+   "gate_G_abl": true,
+   "n_fit": 15950,
+   "n_test": 3539,
+   "dims": 768
+  },
+  "sigma_all": {
+   "n_sites": 77634,
+   "E_V": 0.5279157325539967,
+   "E_total": 1041.314050780746,
+   "E_rank": [
+    15.295187906566635,
+    15.270091620465353,
+    17.222448719779074,
+    16.980093039705494,
+    14.701642861722465
+   ],
+   "E_energy": [
+    105.27667128491953,
+    109.60302382914476,
+    124.78710830892688,
+    130.81754914976815,
+    140.526069212769
+   ],
+   "E_V_add_slice": 0.27402807130690787,
+   "V_mass_in_add_slice": 0.9799655128365705
+  },
+  "gate_IDENT": {
+   "equal_items": 2400,
+   "n": 2400,
+   "pass": true
+  },
+  "ablation_all": {
+   "base_acc": 1.0,
+   "drop_V": 0.0,
+   "drop_rank": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "drop_energy": [
+    0.17833333333333334,
+    0.012916666666666667,
+    0.05708333333333333,
+    0.06,
+    0.13541666666666666
+   ],
+   "Delta_E": -0.08875000000000001,
+   "Delta_E_ci95": [
+    -0.09641875,
+    -0.08158333333333334
+   ],
+   "Delta_rank": 0.0,
+   "Delta_rank_ci95": [
+    0.0,
+    0.0
+   ],
+   "drop_V_above_all_10": false,
+   "drop_V_by_n": {
+    "3": 0.0,
+    "4": 0.0,
+    "5": 0.0,
+    "6": 0.0,
+    "7": 0.0,
+    "8": 0.0
+   },
+   "reading": "ABL-NULL"
+  },
+  "swap_all_edit": "approx (direction-only, RMS)",
+  "swap_all": {
+   "edit": "approx (direction-only, RMS)",
+   "n_items": 2252,
+   "n_undefined_cf": 48,
+   "edit_success_rate": 0.9116341030195382,
+   "edit_success_rate_sameval": 0.8969804618117229,
+   "n_edited": 2053,
+   "F": 0.0,
+   "F_null": 0.0,
+   "F_minus_null": 0.0,
+   "F_minus_null_ci95": [
+    0.0,
+    0.0
+   ],
+   "F_edited": 0.0,
+   "F_null_edited": 0.0,
+   "F_minus_null_edited": 0.0,
+   "F_minus_null_edited_ci95": [
+    0.0,
+    0.0
+   ],
+   "own_acc_noswap": 1.0,
+   "own_acc_sameswap": 1.0,
+   "own_acc_diffswap": 1.0,
+   "fidelity_cos_median": 0.9999302625656128,
+   "fidelity_norm_ratio_median": 0.9903486967086792,
+   "max_abs_read_minus_target": 0.09460437297821045,
+   "disruption": 0.0,
+   "reading": "IGNORES"
+  },
+  "sec": 200
+ }
 }

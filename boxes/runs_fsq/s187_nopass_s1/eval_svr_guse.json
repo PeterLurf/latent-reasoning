@@ -126,5 +126,120 @@
  },
  "use_label": "NOT-USED",
  "sec": 198,
- "def": "SVR G-use (THEORY_SEEDSTAB2 draft rev 3 \u00a74.3, V_probe): see scratch/svr_guse.py's docstring"
+ "def": "SVR G-use (THEORY_SEEDSTAB2 draft rev 3 \u00a74.3, V_probe): see scratch/svr_guse.py's docstring",
+ "all_heads": {
+  "label": "DESCRIPTIVE post-hoc add-on (Theory 2026-10-14, after s185_rms_s1's delta-only ABL-NULL); registered rule unchanged",
+  "K": 8,
+  "K_ablation": 8,
+  "bs": 250,
+  "card": "NVIDIA GeForce RTX 4060",
+  "dtype": "torch.bfloat16",
+  "add_norm": null,
+  "v_probe_all": {
+   "rank": 10,
+   "acc_test_pooled": 0.5764340209098615,
+   "acc_test_ablated": 0.08703023452952811,
+   "chance": 0.09090909090909091,
+   "gate_G_abl": true,
+   "n_fit": 15950,
+   "n_test": 3539,
+   "dims": 768
+  },
+  "sigma_all": {
+   "n_sites": 77634,
+   "E_V": 1.0195474837353435,
+   "E_total": 1234.0730782752394,
+   "E_rank": [
+    16.69370202767637,
+    17.11748535800356,
+    12.325766837251988,
+    15.114294107577761,
+    17.930701675260092
+   ],
+   "E_energy": [
+    137.62074538540827,
+    138.19377763894994,
+    140.4716735715189,
+    140.5282611890642,
+    156.66939277177605
+   ],
+   "E_V_add_slice": 0.9484324127795368,
+   "V_mass_in_add_slice": 0.987301065507532
+  },
+  "gate_IDENT": {
+   "equal_items": 2400,
+   "n": 2400,
+   "pass": true
+  },
+  "ablation_all": {
+   "base_acc": 0.9979166666666667,
+   "drop_V": 0.0,
+   "drop_rank": [
+    0.0,
+    0.0,
+    -0.0004166666666666667,
+    0.0,
+    -0.0004166666666666667
+   ],
+   "drop_energy": [
+    0.02,
+    0.0033333333333333335,
+    0.007083333333333333,
+    0.0025,
+    0.0075
+   ],
+   "Delta_E": -0.008083333333333335,
+   "Delta_E_ci95": [
+    -0.010750000000000001,
+    -0.0055
+   ],
+   "Delta_rank": 0.00016666666666666666,
+   "Delta_rank_ci95": [
+    -0.00025000000000000006,
+    0.0007499999999999999
+   ],
+   "drop_V_above_all_10": false,
+   "drop_V_by_n": {
+    "3": 0.0,
+    "4": 0.0,
+    "5": 0.0,
+    "6": 0.0,
+    "7": 0.0,
+    "8": 0.0
+   },
+   "reading": "ABL-NULL"
+  },
+  "swap_all_edit": "exact",
+  "swap_all": {
+   "edit": "exact",
+   "n_items": 2252,
+   "n_undefined_cf": 48,
+   "edit_success_rate": 0.7109236234458259,
+   "edit_success_rate_sameval": 0.7126998223801065,
+   "n_edited": 1601,
+   "F": 0.0,
+   "F_null": 0.0,
+   "F_minus_null": 0.0,
+   "F_minus_null_ci95": [
+    0.0,
+    0.0
+   ],
+   "F_edited": 0.0,
+   "F_null_edited": 0.0,
+   "F_minus_null_edited": 0.0,
+   "F_minus_null_edited_ci95": [
+    0.0,
+    0.0
+   ],
+   "own_acc_noswap": 0.9982238010657194,
+   "own_acc_sameswap": 0.9982238010657194,
+   "own_acc_diffswap": 0.9982238010657194,
+   "fidelity_cos_median": 0.9999889731407166,
+   "fidelity_norm_ratio_median": 1.0000181198120117,
+   "max_abs_read_minus_target": 0.0625,
+   "disruption": 0.0,
+   "reading": "IGNORES"
+  },
+  "sec": 226
+ }
 }
