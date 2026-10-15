@@ -296,6 +296,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | registered | pending (harness + gates) |
+| 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | registered | pending (port + gates) |
 
 ## Live sections
 
@@ -16297,6 +16298,60 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * a running guard at $3.20.
 
 **Cost:** $2.0 central / $3.0 high (passes 2–10 skip the question, so it is cheaper per item than A). Approved cap $3.20. Realised $ replaces the projection.
+
+## 209. CODI-AT-OUR-BUDGET: is GSM8K's latent shortfall architecture or budget? (USER APPROVED 2026-10-15 ~11:37 EDT, "approve reccomendation", typed in Audit's session and relayed verbatim; one cell; cap $4; pre-registered 2026-10-15 11:39 EDT, before any §209 code or run)
+
+**Question:**
+* All in-house GSM8K latent arms sit at about 0.14–0.15 after about 4 epochs of GSM8K-Aug (A 0.147, B 0.160, W 0.146, F-P 0.139, J0 0.144, J1 0.138). Text CoT C sits at 0.321 at the same budget.
+* Published latent methods reach 0.42–0.44, but at 20–40 epochs (note 202-2).
+* Our eval port scores the released CODI checkpoint (zen-E/CODI-gpt2) at 42.5 vs 43.7 published (docs/GSM8K_REPRO.md), so the evaluation is not the gap.
+* **Is the remaining gap our DeltaMem architecture, or the budget?**
+
+**Design (one change against the published method: the budget):**
+* **Cell `gsm_codi_4ep_s1`:** CODI's GPT-2 small design trained in our pipeline on our data (GSM8K-Aug, 385k; the same test and eval as §200), at **4.0 epochs** (≈ 1.54M examples, as §200's 24k × 64).
+* **Architecture:**
+  - 6 continuous latents generated autoregressively, the last-layer state fed back through CODI's projection (MLP + LN);
+  - LoRA r 128 / α 32 at lr 3e-3;
+  - joint teacher CE plus the per-layer teacher-std-normalised L1 at the token before the answer (the ":" of "The answer is:"), with sg on the teacher;
+  - the teacher's CoT drops its last step;
+  - γ (teacher-CE weight) = 2: CODI's best at its shortest reported budget (Table A5; Literature bc8be322). All other weights are CODI's GPT-2 values.
+* RTX 3090, seed 1, final checkpoint; the test is never used for selection.
+* **Evaluation:** CODI's own test recipe through our existing port (theory/codi_probe.py: question + `<bot>`, 6 latents, `<eot>`, greedy, the answer after "The answer is:") on the 1,319 test items.
+
+**Why 4 epochs is informative (DERIVED, assumptions stated):**
+* At 4 epochs our text CoT C reaches 0.321, about 0.75 of the long-budget GPT-2 CoT-SFT level (0.427–0.441).
+* CODI's own anchors are 0.384 at 20 epochs and 0.437 at 40 (γ 1), with γ 2 faster but lower at the end (0.416 / 0.419).
+* **A1 (assumption):** if the latent method's budget curve is no slower than text's, CODI at 4 epochs ≈ 0.75 × 0.42 ≈ 0.31. If it is much slower (the latents needing many epochs to become useful), CODI at 4 epochs falls toward our latent level.
+* The 4-epoch point therefore separates "a latent method works at this budget and ours doesn't" (architecture-bound) from "latent methods need more budget" (budget-bound). Both readings name a different next spend (§209's step 2, a separate decision).
+
+**Decision rule** (on the in-house equal-budget scale; r = (CODI4 − A) / (C − A), with A 0.147 and C 0.321, gap 0.174):
+* **ARCHITECTURE-BOUND:** CODI4 ≥ 0.251 (r ≥ 0.6). A published latent design closes most of the latent / text gap at our budget, so our DeltaMem design is the GSM8K bottleneck.
+* **BUDGET-BOUND:** CODI4 ≤ 0.175 (≤ A + T, T = 0.028). CODI is no better than ours at this budget, so budget is the lever.
+* **MIXED:** otherwise.
+* Beside it: CODI4 − C (vs text), the valid curve (is it still rising at 4 epochs?), and CODI4's K-latent ablation (0 vs 6 latents), descriptive.
+
+**OC block (rule a; one seed):**
+* The test SE is about 0.012. The seed SD on GSM8K is unknown; take 0.01–0.02, so a combined SD of about 0.016–0.023.
+* P(ARCH-BOUND | true CODI4 0.20) ≈ 0.001–0.013; P(ARCH-BOUND | true 0.30) ≈ 0.983–0.999.
+* P(BUDGET-BOUND | true 0.15) ≈ 0.86–0.94; P(BUDGET-BOUND | true 0.22) ≈ 0.003–0.025 (normal approximation, computed).
+* **Misreads need a true value within about 1 SD of a boundary.** That zone is reported as such.
+
+**Censoring (rule b):**
+* A run that dies before 4 epochs gives NO reading (UNREAD, not a default label). Logs are kept; a re-run happens only under a new name and with approval.
+* A valid curve missing a record is reported as missing.
+
+**Gates (before launch):**
+* (G1) The eval port scores the released zen-E/CODI-gpt2 at 42.5, bitwise to §13's probe on the same card / bs.
+* (G2) Per-term gradflow: the student CE, the teacher CE and the L1 each reach LoRA; sg holds on the teacher states.
+* (G3) LoRA's trainable-parameter count and target modules match CODI's released config.
+* (G4) A smoke at about 200 steps: the loss falls and the latents are generated autoregressively.
+* (G5) mem_check.
+* (G6) G-TIME (replaces the cost projection).
+* Audit's diff review; a running guard at $4.
+
+**Cost:** CODI GPT-2 at 40 epochs ≈ 36 A100-h, so about 3.6 A100-h for 4 epochs, ≈ 6–8 h on a 3090, ≈ $1.6–2.2 at $0.25–0.28 / h, plus hosts. **Cap $4.** Realised $ replaces the projection.
+
+**Next (not registered here):** budget scaling (~20 epochs) of whichever design wins, as a separate decision with its own cost.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
