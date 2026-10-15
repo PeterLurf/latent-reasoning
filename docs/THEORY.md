@@ -16016,6 +16016,15 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 
 **Cost:** measured 1.464 s/step after turn-on, about 18.8 h per seed. That is about $14 typical for 3 seeds and **≤ $18 (slow-host bound; the approved cap)**, with a running guard at $18. Realised $ replaces the projection.
 
+**Note 205-1 (2026-10-15 01:51 EDT; before any §205 output; the scorer's definitions, no rule change).** theory/score_s205.py, fixture-checked on eight synthetic panels: supported, the account falsifier, HARMFUL, a run dying at 30k (censored, so HARMFUL), not landed, a missing eval, unpaired plus ONE-PASS-COMPUTE, not MET.
+* **"Landed"** = eval.json present. Not-landed seeds are pending, never censored.
+* **Censoring applies to landed seeds:** a log ending before 48k, or no entry, reads NOT ENTERED.
+* **The post-landing eval-only pass** (local, $0) writes `<run>/eval_iit.json` = {"iit_eval": {"tau1" | "tau2" | "tau3": {"hybrid_ccc", "own", "n_ccc"}}, "siit_eval": {"keep_ccc", "n_ccc"}, "g2_pass1_deep_probe"}.
+  - The protocol is the conditioned SERIAL / clean-ccc protocol of notes 203-2a / 203-4 (n 3–8 test items; recipient, donor and hybrid all solved clean), with the training loss's own pairing at τ = 1, and τ = 2 / 3 untrained.
+  - g2 is §203's pass-1 deep probe (h ≥ 4 values from S_1).
+* **g1** = the mean over n 3–8 of eval.json s170.acc_by_n_kprime["1"].
+* **PAIRED** = log records 100–2000 equal on loss / answer_ce / aux_ce, compared with the s185 control's log.
+
 ## 206. JOINT-COT-L1: CODI's joint CoT CE and L1 coupling on the warm-started latent arm (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; the PAIR J0 + J1; cap $6; pre-registered 2026-10-15 01:49 EDT, before any §206 code or run)
 
 **Registered text:**
