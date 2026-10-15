@@ -138,9 +138,31 @@ def consmask(P, TE, K):
     full = [consumed_mask(info[i][1], len(info[i][1])) for i in range(len(its))]        # all reductions -> the whole expression; use pass K's union
     dec_cons = lambda i: [FILL if cons[i][min(K, len(cons[i])) - 1][j] else w for j, w in enumerate(toks[i])] if K >= 2 else toks[i]  # noqa: E731
     a_cons = P.run(mask_cons, lambda i: toks[i], len(its), K); a_unc = P.run(mask_unc, lambda i: toks[i], len(its), K); a_ans = P.run(mask_cons, dec_cons, len(its), K)
+    # note 203-5b (POST-HOC, descriptive): the same masks with the think loop stopped at K' = n (the root span is never masked), on items clean at K' = n
+    its_all = [it for it in TE if 3 <= it["n"] <= 8]; its_all = [its_all[i] for i in np.random.default_rng(20381).permutation(len(its_all))]; kn = {"M-CONS-KN": {}, "M-UNCONS-KN": {}}
+    for n_ in range(3, 9):
+        grp = [it for it in its_all if it["n"] == n_]; yg = np.array([N.value(it["root"]) for it in grp]); cg = P.R_.answers(grp, n_); kg = np.where(cg == yg)[0]
+        sub = [grp[i] for i in kg]; ys = yg[kg]; tk = [N.ids(it["syms"]) for it in sub]; inf = [red_spans(it["root"]) for it in sub]
+        cs = [[consumed_mask(sp, t - 1) for t in range(1, n_ + 1)] for _, sp, _ in inf]; rg = np.random.default_rng([20391, n_]); uo = []
+        for syms, spans, owner in inf:
+            pr = rg.permutation(len(syms)); uo.append(sorted(range(len(syms)), key=lambda i: (-owner[i], int(np.where(pr == i)[0][0]))))
+        mc = lambda i, t: tk[i] if t < 2 or not cs[i][t - 1].any() else [FILL if cs[i][t - 1][j] else w for j, w in enumerate(tk[i])]  # noqa: E731
+
+        def mu(i, t):
+            if t < 2 or not cs[i][t - 1].any():
+                return tk[i]
+            mk = cs[i][t - 1]; c = int(mk.sum()); av = [j for j in uo[i] if not mk[j]]; pk = set(av[:c]); return [FILL if j in pk else w for j, w in enumerate(tk[i])]
+        for arm, fn in (("M-CONS-KN", mc), ("M-UNCONS-KN", mu)):
+            got = P.run(fn, lambda i: tk[i], len(sub), n_) if sub else np.zeros(0, int)
+            kn[arm][str(n_)] = {"acc": float((got == ys).mean()) if len(sub) else None, "n": len(sub), "clean_acc_kn": float(len(kg) / len(grp)),
+                                "masked_tokens_mean_by_pass": {str(t): float(np.mean([cs[i][t - 1].sum() if t >= 2 else 0 for i in range(len(sub))])) if sub else None for t in range(1, n_ + 1)}}
+    for arm in kn:
+        tot = sum(v["n"] for v in kn[arm].values()); kn[arm] = {"acc": (sum(v["acc"] * v["n"] for v in kn[arm].values() if v["n"]) / tot) if tot else None, "n": tot, "by_n": kn[arm],
+                                                             "def": "note 203-5b POST-HOC: think loop stops at K' = n; items clean at K' = n; descriptive"}
     out = {"n_clean_items": len(its), "clean_acc_pool": float(len(keep) / len(clean)), "M-CONS": acc_block(a_cons == y, nn), "M-UNCONS": acc_block(a_unc == y, nn),
-           "M-CONS-ANS": acc_block(a_ans == y, nn), "uncons_shortfall_tokens": int(short[0]), "gates": {"PLAIN": gate_plain, "FILLER": {"token": int(FILL), "text": " ?", "single": True, "outside_vocab": True}},
+           "M-CONS-ANS": acc_block(a_ans == y, nn), **kn, "uncons_shortfall_tokens": int(short[0]), "gates": {"PLAIN": gate_plain, "FILLER": {"token": int(FILL), "text": " ?", "single": True, "outside_vocab": True}},
            "masked_tokens_mean_by_pass": {str(t): float(np.mean([cons[i][min(t, len(cons[i])) - 1].sum() if t >= 2 else 0 for i in range(len(its))])) for t in range(1, K + 1)},
+           "masked_tokens_note": "M-CONS / M-UNCONS / M-CONS-ANS mask the same count per pass (M-UNCONS short by uncons_shortfall_tokens in total); M-CONS-ANS also masks the decoder with pass K's think mask; the KN arms log their own per pass",
            "readable": len(its) >= 100, "items": "test n 3-8, rng 20381 permutation, clean-correct at K' = K"}
     del final, full
     return out
@@ -230,7 +252,7 @@ def main():
     if a.stage in ("consmask", "both"):
         t0 = time.time(); g = gate_spans(); r = consmask(P, TE, K); r["gates"]["SPAN"] = g
         json.dump({**r, **meta, "sec": round(time.time() - t0), "def": "THEORY note 203-5 / 203-5a; see scratch/maskswap.py"}, open(os.path.join(rd, "eval_consmask.json"), "w", newline="\n"), indent=1)
-        print(a.run, "CONSMASK", {k_: r[k_]["acc"] for k_ in ("M-CONS", "M-UNCONS", "M-CONS-ANS")}, "n", r["n_clean_items"], "gates", r["gates"]["PLAIN"]["pass"], g["pass"], flush=True)
+        print(a.run, "CONSMASK", {k_: r[k_]["acc"] for k_ in ("M-CONS", "M-UNCONS", "M-CONS-ANS", "M-CONS-KN", "M-UNCONS-KN")}, "n", r["n_clean_items"], "gates", r["gates"]["PLAIN"]["pass"], g["pass"], flush=True)
     if a.stage in ("inputswap", "both"):
         t0 = time.time(); g = gate_mirror(); r = inputswap(P, TE, K); r["gate_MIRROR"] = g
         json.dump({**r, **meta, "sec": round(time.time() - t0), "def": "THEORY note 203-6 / 203-6a; see scratch/maskswap.py"}, open(os.path.join(rd, "eval_inputswap.json"), "w", newline="\n"), indent=1)
