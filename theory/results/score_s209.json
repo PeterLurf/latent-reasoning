@@ -1,0 +1,14 @@
+{
+ "acc": 0.18877937831690675,
+ "A": 0.1470811220621683,
+ "C": 0.3214556482183472,
+ "r": 0.23913043478260873,
+ "label": "MIXED",
+ "codi_minus_text": -0.13267626990144046,
+ "valid_rising_at_end": false,
+ "k_latent_ablation": {
+  "6": 0.18877937831690675,
+  "0": 0.3252463987869598
+ },
+ "reading": "MIXED (CODI4 0.189; r 0.24 on the A 0.147 -> C 0.321 scale; vs text -0.133; valid still rising False)"
+}

@@ -296,7 +296,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
-| 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | registered | pending (port + gates) |
+| 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
 
 ## Live sections
 
@@ -16409,6 +16409,23 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **The training set uses CODI's filters** (≤ 1000 tokens, numeric answer), not §200's filter_bad.
   - Both |train| sizes go in args.json at launch, along with the examples seen at 4.0 epochs of the CODI-filtered set.
   - The §209 result states the absolute exposure beside A / C's about 1.54M examples. If the two exposures differ by more than 5%%, the difference is stated, and the decision rule reads as registered on the CODI-filtered 4.0 epochs.
+
+**§209 result (2026-10-15 19:48 EDT; gsm_codi_4ep_s1, b302, RTX 3090, 11,965 steps at an effective bs of 128, epochs 4.0002, realised about $1.51 of $4; theory/score_s209.py → theory/results/score_s209.json). MIXED: CODI's design at our budget beats our latent arm, but closes only about a quarter of the latent / text gap.**
+* **CODI4 = 0.189** (6 latents, n 1,319) vs A 0.147 and C 0.321, so **r = 0.24**. CODI4 − A = +0.042 (> T); CODI4 − C = −0.133.
+* **OC zone (registered):** 0.189 is 0.014 above the BUDGET-BOUND bar (0.175), i.e. 0.6–0.9 combined SD. It sits in the stated misread zone on that side. It is 0.062 (2.7–3.9 SD) below the ARCHITECTURE-BOUND bar, so **ARCHITECTURE-BOUND is excluded; BUDGET-BOUND is not excluded at one seed.**
+* **Exposure (note 209-2):** 1,531,520 examples (4.0 × the CODI-filtered |train| 382,859; 1,761 dropped by the answer filter) vs A / C's 1,536,000. That is 0.29% fewer, inside 5%.
+* **Valid curve:** 0.044 / 0.074 / 0.078 / 0.140 / 0.150 / 0.144 / 0.176 / 0.176 at 1.5k-step intervals. It is flat over the last 1.5k steps, but the cosine schedule ends at lr ≈ 0, so the flat end does not show that the curve has saturated.
+* **K-latent ablation (descriptive), checked on decoded texts** (eval_latent_texts.json, Experiments, $0):
+  - 0 latents score **0.325**: 86.7% of the outputs contain "<<…>>" steps, with a mean of 22.5 tokens. The 0-latent arm is the **same weights decoding explicit CoT** (the γ 2 teacher CE trains it), not a memory-free control.
+  - 6 latents: 0% "<<", 6.2 tokens, "The answer is: N" directly.
+  - So **one set of weights does text CoT at C's level (0.325 vs 0.321) and latent reasoning at 0.189.**
+* **By depth (descriptive):** m ≤ 2 0.313 (n 422), m ≥ 3 0.132 (n 879). The latent route holds up on short chains and falls off on long ones.
+* **Prediction:** A1's no-slower-than-text case (≈ 0.31) missed. CODI's latents gain less per epoch than text at this budget.
+* **Reading:**
+  - Part of our shortfall is architecture: a published latent design at the same exposure is +0.042 above A and ≥ 0.029 above every in-house arm (0.138–0.160).
+  - Most of the gap is not architecture. Even CODI leaves 76% of the latent / text gap at 4 epochs, while its own weights carry text-level CoT.
+  - So at this budget the latent route under-uses computation the model already has. That points to budget (CODI's 0.38–0.44 come at 20–40 epochs) and to how the latents are trained, not to missing knowledge.
+  - Step 2 (budget scaling) stays a separate user decision.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
