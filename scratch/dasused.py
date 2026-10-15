@@ -404,7 +404,7 @@ def iia_eval(R_, items, Sr, Sd, ycf, t, K, Rm, mode="patch", So=None):
 SM = {"steps": 2000, "every": 100, "n_fit": 4000, "n_val": 500, "n_supp": 6000, "n_B": None}     # --smoke shrinks these (functional test only)
 
 
-def fit_rot(R_, K, t, fit, val, k, lr, init=None, steps=None, bs=64, micro=1, every=None, patience=3, Vs=None):
+def fit_rot(R_, K, t, fit, val, k, lr, init=None, steps=None, bs=64, micro=1, every=None, patience=3, Vs=None, eval_init=False, trace=None):
     """Adam on R (or on W' with R = orth(Vs W') for the on-support refit); early stop on validation IIA; returns (R (D, k) detached, steps, val_best)."""
     steps = steps or SM["steps"]; every = every or SM["every"]; torch.manual_seed(20381 + k); rng = np.random.default_rng(20391 + k); its, Sr, Sd, y = fit; D = Sr[0].size
     if Vs is None:
@@ -412,6 +412,12 @@ def fit_rot(R_, K, t, fit, val, k, lr, init=None, steps=None, bs=64, micro=1, ev
     else:
         rot = Rot(Vs.shape[1], k, R_.dev, init=init); getR = lambda: torch.linalg.qr(Vs @ rot.W).Q  # noqa: E731
     opt = torch.optim.Adam(rot.parameters(), lr=lr); best, bestR, bad, st = -1.0, None, 0, 0
+    if eval_init:                                                           # note 203-9b: step-0 validation; the init competes for "best"
+        with torch.no_grad():
+            Rd = getR().detach()
+        best = float((iia_eval(R_, val[0], val[1], val[2], val[3], t, K, Rd) == val[3]).mean()); bestR = Rd.clone()
+        if trace is not None:
+            trace.append((0, best))
     for st in range(1, steps + 1):
         b = rng.integers(0, len(its), bs); opt.zero_grad()
         for idx in np.array_split(b, micro):
@@ -423,6 +429,8 @@ def fit_rot(R_, K, t, fit, val, k, lr, init=None, steps=None, bs=64, micro=1, ev
             with torch.no_grad():
                 Rd = getR().detach()
             v = float((iia_eval(R_, val[0], val[1], val[2], val[3], t, K, Rd) == val[3]).mean())
+            if trace is not None:
+                trace.append((st, v))
             if v > best + 1e-4:
                 best, bestR, bad = v, Rd.clone(), 0
             else:
@@ -677,6 +685,50 @@ def pca_swap(R_, TE, K, ra, ks=(1024, 4096, 16384), n_diff=20000):
     return out
 
 
+def refit_pca(R_, TE, K, ra, k=1024, lr=1e-4, n_pool=20000):
+    """note 203-9b (optional, descriptive): DAS refit at t = 2 from the top-k PCA basis of the separate 20k pool (pca_swap's construction, rng 20501),
+    lr 1e-4, cap 2,000 steps, validation at step 0 and every 100 steps (trace kept), best INCLUDING the init. B IIA_ccc of the init and of the best."""
+    t = 2; excl = {tuple(it["syms"]) for it in TE if it["n"] >= int(ra.get("excl_min_n", 1))}; r_sp = np.random.default_rng(17300)
+    for _ in range(int(ra.get("serial_pool") or 2200)):
+        r__, _t = N.generate(r_sp, 8); excl.add(tuple(N.render(r__)))
+    TE_syms = {tuple(it["syms"]) for it in TE}
+    for p_ in R_.m.parameters():
+        p_.requires_grad_(False)
+    rng = np.random.default_rng([20302, t]); B = []
+    for it in TE:
+        if t + 1 <= it["n"] <= 8:
+            pr, _ = make_pair(it, t, rng)
+            if pr is not None:
+                B.append((it, pr))
+    rec = [b[0] for b in B]; don = [b[1][0] for b in B]; hyb = [b[1][2] for b in B]; ycf = np.array([b[1][1] for b in B]); y = np.array([N.value(it["root"]) for it in rec])
+    yd = np.array([d["t"] for d in don]); nn = np.array([it["n"] for it in rec])
+    ccc = (R_.answers(rec, K) == y) & (R_.answers(don, K) == yd) & (R_.answers(hyb, K) == ycf); ix = np.where(ccc)[0]
+    nc = {n_: int((nn[ix] == n_).sum()) for n_ in sorted(set(nn.tolist()))}; strata = [n_ for n_, c_ in nc.items() if c_ >= 100]; ix = np.array([i for i in ix if nn[i] in strata], dtype=int)
+    Bi = [rec[i] for i in ix]; BSr, BSd = collect(R_, Bi, t), collect(R_, [don[i] for i in ix], t); Bycf = ycf[ix]
+    rp = np.random.default_rng(20501); pool = []
+    while len(pool) < n_pool:
+        for it in N.train_items(rp, 1000, 8, excl | TE_syms):
+            if t + 1 <= it["n"] <= 8:
+                pr, _ = make_pair(it, t, rp)
+                if pr is not None:
+                    pool.append((it, pr[0]))
+    pool = pool[:n_pool]; Dn = BSr[0].size
+    Dt = torch.from_numpy(np.concatenate([collect(R_, [a[1] for a in pool[i:i + 2000]], t).reshape(-1, Dn) - collect(R_, [a[0] for a in pool[i:i + 2000]], t).reshape(-1, Dn)
+                                          for i in range(0, len(pool), 2000)]).astype(np.float32))
+    G = (Dt @ Dt.T).double(); lam, V = torch.linalg.eigh(G); order = torch.argsort(lam, descending=True)[:k]; U = (Dt.T @ (V[:, order].float() / lam[order].sqrt().float())).contiguous()
+    del Dt, G
+    A_fit, A_val, raw = build_A(R_, TE_syms, excl, t, K)
+    pack = lambda L: ([a[0] for a in L], collect(R_, [a[0] for a in L], t), collect(R_, [a[1] for a in L], t), np.array([a[2] for a in L]))  # noqa: E731
+    fit, val = pack(A_fit), pack(A_val); Ug = U.to(R_.dev)
+    p_init = iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, torch.linalg.qr(Ug).Q); trace = []
+    Rb, st, vb = fit_rot(R_, K, t, fit, val, k, lr, init=Ug, steps=2000, eval_init=True, trace=trace)
+    pb = iia_eval(R_, Bi, BSr, BSd, Bycf, t, K, Rb); trn = iia_eval(R_, fit[0][:1000], fit[1][:1000], fit[2][:1000], fit[3][:1000], t, K, Rb)
+    return {"t": t, "k": k, "lr": lr, "n_ccc": int(len(ix)), "B_iia_ccc_init": float((p_init == Bycf).mean()), "B_iia_ccc_best": float((pb == Bycf).mean()),
+            "val_trace": trace, "val_best": vb, "steps": st, "iia_train_best": float((trn == fit[3][:1000]).mean()),
+            "best_is_init": bool(len(trace) > 0 and vb == trace[0][1] and all(v_ <= trace[0][1] + 1e-4 for _, v_ in trace[1:])),
+            "def": "note 203-9b optional refit: init = top-k exact PCA of the separate 20k pool (rng 20501); lr 1e-4; validation at step 0 + every 100; best incl. init"}
+
+
 def shares(got, own, don, hyb, mask):
     n_ = int(mask.sum())
     if not n_:
@@ -705,7 +757,7 @@ def run_serial(R, rec, don, hyb_v, hyb_it, ts, K, tag, rows):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B", "ladder", "pcaswap"])
+    ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("--device", default="cuda:1"); ap.add_argument("--stage", default="P0", choices=["P0", "P1", "P2", "B", "ladder", "pcaswap", "refit"])
     ap.add_argument("--bs", type=int, default=250); ap.add_argument("--memcheck", action="store_true"); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--lr_select", action="store_true", help="P2: choose the lr on this model's validation pairs (rms s1 only)"); ap.add_argument("--fit_micro", type=int, default=1)
     ap.add_argument("--smoke", action="store_true", help="P2 functional smoke (tiny sizes; written to p2_smoke, never read)")
@@ -723,7 +775,10 @@ def main():
         print(a.run, "memcheck peak %.2f GiB (bs %d, K %d)" % (torch.cuda.max_memory_allocated(a.device) / 2 ** 30, a.bs, K), flush=True); return
     fp = os.path.join(rd, "eval_dasused.json"); res = json.load(open(fp)) if os.path.exists(fp) else {}
     res.update({"run": a.run, "K": K, "add_norm": ra.get("add_norm") or None, "meta": meta}); rows = {}; touched = set()
-    if a.stage == "pcaswap":                                                # note 203-9 amendment: forward-only PCA swap
+    if a.stage == "refit":                                                  # note 203-9b optional refit
+        tb = time.time(); res["refit_pca1024"] = {**refit_pca(R, TE, K, ra), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("refit_pca1024")
+        print(a.run, "REFIT", {k_: res["refit_pca1024"][k_] for k_ in ("B_iia_ccc_init", "B_iia_ccc_best", "val_best", "steps", "best_is_init")}, flush=True)
+    elif a.stage == "pcaswap":                                                # note 203-9 amendment: forward-only PCA swap
         tb = time.time(); res["pca_swap"] = {**pca_swap(R, TE, K, ra), **meta, "sec": round(time.time() - tb), "done": True}; touched.add("pca_swap")
         print(a.run, "PCASWAP", {k_: v_["ycf_iia_ccc"] for k_, v_ in res["pca_swap"]["k"].items()}, res["pca_swap"]["reading"], flush=True)
     elif a.stage == "ladder":                                                 # Theory 2026-10-14 23:3x: rms s1 k-ladder (descriptive pilot)
