@@ -16086,6 +16086,14 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - **W's deep fields** come from `gsm_lat_warm_s1/eval_s206ref.json` (W re-evaluated on J's eval card and bs: acc, acc_by_kprime, acc_by_m_kprime, n_by_m). PROTECT / TOTAL use W's landed acc.
   - **A cell whose log ends before 12k:** every reading is a failure.
 
+**Note 206-2: §206 interim, J1 landed (2026-10-15 08:26 EDT; J1 gsm_lat_jcotl1_s1 05b0c763, RTX 3090 595.91.07, 12k, realised about $1.63; theory/score_s206.py on the real fields; J0 still training). COUPLE, the method reading, waits for J0. Descriptive and per-cell only.**
+* **J1 acc 0.138: TOTAL NEUTRAL** (J1 − W −0.008; J1 − A −0.009). R1-J below (C+ 0.336).
+* **COT-RETAIN fails narrowly:** cot_valid 0.270 at 2k, then 0.312 / 0.324 / 0.344 / 0.348 / 0.344 (W fell to 0.07). P-J1a is FALSIFIED by the letter. The trunk's CoT is largely retained, unlike W's.
+* **KD-ROUTE share_mem 0.073 < 0.10, onset "> 12k":** P-J1g FALSIFIED. The coupling loss is reduced mostly NOT through the memory, i.e. it never entered the memory (G1's branch).
+* **The direct path weakened, not strengthened:** K′0 0.071 (W 0.111), so the K0-GUARD holds. Pooled K′1 / K′10 = 0.64 (W 0.88). **DEEP-MULTIPASS +0.035** (deep K′10 − K′1, just ≥ T_D 0.034; W 0.005).
+* **KD-GEN 0.98** (P-J1i holds). **T2 top-1 0.534** (C 0.024; P-J1j holds). Recall share holds.
+* **Interim reading:** with the joint CE and coupling, the latent arm is less one-pass-dominated and keeps its CoT trunk, but does not gain accuracy at 12k. The coupling's memory route is small. Whether J1 − J0 is NEUTRAL or HURTS decides the coupling's reading.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
