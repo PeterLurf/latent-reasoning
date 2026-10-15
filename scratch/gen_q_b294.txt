@@ -1,0 +1,4 @@
+# IIT-SERIAL G-TIME (docs/THEORY_IITSERIAL_DRAFT_2026-10-14.md §7; --iit 27d05cef + 62343096, Audit-approved, <= $0.25, destroy after the fetch): the s185 RMS recipe exactly + --iit 1.0,0.5,16 at micro 1 (G-MEM: peak_gib_since_start in the log), --sched_scale 0.01 so gamma ramps 20 -> 60 and the timing covers gamma = 0 AND gamma = 1 records; --time_steps 200, log_every 10 (s/step per record from the sec field). No training spend beyond 200 steps.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/iit_gtime_s1 boxes.nested170 --arm inject --think_k 8 --aux_step 1.0 --aux_fade 48000,48000 --fast_add --seed 1 --steps 48000 --kprimes 0,1,4,8,12,16,24,32 --path_indep --add_norm rms --ckpt_every 1000 --micro 1 --iit 1.0,0.5,16 --sched_scale 0.01 --time_steps 200 --log_every 10
