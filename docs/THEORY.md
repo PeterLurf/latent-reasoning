@@ -15792,6 +15792,14 @@ Each registers separately, after T1 / T2.
   - No P2 on the other 3 pilots and no Stage B.
   - The causal content sits at the whole-state level (203-3 / 203-4: swap-follow 0.80–0.97 in converged models), spread over far more than 1024 of S's 49,152 dimensions, or in a form linear DAS cannot fit here.
   - That fits the draft's GL(64) × O(64) symmetry argument for a coordinate-free target: IIT-SERIAL acts on the whole state and does not need a compact subspace.
+* *(Amended 00:13; Audit.)* **"Fit-limited" is as live as "distributed".**
+  - The fitter reaches only 0.46 on its own fit set at k = 1024 (whole state 0.915), so the ladder does not discriminate. The reading above is the rule's label, not evidence of a distributed code.
+  - A full-width, identity-initialised DAS would not help: R = I IS the whole-state swap (the WHOLE gate, bitwise).
+  - **The discriminating $0 check, fit-free (descriptive, pre-stated now):** swap only the top-k principal components of S_d − S_r (PCA on the fit pairs) at k ∈ {1024, 4096, 16384} on the same B pairs, with no optimisation.
+    - ≥ 0.8 at some k ≤ 4096 reads **COMPACT-FIT-LIMITED** (the fitter, not the code, was the bottleneck).
+    - < 0.5 at 16384 reads **DISTRIBUTED** (Csordás 2408.10920's onion / magnitude codes are the frame).
+    - Otherwise INTERMEDIATE.
+  - It changes nothing for IIT-SERIAL, which is coordinate-free.
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
