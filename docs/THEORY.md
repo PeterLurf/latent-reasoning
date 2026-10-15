@@ -15660,6 +15660,19 @@ Each registers separately, after T1 / T2.
   - **y_mir takes the donor's late leaf by construction:** it is the donor's own tree with only the nodes reduced at passes ≤ k replaced by the recipient's values, so every unreduced leaf, including the late bare leaf the decoder reads, is the donor's.
   - **Floor, reported beside it on the same pairs:** each model's K′ = 0 accuracy on x_d (decoder only, no think passes), the decoder-only recomputation floor for INPUT-FOLLOW.
 
+**Note 203-5b (2026-10-14 21:34 EDT; AFTER window s1's descriptive output, so everything added here is POST-HOC; the registered 203-5 rule is unchanged).**
+* **A flaw in 203-5's M-CONS, found by Experiments.**
+  - Read literally, the rule masks every span reduced at passes ≤ t − 1, and that includes the ROOT's span once t − 1 ≥ n. So at passes n + 1..K the whole expression is filler (window s1: K 12, items n ≤ 8).
+  - That confounds the test with post-completion behaviour (C6, the overthinking channel) and with an all-filler input.
+  - Theory's rule did not exclude the root. This is a design error, not an implementation one.
+* **Registered M-CONS / M-UNCONS / M-CONS-ANS are run and READ AS REGISTERED on all 16 models**, with the artefact stated beside every reading.
+* **Added descriptive arm M-CONS-KN (POST-HOC, defined after window s1's output):**
+  - the M-CONS masking with the think loop stopped at K′ = n (completion), so the root span is never masked and no post-completion pass runs;
+  - compared with clean accuracy at K′ = n on the model's own items clean at K′ = n;
+  - **M-UNCONS-KN** is the same with M-UNCONS's control spans.
+  - Read with 203-5's thresholds as **descriptive only.** TOLERANCE-SEPARATES on it carries no registered weight. It would need a fresh pre-registration on new models to count.
+* **P0b liveness (descriptive, 5d3e7396):** with v₂-differing donors swapped after pass τ, the converged models follow only from τ = 2 (ycf 0.06 at τ 1 → 0.78–0.92 at τ 2). So v₂ enters the state at pass 2, one reduction per pass. The failed models are ≤ 0.03 at every τ.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
