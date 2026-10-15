@@ -15597,6 +15597,33 @@ Each registers separately, after T1 / T2.
   - It supports a whole-state interchange loss (docs/THEORY_IITSERIAL_DRAFT_2026-10-14.md) as a target aimed at the actual difference.
   - The direction is not tested: final models only, so state use may be a consequence of entry. Only the intervention tests the cause.
 
+**Note 203-5 (2026-10-14 21:14 EDT; pre-stated before any output; descriptive, $0 eval-only; Audit's lead after 203-4). CONSUMED-MASK: do failed seeds need the re-read input at later passes because they recompute from it?**
+* **Why:**
+  - 203-4: failed seeds ignore a carried state and return their own answer, which fits think passes that re-converge to an input-determined state (Part I's contraction class). Converged seeds carry and use the state.
+  - So hiding the input tokens whose content was already reduced at earlier passes should cost the converged class little and the failed class a lot.
+  - The literature framing (input re-injection in looped models: 2609.01924, SCSE 2607.27656, OrthoInj 2610.06833; IDs pending Literature) is a conjecture for transfer. None of them tests reasoning or seed stability.
+* **Manipulation (think passes only, t ≥ 2; the answer decoder's [EOT, expr, " ="] stays clean in the primary arm):**
+  - Reductions follow the generator's own order (reductions(root), the aux targets' schedule).
+  - At think pass t, every token in the original-expression span of each subtree reduced at passes 1..t−1 is replaced by one fixed filler token. That token is " ?", or another single GPT-2 token outside VOCAB, chosen and asserted single-token before the run. Length and positions are unchanged.
+  - Passes run to the model's own K.
+* **Arms:**
+  - **M-CONS (primary):** consumed spans masked as above.
+  - **M-UNCONS (specificity control):** the same number of tokens masked at each pass, drawn from spans NOT yet consumed by pass t−1 (the latest-reduced subtrees first; rng 20391).
+  - **M-CONS-ANS (descriptive):** M-CONS plus the same masking on the answer decoder's input.
+* **Items:** test items with n 3–8 (≤ 1,000 per n, rng 20381) that the model answers correctly clean at K′ = K. The readable minimum is 100 clean items per model. Reported overall and by n.
+* **Readings** (retained = accuracy under the arm, on the model's own clean items):
+  - **TOLERANCE-SEPARATES:** min over converged retained(M-CONS) − max over failed retained(M-CONS) ≥ 0.25, with ≥ 5 failed readable.
+  - **NO-SEPARATION:** the gap is ≤ 0.10. Otherwise AMBIGUOUS.
+  - **Audit's predictions:** converged drop ≤ 0.15, failed drop ≥ 0.40.
+  - **Specificity (descriptive):** converged retained(M-CONS) − retained(M-UNCONS) ≥ 0.20, i.e. they need the unconsumed text but not the consumed text.
+  - **Pre-stated risk:** a converged drop under M-CONS together with a large M-UNCONS drop would mean masking disrupts memory addressing (writes keyed on those positions), not recomputation. It is reported as MASK-DISRUPTS.
+* **Gates:**
+  - the filler token is single and outside VOCAB;
+  - no masking at t = 1 gives answers bitwise equal to the clean eval at the same bs / card;
+  - the consumed spans for each item are checked against e_t on 10k generator items (the span replaced by its value reproduces e_t).
+  - One card (3070), bf16, the original eval bs; card / dtype / bs recorded.
+* **Consequence:** only TOLERANCE-SEPARATES motivates a SOURCE-DAMPED training variant. That would be its own derivation and the user's call, presented beside IIT-SERIAL, not instead of it.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
