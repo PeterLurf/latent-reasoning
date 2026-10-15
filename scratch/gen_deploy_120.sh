@@ -22,7 +22,7 @@ auto_ship() {   # Audit 2026-10-07 10:49 (s138 shipped without scratch/restart13
   done; echo $a | xargs -n 1 | sort -u | xargs; }
 one() { o=$1; n=$2; np_=$(wc -l < scratch/pods.txt)
   out=$(EXTRA_FILES="${SHIP_GPT2:+prosqa/ckpt/gpt2_pretrained.bin} boxes/gen97.py boxes/mk108.py boxes/fsq120.py $(python scratch/auto_ship.py scratch/gen_q_b$n.txt) ${EXTRA_120:-}" bash scratch/vdeploy_toy.sh $o gen-b$n scratch/gen_q_b$n.txt gen_b$n scratch/gen_vast_job.sh 2>&1)
-  echo "$(date +%T) gen host b$n offer $o: $(echo "$out" | grep -E 'INSTANCE|NVIDIA|STARTED|BAD HOST|FAILED' | tr '\n' ' ')" >> logs/gen_deploy.log
+  echo "$(date +%T) gen host b$n offer $o: $(echo "$out" | grep -E 'INSTANCE|NVIDIA|STARTED|BAD HOST|FAILED|STUCK' | tr '\n' ' ')" >> logs/gen_deploy.log
   echo "$out" | grep -qE 'INSTANCE|FAILED|BAD HOST|STARTED' || echo "$(date +%T) DEPLOY_SILENT_FAIL offer $o: $(echo "$out" | tail -n 3 | tr '\n' ' ')" >> logs/gen_deploy.log   # Audit: a silent vdeploy exit is logged, never blank
   if echo "$out" | grep -q STARTED; then read -r _ id hh pp <<<"$(echo "$out" | grep '^INSTANCE')"
     nohup bash scratch/auto_drain_gen8.sh "$hh $pp gen_b$n $id gen" > logs/auto_drain_gen_b$n.out 2>&1 &
