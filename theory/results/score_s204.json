@@ -1,0 +1,9 @@
+{
+ "branch": "A base",
+ "cells": {
+  "F-P": "gsm_lat_factor_s1",
+  "comparator": "gsm_lat_aug_s1",
+  "F-NR": null
+ },
+ "reading": "pending (F-P or comparator eval-only not landed)"
+}

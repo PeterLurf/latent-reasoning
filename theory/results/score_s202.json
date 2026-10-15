@@ -1,0 +1,28 @@
+{
+ "W_acc": 0.1463229719484458,
+ "loop_formed": true,
+ "think_necessary": false,
+ "kprime": {
+  "0": 0.11144806671721001,
+  "1": 0.1288855193328279,
+  "2": 0.13040181956027294,
+  "4": 0.13115996967399546,
+  "6": 0.13570887035633056,
+  "8": 0.1379833206974981,
+  "10": 0.1463229719484458,
+  "12": 0.14783927217589082,
+  "16": 0.14025777103866566
+ },
+ "W_LIFT": "NEUTRAL",
+ "lift": -0.0007581501137225166,
+ "R1_W": "below",
+ "recall_share": 0.34069911504424777,
+ "predictions": {
+  "P-WL": "FALSIFIED",
+  "P-W3": "FALSIFIED",
+  "P-W1": "holds",
+  "P-W2": "FALSIFIED",
+  "P-W6": "holds"
+ },
+ "reading": "W 0.146; LOOP-FORMED True (K'10 0.146 - K'0 0.111); THINK-NECESSARY False (K'1 0.129) | W-LIFT NEUTRAL (W - A -0.001; exposure differs: W 24k text + 12k latent, A 24k latent) | R1-W below (W - C+ -0.190; C+ 0.336; C+ - C +0.014)"
+}
