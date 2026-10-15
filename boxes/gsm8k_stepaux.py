@@ -477,8 +477,9 @@ def main():
                             "items": {"test_extras": "test, rng 16802 permutation[:extras_n] (n %d)" % len(ex), "aug_valid": "Aug valid, all (n %d)" % len(Dva)},
                             "arm": a.aux_target, "nopass": bool(a.aux_nopass), "tmax": 8,
                             "def": "§204 §8.4: per source (Mt / M1 (pass-token arms) / M0 / COUNTER-SWAP cs_*), by pass t <= min(m, 8, K): value_exact (value / factor arms; "
-                                   "greedy value after the aux prompt), op_acc / ptr1_acc / ptr2_acc (factor heads), or the string arm's value_in_string / op_in_string / "
-                                   "ptr1_in_string from its greedy ' <<lhs=rhs>>'; *_by_grounding = R / Q / unparsed (gsm8k_data.parse_recomputable)"}
+                                   "greedy value after the aux prompt, decoded and compared with the gold RHS as a STRING (note 204-3); value_exact_tokid = token-id "
+                                   "equality), op_acc / ptr1_acc / ptr2_acc (factor heads), or the string arm's value_in_string / op_in_string / ptr1_in_string from its "
+                                   "greedy ' <<lhs=rhs>>'; ptr*_nocollide = items whose candidate set has no first-BPE-token collision; *_by_grounding = R / Q / unparsed"}
         _partial("aux_suite")
     if a.symbolic_dir:                                                      # eval-only: GSM-Symbolic (fetched at eval time; never committed)
         sy = {}

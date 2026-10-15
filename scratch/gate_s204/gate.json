@@ -1,0 +1,176 @@
+{
+ "g1": {
+  "states_equal": true,
+  "aux_logits_equal": true,
+  "aux_greedy_equal": true,
+  "state_dict_keys_equal": true,
+  "runs": "scratch/_tmp/s204ref pre vs post: identical (781f678d)",
+  "pass": true
+ },
+ "g8": {
+  "no_flag_has_add_gain": false,
+  "rms_has_add_gain": true,
+  "pass": true
+ },
+ "g2": {
+  "pass_tokens_in_prompts": [],
+  "prompt": [
+   50256,
+   5012,
+   1058
+  ],
+  "aux_logits_ran": [
+   6,
+   8,
+   50257
+  ],
+  "pass": true
+ },
+ "g3": {
+  "n_items": 10000,
+  "n_steps": 25895,
+  "value_coverage": 0.9976829503765205,
+  "value_label_mismatch": 0,
+  "ptr1_coverage": 0.550530990538714,
+  "ptr2_coverage": 0.5499517281328442,
+  "pointer_label_mismatch": 0,
+  "op_OTHER_rate": 0.01386368024715196,
+  "candidate_collision_rate": 0.020202020202020204,
+  "n_candidate_sets": 14256,
+  "pass": true
+ },
+ "g4": {
+  "grad_norms": {
+   "val": {
+    "mem": 5720.139420850048,
+    "w_op": 0.0,
+    "w_p1": 0.0,
+    "w_p2": 0.0,
+    "trunk": 152.79727337149458
+   },
+   "op": {
+    "mem": 2047.301245135032,
+    "w_op": 145.47415194270147,
+    "w_p1": 0.0,
+    "w_p2": 0.0,
+    "trunk": 46.62464387260578
+   },
+   "ptr1": {
+    "mem": 20463.694608388254,
+    "w_op": 0.0,
+    "w_p1": 1158.0603706036309,
+    "w_p2": 0.0,
+    "trunk": 412.6687328190238
+   },
+   "ptr2": {
+    "mem": 17215.810564318035,
+    "w_op": 0.0,
+    "w_p1": 0.0,
+    "w_p2": 921.9741022127936,
+    "trunk": 362.08327687557977
+   },
+   "ans": {
+    "mem": 2956.3613844317374,
+    "w_op": 0.0,
+    "w_p1": 0.0,
+    "w_p2": 0.0,
+    "trunk": 61.14223210861099
+   }
+  },
+  "pass": true
+ },
+ "g10": {
+  "grad_norms": {
+   "val": {
+    "mem": 16.093042546535607,
+    "w_op": 0.0,
+    "w_p1": 0.0,
+    "w_p2": 0.0,
+    "trunk": 241.5800929371586,
+    "add_gain": 0.036699797958135605
+   },
+   "op": {
+    "mem": 28.55591155489343,
+    "w_op": 612.9437169679568,
+    "w_p1": 0.0,
+    "w_p2": 0.0,
+    "trunk": 143.57995645111959,
+    "add_gain": 0.03983418270945549
+   },
+   "ptr1": {
+    "mem": 39.29564326521436,
+    "w_op": 0.0,
+    "w_p1": 3664.68153503327,
+    "w_p2": 0.0,
+    "trunk": 182.382880565625,
+    "add_gain": 0.09720613807439804
+   },
+   "ptr2": {
+    "mem": 27.975616360684327,
+    "w_op": 0.0,
+    "w_p1": 0.0,
+    "w_p2": 2114.9228719765283,
+    "trunk": 123.55122968435332,
+    "add_gain": 0.06381302326917648
+   },
+   "ans": {
+    "mem": 13.09611338188019,
+    "w_op": 0.0,
+    "w_p1": 0.0,
+    "w_p2": 0.0,
+    "trunk": 129.62259264069016,
+    "add_gain": 0.03528933972120285
+   }
+  },
+  "pass": true
+ },
+ "g5": {
+  "answers_equal": true,
+  "n": 16,
+  "pass": true
+ },
+ "g9": {
+  "rms": {
+   "code_fp32_add_read_rel_spread": 3.365961163126485e-07,
+   "At_vs_tA1_rel": 3.250766043018037e-06,
+   "delta_read_rel_spread": 0.5162808895111084,
+   "fp64_analytic_rel_spread": 4.73772089698685e-13
+  },
+  "none": {
+   "code_fp32_add_read_rel_spread": 3.000000476837158,
+   "At_vs_tA1_rel": 3.250766043018037e-06,
+   "delta_read_rel_spread": 0.5162808895111084,
+   "fp64_raw_scales_as_t_rel_err": 1.199878766568078e-15,
+   "code_fp32_raw_vs_t_rel": 8.589067306274956e-07
+  },
+  "note": "deltamem casts every memory computation to fp32 (ln(x.float()), S.float()), so the code path cannot run in fp64; the fp64 line is the analytic check on the code's own A_1 (t * A_1 through add_read's rms formula in double)",
+  "pass": true
+ },
+ "pass_all": true,
+ "op_vocab_sha256": "454cddc9a9a9d6f6739b32b502760dd56b2c05ef206a575f48d22a6cd72bac0c",
+ "g1_gpu": {
+  "card": "RTX 3070 bf16",
+  "pre": "091f4e12 gsm8k_stepaux (temp copy)",
+  "post": "final",
+  "stepaux_log_identical": true,
+  "textcot_log_identical": true,
+  "registered_eval_fields_identical": true,
+  "eval_items_identical": true,
+  "state_dict_identical": true,
+  "pass": true
+ },
+ "g6": {
+  "method": "same-card comparison (8 GB local cards cannot hold micro 4): --mem_check --micro 16 (4 items) on the composite longest item, RTX 3070 bf16",
+  "peak_gib": {
+   "string (A's arm)": 6.274,
+   "factor": 6.023,
+   "factor+nopass+rms": 6.038
+  },
+  "A_3090_micro4_peak_gib": 16.93,
+  "reading": "factor / F-NR peak below the string arm at the same shape -> micro 4 holds on a 3090 (A: 16.93 GiB); host auto_micro re-checks at launch",
+  "pass": true
+ },
+ "g7": "Theory's scorer fixtures (score_s204) - pending the field list",
+ "g11": "CLOCK - eval-only on the final models (theory/stepfactor/clock_A.py protocol)",
+ "smokes": "scratch/_tmp/s204ref: factor / value / F-NR train + eval (lambda 1: aux_val/op/ptr1/ptr2_ce logged), eval_only rc 0, eval_only with mismatched flags -> assert"
+}
