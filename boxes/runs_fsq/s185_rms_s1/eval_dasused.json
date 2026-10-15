@@ -8,7 +8,7 @@
   "bs_eval": 250,
   "torch": "2.14.0+cu130",
   "driver": "591.86",
-  "script_git": "edb8e9f2e1189bffbfca9d9da87e30dca937a72d"
+  "script_git": "b27b1307c22c4b11b7f7d2f4bba8267014bfea03"
  },
  "serial_cond": {
   "s170": {
@@ -1802,6 +1802,45 @@
   "driver": "591.86",
   "script_git": "edb8e9f2e1189bffbfca9d9da87e30dca937a72d",
   "sec": 908,
+  "done": true
+ },
+ "refit_pca1024": {
+  "t": 2,
+  "k": 1024,
+  "lr": 0.0001,
+  "n_ccc": 4471,
+  "B_iia_ccc_init": 0.7070006709908297,
+  "B_iia_ccc_best": 0.7070006709908297,
+  "val_trace": [
+   [
+    0,
+    0.71
+   ],
+   [
+    100,
+    0.142
+   ],
+   [
+    200,
+    0.124
+   ],
+   [
+    300,
+    0.138
+   ]
+  ],
+  "val_best": 0.71,
+  "steps": 300,
+  "iia_train_best": 0.681,
+  "best_is_init": true,
+  "def": "note 203-9b optional refit: init = top-k exact PCA of the separate 20k pool (rng 20501); lr 1e-4; validation at step 0 + every 100; best incl. init",
+  "card": "NVIDIA GeForce RTX 3070",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "b27b1307c22c4b11b7f7d2f4bba8267014bfea03",
+  "sec": 1140,
   "done": true
  }
 }
