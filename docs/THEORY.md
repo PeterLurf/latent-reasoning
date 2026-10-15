@@ -15570,6 +15570,26 @@ Each registers separately, after T1 / T2.
   - The registered CONTRAST-SURVIVES needs ≥ 5 failed models, so it waits for P0 on all 16 (Stage-B P0).
 * The s170 n = 8 pool: the failed models are N/A there (< 100 clean pairs: 35 and 69). Descriptive only.
 
+**Note 203-4: CONDITIONED SERIAL, all 16 D7 models (2026-10-14 21:00 EDT; the registered reading of notes 203-2 / 203-2a; Experiments, 3070 bf16 bs 250; gates SI 16 / 16 exact, S170 within 0.02 on 16 / 16, max 0.0168). CONTRAST-SURVIVES: on clean-ccc n 3–8 pairs, every converged model follows a whole-state swap and every failed model ignores it.**
+* **t = 2 (primary):**
+  - converged clean hybrid 0.800–0.966, minimum 0.800 (window s1);
+  - failed 0.028–0.184 on the 5 readable models (rms s3, den, rwwin, hold, nofade), maximum 0.184 (den s1). csr s1 and rmsgf s3 are N/A (< 100 clean pairs).
+  - **Contrast 0.616 ≥ 0.20**, with exactly 5 failed models readable (the registered minimum).
+  - CAPABILITY-EXPLAINED does not fire: no failed model is ≥ 0.70.
+* **t = 1:**
+  - converged 0.701–0.924;
+  - failed 0.003–0.049 on all 7 readable;
+  - contrast 0.652.
+  - Every failed model returns its own answer at ≥ 0.87.
+* **Descriptive:**
+  - At t = 2, three failed models (den, rwwin, nofade) begin to follow (hybrid 0.18, own 0.59–0.60). Their pass-2 state is used a little.
+  - At t = 1 no failed model uses its carried state.
+* **Reading:**
+  - Capability-conditioned, the whole-state interchange separates the classes as a causal statement. Converged seeds carry and use their state. Failed seeds recompute from the re-presented input and ignore what they carried, including at items they solve.
+  - This is the used separator that §203's D7 probe was not (§203 result).
+  - It supports a whole-state interchange loss (docs/THEORY_IITSERIAL_DRAFT_2026-10-14.md) as a target aimed at the actual difference.
+  - The direction is not tested: final models only, so state use may be a consequence of entry. Only the intervention tests the cause.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
