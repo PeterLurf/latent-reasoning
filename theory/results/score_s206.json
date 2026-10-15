@@ -1,5 +1,37 @@
 {
- "J0": null,
+ "J0": {
+  "dir": "gsm_lat_jcot_s1",
+  "last_step": 12000,
+  "dead": false,
+  "acc": 0.14404852160727824,
+  "K0": 0.07733131159969674,
+  "K1": 0.10310841546626232,
+  "K10": 0.14404852160727824,
+  "loop_formed": true,
+  "think_necessary": false,
+  "deep_K0": 0.055745164960182024,
+  "deep_K1": 0.07281001137656427,
+  "deep_K10": 0.09101251422070535,
+  "think_necessary_deep": false,
+  "deep_multipass": 0.018202502844141072,
+  "cot_valid_by_2k": {
+   "2000": 0.284,
+   "4000": 0.288,
+   "6000": 0.336,
+   "8000": 0.362,
+   "10000": 0.364,
+   "12000": 0.358
+  },
+  "cot_retain_min_event_only": 0.284,
+  "cot_retain": false,
+  "kd_share_mem": -0.1364238568428446,
+  "kd_share_multipass": -0.1289913160178309,
+  "kd_route_onset": "> 12k",
+  "kd_gen": 0.9850029114884137,
+  "t2_valid_top1": 0.5235042735042735,
+  "t2_valid_acc": 0.5106837606837606,
+  "recall_share": 0.24377876106194687
+ },
  "J1": {
   "dir": "gsm_lat_jcotl1_s1",
   "last_step": 12000,
@@ -33,6 +65,11 @@
   "t2_valid_acc": 0.5213675213675214,
   "recall_share": 0.271787610619469
  },
+ "COUPLE": "NEUTRAL",
+ "couple_delta": -0.006065200909780133,
+ "SHORTCUT": false,
+ "PROTECT": "NEUTRAL",
+ "protect_delta": -0.00227445034116755,
  "TOTAL": "NEUTRAL",
  "total_delta": -0.008339651250947683,
  "J1_minus_A": -0.0090978013646702,
@@ -40,6 +77,9 @@
  "K0_GUARD": true,
  "W_ref_deep_multipass": 0.004550625711035275,
  "predictions": {
+  "P-J1b": "FALSIFIED",
+  "P-J0b": "holds",
+  "P-J0a": "FALSIFIED",
   "P-J1a": "FALSIFIED",
   "P-J1c": "FALSIFIED",
   "P-J1d": "holds",
@@ -50,5 +90,5 @@
   "P-J1i": "holds",
   "P-J1j": "holds"
  },
- "reading": "TOTAL NEUTRAL (J1 - W -0.008); J1 - A -0.009; R1-J below; K0-GUARD True (K'0 0.071); DEEP-MULTIPASS +0.035; KD-ROUTE share_mem 0.07295056902738441 (onset > 12k)"
+ "reading": "COUPLE NEUTRAL (J1 - J0 -0.006) | PROTECT (joint-CE effect: protection + extra text exposure) NEUTRAL (-0.002) | TOTAL NEUTRAL (J1 - W -0.008); J1 - A -0.009; R1-J below; K0-GUARD True (K'0 0.071); DEEP-MULTIPASS +0.035; KD-ROUTE share_mem 0.07295056902738441 (onset > 12k)"
 }
