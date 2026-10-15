@@ -12,7 +12,11 @@ Terms (draft §2.2; the swap site is the whole state after pass tau, all heads):
   IIT : S_tau^d = tau passes on x_d (with grad) -> passes tau+1..K on x -> CE(dec_logits(x), y_hyb)   (full-vocabulary CE at ' =', as the answer CE)
   SIIT: S_tau  = tau passes on x   (with grad) -> passes tau+1..K on x' -> CE(dec_logits(x'), y)
   Both run as ONE graph of 2 B_I rows (rows 0..B_I-1 IIT, B_I.. SIIT); loss = gamma * (w_I L_IIT + w_S L_SIIT); the caller backward()s it after the
-  main backward (gradients accumulate; the existing clip applies to the sum). No @torch.no_grad on this path (gradient-flow rule; asserted by ast)."""
+  main backward (gradients accumulate; the existing clip applies to the sum). No @torch.no_grad on this path (gradient-flow rule; asserted by ast).
+Lengths: a redraw changes only leaf VALUES (h's two operands, the bare leaf); every value 0..10 renders as ONE token (nested170 asserts each VOCAB
+symbol is a single GPT-2 token) and the operators / brackets are untouched, so x_d, x' and the hybrid render to x's length by construction (the
+shape assert in iit_loss cannot fire; G-HYB 0 / 10,029). nested170 logs write_grad_norm AFTER the IIT backward (from gamma > 0 it includes IIT
+gradients); write_grad_norm_pre_iit is the main loss's alone, comparable to the controls."""
 import numpy as np
 import torch
 import torch.nn.functional as Fn
