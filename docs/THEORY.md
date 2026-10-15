@@ -295,6 +295,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
+| 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | registered | pending (harness + gates) |
 
 ## Live sections
 
@@ -16058,6 +16059,15 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **g1** = the mean over n 3–8 of eval.json s170.acc_by_n_kprime["1"].
 * **PAIRED** = log records 100–2000 equal on loss / answer_ce / aux_ce, compared with the s185 control's log.
 
+**Note 205-2 (2026-10-15 11:16 EDT; operational; the user's approval relayed by Audit, ~12:0x 2026-10-15, "Approve both").**
+* **Driver unavailability:** no 570.172.08 offer has appeared since 02:43. s1's control driver is unavailable, so **s205_iit_s1 runs UNPAIRED on another driver,** as the registration allows (unpaired if the bitwise pairing on records 100–2000 fails).
+* **Limit, stated now:**
+  - s1's trajectory differs from its control from step 0 by numerics as well as by the loss (GPU / driver numerics carry ≥ about 70% of the outcome, note 203-7). So **s1 cannot cleanly test HARMFUL**: a non-entry could be numerics.
+  - **s2 carries the HARMFUL test** if it runs paired on 570.172.08.
+  - s1's ENTERED / MET labels are read as registered, with "UNPAIRED" beside them.
+  - The arm reading counts s1 as registered; the HARMFUL clause is read on s2 (and on s1 only if it runs paired).
+* **The §205 cap is raised from $18.00 to $18.50** (user-approved).
+
 ## 206. JOINT-COT-L1: CODI's joint CoT CE and L1 coupling on the warm-started latent arm (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; the PAIR J0 + J1; cap $6; pre-registered 2026-10-15 01:49 EDT, before any §206 code or run)
 
 **Registered text:**
@@ -16229,6 +16239,64 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - **B: "a 0.001 miss, descriptively the same pattern".** The rule form is not changed post hoc.
   - **Presence ≠ use again:** the memory carries a generic "has thought" signal the decoder depends on (zero-state 0.20–0.51 vs donor-state 0.80–0.88), but no item-specific content it uses. Cf. §203 G-use and note 204-2's ZERO vs MEAN.
   - **This reconciles §204:** VALUE-LEAK shows the values are DECODABLE from M_1 by the aux decoder, while §207 shows the answer decoder does not USE them; it recomputes from the question.
+
+## 208. QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS: can memory-only passes compute GSM8K? (USER APPROVED 2026-10-15 ~12:0x, "Approve both", typed in Audit's session and relayed verbatim; one cell; cap $3.20; pre-registered 2026-10-15 11:16 EDT, before any §208 code or run)
+
+**Registered text:**
+* docs/THEORY_QONCE_DRAFT_2026-10-15.md **at 1c2dc4d3** (including §16, the aux-prompt choice) is the registered text for every definition below.
+* For the answer-bottleneck decoder's definitions and swap labels it uses docs/THEORY_ANSBOTTLE_DRAFT_2026-10-15.md at b890ae81, as the QO draft references it.
+* Both files are now frozen. Changes go here as dated amendments.
+* Derivations by Opus subagent, reviewed by Theory and Audit. Literature f4c7c197: new for latent reasoning.
+
+**Why (data, POST-HOC):**
+* §207: every GSM8K latent model recomputes from the re-presented question; the memory is a scaffold, not a carrier.
+* §204 / §206: per-pass targets and a pre-answer coupling are met by pass-1 precompute or by the decoder, not by the memory.
+* Internal precedent: §165 FIXED-CHUNK (question once, a problem-free decoder, final-answer-only training) failed. §175 showed that per-pass supervision makes the passes used. Question-once with the step aux has never run.
+
+**Cell:** `gsm_lat_ansbn_qonce_nopass_s1` = §200 A's flags exactly + `--ans_bottleneck --question_once --aux_nopass` (no RMS).
+* Think pass 1 reads [EOT, question]. Passes 2–10 read the fixed 17-token filler (EOT + FILLER-N's string).
+* The answer decoder reads [EOT, "###"] + the memory only.
+* The aux prompt is [EOT, " Step", " :"].
+* RTX 3090, seed 1, 24k. Final checkpoint for every reading; the test is never used for selection.
+
+**Decisive reading, ITER-GAIN (comparator-free; PROVED from the code that passes 2–10 are item-identical functions except through the memory):**
+* ACC − max(MEAN-ITER(1), K′1) ≥ T = 0.028 pooled, **and** the deep version (m ≥ 3) ≥ T_D = 0.034.
+* K′1-RESCALED is reported only (it is wrong under QO; §16).
+
+**Labels (draft §5 / §7):**
+* **QO-SERIAL** (the C1 success) = ITER-GAIN ∧ SERIAL-PROFILE (an onset growing with m) ∧ (TRANSPLANT-SERIAL ∨ INT-PROGRESS).
+* **TWO-STAGE / DENOISE:** ITER-GAIN with a flat onset. Multi-pass use, not serial.
+* **PASS1-PRECOMPUTE:** no ITER-GAIN; capped at about 0.13.
+* **QO-CAPACITY-BOUND** vs **QO-COMPUTE-FAIL:** by the literal-recall probes and the accuracy-vs-literal-count slope.
+* ACC vs A (LIFTS / MATCHES / HURTS) is reported. It is two changes against A, so attribution between AB and QO rests on the probes.
+* The clock readout (pairs 2v3, 3v4, 5v6) is descriptive.
+
+**OC block (rule a; one seed):**
+* P(QO-SERIAL | no effect) ≈ 0.005–0.01; P(QO-SERIAL | effect) ≈ 0.2–0.4.
+* ITER-GAIN alone: P(| no effect) ≈ 0.02 by sampling (≈ 0.2 if "no effect" means "no serial use", since TWO-STAGE also passes).
+* **A positive is strong evidence; a null is weak; a rate claim needs ≥ 3 seeds.**
+
+**Censoring (rule b; draft §9):**
+* A run ending before 24k, dying or aborted: every reading fails.
+* A MEAN-ITER replay failing its identity gate: ITER-GAIN not credited.
+* An unreadable ONSET: SERIAL-PROFILE not met.
+* Unreadable transplant and probes: QO-SERIAL fails.
+* answer_ce never ≤ 0.92 per token: NO-ENTRY, a failure.
+* Event-only values are reported beside each.
+
+**Prior (CONJECTURE):** ACC central 0.075 (HURTS about 0.7); P(ITER-GAIN) about 0.36; P(QO-SERIAL) about 0.16; PASS1 about 0.42. The main risk is the lossy-copy basin: per-literal fidelity ρ below about 0.72.
+
+**Gates (draft §12 + §16):**
+* the plain path bitwise (G1, including that `--aux_nopass` alone reproduces §204's NOPASS path bitwise, and the AB / QO helpers in FactorMem as well as ProsMem);
+* per-term gradflow;
+* mem_check;
+* an assert that the answer decoder's input ids contain no question token;
+* the MEAN-ITER identity gate;
+* G-TIME (replaces the cost projection);
+* Audit's diff review;
+* a running guard at $3.20.
+
+**Cost:** $2.0 central / $3.0 high (passes 2–10 skip the question, so it is cheaper per item than A). Approved cap $3.20. Realised $ replaces the projection.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
