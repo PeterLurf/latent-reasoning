@@ -15799,6 +15799,9 @@ Each registers separately, after T1 / T2.
     - ≥ 0.8 at some k ≤ 4096 reads **COMPACT-FIT-LIMITED** (the fitter, not the code, was the bottleneck).
     - < 0.5 at 16384 reads **DISTRIBUTED** (Csordás 2408.10920's onion / magnitude codes are the frame).
     - Otherwise INTERMEDIATE.
+  - *(Added 00:13, before any output; Audit.)* **The PCA basis comes from a SEPARATE pair pool, never from the evaluated B pairs.** A basis fitted on the evaluated pairs encodes each pair's own difference, and at k ≥ n it contains them exactly.
+    - The basis needs ≥ k independent differences, so the 4,000 A pairs cap the rank at 4,000. **The pool is ≥ 20,000 fresh pairs** built like B (same donor construction and eligibility), drawn from items disjoint from B (new rng 20501), with a randomized SVD; the method is recorded.
+    - k ∈ {1024, 4096, 16384}, evaluated on the B ccc pairs only.
   - It changes nothing for IIT-SERIAL, which is coordinate-free.
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
