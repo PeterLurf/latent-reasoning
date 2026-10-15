@@ -16072,6 +16072,20 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 
 **Cost:** pair $4.04 central / $6.00 high (the approved cap $6). The conditional J1-LoRA cell (only if COT-RETAIN fails) is a separate decision.
 
+**Note 206-1 (2026-10-15 02:16 EDT; before any §206 output; harness deviations and scorer definitions, no rule change; harness adef2e6a, local gates PASS).**
+* **Deviations from the draft text:**
+  - (1) The g2 JOINT-EXACT gate ran in fp32 (relative 6.2e-9). fp64 is impossible, because deltamem casts the memory branch to fp32. This is the same property-check case as note 204-4.
+  - (2) --kd_detach_trunk is not implemented. It belongs to J1-MEM, which is not approved.
+  - (3) G8 (timing) is J1's own first 200 steps (HOSTPROBE + the $6 guard projection), not a separate deploy; Audit's call.
+* **Scorer definitions** (theory/score_s206.py, fixture-checked before landing):
+  - **P-J1j** reads `t2_acc.valid.top1` (the first answer token's argmax at the T2 "###", the quantity behind C's 0.024). `t2_acc.valid.acc` (the greedy answer) goes beside it.
+  - **COT-RETAIN** = the minimum of cot_valid_acc over the 2k records (steps 2000..12000). A missing record counts as below 0.30 (rule b).
+  - **KD-ROUTE** = eval.json kd_route.share_mem ≥ 0.10. The onset is the first log record with kdr_share_mem ≥ 0.10, "> 12k" if never.
+  - **Recall share** = fit_fix − fit_rs.
+  - **KD-GEN** = kd_gen.ratio.
+  - **W's deep fields** come from `gsm_lat_warm_s1/eval_s206ref.json` (W re-evaluated on J's eval card and bs: acc, acc_by_kprime, acc_by_m_kprime, n_by_m). PROTECT / TOTAL use W's landed acc.
+  - **A cell whose log ends before 12k:** every reading is a failure.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
