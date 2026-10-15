@@ -295,7 +295,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
-| 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | registered | pending (harness + gates) |
+| 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | registered | pending (port + gates) |
 
 ## Live sections
@@ -16312,6 +16312,29 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **The chance level for MEMORY-CARRIES / MEMORY-FAILS = K′0 accuracy (fp32),** the zero-memory constant answer and the measured proxy for P_test(y = c).
 * **QO-CAPACITY-BOUND's FIDELITY branch is read without the difficulty control** (A's aux-slot operand drop is not in eval_qonce), and this is stated beside it. RETENTION needs no control.
 * **G6 failing gives "ITER-GAIN NOT CREDITED" and no route label.** The route labels require a credited ITER-GAIN reading.
+
+**§208 result (2026-10-15 15:24 EDT; gsm_lat_ansbn_qonce_nopass_s1, b301, 3090 595.91.07, 24k, realised about $0.88 of $3.20; local fp32 eval_qonce.json with G6 passing on the final model; theory/score_s208.py). PASS1-PRECOMPUTE: with the question shown only to pass 1 and a memory-only decoder, one forward pass computes the answer and later passes add nothing. Accuracy MATCHES A.**
+* **ITER-GAIN fails:** ACC 0.138 vs max(MEAN-ITER(1) 0.142, K′1 0.143), so −0.005 pooled and −0.007 on m ≥ 3.
+  - K′ 0 / 1 / 2 / 4 / 10 / 16 = 0.014 / 0.143 / 0.140 / 0.143 / 0.138 / 0.130.
+  - K′0 is the constant answer " 30", so the bottleneck holds and the answer crosses the memory.
+* **ONSET = 1 in every stratum** (m 1, 2, 3, 4, 5+): ONESHOT-PROFILE.
+* **PROGRESS-TRANSPLANT:** P_hyb 0.000 in every cell (C_t2 n 449, S_t2 n 130). P_own 0.97–1.00: the answer follows the recipient's pass-1 content and ignores the donor's passes 2..t. TRANSPLANT-SERIAL is not met.
+* **INT-PROGRESS: not met.** The ℓ ≥ 2 values from M_{ℓ+1} and from M_1 are both at chance (0.096 vs the M_0 floor 0.109).
+* **Capacity: QO-CAPACITY-BOUND does not fire.**
+  - R_QO = 0.42 = R_A (0.42): no extra literal-count penalty.
+  - LIT-RECALL(1) 0.339 vs floors ≤ 0.046; LIT-RECALL(10) 0.316, so no RETENTION loss.
+  - The FIDELITY drop (0.176) is within A's 0.142 + 0.10.
+  - QO-COMPUTE-FAIL does not fire either (ACC > A − T).
+* **ACC vs A: MATCHES** (−0.011). STABLE-12 and STABLE-16 hold. Entry (answer_ce ≤ 0.92) at 8.2k.
+* **Descriptive:**
+  - ANS-LIN: the answer's first token is linearly decodable from the final read at 0.117 (decoder 0.196, ratio 0.60).
+  - Clock pairs 2v3 / 3v4 / 5v6: 0.755 / 0.700 / 0.650.
+* **Predictions:** the prior's modal label (PASS1, about 0.42) held. The prior "ACC HURTS (about 0.7), central 0.075" missed: ACC matched A.
+* **Reading:**
+  - **At this budget the GSM8K latent arm's whole accuracy is a single forward pass.** With the question visible only to pass 1 and a decoder that sees nothing but the memory, pass 1 computes the answer (about 0.14) and writes it; passes 2–10 neither add to nor use it.
+  - Together with §207 (every earlier recipe recomputes from the re-read question), this is the clearest statement of the GSM8K state: **no recipe tried has learned memory-mediated multi-pass computation on GSM8K at about 4 epochs. The about 0.14 is GPT-2-small's one-pass accuracy at this budget.**
+  - §209 (CODI at the same budget) decides whether a published latent design does better at this budget (architecture) or not (budget).
+  - The QO draft's named next lever was copy fidelity. It is NOT indicated: the copy was fine and capacity did not bind. The binding fact is that one pass suffices for what the model learned. Any multi-pass gain needs a training signal that one pass cannot meet.
 
 ## 209. CODI-AT-OUR-BUDGET: is GSM8K's latent shortfall architecture or budget? (USER APPROVED 2026-10-15 ~11:37 EDT, "approve reccomendation", typed in Audit's session and relayed verbatim; one cell; cap $4; pre-registered 2026-10-15 11:39 EDT, before any §209 code or run)
 
