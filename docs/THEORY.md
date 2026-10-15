@@ -10361,6 +10361,8 @@ subspace.**
 * **The amended reading:** t = 12 is NOT-DECOMPOSABLE by rule (2 / 3), but the negative cannot be distinguished from a fit failure. MULT is not shown DECOMPOSABLE (one model, s2, at t = 4).
 * **To make the MIX negatives readable later,** the fix is the fitter at large k (lr, initialisation and steps for k = 64), not the rule.
 
+**Note 167-x (2026-10-15 01:31 EDT; post hoc, only weakens; from §203's DAS pilot, notes 203-9b and its refit).** The DAS fitter shared by §167 (R = QR(W) on the flattened 49,152-d memory, Adam at lr 1e-3 / 3e-3) destroyed a 0.71-IIA PCA initialisation within about 100 steps on the nested task. The likely mechanism: the entries are about 1/√D, and Adam's per-entry step is about lr whatever the gradient scale. **So §167's MULT NOT-DECOMPOSABLE reads are read as FIT-LIMITED, not as evidence of a non-decomposable state.** This strengthens the existing caveat. The S5 DECOMPOSABLE positives are unaffected: a failing fitter cannot manufacture a found subspace, and their random-model baselines held. A re-test with a fit-free PCA baseline and a scale-aware optimiser would decide MULT; it is not queued.
+
 ## 168. DEEP-ProsQA: graph search past one pass, with a measured single-pass boundary (C1 + C3 on a task that exceeds a pass; the C1-forcing note's option 2(b)) (the user's go via Audit, "approve go ahead on prosqa deep"; pre-registered 2026-10-09 01:35 EDT, after Literature's check dfaf9ed6 (`docs/LIT_DEEP_PROSQA_2026-10-08.md`) and Audit's lead, before any implementation or run)
 
 **Why.**
@@ -15822,6 +15824,7 @@ Each registers separately, after T1 / T2.
 * **Archive P2** (4060, k ≤ 64; 0f1b16fb): label **VOID** (G-DISRUPT: a same-value patch drops own accuracy 0.82–0.88). Descriptive: necessity resample excess 0.76; locus additive 0.83. No weight.
 * **Methodology lesson:** DAS fits must log validation at step 0 (the initialisation) and keep "best including init". A warm start can be destroyed by the step size.
 * **Optional, not queued:** a refit from the PCA-1024 basis at lr 1e-4 with step-0 validation, to test whether a v₂-specific subspace beats PCA. It is descriptive and does not affect IIT-SERIAL.
+* *(Done 2026-10-15 01:31 EDT, 65b97269; descriptive.)* From the PCA-1024 init (B IIA_ccc 0.707, val 0.710), Adam at lr 1e-4 drops val to 0.142 within 100 steps and early-stops at 300; best = the init (kept). **Likely mechanism (descriptive, untested):** R = QR(W) with W ∈ R^{49,152 × k} has entries of about 1/√49,152 ≈ 0.0045, and Adam moves each entry by about lr per step regardless of gradient scale. So the basis is randomised within tens of steps (lr 1e-4) or a few (lr 3e-3). A fit in this parameterisation needs lr ~1e-6–1e-5 or a scale-aware optimiser.
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
