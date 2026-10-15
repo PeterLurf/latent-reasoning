@@ -1,0 +1,109 @@
+{
+ "g_bits": {
+  "dec_ce_equal": true,
+  "plain_final_equal": true,
+  "pass": true
+ },
+ "g2_joint_exact": {
+  "max_abs_diff": 9.5367431640625e-07,
+  "max_abs_grad": 153.81768798828125,
+  "rel": 6.200030236307457e-09,
+  "same_keys": true,
+  "dtype": "float32 (deltamem casts the memory branch to fp32)",
+  "pass": true,
+  "deviation": "registered text asks fp64 rel <= 1e-12; deltamem casts the memory branch to fp32 (x.float() into fp32 LayerNorm / qkv), so a float64 model cannot run without editing the shared module; fp32 rel 6.2e-9 (~0.1 fp32 ulp)"
+ },
+ "g3_gradflow": {
+  "by_term": {
+   "T1": {
+    "g": 3.08326642977314,
+    "mem": 0.0,
+    "mem.wo": 0.0,
+    "qkv_kv": 0.0,
+    "z_requires_grad": false
+   },
+   "T2": {
+    "g": 41.26546270245415,
+    "mem": 0.0,
+    "mem.wo": 0.0,
+    "qkv_kv": 0.0,
+    "z_requires_grad": false
+   },
+   "KD": {
+    "g": 113.60509557542984,
+    "mem": 2923.4091227216463,
+    "mem.wo": 2922.1940839820672,
+    "qkv_kv": 66.96732330322266,
+    "z_requires_grad": false
+   },
+   "KD_low": {
+    "g": 1.0849903839094956,
+    "mem": 0.0,
+    "mem.wo": 0.0,
+    "qkv_kv": 0.0,
+    "z_requires_grad": false
+   }
+  },
+  "decorators": {
+   "parse_layers": [],
+   "fwd_plain_layers": [],
+   "dec_layers": [],
+   "lines_of": [],
+   "teacher": [],
+   "t2_prefixes": [],
+   "teacher_context": [],
+   "kd_items": [],
+   "sig_of": [],
+   "l1_const": [],
+   "route": [],
+   "kd_loss": []
+  },
+  "pass": true
+ },
+ "g4_formats": {
+  "n_items": 200,
+  "t2_mismatch": 0,
+  "positions_asserted": true,
+  "pass": true
+ },
+ "pass_all": true,
+ "g1_plain_path": {
+  "method": "scratch/_tmp/s204ref/run.sh (CPU fp32, stepaux + textcot, 3 steps) on the final working tree vs post2 (= HEAD ae289bcb): log.jsonl / eval.json / eval_items / eval_items_kprime / s200_init equal (wall-clock fields stripped), state_dict keys + per-tensor float64 sums equal",
+  "pass": true
+ },
+ "g5_mem": {
+  "card": "RTX 3070 (cuda:1), --mem_check --micro 16 (4 items, composite longest item m 7)",
+  "W": 6.2664,
+  "J0": 6.7145,
+  "J1": 6.7109,
+  "delta_J1_minus_W_gib": 0.4445,
+  "W_cloud_micro4": 16.93,
+  "J1_micro4_estimate": 17.37,
+  "limit": 21.0,
+  "note": "the delta is the trunk grads alive from the teacher backward (item-independent); auto_micro re-measures on the 3090",
+  "pass": true
+ },
+ "g6_init_identity": {
+  "s200_init_equal_W_vs_J1": true,
+  "g_add_init": 0.0006195993046276271,
+  "note": "JC adds no parameters and no init-time computation; \u00a7202 INIT-IDENTITY gate unchanged",
+  "pass": true
+ },
+ "g7_eval_invariance": {
+  "model": "50-step J1 smoke (3070 fp32; scratch/_tmp/s206smk)",
+  "shared_fields": 36,
+  "diff_fields": [],
+  "items_bytes_equal": true,
+  "kprime_items_bytes_equal": true,
+  "J_only": [
+   "cot_valid_final",
+   "kd_ans",
+   "kd_gen",
+   "kd_route",
+   "t2_acc"
+  ],
+  "pass": true
+ },
+ "g8_time": "pending: the J1 --time_steps 200 on a 3090",
+ "pass_all_local": true
+}
