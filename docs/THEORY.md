@@ -289,7 +289,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 199 | CONTRACTION-TRAP (the user's seed-stability request): order parameter s182.path_indep separates converged / failed across 19 models; M1 = within-n rank test, per-pass delta decay ᾱ vs handle onset (ρ̄ > 0 predicted; falsified ≤ 0 or < 0.3); 199-A method CSR (completion-switched step-ratio target), RMS s1–s3 on 3090 paired with s185, SUPPORTED / MIXED / FALSIFIED (P-A5 on checkpoint path_indep) | registered (M1, M2, M3, 199-A) | **closed: M1 PREDICTED, M3 PREDICTED, M2 no pair connected; CSR (199-A) FLOOR-GAMED + harmful on its paired seed (1 of 3 seeds; s3 stopped, s2 cancelled); account untested** |
 | 200 | GSM8K-AUG PILOT (user-approved 2026-10-13 ~23:5x via Audit, "make sure its augmented dataset"; Tier 1 only, cap $7): latent step-aux A / A+resample B vs TEXT-COT C / D on GSM8K-Aug, 24k, final checkpoint; R1 C3 in-house ±2.8, R2 vs PCCoT 49.48 (no 1-seed SOTA claim), R3 resample, R4 THINK-NECESSARY, R6 length, R7 STABLE, LOOP-NOT-FORMED, IDLE-PASSES | registered | **latent BELOW text (A 0.147 vs C 0.321); loop forms weakly but THINK-NECESSARY fails (K′1 ≈ K′10); recall share 0.48 (P1 falsified), resampling cut it to 0.15 at no test cost; D unavailable; WARM-START trigger met** |
 | 201 | OVERTHINK-EXIT (the user's overthinking + latent-transition requests; $0 eval-only): T1 FREEZE 2×2 (which channel drives post-completion decay; ADD-COUPLED / ADD-DIRECT / DELTA-INTRINSIC / JOINT; additive account falsified if R_FA ≤ 0.3 in ≥ 2 of 3 key models), T2 SHIRYAEV-HEAD halt (NO-OVERTHINK / SIZE-FREE / PREMATURE; β-cue falsifier) | registered | **T1: additive account FALSIFIED - overthinking is post-completion DELTA writes (R_FD ~1.0 in 5/7); T2: learned halt NO-OVERTHINK on 7/7 (= best fixed K′ vs K′32 0.34-0.94), size-free on RMS; T2-b fails narrowly, T2-c fails; T4 SNAP-CHAIN: SNAP-HURTS 4/4 (the pass-7 text write is exact ~0 beyond n 10; Prop 8 untested)** |
-| 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **open** |
+| 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **W-LIFT NEUTRAL (W 0.146 vs A 0.147); R1-W below (C+ 0.336); LOOP-FORMED, THINK-NECESSARY fails; the CoT trunk is forgotten by 2k (cot_valid 0.07-0.13); §204 -> A base** |
 | 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | waits for §202 |
 
@@ -15401,6 +15401,39 @@ Each registers separately, after T1 / T2.
 **Cost:**
 * W $1.37 central / $1.82 high, C+ $0.33 / $0.41, so **$1.70 / $2.23**, within the user's ≤ $4 pre-approval. Audit is to confirm C+ is in scope as the control.
 * Realised $ replaces the projection at landing.
+
+**§202 result (2026-10-14 22:49 EDT; W gsm_lat_warm_s1 (3090, 595.84, micro 4, init sha c5b52282 = C) and C+ gsm_txt_aug_cont_s1 (997ff5bd); final checkpoints; theory/score_s202.py). The CoT-trained trunk does not lift the latent arm: W − A is NEUTRAL, and W sits where A sat. The warm start's CoT ability is lost within the first 2k latent steps.**
+* **W-LIFT: NEUTRAL** (W 0.146 vs A 0.147, −0.001). Exposure differs as registered: W had 24k text + 12k latent steps, A 24k latent.
+* **R1-W: below** (W − C+ = −0.190). C+ is 0.336, so the equal-exposure text control rose +0.014 over C (0.321).
+* **LOOP-FORMED: yes** (K′10 0.146 − K′0 0.111 = 0.035 ≥ 0.028).
+* **THINK-NECESSARY: fails** (K′1 0.129 > 0.5·K′10).
+* **Predictions:**
+
+  | prediction | status | value |
+  |---|---|---|
+  | P-WL (WARM-HELPS) | FALSIFIED | |
+  | P-W1 (LOOP-FORMED) | holds | |
+  | P-W2 (THINK-NECESSARY) | FALSIFIED | |
+  | P-W3 (W in [0.24, 0.35], R1-W matches or below) | FALSIFIED | W 0.146 < 0.24 |
+  | P-W4 (Aug-valid at 8k ≥ 0.20) | FALSIFIED | 0.152 |
+  | P-W6 (recall share ≥ 0.20) | holds | 0.523 − 0.182 = 0.34 |
+  | P-W8 (descriptive: aux exact ≥ 0.10 lower on R-operand steps than on Q steps) | holds | R 0.088 vs Q 0.320 |
+
+  - The registered falsifiers "W − A < +2.8" and "W < 0.24" are both met.
+* **Descriptive (mechanism):**
+  - **COT-RETAIN:** the shared trunk's own TEXT-COT accuracy on Aug valid (cot_valid) is 0.072 at 2k, 0.092 at 4k, 0.116 at 6k, and 0.106–0.128 after. C's own valid curve reached 0.35.
+  - So the CoT plan the warm start was meant to supply (the tilt) was **forgotten in the open-loop window**: the re-warmed lr of 1e-4 with γ = 0 to 2k, training the trunk on latent losses. This is risk 1 of the warm-start draft, named before the run.
+  - K′0 rose from 0.022 at step 0 (C forced to answer directly) to 0.111: the trunk re-learned direct answering.
+  - W's valid curve tracks A's.
+  - aux exact by pass: 0.322 / 0.157 / 0.045 / 0.033 / 0.020 / 0, as A's.
+  - path_indep: delta_cos 0.899, from_zero 0.138, which is the contractive class.
+  - STABLE: K′12 0.148, K′16 0.140.
+* **THINK-NECESSARY-DEEP (note 202-1):** pending W's eval_m_kprime on the 3070. Read against A's reference (deep K′1 / K′10 0.88).
+* **Realised spend:** W about $1.10 + about $0.20 for the failed and BAD hosts; C+ about $0.37. **The pair costs about $1.7** (cap $4).
+* **Reading:**
+  - At this budget, initialising from a CoT-trained trunk does not help the latent arm, because the trunk's CoT competence does not survive latent training. So whether a warm start can help remains untested.
+  - A design that **protects the trunk** would test it: no open-loop window (γ = 1 from step 0, FAIR-START), a low lr, or a frozen trunk with only memory and adapters trained. That needs its own derivation and decision.
+  - **§204's branch rule now picks the A base:** F-P vs A at 24k, with no F-NR cell (~$2.82 / $3.70).
 
 **Note 202-1 (2026-10-14 18:10 EDT; before any §202 output, W and C+ still filling; descriptive, no rule change). THINK-NECESSARY-DEEP, read beside P-W2.**
 * **Why (docs/THEORY_STEPFACTOR_DRAFT_2026-10-14.md D4; DERIVED under A-DEC plus a calc on the test m-mix):**
