@@ -15428,7 +15428,7 @@ Each registers separately, after T1 / T2.
   - aux exact by pass: 0.322 / 0.157 / 0.045 / 0.033 / 0.020 / 0, as A's.
   - path_indep: delta_cos 0.899, from_zero 0.138, which is the contractive class.
   - STABLE: K′12 0.148, K′16 0.140.
-* **THINK-NECESSARY-DEEP (note 202-1):** pending W's eval_m_kprime on the 3070. Read against A's reference (deep K′1 / K′10 0.88).
+* **THINK-NECESSARY-DEEP (note 202-1):** pending W's eval_m_kprime on the 3070. Read against A's reference (deep K′1 / K′10 0.88). *(Filled 23:22: W, 3070 bf16 bs 64, gate bitwise vs its same-card reference (8e1c8fcc). m ≥ 3 (n 879): K′0 / 1 / 10 = 0.081 / 0.091 / 0.096, so K′1 / K′10 is **0.95** (A 0.88) and **THINK-NECESSARY-DEEP fails**. The warm start is even more one-pass-dominated on deep items. The deep loop gain is 0.015, below T_D 0.034.)*
 * **Realised spend:** W about $1.10 + about $0.20 for the failed and BAD hosts; C+ about $0.37. **The pair costs about $1.7** (cap $4).
 * **Reading:**
   - At this budget, initialising from a CoT-trained trunk does not help the latent arm, because the trunk's CoT competence does not survive latent training. So whether a warm start can help remains untested.
