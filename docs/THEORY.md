@@ -15526,6 +15526,24 @@ Each registers separately, after T1 / T2.
     - Swap: the exact additive edit on the 5 no-norm models (fidelity cos 1.0000, edit success 0.71–0.90) and the direction-only edit on the 4 RMS models (cos 0.9999, edit success 0.84–0.91). F = F_null in every model; disruption ≤ 0.002.
     - **The answer path ignores a faithfully written donor value in both head types.**
 
+**Note 203-2 (2026-10-14 20:37 EDT; pre-stated before any output; descriptive, $0 local; step 1 of the Audit-approved DAS-USED pilot, docs/THEORY_DASUSED_DRAFT_2026-10-14.md). CONDITIONED SERIAL: does the whole-state swap contrast survive conditioning on capability?**
+* **Why:**
+  - s170.serial at t = 2 reads a hybrid rate of 0.53–0.96 in the 9 converged models and 0.07–0.12 in the 7 failed.
+  - The failed models solve shallow items clean at K′ = K (s185_rms_s3: 0.96 / 0.84 / 0.65 at n 3 / 4 / 5). After the swap, though, they give the recipient's own answer only 0.12–0.31 of the time.
+  - So "failed = non-solver" does not explain it, but the class contrast has not been conditioned on capability (Audit).
+* **Protocol:** nested170's own serial test (serial_items(SPOOL, rng 17200); the 476 pairs; swap the whole state after pass t ∈ {1, 2}, then K passes) on the 16 D7 final models.
+  - Re-run with **per-pair rows**: the swapped answer, plus each model's clean answers on the recipient and the donor without a swap, at K′ = K.
+  - One card per model, bf16, the original eval batch size (the bf16 rule). bs, card and dtype are recorded.
+* **Gate:** the unconditioned rates (hybrid / donor / recipient at t = 1, 2) reproduce eval.json s170.serial within 0.02.
+* **Readings:**
+  - hybrid / donor / recipient on **CLEAN pairs** (recipient and donor both answered correctly at K′ = K without a swap), at t = 2 (primary) and t = 1, overall and by recipient n, each with its count;
+  - a model with fewer than 100 clean pairs at t = 2 is N/A, not "absent".
+  - **CONTRAST-SURVIVES:** min over converged clean hybrid − max over failed clean hybrid ≥ 0.20 at t = 2, with ≥ 5 failed models non-N/A.
+  - **CAPABILITY-EXPLAINED:** some failed model's clean hybrid ≥ the converged minimum − 0.10.
+  - Otherwise **AMBIGUOUS**.
+  - Descriptive: on clean pairs, also the failed models' clean-pair recipient rate, i.e. whether the swap disrupts items they otherwise solve.
+* **Consequence:** CONTRAST-SURVIVES supports a whole-state interchange loss (IIT-SERIAL, being drafted) as a target that separates the basins. CAPABILITY-EXPLAINED weakens it to "converged models use their state; failed models' failure is not specific to state use".
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
