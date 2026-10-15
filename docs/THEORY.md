@@ -16373,6 +16373,12 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - The same exposure in examples as §200's 24k × 64. The scorer's `epochs` field is examples seen / |train|.
 * **The registered decision bars are unchanged:** 0.251 / 0.175 (Audit had quoted "≥ ~0.30" informally; the registered bar is 0.251).
 
+**Note 209-2 (2026-10-15 12:27 EDT; before any §209 output; two deviations from 209-1's wording, Audit's review; the port is approved for launch, and G1 reproduces the released checkpoint 1319 / 1319 inside the port).**
+* **Distillation loss = smooth-L1**, CODI's code default and what the released checkpoint was trained with, not the plain L1 of the paper's Eq. 5 (as 209-1 had it). Matching the training code that produced the released checkpoint is the faithful CODI reproduction. This follows the JOINT-COT draft's v3 reading (Figure A1's code uses smooth-L1).
+* **The training set uses CODI's filters** (≤ 1000 tokens, numeric answer), not §200's filter_bad.
+  - Both |train| sizes go in args.json at launch, along with the examples seen at 4.0 epochs of the CODI-filtered set.
+  - The §209 result states the absolute exposure beside A / C's about 1.54M examples. If the two exposures differ by more than 5%%, the difference is stated, and the decision rule reads as registered on the CODI-filtered 4.0 epochs.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
