@@ -15624,6 +15624,31 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **Pass criterion, fixed now:** (i) ≤ 1e-5 relative, (ii) ≤ 1e-10, and both controls behave as derived. **All met.**
 * **Why this is not the exactness-gate case:** the fp64 rule protects claims that an optimisation computes the same function. Gate 9 checks a mathematical property of an existing read. The fp64 analytic check carries the property, and the fp32 code check shows the implementation matches it at fp32 rounding.
 
+**Note 204-5 (2026-10-14 20:24 EDT; post-freeze, before any §204 output, W not landed; docs/THEORY_LOTUS_CONTRAST_2026-10-14.md, Opus subagent, Theory-reviewed: capacity margin 24x items / 2-12x bits, LOTUS teacherless per its v2 eqs. 1-3). LOTUS-SEP: is LOTUS's per-loop use (2606.31779) explained by teacherless supervision (ii) or by channel width (i)?**
+* **Inputs:** read from §204's registered fields on F-P vs its comparator (W, or A on the A base), on paired test items.
+  - deep = m ≥ 3 (n 879); "ratio" = the raw K′1/K′10 on deep items;
+  - "floor" = the M_0 reading;
+  - VALUE-SERIAL = P-F3's letter (VALUE-EXACT from M_t ≥ floor + 0.10, and VALUE-LEAK ≤ floor + 0.05, on ℓ ≥ 2 R-steps at t = 2–3).
+* **One added descriptive eval field, $0:** VALUE-EXACT and PLAN-ACC at pass 1 on level-1 steps, by m (≤ 2 vs ≥ 4).
+* **Readings:**
+  - **(ii)-SUFFICIENT:** ratio(F-P) ≤ ratio(comparator) − 0.20, and VALUE-SERIAL.
+  - **DECODER-SHORTCUT:** VALUE-SERIAL, but ratio(F-P) > ratio(comparator) − 0.10. The memory carries results that the answer path does not use, which points to (i-b) read geometry, not width.
+  - **WIDTH-CANDIDATE:** all three of:
+    - VALUE-EXACT from M_t on ℓ ≥ 2 R-steps ≤ floor + 0.05;
+    - ratio(F-P) > ratio(comparator) − 0.10;
+    - INTERFERENCE: pass-1 VALUE-EXACT on level-1 steps lower by ≥ 0.10 on m ≥ 4 than on m ≤ 2, **and** that drop exceeds the same drop in PLAN-ACC by ≥ 0.05 (the difficulty control).
+  - **CARRY-FAILS:** as WIDTH-CANDIDATE without INTERFERENCE. Results are not carried, but not by interference (A-OP or learnability).
+  - **INCONCLUSIVE:** otherwise, e.g. a delta in (−0.20, −0.10].
+* **Noise:** the deep ratio's SE is ≈ 0.08 per cell (0.03–0.12), so a paired difference has SE ≈ 0.11, and −0.20 ≈ 1.8 SE. The per-item rows (§204 gate) give the bootstrap, reported beside.
+* **Pre-stated P (A base / W base):**
+  - (ii)-SUFFICIENT 0.25 / 0.35;
+  - DECODER-SHORTCUT 0.25 / 0.25;
+  - WIDTH-CANDIDATE 0.05 / 0.05;
+  - CARRY-FAILS 0.15 / 0.10;
+  - INCONCLUSIVE 0.30 / 0.25.
+* **Consequence:** only WIDTH-CANDIDATE motivates a width cell. DECODER-SHORTCUT motivates a read-geometry change (the answer reading memory at more layers) as its own derivation.
+* Descriptive, one seed. It changes no §204 rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
