@@ -16427,6 +16427,13 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - So at this budget the latent route under-uses computation the model already has. That points to budget (CODI's 0.38–0.44 come at 20–40 epochs) and to how the latents are trained, not to missing knowledge.
   - Step 2 (budget scaling) stays a separate user decision.
 
+**Note 209-3 (2026-10-15 19:51 EDT; Audit reproduced §209 from raw eval.json and asked for this sentence; descriptive, the reading is unchanged).** The items were paired by index across eval_items.json: 0 gold mismatches vs A and C. Depth m = the count of "<<" in the gold CoT (codi_probe.gsm8k).
+* **CODI4 − A = +0.042, with a paired test SE of 0.011 (z 3.8 on test noise alone).** Adding the registered unpaired seed SD of 0.01–0.02 per arm gives 1.4–2.3 SD, so the gain is real-looking but not secure at one seed.
+* **The gain sits at short depth:**
+  - m ≤ 2 (n 422): CODI 0.313 vs A 0.225, +0.088 (z 3.9); C 0.493, so r ≈ 0.33.
+  - m ≥ 3 (n 879): CODI 0.132 vs A 0.109, +0.023 (z 1.9); C 0.242, so r ≈ 0.17.
+* **Reading:** CODI's design mostly helps on chains of 1–2 steps. On deep items it is close to A, while text is 1.8× CODI there (2.2× A). The multi-step shortfall is common to both latent designs at this budget.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
