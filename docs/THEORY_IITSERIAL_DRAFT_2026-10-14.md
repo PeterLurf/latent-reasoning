@@ -370,6 +370,10 @@
 | n ≤ 7 variant (CUTOFF CHOSEN POST-PILOT) | ≈ default, slightly lower | ≈ $11–15 |
 
 * **All variants are above Audit's $10 line at the typical host rate, so the decision is the user's.**
+* *(Added 01:09; Audit.)* **The γ = 0 rate comes from one 10-step interval,** so the ratio (+83%) is thin; against the host probe (0.665 s/step) it would read about +120%.
+  - The $ projection uses the absolute γ = 1 rate (1.464 s/step), which is solid.
+  - **Slow-host bound** (the HOSTPROBE limit 0.854 vs this host's 0.665, i.e. ×1.28): default about 24 h per seed, **about $6.0 per seed and $18 for 3 at $0.25/h**; half-rate about 19.8 h, **about $4.9 per seed and $14.8 for 3**.
+  - **Quote as ranges:** default $14 central to $18 slow-host; half-rate $11.6 to $14.8.
 * A second-stage seed panel (to make a P(enter) claim) costs about $4.7 per seed (default) or $3.9 (half-rate).
 
 **OC block (rule (a); per-seed entry; MET is trained directly by the loss, so the informative label is ENTERED):**
