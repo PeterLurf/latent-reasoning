@@ -294,6 +294,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | **ACC MATCHES (F-P 0.139 vs A 0.147); SHORTCUT-RATIO 0.74 vs 0.85 (P-F5 holds); VALUE-SERIAL FALSIFIED (values readable from M_1: one-pass chain); THINK-NECESSARY / DEEP fail** |
 | 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | registered | pending (harness + gates) |
+| 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | registered (descriptive) | pending |
 
 ## Live sections
 
@@ -16125,6 +16126,45 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * **The direct path weakened, not strengthened:** K′0 0.071 (W 0.111), so the K0-GUARD holds. Pooled K′1 / K′10 = 0.64 (W 0.88). **DEEP-MULTIPASS +0.035** (deep K′10 − K′1, just ≥ T_D 0.034; W 0.005).
 * **KD-GEN 0.98** (P-J1i holds). **T2 top-1 0.534** (C 0.024; P-J1j holds). Recall share holds.
 * **Interim reading:** with the joint CE and coupling, the latent arm is less one-pass-dominated and keeps its CoT trunk, but does not gain accuracy at 12k. The coupling's memory route is small. Whether J1 − J0 is NEUTRAL or HURTS decides the coupling's reading.
+
+## 207. GSM-SWAP: is GSM8K's one-pass dominance the failed nested seeds' "recompute from the input" mode? (descriptive, $0 eval-only on kept models; Audit's lead; pre-stated 2026-10-15 09:57 EDT, before any output)
+
+**Why:**
+* On nested, failed seeds ignore a swapped state and follow a swapped input (203-4 / 203-8), while converged seeds carry the state.
+* Every GSM8K latent model so far is one-pass-dominated: K′1/K′10 0.74–0.95, THINK-NECESSARY fails.
+* Is that the same input-recomputing mode? GSM8K problems have no shared tree shape, so no exact hybrid exists. The test uses own / donor answers and memory-free floors instead.
+
+**Models:** final model.pt of A gsm_lat_aug_s1, B gsm_lat_augrs_s1, W gsm_lat_warm_s1, F-P gsm_lat_factor_s1, J1 gsm_lat_jcotl1_s1, and J0 gsm_lat_jcot_s1 when it lands.
+* One local card (3070), bf16, eval_bs 64 (the original eval bs); card / dtype / bs recorded.
+
+**Items:** GSM8K test.
+* Recipients x_r = items the model answers correctly clean at K′ = 10.
+* Each gets a donor x_d drawn from the same model's clean-correct items (rng 20701), with y_d ≠ y_r (both numeric answers).
+* Readable if ≥ 100 recipients. Reported overall and for m ≤ 2 vs m ≥ 3.
+
+**Arms (K = 10):**
+* **STATE-SWAP(t), t ∈ {1, 2}:** passes 1..t on x_d, then passes t+1..K and the decoder on x_r. Reported: P(answer = y_r) (OWN-KEPT) and P(answer = y_d).
+* **ZERO-STATE:** K′ = 0 on x_r (memory-free), the floor for OWN-KEPT.
+* **INPUT-SWAP(k), k ∈ {1, 2}:** passes 1..k on x_r, then passes k+1..K and the decoder on x_d. Reported: P(answer = y_d) (INPUT-FOLLOW) and P(answer = y_r) (CARRIED).
+* **INPUT-SWAP-THINK** (descriptive): as INPUT-SWAP, but the decoder keeps x_r's text.
+
+**Readings:**
+* **RECOMPUTES-FROM-INPUT** if both hold, on readable models:
+  - OWN-KEPT(2) ≥ 0.8 × OWN-KEPT clean (= 1 on clean items, so ≥ 0.8): the swapped state barely moves the answer;
+  - INPUT-FOLLOW(1) ≥ 0.8.
+* **CARRIES-STATE** if OWN-KEPT(2) ≤ 0.5 and CARRIED(1) ≥ 0.3.
+* Otherwise MIXED.
+* **Descriptive:**
+  - ZERO-STATE vs STATE-SWAP: a misleading memory vs an absent one;
+  - J1 / J0 vs W, since §206's J1 is less one-pass-dominated (K′1/K′10 0.64);
+  - m ≥ 3 vs m ≤ 2.
+
+**Prediction (central, CONJECTURE):** RECOMPUTES-FROM-INPUT for A / B / W / F-P (OWN-KEPT(2) about 0.85, INPUT-FOLLOW about 0.85), and MIXED for J1.
+
+**Gates:**
+* x_d = x_r reproduces the clean answers bitwise at the same bs / card.
+* The plain path is bitwise.
+* A new script; no boxes/*.py edits.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
