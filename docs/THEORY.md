@@ -15648,6 +15648,15 @@ Each registers separately, after T1 / T2.
   - the structure match and y_mir are checked on 10k generator items (the swapped values change the mirror answer);
   - one card (3070), bf16, the original eval bs, recorded.
 
+**Note 203-5a / 203-6a (2026-10-14 21:15 EDT; before any output of either; Audit's review).**
+* **203-5 (CONSUMED-MASK) is kept as registered.**
+  - If BOTH M-CONS and M-UNCONS drop in converged models, the filler token's off-distribution-ness (the SIM-CoT ZERO lesson, note 204-2) is reported as a candidate beside MASK-DISRUPTS.
+  - Both arms use the same filler, so their difference stays the specificity reading.
+* **203-6 (INPUT-SWAP) is the second $0 arm Audit asked for** (the converse of SERIAL, the protocol of 2609.01924).
+  - Primary: from pass k + 1 the donor's input replaces the recipient's in the think passes AND the answer decoder. That matches Huginn, whose output head has no separate text channel.
+  - **Added descriptive variant, INPUT-SWAP-THINK:** only the think passes switch to x_d; the answer decoder keeps [EOT, x_r, " ="]. It separates think-loop recomputation from decoder-side recomputation.
+  - Readings as in 203-6, with an extra share: P(answer = y_r).
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
