@@ -8,7 +8,7 @@
   "bs_eval": 250,
   "torch": "2.14.0+cu130",
   "driver": "591.86",
-  "script_git": "3f96e6a65d5f7ab51a39cce442bae85ce2f4fa6a"
+  "script_git": "edb8e9f2e1189bffbfca9d9da87e30dca937a72d"
  },
  "serial_cond": {
   "s170": {
@@ -1730,6 +1730,78 @@
   "driver": "591.86",
   "script_git": "3f96e6a65d5f7ab51a39cce442bae85ce2f4fa6a",
   "sec": 2863,
+  "done": true
+ },
+ "pca_swap": {
+  "t": 2,
+  "n_ccc": 4471,
+  "strata": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "n_diff": 20000,
+  "raw_items": 27212,
+  "rank": 20000,
+  "method": "exact PCA (not randomized: the exact Gram eigendecomposition is feasible at n_diff and strictly more accurate) of the uncentred state differences of a separate pool of n_diff pairs built like B (make_pair, rng 20501, fresh train_items disjoint from TE; no ccc filter), Gram matrix in float64 (CPU eigh)",
+  "k": {
+   "1024": {
+    "k_eff": 1024,
+    "ycf_iia_ccc": 0.7065533437709685,
+    "own": 0.14851263699396108,
+    "ydonor": 0.016998434354730484,
+    "captured_energy_B": 0.9821530596957587,
+    "ycf_by_n": {
+     "3": 0.7927272727272727,
+     "4": 0.7840616966580977,
+     "5": 0.7061068702290076,
+     "6": 0.6808510638297872,
+     "7": 0.6538952745849298,
+     "8": 0.6477419354838709
+    }
+   },
+   "4096": {
+    "k_eff": 4096,
+    "ycf_iia_ccc": 0.9051666293893983,
+    "own": 0.04182509505703422,
+    "ydonor": 0.00782822634757325,
+    "captured_energy_B": 0.9958018582792431,
+    "ycf_by_n": {
+     "3": 0.889090909090909,
+     "4": 0.929305912596401,
+     "5": 0.9173027989821882,
+     "6": 0.9224030037546934,
+     "7": 0.8914431673052363,
+     "8": 0.8761290322580645
+    }
+   },
+   "16384": {
+    "k_eff": 16384,
+    "ycf_iia_ccc": 0.9136658465667636,
+    "own": 0.0375754864683516,
+    "ydonor": 0.006709908297919929,
+    "captured_energy_B": 0.9993747665729987,
+    "ycf_by_n": {
+     "3": 0.8963636363636364,
+     "4": 0.9331619537275064,
+     "5": 0.9211195928753181,
+     "6": 0.9299123904881101,
+     "7": 0.9029374201787995,
+     "8": 0.8929032258064517
+    }
+   }
+  },
+  "reading": "COMPACT-FIT-LIMITED",
+  "card": "NVIDIA GeForce RTX 3070",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "edb8e9f2e1189bffbfca9d9da87e30dca937a72d",
+  "sec": 908,
   "done": true
  }
 }
