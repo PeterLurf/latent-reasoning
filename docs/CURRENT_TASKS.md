@@ -294,6 +294,10 @@ deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `va
   Long derivations go in `docs/THEORY_*.md` with CPU check scripts in `theory/`. The user wants proofs and research
   delegated to Opus subagents, with their key proofs reviewed before use. Audit checks for the section before
   approving spend. Bug fixes and logging-only changes are exempt.
+* **Seed-rate OC block and conservative censoring (user, 2026-10-14 ~21:1x, typed in Audit's session and relayed verbatim; recorded 21:12 EDT: "approve the 2 that u reccomend").** Every new registration, from IIT-SERIAL onward, carries:
+  - (a) a seed-rate OC block: P(pass rule | no effect) and P(pass | effect) at the panel's seed count, plus realised $;
+  - (b) conservative censoring: a run that never reaches the event by its end counts as a FAILURE, not missing, with the event-only mean reported beside it.
+  The same approval SKIPS §200 run D (text CoT with resampled numbers): §200's R1 B-D and R3 text pair stay UNAVAILABLE.
 * **Spend.**
   - Projection to Audit for > $5.
   - Keep ≥ $10 credit.

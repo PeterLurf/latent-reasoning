@@ -15323,6 +15323,13 @@ Each registers separately, after T1 / T2.
 * **Scorer fix (field path, no rule change):** score_s200 read `symbolic.main` as a number, but the field is {acc, n, sd_over_templates}. It also required all four cells for P8. The fix reads `main.acc` and decides P8 as FALSIFIED on any arm > 3 points, "pending" while an arm is missing. Re-run diff vs the committed output: only the P8 fields changed. A fixture checks the pending branch.
 * **P-W8 comparator (descriptive):** A's aux exact by grounding is Q-steps 0.331 (n 281), R-steps 0.113 (n 363), unparsed 0.131 (n 1,054). Steps whose operands are earlier results are decoded about 3× worse than question-literal steps.
 
+**Note 200-6 (2026-10-14 21:12 EDT; the user's decision, typed in Audit's session at ~21:1x and relayed verbatim: "approve the 2 that u reccomend").**
+* **§200 run D (TEXT-COT with R_x + R_ν resampling) is SKIPPED.** It will not run.
+* §200's R1 (B − D) and R3's text pair stay **UNAVAILABLE** permanently. The §200 result stands as read (A − C below, RS-NEUTRAL on the latent pair only, P2 unreadable).
+* The same approval adopts two **standing registration rules** (docs/CURRENT_TASKS.md, Standing rules), applying from IIT-SERIAL onward:
+  - **(a) a seed-rate OC block:** P(pass rule | no effect) and P(pass | effect) at the panel's seed count, plus realised $;
+  - **(b) conservative censoring:** a run that never reaches the event by its end counts as a failure, not as missing, with the event-only mean beside it.
+
 ## 202. WARM-START-FROM-COT: does a CoT-trained trunk make §200's latent arm competitive at equal exposure? (the user's pre-approval relayed by Audit, 2026-10-14 ~12:0x, "ima preapprove wtv yall cooking up", ≤ $4; triggered by §200 reading BELOW; pre-registered 2026-10-14 16:41 EDT, before any §202 code or run)
 
 **Derivation and probes:** docs/THEORY_WARMCOT_DRAFT_2026-10-14.md (f368b9ca; Opus subagent, reviewed by Theory). Literature's check is d29ff05b. Tags as there; the probe data are POST-HOC.
