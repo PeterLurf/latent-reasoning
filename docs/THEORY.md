@@ -16299,6 +16299,12 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 
 **Cost:** $2.0 central / $3.0 high (passes 2–10 skip the question, so it is cheaper per item than A). Approved cap $3.20. Realised $ replaces the projection.
 
+**Note 208-1 (2026-10-15 11:40 EDT; before any §208 output; a procedure change, Audit's call on the timing).** The MEAN-ITER replay identity gate (G6), and the rest of the eval-only §5 script (MEAN-ITER(k), ONSET, transplant, LIT-RECALL / INT-PROGRESS / ANS-LIN, the clock readout), may be built while the cell trains, instead of before launch.
+* These are eval-only analyses of the final model.pt; nothing has to be recorded during training.
+* **G6 must pass on the smoke QO model before the cell lands,** and on the final model before any ITER-GAIN read.
+* The registered censoring already covers a failure: a MEAN-ITER replay failing its identity gate means ITER-GAIN is not credited.
+* The training-path gates (G1–G5, the no-question-token assert, G-TIME) stay before launch.
+
 ## 209. CODI-AT-OUR-BUDGET: is GSM8K's latent shortfall architecture or budget? (USER APPROVED 2026-10-15 ~11:37 EDT, "approve reccomendation", typed in Audit's session and relayed verbatim; one cell; cap $4; pre-registered 2026-10-15 11:39 EDT, before any §209 code or run)
 
 **Question:**
