@@ -493,3 +493,6 @@ Opus subagent for Theory, on Audit's lead after §207 (GSM-SWAP). **Not register
 6. **bf16 and batch size.** Every swap and probe reading runs at eval_bs 64 on the 3070 for both models. Clean-correct sets differ by card (§207's B borderline), so card / dtype / bs are recorded and never mixed between a cell and its comparator.
 7. **The γ = 1 closed loop** makes E_add deviate from t/K. P-B9's falsifier catches a large deviation. The energy split is descriptive.
 8. **One seed** (LR ≈ 0.6 for a null). A null does not show that the bottleneck cannot induce carry in some seed. Stage 2 (≥ 3 seeds) is a separate decision.
+
+## Addendum (Theory, 2026-10-15 10:54 EDT): a missed internal precedent
+* §179 READOUT, a decoder with no problem text, failed on CAPACITY for an 8-digit product. It is the nearest internal precedent for a question-free answer decoder and is cited here. QUESTION-ONCE (docs/THEORY_QONCE_DRAFT_2026-10-15.md) carries the full precedent table (§153 / §165 / §169 / §171 / §175 / §179).
