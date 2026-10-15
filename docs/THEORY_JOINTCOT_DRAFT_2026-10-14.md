@@ -423,3 +423,11 @@ Opus subagent for Theory. **Not registered.** Theory reviews; registration needs
   - CPU fp32, 3 threads, Idle, 23 min (1,403 s). Its forward is bitwise equal to GPT2KV.forward (gate 0.0).
 * `calc_jointcot.py` → `calc_jointcot.json`: κ, shares, the raw-teacher mapping, OC, cost, LoRA rate.
 * Rerun: `python -I <script>` from this folder.
+
+---
+
+## Addendum: Audit review (Theory, 2026-10-15 00:01 EDT; OK to go to the user)
+* **Power is the headline.** One seed: COUPLE at the central +0.03 has P(pass) ≈ 0.55, with false-pass up to 18%% at a 2-point seed SD. A HELPS needs a second seed (+$2–3 per cell).
+* **Wording.** J0 − W is the **"joint-CE effect (trunk protection + extra text-CoT exposure)"**, not pure protection. Only J1 − J0 isolates the coupling.
+* **Shortcut reading, registered beside COUPLE.** Post-read layers can partly meet the L1 from question-derived features without M_K. **COUPLE-HELPS with K′0 rising by ≥ T reads as a shortcut, not a success.** KD-ROUTE and the K′0 guard are the detectors.
+* **Options for the user:** the pair J0 + J1 ($4.04 / $6.00; Audit recommends it), or J1 alone ($2.02 / $3.00; cannot separate the coupling from the joint CE).
