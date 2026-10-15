@@ -15997,6 +15997,7 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - Factoring the per-pass target (a teacherless value, an operator and pointers) makes the latent arm somewhat less one-pass-dominated and gives better operand selection. It does not force serial computation: the model writes the values, as well as the plan, at pass 1 and reads them out by the pass token. Accuracy is unchanged at this budget.
   - This is the pass-token leak D5 / D5b predicted for F-P. Its closing arm (F-NR, NOPASS + RMS) ran only on the W base, so on this branch it is untested. A new decision.
 * **Spend:** about $2.56 of the $3.90 cap.
+* *(Added 09:17; Audit's independent reproduction.)* **Weighting caveat:** aux_suite logs no R-stratum counts (n_*_by_grounding). So the R-step t2 / t3 pooling (0.126 / 0.140) weights the passes by their all-grounding counts (470 : 352), per note 204-6's fallback. Equal weights give 0.118 / 0.130. The VALUE-LEAK / VALUE-EXACT ratio is about 0.90 either way, ≥ 0.7, so **P-F3 FALSIFIED is robust**. A later reading that needs exact R weights requires aux_suite to log n_*_by_grounding.
 
 ## 205. IIT-SERIAL: a whole-state interchange loss for seed stability (USER APPROVED 2026-10-15 ~01:4x, "Approve", typed in Audit's session and relayed verbatim; FULL / default design; cap $18; pre-registered 2026-10-15 01:49 EDT, before any §205 training run)
 
