@@ -120,10 +120,11 @@ def main():
     cap = comp = None
     if rq.get("R_QO") is not None and lr.get("1") and lr.get("10"):
         r1, rK = lr["1"]["Mt"], lr["10"]["Mt"]; fl1 = max(lr["1"].get(k_, {}).get("all", 0) for k_ in ("M0", "length_only", "y_only"))
-        fid = r1["nlit_ge4"] <= r1["nlit_le2"] - 0.10 + EPS; ret = rK["all"] <= r1["all"] - 0.10 + EPS
+        ac = q.get("A_operand_top1_by_nlit"); drop_A = (ac["le2"] - ac["ge4"]) if ac else 0.0     # difficulty control (draft §4.4), if supplied
+        fid = (r1["nlit_le2"] - r1["nlit_ge4"]) >= 0.10 + drop_A - EPS; ret = rK["all"] <= r1["all"] - 0.10 + EPS
         cap = bool(rq["R_QO"] <= 0.5 * RA + EPS and (fid or ret))
         comp = bool(min(r1["nlit_le2"], r1["nlit_ge4"], rK["nlit_le2"], rK["nlit_ge4"]) >= fl1 + 0.30 - EPS and not iter_gain and A and acc <= A["acc"] - T + EPS)
-        out.update(R_QO=rq["R_QO"], FIDELITY=fid, RETENTION=ret, fidelity_note="the difficulty control (A's aux-slot operand drop) is not in eval_qonce; FIDELITY read without it")
+        out.update(R_QO=rq["R_QO"], FIDELITY=fid, RETENTION=ret, fidelity_note=("difficulty control applied (A's drop %.3f)" % drop_A) if ac else "the difficulty control (A's aux-slot operand drop) is not in eval_qonce; FIDELITY read without it")
     out.update(QO_CAPACITY_BOUND=cap, QO_COMPUTE_FAIL=comp)
     if A:
         d = e["acc"] - A["acc"]; out["ACC_vs_A"] = "LIFTS" if d >= T - EPS else ("HURTS" if d <= -T + EPS else "MATCHES"); out["acc_vs_A_delta"] = d
