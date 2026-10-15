@@ -1,0 +1,2 @@
+s185_rms_s1 REFIT {'B_iia_ccc_init': 0.7070006709908297, 'B_iia_ccc_best': 0.7070006709908297, 'val_best': 0.71, 'steps': 300, 'best_is_init': True}
+s185_rms_s1 P0 done 1142 s
