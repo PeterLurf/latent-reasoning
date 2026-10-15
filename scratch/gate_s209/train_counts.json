@@ -1,0 +1,22 @@
+{
+ "train_codi_filters": 382859,
+ "codi_filter_dropped": {
+  "tokens": 0,
+  "answer": 1761
+ },
+ "train_s200_filter_bad": 380567,
+ "s200_filter_counts": {
+  "lines": 384622,
+  "kept": 380567,
+  "wrong": 2959,
+  "unparsed": 1094,
+  "malformed": 2
+ },
+ "train_lines": 384622,
+ "epochs": 4.0,
+ "effective_bs": 128,
+ "steps_total": 11965,
+ "examples_seen_at_4ep": 1531520,
+ "examples_4x_codi_set": 1531436,
+ "note": "Theory 209-2: eval.json epochs = examples seen / train_codi_filters; computed locally from the shipped code (boxes/codi_port.load_items) before launch"
+}
