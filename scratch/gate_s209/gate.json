@@ -1,0 +1,139 @@
+{
+ "tok": {
+  "n": 2000,
+  "mismatch": 0,
+  "pass": true
+ },
+ "g3": {
+  "lora_params": 18874368,
+  "released_lora_params": 18874368,
+  "lora_modules": 48,
+  "released_lora_modules": 48,
+  "targets": [
+   "c_attn",
+   "c_fc",
+   "c_proj"
+  ],
+  "released_targets": [
+   "c_attn",
+   "c_fc",
+   "c_proj"
+  ],
+  "shapes_equal": true,
+  "prj_params": 1182720,
+  "released_prj_params": 1182720,
+  "trainable_total": 20057088,
+  "pass": true
+ },
+ "g2": {
+  "ce": {
+   "lora": 3.2589215979148483,
+   "prj": 46.857455341204215,
+   "tgt_req_grad": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  "distill": {
+   "lora": 0.14054001619879394,
+   "prj": 3.447142228461756,
+   "tgt_req_grad": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "teacher_hidden_req_grad": false
+  },
+  "ref_ce": {
+   "lora": 2.9960249658198266,
+   "prj": 0.0,
+   "tgt_req_grad": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  "pass": true
+ },
+ "g4_autoregressive": {
+  "latent_diffs": [
+   0.26859304308891296,
+   0.05543220043182373,
+   0.03047502040863037,
+   0.029038995504379272,
+   0.028652578592300415,
+   0.02780267596244812
+  ],
+  "pass": true
+ },
+ "g1": {
+  "acc": 0.4245640636846095,
+  "bench_acc": 0.4245640636846095,
+  "correct_equal": 1319,
+  "text_equal": 1319,
+  "n": 1319,
+  "params_loaded": 244,
+  "card": "NVIDIA GeForce RTX 3070",
+  "bs": 16,
+  "pass": true
+ },
+ "g4_smoke": {
+  "run": "scratch/_tmp/s209/smoke (3070 bf16, eff_bs 32 = micro 8 x 4, 200 steps)",
+  "loss": [
+   14.409,
+   4.719,
+   4.013,
+   3.885,
+   3.699,
+   3.485,
+   3.494,
+   3.505,
+   3.447,
+   3.367
+  ],
+  "preflight_eval32": "runs (acc 0.0 at init)",
+  "resume": "ckpt at 200 -> 220 steps, sec continues (651 -> 717)",
+  "sec_per_step_3070": 3.258,
+  "pass": true
+ },
+ "g5_mem": {
+  "card": "RTX 3070 8 GB",
+  "micro8_peak_gib": 4.276,
+  "micro16": "OOM on 8 GB",
+  "cloud": "--auto_micro from 64 down (budget 21 GiB), accumulation = 128 / micro (recorded)",
+  "pass": true
+ },
+ "g6_time": "pending: the cell's first 200 steps (HOSTPROBE + the \\$4 guard), as \u00a7206 G8",
+ "pass_all_local": true
+}
