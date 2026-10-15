@@ -16204,6 +16204,10 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - GSM8K's one-pass dominance is the nested failed seeds' "recompute from the input" mode (203-4 / 203-8; Huginn 2609.01924), in every GSM8K latent recipe tried (raw, resampled, warm-started, factored, joint-CoT plus coupling).
   - On GSM8K the latent memory is a scaffold, not a carrier. This is the most direct account yet of why the latent arm sits below text.
   - It points at an interchange-type objective for GSM8K (the IIT-SERIAL logic) as the matching lever. That would be its own derivation, as GSM8K lacks an exact hybrid target.
+* *(Added 10:05; Audit's independent reproduction from the five eval_gswap.json files.)*
+  - **B: "a 0.001 miss, descriptively the same pattern".** The rule form is not changed post hoc.
+  - **Presence ≠ use again:** the memory carries a generic "has thought" signal the decoder depends on (zero-state 0.20–0.51 vs donor-state 0.80–0.88), but no item-specific content it uses. Cf. §203 G-use and note 204-2's ZERO vs MEAN.
+  - **This reconciles §204:** VALUE-LEAK shows the values are DECODABLE from M_1 by the aux decoder, while §207 shows the answer decoder does not USE them; it recomputes from the question.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
