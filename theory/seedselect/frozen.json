@@ -1,0 +1,130 @@
+{
+ "spec": {
+  "version": "seedselect-draft-2026-10-14-rev2",
+  "windows": {
+   "R1": [
+    500,
+    2000
+   ],
+   "R2": [
+    300,
+    900
+   ],
+   "R3": [
+    2100,
+    8000
+   ],
+   "R3b": [
+    2100,
+    6000
+   ]
+  },
+  "detrend_knots": {
+   "R3": [
+    6000
+   ],
+   "R3b": []
+  },
+  "lf_min_period_steps": 500,
+  "min_resid_dof_spectral": 8,
+  "max_gap_factor": 1,
+  "primary": {
+   "reading": "R1",
+   "feature": "slope:loss",
+   "test": "two-sided",
+   "alpha": 0.05
+  },
+  "signs": {
+   "R1": {
+    "slope:loss": 1,
+    "level:loss": 1,
+    "lfa:loss": 1,
+    "lff:loss": 1,
+    "null_power:loss": -1,
+    "null_exp:loss": -1
+   },
+   "R2": {
+    "slope:loss": -1,
+    "level:loss": -1,
+    "lfa:loss": 1,
+    "lff:loss": 1,
+    "null_power:loss": -1,
+    "null_exp:loss": -1
+   },
+   "R3": {
+    "slope:loss": 1,
+    "slope:aux_ce": 1,
+    "slope:answer_ce": 1,
+    "level:aux_ce": 1,
+    "lfa:answer_ce": 1,
+    "lfa:aux_ce": 1,
+    "vw:write_grad_norm": -1,
+    "composite": 1,
+    "null_power:loss": -1,
+    "null_exp:loss": -1
+   }
+  },
+  "null": {
+   "primary": "power",
+   "secondary": "exp",
+   "c_grid": [
+    0.02,
+    8.0,
+    400
+   ],
+   "tau_grid_k": [
+    0.05,
+    100.0,
+    400
+   ],
+   "eps": 0.001,
+   "targets": {
+    "R1": [
+     "ratio",
+     2600,
+     4000
+    ],
+    "R2": [
+     "ratio",
+     1000,
+     2000
+    ],
+    "R3": [
+     "level",
+     48000
+    ],
+    "R3b": [
+     "level",
+     48000
+    ]
+   }
+  },
+  "beat_null": {
+   "alpha": 0.05,
+   "min_delta_C": 0.1,
+   "applies_to": [
+    "R1",
+    "R2"
+   ],
+   "n_perm": 100000
+  },
+  "R1c_register_min_pairs": 30,
+  "composite_R3": [
+   "slope:aux_ce",
+   "vw:write_grad_norm"
+  ],
+  "thresholds": {
+   "useful_C": 0.72,
+   "useless_ci": [
+    0.28,
+    0.72
+   ]
+  },
+  "n_perm": 100000,
+  "n_boot": 4000,
+  "seed": 20261014,
+  "dup_rel_tol": 1e-06
+ },
+ "spec_hash": "a8c5208fc83994d6df3fe41f05bedd6d20a3108f916d47fd9c41b46ed034320a",
+ "frozen_at": "2026-10-14 21:37:40"
+}
