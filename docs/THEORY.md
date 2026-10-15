@@ -15673,6 +15673,25 @@ Each registers separately, after T1 / T2.
   - Read with 203-5's thresholds as **descriptive only.** TOLERANCE-SEPARATES on it carries no registered weight. It would need a fresh pre-registration on new models to count.
 * **P0b liveness (descriptive, 5d3e7396):** with v₂-differing donors swapped after pass τ, the converged models follow only from τ = 2 (ycf 0.06 at τ 1 → 0.78–0.92 at τ 2). So v₂ enters the state at pass 2, one reduction per pass. The failed models are ≤ 0.03 at every τ.
 
+**Note 203-7: SEEDSELECT, the blind early-selection retrospective (2026-10-14 21:50 EDT; docs/THEORY_SEEDSELECT_DRAFT_2026-10-14.md rev 2; frozen SPEC a8c5208f at 21:37:40, Audit-verified; theory/seedselect/results.json). Early loss-curve features do not predict a seed's fate beyond what the curve's own saturation predicts.**
+* **PRIMARY R1** (the fsq120 S5 panel, 28 runs, 92 within-card pairs; outcome FLAG4; feature: the ln-loss slope over [500, 2000], with the hare sign pre-stated):
+  - **C 0.283, 95% CI 0.11–0.49, two-sided p 0.070.**
+  - **The verdict is INCONCLUSIVE.** C is just above the REVERSED cut of 0.28, and the CI is not inside (0.28, 0.72).
+  - In its reversed orientation, the feature's C (0.717) does not beat the curve-mechanics null: power-law null 0.707, ΔC 0.01 (p 0.25); exponential null ΔC 0.00.
+* **R2** (the §123–§130 plateau flag, 226 runs, 2,150 pairs): the slope reaches C 0.754 (p 1e-5), but the read is **EXPLAINED BY CURVE MECHANICS** (power-law null 0.734, exponential 0.741). Level is the same; the spectral features read NOT USEFUL.
+* **R1c** (long_acc outcome, 17 pairs; descriptive, since < 30): the slope reads C 0.12, against the hare sign, while the saturation nulls read 0.82–0.88.
+* **Nested R3 / R3b** (2–11 runs): descriptive only and uninformative, as the draft derived.
+* **Gates:**
+  - G2 flagged 32 trajectory pairs identical to 2k; no reading contains both members (checked).
+  - C3 excluded 14 design-stopped or never-started runs, none of them in R1 or R2.
+  - Conservative censoring was applied to every label.
+* **Reading:**
+  - With the curve-mechanics null in place, there is no evidence that early loss features select seeds. Their apparent signal (R2) is what a saturating curve predicts.
+  - **An "N short seeds, keep the best by loss" protocol is not supported.**
+  - The fsq120 prospective check (~$5–10) is not motivated.
+  - The nested route stays as the draft stated: a $0 full-state 8k checkpoint in future runs, plus a STATE feature (the 203-4 swap-follow rate). That is untested before entry.
+  - Per the OC block, a non-pass rules out only strong detectors (P(USEFUL | real C 0.8) = 0.62).
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
