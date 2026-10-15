@@ -15804,6 +15804,25 @@ Each registers separately, after T1 / T2.
     - k ∈ {1024, 4096, 16384}, evaluated on the B ccc pairs only.
   - It changes nothing for IIT-SERIAL, which is coordinate-free.
 
+**Note 203-9b: the fit-free PCA swap (2026-10-15 00:37 EDT; the 203-9 amendment's pre-stated check; Experiments; rms s1, t = 2, B ccc n 4,471; basis = exact PCA (20k × 20k Gram, float64) of a SEPARATE 20,000-pair pool, rng 20501, disjoint from B). COMPACT-FIT-LIMITED: the DAS ladder's null was the fitter, not the code.**
+* **Results:**
+
+  | k (top PCA directions of S_d − S_r) | ycf (IIA_ccc) | own | B difference energy captured |
+  |---|---|---|---|
+  | 1024 | 0.707 | 0.149 | 0.982 |
+  | 4096 | **0.905** | 0.042 | 0.996 |
+  | 16384 | 0.914 | 0.038 | 0.9994 |
+
+  - The whole-state swap reads 0.915.
+  - At k = 4096, ycf is 0.89–0.93 at every n 3–8.
+* **The rule (≥ 0.8 at some k ≤ 4096) reads COMPACT-FIT-LIMITED.** DAS at k ≤ 1024 read about 0.09–0.10, while the unoptimised PCA basis it was warm-started from already scores 0.707 at k = 1024. So the QR-parameterised fit at lr 3e-3 moved away from a good initialisation within the first 100 steps and early-stopped on flat validation.
+* **Scope of "compact" (stated):**
+  - 4096 directions hold 99.6% of the item-to-item difference energy. So this shows that **the item-varying part of S_2 lives in about 4096 of 49,152 dimensions (8%)**, and swapping it transfers the computation.
+  - It does **not** identify a v₂-SPECIFIC code. That would need a DAS fit that beats PCA at a given k, which the pilot's fitter never achieved.
+* **Archive P2** (4060, k ≤ 64; 0f1b16fb): label **VOID** (G-DISRUPT: a same-value patch drops own accuracy 0.82–0.88). Descriptive: necessity resample excess 0.76; locus additive 0.83. No weight.
+* **Methodology lesson:** DAS fits must log validation at step 0 (the initialisation) and keep "best including init". A warm start can be destroyed by the step size.
+* **Optional, not queued:** a refit from the PCA-1024 basis at lr 1e-4 with step-0 validation, to test whether a v₂-specific subspace beats PCA. It is descriptive and does not affect IIT-SERIAL.
+
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
 **Registered text:**
