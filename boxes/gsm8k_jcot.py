@@ -52,10 +52,8 @@ def lines_of(it):
     L = [ENC.encode("<<%s>>\n" % e) for e in it["eqs"]]; assert [t for l_ in L for t in l_] == it["cot"], "JOINT-COT: cot == its lines concatenated"; return L
 
 
-def teacher(g, its, dev, ac, layers=(), mode="drop", m_min=2, stats=None):
-    """-> (L_T1, L_T2 or None, {l: z (n_kd, 768) detached}, kd rows (indices into its)). T1 / T2 each one padded plain forward.
-    stats (a dict, diagnostics only): + "t2_top1" (per kd row: the T2 '###' argmax == the first answer token; C's 0.024, draft §3) and "t2_tf_exact"
-    (every answer label argmax-correct in the one teacher-forced T2 forward)."""
+def teacher(g, its, dev, ac, layers=(), mode="drop", m_min=2):
+    """-> (L_T1, L_T2 or None, {l: z (n_kd, 768) detached}, kd rows (indices into its)). T1 / T2 each one padded plain forward."""
     s1, l1, p1 = [], [], []
     for it in its:
         q = it["pre"] + it["cot"] + it["a1"] + [EOS]; s1.append(q); l1.append([-100] * len(it["pre"]) + q[len(it["pre"]):]); p1.append(len(it["pre"]) + len(it["cot"]))
@@ -82,11 +80,41 @@ def teacher(g, its, dev, ac, layers=(), mode="drop", m_min=2, stats=None):
         else:
             hf, _ = g(g.embed(x), None)
     lg = g.logits(hf[:, :-1]).float(); L2 = Fn.cross_entropy(lg.reshape(-1, lg.shape[-1]), torch.tensor(lb, device=dev)[:, 1:].reshape(-1), ignore_index=-100)
-    if stats is not None:
-        am = lg.argmax(-1).cpu().numpy(); y_ = np.asarray(lb)[:, 1:]
-        stats["t2_top1"] = [bool(am[r, p] == s2[r][p + 1]) for r, p in enumerate(pT)]
-        stats["t2_tf_exact"] = [bool(((am[r] == y_[r]) | (y_[r] == -100)).all()) for r in range(len(s2))]
     return L1, L2, z, r2
+
+
+def t2_seqs(its):
+    """T2 (pre + lines[:m-1] + a1 + EOS) for every item of its -> (sequences, '###' positions)."""
+    s, p = [], []
+    for it in its:
+        body = it["pre"] + [t for l_ in lines_of(it)[:-1] for t in l_]; q = body + it["a1"] + [EOS]; assert q[len(body)] == ANS, "JOINT-COT: T2 '###'"
+        s.append(q); p.append(len(body))
+    return s, p
+
+
+def teacher_z(g, its, dev, ac, layers, mode="drop"):
+    """diagnostics: the coupling targets only (no CE, no logits) at the '###' of T2 (drop) or T1 (full), for every item of its -> {l: (n, 768)}."""
+    if mode == "full":
+        s = [it["pre"] + it["cot"] + it["a1"] + [EOS] for it in its]; p = [len(it["pre"]) + len(it["cot"]) for it in its]
+        assert all(q[p_] == ANS for q, p_ in zip(s, p)), "JOINT-COT: T1 '###'"
+    else:
+        s, p = t2_seqs(its)
+    ids_, _ = pad(s); x = torch.tensor(ids_, device=dev)
+    with ac():
+        _, caps = fwd_plain_layers(g, x, torch.tensor(p, device=dev), layers)
+    return {l: c.detach().float() for l, c in caps.items()}
+
+
+def t2_stats(g, its, dev, ac):
+    """diagnostics (no grad by the caller): per item, the T2 '###' argmax == the first answer token (top1; C's 0.024, draft §3) and every answer
+    label argmax-correct in the one teacher-forced T2 forward (tf_exact) -> (top1 list, tf_exact list)."""
+    s, p = t2_seqs(its); ids_, _ = pad(s); x = torch.tensor(ids_, device=dev)
+    with ac():
+        hf, _ = g(g.embed(x), None)
+    am = g.logits(hf[:, :-1]).argmax(-1).cpu().numpy(); t1_, tf_ = [], []
+    for r, (q, p_) in enumerate(zip(s, p)):
+        t1_.append(bool(am[r, p_] == q[p_ + 1])); tf_.append(bool(all(am[r, j - 1] == q[j] for j in range(p_ + 1, len(q)))))
+    return t1_, tf_
 
 
 def t2_prefixes(its):
@@ -123,8 +151,7 @@ def route(m, its, dev, ac, layers, think, Ks, mode="drop", norm="teacher_std", k
     with torch.no_grad():
         Z = {l: [] for l in layers}
         for i in range(0, len(its), bs):
-            _, _, z_, r_ = teacher(m.g, its[i:i + bs], dev, ac, layers, mode, 0)
-            assert len(r_) == len(its[i:i + bs])
+            z_ = teacher_z(m.g, its[i:i + bs], dev, ac, layers, mode)
             for l in layers:
                 Z[l].append(z_[l])
         Z = {l: torch.cat(v) for l, v in Z.items()}; sig = sig_of(Z, norm); out = {}

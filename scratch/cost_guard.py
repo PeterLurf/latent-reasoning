@@ -14,7 +14,10 @@ import time
 import sys
 ROOT = "D:/Latent"; os.chdir(ROOT); V = "C:/Users/peter/.local/vastai/vast.sh"; KEY = os.path.expanduser("~/.ssh/runpod_ed25519")
 TAG, CAP, STEPS = sys.argv[1], float(sys.argv[2]), int(sys.argv[3]); CELLS = {int(c.split(":")[0]): c.split(":")[1] for c in sys.argv[4:]}
-HIGH = {int(c.split(":")[0]): float(c.split(":")[2]) for c in sys.argv[4:]}; EVAL_SETUP_H = 0.35; MARKS = (1000, 4000)
+HIGH = {int(c.split(":")[0]): float(c.split(":")[2]) for c in sys.argv[4:]}; EVAL_SETUP_H = 0.35
+MARKS = tuple(int(x) for x in os.environ.get("GUARD_MARKS", "1000,4000").split(","))             # §206 (Audit): GUARD_MARKS=200,1000,4000 (G8 at J1's step 200)
+MIRROR = {int(k): int(v) for k, v in (x.split("=") for x in os.environ.get("GUARD_MIRROR", "").split(",") if x)}   # n=m: n without data projects at m's figure
+STOP = os.environ.get("GUARD_STOP", "") == "1"                                                   # §206 (Audit): on ALERT destroy every started cell (vdestroy)
 
 
 def log(s):
@@ -62,7 +65,7 @@ def main():
             if rec is None or dph is None or rec[0] < 200:
                 continue
             sps = rec[1] / rec[0]; hours = STEPS * sps / 3600 + EVAL_SETUP_H; proj[n] = hours * dph; info[n] = {"step": rec[0], "s_per_step": round(sps, 3), "dph": dph, "proj_usd": round(proj[n], 2)}
-        pair = sum(proj.get(n, HIGH[n]) for n in CELLS) + 0.04 * bad
+        pair = sum(proj.get(n, proj.get(MIRROR.get(n), HIGH[n])) for n in CELLS) + 0.04 * bad
         for n in CELLS:
             if n in info:
                 for mark in MARKS:
@@ -70,7 +73,11 @@ def main():
                         done[n].add(mark)
                         log("CHECK b%d @%d: %s | pair projection $%.2f (cells with data %s, others at HIGH %s; BAD HOSTs %d)" % (n, mark, info, pair, sorted(proj), HIGH, bad))
                         if pair > CAP:
-                            log("ALERT pair projection $%.2f > cap $%.2f - pause decision to Audit / the user" % (pair, CAP)); raise SystemExit(3)
+                            log("ALERT pair projection $%.2f > cap $%.2f - pause decision to Audit / the user" % (pair, CAP))
+                            if STOP:
+                                for n2, (iid2, _, _) in hosts()[0].items():
+                                    r_ = subprocess.run(["bash", "scratch/vdestroy.sh", iid2], capture_output=True, text=True, timeout=180); log("STOP b%d: vdestroy %s rc %d" % (n2, iid2, r_.returncode))
+                            raise SystemExit(3)
         if all(set(MARKS) <= done[n] for n in done):
             log("guard done: both cells past 4k; last pair projection $%.2f" % pair); return
         time.sleep(600)
