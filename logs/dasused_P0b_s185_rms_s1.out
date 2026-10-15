@@ -1,0 +1,4 @@
+P0b t 1 pairs 5540 drops {'not_distinct': 1182, 'ok': 5540, 'div0': 278} gates {'CF': True, 'HYB': True, 'DISTINCT': True} n_ccc 5528 whole {'ycf': 0.6387481910274964, 'ydonor': 0.00886396526772793, 'yown': 0.29160636758321273, 'n': 5528}
+P0b t 2 pairs 4483 drops {'ok': 4483, 'no_late_leaf': 335, 'not_distinct': 916, 'div0': 266} gates {'CF': True, 'HYB': True, 'DISTINCT': True} n_ccc 4471 whole {'ycf': 0.9147841646164169, 'ydonor': 0.006933571907850593, 'yown': 0.03712815924849027, 'n': 4471}
+P0b t 3 pairs 3548 drops {'no_late_leaf': 567, 'ok': 3548, 'not_distinct': 676, 'div0': 209} gates {'CF': True, 'HYB': True, 'DISTINCT': True} n_ccc 3535 whole {'ycf': 0.9253182461103253, 'ydonor': 0.007637906647807638, 'yown': 0.02545968882602546, 'n': 3535}
+s185_rms_s1 P0 done 300 s
