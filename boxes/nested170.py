@@ -647,6 +647,9 @@ def main():
                     "'nmax:K:final_len'; --steps must equal the cap (#gated x max_steps + final_len); LR = the cosine over that cap; '' = fixed-step --anneal")
     ap.add_argument("--csr", default="", help="§199 CSR (Theory 199-A): 'w,lam_min,lam_post,tau,start' - the contraction-schedule regulariser on the aux path's per-pass read R_t, active from step start ('' = off)")
     ap.add_argument("--keep_ckpt_steps", default="", help="§199: comma steps at which a model-only copy ckpt_model_<step>.pt is kept (for the local path_indep probe)")
+    ap.add_argument("--iit", default="", help="IIT-SERIAL (boxes/iit_serial.py): 'w_I,w_S,B_I' - the gamma-weighted interchange (IIT) + same-state (SIIT) terms, "
+                    "one separate graph after the main backward, only while gamma(step) > 0 ('' = off)")
+    ap.add_argument("--iit_tau", type=int, default=1, help="IIT-SERIAL: the swap pass tau"); ap.add_argument("--iit_nmax", type=int, default=0, help="IIT-SERIAL: pairs only from items n <= nmax (0 = all)")
     ap.add_argument("--grokfast", default="", choices=["", "ema"], help="§196: Grokfast EMA gradient filter (grokfast_ema) after backward, before the clip; '' = off")
     ap.add_argument("--gf_alpha", type=float, default=0.98); ap.add_argument("--gf_lamb", type=float, default=2.0)
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
@@ -820,6 +823,11 @@ def main():
         return ans, ntok
 
     f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]; lam_now = [0.0]; aux_hist = []
+    IITW = None; iit_hist = []; iit_calls = [0]
+    if a.iit:                                                               # IIT-SERIAL: own rng (seed + 20500), never the training stream
+        import boxes.iit_serial as IIT
+        IITW = [float(v_) for v_ in a.iit.split(",")]; assert len(IITW) == 3 and a.arm == "inject" and not a.k_window, "--iit: 'w_I,w_S,B_I', inject arm, no --k_window"
+        iit_rng = np.random.default_rng(a.seed + 20500)
     KW = [int(x_) for x_ in a.k_window.split(",")] if a.k_window else None; rng_kw = np.random.default_rng(17900 + a.seed); kcount = {}; loss_log = []
     if KW:
         assert a.arm == "inject" and K >= a.n_max_train + KW[1], "§177 (f): --think_k must cover the largest bucket's K (memcheck / calibration)"
@@ -1059,6 +1067,11 @@ def main():
         else:
           for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch]); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
+        if IITW is not None and m is not None and float(m.mem.gamma) > 0:   # IIT-SERIAL: its own graph after the main backward (draft §2.4); weight gamma(step)
+            l_iit, li_ = IIT.iit_loss(m, its, dev, ac, K, iit_rng, a.iit_tau, a.iit_nmax, int(IITW[2]), IITW[0], IITW[1]); iit_calls[0] += 1
+            if l_iit is not None:
+                (float(m.mem.gamma) * l_iit).backward()
+            iit_hist.append(li_)
         if m is not None:
             from boxes.deltas5 import write_grad_norm
             wwin.append(write_grad_norm(m))
@@ -1103,6 +1116,10 @@ def main():
                 if a.aux_hold:                                              # §182 HOLD: the separate hold term
                     rec["hold_aux_ce"] = float(np.mean([x_[2] for x_ in aux_hist])) if aux_hist else None
                 aux_hist.clear()
+            if IITW is not None:                                            # IIT-SERIAL in-training fields (iit_ce / siit_ce per record; calls so far)
+                hs_ = [h_ for h_ in iit_hist if h_.get("iit_pairs")]
+                rec.update({"iit_ce": float(np.mean([h_["iit_ce"] for h_ in hs_])) if hs_ else None, "siit_ce": float(np.mean([h_["siit_ce"] for h_ in hs_])) if hs_ else None,
+                            "iit_pairs_mean": float(np.mean([h_["iit_pairs"] for h_ in iit_hist])) if iit_hist else None, "iit_calls": iit_calls[0]}); iit_hist.clear()
             if m is not None and wwin:
                 md_ = float(np.median(wlast)) if wlast else 0.0; mx_ = float(np.max(wwin)); late = step > a.write_mix_start * sc
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
