@@ -1161,5 +1161,34 @@
   "script_git": "58514020b98e3b5c040c99a7dbf53be8b9757f9b",
   "sec": 406,
   "done": true
+ },
+ "p1": {
+  "D": 49152,
+  "k": 64,
+  "fit_bs": 64,
+  "t": 2,
+  "n": 8,
+  "ckpt_passes": true,
+  "peak_gib_micro1": 1.4850902557373047,
+  "grad": {
+   "R_grad_norm": 1.8284636735916138,
+   "model_params_frozen": true,
+   "pass": true
+  },
+  "fit_micro": 1,
+  "G_MEM": {
+   "pass": true,
+   "limit_gib": 6.5
+  },
+  "s_per_step": 1.405117564201355,
+  "time_steps": 50,
+  "card": "NVIDIA GeForce RTX 3070",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "58514020b98e3b5c040c99a7dbf53be8b9757f9b",
+  "sec": 74,
+  "done": true
  }
 }
