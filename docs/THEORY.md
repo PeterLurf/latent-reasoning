@@ -15656,6 +15656,9 @@ Each registers separately, after T1 / T2.
   - Primary: from pass k + 1 the donor's input replaces the recipient's in the think passes AND the answer decoder. That matches Huginn, whose output head has no separate text channel.
   - **Added descriptive variant, INPUT-SWAP-THINK:** only the think passes switch to x_d; the answer decoder keeps [EOT, x_r, " ="]. It separates think-loop recomputation from decoder-side recomputation.
   - Readings as in 203-6, with an extra share: P(answer = y_r).
+* *(Added 2026-10-14 21:16 EDT, before any output; Audit.)*
+  - **y_mir takes the donor's late leaf by construction:** it is the donor's own tree with only the nodes reduced at passes ≤ k replaced by the recipient's values, so every unreduced leaf, including the late bare leaf the decoder reads, is the donor's.
+  - **Floor, reported beside it on the same pairs:** each model's K′ = 0 accuracy on x_d (decoder only, no think passes), the decoder-only recomputation floor for INPUT-FOLLOW.
 
 ## 204. STEP-TARGET-FACTOR: a factored per-pass target on GSM8K-Aug (Audit's lead; USER APPROVED 2026-10-14 ~19:0x, "approve 12 and clean", relayed verbatim by Audit, ≤ $3.90; launches only after §202 lands; pre-registered 2026-10-14 19:13 EDT, before any §204 code or run)
 
