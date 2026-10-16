@@ -461,6 +461,9 @@ def main():
     ap.add_argument("--time_steps", type=int, default=0, help="G-TIME: train this many steps on forced final-stage batches (n <= 8, K 12), write timing.json + eval.json, exit")
     ap.add_argument("--mem_check", action="store_true", help="peak memory: one training step on the longest n <= 8 items at K 12 + an n 16 eval forward at K' 24 -> mem_check.json")
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--fp32", action="store_true")
+    ap.add_argument("--auto_micro", action="store_true", help="before training: the smallest micro in 1, 2, 4, 8 whose forward + backward on the longest final-stage "
+                    "batch (n <= 8, K 12, fixed items) peaks <= --mem_budget GiB (no optimizer step; the run's rngs untouched) -> logged")
+    ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--stop_at", type=int, default=0, help="smokes (G1b): stop after this step, schedules unchanged (no final eval)")
     ap.add_argument("--keep_ckpt_steps", default="", help="comma steps (0 = after calibration) at which a model-only copy ckpt_model_<step>.pt is kept (G1b smoke)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
@@ -494,6 +497,23 @@ def main():
         json.dump(cal, open(os.path.join(a.out, "calibration.json"), "w", newline="\n"), indent=1)
         json.dump({**vars(a), **info}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
         print("CALIBRATION max_m99 %.4f ratio/e5 %s" % (cal["max_m99"], cal["ratio_test"]["ratio_over_e5"]), flush=True)
+    if a.auto_micro and dev.startswith("cuda"):                             # the largest training shape (final stage, K 12, the longest items)
+        big = sorted(N.train_items(np.random.default_rng(0), 8 * a.bs, ns[-1], set()), key=lambda it: -len(it["syms"]))[:a.bs]; am = {}
+        for mic in (1, 2, 4, 8):
+            torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); ok = True
+            try:
+                for k_ in range(mic):
+                    sub = big[k_ * (a.bs // mic):(k_ + 1) * (a.bs // mic)]; L_, _, _ = vb_loss(m, sub, [a.kmax] * len(sub), dev, ac, a.rec_w, 0.0)
+                    (L_ / mic).backward(); del L_
+                    if a.mct:                                               # the MCT path's extra memory (p_TF 1) on the same chunk
+                        L_, _, _ = vb_loss(m, sub, [a.kmax] * len(sub), dev, ac, a.rec_w, 1.0, np.random.default_rng(0)); (L_ / mic).backward(); del L_
+            except torch.OutOfMemoryError:
+                ok = False
+            m.zero_grad(set_to_none=True); pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30; am[str(mic)] = round(pk, 2) if ok else "OOM"
+            if ok and pk <= a.mem_budget:
+                a.micro = mic; break
+        torch.cuda.empty_cache(); log_am = {"auto_micro": a.micro, "peak_gib_by_micro": am, "mem_budget": a.mem_budget}; print("AUTO_MICRO", log_am, flush=True)
+        json.dump(log_am, open(os.path.join(a.out, "auto_micro.json"), "w", newline="\n"), indent=1)
     KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
     if 0 in KEEP and step0 == 1:
         torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
