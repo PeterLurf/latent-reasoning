@@ -292,7 +292,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **W-LIFT NEUTRAL (W 0.146 vs A 0.147); R1-W below (C+ 0.336); LOOP-FORMED, THINK-NECESSARY fails; the CoT trunk is forgotten by 2k (cot_valid 0.07-0.13); §204 -> A base** |
 | 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | **ACC MATCHES (F-P 0.139 vs A 0.147); SHORTCUT-RATIO 0.74 vs 0.85 (P-F5 holds); VALUE-SERIAL FALSIFIED (values readable from M_1: one-pass chain); THINK-NECESSARY / DEEP fail** |
-| 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | running (s1, s2) | **FAILED by rule: s3 MET-NOT-ENTERED (hybrid 0.996 vs control 0.003, but no entry, acc = control); account falsified at 1 seed; s1 / s2 pending for HARMFUL** |
+| 205 | IIT-SERIAL (user-approved FULL design, cap $18.50): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels | closed | **FAILED (s3 MET-NOT-ENTERED, account falsified); MET 3/3, ENTERED 2/3; no HARMFUL (s1 / s2 entered 21k / 22k vs 19k); $15.41** |
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
@@ -17079,6 +17079,20 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
    - **CLOCK-FOREIGN:** insert − replace ≤ −0.10 (an index-keyed clock).
    - For future stall-trained cells, PF ∧ FOREIGN replaces STALL-SHIFT. For the §211 cells, which have no stall training, 211-13's STALL-SHIFT stands.
 6. **REDTEAM2's VB-2 blockers** (the logged answer CE becomes self-referential under R1-C; VB-2 narrows the constraint) belong to the bottleneck draft and are fixed there. They do not affect §211.
+
+**§205 final result (2026-10-16 03:44 EDT; all three seeds landed; theory/score_s205.py; realised $15.41 of $18.50 (s1 $3.44, s2 $6.02, s3 $5.95, $0 on bad hosts)). ARM FAILED by the registered rule (s3 MET-NOT-ENTERED, the account falsifier). HARMFUL does not fire. MET 3/3, ENTERED 2/3.**
+* **s2 (b297, paired, 3090 / 570.172.08):** ENTERED-AND-MET.
+  * entry(0.5) 22k vs control 19k (entry(0.1) 26k vs 28k); final bin 0.001;
+  * hybrid_ccc 0.9996 / 1.0 / 1.0 at τ1 / τ2 / τ3 (n 2,265 / 807 / 51); SIIT 1.0;
+  * g1 0.110, g2 0.081; acc_from_donor 0.098; delta_cos 0.548;
+  * acc n 1..9 ≥ 0.990, then n 10 0.366, n 11..16 0.12–0.15.
+* **s1:** ENTERED-AND-MET (entry 21k vs 19k). **s3:** MET-NOT-ENTERED (205-4 / 205-5: it writes recoverable values only at passes 1–2).
+* **Predictions:** P-I1 (MET 3/3, 0.6) held. P-I2 (s3 enters, 0.75) missed. P-I3 (no HARMFUL, 0.85) held. P-I7 (SUPPORTED, 0.35) missed.
+* **Reading:**
+  * A whole-state interchange loss is compatible with normal convergence: the two seeds whose controls enter also enter under IIT, 2–3k later.
+  * It does not rescue a failed seed. Where s3 still writes (passes 1–2) it carries and uses the state, but the IIT loss gives it no depth.
+  * Together with 205-5's item-level evidence (beyond training, 3 failed vs 5 converged: subtree height adds first-error hazard only in failed seeds), the seed lottery's separator lies in how deep sub-results are computed and written, not in whether a carried state is used.
+* **Still to run:** the registered descriptive 8k tests (203-4 swap-follow, 203-6 input swap on ckpt_model_8000.pt, s1 / s2 / s3), local, $0.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
