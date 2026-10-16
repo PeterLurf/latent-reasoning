@@ -2,14 +2,27 @@
  "seeds": {
   "1": {
    "cell": "s205_iit_s1",
-   "last_step": 0,
-   "paired": null,
-   "landed": false,
-   "entry_05": null,
-   "last_bin": null,
-   "entered": null,
-   "met": null,
-   "label": "pending (not landed)"
+   "last_step": 48000,
+   "paired": true,
+   "landed": true,
+   "entry_05": 21000,
+   "last_bin": 0.0009011537292044523,
+   "entered": true,
+   "hybrid_ccc_tau1": 1.0,
+   "met": true,
+   "n_ccc_tau1": 2265,
+   "g2": 0.09806451612903226,
+   "untrained_tau": {
+    "tau2": 1.0,
+    "tau3": 1.0
+   },
+   "siit_keep_ccc": 0.9995584988962473,
+   "g1": 0.11599999999999999,
+   "acc_from_donor": 0.096,
+   "delta_cos": 0.6022391319274902,
+   "one_pass_compute": false,
+   "clean_contractive": false,
+   "label": "ENTERED-AND-MET"
   },
   "2": {
    "cell": "s205_iit_s2",
@@ -50,8 +63,8 @@
  "HARMFUL": false,
  "arm": "pending",
  "account_falsifier": true,
- "event_only_mean_entry": null,
- "n_entered": 0,
- "n_landed": 1,
- "reading": "s1 pending (not landed) (entry None, last bin None, paired None, hyb None) | s2 pending (not landed) (entry None, last bin None, paired None, hyb None) | s3 MET-NOT-ENTERED (entry None, last bin 1.073, paired True, hyb 0.9962546816479401) | ARM pending; HARMFUL False; entered 0/3 (landed 1); event-only mean entry None"
+ "event_only_mean_entry": 21000.0,
+ "n_entered": 1,
+ "n_landed": 2,
+ "reading": "s1 ENTERED-AND-MET (entry 21000, last bin 0.001, paired True, hyb 1.0) | s2 pending (not landed) (entry None, last bin None, paired None, hyb None) | s3 MET-NOT-ENTERED (entry None, last bin 1.073, paired True, hyb 0.9962546816479401) | ARM pending; HARMFUL False; entered 1/3 (landed 2); event-only mean entry 21000.0"
 }
