@@ -17750,6 +17750,13 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - **Prediction:** FAULT drops ge33 accuracy by about 0.05 × P(the neighbour's class differs) ≈ 0.04, so LFK_SENSITIVE is expected.
 - **Scorers:** score_s212 adds the fault reading and LFK_SENSITIVE to its D3 block. score_s213 enforces the precondition.
 
+**Note 213-2 (2026-10-16 14:45 EDT; Audit's points on 213-1, before N1's eval_lfk.json exists).**
+- **The FAULT arm runs on the same items and batches as intact.** eval_lfk.json["fault"] adds:
+  - **paired** {"bucket": {events_both, intact_correct, fault_correct, diff}}: the per-event difference over the events counted in both arms (faults end later events, so the event sets differ);
+  - **realised** {"ge33": {faults, faults_class_differs}}: faults_class_differs counts faulted events where slot j−1's reference class ≠ slot j's.
+- **These are reported beside the bucket accuracies.** The 213-1 rule is unchanged.
+- **One pre-stated branch:** if SENSITIVE fails **and** faults_class_differs < 0.03 × the ge33 events (0.045 expected), the control is re-run once at p 0.10 (rng 21303) as eval_lfk.json["fault2"], and the rule is applied to fault2. Otherwise a failed SENSITIVE stands, and (a′) is replaced by amendment.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

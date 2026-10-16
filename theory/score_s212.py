@@ -253,9 +253,18 @@ def lfk(d):
         return {"acc_le28": lo, "acc_29_32": acc("all_29_32"), "acc_ge33": hi, "events_ge33": n_hi, "readable": readable,
                 "by_kind": {k: acc(k) for k in sorted(S)}, "MEETS": bool(readable and hi >= lo - 0.01 - EPS)}
     o = read(f["slot"])
+    sens = lambda fo: bool(fo["readable"] and o["acc_ge33"] is not None and fo["acc_ge33"] <= o["acc_ge33"] - 0.02 + EPS and not fo["MEETS"])  # noqa: E731
     if "fault" in f:                                                        # note 213-1 S0-2b: the positive control (N1)
-        fo = read(f["fault"]["slot"]); o["fault"] = fo
-        o["SENSITIVE"] = bool(fo["readable"] and o["acc_ge33"] is not None and fo["acc_ge33"] <= o["acc_ge33"] - 0.02 + EPS and not fo["MEETS"])
+        fo = read(f["fault"]["slot"]); fo["paired"] = f["fault"].get("paired"); fo["realised"] = f["fault"].get("realised"); o["fault"] = fo
+        o["SENSITIVE"] = sens(fo)
+        rz = (f["fault"].get("realised") or {}).get("ge33") or {}
+        low = bool(rz and fo["events_ge33"] and rz.get("faults_class_differs", 0) < 0.03 * fo["events_ge33"])
+        o["fault_low_realised"] = low
+        if not o["SENSITIVE"] and low and "fault2" in f:                    # note 213-2: one re-run at p 0.10 decides
+            f2 = read(f["fault2"]["slot"]); f2["paired"] = f["fault2"].get("paired"); f2["realised"] = f["fault2"].get("realised")
+            o["fault2"] = f2; o["SENSITIVE"] = sens(f2)
+        elif not o["SENSITIVE"] and low:
+            o["SENSITIVE"] = None                                           # pending the 213-2 re-run
     return o
 
 
