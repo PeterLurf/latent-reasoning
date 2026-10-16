@@ -183,7 +183,7 @@ The definitions are in 211-1 / 211-13 / 211-15 / 211-16. Each part is also repor
 
 ---
 
-## Addendum 1 (2026-10-16, Audit's review of 6bde99cb): pass-global *use*, not just access
+## Addendum 1 (2026-10-16 03:51 EDT, Audit's review of 6bde99cb): pass-global *use*, not just access
 
 **The tension (Audit).** HISTORY-SWAP keeps every version addressable, but it *trains* the model to distrust older passes: on swapped items they carry no information (H2). That pushes behaviour toward recency. The user's intent is pass-global *use*.
 
