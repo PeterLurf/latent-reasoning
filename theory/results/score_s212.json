@@ -1,0 +1,114 @@
+{
+ "stage0": {
+  "N2": {
+   "RS": {
+    "D": null,
+    "D_control": 0.00016754628466113714,
+    "thin_cells": 12,
+    "readable": false,
+    "HISTORY_KEYED": false,
+    "HISTORY_FREE": false,
+    "HEAD_LIMITED": true
+   },
+   "HALT": {
+    "HALT_EXACT": true,
+    "exact_3_8": 0.948,
+    "NOT_PREMATURE": false,
+    "STALL_SHIFT": true,
+    "stall_shift": 0.9265236780632831,
+    "stall_qualifying": 4709,
+    "DEPTH_TIMING": false,
+    "C5_VB": false,
+    "CLOCK_HOLD": false,
+    "EDGE_COLLAPSE": false,
+    "STALL_COUNT": false,
+    "NO_DONE": false
+   },
+   "PF": null,
+   "HIST": {
+    "trunc_change_le8": -0.17625,
+    "trunc_change_9_12": -0.2645,
+    "HISTORY_HURTS": false,
+    "HISTORY_USED": true,
+    "HISTORY_IGNORED": false
+   },
+   "FOREIGN": null,
+   "REPAIR": null,
+   "STEP": null,
+   "DEEP": true
+  },
+  "N1": {
+   "RS": {
+    "D": 0.8292964244521338,
+    "D_control": -8.335417187630053e-05,
+    "thin_cells": 8,
+    "readable": true,
+    "HISTORY_KEYED": true,
+    "HISTORY_FREE": false,
+    "HEAD_LIMITED": true
+   },
+   "HALT": null,
+   "PF": null,
+   "HIST": {
+    "trunc_change_le8": 0.0,
+    "trunc_change_9_12": -0.015250000000000007,
+    "HISTORY_HURTS": false,
+    "HISTORY_USED": false,
+    "HISTORY_IGNORED": true
+   },
+   "FOREIGN": null,
+   "REPAIR": null,
+   "STEP": null,
+   "DEEP": true
+  },
+  "N3": {
+   "RS": {
+    "D": null,
+    "D_control": -0.00016883336147223137,
+    "thin_cells": 12,
+    "readable": false,
+    "HISTORY_KEYED": false,
+    "HISTORY_FREE": false,
+    "HEAD_LIMITED": true
+   },
+   "HALT": {
+    "HALT_EXACT": true,
+    "exact_3_8": 0.9886666666666667,
+    "NOT_PREMATURE": false,
+    "STALL_SHIFT": false,
+    "stall_shift": 0.12631792376317924,
+    "stall_qualifying": 4932,
+    "DEPTH_TIMING": false,
+    "C5_VB": false,
+    "CLOCK_HOLD": false,
+    "EDGE_COLLAPSE": false,
+    "STALL_COUNT": false,
+    "NO_DONE": false
+   },
+   "PF": null,
+   "HIST": {
+    "trunc_change_le8": -0.270125,
+    "trunc_change_9_12": -0.18425,
+    "HISTORY_HURTS": false,
+    "HISTORY_USED": true,
+    "HISTORY_IGNORED": false
+   },
+   "FOREIGN": null,
+   "REPAIR": null,
+   "STEP": null,
+   "DEEP": true
+  },
+  "GO": {
+   "G1": true,
+   "FT": false,
+   "S": null,
+   "RS_models_read": 3
+  }
+ },
+ "G1": {
+  "label": "pending (not landed)"
+ },
+ "FT": {
+  "label": "pending"
+ }
+}
