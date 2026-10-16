@@ -128,12 +128,13 @@ def part_acc(m, TE, dev, bs):
                     k_ = "%d,%d" % (t, int(alive[r_])); d_ = sc.setdefault(k_, [0, 0]); d_[0] += int(hit[r_]); d_[1] += 1
                     if 6 <= n <= 8:
                         val_ok += int(hit[r_]); val_n += 1
+            del r, dec, E                                                   # free the K' 24 rollout before the bank arms (06:2x 10-16: holding it OOMed n 16 on 8 GB)
             off0 = m.bank_off; m.bank_off = True                            # BANK-OFF (descriptive): every bank logit -inf, K' = n + 2
             rb = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(B, device=dev)}); m.bank_off = off0
             boff[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy(); del rb
             m.ver_keep = ablate_keep                                        # BANK-ABLATE as registered (draft §7; note 211-14): versions 1..t-2 masked
             rb = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(B, device=dev)}); m.ver_keep = None
-            abl[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy(); del r, rb, dec, E    # free this chunk's bank before the next (8 GB cards)
+            abl[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy(); del rb   # free this chunk's bank before the next (8 GB cards)
     by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 17)}  # noqa: E731
     by_ta = {k: {"acc": v[0] / v[1], "n": v[1]} for k, v in sorted(sc.items(), key=lambda kv: tuple(int(z) for z in kv[0].split(",")))}
     slopes = []
