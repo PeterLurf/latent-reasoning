@@ -1,0 +1,5 @@
+# THEORY §211 VERSION-BANK + READY-RECODE, N2 PURE-ANNEAL (main), seed 1 (registered 5e554c39, notes 211-1 / 211-2; scorer theory/score_s211.py 3d0d72af; user-approved Stage 0+1 via Audit, family cap $9, per-cell guard $3). boxes/vbank.py (Stage 0 gates scratch/gate_s211/*.json). RTX 3090, non-580, via scratch/s211_fill.sh: HOSTPROBE, then line 1 = G-TIME on forced final-stage batches (n <= 8, K 12) -> admission on its s/step; line 2 = the cell (48k, bs 64, --auto_micro, ckpt every 1k; off-host ckpt mirror). eval_vb.json is computed locally post-landing (fp32).
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s211_vb_pa_s1_gtime boxes.vbank --mode pa --seed 1 --steps 48000 --time_steps 60 --auto_micro
+boxes/runs_fsq/s211_vb_pa_s1 boxes.vbank --mode pa --seed 1 --steps 48000 --auto_micro --ckpt_every 1000
