@@ -180,3 +180,32 @@ The definitions are in 211-1 / 211-13 / 211-15 / 211-16. Each part is also repor
 5. **The constraint as experienced by the user.** VB-2G keeps the bank fully readable and recency is learned, but a model that learns recent-1 behaves RNN-like in function. That is reported (CARRY-LIKENESS, HIST-TRUNC), never imposed.
 
 **Premise falsifier:** Stage 0 reads HISTORY-FREE ∧ HEAD-LIMITED on every model. Then self-similarity is not the bottleneck, and the locality / structural-position cell (D's D3, Ito-style 2608.31067) comes first.
+
+---
+
+## Addendum 1 (2026-10-16, Audit's review of 6bde99cb): pass-global *use*, not just access
+
+**The tension (Audit).** HISTORY-SWAP keeps every version addressable, but it *trains* the model to distrust older passes: on swapped items they carry no information (H2). That pushes behaviour toward recency. The user's intent is pass-global *use*.
+
+**Change of default: HISTORY-INSERT replaces HISTORY-SWAP in G1.**
+- With probability p_h per item, at passes t ≥ 2, insert o ~ U{1..K_max} stored versions of another micro-batch item at the *old end* of the bank (ages shifted by o).
+- **All of the item's own versions are kept.** No extra forward pass is needed; masks handle lengths.
+- **H1′ [PROVED, same argument as H1 / H Prop 8(ii)].** On inserted items the bank index and the size of the bank are shifted by o, independently of the item's progress. So "t ≥ 9 ⇒ hold", the count rule and bank-size clocks pay L_rec > 0 on a positive-probability set. This holds for any p_h > 0, and the penalty scales with p_h.
+- **What it does not do [DERIVED].** It does not make the item's own history uninformative: H2 does not apply. Recompute or reuse from older *own* versions stays possible and rewarded where it helps. In-distribution history use, LIT2's TaH side, is untouched. Foreign entries are content-unrelated, so learning to ignore them is legitimate, not a bypass.
+- **New risk:** dilution from extra bank entries (Lemma 2), measured by MARGIN-SCALE.
+- **Consequence for readings:** FOREIGN-INSERT becomes trained-for, so it is descriptive in G1. **PF's k-axis plus FOREIGN-REPLACE stay decisive** for clocks, together with STALL, which is still untrained.
+
+**HISTORY-SWAP is kept as a triggered alternative (G1-S).** It runs only if G1 reads HISTORY-KEYED *and* HISTORY-HURTS: older versions measurably hurt depth (eval-time HIST-TRUNC gain ≥ 0.10 at n 9–12 with n ≤ 8 ≥ −0.03). That is LIT2's CoTFormer pattern. Its recency push is then the evidence-backed remedy, and it is reported to the user as such.
+
+**The choice p_h = 0.25** is a stated design choice, not an optimum.
+- Any p_h > 0 makes the clock rules non-zero-loss (H1′).
+- A larger p_h strengthens the anti-clock pressure but adds more dilution (INSERT) or more recency pressure (SWAP).
+- At 0.25, 75% of items train on a clean bank.
+- No derivation picks 0.25 over, say, 0.1.
+
+**(a) New reported reading beside VB2G-C1: HISTORY-USE.** At test, with no insert or swap, compare intact accuracy against recent-1 + V_0 (HIST-TRUNC):
+- **HISTORY-USED:** HIST-TRUNC drops n ≤ 8 by ≥ 0.03, or n 9–16 by ≥ 0.05. The model reads its older passes.
+- **HISTORY-IGNORED:** |Δ| ≤ 0.02 at both. The model behaves recent-1 in function, and that is reported to the user as recency-in-practice.
+- **HISTORY-HURTS** as in 211-16.
+
+The VB2G-C1 row states which of these holds.
