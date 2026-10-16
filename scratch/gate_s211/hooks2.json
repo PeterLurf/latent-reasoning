@@ -1,0 +1,27 @@
+{
+ "pa_float32": {
+  "ver_sub_self_bitwise": true,
+  "prefix_empty_bitwise": true,
+  "floor_finite": true,
+  "floor_maxdiff_V10": 262.04718017578125
+ },
+ "carry_float32": {
+  "ver_sub_self_bitwise": true,
+  "prefix_empty_bitwise": true,
+  "floor_finite": true,
+  "floor_maxdiff_V10": 27.220943450927734
+ },
+ "pa_float64": {
+  "ver_sub_self_bitwise": true,
+  "prefix_empty_bitwise": true,
+  "floor_finite": true,
+  "floor_maxdiff_V10": 262.04711372195203
+ },
+ "carry_float64": {
+  "ver_sub_self_bitwise": true,
+  "prefix_empty_bitwise": true,
+  "floor_finite": true,
+  "floor_maxdiff_V10": 27.220895583775373
+ },
+ "pass": true
+}

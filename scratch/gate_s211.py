@@ -213,5 +213,22 @@ def gate_verkeep(dev="cpu"):
     out["pass"] = all(v["all_true_bitwise"] and v["ablate_finite"] and v["ablate_maxdiff_V10"] > 0 for v in out.values()); return out
 
 
+
+def gate_hooks2(dev="cpu"):
+    """note 212-3 eval-only hooks: (b) ver_sub = the item's own stored V_1..V_o == intact bitwise; (c) prefix = [] == intact; (d) age_floor 2 changes V_t
+    (t >= 3) and stays finite; fp32 + fp64, PA (c 0) + CARRY, 10 passes."""
+    out = {}
+    for dt in (torch.float32, torch.float64):
+        for mode in ("pa", "carry"):
+            m = _model(mode, dt, dev); m.c_anneal.fill_(0.0); its = _items(5, 21110, 3, 8); x, pad, lens = VB.batch_x(its, dev); rows = {t: torch.arange(len(its)) for t in range(11)}
+            with torch.no_grad():
+                r0 = m.rollout(x, pad, 10, coda_rows=rows); rs = m.rollout(x, pad, 10, coda_rows=rows, ver_sub=[r0["S"][s_] for s_ in (1, 2, 3)])
+                rp = m.rollout(x, pad, 10, coda_rows=rows, prefix=[]); m.age_floor = 2.0; rf = m.rollout(x, pad, 10, coda_rows=rows); m.age_floor = None
+            eq = lambda a, b: all(torch.equal(u[pad], v[pad]) for u, v in zip(a["V"], b["V"])) and all(torch.equal(a["coda"][t][1][pad], b["coda"][t][1][pad]) for t in rows)  # noqa: E731
+            out["%s_%s" % (mode, str(dt)[6:])] = {"ver_sub_self_bitwise": eq(r0, rs), "prefix_empty_bitwise": eq(r0, rp),
+                                                  "floor_finite": all(bool(torch.isfinite(v).all()) for v in rf["V"]), "floor_maxdiff_V10": float((rf["V"][10] - r0["V"][10])[pad].abs().max())}
+    out["pass"] = all(v["ver_sub_self_bitwise"] and v["prefix_empty_bitwise"] and v["floor_finite"] and v["floor_maxdiff_V10"] > 0 for v in out.values()); return out
+
+
 if __name__ == "__main__":
-    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b, "verkeep": gate_verkeep}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
+    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b, "verkeep": gate_verkeep, "hooks2": gate_hooks2}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))

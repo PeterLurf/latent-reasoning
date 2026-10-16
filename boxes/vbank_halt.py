@@ -9,7 +9,8 @@ acc_halt = the coda answer at t_halt; never / stuck / gprog read at T_max and co
 frozen = never or stuck, with alive(Ê at the stop) recorded (frozen_nm8 = alive == n - 8).
 STALL (the registered §211 intervention): stored V_t := V_{t-1} at t = ceil(n/2), rolled to 24, on n 4..8 (9..12 descriptive); among items with intact
 t_halt = n: shift = P(stalled t_halt = n + 1); frozen1 = never / stuck with exactly 1 operator alive; other_never; at_n; ge_n2. Double STALL
-(copies at ceil(n/2) and ceil(n/2) + 1) -> P(t_halt = n + 2), descriptive. t_conv_dec = the first t >= 1 with Ê_t == Ê_{t-1}; answer2 = the first t
+(copies at ceil(n/2) and ceil(n/2) + 1) -> P(t_halt = n + 2), descriptive; STUCK-STOP is skipped at ceil(n/2) + 1 there (two copies give three equal
+decodes by construction). t_conv_dec = the first t >= 1 with Ê_t == Ê_{t-1}; answer2 = the first t
 >= 2 whose coda answer equals the answers at t - 1 and t - 2 (moved2 = the answer changes again later): descriptive, Experiments' definitions.
 Not in this pass (descriptive, later): HEAD-STALL / CLOCK-PROBE / CLOCK-GAIN heads, ADVANCE, R-POS.
     python -m boxes.vbank_halt --run boxes/runs_fsq/s211_vb_pa_s1 --device cuda:0 [--fixture]"""
@@ -41,13 +42,13 @@ def done(e):
     return alive(e) == 0 and not any(c in BR_C for c in e) and sum(1 for c in e if c in VAL_C) == 1
 
 
-def halt_of(E):
+def halt_of(E, skip_stuck=()):
     """E: list of decoded tuples Ê_0..Ê_T (real slots). -> (status, t, gprog_t, alive at stop). status in halt / gprog / stuck / never."""
     flag = False
     for t in range(1, len(E)):
         if alive(E[t - 1]) - alive(E[t]) >= 2:
             flag = True
-        if t >= 2 and E[t] == E[t - 1] == E[t - 2] and alive(E[t]) > 0:
+        if t >= 2 and t not in skip_stuck and E[t] == E[t - 1] == E[t - 2] and alive(E[t]) > 0:
             return "stuck", None, None, alive(E[t])
         if done(E[t]):
             return ("gprog", None, t, 0) if flag else ("halt", t, None, 0)
@@ -80,8 +81,8 @@ def rollout_halt(m, its, dev, stall=()):
     x, pad, lens = VB.batch_x(its, dev); st = {}
 
     def edit(t, V):
-        if t in stall:
-            return st[t - 1].clone()
+        if t in stall:                                                      # the copy is itself stored (a double STALL copies it again; 12:4x fix)
+            st[t] = st[t - 1].clone(); return st[t]
         st[t] = V
         return None
     if stall:
@@ -93,7 +94,7 @@ def rollout_halt(m, its, dev, stall=()):
     return E, A
 
 
-def run(m, TE, dev, bs):
+def run(m, TE, dev, bs, partial_path=None):
     Nn = np.array([it["n"] for it in TE]); rows = []; out = {"by_n": {}, "stall": {}, "stall_by_n": {}, "double_stall": {}}
     for n in range(1, 17):
         recs = []
@@ -128,6 +129,8 @@ def run(m, TE, dev, bs):
                                "r_coda_agree": (sum(1 for r_ in halted if r_["r_answer"] == r_["coda"][r_["t_halt"]]) / len(halted)) if halted else None,
                                "collapse_rate": float(np.mean([len(r_["collapse_t"]) > 0 for r_ in recs])), "stuck": f(lambda r_: r_["status"] == "stuck")}
         print("HALT n", n, {k: out["by_n"][str(n)][k] for k in ("exact", "premature", "never", "gprog", "acc_halt", "acc_n2")}, flush=True)
+    if partial_path:                                                        # a late (STALL-part) crash keeps the by_n readings
+        json.dump({"by_n": out["by_n"], "rows": rows, "partial": True}, open(partial_path, "w", newline="\n"))
     intact = {(r_["item"]): r_ for r_ in rows}
     for n in range(4, 13):                                                  # STALL (4..8 registered; 9..12 descriptive) and double STALL (4..8)
         ts = math.ceil(n / 2); sb = {"q": 0, "shift": 0, "frozen1": 0, "other_never": 0, "at_n": 0, "ge_n2": 0, "gprog": 0, "other": 0}; dbl = {"q": 0, "n2": 0}
@@ -153,7 +156,7 @@ def run(m, TE, dev, bs):
                 else:
                     sb["other"] += 1
                 if E2 is not None:
-                    s2 = halt_of(E2[k_]); dbl["q"] += 1; dbl["n2"] += s2[0] == "halt" and s2[1] == n + 2
+                    s2 = halt_of(E2[k_], skip_stuck=(ts + 1,)); dbl["q"] += 1   # two copies make 3 equal decodes by construction; dbl["n2"] += s2[0] == "halt" and s2[1] == n + 2
         out["stall_by_n"][str(n)] = {"qualifying": sb["q"], **{k: (v / sb["q"] if sb["q"] else None) for k, v in sb.items() if k != "q"}, "stall_t": ts}
         if n <= 8:
             out["double_stall"][str(n)] = {"qualifying": dbl["q"], "p_n2": (dbl["n2"] / dbl["q"]) if dbl["q"] else None}
@@ -173,7 +176,7 @@ def main():
     if a.fixture or not fx["pass"]:
         return
     dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
-    m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time(); res = run(m, TE, dev, a.eval_bs)
+    m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time(); res = run(m, TE, dev, a.eval_bs, os.path.join(a.run, "eval_vbhalt.partial.json"))
     ev = os.path.join(a.run, "eval_vb.json")                                # gate (i): item counts at t = n + 2 == eval_vb's acc_n2
     if os.path.exists(ev) and a.per_n == 1000:
         a2 = json.load(open(ev))["acc_n2"]; res["gate_acc_n2"] = {n: {"halt": res["by_n"][n]["acc_n2"], "eval_vb": a2[n]} for n in res["by_n"]}

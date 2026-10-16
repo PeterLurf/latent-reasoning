@@ -118,11 +118,14 @@ def alibi_init(H=12, n_alibi=6):
     return torch.tensor([-(2.0 ** (-8.0 * (h + 1) / n_alibi)) if h < n_alibi else 0.0 for h in range(H)])
 
 
-def bias_row(b, b0, gm, t, nver, pad, off_v0=False, off=False, keep=None):
+def bias_row(b, b0, gm, t, nver, pad, off_v0=False, off=False, keep=None, floor=None):
     """the bank logit bias over stored versions 0..nver-1, read at pass (or coda) index t: beta0 (version 0, no age term) or beta + gamma * (t - 1 - s);
     -inf on padded slots (pad (B, T) bool, True = real), on version 0 when off_v0, everywhere when off. b, b0, gm: (H,) -> (B, H, 1, nver * T)."""
     B, T = pad.shape; s = torch.arange(nver, device=pad.device); age = (t - 1 - s).to(b.dtype)
-    row = torch.where(s[None, :] == 0, b0[:, None], b[:, None] + gm[:, None] * age[None, :])            # (H, nver)
+    agev = gm[:, None] * age[None, :]
+    if floor is not None:                                                   # eval-only (note 212-3): age term -> min(gamma * age, -floor * age) on versions 1..t-2
+        ap_ = (s >= 1) & (s <= t - 2); agev = torch.where(ap_[None, :], torch.minimum(agev, -floor * age[None, :]), agev)
+    row = torch.where(s[None, :] == 0, b0[:, None], b[:, None] + agev)                                      # (H, nver)
     row = row[:, :, None].expand(-1, nver, T).reshape(len(b), nver * T)
     valid = pad[:, None, :].expand(B, nver, T).reshape(B, nver * T)
     if off_v0:
@@ -163,6 +166,7 @@ class VBankN(torch.nn.Module):
         self.cap = None                                                     # calibration: a dict -> {("core" | "coda", layer, t): the layer's input h}
         self.gather_log = None                                              # a list -> per pass (t, (B,) mean self-mass on (t-1, j) over heads / real slots)
         self.ver_keep = None                                                # eval-only (note 211-14): f(t, nver) -> (nver,) bool of bank versions kept (None = all)
+        self.age_floor = None                                               # eval-only (note 212-3): slope floor mu on the age term of versions 1..t-2 (None = off)
 
     def nrm(self, V, rms0):
         return self.gain * (V * (rms0 / V.pow(2).mean(-1, keepdim=True).sqrt()))
@@ -176,10 +180,14 @@ class VBankN(torch.nn.Module):
         the gates), autocast off: at c = 1e4 the weights are exactly one-hot, so U == N(V_{t-1}) bitwise (gate_carry_bitwise)."""
         B, T = pad.shape; H, hd = self.H, self.hd; dev = pad.device; dt = torch.float64 if NV[0].dtype == torch.float64 else torch.float32
         with torch.autocast(device_type=dev.type, enabled=False):
-            q = (self.g.w("wpe.weight")[:T].to(dt) @ self.gq_w.to(dt) + self.gq_b.to(dt)).view(T, H, hd).transpose(0, 1)   # (H, T, hd), content-free
+            q = (DM_().wpe_slice(self.g, T).to(dt) @ self.gq_w.to(dt) + self.gq_b.to(dt)).view(T, H, hd).transpose(0, 1)   # (H, T, hd), content-free;
+            # wpe_slice = wpe[:T] unless deltamem.POS_OFFSET / POS_KEEP0 are set (eval-only position tests, note 212-x; the prelude uses the same slice)
             K_ = torch.cat(gk[:t], 2).to(dt); lg = torch.einsum("htd,bhsd->bhts", q, K_) / math.sqrt(hd)                    # (B, H, T, tT)
             s_idx = torch.arange(t, device=dev).repeat_interleave(T); i_idx = torch.arange(T, device=dev).repeat(t)
-            lg = lg + self.gamma_q.to(dt)[None, :, None, None] * (t - 1 - s_idx).to(dt)[None, None, None, :]
+            ag_ = self.gamma_q.to(dt)[None, :, None, None] * (t - 1 - s_idx).to(dt)[None, None, None, :]
+            if self.age_floor is not None:                                  # eval-only (note 212-3): the same slope floor on the gather's age term
+                ap_ = ((s_idx >= 1) & (s_idx <= t - 2))[None, None, None, :]; ag_ = torch.where(ap_, torch.minimum(ag_, -self.age_floor * (t - 1 - s_idx).to(dt)[None, None, None, :]), ag_)
+            lg = lg + ag_
             own = (s_idx[None, :] == t - 1) & (i_idx[None, :] == torch.arange(T, device=dev)[:, None])                   # (T, tT): the (t-1, j) entry
             lg = lg - self.c_anneal.to(dt) * (~own).to(dt)[None, None]
             valid = pad[:, None, :].expand(B, t, T).reshape(B, t * T)
@@ -204,18 +212,21 @@ class VBankN(torch.nn.Module):
                 h = block_bank(src, i, h, None, None, None)
             else:
                 bk = torch.cat([k for k, _ in kvs[i][1:t]], 2); bv = torch.cat([v for _, v in kvs[i][1:t]], 2); T_ = h.shape[1]
-                bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, False, self.bank_off, self.ver_keep(t, t) if self.ver_keep else None)[..., T_:].expand(-1, -1, T_, -1)
+                bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, False, self.bank_off, self.ver_keep(t, t) if self.ver_keep else None, self.age_floor)[..., T_:].expand(-1, -1, T_, -1)
                 if self.cap is not None:
                     self.cap[("coda", i, t)] = h.detach()
                 h = block_bank(src, i, h, bk, bv, bb)
         return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
 
-    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False):
+    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None):
         """x (B, T) token ids [EOT, expr, ' ='] right-padded; pad (B, T) real-slot mask; K passes.
         coda_rows {t: LongTensor rows}: the coda after pass t (t = 0: on V_0) on those rows -> out["coda"][t] = (rows, h (b, T, D)).
         edit(t, V_t) -> the stored entry V_t' (bank, and the carry), or (bank_t, carry_t) under CARRY (VALUE-SWAP iii); None = V_t (interventions, MCT).
         v0_off_after: V_0's entry masked (core layers and gather) for passes > it (VALUE-SWAP iv; the coda never reads V_0, pin 4).
         sg_input: the pass input U (carry / gather) stop-gradiented - the path-specific gradflow gate (only the bank reads carry gradient across passes).
+        Eval-only (note 212-3, FOREIGN): prefix = [F_1..F_o] stored versions pushed right after V_0 before pass 1 (INSERT: passes then run t = o + 1..K,
+        K absolute; the carry stays V_0); ver_sub = [F_1..F_o]: entry s in 1..o is READ as F_s by every pass t > s + 1 and by the coda after pass t >= s + 1
+        (REPLACE; the pass that consumes V_s still reads the real V_s). None = unchanged.
         -> {"V": computed V_0..V_K, "S": stored entries, "coda": {...}, "kv": the bank K / V}."""
         g = self.g; B, T = x.shape; V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]); rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
         Vc, St, kv, gk, NV, out = [V0], [V0], {i: [] for i in LAYERS}, [], [], {}
@@ -230,16 +241,25 @@ class VBankN(torch.nn.Module):
         def coda_at(t, Vt):
             if coda_rows and t in coda_rows:
                 r_ = coda_rows[t]
-                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in kv[i]] for i in CODA}, pad[r_]))
+                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in view(t + 1, kv[i], fkv[i] if fkv else None)] for i in CODA}, pad[r_]))
+        fkv = fNV = fgk = None
+        if ver_sub is not None:
+            fkv = {i: [bank_kv(g, i, F_) for F_ in ver_sub] for i in LAYERS}; fNV = [self.nrm(F_, rms0) for F_ in ver_sub]
+            fgk = [self.gkey(F_) for F_ in ver_sub] if self.mode == "pa" else None
+
+        def view(tr, lst, flst):                                            # REPLACE: entry s (1..o) read as F_s when the reading index tr > s + 1
+            return lst if flst is None else [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr > s_ + 1 else lst[s_] for s_ in range(len(lst))]
         coda_at(0, V0); push(V0); carry = V0
-        for t in range(1, K + 1):
+        for F_ in (prefix or []):                                           # INSERT: foreign versions after V_0
+            Vc.append(F_); St.append(F_); push(F_)
+        for t in range(1 + len(prefix or []), K + 1):
             off_ = v0_off_after is not None and t > v0_off_after
             kp_ = self.ver_keep(t, t) if self.ver_keep else None
-            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, gk, NV, pad, off_, kp_)
+            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, view(t, gk, fgk), view(t, NV, fNV), pad, off_, kp_)
             h = h.detach() if sg_input else h
             for li, i in enumerate(CORE):
-                bk = torch.cat([k for k, _ in kv[i]], 2); bv = torch.cat([v for _, v in kv[i]], 2)
-                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pad, off_, self.bank_off, kp_).expand(-1, -1, T, -1)
+                kvi = view(t, kv[i], fkv[i] if fkv else None); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
+                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pad, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
                 if self.cap is not None:
                     self.cap[("core", i, t)] = h.detach()
                 h = block_bank(g, i, h, bk, bv, bb)
