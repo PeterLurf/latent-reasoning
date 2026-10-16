@@ -1,0 +1,42 @@
+{
+ "train": {
+  "mean": 9.72,
+  "p99": 27.0,
+  "max": 33
+ },
+ "9": {
+  "mean": 11.9,
+  "p99": 31.0,
+  "max": 35,
+  "share_gt_train_max": 0.0007,
+  "share_gt_train_p99": 0.082
+ },
+ "10": {
+  "mean": 12.31,
+  "p99": 35.0,
+  "max": 39,
+  "share_gt_train_max": 0.0183,
+  "share_gt_train_p99": 0.1153
+ },
+ "12": {
+  "mean": 13.15,
+  "p99": 41.0,
+  "max": 45,
+  "share_gt_train_max": 0.092,
+  "share_gt_train_p99": 0.1293
+ },
+ "14": {
+  "mean": 13.92,
+  "p99": 47.0,
+  "max": 53,
+  "share_gt_train_max": 0.1067,
+  "share_gt_train_p99": 0.1394
+ },
+ "16": {
+  "mean": 14.62,
+  "p99": 53.0,
+  "max": 59,
+  "share_gt_train_max": 0.1143,
+  "share_gt_train_p99": 0.1509
+ }
+}
