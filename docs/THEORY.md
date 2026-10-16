@@ -17094,6 +17094,13 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
   * Together with 205-5's item-level evidence (beyond training, 3 failed vs 5 converged: subtree height adds first-error hazard only in failed seeds), the seed lottery's separator lies in how deep sub-results are computed and written, not in whether a carried state is used.
 * **Still to run:** the registered descriptive 8k tests (203-4 swap-follow, 203-6 input swap on ckpt_model_8000.pt, s1 / s2 / s3), local, $0.
 
+**Note 211-17 (2026-10-16 04:16 EDT; the 211-12 markers on N3, b306, from host log.jsonl; descriptive, no reading).**
+- **Marker (a) MET.** answer_ce was 1.04 at 24k (p_TF reaches 0 there) and **0.196 at 30k**; rec_ce went 0.161 → 0.052. N3 recovered once teacher forcing ended.
+  - This timing **fits, but does not establish,** 211-12's named candidate (c): the gather mixing sg-corrected and uncorrected entries.
+  - An equally consistent alternative is simply more training at n ≤ 8. §211 cannot separate the two.
+- **Marker (b).** Off-self stayed at 0.91–0.93 throughout, with no drift toward (t−1, j). CARRY-LIKENESS ≈ 0.08 so far, against 211-5's expected recovery.
+- **Flag for the final readings (descriptive).** gn_preclip is 30–83 over 29–30k (it was 6–15 at 18–24k), and gather_gn is about 32 at 29–29.5k. The clip at 1.0 bounds updates. The gradient-norm trajectory is reported beside N3's result.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
