@@ -1,0 +1,20 @@
+{
+ "train_fp32_bitwise_all_V_and_logits": true,
+ "train_fp32_t1_bitwise_c10000": true,
+ "train_fp32_t1_bitwise_c20": true,
+ "train_fp32_t1_bitwise_c0": true,
+ "train_fp64_rel_max": 0.0,
+ "train_fp64_t1_bitwise_c10000": true,
+ "train_fp64_t1_bitwise_c20": true,
+ "train_fp64_t1_bitwise_c0": true,
+ "frozen_fp32_bitwise_all_V_and_logits": true,
+ "frozen_fp32_t1_bitwise_c10000": true,
+ "frozen_fp32_t1_bitwise_c20": true,
+ "frozen_fp32_t1_bitwise_c0": true,
+ "frozen_fp64_rel_max": 0.0,
+ "frozen_fp64_t1_bitwise_c10000": true,
+ "frozen_fp64_t1_bitwise_c20": true,
+ "frozen_fp64_t1_bitwise_c0": true,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

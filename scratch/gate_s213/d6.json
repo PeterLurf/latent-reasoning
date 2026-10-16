@@ -1,0 +1,63 @@
+{
+ "c0_R1_norms": {
+  "slva_wq": 10.6748046875,
+  "slva_bq": 1.4598602056503296,
+  "slva_wk": 10.49596881866455,
+  "slva_bk": 2.486834489445755e-07,
+  "slva_beta0": 1.2144443988800049,
+  "slva_gamma": 0.3272383511066437,
+  "slva_ln_q.weight": 7.086248397827148,
+  "slva_ln_q.bias": 6.598284721374512,
+  "slva_ln_k.weight": 7.662842750549316,
+  "slva_ln_k.bias": 1.571152324686409e-06
+ },
+ "c0_R1R2_norms": {
+  "slva_wq": 12.860001564025879,
+  "slva_bq": 1.8502216339111328,
+  "slva_wk": 12.646296501159668,
+  "slva_bk": 2.1078167833366024e-07,
+  "slva_beta0": 1.660325288772583,
+  "slva_gamma": 0.4073667824268341,
+  "slva_ln_q.weight": 9.447789192199707,
+  "slva_ln_q.bias": 8.680319786071777,
+  "slva_ln_k.weight": 10.543338775634766,
+  "slva_ln_k.bias": 1.52730888203223e-06
+ },
+ "c0_R2_changes": true,
+ "c1e4_R1_norms": {
+  "slva_wq": 0.0,
+  "slva_bq": 0.0,
+  "slva_wk": 0.0,
+  "slva_bk": 0.0,
+  "slva_beta0": 0.0,
+  "slva_gamma": 0.0,
+  "slva_ln_q.weight": 0.0,
+  "slva_ln_q.bias": 0.0,
+  "slva_ln_k.weight": 0.0,
+  "slva_ln_k.bias": 0.0
+ },
+ "c1e4_R1R2_norms": {
+  "slva_wq": 0.0,
+  "slva_bq": 0.0,
+  "slva_wk": 0.0,
+  "slva_bk": 0.0,
+  "slva_beta0": 0.0,
+  "slva_gamma": 0.0,
+  "slva_ln_q.weight": 0.0,
+  "slva_ln_q.bias": 0.0,
+  "slva_ln_k.weight": 0.0,
+  "slva_ln_k.bias": 0.0
+ },
+ "c1e4_R2_changes": null,
+ "decorators": {
+  "__init__": [],
+  "anneals": [
+   "property"
+  ],
+  "slva_params": [],
+  "gkey": [],
+  "gather": []
+ },
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 2070"
+}

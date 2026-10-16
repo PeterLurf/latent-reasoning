@@ -531,7 +531,9 @@ def main():
     import os
     import time
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", required=True, choices=["pa", "carry"]); ap.add_argument("--mct", action="store_true", help="N3: R3 minimal-correction teacher forcing")
+    ap.add_argument("--mode", required=True, choices=["pa", "carry", "slva"]); ap.add_argument("--mct", action="store_true", help="N3: R3 minimal-correction teacher forcing")
+    ap.add_argument("--table", default="train", choices=["train", "frozen"], help="§213: frozen = wpe.requires_grad False before the optimizer (D3-F; slva only)")
+    ap.add_argument("--args_ref", default="", help="§213 G-D7: an args.json to diff against; the diff is printed (ARGS-DIFF) and written to args_diff.json")
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--cur", default="3,5,8"); ap.add_argument("--cur_gate", default="0.3:2:8000", help="thr:need:cap (pin (d))")
     ap.add_argument("--c_sched", default="1000,8000"); ap.add_argument("--tf_sched", default="4000,24000"); ap.add_argument("--mu", type=float, default=1.0)
@@ -557,8 +559,14 @@ def main():
         EXCL.add(tuple(N.render(N.generate(r_sp, 8)[0])))
     ns = [int(v) for v in a.cur.split(",")]; thr, need, cap = a.cur_gate.split(":"); GATE = CurGate(ns, float(thr), int(need), int(cap))
     ch0, ch1 = (int(v) for v in a.c_sched.split(",")); tf0, tf1 = (int(v) for v in a.tf_sched.split(","))
-    m = VBankN(s5.load_gpt2(dev), a.mode).to(dev)
-    opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    import boxes.deltamem as DMm
+    assert DMm.POS_OFFSET == 0 and not DMm.POS_KEEP0, "training needs the plain position table (POS_OFFSET 0)"   # §213 G-D7
+    m = make_model(s5.load_gpt2(dev), a.mode, a.table).to(dev); a.arch = type(m).__name__
+    wpe0 = None
+    if a.table == "frozen":                                                 # §213 D3-F: frozen BEFORE the optimizer is built (no decoupled decay)
+        from boxes.slva import wpe_sha
+        m.g.p["wpe_weight"].requires_grad_(False); wpe0 = wpe_sha(m)
+    opt = torch.optim.AdamW([p_ for p_ in m.parameters() if p_.requires_grad], lr=a.lr, weight_decay=0.01)   # pa / carry: every parameter, as before
     info = {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()}
     step0, t_prev, n_nonfinite = 1, 0.0, 0
     if a.resume and os.path.exists(a.resume):
@@ -575,6 +583,10 @@ def main():
         xc, pc, lc = batch_x(cal_its, dev); cal = m.calibrate(xc, pc, lc); cal["ratio_test"] = m.ratio_test(xc, pc, lc)
         json.dump(cal, open(os.path.join(a.out, "calibration.json"), "w", newline="\n"), indent=1)
         json.dump({**vars(a), **info}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+        if a.args_ref:                                                      # §213 G-D7 ARGS-DIFF (launch log)
+            ref = json.load(open(a.args_ref)); cur = {**vars(a), **info}; skip = {"args_ref"}
+            dif = {k: [ref.get(k), cur.get(k)] for k in sorted(set(ref) | set(cur)) if k not in skip and ref.get(k) != cur.get(k)}
+            json.dump({"ref": a.args_ref, "diff": dif}, open(os.path.join(a.out, "args_diff.json"), "w", newline="\n"), indent=1); print("ARGS-DIFF", json.dumps(dif), flush=True)
         print("CALIBRATION max_m99 %.4f ratio/e5 %s" % (cal["max_m99"], cal["ratio_test"]["ratio_over_e5"]), flush=True)
     if a.auto_micro and dev.startswith("cuda"):                             # the largest training shape (final stage, K 12, the longest items)
         big = sorted(N.train_items(np.random.default_rng(0), 8 * a.bs, ns[-1], set()), key=lambda it: -len(it["syms"]))[:a.bs]; am = {}
@@ -615,12 +627,23 @@ def main():
         lr = lr_at(a.lr, {}, step, a.steps)
         for gr in opt.param_groups:
             gr["lr"] = lr
-        m.c_anneal.fill_(c_at(step, ch0, ch1) if a.mode == "pa" else 1e4); tfp = tf_at(step, tf0, tf1) if a.mct else 0.0
+        m.c_anneal.fill_(c_at(step, ch0, ch1) if m.anneals else 1e4); tfp = tf_at(step, tf0, tf1) if a.mct else 0.0   # §213 G-D4: the capability flag
         m.train(); its, Ks = draw(GATE.n_max()); opt.zero_grad(set_to_none=True); tot = 0.0; ch = a.bs // a.micro; sts = []
         m.gather_log = [] if (a.mode == "pa" and step % a.log_every == 0) else None
+        slog = a.mode == "slva" and step % a.log_every == 0; sm_ = {"chg": [0.0, 0], "copy": [0.0, 0]}
         for k_ in range(a.micro):
+            if slog:
+                m.slva_log = []
             L, st_, _ = vb_loss(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, ac, a.rec_w, tfp, rng_tf, a.mu)
             (L / a.micro).backward(); tot += float(L.item()) / a.micro; sts.append(st_)
+            if slog:                                                        # §213 G-D4: SLVA off-newest mass on changed / copy slots
+                from boxes.slva import mass_stats
+                ms_ = mass_stats(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev)
+                for kk in sm_:
+                    sm_[kk][0] += ms_[kk][0]; sm_[kk][1] += ms_[kk][1]
+        if slog:
+            m.slva_log = None; sg_ = [p_.grad for p_ in m.slva_params() if p_.grad is not None]
+            slva_gn = float(torch.stack([g_.float().pow(2).sum() for g_ in sg_]).sum().sqrt()) if sg_ else 0.0
         if a.mode == "pa" and step % a.log_every == 0:                    # note 211-3 gate: the gather's parameter gradient norm (pre-clip)
             gg_ = [p_.grad for n_, p_ in m.named_parameters() if n_ in ("gq_w", "gq_b", "gk_w", "gk_b", "gln_w", "gln_b", "gamma_q") and p_.grad is not None]
             gather_gn = float(torch.stack([g_.float().pow(2).sum() for g_ in gg_]).sum().sqrt()) if gg_ else 0.0
@@ -642,6 +665,9 @@ def main():
                 ss = [s_ for v in acc for s_ in v[3]]; tot_ = sum(s_["tf_tot"] for s_ in ss); sl = sum(s_["mct_slots"] for s_ in ss); rl = [x_ for s_ in ss for x_ in s_["mct_rel"]]
                 rec_.update({"tf_p": tfp, "tf_frac": (sum(s_["tf_n"] for s_ in ss) / tot_) if tot_ else None, "mct_multi_frac": (sum(s_["mct_multi"] for s_ in ss) / sl) if sl else None,
                              "mct_rel_mean": float(np.mean(rl)) if rl else None})
+            if slog:
+                rec_.update({"slva_offnewest_chg": sm_["chg"][0] / sm_["chg"][1] if sm_["chg"][1] else None,
+                             "slva_offnewest_copy": sm_["copy"][0] / sm_["copy"][1] if sm_["copy"][1] else None, "slva_gn": slva_gn})
             if m.gather_log:
                 rec_["carry_mass"] = float(torch.cat([v_ for _, v_ in m.gather_log]).mean()); rec_["gather_offself"] = 1.0 - rec_["carry_mass"]; rec_["gather_gn"] = gather_gn
             log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []
@@ -650,6 +676,9 @@ def main():
             torch.save({"model": m.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps and not forced:
             cp = os.path.join(a.out, "ckpt_last.pt")
+            if wpe0 is not None:                                            # §213 G-D3: D3-F's table bytes == pretrained at every checkpoint
+                from boxes.slva import wpe_sha
+                assert wpe_sha(m) == wpe0, "D3-F: the frozen table changed"; log.write(json.dumps({"step": step, "wpe_frozen_ok": True}) + "\n"); log.flush()
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "rng_k": rng_k.bit_generator.state, "rng_tf": rng_tf.bit_generator.state,
@@ -660,8 +689,10 @@ def main():
         with torch.no_grad(), ac():
             m.rollout(xe, pe, 24, coda_rows={24: torch.arange(len(ev), device=dev)})
         pk_eval = torch.cuda.max_memory_allocated(dev) / 2 ** 30
-        json.dump({"peak_gib_train_step": pk_train, "peak_gib_eval_n16_k24": pk_eval, "bs": a.bs, "micro": a.micro, "eval_bs": a.eval_bs, "gpu": info["train_gpu"], "amp": str(amp)},
-                  open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEMCHECK", pk_train, pk_eval, flush=True); return
+        mj = {"peak_gib_train_step": pk_train, "peak_gib_eval_n16_k24": pk_eval, "bs": a.bs, "micro": a.micro, "eval_bs": a.eval_bs, "gpu": info["train_gpu"], "amp": str(amp)}
+        for f_ in ("mem_check.json", "eval.json"):                         # eval.json: the queue / drain line-done marker (§213 queue line 1, as --time_steps)
+            json.dump(mj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
+        print("MEMCHECK", pk_train, pk_eval, flush=True); return
     if a.time_steps:
         sps = (time.time() - tt0) / a.time_steps
         tj = {"mode": a.mode, "mct": a.mct, "steps_timed": a.time_steps, "sec_per_step": sps, "est_hours": sps * a.steps / 3600, "gpu": info["train_gpu"], "micro": a.micro,
@@ -686,7 +717,10 @@ def main():
             with torch.no_grad(), ac():
                 r_ = m.rollout(xe, pe, n + 2, coda_rows={n + 2: torch.arange(len(ch_), device=dev)})
                 A[idx[i:i + a.eval_bs]] = m.answer_logits(r_["coda"][n + 2][1], le)[:, N.NUM_IDS].argmax(-1).cpu().numpy()
-    res = {"task": "nested", "arm": "vbank", "mode": a.mode, "mct": a.mct, "seed": a.seed, "acc_n2_host": {str(n): float((A == Y)[Nn == n].mean()) for n in range(1, 17)},
+    if wpe0 is not None:
+        from boxes.slva import wpe_sha
+        assert wpe_sha(m) == wpe0, "D3-F: the frozen table changed"
+    res = {"task": "nested", "arm": "vbank", "mode": a.mode, "arch": a.arch, "table": a.table, "wpe_frozen_ok": (wpe0 is not None) or None, "mct": a.mct, "seed": a.seed, "acc_n2_host": {str(n): float((A == Y)[Nn == n].mean()) for n in range(1, 17)},
            "train_sec": train_sec, "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
            "note": "descriptive host eval; the registered readings come from the local fp32 eval_vb.json (note 211-1)"}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
