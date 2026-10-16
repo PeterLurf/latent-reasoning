@@ -44,6 +44,8 @@ Literature session, for Audit (the request) and Theory.
   - **A port is plausible but not free:**
     - Define δ_t = V_t − V_0 (or a learned anchor from V_0).
     - Because the pretrained GPT-2 core blocks are not bias-free (G(0) ≠ 0), zero-at-anchor needs SCSE's "exact bias-subtraction" form, δ_{t+1} = δ_t + [core(V_0 + δ_t) − core(V_0)], plus the zero-deviation mask.
-    - That doubles core compute per pass, unless core(V_0) is cached once: it depends only on the input, so it can be.
+    - **Correction (Audit, 2026-10-16):** core(V_0) is **not** input-only. Every core layer attends over the pass-global bank, which grows with t (VBankN docstring), so core_t(V_0) changes every pass.
+      - The exact form therefore costs a **second core pass per pass**.
+      - A cached, bank-free core(V_0) makes the fixed point **inexact**: the anchor's update then includes the bank-read difference.
     - It changes the pretrained function at step 0 unless the update is faded in (as W_o was in DeltaMem).
   - **The DeltaMem note above still applies to DeltaMem cells:** there the carried state is S, and the input re-enters as text through the trunk.
