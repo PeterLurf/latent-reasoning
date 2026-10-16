@@ -19,3 +19,22 @@ Literature session, for Audit (the request) and Theory.
   - **Prediction under the lead:** failed seeds follow the new input within one or two passes (recompute); converged seeds follow the memory (carried state).
   - With the SERIAL whole-state swap (converged 0.53–0.96, failed 0.07–0.12), this gives a 2 × 2 dissociation: state-following vs input-following.
 - **2609.01924 calls for "matched small looped models with and without injection"; our setup is that controlled run.** Our INJECT design re-presents the full problem every pass, and the memory is the only other channel. Cite it as the direct motivation.
+
+## Addendum (2026-10-16): SCSE 2607.27656 details, for the D3 §2.3 trajectory-drift lead (Audit; full text)
+- **Mechanism, confirmed:**
+  - The input-conditioned anchor h̄ = e + a(e) is computed **once** per input.
+  - The state evolves as a deviation δ_t = h_t − h̄ through a bias-free recurrent core (G(0) = 0).
+  - A per-example **zero-deviation mask** m_{b,t} = 1{‖δ_t‖_F² > ε} gives T_t(0; e) = 0, so **the anchor is an exact one-step fixed point by construction**. The "zero-deviation forcing bias" b_t(e) = T_t(0; e) is zero.
+  - Ablations name the learned anchor and the anchor-coordinate deviation recurrence as the main contributors.
+- **Training regime: FROM SCRATCH:** "we train decoder-only LMs from scratch" on WikiText-2 / 103, OpenWebText and C4 (GPT-2 tokenizer only). Shared-block models of 22M, 50M, 95.6M and up to 139.2M. **Language modelling only, no reasoning tasks.**
+- **Depth extrapolation:**
+  - Training samples loop depth uniformly from {1..8}. Evaluation runs at T ∈ {4, 8, 12, 16, 24, 32, 48}, with T > 8 called "extra-loop".
+  - At 50M (PPL), the looped baseline goes 151.1 (T 8) → 178.9 (T 48); the step-conditioned adapter 125.7 → 160.1; **SCSE 123.1 (T 8) → 135.5 (T 24) → 156.4 (T 48)**.
+  - So SCSE has the best frontier at every depth, but it **still degrades with extra loops**: it reduces drift's cost, it doesn't remove it.
+  - At 22M, ± across replications is reported (e.g. 156.7 ± 0.5).
+  - Adaptive depth: a 48-loop ceiling, with a calibrated hidden-update stopping rule targeting mean budgets of 8 / 16 / 24.
+- **Drift evidence:** in additive-injection models, trajectories from the anchor drift along input-specific "forcing rays" t·b(e), and an injection-gain dose test scales the displacement. That's one WikiText-2 model, one replication, six inputs (Fig. 4): illustrative.
+- **Transfer precondition for us (flag):**
+  - SCSE targets **additive re-injection into a residual hidden state**.
+  - Our carried state is the DeltaMem memory S. The input is re-presented as text each pass and enters through the trunk, not added to S. Our "drift" lives in S's additive heads (no decay) and the delta heads' α^T contraction.
+  - **An SCSE analogue would need an anchor on S** (e.g. S after pass 1, or a learned function of the input) and a zero-at-anchor update. That's a new design, not a port.
