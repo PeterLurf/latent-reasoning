@@ -138,7 +138,8 @@ class VBankN(torch.nn.Module):
     [bank versions 0..t-1 | the current version, causal] with the bias beta0 (V_0) / beta + gamma * age. R = LN + Linear(768 -> 20), the recode head.
     Pins (note 211-1): 1 gather = 12 heads x 64, each over its own 64-d slice of N(V); own W_q / W_k / LN copied from block 6 (c_attn q / k, ln_1);
     the content-free query wpe[j] @ W_q + b_q; gamma_q per head init 0; c = the c_anneal buffer (set by the trainer). N(V_s)[i] = gain * V_s[i] *
-    rms(V_0[i]) / rms(V_s[i]). 2 ALiBi gamma, no age term on V_0. 4 the coda reads V_0..V_{t-1} + causal V_t with its own beta / beta0 / gamma rows.
+    rms(V_0[i]) / rms(V_s[i]). 2 ALiBi gamma, no age term on V_0. 4 the coda reads V_1..V_{t-1} + causal V_t (V_0 excluded from its bank, note 211-2)
+    with its own beta / gamma rows (its beta0 rows are unused).
     5 gain: a 768-vector, init 1. Bank K / V are computed once per (version, layer) WITH gradient and concatenated per pass (Experiments -> Theory
     23:2x: an in-place preallocated bank fails autograd's saved-tensor version check)."""
     def __init__(self, g, mode="pa"):
@@ -154,7 +155,7 @@ class VBankN(torch.nn.Module):
             self.gq_w = torch.nn.Parameter(W[:, :D].clone()); self.gq_b = torch.nn.Parameter(b[:D].clone())
             self.gk_w = torch.nn.Parameter(W[:, D:2 * D].clone()); self.gk_b = torch.nn.Parameter(b[D:2 * D].clone())
             self.gln_w = torch.nn.Parameter(g.w("h.6.ln_1.weight").detach().clone()); self.gln_b = torch.nn.Parameter(g.w("h.6.ln_1.bias").detach().clone())
-            self.gamma_q = torch.nn.Parameter(torch.zeros(H, device=dev))
+            self.gamma_q = torch.nn.Parameter(alibi_init(H, H).to(dev))         # note 211-1 pin 1 (211-2): forward-decay ALiBi on all 12 heads, -2^(-8(h+1)/12)
         self.register_buffer("c_anneal", torch.tensor(1e4, device=dev))
         self.bank_off = False                                               # True: every bank logit -inf (G1 / the calibration rollout = exact CARRY)
         self.cap = None                                                     # calibration: a dict -> {("core" | "coda", layer, t): the layer's input h}
@@ -188,26 +189,28 @@ class VBankN(torch.nn.Module):
                 self.gather_log.append((t, (sm.mean(1) * pad).sum(1) / pad.sum(1)))
         return U.to(NV[0].dtype)
 
-    def coda(self, t, Vt, kvs, pad, off_v0=False, src=None, bp=None):
-        """blocks 10-11 over [bank versions 0..t-1 (kvs {layer: [(k, v)] * t}) | V_t causal] + ln_f -> (b, T, D). src: a weight source (.w / .H; default
+    def coda(self, t, Vt, kvs, pad, src=None, bp=None):
+        """blocks 10-11 over [bank versions 1..t-1 (kvs {layer: [(k, v)] * t}; V_0 excluded, note 211-1 pin 4) | V_t causal] + ln_f -> (b, T, D); t <= 1: no
+        bank (K' = 0 is the coda on V_0 as its causal input). src: a weight source (.w / .H; default
         the trunk) and bp: (beta, beta0, gam) rows for the 2 coda layers (default this model's) - the PROBE(t) coda copy passes its own."""
         src = src or self.g; D = self.D; h = Vt; bp = bp or (self.beta[4:], self.beta0[4:], self.gam[4:])
         for r, i in enumerate(CODA):
-            if t == 0:
+            if t <= 1:
                 h = block_bank(src, i, h, None, None, None)
             else:
-                bk = torch.cat([k for k, _ in kvs[i][:t]], 2); bv = torch.cat([v for _, v in kvs[i][:t]], 2)
-                bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, off_v0, self.bank_off).expand(-1, -1, h.shape[1], -1)
+                bk = torch.cat([k for k, _ in kvs[i][1:t]], 2); bv = torch.cat([v for _, v in kvs[i][1:t]], 2); T_ = h.shape[1]
+                bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, False, self.bank_off)[..., T_:].expand(-1, -1, T_, -1)
                 if self.cap is not None:
                     self.cap[("coda", i, t)] = h.detach()
                 h = block_bank(src, i, h, bk, bv, bb)
         return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
 
-    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None):
+    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False):
         """x (B, T) token ids [EOT, expr, ' ='] right-padded; pad (B, T) real-slot mask; K passes.
         coda_rows {t: LongTensor rows}: the coda after pass t (t = 0: on V_0) on those rows -> out["coda"][t] = (rows, h (b, T, D)).
         edit(t, V_t) -> the stored entry V_t' (bank, and the carry), or (bank_t, carry_t) under CARRY (VALUE-SWAP iii); None = V_t (interventions, MCT).
-        v0_off_after: V_0's entry masked (core, gather and coda) for passes > it and the coda after t > it (VALUE-SWAP iv).
+        v0_off_after: V_0's entry masked (core layers and gather) for passes > it (VALUE-SWAP iv; the coda never reads V_0, pin 4).
+        sg_input: the pass input U (carry / gather) stop-gradiented - the path-specific gradflow gate (only the bank reads carry gradient across passes).
         -> {"V": computed V_0..V_K, "S": stored entries, "coda": {...}, "kv": the bank K / V}."""
         g = self.g; B, T = x.shape; V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]); rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
         Vc, St, kv, gk, NV, out = [V0], [V0], {i: [] for i in LAYERS}, [], [], {}
@@ -221,12 +224,13 @@ class VBankN(torch.nn.Module):
 
         def coda_at(t, Vt):
             if coda_rows and t in coda_rows:
-                r_ = coda_rows[t]; off_ = v0_off_after is not None and t > v0_off_after
-                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in kv[i]] for i in CODA}, pad[r_], off_))
+                r_ = coda_rows[t]
+                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in kv[i]] for i in CODA}, pad[r_]))
         coda_at(0, V0); push(V0); carry = V0
         for t in range(1, K + 1):
             off_ = v0_off_after is not None and t > v0_off_after
             h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, gk, NV, pad, off_)
+            h = h.detach() if sg_input else h
             for li, i in enumerate(CORE):
                 bk = torch.cat([k for k, _ in kv[i]], 2); bv = torch.cat([v for _, v in kv[i]], 2)
                 bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pad, off_, self.bank_off).expand(-1, -1, T, -1)
@@ -273,8 +277,9 @@ class VBankN(torch.nn.Module):
     def calibrate(self, x, pad, lens, K=KMAX, mu=0.02, q=0.99):
         """pin 3: a CARRY rollout with the bank masked (exact CARRY) to V_0..V_K, every layer's input captured; per layer (core 6-9 and coda 10-11) and
         head, the bank mass a query would give is sigmoid(beta + log A - log C) (A = the bank entries' exp-score sum, C = the rest), so beta0 is set
-        first (bank = V_0; every t >= 1) and then beta (V_1..V_{t-1}, beta0 fixed; t >= 2) to logit(mu) - quantile_q(log A - log C) over (items, real
-        query slots, t): the q-quantile mass is then mu (re-measured after setting). -> a report dict (the ratio test: ratio_test())."""
+        first (bank = V_0; every t >= 1) and then beta (V_1..V_{t-1}, beta0 fixed; t >= 2) to logit(mu) - 0.01 - quantile_q(log A - log C) over (items,
+        real query slots, t): the q-quantile mass is then just under mu (re-measured after setting). The coda layers have no V_0 entry (pin 4): beta
+        only, C = the causal part alone, their beta0 rows unused. -> a report dict (the ratio test: ratio_test())."""
         g = self.g; D, H, hd = self.D, self.H, self.hd; mode0, off0 = self.mode, self.bank_off; self.bank_off = True; self.cap = {}
         try:
             r = self.rollout(x, pad, K, coda_rows={t: torch.arange(x.shape[0], device=x.device) for t in range(1, K + 1)})
@@ -284,7 +289,7 @@ class VBankN(torch.nn.Module):
         rep = {}; lmu = math.log(mu / (1 - mu)) - 0.01                                  # 0.01 nats inside the target (m99 ~ 0.0198)
         for li, i in enumerate(LAYERS):
             kind = "core" if i in CORE else "coda"; parts = {"v0": [], "rest": [], "cur": [], "t": []}
-            for t in range(1, K + 1):
+            for t in range(1 if kind == "core" else 2, K + 1):
                 h = cap[(kind, i, t)]; B, T, _ = h.shape; pre = f"h.{i}."
                 a = F.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
                 qh, kh, _ = (a @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
@@ -296,15 +301,19 @@ class VBankN(torch.nn.Module):
                 parts["v0"].append(torch.logsumexp(sc_b[..., :T], -1)); parts["cur"].append(torch.logsumexp(sc_cur, -1)); parts["t"].append(t)
                 parts["rest"].append(torch.logsumexp(sc_b[..., T:] + self.gam[li].float()[None, :, None, None] * age[T:][None, None, None, :], -1) if t >= 2 else None)
             sel = pad[:, None, :].expand(-1, H, -1)                       # real query slots
-            x0 = torch.stack([(a0 - c0) for a0, c0 in zip(parts["v0"], parts["cur"])], 0)                    # (K, B, H, T): log A - log C for beta0
-            b0 = torch.stack([lmu - torch.quantile(x0[:, :, h_, :][:, sel[:, h_, :]].flatten(), q) for h_ in range(H)])
-            self.beta0.data[li] = b0.to(self.beta0.dtype)
-            m0 = torch.sigmoid(x0 + b0[None, None, :, None]); m0q = [float(torch.quantile(m0[:, :, h_, :][:, sel[:, h_, :]].flatten(), q)) for h_ in range(H)]
-            x1 = torch.stack([ar - torch.logaddexp(c0, a0 + b0[None, :, None]) for ar, a0, c0, t in zip(parts["rest"], parts["v0"], parts["cur"], parts["t"]) if t >= 2], 0)
+            if kind == "core":
+                x0 = torch.stack([(a0 - c0) for a0, c0 in zip(parts["v0"], parts["cur"])], 0)                # (K, B, H, T): log A - log C for beta0
+                b0 = torch.stack([lmu - torch.quantile(x0[:, :, h_, :][:, sel[:, h_, :]].flatten(), q) for h_ in range(H)])
+                self.beta0.data[li] = b0.to(self.beta0.dtype)
+                m0 = torch.sigmoid(x0 + b0[None, None, :, None]); m0q = [float(torch.quantile(m0[:, :, h_, :][:, sel[:, h_, :]].flatten(), q)) for h_ in range(H)]
+                x1 = torch.stack([ar - torch.logaddexp(c0, a0 + b0[None, :, None]) for ar, a0, c0, t in zip(parts["rest"], parts["v0"], parts["cur"], parts["t"]) if t >= 2], 0)
+            else:                                                           # pin 4: the coda's bank is V_1..V_{t-1} (rest = its versions 1..t-1)
+                b0, m0q = None, []
+                x1 = torch.stack([ar - c0 for ar, c0 in zip(parts["rest"], parts["cur"])], 0)
             b1 = torch.stack([lmu - torch.quantile(x1[:, :, h_, :][:, sel[:, h_, :]].flatten(), q) for h_ in range(H)])
             self.beta.data[li] = b1.to(self.beta.dtype)
             m1 = torch.sigmoid(x1 + b1[None, None, :, None]); m1q = [float(torch.quantile(m1[:, :, h_, :][:, sel[:, h_, :]].flatten(), q)) for h_ in range(H)]
-            rep[str(i)] = {"beta0": [round(float(v), 4) for v in b0], "beta": [round(float(v), 4) for v in b1], "m99_v0": m0q, "m99_rest": m1q}
+            rep[str(i)] = {"beta0": [round(float(v), 4) for v in b0] if b0 is not None else None, "beta":[round(float(v), 4) for v in b1], "m99_v0": m0q, "m99_rest": m1q}
         rep["max_m99"] = max(max(v["m99_v0"] + v["m99_rest"]) for k, v in rep.items() if k != "max_m99"); rep["mu"] = mu; rep["q"] = q
         return rep
 
@@ -334,10 +343,256 @@ def batch_x(items, dev):
     return torch.tensor(ids_, device=dev), torch.tensor(m_, device=dev), torch.tensor([len(q_) for q_ in seqs], device=dev)
 
 
+
+# ------------------------------------------------------------------ Part 4: READY-RECODE training (draft §4; note 211-1 engineering pins c-e)
+VAL0 = CID[" 0"]                                                            # the value classes are VAL0 .. VAL0 + 10
+
+
+def rec_targets(items, Kb, T, dev):
+    """(B, Kb + 1, T) class ids of E_0..E_Kb (HOLD past n) on each item's slots; -100 on padding."""
+    E = np.full((len(items), Kb + 1, T), -100, dtype=np.int64)
+    for r, it in enumerate(items):
+        e = np.array(recode_targets(it["root"], Kb)); E[r, :, :e.shape[1]] = e
+    return torch.tensor(E, device=dev)
+
+
+def vb_loss(m, items, Ks, dev, ac, rec_w=1.0, tf_p=0.0, tf_rng=None, mu=1.0, sg_input=False, keep=False):
+    """L = L_ans + rec_w * L_rec for items with per-item pass budgets Ks (K_i); pin (c).
+    R1: answer CE (full vocabulary, the ' %d' target) of the coda after pass t, t in [n_i, K_i]; mean over t per item, then over items.
+    R2: per (item, t), t in 1..K_i: 1/2 the weighted-mean CE of R(V_t) over changed slots (E_t != E_{t-1}) + 1/2 over unchanged real slots, value-class
+    targets weighted 2; with no changed slot (HOLD) the unchanged mean alone; mean over t per item, then over items.
+    R3 (tf_p > 0; pin (e)): each stored entry V_s (s >= 1) of each item is, with probability tf_p (tf_rng), replaced by sg(MCT(V_s)) in the bank and the
+    carry; the losses read the computed V_s. -> (L, stats, the rollout if keep)."""
+    x, pad, lens = batch_x(items, dev); B, T = x.shape; Kb = int(max(Ks)); n_ = torch.tensor([it["n"] for it in items], device=dev); Kt = torch.tensor(Ks, device=dev)
+    E = rec_targets(items, Kb, T, dev); win = {t: torch.nonzero((n_ <= t) & (t <= Kt)).flatten() for t in range(0, Kb + 1)}; win = {t: r_ for t, r_ in win.items() if len(r_)}
+    st = {"tf_n": 0, "tf_tot": 0, "mct_slots": 0, "mct_multi": 0, "mct_rel": []}
+
+    def edit(t, Vt):
+        if tf_p <= 0:
+            return None
+        live = t <= Kt; draw = torch.tensor(tf_rng.random(B) < tf_p, device=dev) & live
+        st["tf_tot"] += int(live.sum()); st["tf_n"] += int(draw.sum())
+        if not bool(draw.any()):
+            return None
+        Vm, ms = m.mct(Vt.detach(), E[:, t], pad, mu); stp = ms["steps"][draw]
+        st["mct_slots"] += int((stp >= 1).sum()); st["mct_multi"] += int((stp > 1).sum()); st["mct_rel"] += ms["rel"]
+        return torch.where(draw[:, None, None], Vm.to(Vt.dtype), Vt)
+    with ac():
+        r = m.rollout(x, pad, Kb, coda_rows=win, edit=edit, sg_input=sg_input)
+    y = torch.tensor(N.NUM_IDS[[it["t"] for it in items]], device=dev)
+    ans_sum = torch.zeros(B, device=dev); ans_cnt = torch.zeros(B, device=dev)
+    for t, (rows, h) in r["coda"].items():
+        ce = F.cross_entropy(m.answer_logits(h, lens[rows]), y[rows], reduction="none").float()
+        ans_sum = ans_sum.index_add(0, rows, ce); ans_cnt = ans_cnt.index_add(0, rows, torch.ones_like(ce))
+    rec_sum = torch.zeros(B, device=dev); rec_cnt = torch.zeros(B, device=dev)
+    for t in range(1, Kb + 1):
+        Et, Ep = E[:, t], E[:, t - 1]; valid = pad & (t <= Kt)[:, None]
+        if not bool(valid.any()):
+            continue
+        ce = F.cross_entropy(m.rec_logits(r["V"][t]).transpose(1, 2), Et.clamp_min(0), reduction="none").float()
+        w = 1.0 + (Et >= VAL0).float(); ch = ((Et != Ep) & valid).float(); un = ((Et == Ep) & valid).float()
+        tc = (w * ce * ch).sum(1) / (w * ch).sum(1).clamp_min(1e-9); tu = (w * ce * un).sum(1) / (w * un).sum(1).clamp_min(1e-9)
+        live = (t <= Kt).float(); term = torch.where(ch.sum(1) > 0, 0.5 * tc + 0.5 * tu, tu)
+        rec_sum = rec_sum + term * live; rec_cnt = rec_cnt + live
+    has_a = ans_cnt > 0; L_ans = (ans_sum[has_a] / ans_cnt[has_a]).mean(); L_rec = (rec_sum / rec_cnt.clamp_min(1)).mean()
+    st.update(answer_ce=float(L_ans.detach()), rec_ce=float(L_rec.detach()))
+    return L_ans + rec_w * L_rec, st, (r if keep else None)
+
+
+class CurGate:
+    """R4 (draft §4; REDTEAM F9b; pin (d)): stages n_max = ns[0] -> ... -> ns[-1]. A stage advances when `need` consecutive completed 1k-step bins
+    (counted from the stage's first step) of the per-step readiness-window answer CE (not the total loss) average < thr, or after `cap` steps in the
+    stage; the final stage runs to --steps (the LR cosine is over --steps)."""
+    def __init__(self, ns, thr=0.3, need=2, cap=8000, bin_=1000):
+        self.ns, self.thr, self.need, self.cap, self.bin = list(ns), thr, need, cap, bin_; self.stage = 0; self.start = 1; self.cur = []; self.bins = []; self.hist = []
+
+    def n_max(self):
+        return self.ns[self.stage]
+
+    def update(self, step, ans_ce):
+        """after step `step` (ans_ce None = a non-finite step, skipped) -> (new stage, reason, last bin mean) on an advance, else None."""
+        if self.stage == len(self.ns) - 1:
+            return None
+        if ans_ce is not None:
+            self.cur.append(ans_ce)
+        reason = None
+        if (step - self.start + 1) % self.bin == 0:
+            self.bins.append(float(np.mean(self.cur)) if self.cur else float("inf")); self.cur = []
+            if len(self.bins) >= self.need and all(b_ < self.thr for b_ in self.bins[-self.need:]):
+                reason = "answer_ce < %.2f for %d bins" % (self.thr, self.need)
+        if reason is None and step - self.start + 1 >= self.cap:
+            reason = "cap %d steps" % self.cap
+        if reason is None:
+            return None
+        self.hist.append({"step": step, "from": self.ns[self.stage], "to": self.ns[self.stage + 1], "reason": reason, "bins": self.bins[-4:]})
+        self.stage += 1; self.start = step + 1; self.cur = []; self.bins = []
+        return self.stage, reason, (self.hist[-1]["bins"][-1] if self.hist[-1]["bins"] else None)
+
+    def state(self):
+        return {k: getattr(self, k) for k in ("stage", "start", "cur", "bins", "hist")}
+
+    def load(self, d):
+        for k, v in d.items():
+            setattr(self, k, v)
+
+
+def c_at(step, hold=1000, end=8000):
+    """PURE-ANNEAL c(step): 1e4 to `hold`, linear to 0 at `end` (draft §3: a buffer, not a parameter)."""
+    return 1e4 if step <= hold else max(0.0, 1e4 * (end - step) / (end - hold))
+
+
+def tf_at(step, hold=4000, end=24000):
+    """R3 p_TF(step): 1 to `hold`, linear to 0 at `end`."""
+    return 1.0 if step <= hold else max(0.0, (end - step) / (end - hold))
+
+
+def main():
+    import argparse
+    import json
+    import os
+    import time
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", required=True, choices=["pa", "carry"]); ap.add_argument("--mct", action="store_true", help="N3: R3 minimal-correction teacher forcing")
+    ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--lr", type=float, default=1e-4)
+    ap.add_argument("--seed", type=int, default=1); ap.add_argument("--cur", default="3,5,8"); ap.add_argument("--cur_gate", default="0.3:2:8000", help="thr:need:cap (pin (d))")
+    ap.add_argument("--c_sched", default="1000,8000"); ap.add_argument("--tf_sched", default="4000,24000"); ap.add_argument("--mu", type=float, default=1.0)
+    ap.add_argument("--rec_w", type=float, default=1.0); ap.add_argument("--kmax", type=int, default=KMAX); ap.add_argument("--kextra", type=int, default=4)
+    ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
+    ap.add_argument("--time_steps", type=int, default=0, help="G-TIME: train this many steps on forced final-stage batches (n <= 8, K 12), write timing.json + eval.json, exit")
+    ap.add_argument("--mem_check", action="store_true", help="peak memory: one training step on the longest n <= 8 items at K 12 + an n 16 eval forward at K' 24 -> mem_check.json")
+    ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--fp32", action="store_true")
+    ap.add_argument("--keep_ckpt_steps", default="", help="comma steps (0 = after calibration) at which a model-only copy ckpt_model_<step>.pt is kept (G1b smoke)")
+    ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device
+    from boxes import s5
+    from boxes.fsq120 import lr_at, driver_version, env_info
+    torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); rng_k = np.random.default_rng(a.seed + 21100); rng_tf = np.random.default_rng(a.seed + 21200)
+    amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
+    ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    TE = N.test_set(a.per_n); EXCL = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)    # §170's exclusion: the test set + the SERIAL pool
+    for _ in range(2200):
+        EXCL.add(tuple(N.render(N.generate(r_sp, 8)[0])))
+    ns = [int(v) for v in a.cur.split(",")]; thr, need, cap = a.cur_gate.split(":"); GATE = CurGate(ns, float(thr), int(need), int(cap))
+    ch0, ch1 = (int(v) for v in a.c_sched.split(",")); tf0, tf1 = (int(v) for v in a.tf_sched.split(","))
+    m = VBankN(s5.load_gpt2(dev), a.mode).to(dev)
+    opt = torch.optim.AdamW(m.parameters(), lr=a.lr, weight_decay=0.01)
+    info = {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()}
+    step0, t_prev, n_nonfinite = 1, 0.0, 0
+    if a.resume and os.path.exists(a.resume):
+        ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
+        rng.bit_generator.state = ck["np_rng"]; rng_k.bit_generator.state = ck["rng_k"]; rng_tf.bit_generator.state = ck["rng_tf"]; torch.set_rng_state(ck["torch_rng"].cpu())
+        GATE.load(ck["gate"]); step0 = ck["step"] + 1; t_prev = ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; cal = ck["calibration"]
+        print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
+    else:                                                                   # pin 3: beta0 / beta calibrated at step 0 (CARRY rollout, bank masked; fp32)
+        r_c = np.random.default_rng(21110); cal_its = []
+        while len(cal_its) < 64:
+            r_, y_ = N.generate(r_c, int(r_c.integers(1, 9))); s_ = N.render(r_)
+            if tuple(s_) not in EXCL:
+                cal_its.append({"syms": s_, "t": y_, "root": r_})
+        xc, pc, lc = batch_x(cal_its, dev); cal = m.calibrate(xc, pc, lc); cal["ratio_test"] = m.ratio_test(xc, pc, lc)
+        json.dump(cal, open(os.path.join(a.out, "calibration.json"), "w", newline="\n"), indent=1)
+        json.dump({**vars(a), **info}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+        print("CALIBRATION max_m99 %.4f ratio/e5 %s" % (cal["max_m99"], cal["ratio_test"]["ratio_over_e5"]), flush=True)
+    KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
+    if 0 in KEEP and step0 == 1:
+        torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
+    forced = bool(a.mem_check or a.time_steps)
+    if forced:
+        GATE.stage = len(ns) - 1
+    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []; tt0 = time.time()
+
+    def draw(nmax):
+        if a.mem_check:                                                     # the longest items of the final stage
+            its = sorted(N.train_items(np.random.default_rng(0), 8 * a.bs, nmax, set()), key=lambda it: -len(it["syms"]))[:a.bs]
+        else:
+            its = N.train_items(rng, a.bs, nmax, EXCL)
+        Ks = [a.kmax if forced else min(it["n"] + int(rng_k.integers(0, a.kextra + 1)), a.kmax) for it in its]
+        return its, Ks
+    last = step0 + a.time_steps - 1 if a.time_steps else (1 if a.mem_check else a.steps)
+    if dev.startswith("cuda"):
+        torch.cuda.reset_peak_memory_stats(dev)
+    for step in range(step0, last + 1):
+        lr = lr_at(a.lr, {}, step, a.steps)
+        for gr in opt.param_groups:
+            gr["lr"] = lr
+        m.c_anneal.fill_(c_at(step, ch0, ch1) if a.mode == "pa" else 1e4); tfp = tf_at(step, tf0, tf1) if a.mct else 0.0
+        m.train(); its, Ks = draw(GATE.n_max()); opt.zero_grad(set_to_none=True); tot = 0.0; ch = a.bs // a.micro; sts = []
+        m.gather_log = [] if (a.mode == "pa" and step % a.log_every == 0) else None
+        for k_ in range(a.micro):
+            L, st_, _ = vb_loss(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, ac, a.rec_w, tfp, rng_tf, a.mu)
+            (L / a.micro).backward(); tot += float(L.item()) / a.micro; sts.append(st_)
+        gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); gn_log.append(float(gn))
+        ans = float(np.mean([s_["answer_ce"] for s_ in sts])); rec = float(np.mean([s_["rec_ce"] for s_ in sts]))
+        if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
+            n_nonfinite += 1; opt.zero_grad(set_to_none=True); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush(); ans_g = None
+        else:
+            opt.step(); acc.append((tot, ans, rec, sts)); ans_g = ans
+        adv = None if forced else GATE.update(step, ans_g)
+        if adv is not None:
+            log.write(json.dumps({"step": step, "cur_stage": adv[0], "n_max_train": GATE.n_max(), "reason": adv[1], "bin_mean": adv[2]}) + "\n"); log.flush()
+        if step % a.log_every == 0 or step == last:
+            rec_ = {"step": step, "loss": float(np.mean([v[0] for v in acc])) if acc else None, "sec": round(time.time() - t0),
+                    "answer_ce": float(np.mean([v[1] for v in acc])) if acc else None, "rec_ce": float(np.mean([v[2] for v in acc])) if acc else None,
+                    "n_max_train": GATE.n_max(), "cur_stage": GATE.stage, "lr": lr, "c": float(m.c_anneal), "gn_preclip": gn_log[-1],
+                    "clip_frac_100": float(np.mean([v > 1.0 for v in gn_log[-100:]]))}
+            if a.mct:
+                ss = [s_ for v in acc for s_ in v[3]]; tot_ = sum(s_["tf_tot"] for s_ in ss); sl = sum(s_["mct_slots"] for s_ in ss); rl = [x_ for s_ in ss for x_ in s_["mct_rel"]]
+                rec_.update({"tf_p": tfp, "tf_frac": (sum(s_["tf_n"] for s_ in ss) / tot_) if tot_ else None, "mct_multi_frac": (sum(s_["mct_multi"] for s_ in ss) / sl) if sl else None,
+                             "mct_rel_mean": float(np.mean(rl)) if rl else None})
+            if m.gather_log:
+                rec_["carry_mass"] = float(torch.cat([v_ for _, v_ in m.gather_log]).mean())
+            log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []
+        m.gather_log = None
+        if step in KEEP:
+            torch.save({"model": m.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
+        if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps and not forced:
+            cp = os.path.join(a.out, "ckpt_last.pt")
+            if os.path.exists(cp):
+                os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
+            torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "rng_k": rng_k.bit_generator.state, "rng_tf": rng_tf.bit_generator.state,
+                        "torch_rng": torch.get_rng_state(), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "calibration": cal}, cp)
+    if a.mem_check:
+        pk_train = torch.cuda.max_memory_allocated(dev) / 2 ** 30; opt.zero_grad(set_to_none=True); torch.cuda.reset_peak_memory_stats(dev); m.eval()
+        ev = sorted([it for it in TE if it["n"] == 16], key=lambda it: -len(it["syms"]))[:a.eval_bs]; xe, pe, le = batch_x(ev, dev)
+        with torch.no_grad(), ac():
+            m.rollout(xe, pe, 24, coda_rows={24: torch.arange(len(ev), device=dev)})
+        pk_eval = torch.cuda.max_memory_allocated(dev) / 2 ** 30
+        json.dump({"peak_gib_train_step": pk_train, "peak_gib_eval_n16_k24": pk_eval, "bs": a.bs, "micro": a.micro, "eval_bs": a.eval_bs, "gpu": info["train_gpu"], "amp": str(amp)},
+                  open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1); print("MEMCHECK", pk_train, pk_eval, flush=True); return
+    if a.time_steps:
+        sps = (time.time() - tt0) / a.time_steps
+        tj = {"mode": a.mode, "mct": a.mct, "steps_timed": a.time_steps, "sec_per_step": sps, "est_hours": sps * a.steps / 3600, "gpu": info["train_gpu"], "micro": a.micro,
+              "forced": "final stage n <= 8, K = 12 every item"}
+        for f_ in ("timing.json", "eval.json"):
+            json.dump(tj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
+        print("TIMING", sps, flush=True); return
+    train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    opt.zero_grad(set_to_none=True); opt.state.clear(); m.eval(); t1 = time.time()
+    if dev.startswith("cuda"):
+        torch.cuda.empty_cache()
+    Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); A = np.zeros(len(TE), dtype=np.int64)   # host-side, descriptive: acc at K' = n + 2
+    for n in range(1, 17):
+        idx = np.nonzero(Nn == n)[0]
+        for i in range(0, len(idx), a.eval_bs):
+            ch_ = [TE[j] for j in idx[i:i + a.eval_bs]]; xe, pe, le = batch_x(ch_, dev)
+            with torch.no_grad(), ac():
+                r_ = m.rollout(xe, pe, n + 2, coda_rows={n + 2: torch.arange(len(ch_), device=dev)})
+                A[idx[i:i + a.eval_bs]] = m.answer_logits(r_["coda"][n + 2][1], le)[:, N.NUM_IDS].argmax(-1).cpu().numpy()
+    res = {"task": "nested", "arm": "vbank", "mode": a.mode, "mct": a.mct, "seed": a.seed, "acc_n2_host": {str(n): float((A == Y)[Nn == n].mean()) for n in range(1, 17)},
+           "train_sec": train_sec, "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
+           "note": "descriptive host eval; the registered readings come from the local fp32 eval_vb.json (note 211-1)"}
+    json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+    for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
+        if os.path.exists(os.path.join(a.out, ck_)):
+            os.remove(os.path.join(a.out, ck_))
+    print("EVAL", json.dumps(res["acc_n2_host"]), flush=True); print("DONE", a.out, flush=True)
+
 if __name__ == "__main__":
     import json
     import sys
     if len(sys.argv) > 1 and sys.argv[1] == "g1":
         print(json.dumps(gate_g1()))
-    else:
+    elif len(sys.argv) > 1 and sys.argv[1] == "rerender":
         print(json.dumps(gate_rerender()))
+    else:
+        main()

@@ -96,5 +96,72 @@ def gate_cal(dev="cuda:0"):
     return {"calibration": rep, "ratio_test": rt, "pass": rep["max_m99"] <= 0.02 + 1e-6 and rt["pass"]}
 
 
+
+def _train_items(n_items, seed, n_lo, n_hi):
+    its = _items(n_items, seed, n_lo, n_hi)
+    for it in its:
+        it["n"] = sum(1 for x_ in it["syms"] if x_.strip() in N.OPS)
+    return its
+
+
+def gate_gradflow(dev="cuda:0"):
+    """REDTEAM F9a / §211 gates: (1) every parameter group gets a nonzero gradient from vb_loss (PA at c = 0 and c = 1e4, CARRY; MCT on for one PA run);
+    (2) dL / d(bank K, V) != 0 for every bank-reading layer (versions >= 1); (3) with the carry / gather input stop-gradiented (sg_input) and rec_w 0,
+    dL_ans / dV_1 != 0 on items with n >= 3 (their answer windows start at t >= 3, so V_1 reaches L_ans only through bank reads). fp32."""
+    ac = lambda: torch.autocast("cuda", enabled=False)  # noqa: E731
+    its = _train_items(8, 21105, 3, 5); Ks = [min(it["n"] + 2, 12) for it in its]; out = {}
+    for tag, mode, c, tf in (("pa_c0", "pa", 0.0, 0.0), ("pa_c1e4", "pa", 1e4, 0.0), ("carry", "carry", 1e4, 0.0), ("pa_c0_mct", "pa", 0.0, 0.5)):
+        m = _model(mode, torch.float32, dev); m.c_anneal.fill_(c); m.zero_grad(set_to_none=True)
+        L, st, r = VB.vb_loss(m, its, Ks, dev, ac, 1.0, tf, np.random.default_rng(0), keep=True)
+        bank = {i: [t_ for s_ in range(1, len(r["kv"][i])) for t_ in r["kv"][i][s_]] for i in VB.LAYERS}
+        gb = torch.autograd.grad(L, [t_ for i in VB.LAYERS for t_ in bank[i]], retain_graph=True, allow_unused=True)
+        gbn, k_ = {}, 0
+        for i in VB.LAYERS:
+            n_ = len(bank[i]); gbn[str(i)] = float(sum(float(g_.norm()) for g_ in gb[k_:k_ + n_] if g_ is not None)); k_ += n_
+        L.backward(); zero = []
+        for nm, p_ in m.named_parameters():
+            if p_.grad is None or float(p_.grad.norm()) == 0:
+                zero.append(nm)
+        if tf == 0 and mode == "pa":
+            zb0 = m.beta0.grad[4:].abs().sum().item() if m.beta0.grad is not None else 0.0
+        out[tag] = {"zero_grad_params": zero, "bank_kv_grad_norm": gbn, "answer_ce": st["answer_ce"], "rec_ce": st["rec_ce"],
+                    "beta0_core_grad": float(m.beta0.grad[:4].norm()), "beta0_coda_grad": float(m.beta0.grad[4:].norm()), "beta_grad": float(m.beta.grad.norm()),
+                    "gam_grad": float(m.gam.grad.norm()), **({"tf_frac": st["tf_n"] / max(1, st["tf_tot"])} if tf else {})}
+        m2 = _model(mode, torch.float32, dev); m2.c_anneal.fill_(c)
+        L2, _, r2 = VB.vb_loss(m2, its, Ks, dev, ac, 0.0, 0.0, None, sg_input=True, keep=True)
+        out[tag]["sg_dLans_dV1"] = float(torch.autograd.grad(L2, r2["V"][1])[0].norm())
+    ok = True
+    for tag, v in out.items():
+        allowed = {"gq_w", "gq_b", "gk_w", "gk_b", "gln_w", "gln_b", "gamma_q"} if tag == "pa_c1e4" else set()   # c = 1e4: a one-hot softmax, d/dlogits = 0 exactly
+        ok = ok and not [z for z in v["zero_grad_params"] if z not in allowed] and all(x_ > 0 for x_ in v["bank_kv_grad_norm"].values())
+        ok = ok and v["sg_dLans_dV1"] > 0 and v["beta0_core_grad"] > 0 and v["beta_grad"] > 0 and v["gam_grad"] > 0
+    out["pass"] = bool(ok); return out
+
+
+def gate_mct(dev="cuda:0"):
+    """MCT W1 / W3 (R3; pin 7): W1, R(MCT(V_s)) decodes E_s at every real slot (<= 3 steps), on V_1..V_8 of 32 items (n 3..8, init model, fp32);
+    the share of slots needing > 1 step and ||dV|| / ||V|| per step logged. W3: an edit of V_s along R's row space (rec.weight rows, per slot, norm 0.1 rms)
+    vs one of equal norm in its null space: the relative change of V_{s+1} for each (row-space change > 0 is the requirement; the ratio is reported)."""
+    m = _model("pa", torch.float32, dev); its = _train_items(32, 21106, 3, 8); x, pad, lens = VB.batch_x(its, dev); E = VB.rec_targets(its, 8, x.shape[1], dev)
+    out = {"W1": {}, "W3": {}}
+    with torch.no_grad():
+        r = m.rollout(x, pad, 8)
+        for s_ in range(1, 9):
+            Vm, ms = m.mct(r["V"][s_], E[:, s_], pad); dec = m.rec_logits(Vm).argmax(-1); ok_ = ((dec == E[:, s_].clamp_min(0)) | ~pad).all(1)
+            need = ms["steps"][pad]; out["W1"][str(s_)] = {"all_slots_ok_items": float(ok_.float().mean()), "slot_acc": float((dec == E[:, s_])[pad].float().mean()),
+                                                          "frac_multi_step": float((need > 1).float().sum() / max(1, int((need >= 1).sum()))), "rel": ms["rel"]}
+        W = m.rec.weight.float(); P_row = torch.linalg.pinv(W) @ W; gen = torch.Generator(device=dev).manual_seed(21107)
+        for s_ in (2, 4, 6):
+            z = torch.randn(r["V"][s_].shape, device=dev, generator=gen); dr = z @ P_row.T; dn = z - dr
+            sc = 0.1 * r["V"][s_].pow(2).mean(-1, keepdim=True).sqrt()
+            dr = dr / dr.norm(dim=-1, keepdim=True) * sc * 768 ** 0.5; dn = dn / dn.norm(dim=-1, keepdim=True) * sc * 768 ** 0.5
+            ch = {}
+            for nm, d_ in (("row", dr), ("null", dn)):
+                rr = m.rollout(x, pad, s_ + 1, edit=lambda t, V, d_=d_, s_=s_: V + d_ * pad[..., None] if t == s_ else None)
+                ch[nm] = float((rr["V"][s_ + 1] - r["V"][s_ + 1])[pad].norm() / r["V"][s_ + 1][pad].norm())
+            out["W3"][str(s_)] = {**ch, "row_over_null": ch["row"] / ch["null"] if ch["null"] > 0 else None}
+    out["pass"] = all(v["all_slots_ok_items"] == 1.0 for v in out["W1"].values()) and all(v["row"] > 1e-4 for v in out["W3"].values()); return out
+
+
 if __name__ == "__main__":
-    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
+    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
