@@ -17829,6 +17829,14 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 
 **Pre-stated prediction for a triggered cell:** RS |D| ≤ 0.05 at n 9–12 (SELF-SIMILAR) where the parent reads > 0.20 (Audit).
 
+**Note 213-5 (2026-10-16 15:01 EDT; addendum to 213-4: Literature verified arXiv 2607.27656 (SCSE) in LIT_INPUT_BYPASS_LOOPED, 5b46eb33).**
+- **The mechanism is confirmed:** a once-computed anchor; a deviation recurrence with G(0) = 0; a zero-deviation mask, so the anchor is an exact one-step fixed point. G(0) = 0 answers precondition (ii) of 213-4 (zero at init).
+- **Precondition (i) stays open.** Exactness holds at the anchor only; what zeroes a non-anchor copy slot's deviation is the design question.
+- **Scope of evidence:** from-scratch LMs only (22–139M parameters), no reasoning tasks.
+  - Extra-loop perplexity at 50M: SCSE 123.1 / 135.5 / 156.4 at T 8 / 24 / 48, against the baseline's 151.1 → 178.9.
+  - It is best at every depth, but **it still degrades with loops**. Expect reduced drift, not removed drift. The 213-4 prediction (SELF-SIMILAR, |D| ≤ 0.05) is therefore a strong test.
+- **Transfer is a new design, not a port** (Literature). It is still held behind §213's trigger.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
