@@ -1,0 +1,151 @@
+{
+ "run": "s205_iit_s1",
+ "model": "model.pt",
+ "card": "NVIDIA GeForce RTX 3070",
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "bs": 250,
+ "K": 8,
+ "fast_add": true,
+ "chunk_delta": 0,
+ "iit_eval": {
+  "tau1": {
+   "n_ccc": 2265,
+   "hybrid_ccc": 1.0,
+   "own": 0.0,
+   "donor": 0.0,
+   "by_n": {
+    "3": {
+     "n": 618,
+     "hybrid": 1.0
+    },
+    "4": {
+     "n": 459,
+     "hybrid": 1.0
+    },
+    "5": {
+     "n": 384,
+     "hybrid": 1.0
+    },
+    "6": {
+     "n": 294,
+     "hybrid": 1.0
+    },
+    "7": {
+     "n": 264,
+     "hybrid": 1.0
+    },
+    "8": {
+     "n": 246,
+     "hybrid": 1.0
+    }
+   },
+   "n_pairs": 2266,
+   "counts": {
+    "seen": 6000,
+    "eligible": 2456,
+    "kept": 2266
+   },
+   "all": {
+    "hybrid": 0.999558693733451,
+    "own": 0.0,
+    "n": 2266
+   }
+  },
+  "tau2": {
+   "n_ccc": 807,
+   "hybrid_ccc": 1.0,
+   "own": 0.0,
+   "donor": 0.0,
+   "by_n": {
+    "5": {
+     "n": 138,
+     "hybrid": 1.0
+    },
+    "6": {
+     "n": 199,
+     "hybrid": 1.0
+    },
+    "7": {
+     "n": 236,
+     "hybrid": 1.0
+    },
+    "8": {
+     "n": 234,
+     "hybrid": 1.0
+    }
+   },
+   "n_pairs": 808,
+   "counts": {
+    "seen": 6000,
+    "eligible": 890,
+    "kept": 808
+   },
+   "all": {
+    "hybrid": 0.9987623762376238,
+    "own": 0.0,
+    "n": 808
+   }
+  },
+  "tau3": {
+   "n_ccc": 51,
+   "hybrid_ccc": 1.0,
+   "own": 0.0,
+   "donor": 0.0,
+   "by_n": {
+    "7": {
+     "n": 13,
+     "hybrid": 1.0
+    },
+    "8": {
+     "n": 38,
+     "hybrid": 1.0
+    }
+   },
+   "n_pairs": 51,
+   "counts": {
+    "seen": 6000,
+    "eligible": 54,
+    "kept": 51
+   },
+   "all": {
+    "hybrid": 1.0,
+    "own": 0.0,
+    "n": 51
+   }
+  }
+ },
+ "siit_eval": {
+  "keep_ccc": 0.9995584988962473,
+  "n_ccc": 2265,
+  "follow_text_ccc": 0.0004415011037527594,
+  "n_pairs": 2266
+ },
+ "g2_pass1_deep_probe": 0.09806451612903226,
+ "g2_detail": {
+  "by_t": {
+   "4": {
+    "acc": 0.07920791953802109,
+    "n": 101
+   },
+   "5": {
+    "acc": 0.07482992857694626,
+    "n": 147
+   },
+   "6": {
+    "acc": 0.12060301750898361,
+    "n": 199
+   },
+   "7": {
+    "acc": 0.10769230872392654,
+    "n": 195
+   },
+   "8": {
+    "acc": 0.09022556245326996,
+    "n": 133
+   }
+  },
+  "n": 775,
+  "def": "step_recover protocol (svr_gpre.probe) fitted on S_1's decoder-position read per target t >= 2; test targets with h >= 4; pooled"
+ },
+ "sec": 97
+}
