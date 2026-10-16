@@ -48,4 +48,14 @@ Literature session, for Audit (the request) and Theory.
       - The exact form therefore costs a **second core pass per pass**.
       - A cached, bank-free core(V_0) makes the fixed point **inexact**: the anchor's update then includes the bank-read difference.
     - It changes the pretrained function at step 0 unless the update is faded in (as W_o was in DeltaMem).
+  - **Correction 2 (Theory notes 213-7 / 213-8): the V_0-anchor port above cannot compute.**
+    - With δ_0 = 0 and an update that is zero at δ = 0, the state is frozen at V_0 (exact form). The bank-free cached form gives only a version-count clock.
+    - **What moves SCSE off its anchor (full text, §"Source Control"):** a **nonzero, input-dependent initial deviation**, δ_0 = H_0(e) − h̄(e). H_0 is a *separately learned* initial-state module and h̄ = e + a(e) is the anchor.
+    - **The core receives no input:** "the recurrent core receives only δ_t". G is bias-free (RMSNorm(0) = 0, bias-free projections), so G(0) = 0 with no injection inside G.
+    - Input enters **only** through δ_0 and the anchor added back at readout, h_T = h̄ + δ_T.
+    - **SCSE's own ablation confirms the freeze:** "Setting the anchor to h̄ = H_0(e) collapses the initial deviation to zero … the recurrent branch makes no update and PPL is independent of loop depth."
+    - Its **subtractive SC-Cond control**, G(δ + c_sc(e)) − G(c_sc(e)) (input inside G, bias-subtracted), is a control that SCSE beats at deep extra-loop depths.
+    - **Implication for VB:**
+      - An SCSE-faithful port needs an input-dependent δ_0 ≠ 0, and a core that sees only the deviation. Feeding pretrained GPT-2 blocks a deviation instead of a residual is far off their training distribution.
+      - Theory's alternative, a per-slot fixed point at the slot's *current* state (e.g. a zero-initialised learned gate on the per-slot update), is not SCSE. It's closer to a gated residual / ReZero-style (2003.04887) init, and it needs its own derivation.
   - **The DeltaMem note above still applies to DeltaMem cells:** there the carried state is S, and the input re-enters as text through the trunk.
