@@ -17961,6 +17961,21 @@ theory/score_s213's REFERENCE block adds hold_read().
 - **The hold is sticky, as intended:** a slot that enters copy mode keeps the V it had at entry for every later pass whose decode is unchanged. That is the per-slot fixed point the held gate would learn. A pass whose decode differs ends the hold and stores the computed V_t[j].
 - **Exposure is logged as in d3sel,** per arm: the share of items with ≥ 1 held slot-event, and the slot-events per item, by n. A null is then distinguishable from "rarely triggered".
 
+**Note 213-16 (2026-10-16 16:36 EDT; S0-4 COPY-HOLD on N1, the 213-14 / 213-15 rule; s211_vb_carry_s1/eval_hold.json, 79bad2a8, 2070, fp32, eval_bs 32; gates bitwise: intact = eval_vb (acc_n2 and acc_k['24']), cells = eval_rs; scored with theory/score_s213's hold_read).**
+
+**Rule: UNREADABLE (the control fails), so HOLD-FIXES is not met.**
+- Holding class-unchanged slots at their stored V breaks N1 inside its training range: acc_n2 at n 1..4 is 1.000 / 0.982 / **0.414 / 0.122**, then chance. HOLD+V is the same.
+- The pooled G_H is −0.450 (D_R +0.469). Exposure is 100% of items at every n (held slot-events per item: 68 / 458 / 1,010 at n 2 / 8 / 16).
+
+**Descriptive** (one-directional, as 212-18: a decode-ruled hold on an untrained model):
+- **During the computation, N1's "copy" slots are not static stores.** Their carried code must change from pass to pass even when their class does not; freezing it removes state N1 uses. Together with REFRESH (reset to V_0, collapsing from n 2) and MASKVOID (212-18), **every slot kind carries working state in N1's trajectory**.
+- **After the computation ends, the same hold removes N1's long-run drift.** At n 1–2, where the answer is complete after 1–2 passes and the rest are idle, acc_k24 goes 0.730 / 0.710 (intact) → **1.000 / 0.985** (hold). At K′ n + 2 it is 1.000 / 0.982. So N1's K′ 24 instability on finished items is drift that a per-slot hold removes.
+
+**Lead ranking** (213-14's "use"; no §213 rule):
+- **A decode-ruled per-slot gate is deprioritised:** its fixed point breaks the computation.
+- **The supported form is a completion-conditioned hold:** freeze the state after the answer is reached. It speaks to C6 stability and C5 halting, not to the in-computation drift that limits DEPTH. If a §213 cell reads LENGTH-FREE but K′ 24-unstable, that is the lead, with its own derivation.
+- **N1's in-computation deficit** (RS +0.47) is **not** removed by freezing copy slots. Its cause stays open (212-18).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
