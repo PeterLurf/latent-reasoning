@@ -17894,6 +17894,23 @@ The arms are as in 213-1. For PA cells, "SLVA" reads as the PA gather: self_abla
 
 theory/score_s213.py adds a REFERENCE block that applies hist() to these files (descriptive).
 
+**Note 213-12 (2026-10-16 15:57 EDT; the 213-11 d3hist reference row; e6413780 (N1, N2) and 4c443206 (N3), each on its eval_vb card, fp32, eval_bs 32; the intact arm is bitwise eval_vb on all three; PA / CARRY hook gate d8 PASS (442413ec); scored with theory/score_s213's REFERENCE).**
+
+**EXPECTATIONS_MET = True: the d3hist path reads the known answers, so §213's (f) and RNN-IN-FUNCTION are cleared to score.**
+
+| cell | pooled n 6–8 drop: bank / self / other | HISTORY-USED | swap follow: NEWEST / BANK / OLD (pairs) | RNN-IN-FUNCTION |
+|---|---|---|---|---|
+| N1 CARRY (2070) | 0.000 / omitted / 0.000 | no | 1.000 / 0.000 / 0.000 (4,184) | **yes** |
+| N2 PA (4060) | **0.469** / 0.305 / 0.000 | **yes** | 0.994 / 0.000 / 0.004 (4,183) | no |
+| N3 PA + MCT (3070) | **0.587** / 0.037 / 0.000 | **yes** | 0.899 / 0.000 / 0.016 (4,182) | no |
+
+(N1's self arm is omitted: CARRY has no gather. N1's NEWEST / BANK equal eval_vb's iii_carry / iii_bank.)
+
+**Descriptive.**
+- **N2:** own-slot history carries most of its use (a self drop of 0.305 of the bank's 0.469). Cross-slot masking alone does nothing (M2), yet masking both costs more than own-slot alone. Cross-slot versions are therefore a backup channel.
+- **N3's history use is almost entirely the gather's cross-slot mid versions** (self 0.037 of 0.587). SLVA cannot express that. An N3-like route to HISTORY-USED is therefore unavailable to a §213 cell. Only N2's own-slot channel is (D3_v1 §1 thesis).
+- **OLD-SWAP follow is ≤ 0.016 even in the history-using PA cells.** Their history use is a support read (masking hurts), not a content read (the answer does not follow donor versions). For §213, a HISTORY-USED cell with OLD-SWAP ≈ 0 matches N2's pattern. It is reported as such, with no rule change.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

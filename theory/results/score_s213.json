@@ -1,0 +1,99 @@
+{
+ "D3-T": {
+  "cell": "s213_d3t_s1",
+  "ARGS_DIFF": null,
+  "s211": {
+   "cell": "s213_d3t_s1",
+   "last_step": 0,
+   "label": "pending (not started)"
+  },
+  "label": "pending (not started)"
+ },
+ "D3-F": {
+  "cell": "s213_d3f_s1",
+  "ARGS_DIFF": null,
+  "s211": {
+   "cell": "s213_d3f_s1",
+   "last_step": 0,
+   "label": "pending (not started)"
+  },
+  "label": "pending (not started)"
+ },
+ "PAIR": {
+  "label": "pending"
+ },
+ "REFERENCE": {
+  "N2": {
+   "intact_n6_8": 0.9996666666666667,
+   "gate_intact_equals_eval_vb": true,
+   "readable": true,
+   "drop": {
+    "bank_ablate_slva": 0.4686666666666667,
+    "self_ablate": 0.30533333333333335,
+    "other_ablate": 0.0
+   },
+   "HISTORY_USED": true,
+   "swap": {
+    "n_pairs": 4183,
+    "newest_follow": 0.9940234281616065,
+    "newest_own": 0.005020320344250538,
+    "bank_follow": 0.0,
+    "bank_own": 1.0,
+    "old_follow": 0.004303131723643318,
+    "old_own": 0.9949796796557495
+   },
+   "omitted": [],
+   "OLD_SWAP_follow": 0.004303131723643318,
+   "RNN_IN_FUNCTION": false
+  },
+  "N1": {
+   "intact_n6_8": 1.0,
+   "gate_intact_equals_eval_vb": true,
+   "readable": true,
+   "drop": {
+    "bank_ablate_slva": 0.0,
+    "self_ablate": null,
+    "other_ablate": 0.0
+   },
+   "HISTORY_USED": false,
+   "swap": {
+    "n_pairs": 4184,
+    "newest_follow": 1.0,
+    "newest_own": 0.0,
+    "bank_follow": 0.0,
+    "bank_own": 1.0,
+    "old_follow": 0.0,
+    "old_own": 1.0
+   },
+   "omitted": [
+    "self_ablate"
+   ],
+   "OLD_SWAP_follow": 0.0,
+   "RNN_IN_FUNCTION": true
+  },
+  "N3": {
+   "intact_n6_8": 0.9996666666666667,
+   "gate_intact_equals_eval_vb": true,
+   "readable": true,
+   "drop": {
+    "bank_ablate_slva": 0.587,
+    "self_ablate": 0.03733333333333333,
+    "other_ablate": 0.0
+   },
+   "HISTORY_USED": true,
+   "swap": {
+    "n_pairs": 4182,
+    "newest_follow": 0.8986131037780966,
+    "newest_own": 0.0824964131994261,
+    "bank_follow": 0.0,
+    "bank_own": 1.0,
+    "old_follow": 0.01649928263988522,
+    "old_own": 0.9806312769010043
+   },
+   "omitted": [],
+   "OLD_SWAP_follow": 0.01649928263988522,
+   "RNN_IN_FUNCTION": false
+  },
+  "EXPECTATIONS_MET": true
+ }
+}
