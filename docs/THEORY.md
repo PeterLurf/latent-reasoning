@@ -16875,6 +16875,15 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 - N3's stage-1 out-of-range overconfidence (211-8) did not make admitting n 4–5 costlier. It was cheaper.
 - **Caveat:** p_TF ≈ 0.95 at 5k, so most bank entries were still MCT-corrected. This recovery is mostly teacher-forced.
 
+**§205 s1 result (2026-10-16 02:16 EDT; s205_iit_s1, b296, RTX 3090 / 595.71.05; 48k, 0 non-finite, train_sec 51,044, about $3.44; eval_iit.json on the 3070 at bs 250; theory/score_s205.py). s1 reads ENTERED-AND-MET.**
+* **ENTERED:** entry(0.5) 21k (control s185_rms_s1 19k); final 1k bin 0.001.
+* **MET:** hybrid_ccc 1.0 at τ1 / τ2 / τ3 (τ1 n_ccc 2,265 of 2,266), 1.0 at every n 3..8. SIIT keep 0.9996.
+* **Guards:** g1 0.116, g2 0.098 (no ONE-PASS-COMPUTE). acc_from_donor 0.096, delta_cos 0.602 (no CLEAN-CONTRACTIVE).
+* **Descriptive:** accuracy at n 1..9 ≥ 0.989, then n 10 0.328 and n 11..16 0.13–0.15. s170.serial hybrid 1.0 / 1.0 / 1.0 / 0.994 at t 1 / 2 / 4 / 6 (null 0.099).
+* **Pairing (fact, against note 205-2's expectation).** s1 was declared unpaired a priori: its driver is 595.71.05, the control's 570.172.08. But **all 20 log records at steps 100–2,000 are bitwise identical to s185_rms_s1's**, and the first difference is at 2,100, after the IIT term turns on at 2,001. So s1 meets the registered PAIRED definition.
+  * HARMFUL would be readable on s1. It does not fire: s1 entered.
+* **Arm:** still FAILED by rule (s3 MET-NOT-ENTERED). s2 (about 02:50) reads HARMFUL and its own label. The §205 family is at about $15.42 of $18.50.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
