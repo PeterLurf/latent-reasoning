@@ -1,0 +1,4 @@
+tau 1 {'hybrid_ccc': 0.9995584988962473, 'own': 0.0, 'donor': 0.0, 'n_ccc': 2265} 43
+tau 2 {'hybrid_ccc': 1.0, 'own': 0.0, 'donor': 0.0, 'n_ccc': 807} 55
+tau 3 {'hybrid_ccc': 1.0, 'own': 0.0, 'donor': 0.0, 'n_ccc': 51} 56
+EVAL_IIT {'tau1': 0.9995584988962473, 'tau2': 1.0, 'tau3': 1.0} 1.0 0.08129032258064516 94
