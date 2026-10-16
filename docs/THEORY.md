@@ -16761,6 +16761,24 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 5. **carry_likeness** comes from the intact K′ = n + 2 rollouts.
 6. **acc_tf** applies MCT with target E_t to bank entries t ≥ 1.
 
+**Note 211-5 (2026-10-16 00:10 EDT; before any §211 output; descriptive facts from the compressed-anneal smoke s211_anneal_smoke (11.7× compressed, n ≤ 3, 800 steps) and the G1b smokes (acc43412); N2 and N1 released by Audit, N3 after its G1b; no rule change).**
+
+1. **Anneal transient (watch item).**
+   - At the end of the ramp (c 1.3 → 0), rec_ce rose 0.58 → 1.29 and answer_ce 2.18 → 2.29. Both recovered within about 100 steps.
+   - In the real schedule that segment spans about 450 steps (about 7.5k–8.5k). It is reported descriptively from log.jsonl, and the gather off-self mass and gradient norm are logged every 100 steps.
+   - It is not a censoring event: rule b applies only to dead or non-entering runs.
+2. **CARRY-LIKENESS after the smoke ≈ 0.10.** At c = 0 the gather put about 90% of its mass off-self, far below the registered expectation (≥ 0.8, P 0.7).
+   - **Expected to recover with training [DERIVED direction; ASSUMED magnitude].**
+     - At c = 0 the content-free queries W_q·wpe[j] are barely trained (they only start learning near the end of the ramp). Within the recency-favoured versions, mass therefore spreads over all positions i rather than matching i = j.
+     - The unchanged-slot half of R2 needs V_t[j] to keep E_{t−1}[j]. That is most cheaply done by putting U_t⁰[j]'s mass on (t−1, j), so the recode loss's gradient pushes toward self-position gathering.
+     - GPT-2's layer-10 residual keeps position linearly decodable, which makes the match learnable.
+   - **The prediction stands as registered.** It is descriptive, not part of VB-C1.
+   - **How a low end value reads:** a low final CARRY-LIKENESS with VB-C1 met means a pass-global read pattern beyond the Markov optimum, which is consistent with the user's constraint. A low value with DEEP failing is reported against N1 (CARRY) as a possible gather cost (descriptive, one seed).
+3. **G1b results (PASS, pa and carry).**
+   - Drift 0.48 → about 0.
+   - CE(K′ = n): 6.80 → 2.70 → 2.31 (pa), 6.80 → 2.58 → 2.01 (carry).
+   - pamct is still running, with answer_ce 0.98 at 1k vs 2.12 for pa (descriptive).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
