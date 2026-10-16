@@ -300,6 +300,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
+| 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, "what reccomend approve" = option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **Stage 0 S0-1..3 first (local); then gates + Audit diff review; not launched** |
 
 ## Live sections
 
@@ -17652,6 +17653,71 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
   - the control drop blocks the add, N2's LFK is unreadable, the STAB intact gate is broken;
   - a low G_MV with gap share 0.7 (COMPACTION-TRIGGER), N1's LFK failing (not discriminating), a small STAB;
   - D_R ≤ 0 is UNREADABLE.
+
+## 213. D3: slot-local version attention (SLVA) on VERSION-BANK, cells D3-T / D3-F (USER APPROVED 2026-10-16 14:36 EDT: "what reccomend approve", relayed verbatim by Audit = D3 v1.1 option A; cap $4.5 for the pair; no FT pair; G1 stays held; pre-registered 2026-10-16 14:40 EDT, before any D3 Stage 0 output or SLVA code)
+
+**Registered text.**
+- docs/research_bottleneck_2026-10-16/D3_v1.md **at c9f3f980** (v1.1) is the registered text for every definition, rule and label. That file is now frozen.
+- The Stage 0 rows are notes 212-15 and 212-16.
+- **Derivation** (math-backing rule): D3_v1 §3 (Thm 1, Prop 2, Prop 3′, Prop 6, Thm 4), with PROOFS_D3's verdicts and REDTEAM_D3's fixes (docs/research_bottleneck_2026-10-16/).
+- **Scorer:** theory/score_s213.py (this commit), fixture-checked on 5 cases:
+  - an N1-like and an N2-like cell (LENGTH-FREE vs knee; DG fail; RNN-IN-FUNCTION);
+  - D3-C2-ATTN vs D3-C2 "form only";
+  - dead, plus an LFK fail, a broken hist gate and an ARGS-DIFF;
+  - pending;
+  - an entry gap > 5k → CONFOUNDED; and the pair censored on a dead cell.
+
+**Cells** (RTX 3090, seed 1, 48k × bs 64, one GPU class; the off-host checkpoint mirror armed at launch; checkpoints deleted at train end):
+- **s213_d3t_s1 = D3-T:** N2's args.json with mode slva (SLVA replaces the PA gather, D3_v1 §2.1). The table trains.
+- **s213_d3f_s1 = D3-F:** D3-T plus the frozen pretrained table (§2.2).
+- **The recipe is N2's** (ARGS-DIFF gate):
+  - cur 3,5,8 with gate 0.3:2:8000; c_sched 1000,8000;
+  - lr 1e-4 cosine; wd 0.01; kmax 12; kextra 4; mu 1.0; rec_w 1.0;
+  - R1 plus reweighted R2.
+- **Entry / NO-ENTRY** use §211's answer_ce field, as for N1 / N2. D3 has no HISTORY-INSERT, so that is the CE against y.
+- **Add-on:** VOID key masks go into both cells iff S0-1 reads ADD-VOIDMASK (score_s212's D3 block). This is decided before launch and recorded in a note.
+
+**Decisive, per cell** (D3_v1 §5):
+- **D3-C2-ATTN** = LENGTH-FREE (NO-KNEE at m 9 and m 10 ∧ LENGTH-FREE-K) ∧ DEPTH-GENERAL (mean acc_n2 n 9–12 ≥ 0.80) ∧ VB-C1 ∧ HISTORY-USED (BANK-ABLATE-SLVA drops pooled n 6–8 by ≥ 0.10).
+- **D3-C2 without HISTORY-USED** is reported as "C2 with the memory in form only".
+- **LENGTH-FREE-K counts only if S0-2 reads LFK_DISCRIMINATES.** Otherwise it is replaced by an amendment before any D3 eval output.
+- **Reported beside:**
+  - COUNT; STEP-GENERAL; SELF-SIMILAR;
+  - SELF-ABLATE and OTHER-ABLATE; the swap triple and RNN-IN-FUNCTION; OLD-SWAP follow (quoted beside HISTORY-USED);
+  - strict exactness;
+  - the pair's TABLE differences (descriptive, with entry steps).
+
+**OC (one seed per cell):**
+- P(LENGTH-FREE | no effect) ≤ 0.05; P(| effect) ≈ 0.7–0.85.
+- P(HISTORY-USED | none) ≤ 0.01; P(| N2-like use) ≈ 0.95.
+- P(DG | no effect) ≈ 0.05; P(| effect) ≈ 0.6.
+- **P(CARRY collapse) ≈ 0.7–0.85.** P(D3-C2) 0.08–0.15 per cell. **P(D3-C2-ATTN) ≈ 0.03–0.08 per cell; P(at least one in the pair) ≈ 0.05–0.15.**
+- If S0-3 does not read OWN-HISTORY-STABILISES, P(DG | DEEP) drops from 0.3 to 0.15.
+- A positive is strong; a null is weak. A rate claim needs ≥ 3 seeds and the user's OK.
+
+**Censoring (rule b):**
+- A dead run (log < 48k) or NO-ENTRY fails every reading, and the pair reading is then censored.
+- Unparseable decodes and never-halting count as failures.
+- A NO-KNEE side with < 100 items, or LENGTH-FREE-K with < 500 slot-events at ge33, is UNREADABLE (not met).
+- HISTORY-USED is UNREADABLE (not met) if the intact pooled n 6–8 is < 0.90 or the intact arm is not bitwise eval_vb.
+- RS cells with < 100 items are excluded.
+
+**Eval files** (note 213-1 contract), local fp32 at eval_bs 32, **on one local card for both cells** (D3_v1 §5's "training card's class" is read as one class for both cells, the §211 practice), card recorded:
+- eval_vb.json (note 211-1);
+- eval_steppos.json (vbank_diag part steppos);
+- eval_lfk.json (212-15);
+- eval_rs.json (part rs);
+- **eval_d3hist.json:**
+  - {intact | bank_ablate_slva | self_ablate | other_ablate: {acc_n2 {n}}}, n 1..12;
+  - swap {n_pairs, newest_follow, newest_own, bank_follow, bank_own, old_follow, old_own} on VALUE-SWAP's pairs (definitions in D3_v1 §5).
+
+**Gates before launch:**
+- G-D0 to G-D7 green (D3_v1 §6), including ARGS-DIFF printed in the launch log;
+- **Audit's diff review** of boxes/slva.py and the trainer / loader edits;
+- the off-host mirror armed;
+- S0-1, S0-2 and S0-3 run first on the local cards.
+
+**Cost.** $1.05–1.90 per cell projected. **Cap $4.5 for the pair** (guard). The realised $ replaces the projections, and nothing is dropped silently.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
