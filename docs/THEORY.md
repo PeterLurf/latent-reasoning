@@ -16801,6 +16801,29 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 * Padded batched = per-item to 5.7e-15 in fp64, so batch composition is not a confound. Readings are in fp32; any re-check uses bs 32 regardless.
 * vbank.py is unchanged; all cells run identical code.
 
+**Note 211-8 (2026-10-16 00:48 EDT; before any §211 output; Theory's call on N3 under note 211-6's rule, which held it because pa's n 4–8 CE was flat; data scratch/gate_s211/g1b_split.json; free-running CE at K′ = n, 256 items, fp32; all 2k steps in curriculum stage 1, n ≤ 3). Decision: release N3 as registered, with no design change.**
+
+| CE | step 0 | 1k | 2k |
+|---|---|---|---|
+| pa, n ≤ 3 | 3.93 | 2.81 | 1.73 |
+| pa, n 4–8 | 9.07 | 2.42 | 2.37 |
+| pamct, n ≤ 3 | 3.93 | 1.50 | 1.31 |
+| pamct, n 4–8 | 9.07 | 7.68 | 10.47 |
+
+pamct's n 4–8 with MCT applied at eval: 8.59 / 10.30.
+
+**Reasons.**
+1. **Neither cell generalises beyond the curriculum at 2k.** pa's n 4–8 CE of 2.37 is ln 11 = 2.40: uniform over the 11 values, i.e. calibrated chance, not generalisation. pamct is also at chance but confidently wrong. The difference is **calibration, not capability**. MCT learns the trained depths faster and sharper (1.31 vs 1.73).
+2. **Exposure bias is not the mechanism.** With MCT applied at eval (every bank version corrected to E_s), pamct's n 4–8 is just as bad (10.30). So the step map trained only on n ≤ 3 is confidently wrong on longer expressions even from correct inputs. A lower p_TF start or mixed free-running training (Experiments' suggestions) has no stated mechanism for that. Changing the registered design would need a derivation.
+3. **The gate passes under 211-6's criterion:** the trained-range CE falls 1.50 → 1.31, and the drift criterion passes.
+4. **The curriculum trains n 4–8 in its later stages.** The registered question for N3 is whether training the step map from correct inputs at every depth removes CARRY-NO-STEP. Stage 1's out-of-range calibration does not bear on that.
+
+**Pre-stated descriptive watch for N3 against N2:**
+- the answer_ce jump of the newly admitted n at each curriculum advance (5k-step windows);
+- the steps to re-reach < 0.3.
+
+If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a candidate cause, descriptively, and is not tested here.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
