@@ -17525,6 +17525,30 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - The per-cell target n is reported. Audit: 10_31 has 627 and 10_33 has 307, so the pool is dominated by m = 10.
 - The scorer also reports, per arm, the **count of exposed-control cells differing from intact**. That proves the control is exposed.
 
+**Note 212-13 (2026-10-16 13:41 EDT; the 212-11 tests, eval_d3diag.json on N2 (4060), N3 (3070) and N1 (2070), fp32, eval_bs 32; intact reproduces steppos B; read by theory/score_s212's d3diag under the 212-12 pooling rule (item-weighted); target cells n: 8_31 35, 8_33 1, 9_31 482, 9_33 160, 10_31 627, 10_33 614, so m 9–10 dominate).**
+
+**1. Labels: every PA arm is UNREADABLE.** The exposed control is proven exposed: 4–7 control cells differ from intact in every arm.
+
+| cell | arm | target (intact 0.226 / 0.195) | exposed control (intact 0.995 / 0.993) |
+|---|---|---|---|
+| N2 | gs24 | 0.199 | **0.794** |
+| N2 | wpe_b1 (pretrained rows ≥ 24) | 0.000 | **0.508** |
+| N2 | wpe_b2 (all pretrained) | 0.000 | 0.000 |
+| N3 | gs24 | 0.001 | 0.591 |
+| N3 | wpe_b1 | 0.000 | 0.558 |
+| N3 | wpe_b2 | 0.000 | 0.000 |
+
+- **N1 (CARRY), reference:** wpe_b1 / b2 read NOT at the ceiling (target 0.997 → 0.999; control 1.000, 0 cells differing).
+  - Descriptively, the pretrained table **improves** N1's long step monotonically: m 14 / 15 / 16 go 0.848 / 0.726 / 0.616 intact → 0.933 / 0.829 / 0.748 (b1) → 0.977 / 0.931 / 0.860 (b2).
+- **N2 detail (descriptive):** gs24 hurts m 8–9 (0.991 / 0.782 → 0.783 / 0.479) but lifts m 11–12 from about 0 to 0.195 / 0.144.
+
+**2. Reading** (Audit predicted UNREADABLE for b1; it is informative about the seam, not a failed test).
+- **PURE-ANNEAL training bound the core to its fine-tuned position table.** Restoring pretrained rows at ≥ 24 halves even in-support exposed items, and an all-pretrained table kills the step.
+- **CARRY training did not**, and the pretrained table generalises better than N1's fine-tuned one.
+- **This supports D3's frozen-position-table element [DERIVED from the contrast]:** if the table is frozen at pretrained values from the start of training, PA-style rewiring of positions cannot occur, and N1 shows the pretrained table is the length-tolerant one.
+- The N2 gs24 lift at m 11–12 hints that the far-slot gather contributes to the failure beyond T ≈ 33 (descriptive).
+- The causal mechanism remains [CONJECTURE].
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
