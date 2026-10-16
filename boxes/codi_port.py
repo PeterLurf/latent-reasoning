@@ -253,7 +253,7 @@ def main():
             hist = []; log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         if (step % ve == 0 or step == total) and not a.max_steps:
             m.eval(); prj.eval(); tv = time.time(); va, _, _ = evaluate(m, prj, valid, dev); m.train(); prj.train(); vhist.append([step, va])
-            log.write(json.dumps({"step": step, "valid_acc": va, "epochs": seen / len(Dtr), "valid_sec": round(time.time() - tv, 1)}) + "\n"); log.flush()
+            log.write(json.dumps({"step": step, "valid_acc": va, "epochs": seen / len(Dtr), "lr": sched.get_last_lr()[0], "valid_sec": round(time.time() - tv, 1)}) + "\n"); log.flush()   # §210 (Audit): lr beside each valid record
         if a.ckpt_every and step % a.ckpt_every == 0 and step < total:
             torch.save({"tp": {n: p_.detach() for n, p_ in TP}, "opt": opt.state_dict(), "sched": sched.state_dict(), "step": step, "seen": seen, "pos": pos, "ep": ep,
                         "vhist": vhist, "rng": rng.bit_generator.state, "order": order, "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev),

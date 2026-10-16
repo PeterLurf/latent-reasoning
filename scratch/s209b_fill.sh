@@ -6,12 +6,24 @@
 # A refused host: vdestroy, its gen8 drain watcher stopped by pid, drained_hosts + exclude list, billed minutes logged; stays pending. 4 BAD / refused hosts -> held.
 #   PMAX=0.60 nohup bash scratch/s209b_fill.sh >> logs/fill_s209b.out 2>&1 &
 cd "$(dirname "$0")/.."
-PMAX=${PMAX:-0.60}; CAP=12.0; STEPS=59822; RATIO=${RATIO:-3.22}; n=303; BADN=0; BADMAX=4; BADLOG=logs/s209b_bad_cost.log
+PMAX=${PMAX:-0.60}; CAP=11.5; STEPS=59822; RATIO=${RATIO:-3.22}; n=303; BADN=0; BADMAX=4; BADLOG=logs/s209b_bad_cost.log
 export GPU_NAME=A100_SXM4; export EXTRA_120="$(tr '\n' ' ' < scratch/gen_q_b303.extra)"
 log() { echo "$(date +%T) fill_s209b $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 probe() {   # host port -> "OK <s/step>" / "SLOW" / ""
   local r; r=$(timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "grep -h 'HOSTPROBE' /workspace/Latent/logs/queue_gen_b$n.out | tail -n 1" 2>/dev/null)
   echo "$r" | grep -q "HOSTPROBE_SLOW" && { echo SLOW; return; }; echo "$r" | grep -q "s/step" && echo "OK $(echo "$r" | awk '{for(i=1;i<=NF;i++) if($i=="HOSTPROBE") print $(i+1)}')"
+}
+g1check() {   # §210 G1': the released CODI ckpt re-scored on this host (queue line 1) must be within 0.010 of 0.425, else stop the host and report
+  local r=""; for i in $(seq 1 30); do
+    r=$(timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "cat /workspace/Latent/boxes/runs_fsq/gsm_codi_20ep_s1_g1/eval.json 2>/dev/null" 2>/dev/null)
+    [ -n "$r" ] && break; sleep 60
+  done
+  if echo "$r" | python -c "import json,sys; d=json.load(sys.stdin); print('G1PRIME acc', d['acc'], 'pass', d['pass'], d.get('card')); sys.exit(0 if d['pass'] else 1)" >> logs/fill_s209b.out 2>&1; then
+    log "b$n: G1' PASS on $1:$2"; return 0
+  fi
+  log "b$n: G1' FAIL or missing on $1:$2 - stopping the host (instance $3) and reporting (no retry)"
+  for dp in $(ps -ef | grep "auto_drain_gen8.sh $1 $2 gen_b$n $3" | grep -v grep | awk '{print $2}'); do [ "$dp" != "$$" ] && kill "$dp"; done
+  echo "$1:$2" >> logs/drained_hosts.txt; log "b$n: $(bash scratch/vdestroy.sh "$3" | tail -1)"; exit 4
 }
 [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
 while [ ! -f scratch/fill_s209b.stop ]; do
@@ -34,7 +46,7 @@ while [ ! -f scratch/fill_s209b.stop ]; do
     proj=$(python -c "print(round(($pv * $RATIO * $STEPS / 3600 + 0.45) * $dph, 2))")
     if python -c "import sys; sys.exit(0 if $proj <= $CAP else 1)"; then
       log "b$n: HOSTPROBE OK ($pv s/step) on $h:$p - ADMIT: projection \$$proj (ratio $RATIO, $STEPS steps, \$$dph/h) <= \$$CAP"
-      sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; log "b$n: done (admitted)"; exit 0
+      g1check "$h" "$p" "$iid"; sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; log "b$n: done (admitted)"; exit 0
     fi
     log "b$n: HOSTPROBE OK ($pv s/step) but projection \$$proj > \$$CAP on ratio $RATIO"
     if [ ! -s logs/s209b_ratio.txt ]; then                               # Audit: the 3090 ratio may not transfer -> measure the real run's s/step at step >= 200 first
@@ -47,7 +59,7 @@ while [ ! -f scratch/fill_s209b.stop ]; do
         RATIO=$(python -c "print(round($sps / $pv, 3))"); echo "$(date '+%F %T') A100 probe $pv s/step, train $sps s/step at step >= 200 -> ratio $RATIO ($h:$p)" >> logs/s209b_ratio.txt
         proj=$(python -c "print(round(($sps * $STEPS / 3600 + 0.45) * $dph, 2))"); log "b$n: measured train $sps s/step (ratio $RATIO) -> projection \$$proj"
         if python -c "import sys; sys.exit(0 if $proj <= $CAP else 1)"; then
-          log "b$n: ADMIT on the measured rate: projection \$$proj <= \$$CAP"; sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; log "b$n: done (admitted)"; exit 0
+          log "b$n: ADMIT on the measured rate: projection \$$proj <= \$$CAP"; g1check "$h" "$p" "$iid"; sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; log "b$n: done (admitted)"; exit 0
         fi
       else
         log "b$n: no step-200 record within 60 min - treating as refused"
