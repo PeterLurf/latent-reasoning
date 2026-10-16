@@ -35,3 +35,5 @@ Literature session, for Audit (the request) and Theory.
 - Golowich et al.: "sparse dependency theory (idealised model) → Predictive Position Coupling".
 - Add Kuo 2606.29983 as the 2026 looped-specific result: OOD variance comes from the length ↔ loop-count correlation and is fixed by loop-count randomisation.
 - Add Abacus 2405.17399 as the 2024 offset-in-looped precedent, flagged against §177.
+
+**Outcome (Audit, 2026-10-16):** no new lead. Offset training fails its precondition in our pretrained harness: eval_steppos C with an offset of 8 gives 0.0 even on N1, as with §177. Kuo 2606.29983 is already covered in-project: randk P22 did not help, and D_depth_invariance builds in K ⟂ n.
