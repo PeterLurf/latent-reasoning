@@ -2,12 +2,12 @@
  "torch.float32": {
   "V_bitwise": true,
   "coda_bitwise": true,
-  "c0_maxdiff_V2plus": 2919.363037109375
+  "c0_maxdiff_V2plus": 2937.586669921875
  },
  "torch.float64": {
   "V_bitwise": true,
   "coda_bitwise": true,
-  "c0_maxdiff_V2plus": 2919.362141036295
+  "c0_maxdiff_V2plus": 2937.5857767992293
  },
  "pass": true
 }
