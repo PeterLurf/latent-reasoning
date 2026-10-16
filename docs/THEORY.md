@@ -17641,6 +17641,18 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - D3 v1 is drafted (Theory's revision after PROOFS_D3, REDTEAM_D3 and 212-14). It goes to Audit for review, then the training choice goes to the user (options A–C in D3_v1 §6; recommended A: D3-T + D3-F, cap $4.5).
 - No training code or spend before the user's OK. G1 stays held.
 
+**Note 212-16 (2026-10-16 14:31 EDT; amends 212-15 before any D3 Stage 0 output exists, after Audit's review of D3 v1; Audit approved S0-1..3 as $0 diagnostics, pending its diff review of the vbank_diag parts).**
+- **S0-1 readability (Audit):** the selector is readable only if ≥ 1 cell has ≥ 100 items and D_R ≥ 0.20. Otherwise it is UNREADABLE and no add-on is made. The rule is one-directional: an eval-time VOID mask on N1, which never trained with masks, can false-negative, so a null does not exclude trained VOID masks.
+- **D3 v1.1:**
+  - c_sched 1000,8000 (N2's args.json), not 1000,14000. D3-T is then the single change from N2.
+  - An ARGS-DIFF launch gate (G-D7): D3-T differs from s211_vb_pa_s1/args.json only in mode / arch, the SLVA capability flag and the out / device / host metadata; D3-F adds only the frozen-table flag. Checked: tf_sched is inert without --mct, and R2's weighting and rec_w 1.0 are N2's.
+  - OLD-SWAP follow is quoted beside HISTORY-USED in every result line.
+- **Scorer:** theory/score_s212.py adds the readers d3sel / lfk / stabhist and the D3 block of stage0 (ADD_VOIDMASK, LFK_DISCRIMINATES, OWN_HISTORY_STABILISES). Fixture-checked on 4 synthetic cases:
+  - add, discriminates, stabilises;
+  - the control drop blocks the add, N2's LFK is unreadable, the STAB intact gate is broken;
+  - a low G_MV with gap share 0.7 (COMPACTION-TRIGGER), N1's LFK failing (not discriminating), a small STAB;
+  - D_R ≤ 0 is UNREADABLE.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

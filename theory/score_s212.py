@@ -17,6 +17,8 @@ Part A, Stage 0 on the §211 cells (N2 s211_vb_pa_s1 = base, N1 s211_vb_carry_s1
     hh coefficient (per SD) among prov >= 1 rows >= +0.5.
   Go rules: G1_GO = not (every read model is HISTORY-FREE and HEAD-LIMITED); FT_GO = base N2 reads CLOCK-HOLD / EDGE-COLLAPSE / STALL-COUNT (and is DEEP);
     S_GO = the STEP trigger fires on a DEEP §211 cell.
+  D3 Stage 0 (note 212-15; D3_v1.md): D3SEL (N1, eval_d3sel.json) ADD-VOIDMASK; LFK (eval_lfk.json, each cell) LENGTH-FREE-K and LFK_DISCRIMINATES
+    (N1 meets, N2 and N3 do not); STABHIST (N2, eval_stabhist.json) OWN-HISTORY-STABILISES.
 Part B, G1 s212_vb2g_s1: VB2G-C1 = (a) DEEP, PROBE-GAIN, SERIAL-ONSET, SERIAL-STEP (score_s211's definitions) and (b) DEPTH-GENERAL (mean acc_n2 n 9-12
   >= 0.80), SELF-SIMILAR (RS pooled n 9-16 all r |D| <= 0.05, control <= 0.03, every cell >= 100), STEP-FLAT (eval_stepflat.json) and (c) PF CONTENT-KEYED,
   NO-CLOCK (STALL >= 0.9) and (d) C5-VB. Reported: HISTORY-USE, KEEP-ACC (cap 0.995 at n 13-16). Censoring: dead (< 48k) or NO-ENTRY on true_answer_ce.
@@ -209,6 +211,63 @@ def d3diag(d):
     return res
 
 
+def d3sel(d):
+    """Note 212-15 S0-1 (N1): D_R = pooled (restart - intact) over n 9-12, r in {4, 6}, cells >= 100 items, item-weighted; G_MV = the same pooling of
+    (maskvoid - intact); readable iff >= 1 cell and D_R >= 0.20 (note 212-16; else UNREADABLE, no add-on); ADD-VOIDMASK iff readable, G_MV >= 0.5 D_R and acc_n2(maskvoid) >= acc_n2(intact) - 0.02 at every n 1..8. Descriptive: REFRESH share
+    = pooled (refresh - intact) / D_R; GAP share = (D_R - pooled (gapped - intact)) / D_R, read only if gapped_supported and the gapped control (n 5-8, r in
+    {2, 4}, pooled gapped - restart >= -0.02) holds; COMPACTION-TRIGGER (D3 v1 2.4) = GAP share >= 0.5."""
+    f = jl(d, "eval_d3sel.json")
+    if f is None:
+        return None
+    C = f["cells"]; keys = ["%d_%d" % (n, r) for n in range(9, 13) for r in (4, 6)]
+    sel = [C[k] for k in keys if k in C and C[k]["n_items"] >= 100]
+    pool = lambda arm: wmean([(c["n_items"], c[arm] - c["intact"]) for c in sel if c.get(arm) is not None])  # noqa: E731
+    dr, gmv, grf = pool("restart"), pool("maskvoid"), pool("refresh")
+    A = f["acc_n2"]; ctl = all(A["maskvoid"][str(n)] >= A["intact"][str(n)] - 0.02 - EPS for n in range(1, 9))
+    readable = bool(len(sel) >= 1 and dr is not None and dr >= 0.20 - EPS)     # note 212-16 (Audit): else UNREADABLE, no add-on
+    add = bool(readable and gmv is not None and gmv >= 0.5 * dr - EPS and ctl)
+    gap = None; gctl = None
+    if f.get("gapped_supported"):
+        G = f.get("gapped_control") or {}
+        gc = [G[k] for k in ("%d_%d" % (n, r) for n in range(5, 9) for r in (2, 4)) if k in G and G[k]["n_items"] >= 100]
+        gctl = wmean([(c["n_items"], c["gapped"] - c["restart"]) for c in gc])
+        dg = pool("gapped")
+        if gctl is not None and gctl >= -0.02 - EPS and dg is not None and dr is not None and dr > EPS:
+            gap = (dr - dg) / dr
+    return {"D_R": dr, "G_MV": gmv, "maskvoid_control": ctl, "cells_read": len(sel), "readable": readable, "ADD_VOIDMASK": add,
+            "REFRESH_share": (grf / dr) if (grf is not None and dr and dr > EPS) else None, "gapped_control": gctl, "GAP_share": gap,
+            "COMPACTION_TRIGGER": bool(gap is not None and gap >= 0.5 - EPS)}
+
+
+def lfk(d):
+    """Note 212-15 S0-2 / D3 v1 5 (a'): LENGTH-FREE-K = all-kind strict per-slot accuracy at ge33 >= the same at le28 - 0.01; readable with >= 500
+    slot-events at ge33 (else UNREADABLE = not met)."""
+    f = jl(d, "eval_lfk.json")
+    if f is None:
+        return None
+    S = f["slot"]; acc = lambda k: (S[k]["strict_correct"] / S[k]["events"]) if (k in S and S[k]["events"]) else None  # noqa: E731
+    lo, hi, n_hi = acc("all_le28"), acc("all_ge33"), (S.get("all_ge33") or {}).get("events", 0)
+    readable = bool(n_hi >= 500 and lo is not None and hi is not None)
+    return {"acc_le28": lo, "acc_29_32": acc("all_29_32"), "acc_ge33": hi, "events_ge33": n_hi, "readable": readable,
+            "by_kind": {k: acc(k) for k in sorted(S)}, "MEETS": bool(readable and hi >= lo - 0.01 - EPS)}
+
+
+def stabhist(d):
+    """Note 212-15 S0-3 (N2): STAB = mean over n 3..6 of [(acc_n2 - acc_k24) self_ablate] - [(acc_n2 - acc_k24) intact]; OWN-HISTORY-STABILISES iff
+    STAB >= 0.10 and the intact arm equals eval_vb's acc_n2 / acc_k['24'] exactly (the gate; else UNREADABLE). other_ablate's STAB is descriptive."""
+    f = jl(d, "eval_stabhist.json"); ev = jl(d, "eval_vb.json")
+    if f is None:
+        return None
+    gate = bool(ev and all(f["intact"]["acc_n2"][str(n)] == ev["acc_n2"][str(n)] and f["intact"]["acc_k24"][str(n)] == ev["acc_k"]["24"][str(n)]
+                           for n in range(3, 9)))
+    g = lambda arm, n: f[arm]["acc_n2"][str(n)] - f[arm]["acc_k24"][str(n)]  # noqa: E731
+    st = lambda arm: (sum(g(arm, n) - g("intact", n) for n in range(3, 7)) / 4) if arm in f else None  # noqa: E731
+    s_self = st("self_ablate")
+    return {"gate_intact_equals_eval_vb": gate, "STAB_self": s_self, "STAB_other": st("other_ablate"),
+            "OWN_HISTORY_STABILISES": bool(gate and s_self is not None and s_self >= 0.10 - EPS),
+            "label": "UNREADABLE (intact gate)" if not gate else ("OWN-HISTORY-STABILISES" if s_self >= 0.10 - EPS else "not supported")}
+
+
 def stage0():
     out = {}
     for tag, d in STAGE0.items():
@@ -220,12 +279,16 @@ def stage0():
                                                         "GE_0_2": (rep["p_right_after_wrong"] is not None and rep["p_right_after_wrong"] >= 0.2 - EPS),
                                                         "informative": bool(rep.get("n_events") and rep["n_events"] >= 30)},
                     "STEP": step_trigger(rows), "DEEP": bool(ev and all(ev["acc_n2"][str(n)] >= 0.90 - EPS for n in range(3, 9))),
-                    "D3DIAG": d3diag(d)}
+                    "D3DIAG": d3diag(d), "D3SEL": d3sel(d), "LFK": lfk(d), "STABHIST": stabhist(d)}
     rsd = [v["RS"] for v in out.values() if v["RS"]]
     g1 = None if not rsd else (not all(r["HISTORY_FREE"] and r["HEAD_LIMITED"] for r in rsd))
     b = out["N2"]; ft = None if b["HALT"] is None else bool(b["DEEP"] and (b["HALT"]["CLOCK_HOLD"] or b["HALT"]["EDGE_COLLAPSE"] or b["HALT"]["STALL_COUNT"]))
     stp = [v["STEP"]["FIRES"] for v in out.values() if v["STEP"] and v["DEEP"]]
     out["GO"] = {"G1": g1, "FT": ft, "S": (any(stp) if stp else None), "RS_models_read": len(rsd)}
+    L = {k: out[k]["LFK"] for k in ("N1", "N2", "N3")}                      # 212-15 S0-2: the reading must discriminate before D3 uses it
+    out["D3"] = {"ADD_VOIDMASK": (out["N1"]["D3SEL"] or {}).get("ADD_VOIDMASK"),
+                 "LFK_DISCRIMINATES": (None if any(v is None for v in L.values()) else bool(L["N1"]["MEETS"] and not L["N2"]["MEETS"] and not L["N3"]["MEETS"])),
+                 "OWN_HISTORY_STABILISES": (out["N2"]["STABHIST"] or {}).get("OWN_HISTORY_STABILISES")}
     return out
 
 
@@ -265,7 +328,7 @@ def ft_read():
 
 def main():
     out = {"stage0": stage0(), "G1": g1_read(), "FT": ft_read()}
-    print("READING: GO %s | G1 %s | FT %s" % (out["stage0"]["GO"], out["G1"]["label"], out["FT"]["label"]))
+    print("READING: GO %s | D3 %s | G1 %s | FT %s" % (out["stage0"]["GO"], out["stage0"]["D3"], out["G1"]["label"], out["FT"]["label"]))
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s212.json"), "w", newline=chr(10)), indent=1, default=str)
 
 
