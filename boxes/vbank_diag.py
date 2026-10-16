@@ -812,12 +812,79 @@ def part_d3hist(m, TE, dev, bs):
     return res
 
 
+@torch.no_grad()
+def part_hold(m, TE, dev, bs):
+    """note 213-14 S0-4 COPY-HOLD (on N1; $0, fp32, eval_bs 32). One K' 24 rollout per chunk and arm (vbank_eval.part_acc's chunks), coda rows n + 2 and 24:
+    intact; hold = rollout(edit): at every pass t >= 2, real slots whose argmax R(V_t[j]) equals the decode of the previous stored entry S_{t-1}[j] and is
+    not VOID get stored entry AND carry := S_{t-1}[j] (the previous stored value, possibly already held; S_{t-1} decodes as V_{t-1} at every slot that was
+    held, since a slot is held only when its class repeats); hold_v = the same with VOID slots included. RS items = exact decode at t = n - r (part_rs's
+    classify, from the intact rollout's V_t); cells n 9-13 x r {4, 6}: intact / hold / hold_v = acc at K' = n + 2 on them; restart = part_rs's compact
+    fresh run at K' = r + 2 over part_rs's full job lists for r in {4, 6} (same batches -> bitwise eval_rs). acc_n2 / acc_k24 per arm, n 1..16;
+    exposure (by n) = share of items with >= 1 held slot-event (passes <= 24) and mean held slot-events per item. Note 213-15: "unchanged" = argmax R(computed
+    V_t[j]) == argmax R(stored S_{t-1}[j]) (!= VOID unless hold_v); sticky (a held slot keeps its entry while the decode repeats)."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE])
+    ARMS = ("intact", "hold", "hold_v"); A2 = {a_: np.full(len(TE), -1) for a_ in ARMS}; A24 = {a_: np.full(len(TE), -1) for a_ in ARMS}; RR = (4, 6)
+    jobs = {r: [] for r in RR}; expo = {a_: {} for a_ in ARMS[1:]}
+    for n in range(1, 17):
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B = len(its); rows = torch.arange(B, device=dev)
+            for arm in ARMS:
+                ex = {"any": torch.zeros(B, dtype=torch.bool, device=dev), "ev": 0, "S": None, "D": None}
+                edit = None
+                if arm != "intact":
+                    def edit(t, V, ex=ex, pad=pad, inc_void=(arm == "hold_v")):
+                        d = m.rec_logits(V).argmax(-1)
+                        if t >= 2:
+                            z = (d == ex["D"]) & pad
+                            if not inc_void:
+                                z = z & (d != VB.VOID)
+                            ex["any"] |= z.any(1); ex["ev"] += int(z.sum()); V = torch.where(z[..., None], ex["S"], V); d = torch.where(z, ex["D"], d)
+                        ex["S"], ex["D"] = V, d
+                        return V
+                r_ = m.rollout(x, pad, 24, coda_rows={n + 2: rows, 24: rows}, edit=edit)
+                l2 = m.answer_logits(r_["coda"][n + 2][1], lens); l24 = m.answer_logits(r_["coda"][24][1], lens)
+                assert bool(torch.isfinite(l2).all() and torch.isfinite(l24).all()), arm
+                A2[arm][ch] = l2[:, num].argmax(-1).cpu().numpy(); A24[arm][ch] = l24[:, num].argmax(-1).cpu().numpy()
+                if arm == "intact":
+                    for r in RR:
+                        t = n - r
+                        if t < 1:
+                            continue
+                        dec = m.rec_logits(r_["V"][t]).argmax(-1).cpu().numpy()
+                        for k_, j in enumerate(ch):
+                            if classify(VB.rerender(list(dec[k_, :int(lens[k_])])), N.cot_steps(TE[j]["root"])[t]) == "exact":
+                                jobs[r].append((int(j), t))
+                else:
+                    e_ = expo[arm].setdefault(str(n), [0, 0, 0]); e_[0] += int(ex["any"].sum()); e_[1] += ex["ev"]; e_[2] += B
+                del r_
+        print("HOLD n", n, {a_: round(float((A2[a_] == Y)[Nn == n].mean()), 3) for a_ in ARMS}, flush=True)
+    rest = {}
+    for r in RR:                                                            # part_rs's restart, same job order and batches
+        js = jobs[r]
+        for c0 in range(0, len(js), bs):
+            part = js[c0:c0 + bs]; its = [{"syms": N.render(reduce_k(TE[j]["root"], t)), "t": TE[j]["t"]} for j, t in part]
+            x, pad, lens = VB.batch_x(its, dev); rr = m.rollout(x, pad, r + 2, coda_rows={r + 2: torch.arange(len(its), device=dev)})
+            a_ = m.answer_logits(rr["coda"][r + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rr
+            for k_, (j, t) in enumerate(part):
+                rest[(j, t)] = bool(a_[k_] == TE[j]["t"])
+    mean_ = lambda v: float(np.mean(v)) if len(v) else None  # noqa: E731
+    cells = {}
+    for n in range(9, 14):
+        for r in RR:
+            tt = n - r; js = [j for (j, t) in jobs[r] if t == tt and TE[j]["n"] == n]
+            c_ = {"n_items": len(js), "restart": mean_([rest[(j, tt)] for j in js])}; c_.update({a_: mean_([bool(A2[a_][j] == Y[j]) for j in js]) for a_ in ARMS})
+            cells["%d_%d" % (n, r)] = c_
+    by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 17)}  # noqa: E731
+    return {"cells": cells, "acc_n2": {a_: by_n(A2[a_]) for a_ in ARMS}, "acc_k24": {a_: by_n(A24[a_]) for a_ in ARMS},
+            "exposure": {a_: {n: {"items_exposed": v[0] / v[2], "held_events_per_item": v[1] / v[2]} for n, v in d.items()} for a_, d in expo.items()}, "def": part_hold.__doc__}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
