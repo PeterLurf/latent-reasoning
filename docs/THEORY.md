@@ -16900,6 +16900,64 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 - **(c)** The candidate mechanism, untested and named now so it can't be fitted later. The gather mixes many versions and positions (off-self 0.9), and so mixes sg-corrected entries with uncorrected ones whose distributions differ. MCT's per-slot correction then fails to help a reader that does not read slot (t−1, j).
 - If N3 reads NO-ENTRY / LOSES-ONE-PASS at 48k, (c) and the stage-1 overconfidence (211-8) are both named as candidate causes. Neither is tested in §211.
 
+**Note 211-13 (2026-10-16 03:03 EDT; PRE-STATED before any §211 eval_vb.json output is read (the cells land about 05:00); a CONTENT-HALT eval-only analysis from the bottleneck research session (user 02:44 EDT); definitions fixed now; RUNNING it ($0, local, eval-only) needs the user's OK via Audit, per that session's rule; descriptive beside §211, not a §211 reading).**
+
+**Source.** Full definitions, propositions and the error model are in docs/research_bottleneck_2026-10-16/H_halting.md at 8a0ee98d (inventor H). Summary:
+
+**The halt** (zero parameters, no gradient):
+- DONE(Ê_t) = no live operator ∧ no bracket ∧ exactly one value slot, where Ê_t = argmax R(V_t).
+- t_halt = the first such t, capped at T_max = 24. Never halting counts as failure.
+- **G-PROG:** a pass that removes ≥ 2 decoded operators marks the item UNRELIABLE, an abstention that counts as failure.
+- **STUCK-STOP r = 3:** reported as never-halt.
+
+**Readings** (per cell N1 / N2 / N3; fp32, eval_bs 32, the §170 test set):
+- **HALT-EXACT:** pooled n 3..8, P(t_halt = n) ≥ 0.90.
+- **NOT-PREMATURE:** acc_halt ≥ acc(K′ = n + 2) − 0.02 at every n 3..8, and ≥ −0.05 at every n 9..12.
+- **STALL-SHIFT:** under the registered §211 STALL (a copy at t = ⌈n/2⌉), among items with intact t_halt = n, P(stalled t_halt = n + 1) ≥ 0.85 on n 4..8. UNREADABLE below 200 items (= not met).
+- **DEPTH-TIMING:** at n 9 and at n 10 each,
+  - P(t_halt = n) ≥ 0.60;
+  - P(t_halt = 8) ≤ 0.10;
+  - P(frozen at T_max with n − 8 operators alive) ≤ 0.10.
+- **C5-VB** = all four.
+
+**Labels:**
+- HALT-IN-RANGE (readings 1–3);
+- **CLOCK-HOLD** (≥ 0.5 of n 9–12 items frozen with n − 8 operators alive: the zero-loss "t ≥ 9 ⇒ hold" shortcut);
+- **EDGE-COLLAPSE** (≥ 0.5 halt at t = 8);
+- **STALL-COUNT** (FROZEN-1 ≥ 0.5 under STALL);
+- STALL-FRAGILE, NO-DONE (never-halt > 0.10 at n 3..8), CODA-LAG.
+
+**Descriptive:**
+- t_halt histograms by n 1..16 and the event-only mean;
+- HALT-REGRET, the R-answer, the collapse rate, R-POS;
+- decoded-convergence and answer2 halts;
+- double STALL, ADVANCE;
+- HEAD-STALL / CLOCK-PROBE / CLOCK-GAIN (heads fit on detached pooled features from 2,000 training items).
+
+**OC (one seed per cell; H §5):**
+- P(C5-VB | clock or edge keying) ≤ 0.02.
+- P(C5-VB | a content-keyed DEEP cell) ≈ 0.35.
+- Per cell ≈ 0.08–0.10.
+- **The trivial input-count halt fails STALL-SHIFT by construction.**
+
+**Censoring:** never-halt and G-PROG abstentions fail every halting reading. A dead or NO-ENTRY cell fails all four.
+
+**Predictions [CONJECTURE]** for a DEEP cell:
+- HALT-EXACT, P 0.8;
+- at n 9–12 the leading failure is CLOCK-HOLD over EDGE-COLLAPSE (P 0.45 vs 0.25);
+- N1's STALL-SHIFT ≥ N2's (P 0.6);
+- CLOCK-PROBE above chance on raw features (P 0.6) and at chance on R logits (P 0.8).
+
+**Harness (if run).**
+- A new boxes/vbank_halt.py writes <run>/eval_vbhalt.json, with per-item rows: t_halt, the G-PROG flag, alive(Ê_t) for t 0..24, the coda answer at each t, the R-answer, t_conv_dec, answer2 / MOVED2.
+- It runs on a card without a co-tenant.
+- **Gates:**
+  - at t = n + 2 the item counts equal eval_vb's acc_n2;
+  - a synthetic-trajectory fixture (content / count / edge / input-count / stuck) scores as H's Prop 5 predicts;
+  - every field it reads is grepped in the module before data.
+
+**The training lever STALL-AUG** (H §2.4, Prop 8) is **not** pre-stated for running. It would need its own registration and the user's OK.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
