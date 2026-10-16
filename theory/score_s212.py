@@ -241,15 +241,22 @@ def d3sel(d):
 
 def lfk(d):
     """Note 212-15 S0-2 / D3 v1 5 (a'): LENGTH-FREE-K = all-kind strict per-slot accuracy at ge33 >= the same at le28 - 0.01; readable with >= 500
-    slot-events at ge33 (else UNREADABLE = not met)."""
+    slot-events at ge33 (else UNREADABLE = not met). Note 213-1: with a "fault" arm (S0-2b, N1), SENSITIVE iff the fault arm is readable, its ge33 accuracy is
+    <= intact's - 0.02, and it reads not-met."""
     f = jl(d, "eval_lfk.json")
     if f is None:
         return None
-    S = f["slot"]; acc = lambda k: (S[k]["strict_correct"] / S[k]["events"]) if (k in S and S[k]["events"]) else None  # noqa: E731
-    lo, hi, n_hi = acc("all_le28"), acc("all_ge33"), (S.get("all_ge33") or {}).get("events", 0)
-    readable = bool(n_hi >= 500 and lo is not None and hi is not None)
-    return {"acc_le28": lo, "acc_29_32": acc("all_29_32"), "acc_ge33": hi, "events_ge33": n_hi, "readable": readable,
-            "by_kind": {k: acc(k) for k in sorted(S)}, "MEETS": bool(readable and hi >= lo - 0.01 - EPS)}
+    def read(S):
+        acc = lambda k: (S[k]["strict_correct"] / S[k]["events"]) if (k in S and S[k]["events"]) else None  # noqa: E731
+        lo, hi, n_hi = acc("all_le28"), acc("all_ge33"), (S.get("all_ge33") or {}).get("events", 0)
+        readable = bool(n_hi >= 500 and lo is not None and hi is not None)
+        return {"acc_le28": lo, "acc_29_32": acc("all_29_32"), "acc_ge33": hi, "events_ge33": n_hi, "readable": readable,
+                "by_kind": {k: acc(k) for k in sorted(S)}, "MEETS": bool(readable and hi >= lo - 0.01 - EPS)}
+    o = read(f["slot"])
+    if "fault" in f:                                                        # note 213-1 S0-2b: the positive control (N1)
+        fo = read(f["fault"]["slot"]); o["fault"] = fo
+        o["SENSITIVE"] = bool(fo["readable"] and o["acc_ge33"] is not None and fo["acc_ge33"] <= o["acc_ge33"] - 0.02 + EPS and not fo["MEETS"])
+    return o
 
 
 def stabhist(d):
@@ -288,6 +295,7 @@ def stage0():
     L = {k: out[k]["LFK"] for k in ("N1", "N2", "N3")}                      # 212-15 S0-2: the reading must discriminate before D3 uses it
     out["D3"] = {"ADD_VOIDMASK": (out["N1"]["D3SEL"] or {}).get("ADD_VOIDMASK"),
                  "LFK_DISCRIMINATES": (None if any(v is None for v in L.values()) else bool(L["N1"]["MEETS"] and not L["N2"]["MEETS"] and not L["N3"]["MEETS"])),
+                 "LFK_SENSITIVE": (out["N1"]["LFK"] or {}).get("SENSITIVE"),
                  "OWN_HISTORY_STABILISES": (out["N2"]["STABHIST"] or {}).get("OWN_HISTORY_STABILISES")}
     return out
 

@@ -17719,6 +17719,37 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 
 **Cost.** $1.05–1.90 per cell projected. **Cap $4.5 for the pair** (guard). The realised $ replaces the projections, and nothing is dropped silently.
 
+**Note 212-17 (2026-10-16 14:42 EDT; S0-2 on N2 / N3 and the N2 / N3 wpereset, both descriptive; e4e91c33; read from raw: N2 on the 4060, N3 on the 3070, fp32, eval_bs 32).**
+
+**S0-2 LENGTH-FREE-K** (all-kind strict per-slot accuracy at t ≥ 2 on exact inputs; events / accuracy):
+
+| | le28 | 29_32 | ge33 |
+|---|---|---|---|
+| N2 | 229,402 / 0.9940 | 3,324 / 0.9813 | **0 events** |
+| N3 | 183,743 / 0.9898 | 2,444 / 0.9787 | **0 events** |
+
+- No exact-input pass t ≥ 2 exists at n ≥ 12 in either cell (step events at n 9 / 10 / 11: N2 6,180 / 1,866 / 124; N3 5,638 / 921 / 8).
+- **Both read UNREADABLE, so not met by §5's censoring:** the cliff corrupts the state before any later pass sees an exact long input.
+- So the pre-stated "N2 and N3 do not meet" holds **by censoring only**. That (a′) can fail on a *measured* value is undemonstrated, which is the case for the positive control in 213-1.
+
+**wpereset** (every wpe row pretrained), acc_n2 at n 1..12:
+- N2 goes from 1.000 (n ≤ 8) / 0.948 / 0.425 / 0.155 / 0.127 to **0.09–0.26 at every n, n 1 included**. N3 likewise (0.08–0.35).
+- The PA cells are bound to their trained table at every length, as in 212-13 and M3. N1 kept n ≤ 5 under the same swap (212-14).
+
+**Note 213-1 (2026-10-16 14:42 EDT; §213's eval-file contract, as stated in §213's "Eval files" paragraph, plus one amendment made before any D3 Stage 0 LFK output on N1 and before any D3 code or output exists).**
+
+**Contract.** Unchanged from §213: eval_vb / eval_steppos / eval_lfk / eval_rs / eval_d3hist, with the fields as listed there, on one local card for both cells.
+
+**Amendment: LENGTH-FREE-K must be shown sensitive.**
+- **S0-2b FAULT arm on N1 (2070, fp32, eval_bs 32),** the same items and reading as S0-2.
+  - At every pass t ≥ 2, for each slot j ≥ 33, independently with p = 0.05 (np rng seed 21302, drawn per (item, t, j) in a fixed order), the **pass input** of slot j is replaced by that of slot j − 1 (for CARRY, the carry). Stored bank entries are untouched, so the event is still counted.
+  - This mimics PA's measured signature: wrong copies that decode a neighbour's class.
+  - Output: eval_lfk.json["fault"], with the same structure as the top level, plus fault_def.
+- **LFK_SENSITIVE iff** FAULT has ≥ 500 ge33 events, its all-kind ge33 strict accuracy is ≤ intact's − 0.02, and it reads not-met.
+- **(a′) counts in §213 only if LFK_DISCRIMINATES ∧ LFK_SENSITIVE.** Otherwise (a′) is replaced by an amendment before any D3 eval output, and LENGTH-FREE reads pending until then.
+- **Prediction:** FAULT drops ge33 accuracy by about 0.05 × P(the neighbour's class differs) ≈ 0.04, so LFK_SENSITIVE is expected.
+- **Scorers:** score_s212 adds the fault reading and LFK_SENSITIVE to its D3 block. score_s213 enforces the precondition.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

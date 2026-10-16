@@ -6,6 +6,7 @@ Per cell:
   NO-KNEE (eval_steppos.json fresh_m_T): for m 9 and m 10 separately, pooled exact at T >= 33 >= pooled exact at T <= 29 - 0.05; each side >= 100 items
     (else UNREADABLE = not met).  COUNT (reported): min over m 9-12 of fresh_m exact >= 0.95.  STEP-GENERAL (stretch): fresh_m exact >= 0.95 at m 12-16.
   LENGTH-FREE-K (eval_lfk.json): score_s212.lfk (all-kind strict per-slot ge33 >= le28 - 0.01; >= 500 events at ge33).  LENGTH-FREE = NO-KNEE and LFK.
+    Note 213-1: LFK counts only if LFK_DISCRIMINATES and LFK_SENSITIVE on the §211 cells (lfk_valid); else every cell reads pending.
   DEPTH-GENERAL: eval_vb acc_n2 mean over n 9-12 >= 0.80.  SELF-SIMILAR (reported): score_s212.rs_read on eval_rs.json, n 9-12, r in {2,4,6,8}: readable
     and |D| <= 0.05 (control within 0.03).
   HISTORY-USED (eval_d3hist.json): mean over n 6-8 of acc_n2 intact - bank_ablate_slva >= 0.10; UNREADABLE (not met) if the intact mean < 0.90 or the
@@ -73,6 +74,14 @@ def args_diff(d):
     return {"shared_diffs": shared, "new_keys": sorted(k for k in a if k not in b), "mode": a.get("mode"), "ok": not shared}
 
 
+def lfk_valid():
+    """Note 213-1: (a') counts only if LFK_DISCRIMINATES (N1 meets; N2 and N3 do not, on the §211 cells) and LFK_SENSITIVE (N1's FAULT arm)."""
+    L = {k: S212.lfk(v) for k, v in S212.STAGE0.items()}
+    if any(v is None for v in L.values()) or "SENSITIVE" not in L["N1"]:
+        return None
+    return bool(L["N1"]["MEETS"] and not L["N2"]["MEETS"] and not L["N3"]["MEETS"] and L["N1"]["SENSITIVE"])
+
+
 def cell(tag, d):
     o = {"cell": d, "ARGS_DIFF": args_diff(d)}
     a = S211.cell_read(tag, d); o["s211"] = a
@@ -86,6 +95,9 @@ def cell(tag, d):
     nk = no_knee(sp); fm = sp["fresh_m"]
     count = min(fm[str(m)]["exact"] for m in range(9, 13)) >= 0.95 - EPS
     sg = all(fm[str(m)]["exact"] >= 0.95 - EPS for m in range(12, 17)); sg_mean = sum(fm[str(m)]["exact"] for m in range(12, 17)) / 5
+    valid = lfk_valid()
+    if not valid:                                                           # note 213-1: (a') not validated -> LENGTH-FREE pending an amendment
+        o["LFK_VALID"] = valid; o["label"] = "pending (LENGTH-FREE-K not validated: LFK_DISCRIMINATES and LFK_SENSITIVE needed; note 213-1)"; return o
     lfree = bool(nk["NO_KNEE"] and lf["MEETS"])
     dg = a["DEPTH_9_12"] >= 0.80 - EPS
     ss = S212.rs_read(rs, range(9, 13), (2, 4, 6, 8)); selfsim = bool(ss and ss["readable"] and abs(ss["D"]) <= 0.05 + EPS)
