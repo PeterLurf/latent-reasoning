@@ -230,5 +230,20 @@ def gate_hooks2(dev="cpu"):
     out["pass"] = all(v["ver_sub_self_bitwise"] and v["prefix_empty_bitwise"] and v["floor_finite"] and v["floor_maxdiff_V10"] > 0 for v in out.values()); return out
 
 
+
+def gate_gsplice(dev="cpu"):
+    """note 212-6 hooks: gather_splice = 0 on a PA model == the same weights under CARRY, bitwise (every slot takes N(V_{t-1})); gather_qmod = 10**6 (no wrap)
+    == default bitwise; fp32 + fp64, c 0, 8 passes."""
+    out = {}
+    for dt in (torch.float32, torch.float64):
+        m = _model("pa", dt, dev); m.c_anneal.fill_(0.0); its = _items(5, 21111, 3, 8); x, pad, lens = VB.batch_x(its, dev); rows = {t: torch.arange(len(its)) for t in range(9)}
+        with torch.no_grad():
+            r0 = m.rollout(x, pad, 8, coda_rows=rows); m.gather_splice = 0; rs = m.rollout(x, pad, 8, coda_rows=rows); m.gather_splice = None
+            m.mode = "carry"; rc = m.rollout(x, pad, 8, coda_rows=rows); m.mode = "pa"; m.gather_qmod = 10 ** 6; rq = m.rollout(x, pad, 8, coda_rows=rows); m.gather_qmod = None
+        eq = lambda a, b: all(torch.equal(u[pad], v[pad]) for u, v in zip(a["V"], b["V"])) and all(torch.equal(a["coda"][t][1][pad], b["coda"][t][1][pad]) for t in rows)  # noqa: E731
+        out[str(dt)] = {"splice0_eq_carry": eq(rs, rc), "qmod_nowrap_eq_default": eq(rq, r0), "splice0_differs_from_pa_c0": not eq(rs, r0)}
+    out["pass"] = all(all(v.values()) for v in out.values()); return out
+
+
 if __name__ == "__main__":
-    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b, "verkeep": gate_verkeep, "hooks2": gate_hooks2}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
+    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b, "verkeep": gate_verkeep, "hooks2": gate_hooks2, "gsplice": gate_gsplice}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))

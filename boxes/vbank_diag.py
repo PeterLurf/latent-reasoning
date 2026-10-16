@@ -338,12 +338,40 @@ def part_steppos(m, TE, dev, bs):
     return res
 
 
+
+def part_gsplice(m, TE, dev, bs, J=29):
+    """note 212-6 GATHER-SPLICE ($0, Audit-approved): the fresh single-step grid of eval_steppos (B; 2,000 items per m 1..16, seed 21600 + m) under
+    intact / gs (pass input at slots j >= 29 = the CARRY value N(V_{t-1}[j]) instead of the gather; at t = 1 that is N(V_0[j])) / mod31 (gather query position
+    j mod 31). Readings (Theory's, pre-stated): GATHER-BOTTLENECK if gs raises pooled exact at T in {31, 33}, m 8-10 by >= 0.30 with the T <= 27 / m <= 8
+    control >= -0.02; NOT-GATHER if < 0.10; UNREADABLE if the control drops > 0.02."""
+    assert m.mode == "pa", "GATHER-SPLICE needs a PURE-ANNEAL cell"
+    res = {}
+    for arm, (sp, qm) in {"intact": (None, None), "gs": (J, None), "mod31": (None, 31)}.items():
+        m.gather_splice, m.gather_qmod = sp, qm; trip = []
+        try:
+            for mo in range(1, 17):
+                trip += single_step(m, fresh_items(mo, 2000, 21600 + mo), dev, bs)
+        finally:
+            m.gather_splice = m.gather_qmod = None
+        res[arm] = {"fresh_m_T": agg(trip, lambda a_, b_: "%d_%d" % (a_, b_)), "fresh_m": agg(trip, lambda a_, b_: str(a_))}
+        print("GS", arm, {k: round(v["exact"], 3) for k, v in res[arm]["fresh_m"].items()}, flush=True)
+
+    def pooled(arm, cond):
+        c_ = [(v["n_steps"], v["exact"]) for k, v in res[arm]["fresh_m_T"].items() if cond(*(int(z) for z in k.split("_")))]
+        n_ = sum(a for a, _ in c_); return (sum(a * b for a, b in c_) / n_, n_) if n_ else (None, 0)
+    tgt = lambda mo, T: 8 <= mo <= 10 and T in (31, 33)  # noqa: E731
+    ctl = lambda mo, T: mo <= 8 and T <= 27  # noqa: E731
+    res["summary"] = {arm: {"target_T31_33_m8_10": pooled(arm, tgt), "control_T27_m8": pooled(arm, ctl)} for arm in ("intact", "gs", "mod31")}
+    res["J"] = J; res["def"] = part_gsplice.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
