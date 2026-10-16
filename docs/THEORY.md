@@ -17911,6 +17911,25 @@ theory/score_s213.py adds a REFERENCE block that applies hist() to these files (
 - **N3's history use is almost entirely the gather's cross-slot mid versions** (self 0.037 of 0.587). SLVA cannot express that. An N3-like route to HISTORY-USED is therefore unavailable to a §213 cell. Only N2's own-slot channel is (D3_v1 §1 thesis).
 - **OLD-SWAP follow is ≤ 0.016 even in the history-using PA cells.** Their history use is a support read (masking hurts), not a content read (the answer does not follow donor versions). For §213, a HISTORY-USED cell with OLD-SWAP ≈ 0 matches N2's pattern. It is reported as such, with no rule change.
 
+**Note 213-13 (2026-10-16 15:58 EDT; corrects 213-12's N3 reading after Audit; the rule result is unchanged: EXPECTATIONS_MET, and §213's (f) is cleared).**
+
+**What the PA arms cover.** For PA cells the d3hist arms are:
+- bank = all readers (gather + core + coda);
+- self = the gather's own-slot mid versions only;
+- other = core + coda only.
+
+There is **no gather-cross-slot-only arm**. So N3's pattern (all-readers drop 0.587, self 0.037 (0.026 by Audit's pooling), other 0.000) does **not** show that its use is the gather's cross-slot versions. It is equally consistent with **redundancy**: history readable by both the gather and the core / coda, so each channel alone compensates (Audit). These arms cannot separate the two.
+
+**Corrections to 213-12:**
+- "N3's history use is almost entirely the gather's cross-slot mid versions" is **withdrawn**. The cause is open: cross-slot gather use or redundancy.
+- "An N3-like route to HISTORY-USED is unavailable to a §213 cell" is **withdrawn**. Redundancy between SLVA and the core / coda is available to SLVA.
+- N2's description stands. It rests on M2's gather arms, where cross-slot only gives no change, own only gives 0.900 / 0.487, and gather-all gives 0.720 / 0.333.
+
+**How a §213 pass is described** (wording only; (f) is the registered all-readers reading):
+- In an SLVA cell the arms are complete. SLVA is slot-local, so self is all of SLVA, and other is the core and coda.
+- HISTORY-USED with self ≈ 0 and other ≈ 0 is therefore described as **redundant use** across SLVA and the core / coda, not as "the SLVA channel carries it".
+- HISTORY-USED with a large self drop is described as **N2-like own-slot use**.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
