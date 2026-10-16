@@ -84,10 +84,34 @@
    }
   },
   "2": {
-   "status": "open"
+   "status": "done",
+   "pooled": {
+    "0": 0.08916666666666667,
+    "1": 0.09699999999999999,
+    "8": 0.9776666666666666,
+    "16": 0.9776666666666666,
+    "24": 0.9538333333333333,
+    "32": 0.8616666666666667
+   },
+   "min_k8_3_8": 0.94,
+   "deep": true,
+   "think_necessary": true,
+   "stable": true,
+   "long_stable": true,
+   "depth_9_12_n2": 0.64725,
+   "clip_rate": null,
+   "gpu": "NVIDIA GeForce RTX 3090",
+   "dwell_by_n": {
+    "3": 0.0,
+    "4": 0.0,
+    "5": 0.0030000000000000027,
+    "6": 0.0030000000000000027,
+    "7": 0.0050000000000000044,
+    "8": 0.007000000000000006
+   }
   }
  },
- "c6_claim": null,
+ "c6_claim": true,
  "entry": {
   "s185_rms_s1": {
    "cell": {
@@ -135,6 +159,6 @@
    "confounded_by_entry": false
   }
  },
- "reading": "JOINT: K'8 0.999 -> K'16 0.999 (STABLE True), K'24 0.989 (LONG-STABLE True), K'32 0.934; min n 3-8 at K'8 0.996 (DEEP True); THINK-NECESSARY True; DEPTH n 9-12 0.688; vs rms K'8 0.998 K'16 0.933 K'24 0.746 DEPTH 0.587; vs window K'8 0.900 K'16 0.899 K'24 0.859 DEPTH 0.465; s2 opens; C6 CLAIM (JOINT + LONG-STABLE, 2 / 2) pending s2; entry(0.5/0.1) cell (22000, 29000) vs s185_rms_s1 19000/29000, s182_window_s1 25000/None CONFOUNDED-BY-ENTRY, s182_window_s2 17000/22000",
+ "reading": "JOINT: K'8 0.999 -> K'16 0.999 (STABLE True), K'24 0.989 (LONG-STABLE True), K'32 0.934; min n 3-8 at K'8 0.996 (DEEP True); THINK-NECESSARY True; DEPTH n 9-12 0.688; vs rms K'8 0.998 K'16 0.933 K'24 0.746 DEPTH 0.587; vs window K'8 0.900 K'16 0.899 K'24 0.859 DEPTH 0.465; s2 JOINT, LONG-STABLE True; C6 CLAIM (JOINT + LONG-STABLE, 2 / 2) True; entry(0.5/0.1) cell (22000, 29000) vs s185_rms_s1 19000/29000, s182_window_s1 25000/None CONFOUNDED-BY-ENTRY, s182_window_s2 17000/22000",
  "errors": []
 }
