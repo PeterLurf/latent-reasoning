@@ -1,0 +1,57 @@
+{
+ "seeds": {
+  "1": {
+   "cell": "s205_iit_s1",
+   "last_step": 0,
+   "paired": null,
+   "landed": false,
+   "entry_05": null,
+   "last_bin": null,
+   "entered": null,
+   "met": null,
+   "label": "pending (not landed)"
+  },
+  "2": {
+   "cell": "s205_iit_s2",
+   "last_step": 0,
+   "paired": null,
+   "landed": false,
+   "entry_05": null,
+   "last_bin": null,
+   "entered": null,
+   "met": null,
+   "label": "pending (not landed)"
+  },
+  "3": {
+   "cell": "s205_iit_s3",
+   "last_step": 48000,
+   "paired": true,
+   "landed": true,
+   "entry_05": null,
+   "last_bin": 1.0729001283049584,
+   "entered": false,
+   "hybrid_ccc_tau1": 0.9962546816479401,
+   "met": true,
+   "n_ccc_tau1": 1068,
+   "g2": 0.08258064516129032,
+   "untrained_tau": {
+    "tau2": 0.9888888888888889,
+    "tau3": null
+   },
+   "siit_keep_ccc": 0.9965277777777778,
+   "g1": 0.11016666666666668,
+   "acc_from_donor": 0.114,
+   "delta_cos": 0.6077128052711487,
+   "one_pass_compute": false,
+   "clean_contractive": false,
+   "label": "MET-NOT-ENTERED"
+  }
+ },
+ "HARMFUL": false,
+ "arm": "pending",
+ "account_falsifier": true,
+ "event_only_mean_entry": null,
+ "n_entered": 0,
+ "n_landed": 1,
+ "reading": "s1 pending (not landed) (entry None, last bin None, paired None, hyb None) | s2 pending (not landed) (entry None, last bin None, paired None, hyb None) | s3 MET-NOT-ENTERED (entry None, last bin 1.073, paired True, hyb 0.9962546816479401) | ARM pending; HARMFUL False; entered 0/3 (landed 1); event-only mean entry None"
+}
