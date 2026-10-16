@@ -17770,6 +17770,28 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - **GAPPED** fails its own control: 0.114–0.717 against restart 1.000 at n 5–8. It is off-distribution for N1, so the layout share is UNREADABLE.
 - **The cause of N1's trajectory deficit** (RS +0.47 pooled n 9–12) therefore remains undetermined between drift and layout. It is only shown not to be VOID reads.
 
+**Note 212-19 (2026-10-16 14:53 EDT; S0-3 STAB-HIST on N2, the 212-15 rule; s211_vb_pa_s1/eval_stabhist.json, bc468269, 4060, fp32, eval_bs 32; in-run gate bitwise: intact = eval_vb; scored with theory/score_s212's stabhist).**
+
+**Rule: OWN-HISTORY-STABILISES is NOT MET.** STAB_self = **0.070** < 0.10. The per-n terms at n 3 / 4 / 5 / 6 are 0.083 / 0.034 / 0.090 / 0.073. STAB_other = −0.0003.
+
+| arm | acc_n2, n 3..8 | acc_k24, n 3..8 |
+|---|---|---|
+| intact | 1 / 1 / 1 / 1 / 1 / 0.999 | 0.999 / 1 / 1 / 1 / 1 / 0.998 |
+| self_ablate (own-slot mid versions masked, gather only) | 1 / 1 / 1 / 0.917 / 0.697 / 0.469 | 0.916 / 0.966 / 0.910 / 0.844 / 0.670 / 0.422 |
+| other_ablate | 1 / 1 / 1 / 1 / 1 / 0.995 | the same |
+
+**Reading.**
+- Own-slot history carries **part** of N2's long-run stability: at n 3–5, self-ablation costs 0.03–0.09 at K′ 24 and nothing at K′ n + 2. That is below the pre-stated bar.
+- Cross-slot history carries none.
+- So "own-slot history gives N2 its stability" is **unsupported at the registered bar** (partial, descriptive).
+
+**Pre-stated consequence (212-15; §213's OC):**
+- P(DG | DEEP) drops from 0.3 to **0.15**.
+- P(D3-C2) per cell drops from 0.08–0.15 to **0.04–0.08** (0.040 under independence).
+- P(D3-C2-ATTN) per cell drops from 0.03–0.08 to **≈ 0.015–0.04**. P(at least one in the pair) ≈ **0.03–0.08**.
+- The LENGTH-FREE and HISTORY-USED odds are unchanged.
+- The pair still answers its two first-order questions whatever happens to DG: does SLVA remove the cliff (LENGTH-FREE), and is the attention memory used causally (HISTORY-USED)?
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
