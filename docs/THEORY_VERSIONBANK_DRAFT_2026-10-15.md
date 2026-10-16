@@ -319,3 +319,22 @@ All readings run in local fp32 at the original eval_bs, on the training card's c
 3. Literature's novelty check when it is online: Feedback Transformer, RecurTrace, InfiLoop, Think-at-Hard against VB.
 4. A scorer, theory/score_s2xx.py, fixture-checked on synthetic panels: VB-C1, ONESHOT, CARRY-NO-STEP, COUNT-KEYED, NO-ENTRY, a dead run, pending.
 5. The registration text in docs/THEORY.md, with the OC block and censoring as above.
+
+---
+
+## Addendum 1 (2026-10-15 23:1x EDT; Audit's review of fc852c5e, before any registration)
+
+1. **Recompute from V_0 is not closed by construction.** V_0, the prelude-encoded problem, stays in the bank, readable by every core layer at every pass (constant β⁰). Unlike §208's question-once, re-reading the input is architecturally possible. What makes recomputation insufficient is only the bounded core.
+   - **Depth lemma coverage.** L1-c′ and Thm 4a already include reads of V_0 (L(0) = 0).
+     - A pass reading V_0 ∪ V_{t−1} has chain length 1 + L(t−1). Its V_0 read adds no hop.
+     - So, under CAP-aff, a pass can recompute **at most c₀ (≈ 2) tree levels directly from V_0**. Any deeper sub-result must come through the chain of versions [PROVED UNDER CAP-aff].
+   - **Which reading catches each form:**
+     - *Global* recompute (the whole answer from V_0 within one pass) is caught by **PROBE-GAIN**, since PROBE(1) would be high.
+     - *Local* recompute (a pass reaching into V_0 to re-derive the sub-expression it should have read from V_t) is caught by **VALUE-SWAP's own-answer share**. After the splice, a pass that recomputes the swapped handle from V_0's operands answers the recipient's y. SERIAL-STEP's "own ≤ 0.3" is the bar.
+   - **New descriptive arm, VALUE-SWAP (iv).** The same splice, with V_0's bank entry masked for passes > t. Comparing the own share with and without V_0 separates recompute-from-V_0 from re-use of the recipient's older versions (V_{t−1} still holds the handle's operands).
+   - **New label, RECOMPUTE-V0:** own(ii) > 0.3 with own(iv) ≤ 0.1. The model re-derives from the input rather than reading its own versions.
+2. **Wording.** R2 supervises the intermediate states: a latent scratchpad of the reduced expression, readable by a linear head.
+   - The claim, if VB-C1 holds, is **"supervised serial latent computation in a pass-global attention memory"**, not unsupervised discovery of iteration. That is consistent with the project's lesson that per-step targets are load-bearing (NORTH_STAR).
+   - On GSM8K the targets come from GSM8K-Aug's text-CoT equations (value-first form, §9). They are C4-legal as distillation from a text-CoT teacher's outputs, and they exist at scale.
+3. **N1 (CARRY) stays in Stage 1.** It is the control for the pretrained-init risk (blocks 6–9 were never trained to be iterated; G1b covers init drift).
+   - The earlier "drop N1 first" line is withdrawn. If G-TIME projects the family above the $9 cap, no cell is dropped silently: the projection goes to Audit and the user for a decision.
