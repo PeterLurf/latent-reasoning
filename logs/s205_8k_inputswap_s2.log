@@ -1,0 +1,3 @@
+INPUT-SWAP k 1 {'n_pairs': 5217, 'n_ccc': 6, 'floor_kprime0_x_d': 0.3333333333333333} {'y_mir': 0.5, 'y_d': 0.3333333333333333, 'y_r': 0.16666666666666666}
+INPUT-SWAP k 2 {'n_pairs': 1526, 'n_ccc': 2, 'floor_kprime0_x_d': 0.5} {'y_mir': 0.5, 'y_d': 0.0, 'y_r': 0.5}
+s205_iit_s2_8k INPUTSWAP gates True {'n_pairs': 11240, 'mismatch': 0, 'pass': True}
