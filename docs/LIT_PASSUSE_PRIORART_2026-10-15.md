@@ -377,3 +377,65 @@ Stand-in for the Literature session. **IDs:** all 81 verified on their arXiv abs
     - **DenseFormer 2402.02622:** scalar averaging of earlier outputs. High weight on the initial embedding; later layers give it negative weight.
     - **MUDDFormer 2502.12170:** dynamic per-position weights per Q / K / V / residual stream. The value stream benefits most, and leans on the first layer's output.
     - **Hyper-Connections 2409.19606:** n copies mixed by a learned matrix, in a Λ-shaped pattern. With n = 1 it is worse than baseline.
+
+## Full-text addendum C (2026-10-15; helper subagent; full text read; IDs checked on the abs pages; dumps in the Theory scratchpad research/fullC/)
+
+**Improvement / progress objectives:**
+- **SCoRe 2409.12917.**
+  - [DERIVATION] Stage I maximises r̂(y₂) − β₂·KL on attempt 1 to the base model (β₂ 0.1 / 0.25). Stage II adds a bonus to attempt 2 only, α·(r̂(y₂) − r̂(y₁)) with α = 10, under γ = 0 (instantaneous reward).
+  - [EMPIRICS] Collapse to non-correcting behaviour when α = 1. Attempt 1 is not degraded (52.6 → 60.0), with no discussion of sabotage.
+- **PAV 2410.08146.**
+  - [DERIVATION] Progress = A^μ = Q^μ(s_h, a_h) − Q^μ(s_{h−1}, a_{h−1}) under a separate prover policy μ; using π's own advantages ≡ outcome reward.
+  - [EMPIRICS] With a strong prover, Q^μ-trained policies "only produce re-phrasings of the question".
+  - [THEOREM, informal] Thm 3.1.
+- **MRT 2503.07572.**
+  - [DERIVATION] r_prg(z_j) = J_r(μ(·|z_j, c)) − J_r(μ(·|c)); contexts come from π_old, so the sum does not telescope.
+- **Cho 2505.23060.**
+  - [EMPIRICS] With a whole-trajectory reward r₂ − r₁ (γ = 0), training maximised the gap "often by deliberately decreasing r₁". The fix is R = (r₂ − r₁) + 0.5·r₁. **Published evidence of the early-attempt sabotage route (our G8).**
+- **Other gaming:** ACT's ponder cheat (inflating late-state magnitudes, 1603.08983); PURE 2504.15275 (summation-form PRM credit "induces LLMs to hack steps").
+- **No ranking / margin loss enforcing acc(K) > acc(K′ < K) was found.** The closest:
+  - Bansal 2202.05826 (progressive loss);
+  - Asadulaev 2511.16886 (Deep Improvement Supervision: per-step targets "strictly closer to y*");
+  - Ouro Stage II (gate only);
+  - RLTT 2602.10520.
+
+**Causal abstraction:**
+- [DEFINITION] IIT 2112.00826: Eq. 1 / 4. A zero loss ⇒ causal abstraction (the converse does not hold). The CNN-LSTM use intervenes on an encoder token, not across steps.
+- [DEFINITION] SIIT 2407.14494: strictness loss on non-aligned nodes; best W_SIIT ≈ 0.5. Non-aligned nodes can still contribute constantly.
+- [DEFINITION] DAS 2303.02536: a soft rotation intervention; the models are frozen (an analysis tool).
+- **No IIT across recurrent iterations or latent steps as a training objective was found.** The nearest:
+  - Ruiz 2507.02782 (state initialised with noise or another input's final state);
+  - type-level IIT 2212.09897;
+  - causal distillation 2112.02505;
+  - LIFT 2509.13334;
+  - counterfactual simulation training 2602.20710.
+  - Analysis only: DAS on GRU/LSTM 2501.06141; SCIT 2608.27265 (cache interchange on CODI); 2608.15156.
+
+**Depth / CoT bounds:**
+- [THEOREM] Feng 2305.15408:
+  - Thm 3.1: assuming TC⁰ ≠ NC¹, for any depth L there is an n such that no log-precision transformer solves Arithmetic(n, p). This is asymptotic.
+  - Thm 3.3: CoT with d constant, L = 5 and 5 heads suffices.
+  - Each CoT step reduces the leftmost handle (our format).
+- [THEOREM] Merrill 2503.03961: looped depth ⌈log₂ n⌉ suffices for regular languages and connectivity. There is no proven matching lower bound (conditional on TC⁰ ≠ NC¹). Θ(log n) is EMPIRICAL.
+- [THEOREM] Sanford 2402.09268: hop_k at L = ⌊log₂ k⌋ + 2; L = Ω(log k) under the MPC conjecture.
+- [THEOREM] Li 2402.12875: S₅ is in CoT[n, log n, 1] but not in T[poly, log n], assuming TC⁰ ⊊ NC¹.
+- [THEOREM] Amiri 2502.02393: UHAT CoT lower bounds Ω(N) (parity, median, …).
+- [THEOREM] Peng 2402.08164: one attention layer cannot compose functions if H(d+1)p < n log n.
+- **Reading:** no unconditional finite-n depth lower bound applies to GPT-2 at n ≤ 16. "One pass is insufficient" must be shown empirically (K′1).
+
+**Input removal across loops:**
+- [EMPIRICS] Recall needed / injection helps: Bansal, Schwarzschild 2106.04537, Yang 2311.12424 ("without input injection … deteriorates beyond the trained loop iterations").
+- [EMPIRICS] Marchenko 2610.00673: looped Qwen3 without re-injection is only 0.01–0.02 nats worse; from scratch, concatenation injection was 0.12–0.13 nats *worse* than no injection.
+- No input-dropout-across-loops or removal-curriculum work was found.
+
+**Halting / early exit definitions:**
+- ACT 1603.08983 (Eq. 10–12); PonderNet 2107.05407 (Eq. 2–3).
+- Deeply-Supervised Nets 1409.5185 (the companion term "often goes to zero").
+- LayerSkip 2404.16710 (all layers at all iterations "reduces the accuracy of the last layer").
+- Shallow-Deep 1810.07052 (overthinking, destructive in up to 50% of errors).
+- CALM 2207.07061.
+
+**Rotation / lifetime / bottlenecks:**
+- No per-iteration random re-encoding used to force recomputation was found.
+- Nearest: Henaff 1602.06662, shuffling RNN 2007.07324, RotLSTM 2105.00357, Expire-Span 2105.06548, Zoneout 1606.01305.
+- Bottlenecks: VIB 1612.00410, IBRO 2507.18391, 2606.20075 ("dual collapse"), Token Assorted 2502.03275, Hourglass 2607.11696.
