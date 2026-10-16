@@ -1,0 +1,7 @@
+{
+ "auto_micro": 1,
+ "peak_gib_by_micro": {
+  "1": 11.84
+ },
+ "mem_budget": 21.0
+}
