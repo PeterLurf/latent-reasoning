@@ -208,3 +208,65 @@ Stand-in for the Literature session. **IDs:** all 81 verified on their arXiv abs
   - SIIT = InterpBench 2407.14494 (Gupta et al.).
   - Fan's length-generalisation paper = 2409.15647.
 - **Not found:** IIT across passes as a training objective; question-once retrofits; rotation as a forcing device; a backbone-side marginal-pass loss.
+
+## Full-text addendum A (2026-10-15; helper subagent; arXiv HTML full text read for every paper; extracted texts kept in the Theory scratchpad research/fullA/; titles and first authors match)
+
+1. **Saunshi 2502.17416.**
+   - [THEOREM] Thm 5.1: n-element group composition needs only "a 1-layer transformer block, T=⌈log2 n⌉ loops".
+   - [THEOREM] Thm 5.2: an L-layer model with at most R distinct layers is simulated by "loops a 1-layer transformer block for L times" (embedding d+R+2).
+   - [THEOREM] Cor 5.3: p-hop needs ⌊log2 p⌋+2 loops.
+   - [THEOREM] Thm 5.4: m CoT steps of an L-layer model are matched by a looped model with L+O(1) layers and Ω(log(n+m)) more embedding dimension, run with "m dummy tokens with m loops".
+   - [DERIVATION] Regulariser: R_G(k) = (1/(L−k)) Σ cosine between corresponding layers of consecutive k-blocks. The loss is L_xent + λ_reg|G|⁻¹ Σ_G R_G(k), with k=4 and λ_reg=10.
+   - [EMPIRICS] Synthetic tasks (n-ary addition, p-hop, i-GSM): a looped k-layer model ≈ a kL-layer model. In LM pretraining (1B, from scratch, 250B Pile tokens), perplexity is worse but reasoning better. **No pretrained retrofit.**
+2. **Fan 2409.15647.**
+   - [DERIVATION] Injection is additive ("input embeddings are added to the output embeddings of the previous step"). The loss is CE only after T_i iterations, with no intermediate supervision; T(n)=n for parity and copy, n+1 for addition.
+   - [DERIVATION] Test-time stop: by oracle, or by maximum confidence T = argmin_{t≤T_max} L(f_t, ŷ^t) against the model's own greedy decode.
+   - [EMPIRICS] No-injection ablation: injection is "generally better", qualitatively (Fig 7). NoPE GPT-2-style block, from scratch.
+3. **Bansal 2202.05826.**
+   - [DERIVATION] Recall: "the input to r at iteration k is [φ_{k−1}, x]".
+   - [DERIVATION] Progressive loss (Alg 1): n∼U{0,m−1}, k∼U{1,m−n}; "compute φ_n with n iterations w/o tracking gradients", then k more iterations with gradient, with the loss at n+k. L = (1−α)L_max_iters + αL_progressive; α = 1 (prefix sums), 0.01 (mazes), 0.5 (chess); m = 30.
+   - [EMPIRICS] "without recall all models fail to extrapolate" (59×59 mazes); without recall, accuracy shows a "sharp decline" with more iterations. Small convnets, from scratch.
+4. **McLeish 2511.07384.**
+   - [DERIVATION] Prelude = early layers; recurrent block and coda = later layers; the middle layers are removed (TinyLlama (4,8,4) = [0-3], [10-17], [18-21]).
+   - [DERIVATION] s_0∼N(0,σ²); s_i = R(e, s_{i−1}), where R begins with a linear adapter on concat(s, e) (2h→h). Recurrences are sampled Poisson-Lognormal, with backprop through at most the last 8 passes and a curriculum ramping the mean.
+   - [EMPIRICS] No analysis of later-recurrence use. Table 6 GSM8K plateaus at the training mean (4): 25.6 / 44.1 / 51.2 / 51.8 / 51.9 / 52.0 at 1 / 2 / 4 / 8 / 16 / 32.
+5. **Shapiro 2608.11233** (Qwen2.5-0.5B, split at layers 6 and 18).
+   - [DERIVATION] Bridge: work + gate·(prelude_proj(p) + state_proj(work) − work), with an identity-biased gate; "the Prelude contribution is applied only on re-entry".
+   - [EMPIRICS] An earlier zero-init gate "self-locked" (all gate and bridge gradients exactly zero).
+   - [DERIVATION] Per-loop CE against the registered intermediate target, then 1,000 steps of final-answer-only training.
+   - [EMPIRICS] Afterwards 625/640 intermediate states are still correct, and 93.0% of extra loops continue the chain ("essentially never parked"). PonderNet "collapsed to always choosing the maximum depth". Synthetic chain task.
+6. **Wang & Reid 2609.01924** (inference-time hooks on Huginn-0125, 3.5B, 16 recurrences).
+   - [EMPIRICS] Confirmed. §1: "continuous recomputation from the re-injected input, not a memory buffer".
+   - [EMPIRICS] §5 injection swap from recurrence k onward "flips the final output to the new input's own answer in all 30 configurations, including k=12"; the old answer decays within about 2 recurrences, "with a ∼2-recurrence memory".
+7. **RecurTrace 2609.03379** (frozen Qwen3 0.6B–8B, post hoc).
+   - [DERIVATION] Loop Memory Attention: h ← h + α·RMSNorm(e) (α=0 at init); h ← h + LMA_ℓ(x_ℓ^(t−1), M_ℓ^(t)), where M_ℓ^(t) = layer ℓ's own outputs from up to W=3 earlier loops, at the same position only. Weights softmax(QᵀK/√d − β_h(t−t_j)).
+   - [DERIVATION] Halting oracle: y_t = 1[min_{t′>t} L_{t′} < L_t − δ], δ = 0.01.
+   - [EMPIRICS] ACT / PonderNet: "drives both methods to stop after one loop" (mean depth 1.0 in all 6 settings).
+   - [EMPIRICS] Removing loop memory (plain looping) raises NLL by 0.07 / 0.05 / 0.06 nats. Beyond the training depth, memory adds +17.7 (state tracking) and +16.7 (arithmetic), and costs −4.7 on pointer chasing. Which loops are attended is not analysed.
+8. **Think-at-Hard 2511.08577.**
+   - [DERIVATION] Duo-causal attention over all positions ≤ i and depths ≤ d (KV concatenated per depth).
+   - [EMPIRICS] Heads attend first-iteration, second-iteration or both keys; deeper layers show more cross-depth reuse. "Latent overthinking": most predictions are correct after pass 1 but sometimes revised to errors. Ouro-1.7B: always-1 73.1, always-2 79.7, oracle 81.8.
+9. **TaH2 2609.35748** (Qwen3-1.7B).
+   - [DERIVATION] Token t attends to KV at positions ≤ t and depths ≤ m.
+   - [EMPIRICS] Extra iterations make 21.7% (Ouro) and 15.9% (Huginn) of tokens worse.
+10. **RLTT 2602.10520** (Ouro-1.4B / 2.6B-Thinking).
+    - [DERIVATION] GRPO's log P^(T_max) is replaced by Σ_t ω_t ∇log P^(t)·Â_i, with the same advantage for every loop; ω is the exit PDF, progressive t^α/Σs^α, or uniform.
+    - [EMPIRICS] The weightings differ "consistently modest[ly]".
+    - [THEOREM] Thm A.5: RLTT's optimal length ≤ GRPO's, assuming concave S(L) and c_RLTT ≥ c_GRPO.
+11. **Popescu 2607.20519.**
+    - [DERIVATION] Joint objective Σ_t q_t(x)ℓ_t + βKL(q‖π).
+    - [EMPIRICS] Joint gate training gives "accuracy at early loops is often lower", with gains concentrated late. Refitting the gate on the frozen trajectory "does not improve performance": "the main issue is the trajectory induced by the joint objective". A large β collapses to near-fixed depth; a geometric prior with λ ≥ 0.5 puts almost all weight on loop 1 and degrades later states.
+    - **Setting: MANO (integers mod 23, prefix notation, up to 10 operations; a task close to our nested one)**, a 4-layer 512-d model, T = 6, from scratch; also Ouro.
+12. **InfiLoop 2610.11570.**
+    - [EMPIRICS] Overwrite failure: TRM (newest state only) peaks at 62.2% at 468 layers and falls to 58.1% at 1,872. "TRM turns 20.9% of these predictions into an incorrect value at least once, and InfiLoop turns 2.4%."
+    - [DERIVATION] h_t = Σ_i α_{t,i} z_i with α ∝ exp(s_i − λ(t−i)), content score s_i = qᵀRMSNorm(z_i) (a shared pseudo-query, scored once), λ learned. It has an exact constant-memory recurrence.
+    - [EMPIRICS] The step size γ is about 0.40 before solving and "surges to 0.91" at the solving step.
+13. **Kuo 2606.29983.**
+    - [DERIVATION] L = E_{K∼π_stop(·|x)} ℓ(θ; x, y, K). Hand schedule K = clip(n+Δ, 1, T_max); RL-halting with REINFORCE, a baseline and entropy.
+    - [EMPIRICS] Run-to-run OOD std 0.087 (K=20) and 0.122 (K=n), vs ≤ 0.009 for non-looped models, traced to "the spurious correlation ... between sequence length and number of loops". It "can also stabilize a suboptimal computation". 3-layer block, from scratch.
+
+**Not stated in the papers:**
+- (4) whether later recurrences are used (only the Table 6 plateau);
+- (5) any loop-bypass / T=1-dominance finding;
+- (7) which loop slots the memory attends to;
+- (8) a number for how often predictions are revised to wrong (Fig 8 only).
