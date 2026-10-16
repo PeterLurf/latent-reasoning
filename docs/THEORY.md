@@ -16726,6 +16726,21 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 | The readout sees only part of the state (Sharma & Vu 2606.24898) | 2606.24898 | R has its own LN; G1b reports V_t drift on the coda path |
 | Teacher-fed hints hurt generalisation | 2209.11142 | TF-ONLY stays a label for N3 |
 
+**Note 211-3 (2026-10-15 23:36 EDT; before any §211 output; Stage 0 findings from Experiments' build; two pre-output amendments plus two facts; the gates so far are FP 1.6e-15, PA (c = 1e4) = CARRY bitwise, masked-K 5.7e-15, G1-cal m₉₉ 0.0198 with ratio 0.68–0.85·e⁵, path gradflow, MCT W1 / W3, E_t; G1b smokes running).**
+
+1. **Amendment, PURE-ANNEAL schedule (a design error caught before output).**
+   - **The problem [DERIVED; computed].** Linear-in-c from 1e4 at 1k to 0 at 8k makes the gather's off-self mass ≈ (N−1)·e^{−c} / (1 + (N−1)·e^{−c}). With N ≈ 340 entries and equal logits, that mass is 3e-60 at 7.9k and 0.997 at 8.0k.
+     - So the registered "anneal" is a step switch in the last ~50 steps.
+     - The gather's W_q / W_k / γ_q also get exactly zero gradient while the softmax is one-hot (Experiments). The switch therefore lands on an untrained gather, which is a distribution shock, not an anneal.
+   - **The fix.** c = 1e4 up to step 1k (function preservation at init, unchanged), then **c = 20·(1 − (s − 1000)/7000), linear to 0 at 8k**.
+     - At equal logits the off-self mass becomes 2e-4 / 0.06 / 0.53 / 0.95 at 3k / 5k / 6k / 7k.
+     - The gather's gradient ∝ e^{−c} grows smoothly from about 3k.
+     - The end state (c = 0, attention-only) and every reading are unchanged.
+2. **Amendment, MCT margin.** Aim at μ + 0.05 = 1.05 nats and test W1 at μ = 1.0.
+   - With the aim exactly at μ, LN renormalisation left step 1 a hair short, so the "share needing > 1 step" field read about 1.0 and carried no information (‖Δ‖/‖V‖ ≈ 1e-3 at step 2).
+3. **Fact, coda bank.** With V_0 out of the coda's bank (211-2), the coda's β⁰ rows are unused. The coda calibrates β over V_1..V_{t−1} only, against its causal part.
+4. **Fact, cost.** The step is launch-bound: about 0.55 s per micro-batch, independent of B, on the 4060. The draft's 0.35–0.8 s/step holds only at micro 1–2 on the 3090. Host G-TIME admits a cell at ≤ $3 or holds it; the family cap of $9 is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
