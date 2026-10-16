@@ -1,0 +1,579 @@
+{
+ "cells": {
+  "3_2": {
+   "n": 3,
+   "r": 2,
+   "t": 1,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 0.997,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.997
+  },
+  "4_2": {
+   "n": 4,
+   "r": 2,
+   "t": 2,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 0.996,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.996
+  },
+  "5_2": {
+   "n": 5,
+   "r": 2,
+   "t": 3,
+   "exact_rate": 0.998,
+   "n_items": 998,
+   "intact": 0.9959919839679359,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.994
+  },
+  "5_4": {
+   "n": 5,
+   "r": 4,
+   "t": 1,
+   "exact_rate": 0.999,
+   "n_items": 999,
+   "intact": 0.993993993993994,
+   "restart": 0.996996996996997,
+   "unparse_rate": null,
+   "intact_all": 0.994
+  },
+  "6_2": {
+   "n": 6,
+   "r": 2,
+   "t": 4,
+   "exact_rate": 0.989,
+   "n_items": 989,
+   "intact": 0.9888776541961577,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.981
+  },
+  "6_4": {
+   "n": 6,
+   "r": 4,
+   "t": 2,
+   "exact_rate": 0.999,
+   "n_items": 999,
+   "intact": 0.980980980980981,
+   "restart": 0.994994994994995,
+   "unparse_rate": null,
+   "intact_all": 0.981
+  },
+  "7_2": {
+   "n": 7,
+   "r": 2,
+   "t": 5,
+   "exact_rate": 0.976,
+   "n_items": 976,
+   "intact": 0.9795081967213115,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.96
+  },
+  "7_4": {
+   "n": 7,
+   "r": 4,
+   "t": 3,
+   "exact_rate": 0.995,
+   "n_items": 995,
+   "intact": 0.9628140703517588,
+   "restart": 0.9949748743718593,
+   "unparse_rate": null,
+   "intact_all": 0.96
+  },
+  "7_6": {
+   "n": 7,
+   "r": 6,
+   "t": 1,
+   "exact_rate": 0.994,
+   "n_items": 994,
+   "intact": 0.9607645875251509,
+   "restart": 0.9738430583501007,
+   "unparse_rate": null,
+   "intact_all": 0.96
+  },
+  "8_2": {
+   "n": 8,
+   "r": 2,
+   "t": 6,
+   "exact_rate": 0.963,
+   "n_items": 963,
+   "intact": 0.9750778816199377,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.946
+  },
+  "8_4": {
+   "n": 8,
+   "r": 4,
+   "t": 4,
+   "exact_rate": 0.978,
+   "n_items": 978,
+   "intact": 0.9560327198364008,
+   "restart": 0.9867075664621677,
+   "unparse_rate": null,
+   "intact_all": 0.946
+  },
+  "8_6": {
+   "n": 8,
+   "r": 6,
+   "t": 2,
+   "exact_rate": 0.981,
+   "n_items": 981,
+   "intact": 0.9480122324159022,
+   "restart": 0.9694189602446484,
+   "unparse_rate": null,
+   "intact_all": 0.946
+  },
+  "9_2": {
+   "n": 9,
+   "r": 2,
+   "t": 7,
+   "exact_rate": 0.904,
+   "n_items": 904,
+   "intact": 0.9668141592920354,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.917
+  },
+  "9_4": {
+   "n": 9,
+   "r": 4,
+   "t": 5,
+   "exact_rate": 0.928,
+   "n_items": 928,
+   "intact": 0.9439655172413793,
+   "restart": 0.990301724137931,
+   "unparse_rate": null,
+   "intact_all": 0.917
+  },
+  "9_6": {
+   "n": 9,
+   "r": 6,
+   "t": 3,
+   "exact_rate": 0.914,
+   "n_items": 914,
+   "intact": 0.9223194748358862,
+   "restart": 0.975929978118162,
+   "unparse_rate": null,
+   "intact_all": 0.917
+  },
+  "9_8": {
+   "n": 9,
+   "r": 8,
+   "t": 1,
+   "exact_rate": 0.797,
+   "n_items": 797,
+   "intact": 0.9209535759096612,
+   "restart": 0.9523212045169385,
+   "unparse_rate": null,
+   "intact_all": 0.917
+  },
+  "10_2": {
+   "n": 10,
+   "r": 2,
+   "t": 8,
+   "exact_rate": 0.512,
+   "n_items": 512,
+   "intact": 0.9375,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.823
+  },
+  "10_4": {
+   "n": 10,
+   "r": 4,
+   "t": 6,
+   "exact_rate": 0.345,
+   "n_items": 345,
+   "intact": 0.8898550724637682,
+   "restart": 0.9884057971014493,
+   "unparse_rate": null,
+   "intact_all": 0.823
+  },
+  "10_6": {
+   "n": 10,
+   "r": 6,
+   "t": 4,
+   "exact_rate": 0.407,
+   "n_items": 407,
+   "intact": 0.8402948402948403,
+   "restart": 0.9582309582309583,
+   "unparse_rate": null,
+   "intact_all": 0.823
+  },
+  "10_8": {
+   "n": 10,
+   "r": 8,
+   "t": 2,
+   "exact_rate": 0.136,
+   "n_items": 136,
+   "intact": 0.8161764705882353,
+   "restart": 0.8897058823529411,
+   "unparse_rate": null,
+   "intact_all": 0.823
+  },
+  "11_2": {
+   "n": 11,
+   "r": 2,
+   "t": 9,
+   "exact_rate": 0.026,
+   "n_items": 26,
+   "intact": 0.6923076923076923,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.566
+  },
+  "11_4": {
+   "n": 11,
+   "r": 4,
+   "t": 7,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.566
+  },
+  "11_6": {
+   "n": 11,
+   "r": 6,
+   "t": 5,
+   "exact_rate": 0.005,
+   "n_items": 5,
+   "intact": 0.8,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.566
+  },
+  "11_8": {
+   "n": 11,
+   "r": 8,
+   "t": 3,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.566
+  },
+  "12_2": {
+   "n": 12,
+   "r": 2,
+   "t": 10,
+   "exact_rate": 0.008,
+   "n_items": 8,
+   "intact": 0.25,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.281
+  },
+  "12_4": {
+   "n": 12,
+   "r": 4,
+   "t": 8,
+   "exact_rate": 0.005,
+   "n_items": 5,
+   "intact": 0.6,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.281
+  },
+  "12_6": {
+   "n": 12,
+   "r": 6,
+   "t": 6,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.281
+  },
+  "12_8": {
+   "n": 12,
+   "r": 8,
+   "t": 4,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.281
+  },
+  "13_2": {
+   "n": 13,
+   "r": 2,
+   "t": 11,
+   "exact_rate": 0.002,
+   "n_items": 2,
+   "intact": 0.5,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.18
+  },
+  "13_4": {
+   "n": 13,
+   "r": 4,
+   "t": 9,
+   "exact_rate": 0.002,
+   "n_items": 2,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.18
+  },
+  "13_6": {
+   "n": 13,
+   "r": 6,
+   "t": 7,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.18
+  },
+  "13_8": {
+   "n": 13,
+   "r": 8,
+   "t": 5,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.18
+  },
+  "14_2": {
+   "n": 14,
+   "r": 2,
+   "t": 12,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.143
+  },
+  "14_4": {
+   "n": 14,
+   "r": 4,
+   "t": 10,
+   "exact_rate": 0.002,
+   "n_items": 2,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.143
+  },
+  "14_6": {
+   "n": 14,
+   "r": 6,
+   "t": 8,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.143
+  },
+  "14_8": {
+   "n": 14,
+   "r": 8,
+   "t": 6,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.143
+  },
+  "15_2": {
+   "n": 15,
+   "r": 2,
+   "t": 13,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.121
+  },
+  "15_4": {
+   "n": 15,
+   "r": 4,
+   "t": 11,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.121
+  },
+  "15_6": {
+   "n": 15,
+   "r": 6,
+   "t": 9,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.121
+  },
+  "15_8": {
+   "n": 15,
+   "r": 8,
+   "t": 7,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.121
+  },
+  "16_2": {
+   "n": 16,
+   "r": 2,
+   "t": 14,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.14
+  },
+  "16_4": {
+   "n": 16,
+   "r": 4,
+   "t": 12,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.14
+  },
+  "16_6": {
+   "n": 16,
+   "r": 6,
+   "t": 10,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.14
+  },
+  "16_8": {
+   "n": 16,
+   "r": 8,
+   "t": 8,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.14
+  }
+ },
+ "long_step": {
+  "1": {
+   "n_steps": 8824,
+   "exact": 0.9969401631912964,
+   "n_exact": 8797
+  },
+  "2": {
+   "n_steps": 7824,
+   "exact": 1.0,
+   "n_exact": 7824
+  },
+  "3": {
+   "n_steps": 6824,
+   "exact": 1.0,
+   "n_exact": 6824
+  },
+  "4": {
+   "n_steps": 5824,
+   "exact": 1.0,
+   "n_exact": 5824
+  },
+  "5": {
+   "n_steps": 4829,
+   "exact": 0.99896458894181,
+   "n_exact": 4824
+  },
+  "6": {
+   "n_steps": 3845,
+   "exact": 0.9958387516254876,
+   "n_exact": 3829
+  },
+  "7": {
+   "n_steps": 2866,
+   "exact": 0.9926727145847871,
+   "n_exact": 2845
+  },
+  "8": {
+   "n_steps": 1918,
+   "exact": 0.97288842544317,
+   "n_exact": 1866
+  },
+  "9": {
+   "n_steps": 1129,
+   "exact": 0.8131089459698848,
+   "n_exact": 918
+  },
+  "10": {
+   "n_steps": 1000,
+   "exact": 0.129,
+   "n_exact": 129
+  },
+  "11": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "12": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "13": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "14": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "15": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "16": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  }
+ },
+ "def": "D \u00a71.2 RS on INJECT: decode = aux_greedy at pass t, exact = ids(cot_steps[t]) + EOT; intact at K' = n + 2; restart = the item reduced t times run fresh at K' = r + 2; unparse_rate is not defined for a greedy token decode (null); exact_rate = exact / all items of n",
+ "run": "s193_rmswin_s2",
+ "card": "NVIDIA GeForce RTX 3070",
+ "bs": 250,
+ "eval_bs": 250,
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "fast_add": true,
+ "aux_nopass": false,
+ "sec": 398
+}
