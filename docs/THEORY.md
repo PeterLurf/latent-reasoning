@@ -298,7 +298,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
-| 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | registered | pending (Stage 0 gates) |
+| 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 
 ## Live sections
 
@@ -17169,6 +17169,44 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
   * Training the step map from corrected bank entries (MCT) produced a cell that carries state and serialises as N2 does, but whose progress is tied to the pass count or breaks under a copied pass. N2, without MCT, does not.
   * One seed. The CARRY-NO-STEP question R3 was meant to test did not arise (neither N2 nor N3 shows it).
 * N1's eval is in its last parts.
+
+**§211 N1 result and family close (2026-10-16 08:08 EDT; s211_vb_carry_s1, b305, RTX 3090, seed 1, 48k (log complete); eval_vb.json local fp32 at eval_bs 32 on the 2070, e2b76660; theory/score_s211.py). N1 (CARRY control) reads VB-C1, through the carry alone. The §211 family (N2 / N1 / N3) is closed at about $4.1 of $9.**
+
+**N1's readings:**
+* DEEP 1.000.
+* PROBE-GAIN 0.871 (PROBE(0) / (1) at 0.117 / 0.130; PROBE(12) 1.000).
+* SERIAL-ONSET: median 2 / 3 / 4 / 6 / 6 / 8; slope 1.11; gap 6.
+* VALUE-SWAP (ii) follow 1.000 / own 0.000 (4,184 pairs); (i) 0.930 / 0.046.
+* STALL 1.000. Entry 11k (the earliest of the three).
+
+**How N1 computes.**
+* Its swap arm (iii) gives **bank-swap 0.000 / 1.000 (own)** and **carry-swap 1.000 / 0.000**. N1 computes through the carry alone, and its bank copy of V_t is unused.
+* BANK-ABLATE (versions 1..t−2 masked) is about intact (1.000 at n 1..8), so N1 is Markov in its versions.
+* bank_off collapses (0.76 / 0.54 / 0.23 at n 1..3, then chance), so it needs V_0 from the bank.
+* K′ 24 is unstable (0.40–0.54 at n 3–8). DEPTH 0.405.
+
+**The family:**
+
+| cell | label | entry (answer-CE 0.5) | how it computes | history | K′ 24 | DEPTH n 9–12 | $ |
+|---|---|---|---|---|---|---|---|
+| **N2 PURE-ANNEAL (main)** | **VB-C1** | 16k | through the pass-global bank | **USED** (BANK-ABLATE n 8 → 0.321) | stable | 0.414 | 1.34 |
+| N1 CARRY | VB-C1 | 11k | carry only (bank V_t unused) | ignored (Markov) | unstable | 0.405 | 0.95 |
+| N3 PA + MCT | COUNT-KEYED (STALL 0.499) | 28k | bank (V_0-dependent) | USED | partly | 0.310 | 1.44 |
+
+Egress was about $0.34, so the family total is about $4.1.
+
+**Reading (one seed per cell):**
+1. **The registered claim holds in the main cell: supervised serial latent computation in a pass-global attention memory (N2),** with the memory used in function, not just in form.
+   * The control (N1) reaches the same C1 readings through an RNN-like carry. So VB-C1 alone does not establish attention-memory use. N2's HISTORY-USED and its stability at K′ 24 are what distinguish it.
+   * A rate claim needs ≥ 3 seeds and the user's OK.
+2. **C2 is not met in any cell** (DEPTH 0.31–0.41; REACH 8–9). This is the bottleneck the VB-2G draft targets.
+3. **MCT teacher forcing (N3) cost the clock test and later entry,** and gained nothing here: CARRY-NO-STEP did not occur in N2.
+4. **Predictions:**
+   * CARRY-LIKENESS ≥ 0.8 missed (0.22 / 0.06).
+   * DEPTH central 0.65 if DEEP missed (0.31–0.41).
+   * P(VB-C1) of 0.3 / 0.35 / 0.4 for N2 / N1 / N3: two positives, one negative.
+
+**Retention:** ckpt_last / ckpt_prev and the s211 checkpoint mirrors are deleted. model.pt, logs, args and eval files are kept (211-13 / 15 / 16 pending the user's OK).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

@@ -60,7 +60,60 @@
  "N1": {
   "cell": "s211_vb_carry_s1",
   "last_step": 48000,
-  "label": "pending (eval_vb.json partial; missing ['vswap', 'stall'])"
+  "dead": false,
+  "entry_answer_ce_05": 11000,
+  "entry_loss_05": 11000,
+  "entry_answer_ce_01": 16000,
+  "DEEP": true,
+  "ACC_n2_pooled": 1.0,
+  "PROBE": {
+   "0": 0.11699999999999999,
+   "1": 0.1295,
+   "2": 0.25133333333333335,
+   "3": 0.4028333333333333,
+   "4": 0.5506666666666666,
+   "6": 0.8435,
+   "8": 1.0,
+   "12": 1.0
+  },
+  "PROBE_VALID": true,
+  "PROBE_GAIN_value": 0.8705,
+  "PROBE_GAIN": true,
+  "ONESHOT_PRECOMPUTE": false,
+  "onset": {
+   "coverage": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   },
+   "median_onset_by_n": {
+    "3": 2.0,
+    "4": 3.0,
+    "5": 4.0,
+    "6": 6.0,
+    "7": 6.0,
+    "8": 8.0
+   },
+   "slope_height": 1.1142857142857143,
+   "slope_n": 1.1714285714285715,
+   "gap_8_3": 6.0,
+   "SERIAL_ONSET": true
+  },
+  "vswap_pairs": 4184,
+  "SERIAL_STEP": true,
+  "stall_recovery": 1.0,
+  "NO_CLOCK": true,
+  "DEPTH_9_12": 0.405,
+  "REACH": 9,
+  "carry_likeness": null,
+  "VB_C1": true,
+  "labels": [
+   "VB-C1"
+  ],
+  "label": "VB-C1"
  },
  "N3": {
   "cell": "s211_vb_pamct_s1",
@@ -120,5 +173,5 @@
   ],
   "label": "COUNT-KEYED"
  },
- "reading": "N2 s211_vb_pa_s1: VB-C1 | N1 s211_vb_carry_s1: pending (eval_vb.json partial; missing ['vswap', 'stall']) | N3 s211_vb_pamct_s1: COUNT-KEYED"
+ "reading": "N2 s211_vb_pa_s1: VB-C1 | N1 s211_vb_carry_s1: VB-C1 | N3 s211_vb_pamct_s1: COUNT-KEYED"
 }
