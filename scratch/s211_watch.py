@@ -4,6 +4,10 @@ the answer_ce records from 200 before to 1000 after it (emitted once the 1000-af
 import json, os, re, subprocess, sys, time
 os.chdir("D:/Latent"); KEY = os.path.expanduser("~/.ssh/runpod_ed25519")
 CELLS = {304: "s211_vb_pa_s1", 305: "s211_vb_carry_s1", 306: "s211_vb_pamct_s1"}; done = set()
+ADV_ONLY = os.environ.get("ADV_ONLY") == "1"                                 # Theory 01:2x: after 211-9, only stage advances (runs until stopped)
+for x_ in os.environ.get("SKIP", "").split(","):                             # already reported, e.g. SKIP=304:6000,305:6000
+    if x_:
+        done.add(("adv", int(x_.split(":")[0]), int(x_.split(":")[1])))
 def host(n):
     h = None
     for l in open("logs/gen_deploy.log", encoding="utf-8", errors="replace"):
@@ -22,7 +26,7 @@ fmt = lambda r: "%d ans %.3f rec %.3f c %.2f off %s ggn %s gn %.1f" % (r["step"]
 while True:
     for n in CELLS:
         R = recs(n); main = {r["step"]: r for r in R if "loss" in r and r.get("answer_ce") is not None}
-        if n == 304:
+        if n == 304 and not ADV_ONLY:
             for s in (10000, 12000):
                 if ("row", n, s) not in done and s in main:
                     done.add(("row", n, s)); print("b304 @%d: %s" % (s, " | ".join(fmt(main[k]) for k in sorted(main) if s - 1000 <= k <= s and k % 200 == 0)), flush=True)
@@ -30,6 +34,6 @@ while True:
             key = ("adv", n, a["step"]); s0 = a["step"]
             if key not in done and max(main or [0]) >= s0 + 1000:
                 done.add(key); print("b%d ADVANCE @%d -> n_max %d (%s): %s" % (n, s0, a["n_max_train"], a["reason"], " | ".join("%d %.3f" % (k, main[k]["answer_ce"]) for k in sorted(main) if s0 - 200 <= k <= s0 + 1000 and k % 100 == 0)), flush=True)
-    if ("row", 304, 12000) in done and any(k[0] == "adv" and k[1] == 305 for k in done):
+    if not ADV_ONLY and ("row", 304, 12000) in done and any(k[0] == "adv" and k[1] == 305 for k in done):
         print("WATCH DONE", flush=True); sys.exit(0)
     time.sleep(120)
