@@ -13,30 +13,17 @@ HALT n 11 {'exact': 0.0, 'premature': 0.001, 'never': 0.015, 'gprog': 0.982, 'ac
 HALT n 12 {'exact': 0.0, 'premature': 0.001, 'never': 0.004, 'gprog': 0.994, 'acc_halt': 0.001, 'acc_n2': 0.108}
 HALT n 13 {'exact': 0.0, 'premature': 0.0, 'never': 0.004, 'gprog': 0.996, 'acc_halt': 0.0, 'acc_n2': 0.104}
 HALT n 14 {'exact': 0.0, 'premature': 0.0, 'never': 0.001, 'gprog': 0.999, 'acc_halt': 0.0, 'acc_n2': 0.09}
-[W1016 12:44:44.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 132120576 bytes (free: 0, total: 8589410304).
+[W1016 12:57:15.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 132120576 bytes (free: 0, total: 8589410304).
 HALT n 15 {'exact': 0.0, 'premature': 0.0, 'never': 0.003, 'gprog': 0.997, 'acc_halt': 0.0, 'acc_n2': 0.106}
-[W1016 12:45:47.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 146800640 bytes (free: 0, total: 8589410304).
+[W1016 12:58:18.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 146800640 bytes (free: 0, total: 8589410304).
 HALT n 16 {'exact': 0.0, 'premature': 0.0, 'never': 0.002, 'gprog': 0.998, 'acc_halt': 0.0, 'acc_n2': 0.1}
-Traceback (most recent call last):
-  File "<frozen runpy>", line 203, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "D:\Latent\boxes\vbank_halt.py", line 188, in <module>
-    main()
-    ~~~~^^
-  File "D:\Latent\boxes\vbank_halt.py", line 176, in main
-    m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time(); res = run(m, TE, dev, a.eval_bs)
-                                                                                     ~~~^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\Latent\boxes\vbank_halt.py", line 136, in run
-    E2, _ = rollout_halt(m, its, dev, stall=(ts, ts + 1)) if n <= 8 else (None, None)
-            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
-    return func(*args, **kwargs)
-  File "D:\Latent\boxes\vbank_halt.py", line 89, in rollout_halt
-    r = m.rollout(x, pad, TMAX, coda_rows={t: torch.arange(len(its), device=dev) for t in range(TMAX + 1)}, edit=edit if stall else None)
-  File "D:\Latent\boxes\vbank.py", line 247, in rollout
-    fgk = [self.gkey(F_) for F_ in ver_sub] if self.mode == "pa" else None
-         ^^^^^^^^^^
-  File "D:\Latent\boxes\vbank_halt.py", line 84, in edit
-    return st[t - 1].clone()
-           ~~^^^^^^^
-KeyError: 2
+STALL n 4 {'qualifying': 999, 'shift': 0.46046046046046046, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.001001001001001001, 'gprog': 0.5385385385385385, 'other': 0.0, 'stall_t': 2}
+STALL n 5 {'qualifying': 998, 'shift': 0.14128256513026052, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.002004008016032064, 'gprog': 0.8567134268537074, 'other': 0.0, 'stall_t': 3}
+STALL n 6 {'qualifying': 993, 'shift': 0.015105740181268883, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0010070493454179255, 'ge_n2': 0.0, 'gprog': 0.9838872104733132, 'other': 0.0, 'stall_t': 3}
+STALL n 7 {'qualifying': 991, 'shift': 0.006054490413723511, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.9939455095862765, 'other': 0.0, 'stall_t': 4}
+STALL n 8 {'qualifying': 951, 'shift': 0.0010515247108307045, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.9989484752891693, 'other': 0.0, 'stall_t': 4}
+STALL n 9 {'qualifying': 456, 'shift': 0.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0021929824561403508, 'ge_n2': 0.0, 'gprog': 0.9978070175438597, 'other': 0.0, 'stall_t': 5}
+STALL n 10 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 5}
+STALL n 11 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 6}
+STALL n 12 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 6}
+DONE boxes/runs_fsq/s211_vb_pamct_s1\eval_vbhalt.json 660 gate True
