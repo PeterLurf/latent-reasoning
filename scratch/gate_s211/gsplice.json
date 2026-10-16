@@ -1,0 +1,13 @@
+{
+ "torch.float32": {
+  "splice0_eq_carry": true,
+  "qmod_nowrap_eq_default": true,
+  "splice0_differs_from_pa_c0": true
+ },
+ "torch.float64": {
+  "splice0_eq_carry": true,
+  "qmod_nowrap_eq_default": true,
+  "splice0_differs_from_pa_c0": true
+ },
+ "pass": true
+}

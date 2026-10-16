@@ -167,6 +167,8 @@ class VBankN(torch.nn.Module):
         self.gather_log = None                                              # a list -> per pass (t, (B,) mean self-mass on (t-1, j) over heads / real slots)
         self.ver_keep = None                                                # eval-only (note 211-14): f(t, nver) -> (nver,) bool of bank versions kept (None = all)
         self.age_floor = None                                               # eval-only (note 212-3): slope floor mu on the age term of versions 1..t-2 (None = off)
+        self.gather_splice = None                                           # eval-only (note 212-6): J -> gather output replaced by N(V_{t-1}) at slots j >= J
+        self.gather_qmod = None                                             # eval-only (note 212-6): gather query position j -> j mod this (None = wpe_slice)
 
     def nrm(self, V, rms0):
         return self.gain * (V * (rms0 / V.pow(2).mean(-1, keepdim=True).sqrt()))
@@ -180,7 +182,8 @@ class VBankN(torch.nn.Module):
         the gates), autocast off: at c = 1e4 the weights are exactly one-hot, so U == N(V_{t-1}) bitwise (gate_carry_bitwise)."""
         B, T = pad.shape; H, hd = self.H, self.hd; dev = pad.device; dt = torch.float64 if NV[0].dtype == torch.float64 else torch.float32
         with torch.autocast(device_type=dev.type, enabled=False):
-            q = (DM_().wpe_slice(self.g, T).to(dt) @ self.gq_w.to(dt) + self.gq_b.to(dt)).view(T, H, hd).transpose(0, 1)   # (H, T, hd), content-free;
+            wq_ = DM_().wpe_slice(self.g, T) if self.gather_qmod is None else self.g.w("wpe.weight")[torch.arange(T, device=dev) % self.gather_qmod]   # 212-6 mod arm
+            q = (wq_.to(dt) @ self.gq_w.to(dt) + self.gq_b.to(dt)).view(T, H, hd).transpose(0, 1)   # (H, T, hd), content-free;
             # wpe_slice = wpe[:T] unless deltamem.POS_OFFSET / POS_KEEP0 are set (eval-only position tests, note 212-x; the prelude uses the same slice)
             K_ = torch.cat(gk[:t], 2).to(dt); lg = torch.einsum("htd,bhsd->bhts", q, K_) / math.sqrt(hd)                    # (B, H, T, tT)
             s_idx = torch.arange(t, device=dev).repeat_interleave(T); i_idx = torch.arange(T, device=dev).repeat(t)
@@ -200,6 +203,8 @@ class VBankN(torch.nn.Module):
             if self.gather_log is not None:
                 sm = w[:, :, torch.arange(T, device=dev), (t - 1) * T + torch.arange(T, device=dev)].detach()                # (B, H, T)
                 self.gather_log.append((t, (sm.mean(1) * pad).sum(1) / pad.sum(1)))
+        if self.gather_splice is not None:                                  # eval-only (note 212-6 GATHER-SPLICE): slots j >= J take the CARRY value N(V_{t-1}[j])
+            U = torch.cat([U[:, :self.gather_splice], NV[t - 1].to(U.dtype)[:, self.gather_splice:]], 1)
         return U.to(NV[0].dtype)
 
     def coda(self, t, Vt, kvs, pad, src=None, bp=None):
