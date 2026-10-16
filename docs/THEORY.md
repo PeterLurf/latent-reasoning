@@ -17869,6 +17869,12 @@ Any SCSE-style transfer must therefore inject the input-driven change outside th
 - **In VERSION-BANK no such target exists up front.** The serial answer is what the passes compute; a one-pass target is exactly what PROBE(0) / (1) show is unavailable (0.12–0.13).
 - **So the anchor form does not transfer.** If the trigger fires, the design shape is the per-slot gated update with its fixed point at the slot's own current state (Audit agrees).
 
+**Note 213-10 (2026-10-16 15:04 EDT; Literature's full-text answer, 316033c4; the lead stays held).**
+- **What moves SCSE's loop:** a nonzero, input-dependent δ_0 = H_0(e) − h̄(e). Its core sees only δ_t (it is bias-free, so G(0) = 0), and input re-enters only at readout.
+- **The paper's own ablation is 213-7 / 213-8's freeze.** Setting h̄ = H_0(e) makes "the recurrent branch make no update".
+- **A faithful VB port** therefore needs a learned H_0 and a deviation-only core. That is far off-distribution for pretrained GPT-2 blocks, against NORTH_STAR's one-pretrained-LM requirement. It is not pursued.
+- **The per-slot gated form of 213-7 is not SCSE.** It is a ReZero-style gated residual (Bachlechner et al., arXiv 2003.04887, verified by Literature). If §213's trigger fires, it needs its own derivation under that name.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
