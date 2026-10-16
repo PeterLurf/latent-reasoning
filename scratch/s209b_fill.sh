@@ -7,7 +7,7 @@
 #   PMAX=0.60 nohup bash scratch/s209b_fill.sh >> logs/fill_s209b.out 2>&1 &
 cd "$(dirname "$0")/.."
 PMAX=${PMAX:-0.60}; CAP=11.5; STEPS=59822; RATIO=${RATIO:-3.22}; n=303; BADN=${BAD0:-0}; BADMAX=4; BADLOG=logs/s209b_bad_cost.log
-export GPU_NAME=A100_SXM4; export EXTRA_120="$(tr '\n' ' ' < scratch/gen_q_b303.extra)"
+export EXTRA_120="$(tr '\n' ' ' < scratch/gen_q_b303.extra)"
 log() { echo "$(date +%T) fill_s209b $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 probe() {   # host port -> "OK <s/step>" / "SLOW" / ""
   local r; r=$(timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "grep -h 'HOSTPROBE' /workspace/Latent/logs/queue_gen_b$n.out | tail -n 1" 2>/dev/null)
@@ -28,9 +28,15 @@ g1check() {   # §210 G1': the released CODI ckpt re-scored on this host (queue 
 [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
 while [ ! -f scratch/fill_s209b.stop ]; do
   bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
-  read -r o ip dph <<<"$(python scratch/offer_pick.py - "$PMAX")"
-  if [ -z "${o:-}" ]; then log "b$n: no A100 SXM4 offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
-  log "b$n: deploying on offer $o ($ip, A100 SXM4, \$$dph/h)"; t0=$(date +%s); bash scratch/gen_deploy_120.sh "$o $n"
+  bt=$(awk '!/^#/ {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0)       # Audit 21:4x: cumulative BAD-host spend cap $1.00
+  if python -c "import sys; sys.exit(0 if $bt > 1.0 else 1)"; then log "CAP: §210 BAD-host spend \$$bt > \$1.00 - held; tell Audit"; exit 3; fi
+  best=""; for gn in A100_SXM4 A100_PCIE; do                            # Audit 21:4x: SXM4 or PCIe 40 / 80 GB (same sm80 chip), the cheapest qualifying offer
+    r_=$(GPU_NAME=$gn python scratch/offer_pick.py - "$PMAX"); [ -z "$r_" ] && continue
+    if [ -z "$best" ] || python -c "import sys; sys.exit(0 if float('$(echo $r_ | cut -d' ' -f3)') < float('$(echo $best | cut -d' ' -f3)') else 1)"; then best="$r_"; bgn=$gn; fi
+  done
+  read -r o ip dph <<<"$best"
+  if [ -z "${o:-}" ]; then log "b$n: no A100 (SXM4 / PCIe) offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
+  log "b$n: deploying on offer $o ($ip, $bgn, \$$dph/h)"; t0=$(date +%s); bash scratch/gen_deploy_120.sh "$o $n"
   line=$(grep "gen host b$n offer $o:" logs/gen_deploy.log | tail -1)
   if ! echo "$line" | grep -q STARTED; then
     mins=$(( ($(date +%s) - t0) / 60 + 1 )); c=$(python -c "print(round($mins / 60 * $dph, 4))"); BADN=$((BADN + 1))
@@ -38,7 +44,7 @@ while [ ! -f scratch/fill_s209b.stop ]; do
     [ "$BADN" -ge "$BADMAX" ] && { log "CAP: $BADMAX BAD / refused hosts - held; tell Audit / Theory"; exit 3; }
     continue
   fi
-  log "b$n: STARTED"; mv "scratch/gen_q_b$n.txt" "scratch/gen_q_b$n.txt.norequeue"
+  log "b$n: STARTED - UPLOAD_OK of the 90 MB bundle (the real test of the 21:0x fix; $bgn)"; mv "scratch/gen_q_b$n.txt" "scratch/gen_q_b$n.txt.norequeue"
   read -r h p iid <<<"$(echo "$line" | awk '{for(i=1;i<=NF;i++) if($i=="INSTANCE") print $(i+2)" "$(i+3)" "$(i+1)}')"
   res=""; for i in $(seq 1 40); do res=$(probe "$h" "$p"); [ -n "$res" ] && break; sleep 60; done
   read -r st pv <<<"$res"
