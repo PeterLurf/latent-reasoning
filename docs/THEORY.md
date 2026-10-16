@@ -17053,6 +17053,33 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
 - Does not stand: the "recompute from the input" account of the failed regime. It stays a **conjecture** until the in-range item-level fit, with a held-out or AIC comparison against a pass-only model, exists.
 - **The bottleneck draft's step-capability design (COMMUTE + OPX) must not lean on HH-FIT.** Its motivation is restated on the step_recover reading plus the beyond-training item-level coefficients, both cited as above.
 
+**Note 211-16 (2026-10-16 03:43 EDT; PRE-STATED before any §211 output; from the bottleneck session's red team (docs/research_bottleneck_2026-10-16/REDTEAM2_v0.md); definitions fixed now; RUNNING them ($0, eval-only, local) needs the user's OK via Audit; descriptive beside §211; no §211 reading changed).**
+
+1. **Base rule for any bottleneck Stage-1 cell.** The base is **N2 (PURE-ANNEAL)**, with the final c-segment lengthened per 211-11. The exception: if N2 reads NO-ENTRY / LOSES-ONE-PASS while N1 reads DEEP, the base question goes to the user as a constraint question (CARRY is RNN-like), never chosen silently.
+2. **REPAIR (red-team finding 4).** Reported:
+   - P(value right at t + 1 | value wrong at t, skeleton right);
+   - P(final correct | ≥ 1 step wrong).
+   **Rule:** if REPAIR ≥ 0.2 in a DEEP §211 cell, any COMMUTE cell uses S's bank-repair variant: carried slots keep true targets when an older version decodes them, and COMMUTE applies only at the handle's value slot.
+3. **The STEP trigger (red-team finding 3; replaces any use of HH-FIT, per 205-5).** On exact-input STEP-CAP events at n 3..8 in a §211 cell:
+   - the held-out log-likelihood gain (5-fold by item) from adding subtree height hh to (t, alive, held, prov, age_max, bdepth) is ≥ **5 nats per 1,000 events**;
+   - and the hh coefficient among handles with ≥ 1 computed operand is ≥ **+0.5 / SD**.
+   - The anchors are INJECT's beyond-training fits: failed 10–22 nats, converged ≤ 1. The threshold is assumed, not derived.
+   - **Only if both hold** is a COMMUTE cell proposed. OPX additionally needs OPERAND-FOLLOW < 0.5.
+   - NO-ENTRY alone is not a trigger.
+4. **Eval-only history arms (red-team finding 2), at K′ = n + 2 on each §211 cell:**
+   - (a) V0-OFF: V_0 masked for t ≥ 2;
+   - (b) an age floor μ = 2 on versions older than the newest;
+   - (c) recent-1: only V_{t−1} plus the current version.
+   - **EVAL-HISTORY-GAIN:** an arm raises n 9–12 by ≥ 0.10 while n ≤ 8 changes by ≥ −0.03.
+   - **Without such a gain, no constraint-narrowing change (V0-OFF, floor, W = 1) is proposed** for training.
+5. **The FOREIGN pair (red-team finding 6; a decisive held-out clock test).**
+   - **FOREIGN-INSERT:** insert o ∈ {3, 6} versions of a length-matched unrelated test item at the old end of the bank, shifting the bank index by o.
+   - **FOREIGN-REPLACE:** replace o existing old entries by foreign ones, leaving the index unchanged.
+   - Read accuracy at K′ = n + 2 at n 4..8 and n 9..12.
+   - **CLOCK-FOREIGN:** insert − replace ≤ −0.10 (an index-keyed clock).
+   - For future stall-trained cells, PF ∧ FOREIGN replaces STALL-SHIFT. For the §211 cells, which have no stall training, 211-13's STALL-SHIFT stands.
+6. **REDTEAM2's VB-2 blockers** (the logged answer CE becomes self-referential under R1-C; VB-2 narrows the constraint) belong to the bottleneck draft and are fixed there. They do not affect §211.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
