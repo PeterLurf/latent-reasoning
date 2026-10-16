@@ -17147,6 +17147,29 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
 * **Scorer disclosure.** After N2's output was read, theory/score_s211.py gained one robustness guard: a *partial* eval_vb.json (parts still running, as for N1 / N3 now) reads "pending" instead of raising KeyError. No reading or threshold changed, and the 11 fixtures re-run identically.
 * N1 and N3 are pending their vswap / stall parts.
 
+**§211 N3 result (2026-10-16 08:03 EDT; s211_vb_pamct_s1, b306, RTX 3090, seed 1, 48k (log complete); eval_vb.json local fp32 at eval_bs 32 on the 3070; theory/score_s211.py; realised $ pending invoice). N3 (N2 + MCT teacher forcing) reads COUNT-KEYED and is not VB-C1. Every C1 part passes; the clock test fails.**
+* **Parts that pass:**
+  * DEEP 0.9998.
+  * PROBE-GAIN 0.876: PROBE(0) / (1) at 0.115 / 0.124; PROBE(12) 1.000; ONESHOT does not fire.
+  * SERIAL-ONSET: median onset 3 / 4 / 6 / 6 / 8 / 8 at n 3..8; slope on height 1.16; gap 5.
+  * VALUE-SWAP SERIAL-STEP (class A, 4,182 pairs): (ii) follow 0.951 / own 0.038; follow_ii falls with n, 0.997 → 0.912 at n 4 → 8. (i) 0.652 / 0.331.
+* **Part that fails, NO-CLOCK:** STALL recovery **0.499**.
+  * Stalled at K′ = n + 1, n 4..8: 0.627 / 0.416 / 0.522 / 0.430 / 0.500, against intact K′ = n at 1.0.
+  * COUNT-KEYED's second branch also fires: DEEP with REACH 8 and DEPTH 0.310 < 0.5.
+* **Limit of the reading:** the §211 STALL alone does not separate a pass-count clock from a copied pass simply breaking the trajectory (STALL-FRAGILE). 211-13's STALL-SHIFT fail-mode split (FROZEN-1 vs other) separates them. It is pre-stated and needs the user's OK to run.
+* **Descriptive:**
+  * (iv) with V_0 masked after t gives follow 0.102 / own 0.091: N3 breaks without V_0 (N2: 0.510 / 0.055).
+  * Class B (ii) 0.988 / 0.002.
+  * acc_tf_n3_8 0.99983 (TF-ONLY does not apply; N3 is DEEP).
+  * CARRY-LIKENESS 0.056.
+  * The registered BANK-ABLATE drops from n 4 (0.937) to 0.291 at n 8: HISTORY-USED, earlier than N2.
+  * K′ 24 is partly unstable: 0.21 / 0.41 at n 1 / 2, 0.80–0.96 at n 3–8.
+  * Entry: answer-CE entry(0.5) 28k (N2 16k), the teacher-forced phase plus 211-12's plateau.
+* **Reading:**
+  * Training the step map from corrected bank entries (MCT) produced a cell that carries state and serialises as N2 does, but whose progress is tied to the pass count or breaks under a copied pass. N2, without MCT, does not.
+  * One seed. The CARRY-NO-STEP question R3 was meant to test did not arise (neither N2 nor N3 shows it).
+* N1's eval is in its last parts.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
