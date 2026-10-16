@@ -17364,6 +17364,34 @@ Egress was about $0.34, so the family total is about $4.1.
 * **The rest of §212 Stage 0 continues as registered** (CONTENT-HALT, PF, the history arms, FOREIGN, REPAIR, the STEP rows, then INJECT).
 * FT's trigger still reads from CONTENT-HALT on N2.
 
+**Note 212-6 (2026-10-16 12:55 EDT; the Stage 0 LONG-STEP split, eval_steppos.json on N1 / N2 / N3, fp32, eval_bs 32; descriptive; plus a PRE-STATED $0 test of the hypothesis it raises).**
+
+**1. The split.** Fresh single step, 2,000 generator items per m; T = token length.
+- **N2 and N3 (PURE-ANNEAL) are length-keyed.**
+  - At an in-support T 27, N2 is 1.00 / 1.00 / 1.00 / 0.99 at m 7–10.
+  - The collapse tracks T at the edge of trained lengths (n ≤ 8 renders at most about 31 tokens). N2 at m 9 goes T29 0.96, T31 0.50, T33 0.06; at m 10, T29 0.82, T31 0.24, T33 0.01. Everything is about 0 by T 33 at every m.
+  - N3 shows a little more count effect at in-range T (T 27, m 10: 0.72).
+- **N1 (CARRY) has NO length cliff.**
+  - By m: 1.000 at m 1–9; then 0.998 / 0.991 / 0.966 / 0.939 / 0.848 / 0.726 / 0.616 at m 10–16. The chain LONG-STEP agrees: m 11 0.985, m 16 0.625.
+  - At fixed m, longer T does not hurt: m 10 is 1.00 at T 27–37; m 16 rises from 0.44 to 0.80 between T 45 and 55.
+  - N1 is count-keyed with graceful decay, and positions up to 55 (against about 31 trained) do not break it.
+- **The offset arm is UNREADABLE in all three cells:** any POS_OFFSET breaks the m 1 control, as in 187-5.
+
+**2. Reading [DERIVED from the contrast; mechanism CONJECTURE].**
+- The shared blocks (prelude 0–5, core 6–9, coda) tolerate positions to 55: N1 shows it.
+- The component N2 / N3 have and N1 lacks is the **PURE-ANNEAL gather**, whose content-free queries W_q·wpe[j] were trained only at j ≲ 31. That is D's cue C-gq. Untrained query positions mis-address the bank, and the pass input collapses.
+- **So the long-input limit of the attention-memory cells is plausibly the gather's absolute-position queries**, not the network's step. The fix would be narrow: relative or structural gather queries.
+- **This also corrects 212-4's reading** "the step itself on long inputs" for N2 / N3 (pending the test below).
+- **N1's own DEPTH limit (0.405) is then not a fresh-step limit.** Its single step is fine at m ≤ 11, so N1's in-trajectory failure lies in the trajectory or history (RS on N1 will say).
+
+**3. Pre-stated $0 test, GATHER-SPLICE** (N2 and N3, the fresh single-step grid (B); run only on Audit's OK).
+- **Arm GS:** for slots at positions j ≥ J0 = 29 (the untrained query range), the pass input is the CARRY value N(V_{t−1}[j]) instead of the gather output. Slots j < 29 keep the trained gather. Everything else is intact.
+- **Control:** T ≤ 27 at m ≤ 8.
+- **GATHER-BOTTLENECK:** GS raises pooled exact at T ∈ {31, 33}, m 8–10, by ≥ 0.30 over intact, while the control changes by ≥ −0.02.
+- **NOT-GATHER:** the change is < 0.10 with the control intact.
+- **UNREADABLE:** the control drops by more than 0.02.
+- **Descriptive:** Experiments' "query position modulo 31" arm.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
