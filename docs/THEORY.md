@@ -280,7 +280,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 190 | RMS × NOPASS: §185 RMS + §187's --aux_nopass; LATE (t 7–8, n 10–12) vs RMS s1 0.648; COSTLY-AUX / COSTLY / TOKEN-FIX (opens s2; claim 2 / 2) / TOKEN-NOT-THE-LIMIT; FLAT and AUX-DONE descriptives | registered | **s1 mixed (LATE 0.878 vs 0.648, DEPTH 0.659 vs 0.587); descriptively size-free early, no token edge, AUX-DONE tracks n to ~10** |
 | 191 | PROSQA-RELABEL: §168 s2 STEP-AUX and TEXT-COT with per-step name relabelling + premise shuffle + option swap (user-approved 2026-10-12); NAME-MEM (test ≥ 0.65) / UNDERFIT / CHANCE (STILL-RISING or FLAT) / mixed; TEXT-COT control ≥ 0.70 | registered | **NAME-MEM (A 0.950; removal K′0/1 at chance; B 0.938). Descriptive: 11–14 0.745 at K′10, ≥ 0.91 at all depths at K′12 (post hoc), degrades K′14/16; p8_ctl 0.640 vs 0.816. GSM8K template lead's trigger fired (needs derivation + user approval)** |
 | 192 | RMS-SEED3: §185 RMS at seed 3 (SEED-1's rule before C2 wording); CONSISTENT (DEEP, depth ≥ 0.537) / LOW-SEED / NOT-DEEP; entry reported | registered | **closed: NOT-DEEP (s3 never entered the basin; clip rate 1.0). RMS seed-robustness refuted at 3 seeds** |
-| 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | registered | **s1 JOINT + LONG-STABLE (K′8/16/24/32 0.999/0.999/0.989/0.934; DEPTH 0.688, best nested); C6 claim pending s2 (Audit's line)** |
+| 193 | RMS × WINDOW: §182 WINDOW + --add_norm rms; §188's rules (JOINT / DEEP-ONLY / STABLE-ONLY / NEITHER; C6 claim = JOINT + LONG-STABLE at 2 / 2) | closed | **C6 CLAIM HOLDS 2 / 2: s1 JOINT + LONG-STABLE (K′8/16/24/32 0.999/0.999/0.989/0.934; DEPTH 0.688); s2 JOINT + LONG-STABLE (0.978/0.978/0.954/0.862; DEPTH 0.647); the gain over WINDOW is seed robustness, not stability** |
 | 194 | §190-S2: descriptive replication of §190's one-seed findings (size-free per-pass curve, AUX-DONE tracking n); REPLICATES = (i) + (ii) + (iii); never a claim | registered | **REPLICATES (2 seeds, descriptive): size-free early steps, AUX-DONE tracks n; s2 under-converged (entry-confounded)** |
 | 195 | (reserved: SELF-DEPTH-ANS, drafted; registers after §194) | — | — |
 | 196 | GROKFAST-S3: RMS s3 (never entered) + Grokfast-EMA (α 0.98, λ 2); exact same-seed control; ACCELERATES (entry ≤ 25k, final < 0.1) / NO-EFFECT / partial | registered | **NO-EFFECT (never entered; final bin 1.394 vs control 1.031; path_indep 0.930 contractive, as 199-A predicted). §197 not registered as drafted (one-seed rescue weak; needs fresh seeds + derivation)** |
@@ -16536,6 +16536,28 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 **Retention:** keep trainable.pt, eval_items.json, eval_latent_texts.json and the final checkpoint until the reading is recorded. Intermediate checkpoints are deleted.
 
 **Cost:** about $8.6 projected; **cap $12**. Realised $ replaces the projection.
+
+**§193 s2 result (2026-10-15 20:25 EDT; s193_rmswin_s2, b291, RTX 3090 / 590.48.01, 48k, 0 non-finite, train_sec 96,556; about 27.5 h of host time, the $/h not logged by the filler (about $7–8 at fleet 3090 rates, an estimate); theory/score_s193.py). s2 reads JOINT + LONG-STABLE, so the C6 CLAIM holds at 2 / 2 (registered: JOINT and LONG-STABLE in both seeds).**
+* **s2 by K′** (pooled n 3–8):
+  - K′8 0.978 → K′16 0.978 (STABLE) → K′24 0.954 (LONG-STABLE; bar 0.928) → K′32 0.862;
+  - min n 3–8 at K′8 is 0.940 (DEEP; bar 0.90); THINK-NECESSARY holds (K′0 / K′1 0.089 / 0.097).
+* **Descriptive:**
+  - DEPTH (n 9–12 at K′ n + 2) 0.647 (s1 0.688).
+  - DWELL ≤ 0.007 at every n.
+  - AUX-DONE is pinned in both seeds, as predicted for the token-present family: median halt 8 at n 8; 89% / 99% capped at n 10 / 12.
+* **Comparators at seed 2:**
+  - RMS s2: K′16 / 24 / 32 = 0.987 / 0.871 / 0.709, DEPTH 0.662.
+  - WINDOW s2: 0.999 / 0.998 / 0.996, DEPTH 0.659.
+* **Entry:**
+  - entry(0.5) 22k vs RMS s2 19k and WINDOW s2 17k: not confounded by the pinned rule (gap ≤ 5k).
+  - entry(0.1) is late: 39k vs 28k / 22k. The slightly lower K′8 (0.978 vs 0.999 in both comparators) fits a later convergence (descriptive).
+* **Reading:**
+  - **The registered C6 claim holds:** RMS × WINDOW is DEEP + THINK-NECESSARY + STABLE + LONG-STABLE at 2 / 2. Per G3's methodology, this is a replication, not a seed rate.
+  - **What the combination adds is seed robustness, not stability beyond WINDOW's:**
+    - At seed 2, WINDOW alone is longer-stable (K′24 0.998 vs 0.954; K′32 0.996 vs 0.862) and as deep.
+    - At seed 1, WINDOW alone never reached < 0.1 (K′8 0.900), while RMS × WINDOW was JOINT.
+    - RMS alone is DEEP but decays by K′24–32 in both seeds.
+  - K′32 (0.934 / 0.862) is outside the claim. Some post-completion decay remains there.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
