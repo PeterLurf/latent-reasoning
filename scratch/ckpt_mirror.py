@@ -52,6 +52,8 @@ def mirror(n, run):
         if os.path.exists(os.path.join(ROOT, "boxes", "runs_fsq", run, "eval.json")) and os.path.isdir(md):
             shutil.rmtree(md); log("RETENTION %s landed + drained -> mirror deleted" % run)
         return "drained"
+    if "QUEUE_DONE" in ssh(h, p, "tail -n 3 /workspace/Latent/logs/queue_gen_b%d.out 2>/dev/null" % n, 60):   # Audit 06:2x 10-16: the drain owns the host's
+        return "queue done (the drain owns the upload)"                     # upload once the queue is done (a 06:01 copy competed with b304's drain)
     rf = "/workspace/Latent/boxes/runs_fsq/%s/ckpt_last.pt" % run
     for attempt in range(3):
         s1 = ssh(h, p, "sha256sum %s 2>/dev/null | cut -c1-64" % rf, 600)
