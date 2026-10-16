@@ -322,7 +322,7 @@ All readings run in local fp32 at the original eval_bs, on the training card's c
 
 ---
 
-## Addendum 1 (2026-10-15 23:1x EDT; Audit's review of fc852c5e, before any registration)
+## Addendum 1 (2026-10-15 23:03 EDT; Audit's review of fc852c5e, before any registration)
 
 1. **Recompute from V_0 is not closed by construction.** V_0, the prelude-encoded problem, stays in the bank, readable by every core layer at every pass (constant β⁰). Unlike §208's question-once, re-reading the input is architecturally possible. What makes recomputation insufficient is only the bounded core.
    - **Depth lemma coverage.** L1-c′ and Thm 4a already include reads of V_0 (L(0) = 0).
