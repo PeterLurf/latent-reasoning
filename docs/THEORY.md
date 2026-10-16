@@ -17809,6 +17809,26 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 
 **Stage 0 is complete** (S0-1 212-18, S0-2 212-17 / 213-3, S0-3 212-19). §213's remaining pre-launch items are G-D0..G-D7, Audit's diff review, the off-host mirror and the $4.5 guard.
 
+**Note 213-4 (2026-10-16 14:57 EDT; §213's triggered follow-ups in one place; nothing here is registered or funded; each needs its own derivation and the user's OK).**
+
+| lever | trigger (a §213 cell reads …) | source |
+|---|---|---|
+| **FIXED-POINT DEVIATION** (new; Audit's research pass) | LENGTH-FREE ∧ (RS HISTORY-KEYED, D ≥ 0.20, or ¬DEPTH-GENERAL) | Kim et al., *Looped Transformers with Source-Centered State Evolution*, arXiv 2607.27656 (Literature to verify: ID, setup, whether any depth / length results exist) |
+| LONG-K training | LENGTH-FREE ∧ HISTORY-IGNORED ∧ ¬DEPTH-GENERAL | D3_v1 §2.4 |
+| REL-GATHER | LENGTH-FREE ∧ HISTORY-IGNORED, and cross-slot gather use wanted | D3_v1 §2.4 |
+| CORE-BAND / EXIST-SCALE | LENGTH-FREE ∧ ¬STEP-GENERAL with errors at the handle (ε re-derived from the cell's own error) | D3_v1 §2.4 |
+| position randomisation in training | ¬LENGTH-FREE with an absolute-position locus | D3_v1 §2.4 |
+| structural / relative positions in the core | D3-T ¬NO-KNEE (the premise falsifier) | D3_v1 §7 |
+
+**FIXED-POINT DEVIATION, as relayed.** The looped core computes a deviation from a learned anchor (V_t = V_{t−1} + [f(V_{t−1}) − f(anchor)], or the paper's form), with a zero-deviation mask, so the anchor is an exact one-step fixed point. It is an architectural fixed point, not a rule overwrite like COPY-ANCHOR.
+
+**Precondition questions** for its derivation, if triggered (a transplant check, before any design):
+- **(i) What sets zero deviation per slot?** The fixed point is exact only at the anchor state. A copy slot whose state differs from the anchor is not fixed unless something zeroes its deviation. If that is a decoded mask, it is COPY-ANCHOR again (212-18: N1's carried copy code is far from V_0, and REFRESH collapses it from n 2). It must therefore be learned or structural.
+- **(ii) Function preservation at step 0.** f(V) − f(a) ≠ f(V) for pretrained blocks, so the anchor term must start at exactly zero (a zero-initialised gate) for the K = 1 GPT-2 identity (G1) to hold.
+- **(iii) The paper's tasks are LM** (WikiText, LAMBADA). Its mechanism's precondition, a state that should stay put under iteration, must be checked against ours, where copy slots stay put but value slots must change.
+
+**Pre-stated prediction for a triggered cell:** RS |D| ≤ 0.05 at n 9–12 (SELF-SIMILAR) where the parent reads > 0.20 (Audit).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
