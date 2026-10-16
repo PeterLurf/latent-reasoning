@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # fill_generic_px = fill_generic + DPH_MAX (the offer price cap, default 0.30; 2026-10-14: §200 B must land at <= $0.26/h for the $7 cap).
+# GPU_NAME (default RTX_3090; 2026-10-15 §209 step 2: A100_SXM4) selects the card class in the offer search.
 # Generic one-at-a-time Vast filler (2026-10-06): deploy the given gen-b<n> queues in order as fleet slots free - live instances <= 15
 # (cap 16) and the summed $/h + $0.25 < $4. Each n is retried until its deploy STARTED. Waits first for fill135 to finish (no races).
 # Offers: RTX 3090, excluded / live IPs skipped, 595.71 first.   EXTRA_120=... nohup bash scratch/fill_generic.sh <tag> <n> [<n> ...] &
@@ -13,7 +14,7 @@ for n in "$@"; do
     read -r cnt burn <<<"$(bash $V show instances --raw 2>/dev/null | python -c "import json,sys;r=json.load(sys.stdin);print(len(r), round(sum((o.get('dph_total') or 0) for o in r), 3))" 2>/dev/null)"
     if [ -n "$cnt" ] && [ "$cnt" -le 15 ] && python -c "import sys;sys.exit(0 if $burn + 0.25 < 4.0 else 1)"; then
       bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
-      o=$(bash $V search offers 'gpu_name=RTX_3090 num_gpus=1 reliability>0.97 dph<='"${DPH_MAX:-0.30}"' disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4' -o dph --raw --limit 150 2>/dev/null | python -c "
+      o=$(bash $V search offers 'gpu_name='"${GPU_NAME:-RTX_3090}"' num_gpus=1 reliability>0.97 dph<='"${DPH_MAX:-0.30}"' disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4' -o dph --raw --limit 150 2>/dev/null | python -c "
 import json,sys
 ex={l.split()[0] for l in open('scratch/vast_exclude_ips.txt') if l.strip() and not l.startswith('#')}   # first token: lines may carry a trailing comment
 used={l.split()[0] for l in open('scratch/live_hosts.txt') if l.strip()}
