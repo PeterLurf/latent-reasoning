@@ -1,0 +1,2 @@
+[W1016 13:44:45.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1409286144 bytes (free: 591396864, total: 8585216000).
+D1 s185_rms_s3 traj {'1': 0.9995, '2': 0.995, '3': 0.8616, '4': 0.5347, '5': 0.308} reroot {'1': 0.9992, '2': 1.0, '3': 0.9994, '4': 0.9992, '5': 1.0} 23
