@@ -1,4 +1,0 @@
-# THEORY §209 step 2 CODI-20EP (user-approved via Audit 20:15, cap $12; AWAITING Theory's registration): gsm_codi_4ep_s1's recipe (boxes/codi_port.py, reviewed 1bcaeee5) for 20.0 epochs (59,822 steps at effective bs 128), A100 SXM4 (GPU_NAME=A100_SXM4 filler, <= $0.70/h, never 580.x). Per-epoch valid (--valid_every 2991), checkpoints every 2,000 steps (resume fixed in G4), auto_micro with --mem_budget 34 (40 / 80 GB cards; effective bs stays 128 = micro x accumulation, recorded). G-TIME = HOSTPROBE + the first 200 steps under the $12 guard. LAUNCH ONLY after registration + Audit's delta review
-# HOSTPROBE
-# P=1
-boxes/runs_fsq/gsm_codi_20ep_s1 boxes.codi_port --epochs 20.0 --eff_bs 128 --micro 64 --auto_micro --mem_budget 34 --seed 1 --gamma 2.0 --valid_every 2991 --ckpt_every 2000

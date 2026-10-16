@@ -1,0 +1,5 @@
+# THEORY §210 CODI-BUDGET-20 (registered de919de5, scorer 10144879; user-approved 20:15 via Audit, cap $12): gsm_codi_4ep_s1's args (boxes/codi_port.py) with --epochs 20 (59,822 steps at effective bs 128 = micro x accumulation, recorded), seed 1, gamma 2, valid at the port default (~0.5 epoch, lr logged beside it), ckpt every 2,000 (resume under the same name). A100 SXM4 via scratch/s209b_fill.sh (<= $0.60/h, never 580.x, HOSTPROBE admission <= $11.5). Line 1 = G1' (released zen-E/CODI-gpt2 re-scored on this host; must be within 0.010 of 0.425, else the filler stops the host and reports). G-TIME at step 200 <= $11.5 (guard s210gt, stop), guard $12 after. Data / tokenizer / CODI test json / released ckpt via .extra
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/gsm_codi_20ep_s1_g1 boxes.codi_g1
+boxes/runs_fsq/gsm_codi_20ep_s1 boxes.codi_port --epochs 20.0 --eff_bs 128 --micro 64 --auto_micro --mem_budget 34 --seed 1 --gamma 2.0 --ckpt_every 2000
