@@ -17976,6 +17976,13 @@ theory/score_s213's REFERENCE block adds hold_read().
 - **The supported form is a completion-conditioned hold:** freeze the state after the answer is reached. It speaks to C6 stability and C5 halting, not to the in-computation drift that limits DEPTH. If a §213 cell reads LENGTH-FREE but K′ 24-unstable, that is the lead, with its own derivation.
 - **N1's in-computation deficit** (RS +0.47) is **not** removed by freezing copy slots. Its cause stays open (212-18).
 
+**Note 213-17 (2026-10-16 16:56 EDT; the completion-conditioned hold of 213-16 needs no new run: its premise is already measured by §212 Stage 0's CONTENT-HALT, s211_vb_carry_s1/eval_vbhalt.json).**
+- Holding the whole state from the first pass whose own decode is terminal gives, up to the coda's duplicated-version reads, the answer read at that halt. That is CONTENT-HALT's acc_halt.
+- **N1 in range: acc_halt 1.000 at every n 1..8, with never-halting 0.000,** against acc_k24 0.40–0.73. So a hold at terminal decode is K′ 24-stable in range. **The premise is met.**
+- **Beyond range the halt is the constraint.** At n 9, acc_halt is 0.341 (exact 0.34), against acc_n2 0.853 at K′ 11. The content halt fires on wrong terminal states. At n 10–12, acc_halt is 0.000–0.004, while never-halting is still only 0.003–0.115.
+- N2 shows the same shape: acc_halt 0.93–1.00 at n 1..8 and 0.606 at n 9 (acc_n2 0.948).
+- **So the C6 lead "freeze after completion" reduces to C5's beyond-range halting.** That is read by §212's halt_read (HALT-EXACT, DEPTH-TIMING) and, for §213's cells, by their vbhalt readings if run after landing. No local row is needed now.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
