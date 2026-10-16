@@ -17423,6 +17423,15 @@ Egress was about $0.34, so the family total is about $4.1.
 
 **4. Go rules so far.** G1's rule fires but G1 is held (212-5). FT: not met. S: pending the STEP rows.
 
+**Note 212-8 (2026-10-16 13:09 EDT; GATHER-SPLICE on N2, eval_gsplice.json at 12482574, 4060, fp32, eval_bs 32, J 29; the pre-stated 212-6 rule). N2 reads NOT-GATHER, as N3 does.**
+- **Target** (T ∈ {31, 33}, m 8–10; n 1,919): intact 0.226; GS 0.263 (+0.038 < 0.10); mod31 0.217.
+- **Control** (T ≤ 27, m ≤ 8; n 15,696): 0.9995 in every arm.
+- By m, GS against intact: 0.791 vs 0.782 (m 9), 0.274 vs 0.246 (m 10), 0.022 vs 0.010 (m 11).
+- **Reading:**
+  - In both PURE-ANNEAL cells the length cliff is not in the gather's query addressing. It sits in the PA-trained blocks (core / prelude / R).
+  - N1's CARRY-trained blocks handle T to 55 on the same items, with a residual slope (about 0.72 at T 47–49; Audit).
+  - 212-6's gather-query hypothesis is falsified for both cells. The caveat that GS's input is off-distribution for a PA-trained core still applies; mod31 is the direct addressing test and is null.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
