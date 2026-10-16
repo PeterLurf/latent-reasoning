@@ -299,7 +299,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
-| 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | Stage 0 running |
+| 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 drafting** |
 
 ## Live sections
 
@@ -17354,6 +17354,15 @@ Egress was about $0.34, so the family total is about $4.1.
 **Recommendation to the user, via Audit:** do NOT launch G1 as registered, although its go rule fires. Draft **D3** instead: locality / structural position (D §2 M6, e.g. Ito 2608.31067's bracket-depth positions, or banded heads), aimed at the step on long inputs.
 - The choice is the user's. G1 stays registered and unlaunched until they decide.
 - A pending descriptive split (Experiments: LONG-STEP by token length T as well as m) will show whether the cliff tracks operator count or slot position, which picks D3's form.
+
+**Note 212-5 (2026-10-16 12:46 EDT; the user's decision on note 212-4's options, typed in Audit's session at 12:45 EDT and relayed verbatim: "B").**
+* **G1 (s212_vb2g_s1) stays registered and UNLAUNCHED.** No training code is built and nothing is spent.
+* G1's go rule fired literally (212-4), but G1 is held by the user's choice. It can be revived only by a new user decision.
+* **Theory drafts D3** for the long-input step: locality / structural position, aimed at the HEAD-LIMITED cliff (LONG-STEP m 9 0.85, m 10 0.27, m ≥ 11 about 0 in N2).
+  * Its form follows the pending LONG-STEP split by token length T.
+  * The draft is $0. Any spend needs the user's approval via Audit.
+* **The rest of §212 Stage 0 continues as registered** (CONTENT-HALT, PF, the history arms, FOREIGN, REPAIR, the STEP rows, then INJECT).
+* FT's trigger still reads from CONTENT-HALT on N2.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
