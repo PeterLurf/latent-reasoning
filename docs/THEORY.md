@@ -17837,6 +17837,11 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
   - It is best at every depth, but **it still degrades with loops**. Expect reduced drift, not removed drift. The 213-4 prediction (SELF-SIMILAR, |D| ≤ 0.05) is therefore a strong test.
 - **Transfer is a new design, not a port** (Literature). It is still held behind §213's trigger.
 
+**Note 213-6 (2026-10-16 15:01 EDT; amends 213-4 / 213-5 after Audit; the lead is still held and unregistered).**
+- **The triggered prediction is revised to the realistic claim:** RS |D| at n 9–12 is ≤ ½ of the parent's |D|. SCSE reduces the cost of drift but does not remove drift (213-5). SELF-SIMILAR (|D| ≤ 0.05) is reported as a stretch.
+- **Where the transfer applies:** in VERSION-BANK the carried state is the per-slot residual V_t (the output of blocks 6–9, carried by CARRY / SLVA). That is closer to SCSE's residual setting than a DeltaMem-S framing suggests.
+- **Precondition (i) remains the obstacle:** what zeroes a non-anchor copy slot's deviation, without a decoded mask.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
