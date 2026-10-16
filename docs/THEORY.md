@@ -298,6 +298,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
+| 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | registered | pending (Stage 0 gates) |
 
 ## Live sections
 
@@ -16586,6 +16587,144 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - **Caveat, stated with the result:** the clean-ccc conditioning makes MET reachable on a failed seed's shallow solvable subset. MET here means "carries wherever it can compute", not "computes deep".
   - What separates converged from failed seeds therefore lies in the per-pass step computation on deep items, not in whether the carried state is used. This fits the per-pass recode / teacher-forcing levers in the deep-research draft (2026-10-15). That link is a conjecture.
 * s1 / s2 (landing about 01:40 / 02:50) still read HARMFUL and the per-seed labels. Note: theory/score_s205.py prints "ARM pending" until every seed's MET is known, although the registered rule already fixes FAILED.
+
+## 211. VERSION-BANK + READY-RECODE: supervised serial latent computation in a pass-global attention memory (USER APPROVED 2026-10-15 23:06 EDT, "approve", typed in Audit's session and relayed verbatim, the time read from Audit's clock; Stage 0 + Stage 1 only; family cap $9; pre-registered 2026-10-15 23:22 EDT, before any §211 code output or run)
+
+**Registered text.**
+* docs/THEORY_VERSIONBANK_DRAFT_2026-10-15.md **at 7438c5d4** (draft + Addendum 1) is the registered text for every definition, rule and label. That file is now frozen; changes go here as dated notes.
+* **Origin.** The user's deep-research request (21:58 EDT) and the pass-global memory constraint (22:07 EDT). Opus subagents: three inventors, a prior-art sweep with full-text addenda, a proof pass and a red team, all in docs/research_passuse_2026-10-15/.
+* **Prior art:** docs/LIT_PASSUSE_PRIORART_2026-10-15.md. The pre-registration novelty check against Feedback Transformer / RecurTrace / InfiLoop / Think-at-Hard is in note 211-2.
+* **Scorer:** theory/score_s211.py (3d0d72af), fixture-checked on 11 panels: VB-C1, ONESHOT-PRECOMPUTE, CARRY-NO-STEP, COUNT-KEYED, NO-ENTRY, dead at 30k, VALUE-SWAP thin, PROBE-INVALID, RECOMPUTE-V0, TF-ONLY (N3), pending.
+
+**Claim wording (Audit).** If VB-C1 holds, the claim is **"supervised serial latent computation in a pass-global attention memory"**. It is not unsupervised discovery of iteration: R2 supervises the intermediate states.
+
+**Cells** (Stage 1; seed 1; RTX 3090; 48k × bs 64; n 1..8 train; the §170 test set; one GPU class; off-host checkpoint mirror for all three, a user rule):
+* **N2 s211_vb_pa_s1 (main):** PURE-ANNEAL + R1 + reweighted R2 + R4.
+* **N1 s211_vb_carry_s1:** CARRY control.
+* **N3 s211_vb_pamct_s1:** N2 + MCT teacher forcing (R3).
+
+**Decisive (per cell, comparator-free):** VB-C1 = DEEP ∧ PROBE-GAIN ∧ SERIAL-ONSET ∧ SERIAL-STEP (VALUE-SWAP) ∧ NO-CLOCK (STALL).
+
+**Labels:** ONESHOT-PRECOMPUTE (falsifies the premise), NO-ENTRY, LOSES-ONE-PASS, CARRY-NO-STEP, COUNT-KEYED, RECOMPUTE-V0, TF-ONLY (N3), PROBE-INVALID, VALUE-SWAP UNREADABLE. Definitions are in draft §7 and Addendum 1. Operational field paths are in note 211-1.
+
+**OC block (rule a; one seed per cell; draft §8):**
+* P(VB-C1 | no serial use) ≤ 0.05:
+  * PROBE-GAIN ≈ 0 under pass-1 precompute;
+  * SERIAL-STEP ≈ 0.05 under recompute-from-V_0, from the failed-class swap shares of 0.003–0.18.
+* P(VB-C1 | real serial use) ≈ 0.6–0.7.
+* P(the cell learns serial use) ≈ 0.45–0.6, so per-cell P(VB-C1) ≈ 0.3–0.4.
+* A positive is strong evidence; a null is weak. Rate claims need ≥ 3 seeds and the user's OK.
+
+**Censoring (rule b):**
+* A dead run (log < 48k) or NO-ENTRY (no answer-CE 1k-bin stays ≤ 0.5 to the end) fails every reading.
+* A never-reached onset is a coverage failure.
+* PROBE-INVALID (PROBE(12) < ACC − 0.05) fails every PROBE reading.
+* VALUE-SWAP with < 100 clean-ccc pairs is UNREADABLE, i.e. not met.
+* Event-only values are reported beside each reading.
+
+**Gates (Stage 0, $0, local; all before any cloud launch; Audit's diff review):**
+* G1, the fp64 masked-bank identity (≤ 1e-9), plus PURE-ANNEAL at c = 1e4 bitwise against CARRY;
+* G1-cal, the per-head β / β⁰ calibration (99th-percentile mass ≤ 0.02) and the ratio test;
+* G1b, a 2k-step init-drift smoke;
+* path-specific gradflow (∂L/∂bank K/V ≠ 0; ∂L_ans/∂V_1 ≠ 0 with the carry / gather sg);
+* the E_t re-render on 100k items;
+* MCT W1 / W3 (N3);
+* mem_check at n 16 / K′ 24 with a preallocated bank;
+* masked-K = unmasked equality in fp64;
+* a plain-path smoke;
+* G-TIME on a forced final-stage batch, projecting the family against the $9 cap. Per-cell guard $3. Nothing is dropped silently: a projection above the cap goes to Audit and the user.
+
+**Cost.** Projection about $5 (range $3–8.5); **cap $9**. Realised $ replaces the projection.
+
+**Not approved:** Stage 2 (GSM8K) is a separate decision after VB-C1. Seed 2 likewise.
+
+**Note 211-1 (2026-10-15 23:22 EDT; before any §211 output; implementation pins answering Experiments' eight open choices, plus the eval_vb.json contract that score_s211 reads; no rule change).**
+
+**Pins.**
+* **(1) Gather.** 12 heads × 64, each gathering its own 64-d slice of N(V_s[i]).
+  * W_q / W_k come from block 6's c_attn q / k. The query is W_q·wpe[j] (content-free).
+  * γ_q is one per head, **initialised to forward-decay ALiBi slopes m_h = 2^{−8(h+1)/12} on all 12 heads** (bias −m_h·age; note 211-2: InfiLoop's forward decay 74.0 vs uniform 38.4).
+  * The source scale is the source slot's: N(V_s[i]) = g ⊙ V_s[i]·rms(V_0[i])/rms(V_s[i]).
+  * Gate: at c = 1e4 the gather equals CARRY's N(V_{t−1}[j]) bitwise.
+* **(2) ALiBi.** Heads 0–5 have m_h = 2^{−8(h+1)/6} and bias −m_h·age; heads 6–11 start at 0; the same in every core layer. **V_0 has no age term** (constant β⁰).
+* **(3) β calibration.**
+  * Calibration rollout: one batch of 64 items, n ≤ 8, K = 12, run with the bank masked (exact CARRY).
+  * Then per-head bisection: β⁰ first, then β with β⁰ fixed, each to a 99th-percentile bank mass ≤ 0.02.
+  * The ratio test Δz(β)/Δz(β − 5) ∈ [0.5, 2]·e⁵ is logged.
+* **(4) The coda reads** V_1..V_{t−1} plus the causal V_t, **with V_0 excluded from its bank** (note 211-2), so the coda is question-free apart from computed versions. K′ = 0 is the coda on V_0 as its causal input, and PROBE coda copies have the same access; with its own β^𝒟 / β⁰^𝒟 calibrated the same way and γ^𝒟 ALiBi like the core.
+* **(5) N(·)** uses the per-slot rms of the same item's V_0. g is a 768-vector, init 1.
+* **(6) E_t.**
+  * VOID covers the consumed span plus any brackets removed at that step; the value sits on the span's last slot.
+  * The reference implementation is the red-team's slot_targets.py (0 failures on 20k).
+  * Gate: re-render on 100k items.
+* **(7) MCT.** μ = 1.0 nats over the runner-up; one pseudo-inverse step, iterated to ≤ 3 if W1 fails. The fraction of slots needing more than one step is logged, along with ‖Δ‖/‖V‖.
+
+**eval_vb.json contract** (local fp32 at the original eval_bs, card recorded; §170 test set, 1,000 items per n, n 1..16):
+* **acc_n2** {n: acc at K′ = n + 2}; **acc_k** {K′: {n: acc}}, K′ 0..16 and 24.
+* **probe** {t: {acc_by_n, items: [0/1 per test item], train_ce_final}}, t ∈ {0, 1, 2, 3, 4, 6, 8, 12}.
+  * Protocol: freeze the model and run t passes. A fresh 2-block coda copy (initialised from the trained coda and its bank-read parameters; LM head tied and frozen) reads V_t plus the bank.
+  * Training: 20k fresh n 3..8 train items (fixed rng, test-excluded), 2k steps, bs 64, AdamW 1e-4, answer CE.
+  * t = 0 means the coda reads V_0.
+* **test_meta** {n, height}, in the same item order as `items`. Height is the operator-tree height (research/heights.py).
+* **vswap** {n_pairs, follow_i, own_i, follow_ii, own_ii, own_iv, follow_iii_bank, follow_iii_carry (N1 only), by_n}.
+  * Recipients: test items n 4..8, with t uniform on {2..n − 1}.
+  * Donor: the recipient with the two operands of the handle reduced at pass t (cot_steps order) resampled, so that the value changes and y_donor ≠ y.
+  * Only clean-ccc pairs are kept (recipient and donor each correct at K′ = n + 2).
+  * Splice into the recipient's bank: (i) slot b only; (ii) the whole V_t. Then run to K′ = n + 2.
+  * (iii) N1 only: the bank entry swapped against the carry, and the reverse.
+  * (iv) as (ii), with V_0 masked for the passes after t and for the coda.
+  * follow = the answer is y_donor; own = the answer is y.
+* **stall** {recovery, by_n}.
+  * Procedure: at t = ⌈n/2⌉, append a copy of V_{t−1} in place of pass t's write.
+  * recovery = pooled acc(n 4..8, K′ = n + 1, stalled) / pooled acc(n 4..8, K′ = n, intact).
+* **stepcap** {copy_slot_acc, value_stepcap_n6_8, stationary_slope, by_t_a}.
+  * STEP-CAP(t, a) is R's accuracy at the newly reduced slot of V_t, on items where R(V_{t−1}) decodes E_{t−1} exactly.
+  * value_stepcap_n6_8 is pooled over n 6..8, t ≤ n.
+  * copy_slot_acc covers the unchanged slots at n 3..8, t ≤ n.
+  * stationary_slope is the mean, over alive counts a with ≥ 3 t values, of the OLS slope on t.
+* **carry_likeness** (N2 / N3): the mean final gather mass on (t − 1, j), passes 2..n, n 3..8.
+* **acc_tf_n3_8** (N3): pooled n 3..8 at K′ = n + 2 with MCT applied to every bank entry at eval.
+* **log.jsonl** has "step", "loss", "answer_ce" (the readiness-window answer CE) and "rec_ce"; N3 also has "tf_frac".
+
+**Engineering pins (Experiments' follow-up, accepted before output):**
+* **(a)** The gather's W_q / W_k / LN are its own parameters, initialised from block 6's c_attn q/k (weight and bias) and ln_1. The query is wpe[j]·W_q + b_q, with no LN on wpe.
+* **(b)** The bank is stored as per-version K/V tensors (computed once, with gradient) concatenated per pass. Autograd cannot use an in-place preallocated buffer. Memory is O(K²), about 2 GB at bs 64; --ckpt_passes is the fallback if mem_check needs it. Padded slots are masked at −inf. This replaces the draft's "preallocated" wording; it is memory-only.
+* **(c)** R1 applies at t ∈ [n_i, K_i]. R2 applies at t = 1..K_i as ½·mean over changed slots + ½·mean over unchanged slots, with value-class targets weighted 2; a HOLD step uses the unchanged mean alone. The mean is taken over t, then over items.
+* **(d)** R4 advances on two consecutive 1k bins of mean answer_ce < 0.3, with **at most 8k steps per stage**, inventor A's value. So n 8 starts by 16k at the latest. The final stage and the LR cosine run to 48k.
+* **(e)** MCT: p_TF is drawn per (item, version s ≥ 1). R2 and the answer loss at s use the computed V_s with gradient; the bank and carry receive sg(V_s + Δ_s).
+  * Δ in LN coordinates: d_y = max(0, max_{c≠y} l_c + μ − l_y) and δ = d·pinv(W)ᵀ, mapped back through the LN scale and mean, ≤ 3 iterations.
+  * The coda's causal V_t is always the computed one. acc_tf corrects bank entries only.
+* **(f)** The β / β⁰ calibration covers all six bank-reading layers (core 6–9 and coda 10–11). Δz for the ratio test is the mean L2 change in the coda's full-vocabulary answer logits at K = 12, with the bank on vs masked.
+* **E_t gate passed:** 0 diffs against slot_targets on 100k items (951,376 versions, n 1–16; d8bbdf3f, scratch/gate_s211/et.json).
+
+**Note 211-2 (2026-10-15 23:22 EDT; before any §211 output; the pre-registration novelty check, an Opus subagent standing in for the offline Literature session; full text of Feedback Transformer 2002.09402, RecurTrace 2609.03379, InfiLoop 2610.11570, Think-at-Hard 2511.08577, TaH2 2609.35748, plus about 16 more; IDs checked; report docs/research_passuse_2026-10-15/NOVELTY_4.md).**
+
+**Verdict: novel as a combination, not per component.**
+1. **The output-version bank read by every core layer:** PARTIALLY ANTICIPATED by TaH / TaH2.
+   - TaH: every layer of a pretrained Qwen3 attends to all earlier iterations at all causal positions. It stores each layer's own K/V and loops the full model.
+   - The draft's "same-layer KV over depths" undersells TaH. This note restates it.
+   - What is left: a bank of **bounded-core outputs** projected by each core layer's own K/V weights, with no window. Under CARRY, layer 6's bank K/V equal TaH-style K/V, so the difference lies in layers 7–9.
+2. **PURE-ANNEAL:** PARTIALLY ANTICIPATED by InfiLoop (softmax over earlier iterations as the next input, with the same norm bound, which is now cited rather than claimed), AttnRes 2603.15031 and MeSH 2510.07739. New: cross-position addressing, position-only queries, and the anneal from exact CARRY.
+3. **The question-free coda:** ANTICIPATED (Huginn's and McLeish's 2-layer codas).
+   - The check also found that the draft's coda read V_0 through the bank. **That is now fixed: V_0 is excluded from the coda's bank** (211-1 pin 4).
+4. **The readiness window:** ANTICIPATED in substance (Fan 2409.15647; Yang 2311.12424; Altabaa 2510.14095).
+5. **The linear per-slot recode:** PARTIALLY ANTICIPATED (Altabaa's shared linear readout per iteration, from scratch; Shapiro 2608.11233's per-loop targets in a retrofit). New: one serial reduction per pass, rendered over the original slots, plus the reweighting.
+6. **MCT:** PARTIALLY ANTICIPATED. Its algebra is ReFT's interchange edit (2404.03592). Its use as scheduled teacher forcing of a looped LM's own latent was not found.
+7. **The readings:** PROBE and VALUE-SWAP are PARTIALLY ANTICIPATED (frozen per-loop readers; interchange interventions). **No STALL test was found.**
+
+**Changes adopted before registration:**
+- **Gather γ_q starts as a forward (recency) decay** on all heads (211-1 pin 1). InfiLoop reports forward decay 74.0, uniform 38.4 and reverse 2.0.
+- **V_0 is excluded from the coda's bank** (pin 4).
+
+**Risks recorded from the literature, with the reading that catches each [EMPIRICS]:**
+| risk | source | reading that catches it |
+|---|---|---|
+| Heads that prefer first-iteration states | TaH | RECOMPUTE-V0 / VALUE-SWAP (iv) |
+| Pass 1 does all the work | MeSH's plain loop (its fix uses a pass index, which VB rules out) | PROBE(1) / ONESHOT |
+| A learned progress clock under step-matched loops | 2609.33144 | STALL stays decisive |
+| Removing QK-norm was RecurTrace's largest single ablation | RecurTrace | Not added here; the β calibration and ratio test bound the initial bank mass. Reported descriptively |
+| The readout sees only part of the state (Sharma & Vu 2606.24898) | 2606.24898 | R has its own LN; G1b reports V_t drift on the coda path |
+| Teacher-fed hints hurt generalisation | 2209.11142 | TF-ONLY stays a label for N3 |
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
