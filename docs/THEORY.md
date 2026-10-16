@@ -16824,6 +16824,22 @@ pamct's n 4–8 with MCT applied at eval: 8.59 / 10.30.
 
 If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a candidate cause, descriptively, and is not tested here.
 
+**Note 211-9 (2026-10-16 01:03 EDT; in-training watch item on N2, b304, from host log.jsonl; descriptive only, no reading, no design change; Audit's pre-stated watch criterion (a bump > 0.3 nats lasting > 1k steps near the end of the anneal) fired).**
+
+**Two overlapping bumps:**
+- The curriculum advance to n ≤ 5 at 6.0k: answer_ce 0.10 → 0.76 at 6.2k, back to 0.32 by 6.8k.
+- The anneal end: answer_ce rose from about 7.0k, as off-self mass passed 0.6, to 1.17 at c = 0 (8.0k). It is recovering: 0.96 / 0.82 / 0.71 at 8.2k / 8.4k / 8.6k.
+- During the last c-segment, gather_gn is 4–6.5 and gn_preclip 18–22 against clip 1.0.
+- The anneal end overlaps the n ≤ 5 stage, so the two are not fully separable. N1 (CARRY, no anneal) gives the stage-advance-only comparison.
+
+**Gather end state at 8.6k:** off-self about 0.85, i.e. CARRY-LIKENESS about 0.15 so far. That is against 211-5's expected recovery; it is read at the final model.
+
+**Decision.**
+- The run continues; no stop rule applies.
+- The registered readings use the final 48k model.
+- NO-ENTRY is defined on the last bins, so a mid-run bump does not affect it.
+- **Expectation, stated now [CONJECTURE]:** answer_ce back below 0.3 within about 4k steps of c = 0, i.e. by 12k.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
