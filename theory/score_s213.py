@@ -59,10 +59,12 @@ def hist(h, ev):
     gate = all(h["intact"]["acc_n2"][str(n)] == ev["acc_n2"][str(n)] for n in (6, 7, 8))
     I = mean("intact"); readable = bool(gate and I >= 0.90 - EPS)
     drop = {a: (I - mean(a)) if a in h else None for a in ("bank_ablate_slva", "self_ablate", "other_ablate")}
-    used = bool(readable and drop["bank_ablate_slva"] is not None and drop["bank_ablate_slva"] >= 0.10 - EPS)
+    # note 213-11 (Audit): an omitted arm reads None (unreadable), never 0 / not-met-by-default
+    used = None if drop["bank_ablate_slva"] is None else bool(readable and drop["bank_ablate_slva"] >= 0.10 - EPS)
     sw = h.get("swap") or {}
-    rnn = bool(sw.get("n_pairs", 0) >= 100 and sw.get("newest_follow", 0) >= 0.95 - EPS and sw.get("old_follow", 1) <= 0.02 + EPS and not used)
-    return {"intact_n6_8": I, "gate_intact_equals_eval_vb": gate, "readable": readable, "drop": drop, "HISTORY_USED": used, "swap": sw,
+    sw_ok = sw.get("n_pairs", 0) >= 100 and sw.get("newest_follow") is not None and sw.get("old_follow") is not None
+    rnn = None if (not sw_ok or used is None) else bool(sw["newest_follow"] >= 0.95 - EPS and sw["old_follow"] <= 0.02 + EPS and not used)
+    return {"intact_n6_8": I, "gate_intact_equals_eval_vb": gate, "readable": readable, "drop": drop, "HISTORY_USED": used, "swap": sw, "omitted": h.get("omitted"),
             "OLD_SWAP_follow": sw.get("old_follow"), "RNN_IN_FUNCTION": rnn}
 
 
@@ -102,7 +104,7 @@ def cell(tag, d):
     dg = a["DEPTH_9_12"] >= 0.80 - EPS
     ss = S212.rs_read(rs, range(9, 13), (2, 4, 6, 8)); selfsim = bool(ss and ss["readable"] and abs(ss["D"]) <= 0.05 + EPS)
     hr = hist(h, ev)
-    c2 = bool(lfree and dg and a["VB_C1"]); c2a = bool(c2 and hr["HISTORY_USED"])
+    c2 = bool(lfree and dg and a["VB_C1"]); c2a = bool(c2 and hr["HISTORY_USED"] is True)
     if dead or noent:
         c2 = c2a = lfree = dg = False
     o.update(dead=dead, no_entry=noent, entry_answer_ce_05=a["entry_answer_ce_05"], VB_C1=a["VB_C1"], NO_KNEE=nk, LFK=lf, LENGTH_FREE=lfree, COUNT=count,
@@ -138,7 +140,8 @@ def main():
     for k, d in S212.STAGE0.items():
         h, ev = jl(d, "eval_d3hist.json"), jl(d, "eval_vb.json")
         ref[k] = hist(h, ev) if (h and ev) else None
-    exp = {"N1": lambda r: (not r["HISTORY_USED"]) and r["RNN_IN_FUNCTION"], "N2": lambda r: r["HISTORY_USED"] and not r["RNN_IN_FUNCTION"], "N3": lambda r: r["HISTORY_USED"]}
+    exp = {"N1": lambda r: r["HISTORY_USED"] is False and r["RNN_IN_FUNCTION"] is True,   # explicit True / False: None (omitted) fails
+           "N2": lambda r: r["HISTORY_USED"] is True and r["RNN_IN_FUNCTION"] is False, "N3": lambda r: r["HISTORY_USED"] is True}
     ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
