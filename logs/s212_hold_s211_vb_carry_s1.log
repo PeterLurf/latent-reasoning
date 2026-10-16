@@ -1,0 +1,20 @@
+HOLD n 1 {'intact': 1.0, 'hold': 1.0, 'hold_v': 1.0}
+HOLD n 2 {'intact': 1.0, 'hold': 0.982, 'hold_v': 0.992}
+HOLD n 3 {'intact': 1.0, 'hold': 0.414, 'hold_v': 0.465}
+HOLD n 4 {'intact': 1.0, 'hold': 0.122, 'hold_v': 0.124}
+HOLD n 5 {'intact': 1.0, 'hold': 0.094, 'hold_v': 0.092}
+HOLD n 6 {'intact': 1.0, 'hold': 0.101, 'hold_v': 0.1}
+HOLD n 7 {'intact': 1.0, 'hold': 0.111, 'hold_v': 0.113}
+HOLD n 8 {'intact': 1.0, 'hold': 0.11, 'hold_v': 0.108}
+HOLD n 9 {'intact': 0.853, 'hold': 0.082, 'hold_v': 0.076}
+HOLD n 10 {'intact': 0.456, 'hold': 0.074, 'hold_v': 0.074}
+HOLD n 11 {'intact': 0.182, 'hold': 0.079, 'hold_v': 0.08}
+HOLD n 12 {'intact': 0.129, 'hold': 0.088, 'hold_v': 0.085}
+HOLD n 13 {'intact': 0.111, 'hold': 0.089, 'hold_v': 0.087}
+HOLD n 14 {'intact': 0.11, 'hold': 0.075, 'hold_v': 0.072}
+HOLD n 15 {'intact': 0.116, 'hold': 0.092, 'hold_v': 0.094}
+[W1016 16:33:20.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 146800640 bytes (free: 0, total: 8589606912).
+[W1016 16:33:21.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 134217728 bytes (free: 0, total: 8589606912).
+HOLD n 16 {'intact': 0.1, 'hold': 0.093, 'hold_v': 0.091}
+DONE boxes/runs_fsq/s211_vb_carry_s1\eval_hold.json 943
+GATE boxes/runs_fsq/s211_vb_carry_s1 hold n/a (no intact reference)
