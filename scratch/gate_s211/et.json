@@ -1,0 +1,13 @@
+{
+ "items": 100000,
+ "seed": 20902,
+ "n_range": [
+  1,
+  16
+ ],
+ "versions": 951376,
+ "diffs": 0,
+ "first_diff_item": null,
+ "pass": true,
+ "reference": "scratch/s211_ref_slot_targets.py (red team, sha256 ebf25d3b... of the source file)"
+}
