@@ -17033,6 +17033,26 @@ All readings are on N1 / N2 / N3, local fp32, eval_bs 32, §170 test set.
 
 **Use.** These choose which bottleneck binds in VB, and so which Stage-1 cell of the bottleneck draft is proposed. No §211 label is affected.
 
+**Note 205-5 (2026-10-16 03:25 EDT; qualifies note 205-4 after Audit's reproduction; descriptive).**
+
+**HH-FIT reproduces numerically but does not discriminate.** Audit re-ran research_bottleneck/scripts/step/feat.py → hhfit.py: R² 0.993–1.000 and max residual ≤ 0.045 on the 7 failed seeds plus s205_iit_s3, matching inventor S. But:
+- the fit has 5 free q(h) for 8 points;
+- the height mix shifts monotonically with t;
+- **a 2-parameter pass-only model, acc_t = σ(a − b·t), fits the same seeds at R² 0.978–0.998.**
+
+So 205-4's sentence "fit by subtree height alone (no pass term)" is **not supported as discriminating evidence**: height and pass are confounded in the s175 aggregate.
+
+**What the item-level evidence says.** It comes from S's logit.py: a joint logistic on 187-3's per-item rows at n 9–12, where height and pass vary independently. It is S's run, cited, and the item-level fit is not yet reproduced by Audit.
+- **Failed seeds:** the first-error hazard rises with **both** subtree height (+0.71…+1.10 per SD) **and** pass (+1.1…+1.6 per SD).
+- **Converged seeds:** height carries −0.03…+0.39 and pass +1.6…+4.4.
+- So **the discriminating difference is the height coefficient (failed ≫ converged)**, not the absence of a pass term.
+- These rows are all **beyond the training depth** (n 9–12). The in-range item-level test is 211-15's part C (S's D1). It is pre-stated and not yet run.
+
+**What stands, and what does not.**
+- Stands: 205-4's step_recover reading, that s3 writes recoverable values only at passes 1–2 (Audit-reproduced).
+- Does not stand: the "recompute from the input" account of the failed regime. It stays a **conjecture** until the in-range item-level fit, with a held-out or AIC comparison against a pass-only model, exists.
+- **The bottleneck draft's step-capability design (COMMUTE + OPX) must not lean on HH-FIT.** Its motivation is restated on the step_recover reading plus the beyond-training item-level coefficients, both cited as above.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
