@@ -1,0 +1,6 @@
+{
+ "s170": {
+  "serial": {}
+ },
+ "note": "8k descriptive dir (\u00a7205 descriptive 203-4 / 203-6): model.pt = ckpt_model_8000.pt[model]; no s170 serial at 8k, so dasused P0 S170 gate is n/a"
+}

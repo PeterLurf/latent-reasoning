@@ -1,0 +1,392 @@
+{
+ "run": "s205_iit_s3_8k",
+ "K": 8,
+ "add_norm": "rms",
+ "meta": {
+  "card": "NVIDIA GeForce RTX 3070",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "b27b1307c22c4b11b7f7d2f4bba8267014bfea03"
+ },
+ "serial_cond": {
+  "s170": {
+   "1": {
+    "all": {
+     "n": 476,
+     "hybrid": 0.0861344537815126,
+     "own": 0.07983193277310924,
+     "donor": 0.09873949579831932,
+     "other": 0.7415966386554622,
+     "na": false
+    },
+    "clean": {
+     "n": 1,
+     "hybrid": 1.0,
+     "own": 0.0,
+     "donor": 0.0,
+     "other": 0.0,
+     "na": true
+    },
+    "clean_rec_don_only": {
+     "n": 3,
+     "hybrid": 0.3333333333333333,
+     "own": 0.6666666666666666,
+     "donor": 0.3333333333333333,
+     "other": 0.0,
+     "na": true
+    }
+   },
+   "2": {
+    "all": {
+     "n": 476,
+     "hybrid": 0.08823529411764706,
+     "own": 0.0819327731092437,
+     "donor": 0.09873949579831932,
+     "other": 0.7373949579831933,
+     "na": false
+    },
+    "clean": {
+     "n": 1,
+     "hybrid": 1.0,
+     "own": 0.0,
+     "donor": 0.0,
+     "other": 0.0,
+     "na": true
+    },
+    "clean_rec_don_only": {
+     "n": 3,
+     "hybrid": 0.3333333333333333,
+     "own": 0.6666666666666666,
+     "donor": 0.3333333333333333,
+     "other": 0.0,
+     "na": true
+    }
+   },
+   "4": {
+    "all": {
+     "n": 476,
+     "hybrid": 0.08823529411764706,
+     "own": 0.0819327731092437,
+     "donor": 0.10294117647058823,
+     "other": 0.7331932773109243,
+     "na": false
+    },
+    "clean": {
+     "n": 1,
+     "hybrid": 1.0,
+     "own": 0.0,
+     "donor": 0.0,
+     "other": 0.0,
+     "na": true
+    },
+    "clean_rec_don_only": {
+     "n": 3,
+     "hybrid": 0.3333333333333333,
+     "own": 0.6666666666666666,
+     "donor": 0.3333333333333333,
+     "other": 0.0,
+     "na": true
+    }
+   },
+   "6": {
+    "all": {
+     "n": 476,
+     "hybrid": 0.09243697478991597,
+     "own": 0.0819327731092437,
+     "donor": 0.10294117647058823,
+     "other": 0.7289915966386554,
+     "na": false
+    },
+    "clean": {
+     "n": 1,
+     "hybrid": 1.0,
+     "own": 0.0,
+     "donor": 0.0,
+     "other": 0.0,
+     "na": true
+    },
+    "clean_rec_don_only": {
+     "n": 3,
+     "hybrid": 0.3333333333333333,
+     "own": 0.6666666666666666,
+     "donor": 0.3333333333333333,
+     "other": 0.0,
+     "na": true
+    }
+   },
+   "clean_acc": {
+    "recipient": 0.08823529411764706,
+    "donor": 0.13865546218487396,
+    "hybrid_item": 0.09033613445378151,
+    "n_ccc": 1,
+    "n": 476
+   },
+   "row_cols": [
+    "pair",
+    "n",
+    "y_own",
+    "y_donor",
+    "y_hyb",
+    "clean_rec",
+    "clean_don",
+    "clean_hyb",
+    "swapped",
+    "eligible"
+   ]
+  },
+  "ext": {
+   "1": {
+    "all": {
+     "n": 2268,
+     "hybrid": 0.11772486772486772,
+     "own": 0.08421516754850088,
+     "donor": 0.08509700176366843,
+     "other": 0.7231040564373897,
+     "na": false
+    },
+    "clean": {
+     "n": 12,
+     "hybrid": 0.9166666666666666,
+     "own": 0.08333333333333333,
+     "donor": 0.0,
+     "other": 0.0,
+     "na": true
+    },
+    "clean_rec_don_only": {
+     "n": 56,
+     "hybrid": 0.23214285714285715,
+     "own": 0.4107142857142857,
+     "donor": 0.39285714285714285,
+     "other": 0.25,
+     "na": true
+    },
+    "by_n": {
+     "3": {
+      "all": {
+       "n": 622,
+       "hybrid": 0.1495176848874598,
+       "own": 0.06591639871382636,
+       "donor": 0.08842443729903537,
+       "other": 0.7090032154340836,
+       "na": false
+      },
+      "clean": {
+       "n": 7,
+       "hybrid": 0.8571428571428571,
+       "own": 0.14285714285714285,
+       "donor": 0.0,
+       "other": 0.0,
+       "na": true
+      }
+     },
+     "4": {
+      "all": {
+       "n": 459,
+       "hybrid": 0.10457516339869281,
+       "own": 0.10239651416122005,
+       "donor": 0.09586056644880174,
+       "other": 0.7058823529411765,
+       "na": false
+      },
+      "clean": {
+       "n": 4,
+       "hybrid": 1.0,
+       "own": 0.0,
+       "donor": 0.0,
+       "other": 0.0,
+       "na": true
+      }
+     },
+     "5": {
+      "all": {
+       "n": 389,
+       "hybrid": 0.08997429305912596,
+       "own": 0.10282776349614396,
+       "donor": 0.07969151670951156,
+       "other": 0.7429305912596401,
+       "na": false
+      },
+      "clean": {
+       "n": 1,
+       "hybrid": 1.0,
+       "own": 0.0,
+       "donor": 0.0,
+       "other": 0.0,
+       "na": true
+      }
+     },
+     "6": {
+      "all": {
+       "n": 289,
+       "hybrid": 0.13494809688581316,
+       "own": 0.09688581314878893,
+       "donor": 0.06920415224913495,
+       "other": 0.7093425605536332,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "7": {
+      "all": {
+       "n": 266,
+       "hybrid": 0.07894736842105263,
+       "own": 0.06766917293233082,
+       "donor": 0.08646616541353383,
+       "other": 0.7744360902255639,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "8": {
+      "all": {
+       "n": 243,
+       "hybrid": 0.12757201646090535,
+       "own": 0.06995884773662552,
+       "donor": 0.0823045267489712,
+       "other": 0.720164609053498,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     }
+    }
+   },
+   "2": {
+    "all": {
+     "n": 814,
+     "hybrid": 0.10442260442260443,
+     "own": 0.07616707616707617,
+     "donor": 0.07985257985257985,
+     "other": 0.7469287469287469,
+     "na": false
+    },
+    "clean": {
+     "n": 0
+    },
+    "clean_rec_don_only": {
+     "n": 8,
+     "hybrid": 0.0,
+     "own": 0.75,
+     "donor": 0.875,
+     "other": 0.0,
+     "na": true
+    },
+    "by_n": {
+     "3": {
+      "all": {
+       "n": 0
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "4": {
+      "all": {
+       "n": 0
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "5": {
+      "all": {
+       "n": 141,
+       "hybrid": 0.0851063829787234,
+       "own": 0.07801418439716312,
+       "donor": 0.07092198581560284,
+       "other": 0.7730496453900709,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "6": {
+      "all": {
+       "n": 196,
+       "hybrid": 0.12755102040816327,
+       "own": 0.10204081632653061,
+       "donor": 0.0663265306122449,
+       "other": 0.7193877551020408,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "7": {
+      "all": {
+       "n": 239,
+       "hybrid": 0.06694560669456066,
+       "own": 0.06276150627615062,
+       "donor": 0.09205020920502092,
+       "other": 0.7866108786610879,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     },
+     "8": {
+      "all": {
+       "n": 238,
+       "hybrid": 0.13445378151260504,
+       "own": 0.06722689075630252,
+       "donor": 0.08403361344537816,
+       "other": 0.7142857142857143,
+       "na": false
+      },
+      "clean": {
+       "n": 0
+      }
+     }
+    }
+   },
+   "clean_acc": {
+    "recipient": 0.12566137566137567,
+    "donor": 0.15652557319223986,
+    "hybrid_item": 0.11904761904761904,
+    "n_ccc": 12,
+    "n": 2268
+   },
+   "row_cols": [
+    "pair",
+    "n",
+    "y_own",
+    "y_donor",
+    "y_hyb",
+    "clean_rec",
+    "clean_don",
+    "clean_hyb",
+    "swapped",
+    "eligible"
+   ]
+  },
+  "gates": {
+   "SI_reproduces_serial_items": true,
+   "S170": {
+    "pairs": {},
+    "max_abs_diff": null,
+    "pass": false
+   }
+  },
+  "def": "notes 203-2 / 203-2a: whole-state swap of the donor's S_t, K passes; clean = recipient, donor and hybrid item correct without a swap; (ii) eligibility per t: bare root leaf, h != root, height(root) >= 2t+1, hybrid not in {own, donor}; n < 100 -> na",
+  "pool_i": "SPOOL n 8 rng 17300 (2,200), serial_items rng 17200",
+  "pool_ii": "test items n 3-8 (all), rng 20371",
+  "card": "NVIDIA GeForce RTX 3070",
+  "dtype": "bf16 autocast trunk, fp32 memory branch",
+  "bs_eval": 250,
+  "torch": "2.14.0+cu130",
+  "driver": "591.86",
+  "script_git": "b27b1307c22c4b11b7f7d2f4bba8267014bfea03",
+  "sec": 51,
+  "done": true
+ }
+}

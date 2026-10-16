@@ -1,0 +1,217 @@
+{
+ "gate_SAME": {
+  "equal": 6000,
+  "n": 6000,
+  "pass": true
+ },
+ "1": {
+  "n_pairs": 5217,
+  "drops": {
+   "ok": 5217,
+   "mir_not_distinct": 448,
+   "ineligible": 335
+  },
+  "n_ccc": 20,
+  "readable": false,
+  "clean_acc": {
+   "x_r": 0.12286754839946329,
+   "x_d": 0.13551849722062487,
+   "mirror": 0.12095073797201457
+  },
+  "primary": {
+   "n": 20,
+   "y_mir": 0.75,
+   "y_d": 0.15,
+   "y_r": 0.05,
+   "all": {
+    "n": 5217,
+    "y_mir": 0.1178838412880966,
+    "y_d": 0.09162353843204907,
+    "y_r": 0.08740655549166187
+   },
+   "by_n": {
+    "3": {
+     "n": 9,
+     "y_mir": 0.8888888888888888,
+     "y_d": 0.0,
+     "y_r": 0.0
+    },
+    "4": {
+     "n": 8,
+     "y_mir": 0.625,
+     "y_d": 0.375,
+     "y_r": 0.125
+    },
+    "5": {
+     "n": 3,
+     "y_mir": 0.6666666666666666,
+     "y_d": 0.0,
+     "y_r": 0.0
+    },
+    "6": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "7": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "8": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    }
+   }
+  },
+  "think_only": {
+   "n": 20,
+   "y_mir": 0.55,
+   "y_d": 0.1,
+   "y_r": 0.25,
+   "by_n": {
+    "3": {
+     "n": 9,
+     "y_mir": 0.4444444444444444,
+     "y_d": 0.0,
+     "y_r": 0.3333333333333333
+    },
+    "4": {
+     "n": 8,
+     "y_mir": 0.5,
+     "y_d": 0.25,
+     "y_r": 0.25
+    },
+    "5": {
+     "n": 3,
+     "y_mir": 1.0,
+     "y_d": 0.0,
+     "y_r": 0.0
+    },
+    "6": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "7": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "8": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    }
+   }
+  },
+  "floor_kprime0_x_d": 0.2
+ },
+ "2": {
+  "n_pairs": 1526,
+  "drops": {
+   "ok": 1526,
+   "ineligible": 4279,
+   "mir_not_distinct": 195
+  },
+  "n_ccc": 0,
+  "readable": false,
+  "clean_acc": {
+   "x_r": 0.10222804718217562,
+   "x_d": 0.11664482306684142,
+   "mirror": 0.0982961992136304
+  },
+  "primary": {
+   "n": 0,
+   "y_mir": null,
+   "y_d": null,
+   "y_r": null,
+   "all": {
+    "n": 1526,
+    "y_mir": 0.09501965923984272,
+    "y_d": 0.09698558322411534,
+    "y_r": 0.08650065530799476
+   },
+   "by_n": {
+    "5": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "6": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "7": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "8": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    }
+   }
+  },
+  "think_only": {
+   "n": 0,
+   "y_mir": null,
+   "y_d": null,
+   "y_r": null,
+   "by_n": {
+    "5": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "6": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "7": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    },
+    "8": {
+     "n": 0,
+     "y_mir": null,
+     "y_d": null,
+     "y_r": null
+    }
+   }
+  },
+  "floor_kprime0_x_d": null
+ },
+ "items": "test n 3-8, rng 20401 permutation; donors rng [20401, k]",
+ "gate_MIRROR": {
+  "n_pairs": 11240,
+  "mismatch": 0,
+  "pass": true
+ },
+ "card": "NVIDIA GeForce RTX 3070",
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "bs": 250,
+ "K": 8,
+ "torch": "2.14.0+cu130",
+ "script_git": "a17b1c611e73b7cf0a16f5fa36c1d8d8b5ab87fb",
+ "sec": 182,
+ "def": "THEORY note 203-6 / 203-6a; see scratch/maskswap.py"
+}
