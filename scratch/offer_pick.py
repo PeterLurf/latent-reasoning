@@ -8,7 +8,7 @@ import sys
 
 os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 drv, dph = sys.argv[1], sys.argv[2]
-q = "gpu_name=RTX_3090 num_gpus=1 reliability>0.97 dph<=%s disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4" % dph
+q = "gpu_name=" + os.environ.get("GPU_NAME", "RTX_3090") + " num_gpus=1 reliability>0.97 dph<=%s disk_space>=40 rentable=true inet_down>=300 cuda_vers>=12.4" % dph
 r = subprocess.run(["bash", "C:/Users/peter/.local/vastai/vast.sh", "search", "offers", q, "-o", "dph", "--raw", "--limit", "150"], capture_output=True, text=True)
 try:
     d = json.loads(r.stdout)
