@@ -270,3 +270,110 @@ Stand-in for the Literature session. **IDs:** all 81 verified on their arXiv abs
 - (5) any loop-bypass / T=1-dominance finding;
 - (7) which loop slots the memory attends to;
 - (8) a number for how often predictions are revised to wrong (Fig 8 only).
+
+## Full-text addendum B (2026-10-15; helper subagent; 20 papers read in full from the arXiv HTML; local copies in the Theory scratchpad research/fullB/)
+
+**Latent-reasoning LMs**
+
+1. **Coconut 2412.06769 (Hao; pretrained GPT-2).**
+   - [DERIVATION] The question stays in context for thoughts and answer: E_t = [e(x_1..x_i), h_i, …, h_{t−1}].
+   - [DERIVATION] Stage k replaces the first k CoT steps with k×c thoughts (optimizer reset at each stage). c = 1 for ProsQA / ProntoQA; c = 2 for GSM8K, plus a final stage that removes all language.
+   - [DERIVATION] Loss: CE on the remaining tokens after the thoughts. "The objective does not encourage the continuous thought to compress the removed language thought."
+   - [EMPIRICS] Table 1, ProsQA: Coconut 97.0, pause 96.6, w/o thought 95.5.
+   - [EMPIRICS] Table 1, GSM8K: Coconut 34.1, pause 24.1, w/o thought 21.6, No-CoT 16.5, CoT 42.9.
+   - [EMPIRICS] Without the curriculum: 14.4. c = 3 gives a loss spike.
+2. **CODI 2502.21074 (Shen; GPT-2 and LLaMA-3.2-1B; LoRA r128; GSM8k-Aug).**
+   - [DERIVATION] L = αL_student + βL_KD + γL_teacher.
+     - L_teacher: CE on [CoT, y] | Q.
+     - L_student: answer CE | Q, Z. The question is visible.
+     - L_KD (Eq. 5): L1 at the ":" of "The answer is:", all layers, sg on the teacher, normalised per layer by the teacher's batch std.
+   - [DERIVATION] Setup details:
+     - the teacher drops the final CoT step (keeping it: 31.7 vs 43.7);
+     - a 2-layer MLP + LN projection; 6 latents;
+     - α = β = 1; γ = 1 (GPT-2), γ = 20 (LLaMA).
+   - **Inconsistency:** Appendix F sweeps β 1 → 30 on LLaMA (46.5 → 51.9%).
+   - [EMPIRICS] GPT-2 ablations: w/o L1 24.5 (No-CoT-SFT 19.1); separate static teacher 27.1.
+3. **LOTUS 2606.31779 (Fan, Svete, Lee; GPT-2 and Llama-3.2-1B / 3B-Instruct; initialised from explicit-CoT checkpoints; full fine-tune).**
+   - [DERIVATION] The latents are learnable (shared <lat> token, learnable E ∈ R^{Kc×d}) and never teacher-forced.
+   - [DERIVATION] Loop: h^(0) = f(E | C_pre), h^(t) = f(E + h^(t−1) | C_pre), where **C_pre is the KV cache of [Q, <BoT>]** (the question stays readable). Gradients flow through all R iterations.
+   - [DERIVATION] Losses:
+     - L_step = (1/N_step) Σ CE(f_head(h^(R)_{i,j}), T_{i,j}), a **post-loop** step readout through the base LM head;
+     - L_ans is a separate forward over [<EoT>, A] attending to [C_pre, h^(R)];
+     - L = L_ans + 0.05 L_step; K = 6, c = 25 (Llama) or 13 (GPT-2), R = 6.
+   - [EMPIRICS] 3B GSM8K: LOTUS 70.0 ± 0.9; CoT 71.5; CODI 60.8; CODI+SIM-CoT 62.3; No-CoT 38.3.
+   - [EMPIRICS] 3B supervision ablations:
+     - no latent supervision: 63.3;
+     - per-iteration supervision: 68.2, vs post-loop 70.0;
+     - LOTUS-aux: 69.9 per-iteration vs 68.4 post-loop;
+     - c = 1: 49.7.
+   - [EMPIRICS] **3B loop-count ablations, showing the iterations are used:**
+     - trained R: 14.6 (R = 2), 68.1 (R = 5), 70.0 (R = 6);
+     - **inference R on the R = 6 model: 22.7 (R = 1) → 70.0 (R = 6) → 69.3 (R = 7)**.
+     - No zero or shuffle test on h^(R).
+4. **Thinking States 2602.08332 (Amos; Qwen2.5-Base 0.5B / 1.5B).**
+   - [DERIVATION] Mechanism:
+     - the input is chunked; X̃_i = X_i + S_i after layer 1;
+     - a 1-layer Thinking Block generates natural-language reasoning (or <EOS>);
+     - a Compression Block (a copy of layer 1) keeps the last c representations as S_{i+1};
+     - thoughts are never appended to the context.
+   - [DERIVATION] Fully teacher-forced (S_i* = C(Z_i*)); no BPTT.
+   - [EMPIRICS] GSM 42.22 vs CoT 60.50, Coconut 32.65. Parity (trained N = 10): 98.37 vs CoT 12.35.
+   - [EMPIRICS] Bypass is not tested. "State ambiguity": prepending the question raises 42.22 → 48.65.
+5. **Altabaa 2510.14095 (from scratch; DAG modular arithmetic p = 23; train N ≤ 32, test up to 128).**
+   - [DERIVATION] T scales linearly with graph depth. Per-step targets: Σ_t Σ_i 1{Depth(x_i) ≤ t} ℓ(W E_i^(t), Value(x_i)).
+   - [DERIVATION] After each iteration the state is projected to a discrete factored symbolic space and re-embedded (allowing teacher forcing across iterations). Error correction: random corruption of value components; needs a 4-layer block.
+   - [EMPIRICS] Continuous supervision "slowly degrades" out of distribution; discrete + correction is near-perfect on every OOD split; CoT reaches only N ≈ 40.
+6. **SIM-CoT 2509.20317.**
+   - [EMPIRICS] Coconut collapses at 5 latents (12.5%); latents become "nearly identical", with content "mainly numbers, lacking operators".
+   - [DERIVATION] A training-only step decoder reads z_k alone: L_step = −Σ_k Σ_t log p(y_{k,t} | z_k, y_{k,<t}); L = λ_step L_step + λ_lm L_ans (λ values not found).
+   - [EMPIRICS] GPT-2 Coconut+SIM 44.8 (+8.2).
+7. **AGCLR 2606.07720 (GPT-2 124M, one seed).**
+   - [DERIVATION] Gated persistent memory: h′_t = (1−f)⊙h_t + r⊙c_{t−1}; c_t = LN(c_{t−1} + w⊙h′_t).
+   - [EMPIRICS] Cosine to the pass-1 state falls 1.0 → 0.126 by pass 6 (AGCLR about 0.22). This is not a use test, and Coconut keeps earlier thoughts in attention.
+   - [EMPIRICS] Results:
+
+     | | CoT | Coconut | AGCLR |
+     |---|---|---|---|
+     | GSM8K | 40.6 | 31.4 | 34.0 |
+     | HotpotQA EM | 11.0 | 10.4 | 14.0 |
+     | ProsQA | 55.0 | 92.0 | 96.0 |
+
+**Do latents do the work?**
+
+8. **Zhang 2512.21711 (7–8B, Coconut 5 latents on ProntoQA).**
+   - [EMPIRICS] Steering: perturbing CoT tokens gives 50% AdvBench success vs 5% for the latents.
+   - [EMPIRICS] MMLU swap: Coconut stays at about 60% vs CoT dropping to 43.4%. "latent tokens exert very limited influence."
+   - [EMPIRICS] Shortcut uptake is strong.
+9. **Liang 2602.00449 (CODI on s_t = s_{t−1}x_t + b mod m; 3-layer from scratch).**
+   - [EMPIRICS] At 2–3 hops bridge states form, but the final input goes straight to the answer: patching latents under an x_{n+1} corruption gives 0% recovery.
+   - [EMPIRICS] At n ≥ 4, only the late s_n is decodable; for prime m accuracy drops sharply.
+   - [THEOREM 1] "Fully bijective FSC has non-contracting long-horizon dynamics".
+10. **Markovian Transformers 2404.18988 (Llama-3.1-8B, Mistral-7B; LoRA).**
+    - [DERIVATION] The answer is generated from the CoT alone ("we do not allow the answer generation to attend back to the question").
+    - [DERIVATION] R = ln π_θ(ans | CoT) − ln π′(ans | CoT′), with π′ the **frozen baseline**; L = L_PG + L_AR + 0.1 KL, with the advantage standardised per batch.
+    - [EMPIRICS] GSM8K 19.6 → 57.1. In the perturbation test, Markovian minus non-Markovian sensitivity grows +0.235 → +0.981 with severity.
+11. **Pause tokens 2310.02226.**
+    - [EMPIRICS] Gains need pretraining and fine-tuning with delays; fine-tuning-only is "lukewarm" and hurts GSM8K. Zero pauses at inference "breaks its performance spectacularly".
+    - [THEOREM 6.1, informal] 2 layers can implement N > L independent computations iff they use pauses.
+12. **Filler tokens 2404.15758 (34M, random init).**
+    - [EMPIRICS] 3SUM 100%; 2SUM 93.6 vs 78.7 without filler. It needs dense supervision (a 50/50 mix of parallelisable CoT and filler); filler-only training stays at about 71%.
+    - [THEOREM] (citing Merrill & Sabharwal): still TC^0 with polynomial filler.
+
+**Memory architectures**
+
+13. **Feedback Transformer 2002.09402.**
+    - [DERIVATION] m_t = Σ_l softmax(w^l) x_t^l; every layer attends to past m's.
+    - [EMPIRICS] Sequential, so 84.4K vs 296K words/s training. Higher layers work better as memory.
+14. **RMT 2207.06881.**
+    - [DERIVATION] Memory is fully rewritten (H^mem_{τ+1} := H^write_τ), no gating; BPTT over 0–4 segments.
+    - [EMPIRICS] Instability with large memory and deep unrolls.
+15. **Token Turing Machines 2211.09119.**
+    - [DERIVATION] Write = learned re-selection ("erased if not re-selected"); m = 96.
+    - [EMPIRICS] Charades: TTM 26.34, NTM 25.86, memory zeroed 22.65.
+16. **Expire-Span 2105.06548.**
+    - [DERIVATION] e_i = Lσ(wᵀh_i + b), set once; soft mask; expired memories are deleted (never rewritten); L_task + αΣe_i/T.
+17. **Cross-layer reads:**
+    - **LIMe 2502.09245:** reads earlier layers' K/V (current-layer queries). Early layers attend to the embeddings. GSM8K fine-tune 0.167 vs 0.140.
+    - **DenseFormer 2402.02622:** scalar averaging of earlier outputs. High weight on the initial embedding; later layers give it negative weight.
+    - **MUDDFormer 2502.12170:** dynamic per-position weights per Q / K / V / residual stream. The value stream benefits most, and leans on the first layer's output.
+    - **Hyper-Connections 2409.19606:** n copies mixed by a learned matrix, in a Λ-shaped pattern. With n = 1 it is worse than baseline.
