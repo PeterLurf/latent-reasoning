@@ -104,10 +104,10 @@ def part_rs(m, TE, dev, bs):
 
 
 @torch.no_grad()
-def long_step(m, TE, dev, bs):
+def long_step(m, TE, dev, bs, by_t=False):
     """LONG-STEP(m): chains re-rooted after every pass; one pass on a fresh input, R(V_1) decoded and compared with its next step; stop at the first
     inexact step. -> {m: {attempted, exact, rate}} over every test item's chain."""
-    cur = {j: N._copy(it["root"]) for j, it in enumerate(TE)}; stats = {}
+    cur = {j: N._copy(it["root"]) for j, it in enumerate(TE)}; stats = {}; stats_t = {}
     while cur:
         idx = sorted(cur, key=lambda j: len(N.render(cur[j])))
         nxt = {}
@@ -117,9 +117,12 @@ def long_step(m, TE, dev, bs):
             for k_, j in enumerate(part):
                 mo = n_ops(cur[j]); red = reduce_k(cur[j], 1); ok = VB.rerender(list(dec[k_, :int(lens[k_])])) == N.render(red)
                 s_ = stats.setdefault(str(mo), [0, 0]); s_[0] += 1; s_[1] += int(ok)
+                s2 = stats_t.setdefault("%d_%d" % (mo, len(its[k_]["syms"]) + 2), [0, 0]); s2[0] += 1; s2[1] += int(ok)   # Theory 12:4x: by token length T too
                 if ok and red.op is not None:
                     nxt[j] = red
         cur = nxt
+    if by_t:
+        return {k: {"n_steps": v[0], "exact": v[1] / v[0], "n_exact": v[1]} for k, v in sorted(stats_t.items(), key=lambda kv: tuple(int(z) for z in kv[0].split("_")))}
     return {k: {"n_steps": v[0], "exact": v[1] / v[0], "n_exact": v[1]} for k, v in sorted(stats.items(), key=lambda kv: int(kv[0]))}   # contract: exact = rate
 
 
@@ -176,12 +179,172 @@ def part_pf(m, TE, dev, bs, n_draws=20000):
             "items; S0 = accuracy of the fresh Q items at K' = r + 2; 20k draws per r, k uniform on 1..12 (seeds 21402 / 21403)"}
 
 
+def _feat_mod():
+    import importlib.util
+    sp = importlib.util.spec_from_file_location("s_feat", os.path.join(ROOT, "docs", "research_bottleneck_2026-10-16", "scripts", "step", "feat.py"))
+    md = importlib.util.module_from_spec(sp); sp.loader.exec_module(md); return md      # S's steps_features (its __main__ is guarded)
+
+
+@torch.no_grad()
+def part_x16(m, TE, dev, bs, rd):
+    """note 211-16 parts that need no pin: STEP rows (S's features on exact-input STEP-CAP events, n 3..8, t 1..n), REPAIR, and the eval-only history
+    arms V0-OFF (V_0 masked in core and gather for t >= 2) and recent-1 (only V_{t-1}; V_0 masked too) at K' = n + 2, n 1..16. Writes eval_step_rows.json,
+    eval_repair.json, eval_hist_arms.json (floor2 is added once its implementation is pinned)."""
+    F_ = _feat_mod(); num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); rows = []
+    rep = {"events": 0, "right_after": 0, "items_wrong": 0, "final_ok_given_wrong": 0, "events_consumed_next": 0}
+    for n in range(3, 9):
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); E = VB.rec_targets(its, n + 2, x.shape[1], dev); VS = VE.vslot_tensor(its, n, dev)
+            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(len(its), device=dev)})
+            fin = (m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1) == torch.tensor([it["t"] for it in its], device=dev)).cpu().numpy()
+            dec = [m.rec_logits(r_["S"][t]).argmax(-1) for t in range(n + 2)]; del r_
+            for k_, j in enumerate(ch):
+                L = int(lens[k_]); feats = F_.steps_features(TE[j]["root"]); wrong_any = False
+                for t in range(1, n + 1):
+                    b = int(VS[k_, t]); Et, Ep = E[k_, t, :L], E[k_, t - 1, :L]; dt, dp = dec[t][k_, :L], dec[t - 1][k_, :L]
+                    exact_in = bool((dp == Ep).all()); ok = bool(dt[b] == Et[b]); wrong_any |= not ok; f_ = feats[t - 1]
+                    if exact_in:
+                        rows.append({"item": int(j), "n": n, "t": t, "hh": f_["hh"], "alive": f_["alive"], "held": f_["held"], "prov": f_["prov"], "age_max": f_["age_max"],
+                                     "bdepth": f_["bdepth"], "correct": int(ok), "age_min": f_["age_min"], "r_left": f_["r"], "op": f_["op"]})
+                    skel = bool(((dt == Et) | (torch.arange(L, device=dev) == b)).all())
+                    if not ok and skel and t < n:                           # REPAIR events: the value wrong at t, every other slot right
+                        En = E[k_, t + 1, :L]
+                        if int(En[b]) == int(Et[b]):
+                            rep["events"] += 1; rep["right_after"] += int(dec[t + 1][k_, b] == En[b])
+                        else:
+                            rep["events_consumed_next"] += 1
+                if wrong_any:
+                    rep["items_wrong"] += 1; rep["final_ok_given_wrong"] += int(fin[k_])
+    json.dump({"rows": rows, "n_rows": len(rows), "def": "note 211-16 §3 / Theory's contract: one row per exact-input STEP-CAP event (R(stored V_{t-1}) == E_{t-1} on every real "
+               "slot), n 3..8, t 1..n; features = S's steps_features (docs/research_bottleneck_2026-10-16/scripts/step/feat.py); correct = R(V_t) at the value slot == E_t"},
+              open(os.path.join(rd, "eval_step_rows.json"), "w", newline="\n"))
+    repair = {"p_right_after_wrong": rep["right_after"] / rep["events"] if rep["events"] else None, "n_events": rep["events"],
+              "p_final_correct_given_wrong": rep["final_ok_given_wrong"] / rep["items_wrong"] if rep["items_wrong"] else None, "n_items": rep["items_wrong"],
+              "n_events_consumed_next": rep["events_consumed_next"],
+              "def": "211-16 §2: events = (item, t < n) with R's value slot wrong at t and every other real slot right, and the slot not consumed at t + 1; right_after = R "
+                     "right at that slot at t + 1. items = n 3..8 items with >= 1 wrong value slot at t <= n; final = the coda at K' = n + 2"}
+    json.dump(repair, open(os.path.join(rd, "eval_repair.json"), "w", newline="\n"), indent=1)
+    arms = {"v0off": (lambda t, nv: (torch.arange(nv) != 0) | torch.tensor(t < 2), None), "recent1": (lambda t, nv: torch.arange(nv) == t - 1, None),
+            "floor2": (None, 2.0)}                                          # note 212-3: floor2 = age term min(gamma * age, -2 * age) on versions 1..t-2
+    hist = {}
+    for nm, (fk, fl) in arms.items():
+        A = np.full(len(TE), -1)
+        for n in range(1, 17):
+            for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); m.ver_keep = fk; m.age_floor = fl
+                try:
+                    r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(len(its), device=dev)})
+                finally:
+                    m.ver_keep = None; m.age_floor = None
+                A[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+        Y = np.array([it["t"] for it in TE]); hist[nm] = {"acc_n2": {str(n): float((A == Y)[Nn == n].mean()) for n in range(1, 17)}}
+        print("ARM", nm, {k: round(v, 3) for k, v in hist[nm]["acc_n2"].items()}, flush=True)
+    hist["def"] = ("211-16 §4 eval-only arms at K' = n + 2: v0off = V_0 masked in core and gather for passes t >= 2 (the coda never reads V_0); recent1 = only "
+                   "V_{t-1} readable in core, gather and coda (V_0 masked too); floor2 = note 212-3 slope floor: age term min(gamma * age, -2 * age) on versions "
+                   "1..t-2 in core, coda and the PA gather (V_0 keeps beta0)")
+    json.dump(hist, open(os.path.join(rd, "eval_hist_arms.json"), "w", newline="\n"), indent=1)
+    return {"step_rows": len(rows), "repair": repair, "hist_arms": {k: v for k, v in hist.items() if k != "def"}}
+
+
+
+@torch.no_grad()
+def part_foreign(m, TE, dev, bs, rd, os_=(3, 6), seed=21500):
+    """note 211-16 §5 / 212-3 FOREIGN pair at K' = n + 2 real passes, n 4..12: the foreign item = another test item of the same token length (rng seed),
+    F_1..F_o = its own stored versions. INSERT: prefix [F_1..F_o] after V_0 (coda at o + n + 2); REPLACE: ver_sub (entry s read as F_s by passes > s + 1);
+    intact beside. -> eval_foreign.json {insert / replace: {o: {acc_n2}}, intact: {acc_n2}}."""
+    num = torch.tensor(N.NUM_IDS, device=dev); rng = np.random.default_rng(seed); Nn = np.array([it["n"] for it in TE]); bylen = {}
+    for j, it in enumerate(TE):
+        bylen.setdefault(len(it["syms"]), []).append(j)
+    res = {"insert": {str(o): {"acc_n2": {}} for o in os_}, "replace": {str(o): {"acc_n2": {}} for o in os_}, "intact": {"acc_n2": {}}, "skipped_no_partner": {}}
+    for n in range(4, 13):
+        cnt = {"intact": 0, **{("insert", o): 0 for o in os_}, **{("replace", o): 0 for o in os_}}; tot = 0
+        cand = [j for j in np.nonzero(Nn == n)[0] if len(bylen[len(TE[j]["syms"])]) > 1]                 # items with a length-matched partner
+        res.setdefault("skipped_no_partner", {})[str(n)] = int((Nn == n).sum()) - len(cand)
+        for ch in VE.chunks(np.array(cand, dtype=np.int64), bs):
+            its = [TE[j] for j in ch]; fj = []
+            for j in ch:
+                pool = [k for k in bylen[len(TE[j]["syms"])] if k != j]; fj.append(int(pool[int(rng.integers(0, len(pool)))]))
+            fits = [TE[k] for k in fj]; x, pad, lens = VB.batch_x(its, dev); xf, pf, lf = VB.batch_x(fits, dev)
+            assert torch.equal(pad, pf), "FOREIGN: the foreign item is not length-matched"
+            y = torch.tensor([it["t"] for it in its], device=dev); tot += len(its); K = n + 2
+            Fs = m.rollout(xf, pf, max(os_))["S"]
+            r0 = m.rollout(x, pad, K, coda_rows={K: torch.arange(len(its), device=dev)})
+            cnt["intact"] += int((m.answer_logits(r0["coda"][K][1], lens)[:, num].argmax(-1) == y).sum()); del r0
+            for o in os_:
+                ri = m.rollout(x, pad, o + K, coda_rows={o + K: torch.arange(len(its), device=dev)}, prefix=[Fs[s_] for s_ in range(1, o + 1)])
+                cnt[("insert", o)] += int((m.answer_logits(ri["coda"][o + K][1], lens)[:, num].argmax(-1) == y).sum()); del ri
+                rr = m.rollout(x, pad, K, coda_rows={K: torch.arange(len(its), device=dev)}, ver_sub=[Fs[s_] for s_ in range(1, o + 1)])
+                cnt[("replace", o)] += int((m.answer_logits(rr["coda"][K][1], lens)[:, num].argmax(-1) == y).sum()); del rr
+            del Fs
+        if not tot:
+            continue
+        res["intact"]["acc_n2"][str(n)] = cnt["intact"] / tot
+        for o in os_:
+            res["insert"][str(o)]["acc_n2"][str(n)] = cnt[("insert", o)] / tot; res["replace"][str(o)]["acc_n2"][str(n)] = cnt[("replace", o)] / tot
+        print("FOREIGN n", n, {k if isinstance(k, str) else "%s%d" % k: round(v / tot, 3) for k, v in cnt.items()}, flush=True)
+    res["def"] = ("211-16 §5 / 212-3: foreign = another test item of the same token length (rng 21500), F_1..F_o its own stored versions; INSERT = after V_0, "
+                  "real passes then n + 2 (coda at o + n + 2; carry stays V_0); REPLACE = entry s in 1..o read as F_s by passes > s + 1 and the coda; intact beside")
+    json.dump(res, open(os.path.join(rd, "eval_foreign.json"), "w", newline="\n"), indent=1)
+    return {k: v for k, v in res.items() if k != "def"}
+
+
+
+def fresh_items(m_ops, n_items, seed):
+    rng = np.random.default_rng(seed); return [{"root": N.generate(rng, m_ops)[0]} for _ in range(n_items)]
+
+
+@torch.no_grad()
+def single_step(m, items, dev, bs):
+    """one pass on fresh inputs; exact = R(V_1) VOIDs dropped == the next reduction step. -> list of (m_ops, T tokens, exact)."""
+    out = []
+    for c0 in range(0, len(items), bs):
+        part = items[c0:c0 + bs]; its = [{"syms": N.render(it["root"])} for it in part]; x, pad, lens = VB.batch_x(its, dev)
+        rr = m.rollout(x, pad, 1); dec = m.rec_logits(rr["V"][1]).argmax(-1).cpu().numpy(); del rr
+        for k_, it in enumerate(part):
+            out.append((n_ops(it["root"]), len(its[k_]["syms"]) + 2, VB.rerender(list(dec[k_, :int(lens[k_])])) == N.render(reduce_k(it["root"], 1))))
+    return out
+
+
+def agg(trip, key):
+    d = {}
+    for mo, T, ok in trip:
+        k = key(mo, T); c_ = d.setdefault(k, [0, 0]); c_[0] += 1; c_[1] += int(ok)
+    return {k: {"n_steps": v[0], "exact": v[1] / v[0]} for k, v in sorted(d.items(), key=lambda kv: tuple(int(z) for z in kv[0].split("_")))}
+
+
+def part_steppos(m, TE, dev, bs):
+    """Theory 12:5x (D3 form): (A) chain LONG-STEP keyed m_T; (B) a fresh single-step grid, 2,000 random items per m 1..16 (generator seed 21600 + m),
+    exact by m_T (bracket count varies T at fixed m) and by m; (C) the position-offset test: fresh items m 1..8 (2,000 each, seed 21700 + m) at
+    deltamem.POS_OFFSET o in {0, 8, 16} (prelude wpe and the PA gather's position queries both shifted), plain and with POS_KEEP0 (position 0 keeps
+    wpe[0], the 187-5 sink fix); exact by m (m <= 5 = the control)."""
+    import boxes.deltamem as DM
+    res = {"long_step_m_T": long_step(m, TE, dev, bs, True)}; print("A done", flush=True)
+    trip = []
+    for mo in range(1, 17):
+        trip += single_step(m, fresh_items(mo, 2000, 21600 + mo), dev, bs)
+    res["fresh_m_T"] = agg(trip, lambda a_, b_: "%d_%d" % (a_, b_)); res["fresh_m"] = agg(trip, lambda a_, b_: str(a_)); print("B done", {k: round(v["exact"], 3) for k, v in res["fresh_m"].items()}, flush=True)
+    res["offset"] = {}
+    try:
+        for o in (0, 8, 16):
+            for keep0 in ((False,) if o == 0 else (False, True)):
+                DM.POS_OFFSET, DM.POS_KEEP0 = o, keep0; trip = []
+                for mo in range(1, 9):
+                    trip += single_step(m, fresh_items(mo, 2000, 21700 + mo), dev, bs)
+                res["offset"]["%d%s" % (o, "_keep0" if keep0 else "")] = agg(trip, lambda a_, b_: str(a_))
+                print("C", o, keep0, {k: round(v["exact"], 3) for k, v in res["offset"]["%d%s" % (o, "_keep0" if keep0 else "")].items()}, flush=True)
+    finally:
+        DM.POS_OFFSET, DM.POS_KEEP0 = 0, False
+    res["def"] = part_steppos.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = {"rs": part_rs, "pf": part_pf}[a.part](m, TE, dev, a.eval_bs)
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+                                                                                                   "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
     fo = os.path.join(a.run, "eval_%s.json" % a.part); json.dump(res, open(fo + ".tmp", "w", newline="\n"), indent=1); os.replace(fo + ".tmp", fo)
