@@ -299,6 +299,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
+| 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | Stage 0 running |
 
 ## Live sections
 
@@ -17207,6 +17208,106 @@ Egress was about $0.34, so the family total is about $4.1.
    * P(VB-C1) of 0.3 / 0.35 / 0.4 for N2 / N1 / N3: two positives, one negative.
 
 **Retention:** ckpt_last / ckpt_prev and the s211 checkpoint mirrors are deleted. model.pt, logs, args and eval files are kept (211-13 / 15 / 16 pending the user's OK).
+
+## 212. VB-2G: fixing the bottlenecks inside a pass-global attention memory (USER APPROVED 2026-10-16 12:32 EDT: the user typed "rove", then confirmed "approve" explicitly, in Audit's session, relayed verbatim; Stage 0 ($0) + G1 (≤ $3) + FT (about $0.6, on its trigger); family cap $6; pre-registered 2026-10-16 12:37 EDT, before any Stage 0 output or G1 / FT code)
+
+**Registered text.**
+- docs/THEORY_VB2G_DRAFT_2026-10-16.md **at 335c462a** (the draft plus Addenda 1 and 2) is the registered text for every definition, rule and label. That file is now frozen.
+- The Stage 0 readings are the pre-stated notes 211-13, 211-15 and 211-16 (all before any §211 output).
+- Origin: the second deep-research session (user 02:44 EDT, "fix bottle necks"). Material in docs/research_bottleneck_2026-10-16/: inventors S, D and H, LIT2, SYNTH2, REDTEAM2, PROOFS2, scripts.
+- **Derivation** (math-backing rule): draft §3 and Addendum 1 (HISTORY-INSERT H1′ [PROVED]); PROOFS2's verdict table; REDTEAM2's fixes.
+- **Scorer:** theory/score_s212.py (5cdc116a), fixture-checked on 6 cases:
+  - G1 and FT go with S no;
+  - all-free plus head-limited (G1 no);
+  - S fires;
+  - G1 passes every part;
+  - G1 fails C2;
+  - FT AUG-BEATS.
+
+**Stage 0** ($0, eval-only, local, on the §211 cells N2 / N1 / N3, then the INJECT models; field contract in note 212-1).
+- **G1 go rule:** G1 launches unless every RS-read model is HISTORY-FREE ∧ HEAD-LIMITED. In that case D3 (locality / structural position) is drafted instead.
+- **FT go rule:** FT runs iff the base N2 is DEEP and reads CLOCK-HOLD / EDGE-COLLAPSE / STALL-COUNT under CONTENT-HALT.
+- **S** (COMMUTE) is not approved here. If the STEP trigger fires on a DEEP §211 cell, it comes back to the user.
+
+**G1 = s212_vb2g_s1** (RTX 3090, seed 1, 48k × bs 64, n 1..8 train, §170 test, one GPU class, off-host checkpoint mirror, checkpoints deleted at train end).
+- **Base:** §211 N2 (PURE-ANNEAL).
+- **Additions** (draft §2):
+  - compaction as key masks;
+  - restamp at storage, with a frozen;
+  - the content-scale normaliser;
+  - **HISTORY-INSERT** at p_h 0.25 (o ~ U{1..12} foreign versions at the old end; own history kept);
+  - a gentler anneal (c 20 → 0 over 1k–14k);
+  - **true_answer_ce** (no-grad CE against y_i), logged and used for the gate and censoring;
+  - the CONTENT-HALT readout.
+- **Decisive:** VB2G-C1 = (a) C1 parts ∧ (b) DEPTH-GENERAL ∧ SELF-SIMILAR ∧ STEP-FLAT ∧ (c) PF CONTENT-KEYED ∧ NO-CLOCK ∧ (d) C5-VB. score_s212 holds the definitions.
+- **Reported beside:** HISTORY-USE (USED / IGNORED / HURTS) and KEEP-ACC (a cap if < 0.995 at n 13–16).
+
+**FT = s212_ft_aug_s1 vs s212_ft_ctrl_s1** (on its trigger only).
+- H's STALL-AUG: per item, a copy, p_s 0.3, S ∈ {1, 2}, cap 12 + S.
+- Fine-tune of N2's model.pt: 8k steps each, LR 3e-5 constant, 3090; CTRL has p_s 0.
+- **Decisive:** AUG-BEATS = AUG meets DEPTH-TIMING and CTRL does not. A 48k STALL-AUG cell only on AUG-BEATS, and with the user's OK.
+
+**OC (one seed per cell; draft §5).**
+- P(VB2G-C1(b) | no invariance) ≤ 0.02. P((b) | invariance learned) ≈ 0.6. Per-cell P((b)) ≈ 0.15–0.25 [ASSUMED].
+- FT: P(AUG-BEATS | no effect) ≈ 0.05 (CTRL controls continued training); P(| effect) ≈ 0.5 [ASSUMED, from H].
+- A positive is strong; a null is weak.
+
+**Censoring (rule b).**
+- A dead run (log < 48k) or NO-ENTRY on true_answer_ce fails every reading.
+- RS / PF / FOREIGN cells with < 100 items are UNREADABLE (not met).
+- STALL-SHIFT with < 200 qualifying items is not met.
+- Never-halting and G-PROG abstentions count as failures.
+- STEP-FLAT is UNREADABLE if more than 20% of n 13–16 strata are dropped.
+
+**Gates before any cloud launch** (draft §6 plus REDTEAM2 §D):
+- fp64 mask-compaction = physical compaction;
+- G1 identity at K = 1 with the new normaliser;
+- G-C3 with restamp at storage;
+- no monkeypatching of `bias_row`;
+- POS_OFFSET = 0 assert;
+- ast-checked per-term gradflow;
+- the HISTORY-INSERT information check (insertion leaves own entries bitwise intact);
+- KEEP-ACC harness;
+- G1b drift smoke;
+- mem_check;
+- G-TIME on a forced final-stage batch;
+- **Audit's diff review**.
+
+**Cost.** G1 projected $1.6–2.6 (guard $3). FT about $0.6. **Family cap $6.** Realised $ replaces the projections. Nothing is dropped silently.
+
+**Note 212-1 (2026-10-16 12:37 EDT; before any Stage 0 output; the field contract that theory/score_s212.py reads; sent to Experiments at 12:3x; no rule change).**
+
+**Files.** All per run dir; n and r keys are strings.
+- **eval_rs.json:**
+  - cells {"n_r": {n_items, intact, restart, unparse_rate}}, n 3..16, r ∈ {2, 4, 6, 8}, r < n. The cut is at t = n − r, conditioned on an exact decode. intact = acc at K′ n + 2; restart = the fresh run at K′ r + 2.
+  - long_step {"m": {n_steps, exact}}.
+- **eval_vbhalt.json:**
+  - by_n {"n": {items, exact, premature, late, never, gprog, acc_halt, acc_n2, halt_at_8, frozen_nm8, t_hist}};
+  - stall {qualifying, shift, frozen1, other_never, at_n, ge_n2};
+  - rows.
+- **eval_pf.json:** grid {"k_s": {n_items, S, r}}; S0 {"r": acc}.
+- **eval_hist_arms.json:** {v0off | floor2 | recent1: {acc_n2}}.
+- **eval_foreign.json:** {insert | replace: {"o": {acc_n2}}}, o ∈ {3, 6}.
+- **eval_repair.json:** {p_right_after_wrong, n_events, p_final_correct_given_wrong, n_items}.
+- **eval_step_rows.json:** rows of {item, n, t, hh, alive, held, prov, age_max, bdepth, correct}, one per exact-input STEP-CAP event at n 3..8.
+- **G1 only:**
+  - eval_stepflat.json {per_step_le8, per_step_13_16_reweighted, strata_dropped_frac};
+  - eval_vb.json, which adds keep_acc {"n"};
+  - log.jsonl, which adds true_answer_ce.
+
+**Operational definitions** (score_s212's docstring holds the full forms):
+- **RS (Stage 0):** pooled n 11–16, r ∈ {4, 6}, n_items-weighted. The control is n ≤ 8 (|D| ≤ 0.03 is needed for a readable RS).
+- **SELF-SIMILAR (G1):** pooled n 9–16, every r.
+- **PF:**
+  - **clock gap** = the weighted mean of (S − S0[r]) over k + r > 8, minus the same over k + r ≤ 8;
+  - **position slope** = the within-k weighted OLS of S on s;
+  - **CONTENT-KEYED** = |gap| ≤ 0.05 and |slope| × (s range) ≤ 0.05.
+- **STEP trigger:**
+  - fit: 5-fold by item (rng 21212); a ridge logistic of the error on standardised (t, alive, held, prov, age_max, bdepth) ± the standardised hh;
+  - read: ΔLL per 1,000 events, and the hh coefficient fitted on prov ≥ 1 rows (hh standardised over all rows).
+- **HISTORY-USE / HURTS / IGNORED:** eval_vb's registered bank_ablate against acc_n2, means over n 1..8, 9..12 and 9..16.
+- **EVAL-HISTORY-GAIN:** any arm with a mean gain ≥ 0.10 over n 9–12 and ≥ −0.03 over n ≤ 8.
+- **CLOCK-FOREIGN:** the mean over o and n 4..12 of (insert − replace) ≤ −0.10.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
