@@ -469,7 +469,7 @@ def main():
     ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--time_steps", type=int, default=0, help="G-TIME: train this many steps on forced final-stage batches (n <= 8, K 12), write timing.json + eval.json, exit")
     ap.add_argument("--mem_check", action="store_true", help="peak memory: one training step on the longest n <= 8 items at K 12 + an n 16 eval forward at K' 24 -> mem_check.json")
-    ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--fp32", action="store_true")
+    ap.add_argument("--eval_bs", type=int, default=64, help="the host's descriptive acc_n2 eval (250 OOMed at n 16 on 24 GB, §211 10-16)"); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--fp32", action="store_true")
     ap.add_argument("--auto_micro", action="store_true", help="before training: the smallest micro in 1, 2, 4, 8 whose forward + backward on the longest final-stage "
                     "batch (n <= 8, K 12, fixed items) peaks <= --mem_budget GiB (no optimizer step; the run's rngs untouched) -> logged")
     ap.add_argument("--mem_budget", type=float, default=21.0)
@@ -602,6 +602,9 @@ def main():
     if a.stop_at and last < a.steps:
         print("STOPPED_AT", last, flush=True); return
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):                            # Audit 06:2x 10-16: right after model.pt, before the descriptive eval (a late eval
+        if os.path.exists(os.path.join(a.out, ck_)):                        # failure left 3 GB of resume state for the drain to carry)
+            os.remove(os.path.join(a.out, ck_))
     opt.zero_grad(set_to_none=True); opt.state.clear(); m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
         torch.cuda.empty_cache()
@@ -617,9 +620,6 @@ def main():
            "train_sec": train_sec, "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
            "note": "descriptive host eval; the registered readings come from the local fp32 eval_vb.json (note 211-1)"}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
-    for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
-        if os.path.exists(os.path.join(a.out, ck_)):
-            os.remove(os.path.join(a.out, ck_))
     print("EVAL", json.dumps(res["acc_n2_host"]), flush=True); print("DONE", a.out, flush=True)
 
 if __name__ == "__main__":
