@@ -1,0 +1,77 @@
+{
+ "ref": "boxes/runs_fsq/s211_vb_pa_s1/args.json",
+ "diff": {
+  "arch": [
+   null,
+   "SLVA"
+  ],
+  "auto_micro": [
+   true,
+   false
+  ],
+  "ckpt_every": [
+   1000,
+   0
+  ],
+  "cuda_version": [
+   "12.4",
+   "13.0"
+  ],
+  "cudnn_version": [
+   90100,
+   92400
+  ],
+  "eval_bs": [
+   250,
+   64
+  ],
+  "image_tag": [
+   "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel",
+   null
+  ],
+  "keep_ckpt_steps": [
+   "",
+   "0,1000,2000"
+  ],
+  "log_every": [
+   100,
+   50
+  ],
+  "micro": [
+   1,
+   2
+  ],
+  "mode": [
+   "pa",
+   "slva"
+  ],
+  "out": [
+   "boxes/runs_fsq/s211_vb_pa_s1",
+   "boxes/runs_fsq/s213_g1b_T"
+  ],
+  "python_version": [
+   "3.11.10",
+   "3.14.7"
+  ],
+  "stop_at": [
+   0,
+   2000
+  ],
+  "table": [
+   null,
+   "train"
+  ],
+  "torch_version": [
+   "2.5.1+cu124",
+   "2.14.0+cu130"
+  ],
+  "train_driver": [
+   "595.71.05",
+   "591.86"
+  ],
+  "train_gpu": [
+   "NVIDIA GeForce RTX 3090",
+   "NVIDIA GeForce RTX 4060"
+  ]
+ }
+}
