@@ -16884,6 +16884,22 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
   * HARMFUL would be readable on s1. It does not fire: s1 entered.
 * **Arm:** still FAILED by rule (s3 MET-NOT-ENTERED). s2 (about 02:50) reads HARMFUL and its own label. The §205 family is at about $15.42 of $18.50.
 
+**Note 211-12 (2026-10-16 02:17 EDT; in-training watch on N3, b306, host log.jsonl; descriptive, no reading, no design change).**
+
+**What happened.** N3 did not recover from the anneal end, unlike N2.
+- answer_ce: 0.23 (6.5k) → 0.81 (7.5k) → **1.65 at c = 0 (8k)**, then a plateau at about 1.23–1.30 over 9k–13k in the n ≤ 5 stage. rec_ce fell slowly, 0.60 → 0.30.
+- The gather's off-self mass is stuck at 0.90–0.94 (N2 settled at about 0.80). gather_gn is 2–3.4; p_TF fell 0.80 → 0.55 over this range.
+- The advance to n ≤ 8 at 13k came **by the 8k stage cap** (R4, 211-1), not the answer-CE gate. answer_ce is about 1.5 over 13.1k–14k.
+- The anneal end and p_TF's decline overlap in N3, so they are not separable here. N2 (same gather and anneal, no MCT) recovered by about 9.8k, so the difference from N2 is MCT's presence.
+
+**Decision.** The run continues; no stop rule applies (projection about $1.0). Rule b reads NO-ENTRY at 48k on the final bins.
+
+**Markers stated now [descriptive; CONJECTURE about mechanism]:**
+- **(a)** answer_ce at p_TF = 0 (24k), and whether it is below 0.5 by 30k.
+- **(b)** Off-self mass through 24k: does it fall once the MCT-corrected entries stop?
+- **(c)** The candidate mechanism, untested and named now so it can't be fitted later. The gather mixes many versions and positions (off-self 0.9), and so mixes sg-corrected entries with uncorrected ones whose distributions differ. MCT's per-slot correction then fails to help a reader that does not read slot (t−1, j).
+- If N3 reads NO-ENTRY / LOSES-ONE-PASS at 48k, (c) and the stage-1 overconfidence (211-8) are both named as candidate causes. Neither is tested in §211.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
