@@ -1,0 +1,151 @@
+{
+ "run": "s205_iit_s3",
+ "model": "model.pt",
+ "card": "NVIDIA GeForce RTX 3070",
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "bs": 250,
+ "K": 8,
+ "fast_add": true,
+ "chunk_delta": 0,
+ "iit_eval": {
+  "tau1": {
+   "n_ccc": 1068,
+   "hybrid_ccc": 0.9962546816479401,
+   "own": 0.0,
+   "donor": 0.0,
+   "by_n": {
+    "3": {
+     "n": 538,
+     "hybrid": 1.0
+    },
+    "4": {
+     "n": 286,
+     "hybrid": 0.9965034965034965
+    },
+    "5": {
+     "n": 149,
+     "hybrid": 0.9865771812080537
+    },
+    "6": {
+     "n": 58,
+     "hybrid": 0.9827586206896551
+    },
+    "7": {
+     "n": 26,
+     "hybrid": 1.0
+    },
+    "8": {
+     "n": 11,
+     "hybrid": 1.0
+    }
+   },
+   "n_pairs": 2266,
+   "counts": {
+    "seen": 6000,
+    "eligible": 2456,
+    "kept": 2266
+   },
+   "all": {
+    "hybrid": 0.5966460723742277,
+    "own": 0.04589585172109444,
+    "n": 2266
+   }
+  },
+  "tau2": {
+   "n_ccc": 90,
+   "hybrid_ccc": 0.9888888888888889,
+   "own": 0.011111111111111112,
+   "donor": 0.0,
+   "by_n": {
+    "5": {
+     "n": 26,
+     "hybrid": 1.0
+    },
+    "6": {
+     "n": 24,
+     "hybrid": 0.9583333333333334
+    },
+    "7": {
+     "n": 24,
+     "hybrid": 1.0
+    },
+    "8": {
+     "n": 16,
+     "hybrid": 1.0
+    }
+   },
+   "n_pairs": 808,
+   "counts": {
+    "seen": 6000,
+    "eligible": 890,
+    "kept": 808
+   },
+   "all": {
+    "hybrid": 0.27103960396039606,
+    "own": 0.06064356435643564,
+    "n": 808
+   }
+  },
+  "tau3": {
+   "n_ccc": 0,
+   "hybrid_ccc": null,
+   "own": null,
+   "donor": null,
+   "by_n": {
+    "7": {
+     "n": 0,
+     "hybrid": null
+    },
+    "8": {
+     "n": 0,
+     "hybrid": null
+    }
+   },
+   "n_pairs": 51,
+   "counts": {
+    "seen": 6000,
+    "eligible": 54,
+    "kept": 51
+   },
+   "all": {
+    "hybrid": 0.09803921568627451,
+    "own": 0.13725490196078433,
+    "n": 51
+   }
+  }
+ },
+ "siit_eval": {
+  "keep_ccc": 0.9965277777777778,
+  "n_ccc": 1152,
+  "follow_text_ccc": 0.0,
+  "n_pairs": 2266
+ },
+ "g2_pass1_deep_probe": 0.08258064516129032,
+ "g2_detail": {
+  "by_t": {
+   "4": {
+    "acc": 0.10891088843345642,
+    "n": 101
+   },
+   "5": {
+    "acc": 0.12244898080825806,
+    "n": 147
+   },
+   "6": {
+    "acc": 0.08542713522911072,
+    "n": 199
+   },
+   "7": {
+    "acc": 0.056410256773233414,
+    "n": 195
+   },
+   "8": {
+    "acc": 0.05263157933950424,
+    "n": 133
+   }
+  },
+  "n": 775,
+  "def": "step_recover protocol (svr_gpre.probe) fitted on S_1's decoder-position read per target t >= 2; test targets with h >= 4; pooled"
+ },
+ "sec": 97
+}
