@@ -16958,6 +16958,19 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 
 **The training lever STALL-AUG** (H §2.4, Prop 8) is **not** pre-stated for running. It would need its own registration and the user's OK.
 
+**Note 211-14 (2026-10-16 03:18 EDT; before any §211 eval_vb.json output; descriptive field definitions only, no reading changed).**
+
+**The mismatch.** The bottleneck session's depth inventor found it (docs/research_bottleneck_2026-10-16, inventor D), and Theory verified it in the code.
+- boxes/vbank_eval.py (a6abd61a, l. 125) implements `bank_ablate` as **every bank logit at −inf** (`bank_off`).
+- The registered definition (draft §7, from inventor A) is **versions 1..t−2 masked at every pass**, keeping V_0 and V_{t−1}.
+
+**The fix.** Both are descriptive, so both are kept, under separate names:
+- **`bank_ablate`** follows the registered form: versions 1..t−2 masked at every core layer and at the coda; V_0 and the newest version kept; the gather (N2 / N3) masked the same way. acc_n2 is read at K′ = n + 2, n 1..16.
+- **`bank_off`** is the implemented form, every bank entry masked. Under N1 (CARRY) it is a carry-only rollout; under N2 / N3 the gather sees only (t−1, j).
+- **`hist_trunc`** is new (inventor D's HIST-TRUNC): every read restricted to {V_0, V_{t−1}}, i.e. the registered BANK-ABLATE, reported at n 9–16 beside n 3–8. It answers LIT2's finding that full iteration history hurts depth extrapolation (CoTFormer 2609.19521; CLRS 2403.04929).
+
+**Use.** None enters VB-C1. They are read beside DEPTH as the descriptive history test.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
