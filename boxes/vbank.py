@@ -175,6 +175,8 @@ class VBankN(torch.nn.Module):
         self.gather_split_log = None                                        # eval-only (211-15 A iv): a list -> per pass (t, self, older-same-slot, cross-slot) per item
         self.slot_mask = None                                               # eval-only (212-15 MASKVOID / GAPPED): f(t, V_t) -> (B, T) bool slots REMOVED from every reader
         #   (core / coda bank entries of every version, the current version's keys, the gather) from then on (accumulated; t = 0 is called on V_0)
+        self.gather_view = None                                             # eval-only (note 213-11, PA d3hist swaps): f(t, gk, NV) -> (gk', NV') for the gather at pass t
+        self.keep_bank_only = False                                         # eval-only (note 213-11, PA OTHER-ABLATE): ver_keep reaches the core / coda bank, not the gather
         self.ver_sub_from = None                                            # eval-only (§213 OLD-SWAP): rollout's ver_sub replaces entries for reading index >= this
         self.input_edit = None                                              # eval-only (213-1 LFK FAULT): f(t, U_t) -> U_t' (the pass input, CARRY / gather / SLVA)
         self.gather_hist_ablate = None                                      # eval-only (212-15 STAB-HIST): "self" | "other" -> the gather's keys (s, j) | (s, i != j),
@@ -195,6 +197,10 @@ class VBankN(torch.nn.Module):
     def gather(self, t, gk, NV, pad, off_v0=False, keep=None):
         """PURE-ANNEAL (draft §3): U[j] = sum_{s < t, i} softmax(l_{j,(s,i)} - c * 1[(s, i) != (t-1, j)]) N(V_s)[i], per head on its 64-d slice; fp32 (fp64 in
         the gates), autocast off: at c = 1e4 the weights are exactly one-hot, so U == N(V_{t-1}) bitwise (gate_carry_bitwise)."""
+        if self.gather_view is not None:                                    # eval-only (213-11)
+            gk, NV = self.gather_view(t, gk, NV)
+        if self.keep_bank_only:                                             # eval-only (213-11)
+            keep = None
         B, T = pad.shape; H, hd = self.H, self.hd; dev = pad.device; dt = torch.float64 if NV[0].dtype == torch.float64 else torch.float32
         with torch.autocast(device_type=dev.type, enabled=False):
             wq_ = DM_().wpe_slice(self.g, T) if self.gather_qmod is None else self.g.w("wpe.weight")[torch.arange(T, device=dev) % self.gather_qmod]   # 212-6 mod arm

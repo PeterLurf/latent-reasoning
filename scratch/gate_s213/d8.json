@@ -1,0 +1,13 @@
+{
+ "pa_c1e4_eq_carry": true,
+ "gather_view_identity": true,
+ "keep_bank_only_no_keep": true,
+ "newest_eq_iii_carry": true,
+ "newest_moves": true,
+ "bank_eq_iii_bank": true,
+ "bank_moves": true,
+ "other_ablate_eq_carry_keep": true,
+ "other_moves": true,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}
