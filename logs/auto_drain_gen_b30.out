@@ -1,3 +1,6 @@
 05:58:50 gen_b30 UNREACHABLE
 06:21:10 gen_b30 UNREACHABLE (3 polls; still polling)
 09:27:35 gen_b30 fetch retry 1: FETCH_INCOMPLETE 54432854 (boxes/runs_fsq/s127_s5_ctrl_s3 model.pt)
+10:42:30 gen_b30 fetch retry 2: FETCH_INCOMPLETE 54432854 (boxes/runs_fsq/s127_s5_ctrl_s3 model.pt)
+11:12:33 gen_b30 UNREACHABLE (3 polls; still polling)
+13:42:50 gen_b30 UNREACHABLE 3 h: exiting

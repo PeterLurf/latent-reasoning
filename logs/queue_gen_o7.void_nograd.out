@@ -2,3 +2,8 @@
 NVIDIA GeForce RTX 3090, 550.107.02
 09:03:58 start boxes/runs_s5/s116_nonecopy_s43
 09:03:58 start boxes/runs_s5/s116_nonecopy_s44
+23:56:31 evaluated boxes\runs_fsq\s128_cyc_s1 rc 1 no-eval
+00:00:50 evaluated boxes\runs_fsq\s128_cyc_s101 rc 0 no-eval
+00:02:33 evaluated boxes\runs_fsq\s128_cyc_s201 rc 0 no-eval
+00:04:15 evaluated boxes\runs_fsq\s128_cyc_s301 rc 0 no-eval
+00:04:15 evaluated boxes\runs_fsq\s128_cyc_s1 rc 0

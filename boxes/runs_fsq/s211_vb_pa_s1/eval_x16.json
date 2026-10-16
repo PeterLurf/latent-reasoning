@@ -1,0 +1,81 @@
+{
+ "step_rows": 30862,
+ "repair": {
+  "p_right_after_wrong": null,
+  "n_events": 0,
+  "p_final_correct_given_wrong": 0.75,
+  "n_items": 4,
+  "n_events_consumed_next": 4,
+  "def": "211-16 \u00a72: events = (item, t < n) with R's value slot wrong at t and every other real slot right, and the slot not consumed at t + 1; right_after = R right at that slot at t + 1. items = n 3..8 items with >= 1 wrong value slot at t <= n; final = the coda at K' = n + 2"
+ },
+ "hist_arms": {
+  "v0off": {
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 0.829,
+    "4": 0.198,
+    "5": 0.14,
+    "6": 0.098,
+    "7": 0.114,
+    "8": 0.095,
+    "9": 0.09,
+    "10": 0.094,
+    "11": 0.098,
+    "12": 0.074,
+    "13": 0.088,
+    "14": 0.086,
+    "15": 0.084,
+    "16": 0.099
+   }
+  },
+  "recent1": {
+   "acc_n2": {
+    "1": 0.959,
+    "2": 1.0,
+    "3": 0.635,
+    "4": 0.166,
+    "5": 0.118,
+    "6": 0.097,
+    "7": 0.102,
+    "8": 0.08,
+    "9": 0.094,
+    "10": 0.09,
+    "11": 0.083,
+    "12": 0.09,
+    "13": 0.095,
+    "14": 0.085,
+    "15": 0.078,
+    "16": 0.093
+   }
+  },
+  "floor2": {
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 0.909,
+    "7": 0.669,
+    "8": 0.415,
+    "9": 0.352,
+    "10": 0.179,
+    "11": 0.123,
+    "12": 0.084,
+    "13": 0.085,
+    "14": 0.084,
+    "15": 0.083,
+    "16": 0.099
+   }
+  }
+ },
+ "run": "boxes/runs_fsq/s211_vb_pa_s1",
+ "mode": "pa",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 4060",
+ "sec": 502
+}

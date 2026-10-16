@@ -80,3 +80,5 @@ json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 04:36:17 b288: deploying on offer 55656159 (7 live, $1.664/h)
 04:39:11 b288: STARTED
 04:50:25 b290: deploying on offer 36517144 (7 live, $1.678/h)
+04:58:24 b290: did not start, retrying
+2026-10-14 05:05:55 s200re D (b290) filler STOPPED by Experiments before its retry: guard @A 2k projects $6.54 without D; D at <= $0.26 x 2.2 h would reach $6.99-7.11 (cap $7) - decision to Audit / the user
