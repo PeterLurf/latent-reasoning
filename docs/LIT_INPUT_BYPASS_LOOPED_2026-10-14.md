@@ -34,7 +34,16 @@ Literature session, for Audit (the request) and Theory.
   - At 22M, ± across replications is reported (e.g. 156.7 ± 0.5).
   - Adaptive depth: a 48-loop ceiling, with a calibrated hidden-update stopping rule targeting mean budgets of 8 / 16 / 24.
 - **Drift evidence:** in additive-injection models, trajectories from the anchor drift along input-specific "forcing rays" t·b(e), and an injection-gain dose test scales the displacement. That's one WikiText-2 model, one replication, six inputs (Fig. 4): illustrative.
-- **Transfer precondition for us (flag):**
-  - SCSE targets **additive re-injection into a residual hidden state**.
-  - Our carried state is the DeltaMem memory S. The input is re-presented as text each pass and enters through the trunk, not added to S. Our "drift" lives in S's additive heads (no decay) and the delta heads' α^T contraction.
-  - **An SCSE analogue would need an anchor on S** (e.g. S after pass 1, or a learned function of the input) and a zero-at-anchor update. That's a new design, not a port.
+- **Transfer precondition for us (flag; corrected 2026-10-16 per Audit: the lead targets VERSION-BANK §211–213, not DeltaMem):**
+  - **VERSION-BANK (`boxes/vbank.py` VBankN, `boxes/slva.py`) is close to SCSE's setting.**
+    - Prelude blocks 0–5 compute **V_0 once** from the input, which is the analogue of SCSE's once-computed anchor h̄.
+    - Core blocks 6–9 loop on a **per-slot residual state**. Pass t's input U_t is N(V_{t−1}) in CARRY mode, or a gather over the bank in PURE-ANNEAL mode; §213 D3 replaces it with the slot-local version attention SLVA.
+    - Every version V_t is appended to a pass-global bank that the core and coda attend over, with V_0 under its own bias β0.
+  - **Where the "forcing term" lives:** VBank doesn't add the input to the state each pass. The input re-enters through **bank attention to V_0** (β0) and through the core's own pretrained biases.
+    - SCSE's zero-deviation forcing bias b_t(e) = T_t(0; e) corresponds to the update the core applies when the state equals the anchor: core(V_0) − V_0, plus the V_0 bank read.
+  - **A port is plausible but not free:**
+    - Define δ_t = V_t − V_0 (or a learned anchor from V_0).
+    - Because the pretrained GPT-2 core blocks are not bias-free (G(0) ≠ 0), zero-at-anchor needs SCSE's "exact bias-subtraction" form, δ_{t+1} = δ_t + [core(V_0 + δ_t) − core(V_0)], plus the zero-deviation mask.
+    - That doubles core compute per pass, unless core(V_0) is cached once: it depends only on the input, so it can be.
+    - It changes the pretrained function at step 0 unless the update is faded in (as W_o was in DeltaMem).
+  - **The DeltaMem note above still applies to DeltaMem cells:** there the carried state is S, and the input re-enters as text through the trunk.
