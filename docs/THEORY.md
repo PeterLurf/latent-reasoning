@@ -17956,6 +17956,11 @@ There is **no gather-cross-slot-only arm**. So N3's pattern (all-readers drop 0.
 
 theory/score_s213's REFERENCE block adds hold_read().
 
+**Note 213-15 (2026-10-16 16:17 EDT; pins 213-14 after Audit's OK, before any eval_hold.json output; the rule is unchanged).**
+- **"Unchanged" means** argmax R(computed V_t[j]) == argmax R(stored V_{t−1}[j]) ≠ VOID. Both are the model's own decodes. The left side is the fresh pass-t output before any hold; the right side is the stored entry, which may already be held.
+- **The hold is sticky, as intended:** a slot that enters copy mode keeps the V it had at entry for every later pass whose decode is unchanged. That is the per-slot fixed point the held gate would learn. A pass whose decode differs ends the hold and stores the computed V_t[j].
+- **Exposure is logged as in d3sel,** per arm: the share of items with ≥ 1 held slot-event, and the slot-events per item, by n. A null is then distinguishable from "rarely triggered".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
