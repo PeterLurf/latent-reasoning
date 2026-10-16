@@ -256,19 +256,21 @@ class VBankN(torch.nn.Module):
         lg = self.rec(self.rec_ln(V)); return lg if lg.dtype == torch.float64 else lg.float()
 
     @torch.no_grad()
-    def mct(self, V, E, valid, mu=1.0, max_iter=3):
+    def mct(self, V, E, valid, mu=1.0, max_iter=3, aim=0.05):
         """R3 (draft §4; pin 7): the minimum-norm edit in R's row space, in LN coordinates, so that R decodes E (B, T) at every valid slot with margin
         mu nats over the runner-up: d_y = max(0, max_{c != y} l_c + mu - l_y), dz = pinv(W) d, mapped back to the residual as sd * dz / ln_w (mean
-        removed); repeated (<= max_iter) while a slot misses the margin. -> (V', {"steps": per-slot step count, "rel": [||dV|| / ||V|| per step]})."""
+        removed); repeated (<= max_iter) while a slot misses the margin. Note 211-3: each step aims at mu + aim (1.05 nats) and W1 tests mu (1.0), so the
+        share of slots needing > 1 step is informative. -> (V', {"steps": per-slot step count, "rel": [||dV|| / ||V|| per step]})."""
         W = self.rec.weight.float(); b = self.rec.bias.float(); Wp = torch.linalg.pinv(W); lw = self.rec_ln.weight.float(); lb = self.rec_ln.bias.float()
         lw_safe = torch.where(lw.abs() < 1e-3, torch.full_like(lw, 1e-3) * torch.sign(lw + 1e-12), lw)
         V2 = V.float().clone(); E_ = E.clamp_min(0)[..., None]; steps = torch.zeros(V.shape[:2], dtype=torch.long, device=V.device); rel = []
         for _ in range(max_iter):
             mu_ = V2.mean(-1, keepdim=True); sd = (V2.var(-1, unbiased=False, keepdim=True) + self.rec_ln.eps).sqrt()
             lg = ((V2 - mu_) / sd * lw + lb) @ W.T + b; ly = lg.gather(-1, E_); lo = lg.scatter(-1, E_, NEG).max(-1, keepdim=True).values
-            need = (lo + mu - ly).clamp_min(0) * valid[..., None]
-            if not bool((need > 0).any()):
+            miss = ((lo + mu - ly) > 0) & valid[..., None]                                  # W1's test: margin mu
+            if not bool(miss.any()):
                 break
+            need = (lo + mu + aim - ly).clamp_min(0) * miss                                  # the step aims at mu + aim
             dv = (torch.zeros_like(lg).scatter(-1, E_, need) @ Wp.T) / lw_safe * sd; dv = dv - dv.mean(-1, keepdim=True)
             rel.append(float(dv.norm() / V2.norm())); V2 = V2 + dv; steps += (need[..., 0] > 0).long()
         return V2.to(V.dtype), {"steps": steps, "rel": rel}
@@ -436,9 +438,10 @@ class CurGate:
             setattr(self, k, v)
 
 
-def c_at(step, hold=1000, end=8000):
-    """PURE-ANNEAL c(step): 1e4 to `hold`, linear to 0 at `end` (draft §3: a buffer, not a parameter)."""
-    return 1e4 if step <= hold else max(0.0, 1e4 * (end - step) / (end - hold))
+def c_at(step, hold=1000, end=8000, c1=20.0):
+    """PURE-ANNEAL c(step) (note 211-3): 1e4 to `hold` (exact CARRY, function preservation), then c1 * (1 - (step - hold) / (end - hold)), linear to 0
+    at `end` (a buffer, not a parameter). The old 1e4-linear schedule was a step switch at ~8k (off-self mass 3e-60 at 7.9k, 0.997 at 8.0k)."""
+    return 1e4 if step <= hold else max(0.0, c1 * (1.0 - (step - hold) / (end - hold)))
 
 
 def tf_at(step, hold=4000, end=24000):
@@ -542,6 +545,9 @@ def main():
         for k_ in range(a.micro):
             L, st_, _ = vb_loss(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, ac, a.rec_w, tfp, rng_tf, a.mu)
             (L / a.micro).backward(); tot += float(L.item()) / a.micro; sts.append(st_)
+        if a.mode == "pa" and step % a.log_every == 0:                    # note 211-3 gate: the gather's parameter gradient norm (pre-clip)
+            gg_ = [p_.grad for n_, p_ in m.named_parameters() if n_ in ("gq_w", "gq_b", "gk_w", "gk_b", "gln_w", "gln_b", "gamma_q") and p_.grad is not None]
+            gather_gn = float(torch.stack([g_.float().pow(2).sum() for g_ in gg_]).sum().sqrt()) if gg_ else 0.0
         gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); gn_log.append(float(gn))
         ans = float(np.mean([s_["answer_ce"] for s_ in sts])); rec = float(np.mean([s_["rec_ce"] for s_ in sts]))
         if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
@@ -561,7 +567,7 @@ def main():
                 rec_.update({"tf_p": tfp, "tf_frac": (sum(s_["tf_n"] for s_ in ss) / tot_) if tot_ else None, "mct_multi_frac": (sum(s_["mct_multi"] for s_ in ss) / sl) if sl else None,
                              "mct_rel_mean": float(np.mean(rl)) if rl else None})
             if m.gather_log:
-                rec_["carry_mass"] = float(torch.cat([v_ for _, v_ in m.gather_log]).mean())
+                rec_["carry_mass"] = float(torch.cat([v_ for _, v_ in m.gather_log]).mean()); rec_["gather_offself"] = 1.0 - rec_["carry_mass"]; rec_["gather_gn"] = gather_gn
             log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []
         m.gather_log = None
         if step in KEEP:
