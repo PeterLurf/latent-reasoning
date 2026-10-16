@@ -1,0 +1,20 @@
+{
+ "run": "D:/Latent/boxes/runs_fsq/s211_vb_pa_s1",
+ "c_anneal": 0.0,
+ "n_batches": 47,
+ "n_items": 1400,
+ "mean_entropy_nats": 0.899739859088229,
+ "kl_uniform": 2.1460459519575004,
+ "offset_only": {
+  "kl_train": 0.4282814562320709,
+  "kl_heldout": 0.42731621861457825
+ },
+ "base": {
+  "kl_train": 0.3160892128944397,
+  "kl_heldout": 0.31809860467910767
+ },
+ "rich": {
+  "kl_train": 0.14161846041679382,
+  "kl_heldout": 0.14332009851932526
+ }
+}
