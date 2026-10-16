@@ -292,7 +292,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 202 | WARM-START-FROM-COT (user pre-approval via Audit, ≤ $4; triggered by §200 BELOW): latent W initialised from §200 C's TEXT-COT model + equal-exposure text control C+; W-LIFT (W − A), R1-W (W − C+), LOOP-FORMED, THINK-NECESSARY; matches the field's initialisation, not a new method | registered | **W-LIFT NEUTRAL (W 0.146 vs A 0.147); R1-W below (C+ 0.336); LOOP-FORMED, THINK-NECESSARY fails; the CoT trunk is forgotten by 2k (cot_valid 0.07-0.13); §204 -> A base** |
 | 203 | SVR seed-stability successor to CSR (user-approved ≤ $10.10): a training-only, linear, pass-free value readout on the delta reads; 3 seeds + C8k paired to s185 RMS; labels ENTERED-AND-USED / MET-NOT-USED / MET-NOT-ENTERED; launches only if G-use ≥ 7/9 (G-pre PASSED) | registered (conditional) | **G-use DO NOT LAUNCH: D7's separator NOT-USED 9/9 (ablation null, donor swap ignored; probe subspace ~1% of read energy) - decodable-but-unused; $0 spent** |
 | 204 | STEP-TARGET-FACTOR on GSM8K-Aug (user-approved ≤ $3.90; after §202): value-from-memory + operator + pointer targets; F-P vs W (or A), F-NR (NOPASS + RMS) vs F-P; THINK-NECESSARY-DEEP, leak / clock diagnostics | registered (conditional) | **ACC MATCHES (F-P 0.139 vs A 0.147); SHORTCUT-RATIO 0.74 vs 0.85 (P-F5 holds); VALUE-SERIAL FALSIFIED (values readable from M_1: one-pass chain); THINK-NECESSARY / DEEP fail** |
-| 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | registered | pending (launch) |
+| 205 | IIT-SERIAL (user-approved FULL design, cap $18): whole-state interchange loss after pass 1 + SIIT term, 3 seeds paired to s185 RMS; MET / ENTERED labels; pilot (LR ~3) | running (s1, s2) | **FAILED by rule: s3 MET-NOT-ENTERED (hybrid 0.996 vs control 0.003, but no entry, acc = control); account falsified at 1 seed; s1 / s2 pending for HARMFUL** |
 | 206 | JOINT-COT-L1 (user-approved pair, cap $6): W + joint teacher CE (J0) vs + per-layer-std L1 at "###" on layers 7-12 (J1); COUPLE = J1 - J0; K0-GUARD / KD-ROUTE / DEEP-MULTIPASS | closed | **COUPLE NEUTRAL (J1 - J0 -0.006); KD-ROUTE 0.073 < 0.10 (coupling not via memory); PROTECT / TOTAL NEUTRAL; COT-RETAIN fails narrowly at 2k (0.28 / 0.27, then ~0.35) -> conditional J1-LoRA is a separate decision; ~$3.24** |
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
@@ -16569,6 +16569,23 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - K′32 (0.934 / 0.862) is outside the claim. Some post-completion decay remains there.
 
 **Note 193-cost (2026-10-15 20:26 EDT; billed figures from Experiments, Vast invoices for instance 55989781).** s193_rmswin_s2's realised cost is **about $6.70**, which replaces the "about $7–8" estimate in the s2 result. The rate is $0.2434/h (GPU $0.2267 + storage $0.0167) plus a $0.014 upload, over about 27.5 h (16:50 10-14 to the 20:21 10-15 destroy). The invoiced part so far is 24.3 h, $5.93. §193 total: about $14.5 (s1 $7.81 + s2 $6.70).
+
+**§205 s3 result (2026-10-15 22:37 EDT; s205_iit_s3, b298, RTX 3090 / 595.84, paired with s185_rms_s3 (PAIRED True); 48k, 0 non-finite, train_sec 72,222; invoiced so far $6.11, the last hour not yet billed; eval_iit.json on the 3070 at eval_bs 250; theory/score_s205.py). s3 reads MET-NOT-ENTERED. The registered account falsifier fires, so the arm reads FAILED by its rule (any MET-NOT-ENTERED) whatever s1 / s2 show.**
+* **MET:** hybrid_ccc at τ1 = 0.996 (n_ccc 1,068), against the control's 0.003 (n 1,090).
+  - τ2 = 0.989 (n 90); τ3 has no eligible items.
+  - SIIT keep 0.997. It is ≥ 0.98 at every n 3..8 on the items it solves (n 538 / 286 / 149 / 58 / 26 / 11).
+* **NOT ENTERED:**
+  - entry(0.5) never; final 1k bin 1.073 (control 1.031).
+  - Accuracy at K′8 by n 1..12 is the control's to within 0.04: 0.995 / 1.0 / 0.955 / 0.840 / 0.650 / 0.487 / 0.344 / 0.256 / 0.203 / 0.143 / 0.121 / 0.122. The pooled n 3..8 value is 0.589 = 0.589.
+* **Guards:** g1 0.110, g2 0.083 (no ONE-PASS-COMPUTE). acc_from_donor 0.114, delta_cos 0.608 (no CLEAN-CONTRACTIVE).
+* **In training,** the unconditioned iit_ce fell only from 2.43 (2.1k) to 1.01 (48k) and never below 0.5, so P-I6 (use before entry) is unreadable (no entry).
+* **Prediction P-I2** (s3 ENTERED, 0.75) **missed.**
+* **Reading:**
+  - The IIT loss changed the failed seed's mechanism on the items it can already solve: from recomputing from the input (0.003) to carrying and using the state (0.996).
+  - It did not give it depth. The account "using the carried value is sufficient for basin entry" is falsified as registered, at one seed.
+  - **Caveat, stated with the result:** the clean-ccc conditioning makes MET reachable on a failed seed's shallow solvable subset. MET here means "carries wherever it can compute", not "computes deep".
+  - What separates converged from failed seeds therefore lies in the per-pass step computation on deep items, not in whether the carried state is used. This fits the per-pass recode / teacher-forcing levers in the deep-research draft (2026-10-15). That link is a conjecture.
+* s1 / s2 (landing about 01:40 / 02:50) still read HARMFUL and the per-seed labels. Note: theory/score_s205.py prints "ARM pending" until every seed's MET is known, although the registered rule already fixes FAILED.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
