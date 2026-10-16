@@ -17392,6 +17392,37 @@ Egress was about $0.34, so the family total is about $4.1.
 - **UNREADABLE:** the control drops by more than 0.02.
 - **Descriptive:** Experiments' "query position modulo 31" arm.
 
+**Note 212-7 (2026-10-16 13:08 EDT; Stage 0 readings so far, theory/score_s212.py on eval_vbhalt / eval_rs / eval_gsplice; local fp32 at eval_bs 32 (N2 on the 4060, N3 on the 3070, N1 on the 2070); pre-stated rules 211-13 / 211-15 / 212-1 / 212-2 / 212-6).**
+
+**1. CONTENT-HALT.**
+- **N2:**
+  - HALT-EXACT met (pooled n 3..8 = 0.948). STALL-SHIFT met (0.927 over 4,709 qualifying).
+  - **NOT-PREMATURE fails narrowly** in range: n 3 0.979 against a bar of 0.980; n 5 0.938. Every miss is a G-PROG abstention (a pass removing ≥ 2 decoded operators). Actual premature halts are 0.000–0.001.
+  - DEPTH-TIMING not met: n 9 exact 0.608 but halt_at_8 0.124; n 10 0.035.
+  - C5-VB not met.
+- **N3:**
+  - HALT-EXACT met (0.989).
+  - **STALL-SHIFT fails** (0.126; G-PROG 0.873; FROZEN-1 0). A copied pass is followed by a **two-reduction catch-up pass**. That is a new, descriptive signature, CATCH-UP, consistent with N3's COUNT-KEYED (§211).
+  - NOT-PREMATURE fails (n 8 0.951); DEPTH-TIMING not met.
+- **In both cells:** CLOCK-HOLD, EDGE-COLLAPSE and STALL-COUNT do **not** fire (frozen_nm8 0; halt_at_8 ≤ 0.12 at n 9–12; FROZEN-1 0).
+- **FT go rule: NOT met. FT does not run.**
+- **Caveat (descriptive):** G-PROG was designed against collapse, but in range it also flags passes that may be correct double reductions. Whether the flagged items' answers are right at their first DONE is requested from the rows. That changes no label.
+
+**2. RS.**
+- **N2 and N3: pooled n 11–16 UNREADABLE** (212-4).
+- **N1 (CARRY): HISTORY-KEYED.** RESTART − INTACT = **+0.829**, with readable cells (the 8 thin cells excluded per 212-2) and control |Δ| ≈ 0.
+- All three read HEAD-LIMITED by 211-15's letter (LONG-STEP min over m 12..16 < 0.95). For N1 this reflects graceful decay (m 12 0.988, m 16 0.625), not the PA cells' cliff.
+- **Reading [DERIVED].** N1's fresh single step works up to m 11–13 (212-6), but its intact continuation fails, and restarting from its own decoded state recovers +0.83. **N1's depth limit is trajectory drift in the carried state.** The lever that targets it is a per-pass re-encoding toward the fresh state (D's CANON / S's SELF-SNAP family).
+
+**3. GATHER-SPLICE on N3: NOT-GATHER** (pre-stated rule).
+- Target (T 31–33, m 8–10): intact 0.195 → GS 0.024 → mod31 0.193.
+- Control: 0.9986 in all arms.
+- Caveat: GS feeds the PA-trained core a pass input it never saw (the plain carry). mod31 is the direct query-addressing test, and it changes nothing.
+- So in N3 the length-keying sits in the PA-trained blocks, not in the gather's addressing.
+- N2's GS is pending. Audit's caveat stands beside it: N1 is not flat either (about 0.72 at T 47–49).
+
+**4. Go rules so far.** G1's rule fires but G1 is held (212-5). FT: not met. S: pending the STEP rows.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
