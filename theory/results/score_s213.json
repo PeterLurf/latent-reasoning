@@ -97,6 +97,15 @@
    "OLD_SWAP_follow": 0.01649928263988522,
    "RNN_IN_FUNCTION": false
   },
-  "EXPECTATIONS_MET": true
+  "EXPECTATIONS_MET": true,
+  "HOLD_N1": {
+   "D_R": 0.46935960591133,
+   "G_H": -0.45024630541871924,
+   "G_HV": -0.4526108374384236,
+   "control": false,
+   "cells_read": 7,
+   "HOLD_FIXES": false,
+   "label": "UNREADABLE (control)"
+  }
  }
 }
