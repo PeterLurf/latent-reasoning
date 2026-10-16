@@ -16741,6 +16741,26 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 3. **Fact, coda bank.** With V_0 out of the coda's bank (211-2), the coda's β⁰ rows are unused. The coda calibrates β over V_1..V_{t−1} only, against its causal part.
 4. **Fact, cost.** The step is launch-bound: about 0.55 s per micro-batch, independent of B, on the 4060. The draft's 0.35–0.8 s/step holds only at micro 1–2 on the 3090. Host G-TIME admits a cell at ≤ $3 or holds it; the family cap of $9 is unchanged.
 
+**Note 211-4 (2026-10-15 23:40 EDT; before any §211 output; the eval harness's operational definitions, from Experiments' boxes/vbank_eval.py questions; the 211-3 delta landed at 8b8499e1 with Audit's OK; no rule change).**
+
+1. **VALUE-SWAP donors.**
+   - **Decisive set (class A; it feeds SERIAL-STEP and RECOMPUTE-V0).**
+     - For each recipient (test n 4..8), list the t ∈ {2..n−1} whose handle has **two original-leaf operands**. Draw t uniformly from the list (rng 21120); drop the item if the list is empty.
+     - Resample (a′, b′) uniformly from the 11 × 11 pairs (b′ ≠ 0 for ÷) until the handle's value changes and y_donor ≠ y. Allow ≤ 200 tries, else drop.
+     - The donor and recipient then differ only in those two alive leaves in V_0..V_{t−1}, so y_hyb = y_donor is well defined.
+     - Slot b = the last slot of the span that changes between E_{t−1} and E_t.
+   - **Descriptive arm (class B, composite handles).** The handle at t has at least one operand computed at an earlier pass. The donor resamples the leaves under the handle's subtree until the handle's value changes and y_donor ≠ y.
+     - The donor's V_s..V_{t−1} then hold the donor's intermediate values. After a splice of V_t only, "own" means reading an older recipient version rather than recomputing from V_0.
+     - Reported by class, never decisive.
+   - **Caveat stated now.** Class-A handles are height-1 sub-results, the easiest to recompute (within c₀). So SERIAL-STEP on class A is a conservative test of version use, and a RECOMPUTE-V0 reading there does not by itself show that deep values are recomputed.
+   - Reported beside the result: the qualifying share by n, the drawn-t histogram, and the clean-ccc pair count by class.
+   - Batches are grouped by (n, t). Clean = recipient and donor each correct at K′ = n + 2.
+2. **STEP-CAP's alive count a** = the number of non-VOID content slots of E_{t−1}, excluding EOT and " =" (= the token length of cot_steps[t−1]).
+3. **Eval batch size.** eval_bs = 64 for every reading. In fp32 at K′ 24 and n 16 the bank does not fit 8 GB at 250. Batches are grouped by n; padded = per-item holds to 5.7e-15 in fp64. This is the "original eval_bs" for every re-check.
+4. **PROBE.** Trainable: blocks 10–11 plus the coda's bank β / γ rows. Frozen: ln_f and wte (the tied LM head).
+5. **carry_likeness** comes from the intact K′ = n + 2 rollouts.
+6. **acc_tf** applies MCT with target E_t to bank entries t ≥ 1.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
