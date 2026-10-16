@@ -16988,6 +16988,51 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 
 **A related correction (research document only; no THEORY.md text affected).** The red team's "conditional per-step success 0.97 → 0.72 over t 3–8" (REDTEAM_v0 F3c) is a ratio of consecutive *marginal* handle accuracies over different item populations. Its decay with t is composition: handles of height ≥ 3 are 0% of steps at t ≤ 2 and 100% at t = 8. It is not a conditional per-step rate.
 
+**Note 211-15 (2026-10-16 03:21 EDT; PRE-STATED before any §211 eval_vb.json output is read; the step and depth diagnostics of the bottleneck session; definitions fixed now; RUNNING them ($0, local, eval-only) needs the user's OK via Audit, as for 211-13; descriptive beside §211, not §211 readings).**
+
+**Sources.**
+- docs/research_bottleneck_2026-10-16/S_step_capability.md (099d5c31; inventor S, §1.3 D2 and §5);
+- docs/research_bottleneck_2026-10-16/D_depth_invariance.md (f840c23e; inventor D, §1.2).
+
+All readings are on N1 / N2 / N3, local fp32, eval_bs 32, §170 test set.
+
+**A. STEP diagnostics (inventor S, D2).**
+- **(i) STEP-CAP rows.** Exact-input events only (R(V_{t−1}) decodes E_{t−1} exactly), n 3..8, t ∈ [2, n].
+  - Columns per event: handle subtree height hh, held values, live length, max VOID gap, operand ages.
+  - **STEP-COMPOSES:** value STEP-CAP ≥ 0.95 in every hh class {1, 2, 3, 4, ≥ 5}, with ≥ 50 events per class (a never-reached class counts as failure).
+  - **RECOMPUTE-BOUNDED:** STEP-CAP q(1–2) ≥ 0.97 and min(q(4), q(≥ 5)) < 0.8.
+  - The E4 joint logistic (hh, t, length, held, bracket depth; coefficients per SD) is descriptive.
+- **(ii) OPERAND-FOLLOW (descriptive).** At pass t ∈ {2..n}, rewrite the handle's operand slots in every version since slot creation to new values (MCT edit in R's row space, μ 1.0; V_0 unchanged). The share of passes whose reduced value follows the edit is reported.
+- **(iii) RE-ROOT-VB (descriptive).** Pass-1 STEP-CAP on render(E_{t−1}) as a fresh problem, by the original hh.
+- **(iv) Gather mass split (N2 / N3, descriptive):** mass on (t−1, j), on (s < t−1, j) and on (·, i ≠ j).
+- **(v)** (iii) after o ∈ {2, 4} prepended V_0 copies (descriptive).
+- **Pre-stated prediction (S) [CONJECTURE, P 0.65]:** a §211 cell reading CARRY-NO-STEP or NO-ENTRY shows q(1–2) ≥ 0.97, q(≥ 4) < 0.8 and OPERAND-FOLLOW < 0.5.
+
+**B. DEPTH diagnostics (inventor D).**
+- **RESTART-SPLIT (RS).** For test items n 9..16, cut at t (remaining r ∈ {2, 4, 6, 8}), conditioned on an exact decode (argmax R(V_t), VOIDs dropped, = cot_steps[t]).
+  - INTACT-CONT = P(correct at K′ = n + 2).
+  - RESTART = P(correct when the decoded expression is run as a fresh problem at K′ = r + 2).
+  - Control: n ≤ 8, every r.
+  - Unparseable decodes are reported as a rate.
+- **RS labels:**
+  - **HISTORY-KEYED:** pooled n 11–16, r ∈ {4, 6}, RESTART − INTACT-CONT ≥ 0.20, with control |Δ| ≤ 0.03 and ≥ 100 conditioned items per cell.
+  - **HISTORY-FREE:** |Δ| ≤ 0.05.
+  - **HEAD-LIMITED:** LONG-STEP(12..16) < 0.95 while LONG-STEP(≤ 8) ≥ 0.99, where LONG-STEP(m) is the per-step exactness on fresh versions with m operators (re-rooted after every pass).
+  - Cells with < 100 items are UNREADABLE.
+- **PREFIX-FACTORIAL (PF).** Natural items whose step-k state is exactly a fixed remainder Q (r ∈ {2, 3}), over k (fixed span s) and over s (fixed k). S(k, s) = P(correct | exact at k).
+  - **CLOCK-KEYED:** at fixed s, S − S(0) ≤ −0.15 once k + r > 8, with |Δ| ≤ 0.03 for k + r ≤ 8.
+  - **POSITION-KEYED:** a slope in s ≤ −0.01 per slot at fixed k.
+  - **CONTENT-KEYED:** both flat within 0.05.
+- **HIST-TRUNC** = eval_vb's `bank_ablate` (registered form, 211-14).
+  - **HISTORY-HURTS:** n 9–12 gain ≥ 0.10 over intact, while n ≤ 8 changes by ≥ −0.03.
+- **Pre-stated predictions (D) [CONJECTURE]:** N1 HISTORY-KEYED, partly HEAD-LIMITED; HISTORY-HURTS P 0.5.
+
+**C. INJECT models (descriptive; data already seen for other readings).** S's D1 (187-3 rows plus RE-ROOT on s185_rms_s3, s205_iit_s3, s185_rms_s1) and D's RS / PF on §190 s1 / s2 and §193 s1 / s2.
+- **Pre-stated (S):** the failed seeds reproduce the HH-FIT profile in-trajectory (q(4) < 0.8) with RE-ROOT ≥ 0.98 in every original-hh class.
+- **Falsifier of the recompute account:** RE-ROOT also falls with hh.
+
+**Use.** These choose which bottleneck binds in VB, and so which Stage-1 cell of the bottleneck draft is proposed. No §211 label is affected.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
