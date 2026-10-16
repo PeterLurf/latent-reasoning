@@ -17494,6 +17494,37 @@ Readings:
 ```
 plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 
+**Note 212-12 (2026-10-16 13:38 EDT; the full §212 Stage 0 scoring, theory/score_s212.py on every Stage 0 file of N1–N3; plus the pooling rule for 212-11, stated before eval_d3diag.json lands).**
+
+**1. Labels** (pre-stated rules; local fp32 at eval_bs 32):
+
+| reading | N2 (PA, base) | N1 (CARRY) | N3 (PA + MCT) |
+|---|---|---|---|
+| RS | UNREADABLE (no decodes past n 11) | **HISTORY-KEYED** (Δ +0.83) | UNREADABLE |
+| LONG-STEP | HEAD-LIMITED (cliff at T ≥ 29–31) | HEAD-LIMITED by letter (graceful decay; m 12 0.988, m 16 0.625) | HEAD-LIMITED (cliff) |
+| CONTENT-HALT | HALT-EXACT + STALL-SHIFT; NOT-PREMATURE fails via G-PROG; no DEPTH-TIMING | HALT-IN-RANGE (all three in-range parts); no DEPTH-TIMING | HALT-EXACT; STALL-SHIFT fails (CATCH-UP) |
+| PF (gap / slope) | neither label (−0.066 / −0.001) | CLOCK-KEYED (−0.150, at the bar) | CLOCK- + POSITION-KEYED (−0.195 / −0.011) |
+| HIST (BANK-ABLATE) | USED | IGNORED | USED |
+| EVAL-HISTORY-GAIN | no | no | no |
+| FOREIGN | CLOCK-FOREIGN (−0.196), **confounded** (PA: a foreign newest entry at the first pass) | **no clock** (−0.018; the clean CARRY test) | CLOCK-FOREIGN (−0.160), confounded |
+| REPAIR | uninformative (0 events) | uninformative (0) | uninformative (2) |
+| STEP trigger | no (ΔLL −0.16 / 1k; about 3 errors) | no (0 errors) | no (ΔLL −0.10 / 1k) |
+
+- Every cell is DEEP.
+- STEP-CAP is about 1.000 at every subtree height in every cell.
+
+**2. Go rules.** G1 fires but is **held by the user** (212-5). **FT: not triggered. S: not triggered.**
+
+**3. Reading [DERIVED from the labels; mechanisms CONJECTURE].**
+- **N1:** its PF CLOCK-KEYED sits beside HISTORY-IGNORED, a clean no-clock FOREIGN and HISTORY-KEYED RS. So it reads as **trajectory-length-keyed drift of the carried state**, not a bank-index or pass-count clock. A restart from its own decode recovers it fully (restart 1.000).
+- **The PA cells' limit** is the long-input step (HEAD-LIMITED cliff), mechanism under D3's diagnosis.
+- **No constraint-narrowing change is supported:** no EVAL-HISTORY-GAIN in any cell.
+
+**4. Pooling rule for 212-11 (Audit's ask, stated before output).**
+- Target and exposed control are pooled **item-weighted** (n_steps-weighted over (m, T) cells).
+- The per-cell target n is reported. Audit: 10_31 has 627 and 10_33 has 307, so the pool is dominated by m = 10.
+- The scorer also reports, per arm, the **count of exposed-control cells differing from intact**. That proves the control is exposed.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

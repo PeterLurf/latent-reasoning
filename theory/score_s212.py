@@ -123,6 +123,8 @@ def hist_read(ev, arms):
     if arms:
         gains = {}
         for k, v in arms.items():
+            if k not in ("v0off", "floor2", "recent1") or not isinstance(v, dict):     # files carry descriptive keys ("def", card, ...)
+                continue
             c = v["acc_n2"]; lo = sum(c[str(n)] - a[str(n)] for n in range(1, 9)) / 8; hi = sum(c[str(n)] - a[str(n)] for n in range(9, 13)) / 4
             gains[k] = {"le8": lo, "9_12": hi, "gain": bool(hi >= 0.10 - EPS and lo >= -0.03 - EPS)}
         o["arms"] = gains; o["EVAL_HISTORY_GAIN"] = any(g["gain"] for g in gains.values())
@@ -176,6 +178,37 @@ def step_trigger(rows):
     return {"events": len(rows), "dLL_per_1k": per1k, "hh_coef_prov1": coef, "FIRES": bool(per1k >= 5 - EPS and coef is not None and coef >= 0.5 - EPS)}
 
 
+def d3diag(d):
+    """Note 212-11 (+ 212-12 pooling): item-weighted (n_steps-weighted) pooling over cells; target T in {31, 33}, m 8..10; exposed control m <= 8, T 25..29.
+    Reports per-cell n for the target and the count of control cells where the arm differs from intact (the exposure proof)."""
+    f = jl(d, "eval_d3diag.json")
+    if f is None:
+        return None
+    I = f["intact"]["fresh_m_T"]
+    def sel(G, tgt):
+        out = []
+        for k, c in G.items():
+            m, T = (int(x) for x in k.split("_"))
+            if (tgt and T in (31, 33) and 8 <= m <= 10) or ((not tgt) and m <= 8 and 25 <= T <= 29):
+                out.append((k, c["n_steps"], c["exact"]))
+        return out
+    def pool(rows):
+        w = sum(n for _, n, _ in rows); return sum(n * e for _, n, e in rows) / w if w else None
+    res = {"target_cells_n": {k: n for k, n, _ in sel(I, True)}}
+    it, ic = pool(sel(I, True)), pool(sel(I, False))
+    for arm in ("gs24", "wpe_b1", "wpe_b2"):
+        if arm not in f:
+            continue
+        G = f[arm]["fresh_m_T"]; at, ac = pool(sel(G, True)), pool(sel(G, False))
+        diff = sum(1 for k, _, e in sel(G, False) if k in I and abs(I[k]["exact"] - e) > 0)
+        rise, cdrop = (at - it), (ac - ic)
+        unread = cdrop < -0.02 - EPS
+        lab = "UNREADABLE (exposed control drops %.3f)" % cdrop if unread else ("BOTTLENECK / CAUSAL" if rise >= 0.30 - EPS else ("NOT" if rise < 0.10 else "INTERMEDIATE"))
+        res[arm] = {"target": at, "target_intact": it, "rise": rise, "control": ac, "control_intact": ic, "control_change": cdrop,
+                    "control_cells_differing": diff, "label": lab}
+    return res
+
+
 def stage0():
     out = {}
     for tag, d in STAGE0.items():
@@ -183,8 +216,11 @@ def stage0():
         rep = jl(d, "eval_repair.json"); rows = (jl(d, "eval_step_rows.json") or {}).get("rows")
         out[tag] = {"RS": rs_read(jl(d, "eval_rs.json"), range(11, 17), (4, 6)), "HALT": halt_read(jl(d, "eval_vbhalt.json")),
                     "PF": pf_read(jl(d, "eval_pf.json")), "HIST": hist_read(ev, jl(d, "eval_hist_arms.json")), "FOREIGN": foreign_read(jl(d, "eval_foreign.json")),
-                    "REPAIR": None if rep is None else {"p": rep["p_right_after_wrong"], "GE_0_2": rep["p_right_after_wrong"] >= 0.2 - EPS},
-                    "STEP": step_trigger(rows), "DEEP": bool(ev and all(ev["acc_n2"][str(n)] >= 0.90 - EPS for n in range(3, 9)))}
+                    "REPAIR": None if rep is None else {"p": rep["p_right_after_wrong"], "n_events": rep.get("n_events"),
+                                                        "GE_0_2": (rep["p_right_after_wrong"] is not None and rep["p_right_after_wrong"] >= 0.2 - EPS),
+                                                        "informative": bool(rep.get("n_events") and rep["n_events"] >= 30)},
+                    "STEP": step_trigger(rows), "DEEP": bool(ev and all(ev["acc_n2"][str(n)] >= 0.90 - EPS for n in range(3, 9))),
+                    "D3DIAG": d3diag(d)}
     rsd = [v["RS"] for v in out.values() if v["RS"]]
     g1 = None if not rsd else (not all(r["HISTORY_FREE"] and r["HEAD_LIMITED"] for r in rsd))
     b = out["N2"]; ft = None if b["HALT"] is None else bool(b["DEEP"] and (b["HALT"]["CLOCK_HOLD"] or b["HALT"]["EDGE_COLLAPSE"] or b["HALT"]["STALL_COUNT"]))
