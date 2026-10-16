@@ -17757,6 +17757,19 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - **These are reported beside the bucket accuracies.** The 213-1 rule is unchanged.
 - **One pre-stated branch:** if SENSITIVE fails **and** faults_class_differs < 0.03 × the ge33 events (0.045 expected), the control is re-run once at p 0.10 (rng 21303) as eval_lfk.json["fault2"], and the rule is applied to fault2. Otherwise a failed SENSITIVE stands, and (a′) is replaced by amendment.
 
+**Note 212-18 (2026-10-16 14:52 EDT; S0-1 SELECTOR on N1, the 212-15 / 212-16 rule; s211_vb_carry_s1/eval_d3sel.json, 27245354, 2070, fp32, eval_bs 32; in-run gates bitwise: intact = eval_vb, cells and gapped_control restart = eval_rs; scored with theory/score_s212's d3sel).**
+
+**Rule: ADD-VOIDMASK is NOT MET, so §213's cells launch without VOID key masks.**
+- The selector is readable: 7 cells ≥ 100 items (5,075 items; 12_4 excluded, with 6).
+- **D_R = +0.469**, **G_MV = −0.177**, so G_MV < 0.5·D_R.
+- MASKVOID's control holds: acc_n2 ≥ intact − 0.02 at n 1..8 (0.995 at n 8). Exposure is 100% of items at every n.
+
+**Descriptive** (one-directional: an eval-time mask on a model never trained with masks can false-negative, so this null does not exclude *trained* VOID masks):
+- **MASKVOID** keeps n ≤ 8 but *lowers* depth: n 9 / 10 / 11 go 0.853 / 0.456 / 0.182 → 0.509 / 0.351 / 0.133. N1's long trajectories **use** their consumed slots. Attending to VOIDs is not what causes N1's drift.
+- **REFRESH** (copy slots reset to V_0) fails its control: N1 collapses from n 2 (0.149). N1's carried copy-slot code is far from V_0. This supports keeping COPY-ANCHOR out (D3_v1 §0 row 3).
+- **GAPPED** fails its own control: 0.114–0.717 against restart 1.000 at n 5–8. It is off-distribution for N1, so the layout share is UNREADABLE.
+- **The cause of N1's trajectory deficit** (RS +0.47 pooled n 9–12) therefore remains undetermined between drift and layout. It is only shown not to be VOID reads.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
