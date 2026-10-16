@@ -1,0 +1,128 @@
+{
+ "reroot": {
+  "o0": {
+   "1": {
+    "n": 6956,
+    "exact": 0.9987061529614721
+   },
+   "2": {
+    "n": 8000,
+    "exact": 0.999375
+   },
+   "3": {
+    "n": 5918,
+    "exact": 1.0
+   },
+   "4": {
+    "n": 3921,
+    "exact": 1.0
+   },
+   "5": {
+    "n": 2205,
+    "exact": 1.0
+   }
+  },
+  "o2": {
+   "1": {
+    "n": 6956,
+    "exact": 0.9981311098332375
+   },
+   "2": {
+    "n": 8000,
+    "exact": 0.99925
+   },
+   "3": {
+    "n": 5918,
+    "exact": 1.0
+   },
+   "4": {
+    "n": 3921,
+    "exact": 1.0
+   },
+   "5": {
+    "n": 2205,
+    "exact": 1.0
+   }
+  },
+  "o4": {
+   "1": {
+    "n": 6956,
+    "exact": 0.9976998274870615
+   },
+   "2": {
+    "n": 8000,
+    "exact": 0.99925
+   },
+   "3": {
+    "n": 5918,
+    "exact": 1.0
+   },
+   "4": {
+    "n": 3921,
+    "exact": 0.9997449630196379
+   },
+   "5": {
+    "n": 2205,
+    "exact": 1.0
+   }
+  }
+ },
+ "split": {
+  "2": {
+   "n": 6000,
+   "self_t1_j": 0.06287218220035234,
+   "older_same_j": 0.31095185832182565,
+   "cross_slot": 0.626175990819931
+  },
+  "3": {
+   "n": 6000,
+   "self_t1_j": 0.07002363365888596,
+   "older_same_j": 0.2680297297437986,
+   "cross_slot": 0.6619466667175293
+  },
+  "4": {
+   "n": 5000,
+   "self_t1_j": 0.05748279954195023,
+   "older_same_j": 0.22845327775478363,
+   "cross_slot": 0.7140639506340026
+  },
+  "5": {
+   "n": 4000,
+   "self_t1_j": 0.04775675165653229,
+   "older_same_j": 0.20024086436629296,
+   "cross_slot": 0.7520024118423462
+  },
+  "6": {
+   "n": 3000,
+   "self_t1_j": 0.04116597433884939,
+   "older_same_j": 0.17795818547407785,
+   "cross_slot": 0.7808758705457052
+  },
+  "7": {
+   "n": 2000,
+   "self_t1_j": 0.03554810401797295,
+   "older_same_j": 0.16023175925016403,
+   "cross_slot": 0.8042201702594757
+  },
+  "8": {
+   "n": 1000,
+   "self_t1_j": 0.030338364243507384,
+   "older_same_j": 0.14612781262397767,
+   "cross_slot": 0.8235338487625122
+  }
+ },
+ "split_pooled": {
+  "self_t1_j": 0.05558327388101154,
+  "older_same_j": 0.23768834304368056,
+  "cross_slot": 0.7067284128401015
+ },
+ "def": "note 211-15 A descriptives: (iii) RE-ROOT-VB - pass-1 STEP-CAP on render(E_{t-1}) as a fresh problem, test items n 3..8, t 2..n, by the original\nhandle height hh (S's steps_features), exact = the full next-step decode; (v) the same after o in {2, 4} prepended V_0 copies (INSERT prefix of V_0,\nthen one real pass); (iv, PA only) the gather mass split at passes 2..n of the intact rollout to n: on (t-1, j) / on (s < t-1, j) / on (., i != j).",
+ "run": "boxes/runs_fsq/s211_vb_pamct_s1",
+ "mode": "pa",
+ "mct": true,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 95
+}
