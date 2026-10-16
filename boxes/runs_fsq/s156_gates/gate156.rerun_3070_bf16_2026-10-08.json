@@ -1,0 +1,106 @@
+{
+ "device": "NVIDIA GeForce RTX 3070",
+ "amp": "torch.bfloat16",
+ "g1_sep_ids": [
+  91
+ ],
+ "g1_roundtrip": true,
+ "g1_pass": true,
+ "g2_interleave_slots_are_sep": true,
+ "g2_pause_last_sep_then_digits": true,
+ "g2_lengths": {
+  "interleave": 25,
+  "pause": 25
+ },
+ "g2_positions": {
+  "interleave": [
+   10,
+   12,
+   14,
+   16,
+   18,
+   20,
+   22,
+   24
+  ],
+  "pause": [
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24
+  ]
+ },
+ "g2_pass": true,
+ "g3_targets_per_row": 8,
+ "g3_pass": true,
+ "g4_reader_ids_row0": [
+  50256,
+  796,
+  91,
+  362,
+  91,
+  767,
+  91,
+  362,
+  91,
+  807,
+  91,
+  767,
+  91,
+  362,
+  91,
+  718,
+  91
+ ],
+ "g4_reader_layout_ok": true,
+ "g4_grad": {
+  "interleave": {
+   "P": 183.18997192382812,
+   "h.0": 11.790889739990234,
+   "h.11": 5.716819763183594,
+   "wte": 93.554443359375
+  },
+  "pause": {
+   "P": 61.541465759277344,
+   "h.0": 3.3933680057525635,
+   "h.11": 4.0474066734313965,
+   "wte": 37.58634948730469
+  },
+  "multrow_reader": {
+   "s_add": 0.018789827823638916,
+   "s_del": 0.0037813070230185986,
+   "ln.weight": 0.046379491686820984,
+   "ln.bias": 0.10637901723384857,
+   "qkv.weight": 0.19358371198177338,
+   "qkv.bias": 0.03395439311861992,
+   "gate.weight": 0.026329489424824715,
+   "gate.bias": 0.00268337270244956,
+   "wo.weight": 0.5300276279449463,
+   "wo.bias": 0.11940758675336838
+  },
+  "multrow_final": {
+   "s_add": 0.034811437129974365,
+   "s_del": 0.0030346508137881756,
+   "ln.weight": 0.07425933331251144,
+   "ln.bias": 0.16520200669765472,
+   "qkv.weight": 0.320420503616333,
+   "qkv.bias": 0.05147337168455124,
+   "gate.weight": 0.034465283155441284,
+   "gate.bias": 0.002584870206192136,
+   "wo.weight": 0.8841231465339661,
+   "wo.bias": 0.10204771906137466
+  }
+ },
+ "g4_zero": {
+  "interleave": [],
+  "pause": [],
+  "multrow_reader": [],
+  "multrow_final": []
+ },
+ "g4_pass": true,
+ "all_pass": true
+}
