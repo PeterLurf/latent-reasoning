@@ -1,0 +1,71 @@
+{
+ "N2": {
+  "cell": "s211_vb_pa_s1",
+  "last_step": 48000,
+  "dead": false,
+  "entry_answer_ce_05": 16000,
+  "entry_loss_05": 21000,
+  "entry_answer_ce_01": 26000,
+  "DEEP": true,
+  "ACC_n2_pooled": 0.9998333333333332,
+  "PROBE": {
+   "0": 0.1195,
+   "1": 0.132,
+   "2": 0.23083333333333333,
+   "3": 0.37333333333333335,
+   "4": 0.5231666666666667,
+   "6": 0.8033333333333333,
+   "8": 0.9998333333333332,
+   "12": 0.9998333333333332
+  },
+  "PROBE_VALID": true,
+  "PROBE_GAIN_value": 0.8678333333333332,
+  "PROBE_GAIN": true,
+  "ONESHOT_PRECOMPUTE": false,
+  "onset": {
+   "coverage": {
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 0.999
+   },
+   "median_onset_by_n": {
+    "3": 2.0,
+    "4": 3.0,
+    "5": 4.0,
+    "6": 6.0,
+    "7": 6.0,
+    "8": 8.0
+   },
+   "slope_height": 1.2857142857142858,
+   "slope_n": 1.1714285714285715,
+   "gap_8_3": 6.0,
+   "SERIAL_ONSET": true
+  },
+  "vswap_pairs": 4183,
+  "SERIAL_STEP": true,
+  "stall_recovery": 0.9971994398879778,
+  "NO_CLOCK": true,
+  "DEPTH_9_12": 0.41375,
+  "REACH": 9,
+  "carry_likeness": 0.2199497933740969,
+  "VB_C1": true,
+  "labels": [
+   "VB-C1"
+  ],
+  "label": "VB-C1"
+ },
+ "N1": {
+  "cell": "s211_vb_carry_s1",
+  "last_step": 48000,
+  "label": "pending (eval_vb.json partial; missing ['probe', 'vswap', 'stall'])"
+ },
+ "N3": {
+  "cell": "s211_vb_pamct_s1",
+  "last_step": 48000,
+  "label": "pending (eval_vb.json partial; missing ['vswap', 'stall'])"
+ },
+ "reading": "N2 s211_vb_pa_s1: VB-C1 | N1 s211_vb_carry_s1: pending (eval_vb.json partial; missing ['probe', 'vswap', 'stall']) | N3 s211_vb_pamct_s1: pending (eval_vb.json partial; missing ['vswap', 'stall'])"
+}
