@@ -1,0 +1,24 @@
+{
+ "pa": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "loss_new": [
+   8.529525756835938,
+   8.959993362426758,
+   7.381217956542969
+  ]
+ },
+ "carry": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "loss_new": [
+   8.529525756835938,
+   8.959993362426758,
+   7.381217956542969
+  ]
+ },
+ "pass": true,
+ "device": "cpu"
+}

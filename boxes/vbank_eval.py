@@ -37,7 +37,8 @@ def height(nd):
 
 def load(run, dev):
     from boxes import s5
-    a = json.load(open(os.path.join(run, "args.json"))); m = VB.VBankN(s5.load_gpt2(dev), a["mode"]).to(dev)
+    a = json.load(open(os.path.join(run, "args.json"))); m = VB.make_model(s5.load_gpt2(dev), a["mode"], a.get("table", "train")).to(dev)   # §213 G-D0 factory
+    assert type(m).__name__ == a.get("arch", "VBankN"), (type(m).__name__, a.get("arch"))
     m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=True)); m.eval()
     for p_ in m.parameters():
         p_.requires_grad_(False)
@@ -104,7 +105,7 @@ def part_acc(m, TE, dev, bs):
     for n in range(1, 17):
         for ch in chunks(np.nonzero(Nn == n)[0], bs):
             its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B, T = x.shape; E = VB.rec_targets(its, 24, T, dev)
-            m.gather_log = [] if m.mode == "pa" else None
+            m.gather_log = [] if m.mode != "carry" else None                # PA gather / SLVA (§213): newest-version mass
             r = m.rollout(x, pad, 24, coda_rows={t: torch.arange(B, device=dev) for t in set(KS) | {n + 2}})
             for k in KS:
                 A[k][ch] = ans(m, r["coda"][k][1], lens).cpu().numpy()

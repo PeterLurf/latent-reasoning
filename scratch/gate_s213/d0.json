@@ -1,0 +1,30 @@
+{
+ "types": [
+  "SLVA",
+  "VBankN",
+  "VBankN"
+ ],
+ "slva_names": [
+  "slva_beta0",
+  "slva_bk",
+  "slva_bq",
+  "slva_gamma",
+  "slva_ln_k",
+  "slva_ln_q",
+  "slva_wk",
+  "slva_wq"
+ ],
+ "no_pa_gather_params": true,
+ "mode_anneals": [
+  "slva",
+  true,
+  false,
+  true
+ ],
+ "n2_into_slva_strict_fails": true,
+ "n2_err_head": "Error(s) in loading state_dict for SLVA:\n\tMissing key(s) in state_dict: \"slva_wq\", \"slva_bq\", \"slva_wk\", \"slva_bk\", \"slva_beta0\", \"slva_gamma\", \"slva_ln_q.weigh",
+ "frozen_needs_slva": true,
+ "ve_load_n2": "VBankN",
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

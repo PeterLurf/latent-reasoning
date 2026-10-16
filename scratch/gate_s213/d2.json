@@ -1,0 +1,7 @@
+{
+ "no_nan_all_slots": true,
+ "padded_vs_alone_rel_max": 4.4629383749636566e-15,
+ "n_pad_slots": 196,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

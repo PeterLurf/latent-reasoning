@@ -1,0 +1,22 @@
+{
+ "keep": true,
+ "v0_off_after": true,
+ "foreign_ver_sub": true,
+ "foreign_prefix_vs_carry_from_F": true,
+ "age_floor": true,
+ "slot_mask": true,
+ "input_edit": true,
+ "slva_gather_splice_finite": true,
+ "slva_gather_splice_split_cross_max": 0.0,
+ "slva_hist_self_finite": true,
+ "slva_hist_self_split_cross_max": 0.0,
+ "slva_hist_other_finite": true,
+ "slva_hist_other_split_cross_max": 0.0,
+ "qmod_asserts": true,
+ "c0_unmasked_mid_mass_min": 1.0370636118750554e-06,
+ "c0_keep_mid_mass_max": 0.0,
+ "c0_offv0_v0_mass_max": 0.0,
+ "c0_self_mid_mass_max": 0.0,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 2070"
+}

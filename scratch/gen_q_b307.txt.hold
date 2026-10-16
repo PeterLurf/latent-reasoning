@@ -1,0 +1,6 @@
+# THEORY §213 D3 D3-T (N2 + SLVA; table trains), seed 1 (registered f08b14c0; D3_v1.md at c9f3f980; scorer theory/score_s213.py; user-approved option A via Audit 14:36 10-16, pair cap $4.5). boxes/slva.py + boxes/vbank.py (gates scratch/gate_s213/*.json). RTX 3090, non-580, via scratch/s213_fill.sh: HOSTPROBE, line 1 = mem_check (G-D7), line 2 = G-TIME (forced final-stage n <= 8, K 12) -> admission on its s/step; line 3 = the cell (48k, bs 64, --auto_micro, ckpt every 1k, ARGS-DIFF vs N2's args.json in the launch log; off-host ckpt mirror). Evals local fp32 post-landing (note 213-1).
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s213_d3t_s1_mem boxes.vbank --mode slva --table train --seed 1 --steps 48000 --mem_check --auto_micro
+boxes/runs_fsq/s213_d3t_s1_gtime boxes.vbank --mode slva --table train --seed 1 --steps 48000 --time_steps 60 --auto_micro
+boxes/runs_fsq/s213_d3t_s1 boxes.vbank --mode slva --table train --seed 1 --steps 48000 --auto_micro --ckpt_every 1000 --args_ref scratch/s213_args_ref_n2.json
