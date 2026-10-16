@@ -502,7 +502,7 @@ def _lower_masked(g, x, km):
 @torch.no_grad()
 def part_d3sel(m, TE, dev, bs):
     """note 212-15 S0-1 SELECTOR (D3_v1 §6). Arms at K' = n + 2 on the §170 test set (part_rs's chunks):
-    intact; MASKVOID = vbank slot_mask: a slot whose argmax R(V_t[j]) is VOID (t >= 1, the model's own decode) is removed from every reader (core / coda
+    intact; MASKVOID = vbank slot_mask: a slot whose argmax R(V_t[j]) is VOID (t >= 1, the model's own decode; never EOT / ' =') is removed from every reader (core / coda
     bank entries of EVERY stored version, the current version's keys; PA: the gather) for every core pass > t and the coda after pass >= t;
     REFRESH = rollout(edit): at every pass t >= 1, slots whose argmax R(V_t[j]) equals their input class E_0[j] have their stored entry (and the carry)
     set to V_0[j]. RS items (exact decode at t = n - r, part_rs's classify): restart = part_rs's compact fresh run at K' = r + 2, computed over part_rs's
@@ -516,7 +516,8 @@ def part_d3sel(m, TE, dev, bs):
     for n in range(1, 17):
         for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
             its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B, T = x.shape; E0 = VB.rec_targets(its, 0, T, dev)[:, 0]; rows = torch.arange(B, device=dev)
-            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}); acc["intact"][ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy()
+            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}); lg_ = m.answer_logits(r_["coda"][n + 2][1], lens); assert bool(torch.isfinite(lg_).all())
+            acc["intact"][ch] = lg_[:, num].argmax(-1).cpu().numpy()
             for r in RR:
                 t = n - r
                 if t < 1:
@@ -528,14 +529,16 @@ def part_d3sel(m, TE, dev, bs):
             V0 = r_["V"][0]; del r_
             ex = {"any": torch.zeros(B, dtype=torch.bool, device=dev), "ev": 0}
 
-            def mv(t, V, ex=ex, pad=pad):
+            def mv(t, V, ex=ex, pad=pad, lens=lens):
                 z = (m.rec_logits(V).argmax(-1) == VB.VOID) if t >= 1 else torch.zeros(V.shape[:2], dtype=torch.bool, device=V.device)
-                z = z & pad; ex["any"] |= z.any(1); ex["ev"] += int(z.sum()); return z
+                z = z & pad; z[:, 0] = False; z[torch.arange(len(lens), device=z.device), lens - 1] = False   # Audit 14:4x (PROOFS_D3 row 1): EOT / ' =' never
+                ex["any"] |= z.any(1); ex["ev"] += int(z.sum()); return z                                 # consumed (an all -inf row 0 at t <= 1 -> NaN)
             try:
                 m.slot_mask = mv; rm_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows})
             finally:
                 m.slot_mask = None
-            acc["maskvoid"][ch] = m.answer_logits(rm_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rm_
+            lg_ = m.answer_logits(rm_["coda"][n + 2][1], lens); assert bool(torch.isfinite(lg_).all()), "MASKVOID: non-finite answer logits"
+            acc["maskvoid"][ch] = lg_[:, num].argmax(-1).cpu().numpy(); del rm_
             e_ = expo["maskvoid"].setdefault(str(n), [0, 0, 0]); e_[0] += int(ex["any"].sum()); e_[1] += ex["ev"]; e_[2] += B
             ex = {"any": torch.zeros(B, dtype=torch.bool, device=dev), "ev": 0}
 
@@ -543,7 +546,8 @@ def part_d3sel(m, TE, dev, bs):
                 z = (m.rec_logits(V).argmax(-1) == E0) & pad; ex["any"] |= z.any(1); ex["ev"] += int(z.sum())
                 return torch.where(z[..., None], V0, V)
             rr_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}, edit=rf)
-            acc["refresh"][ch] = m.answer_logits(rr_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rr_
+            lg_ = m.answer_logits(rr_["coda"][n + 2][1], lens); assert bool(torch.isfinite(lg_).all()), "REFRESH: non-finite answer logits"
+            acc["refresh"][ch] = lg_[:, num].argmax(-1).cpu().numpy(); del rr_
             e_ = expo["refresh"].setdefault(str(n), [0, 0, 0]); e_[0] += int(ex["any"].sum()); e_[1] += ex["ev"]; e_[2] += B
         print("D3SEL n", n, {a_: round(float((acc[a_] == Y)[Nn == n].mean()), 3) for a_ in ARMS}, flush=True)
     rest = {}
@@ -574,7 +578,8 @@ def part_d3sel(m, TE, dev, bs):
                 rg = m.rollout(x, pad, r + 2, coda_rows={r + 2: torch.arange(len(part), device=dev)}, v0=_lower_masked(m.g, x, km))
             finally:
                 m.slot_mask = None
-            a_ = m.answer_logits(rg["coda"][r + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rg
+            lg_ = m.answer_logits(rg["coda"][r + 2][1], lens); assert bool(torch.isfinite(lg_).all()), "GAPPED: non-finite answer logits"
+            a_ = lg_[:, num].argmax(-1).cpu().numpy(); del rg
             for k_, (j, t) in enumerate(part):
                 gap[(j, t)] = bool(a_[k_] == TE[j]["t"])
     mean_ = lambda v: float(np.mean(v)) if len(v) else None  # noqa: E731
