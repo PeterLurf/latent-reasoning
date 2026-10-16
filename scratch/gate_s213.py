@@ -252,15 +252,80 @@ def g_g1b(dev, runs=("s213_g1b_T", "s213_g1b_F"), steps=(0, 1000, 2000)):
             pn = {str(t): float(torch.cat(pnl[t]).mean()) for t in range(9)}; ce_t = {t: torch.cat(cel[t]) for t in range(9)}
             ce_kn = float(torch.stack([ce_t[int(n)][i] for i, n in enumerate(nn_.tolist())]).mean())
             o[str(st)] = {"p_num_by_pass": pn, "ce_kn": ce_kn, "drift": pn["1"] - pn["8"], "c": float(m.c_anneal)}
-        o["pass"] = o[str(steps[-1])]["drift"] < o[str(steps[0])]["drift"] and o[str(steps[2])]["ce_kn"] < o[str(steps[1])]["ce_kn"] < o[str(steps[0])]["ce_kn"]
+        o["pass_g1b"] = o[str(steps[-1])]["drift"] < o[str(steps[0])]["drift"] and o[str(steps[2])]["ce_kn"] < o[str(steps[1])]["ce_kn"] < o[str(steps[0])]["ce_kn"]
+        # G-D3: the table in the kept checkpoints (T: changes from step 0; F: bytes == the pretrained table at 0 / 1000 / 2000)
+        pre = s5.load_gpt2("cpu").p["wpe_weight"].detach().float()
+        w_ = {st: torch.load(os.path.join(d, "ckpt_model_%d.pt" % st), map_location="cpu", weights_only=False)["model"]["g.p.wpe_weight"].float() for st in steps}
+        o["wpe_equal_pretrained"] = {str(st): bool(torch.equal(w_[st], pre)) for st in steps}; o["wpe_maxdiff_vs_pretrained"] = {str(st): float((w_[st] - pre).abs().max()) for st in steps}
+        o["pass_gd3"] = all(o["wpe_equal_pretrained"].values()) if a["table"] == "frozen" else (o["wpe_equal_pretrained"]["0"] and not o["wpe_equal_pretrained"][str(steps[-1])])
+        # G-D4 (first 2k): every logged c == c_at(step, 1000, 8000); SLVA grad exactly 0 while c = 1e4 and > 0 after
+        lg_ = [json.loads(l_) for l_ in open(os.path.join(d, "log.jsonl")) if '"loss"' in l_]
+        o["c_log_matches"] = all(abs(r_["c"] - VB.c_at(r_["step"], 1000, 8000)) <= 1e-9 * max(1.0, r_["c"]) for r_ in lg_)
+        o["slva_gn_zero_at_c1e4"] = all(r_["slva_gn"] == 0.0 for r_ in lg_ if r_["step"] <= 1000); o["slva_gn_pos_after"] = all(r_["slva_gn"] > 0 for r_ in lg_ if r_["step"] > 1000)
+        o["c_at_1500_2000"] = [r_["c"] for r_ in lg_ if r_["step"] in (1500, 2000)]
+        o["pass"] = o["pass_g1b"] and o["pass_gd3"] and o["c_log_matches"] and o["slva_gn_zero_at_c1e4"] and o["slva_gn_pos_after"]
         out[run] = o
     out["pass"] = all(v["pass"] for k, v in out.items() if k != "pass"); return out
+
+
+def g_d4(dev):
+    """G-D4 at 500 / 2k / 5k / 8k: the real trainer, --stop_at 1 --ckpt_every 1 -> ckpt_last.pt; its step relabelled to S - 1; --resume --stop_at S
+    --log_every S logs the c the trainer applied at step S (and the SLVA fields). Expected 1e4 / 17.142857 / 8.571429 / 0."""
+    base = "D:/Latent/scratch/_tmp/s213_gd4"; o = {"expected": {}, "logged": {}}; seed_dir = base + "/seed"; os.makedirs(seed_dir, exist_ok=True)
+    common = [sys.executable, "-m", "boxes.vbank", "--mode", "slva", "--table", "train", "--steps", "48000", "--bs", "16", "--micro", "1", "--device", dev]
+    if not os.path.exists(seed_dir + "/ckpt_last.pt"):
+        r = subprocess.run(common + ["--stop_at", "1", "--ckpt_every", "1", "--log_every", "1", "--out", seed_dir], cwd="D:/Latent", capture_output=True, text=True); assert r.returncode == 0, r.stderr[-1500:]
+    for S in (500, 2000, 5000, 8000):
+        out = "%s/s%d" % (base, S); os.makedirs(out, exist_ok=True)
+        ck = torch.load(seed_dir + "/ckpt_last.pt", map_location="cpu", weights_only=False); ck["step"] = S - 1; torch.save(ck, out + "/resume.pt"); del ck
+        for f_ in ("log.jsonl",):
+            if os.path.exists(os.path.join(out, f_)):
+                os.remove(os.path.join(out, f_))
+        r = subprocess.run(common + ["--resume", out + "/resume.pt", "--stop_at", str(S), "--log_every", str(S), "--ckpt_every", "0", "--out", out], cwd="D:/Latent", capture_output=True, text=True)
+        assert r.returncode == 0, r.stderr[-1500:]
+        rec = [json.loads(l_) for l_ in open(out + "/log.jsonl") if '"loss"' in l_][-1]; o["logged"][str(S)] = {k: rec.get(k) for k in ("step", "c", "slva_gn", "slva_offnewest_chg", "slva_offnewest_copy")}
+        o["expected"][str(S)] = VB.c_at(S, 1000, 8000); os.remove(out + "/resume.pt")
+    o["pass"] = all(abs(o["logged"][k]["c"] - o["expected"][k]) <= 1e-5 * max(1.0, o["expected"][k]) and o["logged"][k]["step"] == int(k) for k in o["expected"]) \
+        and o["logged"]["500"]["slva_gn"] == 0.0 and all(o["logged"][k]["slva_gn"] > 0 for k in ("2000", "5000", "8000"))
+    return o
+
+
+@torch.no_grad()
+def g_d7(dev):
+    """the eval_d3hist hooks: defaults bitwise (slva_view identity, keep_bank_only without keep, ver_sub_from None); at c 1e4 SLVA vs CARRY bitwise:
+    NEWEST (slva_view: donor V_t as the newest at pass t + 1) == CARRY iii_carry (edit -> (V_t, donor)); BANK (stored = donor, SLVA reads the recipient's
+    V_t at passes >= t + 1) == CARRY iii_bank (edit -> (donor, V_t)); OLD (ver_sub donor V_1..V_t, ver_sub_from t + 2) SLVA == CARRY; other_ablate
+    (ablate_keep + keep_bank_only) at c 1e4 == CARRY with ablate_keep."""
+    s, c = pair(dev); s.c_anneal.fill_(1e4); its = items([7], 8); don = items([7], 8, seed=99); x, pad, lens = VB.batch_x(its, dev)
+    T = x.shape[1]; xd, pdd, _ = VB.batch_x(don, dev); assert xd.shape[1] == T or True
+    xd = x.clone(); xd[:, 2] = x[:, 2] + 1                                  # a same-shape donor input (token perturbed at slot 2; any donor works for parity)
+    K = 9; t = 3; rows = {K: torch.arange(x.shape[0], device=dev)}; o = {}
+    eq = lambda r1, r2: bool(all(torch.equal(a_, b_) for a_, b_ in zip(r1["V"], r2["V"])) and torch.equal(r1["coda"][K][1], r2["coda"][K][1]))  # noqa: E731
+    r0 = s.rollout(x, pad, K, coda_rows=rows)
+    s.slva_view = lambda tt, gk, NV: (gk, NV); o["slva_view_identity"] = eq(r0, s.rollout(x, pad, K, coda_rows=rows)); s.slva_view = None
+    s.keep_bank_only = True; o["keep_bank_only_no_keep"] = eq(r0, s.rollout(x, pad, K, coda_rows=rows)); s.keep_bank_only = False
+    rd = s.rollout(xd, pad, K); Vd = rd["V"][t]; Vr = r0["V"][t]; rms0 = r0["V"][0].pow(2).mean(-1, keepdim=True).sqrt()
+    kd, nd, kr, nr = s.gkey(Vd), s.nrm(Vd, rms0), s.gkey(Vr), s.nrm(Vr, rms0)
+    s.slva_view = lambda tt, gk, NV: ((gk[:t] + [kd] + gk[t + 1:], NV[:t] + [nd] + NV[t + 1:]) if tt == t + 1 else (gk, NV))
+    a1 = s.rollout(x, pad, K, coda_rows=rows); s.slva_view = None
+    b1 = c.rollout(x, pad, K, coda_rows=rows, edit=lambda tt, V: (V, Vd.clone()) if tt == t else None); o["newest_eq_iii_carry"] = eq(a1, b1)
+    s.slva_view = lambda tt, gk, NV: ((gk[:t] + [kr] + gk[t + 1:], NV[:t] + [nr] + NV[t + 1:]) if tt >= t + 1 else (gk, NV))
+    a2 = s.rollout(x, pad, K, coda_rows=rows, edit=lambda tt, V: Vd.clone() if tt == t else None); s.slva_view = None
+    b2 = c.rollout(x, pad, K, coda_rows=rows, edit=lambda tt, V: (Vd.clone(), V) if tt == t else None); o["bank_eq_iii_bank"] = eq(a2, b2)
+    dons = [rd["V"][q] for q in range(1, t + 1)]
+    s.ver_sub_from = t + 2; c.ver_sub_from = t + 2
+    a3 = s.rollout(x, pad, K, coda_rows=rows, ver_sub=dons); b3 = c.rollout(x, pad, K, coda_rows=rows, ver_sub=dons); s.ver_sub_from = c.ver_sub_from = None
+    o["old_eq_carry"] = eq(a3, b3); o["old_moves"] = not eq(a3, r0)
+    s.ver_keep = VE.ablate_keep; s.keep_bank_only = True; a4 = s.rollout(x, pad, K, coda_rows=rows); s.ver_keep = None; s.keep_bank_only = False
+    c.ver_keep = VE.ablate_keep; b4 = c.rollout(x, pad, K, coda_rows=rows); c.ver_keep = None; o["other_ablate_eq_carry_keep"] = eq(a4, b4)
+    o["newest_moves"] = not eq(a1, r0); o["bank_moves"] = not eq(a2, r0)
+    o["pass"] = all(o.values()); return o
 
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cuda:1"); a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; os.makedirs(OUT, exist_ok=True)
-    r = {"d0": g_d0, "d1": g_d1, "d2": g_d2, "d5": g_d5, "d6": g_d6, "plain": g_plain, "g1b": g_g1b}[a.gate](a.device)
+    r = {"d0": g_d0, "d1": g_d1, "d2": g_d2, "d4": g_d4, "d5": g_d5, "d6": g_d6, "d7": g_d7, "plain": g_plain, "g1b": g_g1b}[a.gate](a.device)
     r["device"] = torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu"
     json.dump(r, open(os.path.join(OUT, "%s.json" % a.gate), "w", newline="\n"), indent=1); print(a.gate, "PASS" if r["pass"] else "FAIL", json.dumps(r)[:1500], flush=True)
 

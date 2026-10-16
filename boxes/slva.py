@@ -35,6 +35,8 @@ class SLVA(VB.VBankN):
         self.slva_beta0 = torch.nn.Parameter(torch.zeros(H, device=W.device))
         self.slva_gamma = torch.nn.Parameter(VB.alibi_init(H, H).to(W.device))
         self.slva_log = None                                                # trainer diagnostics: a list -> per pass (t, (B, T) newest-version mass, head mean)
+        self.slva_view = None                                               # eval-only (§213 swap triple): f(t, gk, NV) -> (gk', NV') for SLVA's read at pass t only
+        self.keep_bank_only = False                                         # eval-only (§213 OTHER-ABLATE): ver_keep reaches the core / coda bank but not SLVA
 
     @property
     def anneals(self):
@@ -54,6 +56,10 @@ class SLVA(VB.VBankN):
         """SLVA read for pass t (vbank.rollout's gather slot): gk / NV = the (viewed) lists of version keys / N(V_s), s = 0..; pad is NOT used (own-slot
         keys are never masked; slot_mask's removals do not reach a slot-local read). -> U_t (B, T, D) in NV's dtype."""
         assert self.gather_qmod is None, "gather_qmod is undefined for SLVA (no position query)"
+        if self.slva_view is not None:
+            gk, NV = self.slva_view(t, gk, NV)
+        if self.keep_bank_only:
+            keep = None
         B, T, D = NV[0].shape; H, hd = self.H, self.hd; dev = NV[0].device; dt = torch.float64 if NV[0].dtype == torch.float64 else torch.float32
         with torch.autocast(device_type=dev.type, enabled=False):
             qa = F.layer_norm(NV[t - 1].to(dt), (D,), self.slva_ln_q.weight.to(dt), self.slva_ln_q.bias.to(dt))
