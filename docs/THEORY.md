@@ -17101,6 +17101,17 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
 - **Marker (b).** Off-self stayed at 0.91–0.93 throughout, with no drift toward (t−1, j). CARRY-LIKENESS ≈ 0.08 so far, against 211-5's expected recovery.
 - **Flag for the final readings (descriptive).** gn_preclip is 30–83 over 29–30k (it was 6–15 at 18–24k), and gather_gn is about 32 at 29–29.5k. The clip at 1.0 bounds updates. The gradient-norm trajectory is reported beside N3's result.
 
+**Note 205-6 (2026-10-16 04:44 EDT; §205's registered descriptive 8k tests; boxes/runs_fsq/s205_iit_s{1,2,3}_8k/, on the 3070 in bf16 at bs 250; the gates SAME, MIRROR and SI_reproduces_serial_items pass; the S170 gate is n/a at 8k as stated). UNREADABLE: every seed is at chance at step 8,000.**
+- **Clean accuracy** on the s170 SERIAL pool (476 pairs), recipient / donor:
+  - s1: 0.080 / 0.160;
+  - s2: 0.107 / 0.137;
+  - s3: 0.088 / 0.139;
+  - n_ccc is 1 per seed.
+- **203-4 swap-follow:** the hybrid share over all pairs is 0.09–0.13 at t 1 / 2 / 4 / 6, equal to the own and donor shares. The clean subsets have n 0–12.
+- **203-6 INPUT-SWAP:** clean pairs at k 1 are 15 / 6 / 20 of 5,217; at k 2, 3 / 2 / 0 of 1,526.
+- **Reading:** the 8k checkpoint precedes entry for every seed (s1 entered at 21k, s2 at 22k, s3 never). The direction tests therefore cannot separate the classes at 8k, and nothing is read from them.
+- **Retention:** ckpt_model_8000.pt is no longer needed and is deleted. model.pt is kept for s1 / s2 / s3, because s205_iit_s3 is an input to the bottleneck session's in-range INJECT diagnostic (211-15 C / S's D1).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
