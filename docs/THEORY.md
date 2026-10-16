@@ -17842,6 +17842,20 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - **Where the transfer applies:** in VERSION-BANK the carried state is the per-slot residual V_t (the output of blocks 6–9, carried by CARRY / SLVA). That is closer to SCSE's residual setting than a DeltaMem-S framing suggests.
 - **Precondition (i) remains the obstacle:** what zeroes a non-anchor copy slot's deviation, without a decoded mask.
 
+**Note 213-7 (2026-10-16 15:02 EDT; a precondition check of Literature's VERSION-BANK port of SCSE (e4dcd4ad); the lead stays held).**
+
+**The port, as relayed.** V_0 is the anchor. δ_t = V_t − V_0, and δ_{t+1} = δ_t + [core(V_0 + δ_t) − core(V_0)], with core(V_0) cached once, plus the zero-deviation mask, faded in from step 0.
+
+**It fails precondition (iii) of 213-4: V_0 becomes an absorbing state of the whole trajectory** [PROVED, given the bank reads below]. Here core(·) is the map from pass input to V_{t+1}, with the bank as context.
+- **Pass 1 computes nothing.** δ_0 = 0, so δ_1 = core(V_0) − core(V_0) = 0 exactly and V_1 = V_0. The first reduction cannot happen.
+- **Later passes:** by induction, every stored version equals V_0. So core(V_0 + 0; bank_t) differs from the cached core(V_0; bank_1) **only** through the bank's duplicated V_0 keys, whose softmax mass grows with the version count.
+- **Consequence:** the only force that moves the state is a function of t. That is a pure clock, the COUNT-KEYED failure mode (§211 N3; 212-7).
+- **Why it matters here:** in SCSE (LM) the anchor should stay put under iteration. In our task the state must change at every pass (the handle reduces).
+
+**What a VB transfer would need instead** (design note, not a proposal): a fixed point **per slot at that slot's own current state when it should not change**, i.e. a zero update for unchanged slots. That needs no decoded mask: for example, a zero-initialised learned gate on the core's per-slot update, read with the same causal history tests.
+
+Precondition (i) of 213-4 (what zeroes a copy slot's deviation without a rule) is still the design question. Any port must be checked against this absorbing-state argument before a derivation is drafted.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
