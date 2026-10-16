@@ -748,10 +748,16 @@ def part_d3hist(m, TE, dev, bs):
     acc_n2 bitwise (checked by the runner). swap: VALUE-SWAP class A pairs (vbank_eval.make_pairs, rng 21120), swap pass t, K' = n + 2, clean = recipient
     and donor correct (as vswap): NEWEST = the donor's V_t only as SLVA's newest version (SLVA's read at pass t + 1; slva_view); BANK = the donor's V_t only
     in the core / coda bank (stored entry = donor, SLVA's reads of entry t at passes >= t + 1 = the recipient's); OLD = the donor's V_1..V_t at every
-    reader with reading index >= t + 2 (rollout ver_sub + ver_sub_from = t + 2; the coda after pass t + 1 reads index t + 2). follow = y_donor, own = y."""
-    assert m.mode == "slva", "eval_d3hist is the §213 SLVA contract"
-    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {}
+    reader with reading index >= t + 2 (rollout ver_sub + ver_sub_from = t + 2; the coda after pass t + 1 reads index t + 2). follow = y_donor, own = y.
+    Note 213-11 (the §211 cells, a known-answer harness check): PA maps SLVA's arms onto the gather (self_ablate = the gather's own-slot versions
+    1..t-2; other_ablate = ver_keep with keep_bank_only; NEWEST / BANK via gather_view on the gather's version-t keys / values); CARRY: self_ablate
+    omitted (no gather), other_ablate = ablate_keep (core / coda are its only version readers), NEWEST = edit -> (V_t, donor) (vswap iii_carry), BANK =
+    edit -> (donor, V_t) (iii_bank). Arms a mode cannot express are listed in "omitted"."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {"omitted": []}
     arms = (("intact", None), ("bank_ablate_slva", "keep"), ("self_ablate", "self"), ("other_ablate", "bank"))
+    if m.mode == "carry":                                                   # 213-11: no gather -> no own-slot read to ablate; core / coda only == ablate_keep
+        arms = (("intact", None), ("bank_ablate_slva", "keep"), ("other_ablate", "keep")); res["omitted"].append("self_ablate")
+    vattr = "slva_view" if m.mode == "slva" else "gather_view"
     for arm, how in arms:
         A = np.full(len(TE), -1)
         try:
@@ -778,20 +784,24 @@ def part_d3hist(m, TE, dev, bs):
             y = torch.tensor([it["t"] for it in rec], device=dev); yd = torch.tensor([it["t"] for it in don], device=dev)
             clean = (m.answer_logits(rr["coda"][K][1], lens)[:, num].argmax(-1) == y) & (m.answer_logits(rd["coda"][K][1], ld)[:, num].argmax(-1) == yd)
             rms0 = rr["V"][0].pow(2).mean(-1, keepdim=True).sqrt(); Vr, Vd = rr["V"][t], rd["V"][t]
-            kd, nd = m.gkey(Vd), m.nrm(Vd, rms0); kr, nr = m.gkey(Vr), m.nrm(Vr, rms0); dons = [rd["V"][s_] for s_ in range(1, t + 1)]
+            kd, nd = (m.gkey(Vd) if m.mode != "carry" else None), m.nrm(Vd, rms0); kr, nr = (m.gkey(Vr) if m.mode != "carry" else None), m.nrm(Vr, rms0); dons = [rd["V"][s_] for s_ in range(1, t + 1)]
             for arm in ("newest", "bank", "old"):
                 kw = {}
                 try:
-                    if arm == "newest":
-                        m.slva_view = lambda tt, gk, NV: ((gk[:t] + [kd] + gk[t + 1:], NV[:t] + [nd] + NV[t + 1:]) if tt == t + 1 else (gk, NV))
+                    if m.mode == "carry" and arm == "newest":               # 213-11: the carry is CARRY's newest-version read (iii_carry)
+                        kw["edit"] = lambda tt, V: (V, Vd.clone()) if tt == t else None
+                    elif m.mode == "carry" and arm == "bank":               # iii_bank
+                        kw["edit"] = lambda tt, V: (Vd.clone(), V) if tt == t else None
+                    elif arm == "newest":
+                        setattr(m, vattr, lambda tt, gk, NV: ((gk[:t] + [kd] + gk[t + 1:], NV[:t] + [nd] + NV[t + 1:]) if tt == t + 1 else (gk, NV)))
                     elif arm == "bank":
                         kw["edit"] = lambda tt, V: Vd.clone() if tt == t else None
-                        m.slva_view = lambda tt, gk, NV: ((gk[:t] + [kr] + gk[t + 1:], NV[:t] + [nr] + NV[t + 1:]) if tt >= t + 1 else (gk, NV))
+                        setattr(m, vattr, lambda tt, gk, NV: ((gk[:t] + [kr] + gk[t + 1:], NV[:t] + [nr] + NV[t + 1:]) if tt >= t + 1 else (gk, NV)))
                     else:
                         kw["ver_sub"] = dons; m.ver_sub_from = t + 2
                     ra = m.rollout(x, pad, K, coda_rows=rows, **kw)
                 finally:
-                    m.slva_view = None; m.ver_sub_from = None
+                    setattr(m, vattr, None); m.ver_sub_from = None
                 A_ = m.answer_logits(ra["coda"][K][1], lens)[:, num].argmax(-1); del ra
                 cnt[arm][0] += int(((A_ == yd) & clean).sum()); cnt[arm][1] += int(((A_ == y) & clean).sum())
             npairs += int(clean.sum()); del rr, rd

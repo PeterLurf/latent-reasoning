@@ -322,10 +322,42 @@ def g_d7(dev):
     o["pass"] = all(o.values()); return o
 
 
+@torch.no_grad()
+def g_d8(dev):
+    """note 213-11 PA hooks (VBankN.gather_view / keep_bank_only; eval-only, default off): N2's weights in PA and in CARRY (its gather params unused),
+    c 1e4 (PA == CARRY bitwise at real slots, gate_s211 carry_bitwise): defaults bitwise (gather_view identity, keep_bank_only without keep, both vs PA plain);
+    PA NEWEST (gather_view: donor V_t as entry t at pass t + 1) == CARRY iii_carry; PA BANK (stored = donor, the gather reads the recipient's entry t at
+    passes >= t + 1) == CARRY iii_bank; PA other_ablate (ablate_keep + keep_bank_only) == CARRY ablate_keep; each arm moves the output."""
+    sd = torch.load(os.path.join(N2, "model.pt"), map_location=dev, weights_only=True)
+    pa = VB.VBankN(s5.load_gpt2(dev), "pa").to(dev); pa.load_state_dict(sd); c = VB.VBankN(s5.load_gpt2(dev), "carry").to(dev)
+    mk = c.load_state_dict(sd, strict=False); assert not mk.missing_keys, mk
+    for m in (pa, c):
+        m.eval()
+    pa.c_anneal.fill_(1e4); its = items([7], 8); x, pad, lens = VB.batch_x(its, dev); xd = x.clone(); xd[:, 2] = x[:, 2] + 1
+    K = 9; t = 3; rows = {K: torch.arange(x.shape[0], device=dev)}; o = {}
+    # real slots only (as gate_s211 carry_bitwise): PA's gather masks a padded slot's own entry, so padded rows differ from CARRY by design and never
+    # reach a real slot (right padding, causal current version, pad-masked bank)
+    eq = lambda r1, r2: bool(all(torch.equal(a_[pad], b_[pad]) for a_, b_ in zip(r1["V"], r2["V"])) and torch.equal(r1["coda"][K][1][pad], r2["coda"][K][1][pad]))  # noqa: E731
+    r0 = pa.rollout(x, pad, K, coda_rows=rows); o["pa_c1e4_eq_carry"] = eq(r0, c.rollout(x, pad, K, coda_rows=rows))
+    pa.gather_view = lambda tt, gk, NV: (gk, NV); o["gather_view_identity"] = eq(r0, pa.rollout(x, pad, K, coda_rows=rows)); pa.gather_view = None
+    pa.keep_bank_only = True; o["keep_bank_only_no_keep"] = eq(r0, pa.rollout(x, pad, K, coda_rows=rows)); pa.keep_bank_only = False
+    rd = pa.rollout(xd, pad, K); Vd = rd["V"][t]; Vr = r0["V"][t]; rms0 = r0["V"][0].pow(2).mean(-1, keepdim=True).sqrt()
+    kd, nd, kr, nr = pa.gkey(Vd), pa.nrm(Vd, rms0), pa.gkey(Vr), pa.nrm(Vr, rms0)
+    pa.gather_view = lambda tt, gk, NV: ((gk[:t] + [kd] + gk[t + 1:], NV[:t] + [nd] + NV[t + 1:]) if tt == t + 1 else (gk, NV))
+    a1 = pa.rollout(x, pad, K, coda_rows=rows); pa.gather_view = None
+    o["newest_eq_iii_carry"] = eq(a1, c.rollout(x, pad, K, coda_rows=rows, edit=lambda tt, V: (V, Vd.clone()) if tt == t else None)); o["newest_moves"] = not eq(a1, r0)
+    pa.gather_view = lambda tt, gk, NV: ((gk[:t] + [kr] + gk[t + 1:], NV[:t] + [nr] + NV[t + 1:]) if tt >= t + 1 else (gk, NV))
+    a2 = pa.rollout(x, pad, K, coda_rows=rows, edit=lambda tt, V: Vd.clone() if tt == t else None); pa.gather_view = None
+    o["bank_eq_iii_bank"] = eq(a2, c.rollout(x, pad, K, coda_rows=rows, edit=lambda tt, V: (Vd.clone(), V) if tt == t else None)); o["bank_moves"] = not eq(a2, r0)
+    pa.ver_keep = VE.ablate_keep; pa.keep_bank_only = True; a4 = pa.rollout(x, pad, K, coda_rows=rows); pa.ver_keep = None; pa.keep_bank_only = False
+    c.ver_keep = VE.ablate_keep; b4 = c.rollout(x, pad, K, coda_rows=rows); c.ver_keep = None; o["other_ablate_eq_carry_keep"] = eq(a4, b4); o["other_moves"] = not eq(a4, r0)
+    o["pass"] = all(o.values()); return o
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cuda:1"); a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; os.makedirs(OUT, exist_ok=True)
-    r = {"d0": g_d0, "d1": g_d1, "d2": g_d2, "d4": g_d4, "d5": g_d5, "d6": g_d6, "d7": g_d7, "plain": g_plain, "g1b": g_g1b}[a.gate](a.device)
+    r = {"d0": g_d0, "d1": g_d1, "d2": g_d2, "d4": g_d4, "d5": g_d5, "d6": g_d6, "d7": g_d7, "d8": g_d8, "plain": g_plain, "g1b": g_g1b}[a.gate](a.device)
     r["device"] = torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu"
     json.dump(r, open(os.path.join(OUT, "%s.json" % a.gate), "w", newline="\n"), indent=1); print(a.gate, "PASS" if r["pass"] else "FAIL", json.dumps(r)[:1500], flush=True)
 
