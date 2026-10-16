@@ -16971,6 +16971,23 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 
 **Use.** None enters VB-C1. They are read beside DEPTH as the descriptive history test.
 
+**Note 205-4 (2026-10-16 03:20 EDT; a correction narrowing the §205 s3 reading; prompted by the bottleneck session's step inventor, docs/research_bottleneck_2026-10-16/S_step_capability.md; the step_recover figures re-read by Theory from s205_iit_s3/eval.json).**
+
+**What s3 writes, by pass.** s3's per-pass written values (s170.step_recover, a linear probe of the read for step t's value) are **0.908 / 0.360 / 0.186 at t = 1 / 2 / 3, then 0.169 / 0.114 / 0.098 / 0.078 / 0.173 at t 4–8** (majority baseline about 0.08–0.11).
+- So s3's passes write a recoverable step value only at pass 1, partly at pass 2, and **essentially none from pass 3 on**.
+
+**What MET measured.** It was measured at τ1 / τ2 (τ3 had no eligible items), exactly the passes where s3 still writes.
+- **So the result's "carries and uses its state" holds only for passes 1–2.**
+- The reading "carrying is not the limit; the limit is per-pass step capability" is narrowed: from pass 3 on, the failed seed does not carry the steps it shows. It recomputes visible steps from the re-shown input.
+
+**Supporting analysis.** These figures are inventor S's CPU analysis (research2/step/hhfit.py), not re-run by Theory, so Audit's reproduction is needed.
+- In four failed seeds (s185_rms_s3, s205_iit_s3, s185_den_s1, s188_rwwin_s1), handle accuracy over passes 1–8 is fit with R² 0.993–1.000 by **subtree height alone (no pass term)**: about 1 at height ≤ 2, falling to 0.22–0.73 at heights 4–5.
+- 11 of 12 converged models stay ≥ 0.949 at every height.
+
+**Revised reading [CONJECTURE].** The failed regime is recompute from the input, with a depth capacity of about 3 tree levels. It is not a carried state with a weak step. In this regime IIT's whole-state loss changed only passes 1–2.
+
+**A related correction (research document only; no THEORY.md text affected).** The red team's "conditional per-step success 0.97 → 0.72 over t 3–8" (REDTEAM_v0 F3c) is a ratio of consecutive *marginal* handle accuracies over different item populations. Its decay with t is composition: handles of height ≥ 3 are 0% of steps at t ≤ 2 and 100% at t = 8. It is not a conditional per-step rate.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
