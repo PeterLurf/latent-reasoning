@@ -114,6 +114,36 @@
      "control_cells_differing": 7,
      "label": "UNREADABLE (exposed control drops -0.995)"
     }
+   },
+   "D3SEL": null,
+   "LFK": {
+    "acc_le28": 0.9939930776540745,
+    "acc_29_32": 0.9813477737665464,
+    "acc_ge33": null,
+    "events_ge33": 0,
+    "readable": false,
+    "by_kind": {
+     "all_29_32": 0.9813477737665464,
+     "all_ge33": null,
+     "all_le28": 0.9939930776540745,
+     "changed_29_32": 0.965,
+     "changed_ge33": null,
+     "changed_le28": 0.995870265914585,
+     "copy_29_32": 0.9823830877642536,
+     "copy_ge33": null,
+     "copy_le28": 0.9882643016877234,
+     "void_29_32": 1.0,
+     "void_ge33": null,
+     "void_le28": 0.9997157296272899
+    },
+    "MEETS": false
+   },
+   "STABHIST": {
+    "gate_intact_equals_eval_vb": true,
+    "STAB_self": 0.07,
+    "STAB_other": -0.0002500000000000002,
+    "OWN_HISTORY_STABILISES": false,
+    "label": "not supported"
    }
   },
   "N1": {
@@ -220,7 +250,21 @@
      "control_cells_differing": 0,
      "label": "NOT"
     }
-   }
+   },
+   "D3SEL": {
+    "D_R": 0.46935960591133,
+    "G_MV": -0.17714285714285713,
+    "maskvoid_control": true,
+    "cells_read": 7,
+    "readable": true,
+    "ADD_VOIDMASK": false,
+    "REFRESH_share": -0.9525608732157851,
+    "gapped_control": -0.7571589346004752,
+    "GAP_share": null,
+    "COMPACTION_TRIGGER": false
+   },
+   "LFK": null,
+   "STABHIST": null
   },
   "N3": {
    "RS": {
@@ -336,13 +380,93 @@
      "control_cells_differing": 7,
      "label": "UNREADABLE (exposed control drops -0.993)"
     }
-   }
+   },
+   "D3SEL": null,
+   "LFK": {
+    "acc_le28": 0.989833626315016,
+    "acc_29_32": 0.9787234042553191,
+    "acc_ge33": null,
+    "events_ge33": 0,
+    "readable": false,
+    "by_kind": {
+     "all_29_32": 0.9787234042553191,
+     "all_ge33": null,
+     "all_le28": 0.989833626315016,
+     "changed_29_32": 0.9618320610687023,
+     "changed_ge33": null,
+     "changed_le28": 0.9905246900697082,
+     "copy_29_32": 0.9796800691742326,
+     "copy_ge33": null,
+     "copy_le28": 0.9819292619554786,
+     "void_29_32": null,
+     "void_ge33": null,
+     "void_le28": 0.9986952544926289
+    },
+    "MEETS": false,
+    "fault": {
+     "acc_le28": 0.989833626315016,
+     "acc_29_32": 0.9787234042553191,
+     "acc_ge33": null,
+     "events_ge33": 0,
+     "readable": false,
+     "by_kind": {
+      "all_29_32": 0.9787234042553191,
+      "all_ge33": null,
+      "all_le28": 0.989833626315016,
+      "changed_29_32": 0.9618320610687023,
+      "changed_ge33": null,
+      "changed_le28": 0.9905246900697082,
+      "copy_29_32": 0.9796800691742326,
+      "copy_ge33": null,
+      "copy_le28": 0.9819292619554786,
+      "void_29_32": null,
+      "void_ge33": null,
+      "void_le28": 0.9986952544926289
+     },
+     "MEETS": false,
+     "paired": {
+      "le28": {
+       "events_both": 183743,
+       "intact_correct": 181875,
+       "fault_correct": 181875,
+       "diff": 0.0
+      },
+      "29_32": {
+       "events_both": 2444,
+       "intact_correct": 2392,
+       "fault_correct": 2392,
+       "diff": 0.0
+      },
+      "ge33": {
+       "events_both": 0,
+       "intact_correct": 0,
+       "fault_correct": 0,
+       "diff": null
+      }
+     },
+     "realised": {
+      "ge33": {
+       "faults": 0,
+       "faults_class_differs": 0
+      }
+     }
+    },
+    "SENSITIVE": false,
+    "fault_low_realised": false
+   },
+   "STABHIST": null
   },
   "GO": {
    "G1": true,
    "FT": false,
    "S": false,
    "RS_models_read": 3
+  },
+  "D3": {
+   "ADD_VOIDMASK": false,
+   "LFK_DISCRIMINATES": null,
+   "LFK_SENSITIVE": null,
+   "OWN_HISTORY_STABILISES": false
   }
  },
  "G1": {
