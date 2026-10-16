@@ -123,12 +123,65 @@ def long_step(m, TE, dev, bs):
     return {k: {"n_steps": v[0], "exact": v[1] / v[0], "n_exact": v[1]} for k, v in sorted(stats.items(), key=lambda kv: int(kv[0]))}   # contract: exact = rate
 
 
+def gen_value(rng, k, v):
+    """nested170.generate's Alg. 1 with the root value fixed to v: a tree with k operators and value v."""
+    root = N.Node(v=v); leaves = [root]
+    for _ in range(k):
+        i = int(rng.integers(0, len(leaves))); leaf = leaves.pop(i); o = N.OPS[int(rng.integers(0, 4))]; prs = N.PAIRS[(o, leaf.v)]; a_, b_ = prs[int(rng.integers(0, len(prs)))]
+        leaf.op, leaf.l, leaf.r, leaf.v = o, N.Node(v=a_), N.Node(v=b_), None; leaves.insert(i, leaf.r); leaves.insert(i, leaf.l)
+    return root
+
+
+def pf_items(r, n_draws=20000, k_max=12, seed=21400):
+    """D §1.2 PREFIX-FACTORIAL: Q = a size-r item whose render starts with a number v; its leftmost leaf v replaced by P (k operators, value v).
+    -> list of {syms, t, root, k, r, s, q_syms}; asserted: the state after k reductions renders as Q, the value is unchanged."""
+    rng = np.random.default_rng(seed + r); out = []
+    while len(out) < n_draws:
+        q, y = N.generate(rng, r); qs = N.render(q)
+        if not qs[0].strip().isdigit():
+            continue
+        k = int(rng.integers(1, k_max + 1)); it = N._copy(q); h = it
+        while h.op is not None:
+            h = h.l
+        P_ = gen_value(rng, k, h.v); h.v, h.op, h.l, h.r = P_.v, P_.op, P_.l, P_.r
+        syms = N.render(it); assert N.render(reduce_k(it, k)) == qs and N.value(it) == y, "PF: the state at k is not Q"
+        out.append({"syms": syms, "t": y, "root": it, "k": k, "r": r, "s": len(syms) - len(qs) + 1, "q_syms": qs})
+    return out
+
+
+@torch.no_grad()
+def part_pf(m, TE, dev, bs, n_draws=20000):
+    num = torch.tensor(N.NUM_IDS, device=dev); grid = {}; S0 = {}
+    for r in (2, 3):
+        items = pf_items(r, n_draws); fresh_ok = []
+        for c0 in range(0, len(items), bs):                                 # S0: the Q items fresh at K' = r + 2
+            its = [{"syms": it["q_syms"], "t": it["t"]} for it in items[c0:c0 + bs]]; x, pad, lens = VB.batch_x(its, dev)
+            rr = m.rollout(x, pad, r + 2, coda_rows={r + 2: torch.arange(len(its), device=dev)})
+            fresh_ok += list(m.answer_logits(rr["coda"][r + 2][1], lens)[:, num].argmax(-1).cpu().numpy() == np.array([it["t"] for it in its])); del rr
+        S0[str(r)] = float(np.mean(fresh_ok))
+        for k in range(1, 13):
+            ks = [it for it in items if it["k"] == k]; K = k + r + 2
+            for c0 in range(0, len(ks), bs):
+                its = ks[c0:c0 + bs]; x, pad, lens = VB.batch_x(its, dev); rr = m.rollout(x, pad, K, coda_rows={K: torch.arange(len(its), device=dev)})
+                ok = m.answer_logits(rr["coda"][K][1], lens)[:, num].argmax(-1).cpu().numpy() == np.array([it["t"] for it in its])
+                dec = m.rec_logits(rr["V"][k]).argmax(-1).cpu().numpy(); del rr
+                for i_, it in enumerate(its):
+                    c_ = grid.setdefault("%d_%d_%d" % (k, it["s"], r), {"n_items": 0, "n_correct": 0, "n_draws": 0, "r": r, "k": k, "s": it["s"]}); c_["n_draws"] += 1
+                    if VB.rerender(list(dec[i_, :int(lens[i_])])) == it["q_syms"]:
+                        c_["n_items"] += 1; c_["n_correct"] += int(ok[i_])
+        print("PF r", r, "S0", S0[str(r)], flush=True)
+    for c_ in grid.values():
+        c_["S"] = c_["n_correct"] / c_["n_items"] if c_["n_items"] else None; c_["exact_rate"] = c_["n_items"] / c_["n_draws"]
+    return {"grid": grid, "S0": S0, "def": "D §1.2 PF: keys '<k>_<s>_<r>'; S = P(correct at K' = k + r + 2 | R decodes Q exactly at k); n_items = exact-at-k "
+            "items; S0 = accuracy of the fresh Q items at K' = r + 2; 20k draws per r, k uniform on 1..12 (seeds 21402 / 21403)"}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = {"rs": part_rs}[a.part](m, TE, dev, a.eval_bs)
+    res = {"rs": part_rs, "pf": part_pf}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
     fo = os.path.join(a.run, "eval_%s.json" % a.part); json.dump(res, open(fo + ".tmp", "w", newline="\n"), indent=1); os.replace(fo + ".tmp", fo)
