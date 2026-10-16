@@ -17314,6 +17314,21 @@ Egress was about $0.34, so the family total is about $4.1.
 2. **RS thin cells.** Per 211-15's "cells with < 100 items are UNREADABLE", cells under 100 conditioned items are **excluded from the pooled reading, not fatal to it**. The scorer had made any thin cell void the whole RS. The pooled label uses the readable cells and reports `thin_cells`. RS is unreadable if the control or every pooled cell is thin.
    - Experiments' smoke shows N2's decodes at n 12, t 8 are mostly unparseable, so some n ≥ 11 cells may be thin.
 
+**Note 212-3 (2026-10-16 12:40 EDT; before any Stage 0 output; implementation pins for two 211-16 arms, from Experiments' proposals; eval-only hooks in vbank.py, default None, gated bitwise like ver_keep; no rule change).**
+
+1. **The FOREIGN pair** (o ∈ {3, 6}; read at K′ = n + 2 real passes, n 4..8 and 9..12). The foreign item is a different test item of the same token length, chosen by a fixed rng, contributing its intact stored versions F_1..F_o.
+   - **INSERT:** the bank is [V_0(item), F_1..F_o, then the item's own versions].
+     - V_0 keeps index 0 and its β⁰ role.
+     - The bank index and bank size shift by o, while the real versions' relative ages are unchanged.
+     - CARRY: the first real pass's carry is the item's V_0. PA: the gather reads the whole bank. The coda sees F among its bank.
+   - **REPLACE:** a normal run, except that every READ at a pass t > s + 1 sees stored entry s ∈ {1..o} as F_s. The pass that consumes V_s still reads the real V_s, through the carry or as the newest entry.
+   - **CLOCK-FOREIGN** = mean(insert − replace) ≤ −0.10, as registered.
+   - **Bias stated now [DERIVED].** REPLACE also removes the item's own older versions s ≤ o; INSERT keeps them. For a model that uses its history (HISTORY-USED, e.g. §211 N2), insert − replace therefore includes a positive history term. So CLOCK-FOREIGN is conservative (harder to fire) for history users.
+   - **Reported beside (descriptive):** insert − intact (the index shift plus foreign presence) and replace − intact.
+2. **The age-floor arm μ = 2.** For bank versions s ∈ 1..t−2 (older than the newest; V_0 keeps β⁰), the age term γ·age becomes **min(γ·age, −2·age)**: a decay slope of at least 2 nats per pass of age, as in D's floor −μ(t−1−s) with μ ≥ 2.
+   - It applies per layer and head, in the core, the coda and the PA gather (γ_q·age).
+   - Experiments' proposed constant min(γ·age, −2) is not the registered floor.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
