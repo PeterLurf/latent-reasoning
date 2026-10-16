@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, "D:/Latent"); sys.path.insert(0, "D:/Latent/scratch"); os.chdir("D:/Latent")
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
+import torch.nn.functional as F_  # noqa: E402
 
 import boxes.nested170 as N  # noqa: E402
 import boxes.vbank as VB  # noqa: E402
@@ -163,5 +164,32 @@ def gate_mct(dev="cuda:0"):
     out["pass"] = all(v["all_slots_ok_items"] == 1.0 for v in out["W1"].values()) and all(v["row"] > 1e-4 for v in out["W3"].values()); return out
 
 
+
+def gate_g1b(dev="cuda:0", runs=("s211_g1b_pa", "s211_g1b_carry", "s211_g1b_pamct"), steps=(0, 1000, 2000)):
+    """G1b (REDTEAM F5; draft §9 item 3) on the 2k-step smokes' kept models: 256 items (n 1..8, seed 21108), fp32. Per kept step: P(number) at ' =' from
+    the coda after pass t (t 0..8), cos(V_t, V_{t-1}) over real slots (t 1..8), answer CE at K' = n (pooled n 1..8) and at K' = 1 on n = 1.
+    drift = P(num | K' = 1) - P(num | K' = 8). PASS per run: drift(2k) < drift(0) and CE(K' = n) falls 0 -> 1k -> 2k."""
+    import json as _j
+    from boxes import s5
+    its = _train_items(256, 21108, 1, 8); x, pad, lens = VB.batch_x(its, dev); y = torch.tensor(N.NUM_IDS[[it["t"] for it in its]], device=dev)
+    nn_ = torch.tensor([it["n"] for it in its], device=dev); NUM = torch.tensor(N.NUM_IDS, device=dev); out = {}
+    for run in runs:
+        d = os.path.join("boxes/runs_fsq", run); a = _j.load(open(os.path.join(d, "args.json"))); g = s5.load_gpt2(dev); m = VB.VBankN(g, a["mode"]).to(dev); m.eval(); o = {}
+        for st in steps:
+            m.load_state_dict(torch.load(os.path.join(d, "ckpt_model_%d.pt" % st), map_location=dev, weights_only=False)["model"])
+            with torch.no_grad():
+                r = m.rollout(x, pad, 8, coda_rows={t: torch.arange(len(its), device=dev) for t in range(9)})
+                pn, ce_t = {}, {}
+                for t in range(9):
+                    lg = m.answer_logits(r["coda"][t][1], lens); pr = torch.softmax(lg, -1); pn[str(t)] = float(pr[:, NUM].sum(-1).mean())
+                    ce_t[t] = F_.cross_entropy(lg, y, reduction="none")
+                cos = {str(t): float(F_.cosine_similarity(r["V"][t], r["V"][t - 1], dim=-1)[pad].mean()) for t in range(1, 9)}
+                ce_kn = float(torch.stack([ce_t[int(n)][i] for i, n in enumerate(nn_.tolist())]).mean()); ce_k1_n1 = float(ce_t[1][nn_ == 1].mean())
+            o[str(st)] = {"p_num_by_pass": pn, "cos_by_pass": cos, "ce_kn": ce_kn, "ce_k1_n1": ce_k1_n1, "drift": pn["1"] - pn["8"], "c": float(m.c_anneal)}
+        o["pass"] = o[str(steps[-1])]["drift"] < o[str(steps[0])]["drift"] and o[str(steps[2])]["ce_kn"] < o[str(steps[1])]["ce_kn"] < o[str(steps[0])]["ce_kn"]
+        out[run] = o
+    out["pass"] = all(v["pass"] for k, v in out.items() if k != "pass"); return out
+
+
 if __name__ == "__main__":
-    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
+    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))

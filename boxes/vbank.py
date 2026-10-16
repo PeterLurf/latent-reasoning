@@ -461,6 +461,7 @@ def main():
     ap.add_argument("--time_steps", type=int, default=0, help="G-TIME: train this many steps on forced final-stage batches (n <= 8, K 12), write timing.json + eval.json, exit")
     ap.add_argument("--mem_check", action="store_true", help="peak memory: one training step on the longest n <= 8 items at K 12 + an n 16 eval forward at K' 24 -> mem_check.json")
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--fp32", action="store_true")
+    ap.add_argument("--stop_at", type=int, default=0, help="smokes (G1b): stop after this step, schedules unchanged (no final eval)")
     ap.add_argument("--keep_ckpt_steps", default="", help="comma steps (0 = after calibration) at which a model-only copy ckpt_model_<step>.pt is kept (G1b smoke)")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device
@@ -508,7 +509,7 @@ def main():
             its = N.train_items(rng, a.bs, nmax, EXCL)
         Ks = [a.kmax if forced else min(it["n"] + int(rng_k.integers(0, a.kextra + 1)), a.kmax) for it in its]
         return its, Ks
-    last = step0 + a.time_steps - 1 if a.time_steps else (1 if a.mem_check else a.steps)
+    last = step0 + a.time_steps - 1 if a.time_steps else (1 if a.mem_check else (min(a.steps, a.stop_at) if a.stop_at else a.steps))
     if dev.startswith("cuda"):
         torch.cuda.reset_peak_memory_stats(dev)
     for step in range(step0, last + 1):
@@ -566,6 +567,8 @@ def main():
         for f_ in ("timing.json", "eval.json"):
             json.dump(tj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
         print("TIMING", sps, flush=True); return
+    if a.stop_at and last < a.steps:
+        print("STOPPED_AT", last, flush=True); return
     train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
     opt.zero_grad(set_to_none=True); opt.state.clear(); m.eval(); t1 = time.time()
     if dev.startswith("cuda"):
