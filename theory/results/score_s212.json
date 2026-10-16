@@ -24,18 +24,58 @@
     "STALL_COUNT": false,
     "NO_DONE": false
    },
-   "PF": null,
+   "PF": {
+    "gap": -0.06608918832210459,
+    "in_support": 0.0,
+    "slope": -0.001349561953532309,
+    "CLOCK_KEYED": false,
+    "POSITION_KEYED": false,
+    "CONTENT_KEYED": false,
+    "cells": 41
+   },
    "HIST": {
     "trunc_change_le8": -0.17625,
     "trunc_change_9_12": -0.2645,
     "HISTORY_HURTS": false,
     "HISTORY_USED": true,
-    "HISTORY_IGNORED": false
+    "HISTORY_IGNORED": false,
+    "arms": {
+     "v0off": {
+      "le8": -0.565625,
+      "9_12": -0.32475,
+      "gain": false
+     },
+     "recent1": {
+      "le8": -0.6052500000000001,
+      "9_12": -0.3245,
+      "gain": false
+     },
+     "floor2": {
+      "le8": -0.12575,
+      "9_12": -0.22924999999999998,
+      "gain": false
+     }
+    },
+    "EVAL_HISTORY_GAIN": false
    },
-   "FOREIGN": null,
-   "REPAIR": null,
-   "STEP": null,
-   "DEEP": true
+   "FOREIGN": {
+    "insert_minus_replace": -0.1963888888888889,
+    "CLOCK_FOREIGN": true
+   },
+   "REPAIR": {
+    "p": null,
+    "n_events": 0,
+    "GE_0_2": false,
+    "informative": false
+   },
+   "STEP": {
+    "events": 30862,
+    "dLL_per_1k": -0.15736023427315643,
+    "hh_coef_prov1": 5.717347438942981,
+    "FIRES": false
+   },
+   "DEEP": true,
+   "D3DIAG": null
   },
   "N1": {
    "RS": {
@@ -47,19 +87,72 @@
     "HISTORY_FREE": false,
     "HEAD_LIMITED": true
    },
-   "HALT": null,
-   "PF": null,
+   "HALT": {
+    "HALT_EXACT": true,
+    "exact_3_8": 1.0,
+    "NOT_PREMATURE": false,
+    "STALL_SHIFT": true,
+    "stall_shift": 1.0,
+    "stall_qualifying": 5000,
+    "DEPTH_TIMING": false,
+    "C5_VB": false,
+    "CLOCK_HOLD": false,
+    "EDGE_COLLAPSE": false,
+    "STALL_COUNT": false,
+    "NO_DONE": false
+   },
+   "PF": {
+    "gap": -0.15016920473773265,
+    "in_support": 0.0,
+    "slope": -0.0036829815442079553,
+    "CLOCK_KEYED": true,
+    "POSITION_KEYED": false,
+    "CONTENT_KEYED": false,
+    "cells": 47
+   },
    "HIST": {
     "trunc_change_le8": 0.0,
     "trunc_change_9_12": -0.015250000000000007,
     "HISTORY_HURTS": false,
     "HISTORY_USED": false,
-    "HISTORY_IGNORED": true
+    "HISTORY_IGNORED": true,
+    "arms": {
+     "v0off": {
+      "le8": -0.305375,
+      "9_12": -0.27825,
+      "gain": false
+     },
+     "recent1": {
+      "le8": -0.36224999999999996,
+      "9_12": -0.296,
+      "gain": false
+     },
+     "floor2": {
+      "le8": 0.0,
+      "9_12": -0.012250000000000011,
+      "gain": false
+     }
+    },
+    "EVAL_HISTORY_GAIN": false
    },
-   "FOREIGN": null,
-   "REPAIR": null,
-   "STEP": null,
-   "DEEP": true
+   "FOREIGN": {
+    "insert_minus_replace": -0.018388888888888892,
+    "CLOCK_FOREIGN": false
+   },
+   "REPAIR": {
+    "p": null,
+    "n_events": 0,
+    "GE_0_2": false,
+    "informative": false
+   },
+   "STEP": {
+    "events": 32986,
+    "dLL_per_1k": -5.9801853012082734e-09,
+    "hh_coef_prov1": null,
+    "FIRES": false
+   },
+   "DEEP": true,
+   "D3DIAG": null
   },
   "N3": {
    "RS": {
@@ -85,23 +178,63 @@
     "STALL_COUNT": false,
     "NO_DONE": false
    },
-   "PF": null,
+   "PF": {
+    "gap": -0.19470889116637194,
+    "in_support": -0.0007523206867903612,
+    "slope": -0.01073141063056313,
+    "CLOCK_KEYED": true,
+    "POSITION_KEYED": true,
+    "CONTENT_KEYED": false,
+    "cells": 38
+   },
    "HIST": {
     "trunc_change_le8": -0.270125,
     "trunc_change_9_12": -0.18425,
     "HISTORY_HURTS": false,
     "HISTORY_USED": true,
-    "HISTORY_IGNORED": false
+    "HISTORY_IGNORED": false,
+    "arms": {
+     "v0off": {
+      "le8": -0.7715000000000001,
+      "9_12": -0.21775,
+      "gain": false
+     },
+     "recent1": {
+      "le8": -0.828875,
+      "9_12": -0.21725000000000003,
+      "gain": false
+     },
+     "floor2": {
+      "le8": -0.20025,
+      "9_12": -0.14350000000000002,
+      "gain": false
+     }
+    },
+    "EVAL_HISTORY_GAIN": false
    },
-   "FOREIGN": null,
-   "REPAIR": null,
-   "STEP": null,
-   "DEEP": true
+   "FOREIGN": {
+    "insert_minus_replace": -0.1602777777777778,
+    "CLOCK_FOREIGN": true
+   },
+   "REPAIR": {
+    "p": 1.0,
+    "n_events": 2,
+    "GE_0_2": true,
+    "informative": false
+   },
+   "STEP": {
+    "events": 26757,
+    "dLL_per_1k": -0.10215702747449572,
+    "hh_coef_prov1": 3.5624386780101562,
+    "FIRES": false
+   },
+   "DEEP": true,
+   "D3DIAG": null
   },
   "GO": {
    "G1": true,
    "FT": false,
-   "S": null,
+   "S": false,
    "RS_models_read": 3
   }
  },
