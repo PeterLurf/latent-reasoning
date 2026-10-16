@@ -1,0 +1,39 @@
+{
+ "s211_vb_carry_s1": {
+  "g1_v0_explicit_bitwise": true,
+  "g1_zero_mask_maxdiff_logits": 0.0,
+  "g1_zero_mask_maxdiff_VK": 0.0,
+  "g2_t0_masked_invariant_bitwise": true,
+  "g2_t0_unmasked_changes_maxdiff": 33.36493682861328,
+  "g2_t1_masked_invariant_bitwise": true,
+  "g2_t1_unmasked_changes_maxdiff": 18.94649887084961,
+  "maskvoid_smoke_finite": true,
+  "maskvoid_smoke_void_slot_events": 7396,
+  "g4_gapped_prelude_maxdiff": 0.0
+ },
+ "s211_vb_pa_s1": {
+  "g1_v0_explicit_bitwise": true,
+  "g1_zero_mask_maxdiff_logits": 0.0,
+  "g1_zero_mask_maxdiff_VK": 0.0,
+  "g1_hist_ablate_K2_bitwise": true,
+  "g2_t0_masked_invariant_bitwise": true,
+  "g2_t0_unmasked_changes_maxdiff": 24.556856155395508,
+  "g2_t1_masked_invariant_bitwise": true,
+  "g2_t1_unmasked_changes_maxdiff": 24.070594787597656,
+  "maskvoid_smoke_finite": true,
+  "maskvoid_smoke_void_slot_events": 5145,
+  "g3_self_split_older_same_slot_incl_V0_max_t3plus": 0.31356081366539,
+  "g3_self_finite": true,
+  "g3_other_split_older_same_slot_incl_V0_max_t3plus": 0.6323962807655334,
+  "g3_other_finite": true,
+  "g3_None_mid_own_mass_max": 0.946724534034729,
+  "g3_None_mid_cross_mass_max": 0.967995822429657,
+  "g3_self_mid_own_mass_max": 0.0,
+  "g3_self_mid_cross_mass_max": 0.9839226007461548,
+  "g3_other_mid_own_mass_max": 0.9962183833122253,
+  "g3_other_mid_cross_mass_max": 0.0,
+  "g4_gapped_prelude_maxdiff": 0.0
+ },
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 2070"
+}

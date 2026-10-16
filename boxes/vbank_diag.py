@@ -483,12 +483,192 @@ def part_wpereset(m, TE, dev, bs):
     return res
 
 
+# ---------------------------------------------------------------- note 212-15: D3 Stage 0 rows (S0-1 SELECTOR, S0-2 LENGTH-FREE-K, S0-3 STAB-HIST)
+def _cls_tok(c):
+    """recode class id -> its token id (VOID -> None)."""
+    nm = VB.CLS[int(c)]
+    return None if nm == "VOID" else N.EOT if nm == "EOT" else N.TID[nm]
+
+
+def _lower_masked(g, x, km):
+    """the prelude (blocks 0..5 -> V_0) with the current-version keys at km (B, T) True removed (GAPPED's interior mask); block_bank without a bank
+    is deltamem._block's computation with an explicit mask (G1)."""
+    h = g.embed(x) + VB.DM_().wpe_slice(g, x.shape[1])[None]
+    for i in range(VB.CORE[0]):
+        h = VB.block_bank(g, i, h, None, None, None, km)
+    return h
+
+
+@torch.no_grad()
+def part_d3sel(m, TE, dev, bs):
+    """note 212-15 S0-1 SELECTOR (D3_v1 §6). Arms at K' = n + 2 on the §170 test set (part_rs's chunks):
+    intact; MASKVOID = vbank slot_mask: a slot whose argmax R(V_t[j]) is VOID (t >= 1, the model's own decode) is removed from every reader (core / coda
+    bank entries of EVERY stored version, the current version's keys; PA: the gather) for every core pass > t and the coda after pass >= t;
+    REFRESH = rollout(edit): at every pass t >= 1, slots whose argmax R(V_t[j]) equals their input class E_0[j] have their stored entry (and the carry)
+    set to V_0[j]. RS items (exact decode at t = n - r, part_rs's classify): restart = part_rs's compact fresh run at K' = r + 2, computed over part_rs's
+    full job lists for r in {2, 4, 6} (same batches -> bitwise with eval_rs.json); GAPPED = a fresh run at K' = r + 2 on x with each live slot of the
+    reference E_t at its ORIGINAL position (token of its class) and the E_t VOID slots removed from every reader from V_0 on (prelude via an explicit
+    interior key mask, then slot_mask). cells n 9-13 x r {4, 6}; gapped_control n 5-8 x r {2, 4}; acc_n2 per arm n 1..16; exposure = share of items with
+    >= 1 masked (MASKVOID) / refreshed (REFRESH) slot at some pass <= n + 2, and the mean count of slot-events."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE])
+    ARMS = ("intact", "maskvoid", "refresh"); acc = {a_: np.full(len(TE), -1) for a_ in ARMS}; RR = (2, 4, 6); jobs = {r: [] for r in RR}
+    CELLS = [(n, r) for n in range(9, 14) for r in (4, 6)]; CTRL = [(n, r) for n in range(5, 9) for r in (2, 4)]; expo = {a_: {} for a_ in ("maskvoid", "refresh")}
+    for n in range(1, 17):
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B, T = x.shape; E0 = VB.rec_targets(its, 0, T, dev)[:, 0]; rows = torch.arange(B, device=dev)
+            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}); acc["intact"][ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy()
+            for r in RR:
+                t = n - r
+                if t < 1:
+                    continue
+                dec = m.rec_logits(r_["V"][t]).argmax(-1).cpu().numpy()
+                for k_, j in enumerate(ch):
+                    if classify(VB.rerender(list(dec[k_, :int(lens[k_])])), N.cot_steps(TE[j]["root"])[t]) == "exact":
+                        jobs[r].append((int(j), t))
+            V0 = r_["V"][0]; del r_
+            ex = {"any": torch.zeros(B, dtype=torch.bool, device=dev), "ev": 0}
+
+            def mv(t, V, ex=ex, pad=pad):
+                z = (m.rec_logits(V).argmax(-1) == VB.VOID) if t >= 1 else torch.zeros(V.shape[:2], dtype=torch.bool, device=V.device)
+                z = z & pad; ex["any"] |= z.any(1); ex["ev"] += int(z.sum()); return z
+            try:
+                m.slot_mask = mv; rm_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows})
+            finally:
+                m.slot_mask = None
+            acc["maskvoid"][ch] = m.answer_logits(rm_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rm_
+            e_ = expo["maskvoid"].setdefault(str(n), [0, 0, 0]); e_[0] += int(ex["any"].sum()); e_[1] += ex["ev"]; e_[2] += B
+            ex = {"any": torch.zeros(B, dtype=torch.bool, device=dev), "ev": 0}
+
+            def rf(t, V, ex=ex, pad=pad, E0=E0, V0=V0):
+                z = (m.rec_logits(V).argmax(-1) == E0) & pad; ex["any"] |= z.any(1); ex["ev"] += int(z.sum())
+                return torch.where(z[..., None], V0, V)
+            rr_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}, edit=rf)
+            acc["refresh"][ch] = m.answer_logits(rr_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rr_
+            e_ = expo["refresh"].setdefault(str(n), [0, 0, 0]); e_[0] += int(ex["any"].sum()); e_[1] += ex["ev"]; e_[2] += B
+        print("D3SEL n", n, {a_: round(float((acc[a_] == Y)[Nn == n].mean()), 3) for a_ in ARMS}, flush=True)
+    rest = {}
+    for r in RR:                                                            # part_rs's restart, same job order and batches
+        js = jobs[r]
+        for c0 in range(0, len(js), bs):
+            part = js[c0:c0 + bs]; its = [{"syms": N.render(reduce_k(TE[j]["root"], t)), "t": TE[j]["t"]} for j, t in part]
+            x, pad, lens = VB.batch_x(its, dev); rr = m.rollout(x, pad, r + 2, coda_rows={r + 2: torch.arange(len(its), device=dev)})
+            a_ = m.answer_logits(rr["coda"][r + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rr
+            for k_, (j, t) in enumerate(part):
+                rest[(j, t)] = bool(a_[k_] == TE[j]["t"])
+    gap = {}; need = set(CELLS) | set(CTRL)
+    for r in RR:                                                            # GAPPED on the cells' / controls' items only
+        js = [(j, t) for j, t in jobs[r] if (TE[j]["n"], r) in need]
+        for c0 in range(0, len(js), bs):
+            part = js[c0:c0 + bs]; x, pad, lens = VB.batch_x([TE[j] for j, _ in part], dev); km = torch.zeros_like(pad)
+            for k_, (j, t) in enumerate(part):
+                Et = VB.recode_targets(TE[j]["root"], t)[t]; assert len(Et) == int(lens[k_]), "GAPPED: E_t length != the item's"
+                for p_, c in enumerate(Et):
+                    tk = _cls_tok(c)
+                    if tk is None:
+                        km[k_, p_] = True
+                    else:
+                        x[k_, p_] = tk
+            assert not bool((km & ~pad).any()) and not bool(km[:, 0].any()) and not bool(km[torch.arange(len(part), device=dev), lens - 1].any())
+            try:
+                m.slot_mask = lambda t, V, km=km: km if t == 0 else torch.zeros_like(km)
+                rg = m.rollout(x, pad, r + 2, coda_rows={r + 2: torch.arange(len(part), device=dev)}, v0=_lower_masked(m.g, x, km))
+            finally:
+                m.slot_mask = None
+            a_ = m.answer_logits(rg["coda"][r + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rg
+            for k_, (j, t) in enumerate(part):
+                gap[(j, t)] = bool(a_[k_] == TE[j]["t"])
+    mean_ = lambda v: float(np.mean(v)) if len(v) else None  # noqa: E731
+    cells, ctrl = {}, {}
+    for (n, r) in CELLS + CTRL:
+        tt = n - r; js = [j for (j, t) in jobs[r] if t == tt and TE[j]["n"] == n]
+        c_ = {"n_items": len(js), "restart": mean_([rest[(j, tt)] for j in js]), "gapped": mean_([gap[(j, tt)] for j in js])}
+        if (n, r) in CELLS:
+            c_.update({a_: mean_([bool(acc[a_][j] == Y[j]) for j in js]) for a_ in ARMS}); cells["%d_%d" % (n, r)] = c_
+        else:
+            ctrl["%d_%d" % (n, r)] = c_
+    # GAPPED prelude path check: an all-False interior mask vs deltamem.gpt_lower on one chunk (explicit mask vs is_causal kernels)
+    its = [TE[j] for j in np.nonzero(Nn == 9)[0][:bs]]; x, pad, _ = VB.batch_x(its, dev)
+    pre_diff = float((_lower_masked(m.g, x, torch.zeros_like(pad)) - VB.DM_().gpt_lower(m.g, m.g.embed(x), VB.CORE[0])).abs().max())
+    by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 17)}  # noqa: E731
+    return {"cells": cells, "acc_n2": {a_: by_n(acc[a_]) for a_ in ARMS}, "gapped_control": ctrl, "gapped_supported": True,
+            "exposure": {a_: {n: {"items_exposed": v[0] / v[2], "slot_events_per_item": v[1] / v[2]} for n, v in d.items()} for a_, d in expo.items()},
+            "gapped_prelude_maxdiff_empty_mask": pre_diff, "def": part_d3sel.__doc__}
+
+
+@torch.no_grad()
+def part_lfk(m, TE, dev, bs):
+    """note 212-15 S0-2 LENGTH-FREE-K reference (D3_v1 §5 (a')): §170 test items n 9-16, the intact rollout (K' = n); every pass t in 2..n whose input
+    V_{t-1} decodes STRICT exact (argmax R == E_{t-1} at every real slot, VOIDs in place); per real slot j (EOT and ' =' included) strict R(V_t[j]) == E_t[j].
+    kind: changed (E_t[j] != E_{t-1}[j], consumption included) / copy (unchanged, non-VOID) / void (unchanged VOID) / all; bucket on the slot index j:
+    le28 (j <= 28) / 29_32 / ge33. step {n: events, strict_exact, voiddrop_exact (rerender equality)}; first_wrong {T bucket of the item length T
+    (tokens incl. EOT and ' ='): [first wrong slot j]} over events that are not strict exact."""
+    Nn = np.array([it["n"] for it in TE]); KINDS = ("copy", "changed", "void", "all"); BK = (("le28", 0, 28), ("29_32", 29, 32), ("ge33", 33, 10 ** 6))
+    slot = {"%s_%s" % (k, b[0]): [0, 0] for k in KINDS for b in BK}; step = {}; fw = {b[0]: [] for b in BK}
+    bname = lambda v: "le28" if v <= 28 else "29_32" if v <= 32 else "ge33"  # noqa: E731
+    for n in range(9, 17):
+        st = step.setdefault(str(n), {"events": 0, "strict_exact": 0, "voiddrop_exact": 0})
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B, T = x.shape; E = VB.rec_targets(its, n, T, dev)
+            r_ = m.rollout(x, pad, n); dec = [m.rec_logits(r_["V"][t]).argmax(-1) for t in range(n + 1)]; del r_
+            col = torch.arange(T, device=dev)[None, :].expand(B, T)
+            for t in range(2, n + 1):
+                ok_in = ((dec[t - 1] == E[:, t - 1]) | ~pad).all(1)
+                if not bool(ok_in.any()):
+                    continue
+                Et, Ep = E[:, t], E[:, t - 1]; cor = dec[t] == Et; base = pad & ok_in[:, None]; chg = Et != Ep
+                km = {"changed": chg, "copy": ~chg & (Et != VB.VOID), "void": ~chg & (Et == VB.VOID), "all": torch.ones_like(chg)}
+                for k in KINDS:
+                    for b, lo, hi in BK:
+                        sel = base & km[k] & (col >= lo) & (col <= hi); c_ = slot["%s_%s" % (k, b)]; c_[0] += int(sel.sum()); c_[1] += int((sel & cor).sum())
+                strict = (cor | ~pad).all(1); dc = dec[t].cpu().numpy(); ec = Et.cpu().numpy(); okc = ok_in.cpu().numpy(); sc = strict.cpu().numpy()
+                for i in np.nonzero(okc)[0]:
+                    L = int(lens[i]); st["events"] += 1; st["strict_exact"] += int(sc[i]); st["voiddrop_exact"] += int(VB.rerender(list(dc[i, :L])) == VB.rerender(list(ec[i, :L])))
+                    if not sc[i]:
+                        fw[bname(L)].append(int(np.nonzero(dc[i, :L] != ec[i, :L])[0][0]))
+        print("LFK n", n, st, flush=True)
+    return {"slot": {k: {"events": v[0], "strict_correct": v[1], "acc": v[1] / v[0] if v[0] else None} for k, v in slot.items()}, "step": step, "first_wrong": fw,
+            "def": part_lfk.__doc__}
+
+
+@torch.no_grad()
+def part_stabhist(m, TE, dev, bs):
+    """note 212-15 S0-3 STAB-HIST (D3_v1 §6): arms intact / self_ablate / other_ablate = vbank gather_hist_ablate None / "self" / "other" (the PA gather
+    only: for query slot j the keys (s, j) resp. (s, i != j) at 1 <= s <= t-2 are masked; core / coda untouched; rt_d3/rt_hist2.py). acc_n2 (K' = n + 2)
+    and acc_k24 (K' = 24) for n 3..8 from one K' 24 rollout per chunk (vbank_eval.part_acc's chunks; intact must equal eval_vb.json bitwise). check_split
+    (descriptive): gather_split_log on the first chunk of n 8 - its older-same-slot mass INCLUDES V_0[j], which self_ablate keeps (the exact-zero mid-version
+    check is scratch/gate_s212_d3.py g3)."""
+    assert m.mode == "pa", "STAB-HIST needs the PA gather"
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {}; chk = {}
+    for arm, how in (("intact", None), ("self_ablate", "self"), ("other_ablate", "other")):
+        A2 = np.full(len(TE), -1); A24 = np.full(len(TE), -1)
+        try:
+            m.gather_hist_ablate = how
+            for n in range(3, 9):
+                for c_i, ch in enumerate(VE.chunks(np.nonzero(Nn == n)[0], bs)):
+                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+                    m.gather_split_log = [] if (n == 8 and c_i == 0) else None
+                    r_ = m.rollout(x, pad, 24, coda_rows={n + 2: rows, 24: rows})
+                    A2[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy()
+                    A24[ch] = m.answer_logits(r_["coda"][24][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+                    if m.gather_split_log is not None:
+                        chk[arm] = {"older_same_slot_incl_V0_mass_max": float(max(float(o.max()) for _, _, o, _ in m.gather_split_log[2:])),
+                                    "self_mass_mean": float(np.mean([float(s_.mean()) for _, s_, _, _ in m.gather_split_log])),
+                                    "cross_slot_mass_mean": float(np.mean([float(c.mean()) for _, _, _, c in m.gather_split_log]))}
+                    m.gather_split_log = None
+        finally:
+            m.gather_hist_ablate = None; m.gather_split_log = None
+        by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(3, 9)}  # noqa: E731
+        res[arm] = {"acc_n2": by_n(A2), "acc_k24": by_n(A24)}; print("STAB", arm, res[arm], flush=True)
+    res["check_split_n8_chunk0"] = chk; res["def"] = part_stabhist.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
