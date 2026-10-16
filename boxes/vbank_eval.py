@@ -28,7 +28,7 @@ import torch.nn.functional as F  # noqa: E402
 import boxes.nested170 as N  # noqa: E402
 import boxes.vbank as VB  # noqa: E402
 
-T_SET = (0, 1, 2, 3, 4, 6, 8, 12); KS = list(range(17)) + [24]; NUM = None
+T_SET = (0, 1, 2, 3, 4, 6, 8, 12); KS = list(range(17)) + [24]; NUM = None; DEV = "cpu"
 
 
 def height(nd):
@@ -42,6 +42,12 @@ def load(run, dev):
     for p_ in m.parameters():
         p_.requires_grad_(False)
     return m, a
+
+
+def ablate_keep(t, nver):
+    """BANK-ABLATE's kept versions at pass (or coda) t over stored versions 0..nver-1: V_0 and the newest (t - 1); versions 1..t-2 masked."""
+    s = torch.arange(nver, device=DEV)
+    return (s == 0) | (s >= t - 1)
 
 
 def chunks(idx, bs):
@@ -94,7 +100,7 @@ def vslot_tensor(items, t_max, dev):
 @torch.no_grad()
 def part_acc(m, TE, dev, bs):
     Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); A = {k: np.full(len(TE), -1) for k in KS + ["n2"]}
-    cl_sum, cl_cnt = 0.0, 0; sc = {}; copy_ok = copy_n = 0; val_ok = val_n = 0; racc = {}; abl = np.full(len(TE), -1)
+    cl_sum, cl_cnt = 0.0, 0; sc = {}; copy_ok = copy_n = 0; val_ok = val_n = 0; racc = {}; abl = np.full(len(TE), -1); boff = np.full(len(TE), -1)
     for n in range(1, 17):
         for ch in chunks(np.nonzero(Nn == n)[0], bs):
             its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B, T = x.shape; E = VB.rec_targets(its, 24, T, dev)
@@ -122,8 +128,11 @@ def part_acc(m, TE, dev, bs):
                     k_ = "%d,%d" % (t, int(alive[r_])); d_ = sc.setdefault(k_, [0, 0]); d_[0] += int(hit[r_]); d_[1] += 1
                     if 6 <= n <= 8:
                         val_ok += int(hit[r_]); val_n += 1
-            off0 = m.bank_off; m.bank_off = True                            # BANK-ABLATE (descriptive): every bank logit -inf, K' = n + 2
+            off0 = m.bank_off; m.bank_off = True                            # BANK-OFF (descriptive): every bank logit -inf, K' = n + 2
             rb = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(B, device=dev)}); m.bank_off = off0
+            boff[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy(); del rb
+            m.ver_keep = ablate_keep                                        # BANK-ABLATE as registered (draft §7; note 211-14): versions 1..t-2 masked
+            rb = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(B, device=dev)}); m.ver_keep = None
             abl[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy(); del r, rb, dec, E    # free this chunk's bank before the next (8 GB cards)
     by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 17)}  # noqa: E731
     by_ta = {k: {"acc": v[0] / v[1], "n": v[1]} for k, v in sorted(sc.items(), key=lambda kv: tuple(int(z) for z in kv[0].split(",")))}
@@ -140,7 +149,9 @@ def part_acc(m, TE, dev, bs):
                         "n_copy_slots": copy_n, "n_value_cond_n6_8": val_n,
                         "def": "STEP-CAP(t, a): R acc at the value slot of V_t on items whose R(V_{t-1}) decodes E_{t-1} exactly; a = non-VOID content slots of E_{t-1}; "
                                "t <= n; slope over a with >= 3 t values (cells with >= 10 items)"},
-            "r_acc_by_t": {t: {n: v[0] / v[1] for n, v in d.items()} for t, d in racc.items()}, "bank_ablate": {"acc_n2": by_n(abl)}}
+            "r_acc_by_t": {t: {n: v[0] / v[1] for n, v in d.items()} for t, d in racc.items()}, "bank_ablate": {"acc_n2": by_n(abl), "def": "draft §7 / note 211-14: versions 1..t-2 masked at every pass (core, gather) and in the coda; V_0 and the newest kept; K' = n + 2"},
+            "hist_trunc": {"acc_n2": by_n(abl), "def": "alias of bank_ablate (note 211-14)"},
+            "bank_off": {"acc_n2": by_n(boff), "def": "every bank logit -inf (core and coda; the gather still reads all versions), K' = n + 2"}}
 
 
 # ---------------------------------------------------------------- PROBE(t)
@@ -332,10 +343,10 @@ def part_tf(m, TE, dev, bs):
 
 
 def main():
-    global NUM
+    global NUM, DEV
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32)
     ap.add_argument("--parts", default="acc,probe,vswap,stall,tf"); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--probe_ts", default=",".join(map(str, T_SET))); ap.add_argument("--probe_steps", type=int, default=2000, help="smokes only")
-    a = ap.parse_args(); dev = a.device; NUM = torch.tensor(N.NUM_IDS, device=dev); torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
+    a = ap.parse_args(); dev = a.device; DEV = dev; NUM = torch.tensor(N.NUM_IDS, device=dev); torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = load(a.run, dev); TE = N.test_set(a.per_n); fo = os.path.join(a.run, "eval_vb.json")
     out = json.load(open(fo)) if os.path.exists(fo) else {}
     out.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32",

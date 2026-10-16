@@ -195,5 +195,23 @@ def gate_g1b(dev="cuda:0", runs=("s211_g1b_pa", "s211_g1b_carry", "s211_g1b_pamc
     out["pass"] = all(v["pass"] for k, v in out.items() if k != "pass"); return out
 
 
+
+def gate_verkeep(dev="cpu"):
+    """note 211-14 (eval-only ver_keep hook): (a) ver_keep = all-True == ver_keep None bitwise (fp32 and fp64, PA c 0 and CARRY, 10 passes, every V_t and
+    coda output); (b) BANK-ABLATE (versions 1..t-2 masked) runs finite and differs from intact at t >= 3."""
+    out = {}
+    for dt in (torch.float32, torch.float64):
+        for mode in ("pa", "carry"):
+            m = _model(mode, dt, dev); m.c_anneal.fill_(0.0); its = _items(5, 21109, 3, 8); x, pad, lens = VB.batch_x(its, dev); rows = {t: torch.arange(len(its)) for t in range(11)}
+            with torch.no_grad():
+                r0 = m.rollout(x, pad, 10, coda_rows=rows)
+                m.ver_keep = lambda t, nv: torch.ones(nv, dtype=torch.bool); r1 = m.rollout(x, pad, 10, coda_rows=rows)
+                m.ver_keep = lambda t, nv: (torch.arange(nv) == 0) | (torch.arange(nv) >= t - 1); r2 = m.rollout(x, pad, 10, coda_rows=rows); m.ver_keep = None
+            eq = all(torch.equal(a[pad], b[pad]) for a, b in zip(r0["V"], r1["V"])) and all(torch.equal(r0["coda"][t][1][pad], r1["coda"][t][1][pad]) for t in rows)
+            fin = all(bool(torch.isfinite(v).all()) for v in r2["V"]); dif = float((r2["V"][10] - r0["V"][10])[pad].abs().max())
+            out["%s_%s" % (mode, str(dt)[6:])] = {"all_true_bitwise": eq, "ablate_finite": fin, "ablate_maxdiff_V10": dif}
+    out["pass"] = all(v["all_true_bitwise"] and v["ablate_finite"] and v["ablate_maxdiff_V10"] > 0 for v in out.values()); return out
+
+
 if __name__ == "__main__":
-    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
+    g = sys.argv[1]; r = {"et": gate_et, "fp": gate_fp, "carry_bitwise": gate_carry_bitwise, "maskk": gate_maskk, "cal": gate_cal, "gradflow": gate_gradflow, "mct": gate_mct, "g1b": gate_g1b, "verkeep": gate_verkeep}[g](); json.dump(r, open("scratch/gate_s211/%s.json" % g, "w", newline="\n"), indent=1); print(json.dumps(r))
