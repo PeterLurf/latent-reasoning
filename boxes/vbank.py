@@ -71,19 +71,22 @@ def bank_kv(g, i, V):
     return k.view(B, T, g.H, hd).transpose(1, 2), v.view(B, T, g.H, hd).transpose(1, 2)
 
 
-def block_bank(g, i, h, bk, bv, bbias):
+def block_bank(g, i, h, bk, bv, bbias, kmask=None):
     """deltamem._block with a bank: the current version's queries attend over [bank keys (bk, bv: (B, H, Tb, hd)) | the current version, causal];
     bbias (B, H, T, Tb) float: the bank logit bias (beta + gamma * age), -inf on masked entries (padding, versions >= t). bk None = no bank.
-    Bank-free when every bank entry is -inf (G1: equal to deltamem._block within fp64 rounding)."""
+    Bank-free when every bank entry is -inf (G1: equal to deltamem._block within fp64 rounding).
+    kmask (B, T) bool, eval-only (note 212-15 MASKVOID / GAPPED): the current version's keys at True slots are removed (-inf); None = unchanged."""
     B, T, D = h.shape; hd = D // g.H; pre = f"h.{i}."
     a = F.layer_norm(h, (D,), g.w(pre + "ln_1.weight"), g.w(pre + "ln_1.bias"))
     q, k, v = (a @ g.w(pre + "attn.c_attn.weight") + g.w(pre + "attn.c_attn.bias")).split(D, -1)
     q, k, v = (t_.view(B, T, g.H, hd).transpose(1, 2) for t_ in (q, k, v))
     causal = torch.full((T, T), float("-inf"), device=h.device, dtype=q.dtype).triu(1)
+    if kmask is not None:                                                   # eval-only (212-15): per-item removed key slots in the current version
+        causal = causal.expand(B, g.H, T, T).masked_fill(kmask[:, None, None, :], float("-inf"))
     if bk is None:
         o = F.scaled_dot_product_attention(q, k, v, attn_mask=causal)
     else:
-        mask = torch.cat([bbias.to(q.dtype), causal.expand(B, g.H, T, T)], -1)
+        mask = torch.cat([bbias.to(q.dtype), causal.expand(B, g.H, T, T)], -1)   # (expand is a no-op on the kmask (B, H, T, T) form)
         o = F.scaled_dot_product_attention(q, torch.cat([bk.to(q.dtype), k], 2), torch.cat([bv.to(q.dtype), v], 2), attn_mask=mask)
     h = h + o.transpose(1, 2).reshape(B, T, D) @ g.w(pre + "attn.c_proj.weight") + g.w(pre + "attn.c_proj.bias")
     a = F.layer_norm(h, (D,), g.w(pre + "ln_2.weight"), g.w(pre + "ln_2.bias"))
@@ -170,6 +173,10 @@ class VBankN(torch.nn.Module):
         self.gather_splice = None                                           # eval-only (note 212-6): J -> gather output replaced by N(V_{t-1}) at slots j >= J
         self.gather_qmod = None                                             # eval-only (note 212-6): gather query position j -> j mod this (None = wpe_slice)
         self.gather_split_log = None                                        # eval-only (211-15 A iv): a list -> per pass (t, self, older-same-slot, cross-slot) per item
+        self.slot_mask = None                                               # eval-only (212-15 MASKVOID / GAPPED): f(t, V_t) -> (B, T) bool slots REMOVED from every reader
+        #   (core / coda bank entries of every version, the current version's keys, the gather) from then on (accumulated; t = 0 is called on V_0)
+        self.gather_hist_ablate = None                                      # eval-only (212-15 STAB-HIST): "self" | "other" -> the gather's keys (s, j) | (s, i != j),
+        #   1 <= s <= t-2, masked for query slot j (rt_d3/rt_hist2.py); None = unchanged
 
     def nrm(self, V, rms0):
         return self.gain * (V * (rms0 / V.pow(2).mean(-1, keepdim=True).sqrt()))
@@ -199,7 +206,13 @@ class VBankN(torch.nn.Module):
                 valid = valid & (s_idx != 0)[None]
             if keep is not None:
                 valid = valid & keep.to(dev).repeat_interleave(T)[None]
-            w = torch.softmax(lg.masked_fill(~valid[:, None, None, :], NEG), -1)
+            if self.gather_hist_ablate is None:
+                w = torch.softmax(lg.masked_fill(~valid[:, None, None, :], NEG), -1)
+            else:                                                           # eval-only (212-15 STAB-HIST): per query slot j, mid versions 1..t-2 at slot j (self) / i != j (other)
+                mid = ((s_idx >= 1) & (s_idx <= t - 2))[None, :]; same = i_idx[None, :] == torch.arange(T, device=dev)[:, None]   # (Tq, tT)
+                rm = mid & (same if self.gather_hist_ablate == "self" else ~same); assert self.gather_hist_ablate in ("self", "other")
+                w = torch.softmax(lg.masked_fill(~(valid[:, None, :] & ~rm[None])[:, None], NEG), -1)
+
             U = (w @ torch.cat(NV[:t], 1).to(dt).view(B, t * T, H, hd).transpose(1, 2)).transpose(1, 2).reshape(B, T, H * hd)
             if self.gather_log is not None:
                 sm = w[:, :, torch.arange(T, device=dev), (t - 1) * T + torch.arange(T, device=dev)].detach()                # (B, H, T)
@@ -213,23 +226,24 @@ class VBankN(torch.nn.Module):
             U = torch.cat([U[:, :self.gather_splice], NV[t - 1].to(U.dtype)[:, self.gather_splice:]], 1)
         return U.to(NV[0].dtype)
 
-    def coda(self, t, Vt, kvs, pad, src=None, bp=None):
+    def coda(self, t, Vt, kvs, pad, src=None, bp=None, km=None):
         """blocks 10-11 over [bank versions 1..t-1 (kvs {layer: [(k, v)] * t}; V_0 excluded, note 211-1 pin 4) | V_t causal] + ln_f -> (b, T, D); t <= 1: no
         bank (K' = 0 is the coda on V_0 as its causal input). src: a weight source (.w / .H; default
-        the trunk) and bp: (beta, beta0, gam) rows for the 2 coda layers (default this model's) - the PROBE(t) coda copy passes its own."""
+        the trunk) and bp: (beta, beta0, gam) rows for the 2 coda layers (default this model's) - the PROBE(t) coda copy passes its own.
+        km: block_bank's kmask (eval-only, 212-15; pad then excludes the same slots from the bank)."""
         src = src or self.g; D = self.D; h = Vt; bp = bp or (self.beta[4:], self.beta0[4:], self.gam[4:])
         for r, i in enumerate(CODA):
             if t <= 1:
-                h = block_bank(src, i, h, None, None, None)
+                h = block_bank(src, i, h, None, None, None, km)
             else:
                 bk = torch.cat([k for k, _ in kvs[i][1:t]], 2); bv = torch.cat([v for _, v in kvs[i][1:t]], 2); T_ = h.shape[1]
                 bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, False, self.bank_off, self.ver_keep(t, t) if self.ver_keep else None, self.age_floor)[..., T_:].expand(-1, -1, T_, -1)
                 if self.cap is not None:
                     self.cap[("coda", i, t)] = h.detach()
-                h = block_bank(src, i, h, bk, bv, bb)
+                h = block_bank(src, i, h, bk, bv, bb, km)
         return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
 
-    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None):
+    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None, v0=None):
         """x (B, T) token ids [EOT, expr, ' ='] right-padded; pad (B, T) real-slot mask; K passes.
         coda_rows {t: LongTensor rows}: the coda after pass t (t = 0: on V_0) on those rows -> out["coda"][t] = (rows, h (b, T, D)).
         edit(t, V_t) -> the stored entry V_t' (bank, and the carry), or (bank_t, carry_t) under CARRY (VALUE-SWAP iii); None = V_t (interventions, MCT).
@@ -238,8 +252,11 @@ class VBankN(torch.nn.Module):
         Eval-only (note 212-3, FOREIGN): prefix = [F_1..F_o] stored versions pushed right after V_0 before pass 1 (INSERT: passes then run t = o + 1..K,
         K absolute; the carry stays V_0); ver_sub = [F_1..F_o]: entry s in 1..o is READ as F_s by every pass t > s + 1 and by the coda after pass t >= s + 1
         (REPLACE; the pass that consumes V_s still reads the real V_s). None = unchanged.
+        Eval-only (212-15): v0 = a given V_0 (GAPPED's interior-masked prelude); self.slot_mask (see __init__). None = unchanged.
         -> {"V": computed V_0..V_K, "S": stored entries, "coda": {...}, "kv": the bank K / V}."""
-        g = self.g; B, T = x.shape; V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]); rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
+        g = self.g; B, T = x.shape; V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]) if v0 is None else v0; rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
+        M = None if self.slot_mask is None else self.slot_mask(0, V0).bool() & pad     # removed slots so far (212-15); None = the default path
+        pd = pad if M is None else pad & ~M
         Vc, St, kv, gk, NV, out = [V0], [V0], {i: [] for i in LAYERS}, [], [], {}
 
         def push(Vs):
@@ -252,7 +269,8 @@ class VBankN(torch.nn.Module):
         def coda_at(t, Vt):
             if coda_rows and t in coda_rows:
                 r_ = coda_rows[t]
-                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in view(t + 1, kv[i], fkv[i] if fkv else None)] for i in CODA}, pad[r_]))
+                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in view(t + 1, kv[i], fkv[i] if fkv else None)] for i in CODA}, pd[r_],
+                                        km=None if M is None else M[r_]))
         fkv = fNV = fgk = None
         if ver_sub is not None:
             fkv = {i: [bank_kv(g, i, F_) for F_ in ver_sub] for i in LAYERS}; fNV = [self.nrm(F_, rms0) for F_ in ver_sub]
@@ -266,15 +284,18 @@ class VBankN(torch.nn.Module):
         for t in range(1 + len(prefix or []), K + 1):
             off_ = v0_off_after is not None and t > v0_off_after
             kp_ = self.ver_keep(t, t) if self.ver_keep else None
-            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, view(t, gk, fgk), view(t, NV, fNV), pad, off_, kp_)
+            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, view(t, gk, fgk), view(t, NV, fNV), pd, off_, kp_)
             h = h.detach() if sg_input else h
             for li, i in enumerate(CORE):
                 kvi = view(t, kv[i], fkv[i] if fkv else None); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
-                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pad, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
+                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pd, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
                 if self.cap is not None:
                     self.cap[("core", i, t)] = h.detach()
-                h = block_bank(g, i, h, bk, bv, bb)
-            Vc.append(h); coda_at(t, h)
+                h = block_bank(g, i, h, bk, bv, bb, M)
+            Vc.append(h)
+            if M is not None:                                               # 212-15: slots removed after this pass (the coda after pass t already drops them)
+                M = M | (self.slot_mask(t, h).bool() & pad); pd = pad & ~M
+            coda_at(t, h)
             st = edit(t, h) if edit is not None else None
             st = h if st is None else st
             if isinstance(st, tuple):
