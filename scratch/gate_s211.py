@@ -177,13 +177,17 @@ def gate_g1b(dev="cuda:0", runs=("s211_g1b_pa", "s211_g1b_carry", "s211_g1b_pamc
         d = os.path.join("boxes/runs_fsq", run); a = _j.load(open(os.path.join(d, "args.json"))); g = s5.load_gpt2(dev); m = VB.VBankN(g, a["mode"]).to(dev); m.eval(); o = {}
         for st in steps:
             m.load_state_dict(torch.load(os.path.join(d, "ckpt_model_%d.pt" % st), map_location=dev, weights_only=False)["model"])
-            with torch.no_grad():
-                r = m.rollout(x, pad, 8, coda_rows={t: torch.arange(len(its), device=dev) for t in range(9)})
-                pn, ce_t = {}, {}
-                for t in range(9):
-                    lg = m.answer_logits(r["coda"][t][1], lens); pr = torch.softmax(lg, -1); pn[str(t)] = float(pr[:, NUM].sum(-1).mean())
-                    ce_t[t] = F_.cross_entropy(lg, y, reduction="none")
-                cos = {str(t): float(F_.cosine_similarity(r["V"][t], r["V"][t - 1], dim=-1)[pad].mean()) for t in range(1, 9)}
+            with torch.no_grad():                                           # 64-item chunks (fp32 on 8 GB)
+                pnl, cel, csl = {t: [] for t in range(9)}, {t: [] for t in range(9)}, {t: [] for t in range(1, 9)}
+                for c0 in range(0, len(its), 64):
+                    sl = slice(c0, c0 + 64); xc, pc, lc = VB.batch_x(its[sl], dev)
+                    r = m.rollout(xc, pc, 8, coda_rows={t: torch.arange(xc.shape[0], device=dev) for t in range(9)})
+                    for t in range(9):
+                        lg = m.answer_logits(r["coda"][t][1], lc); pnl[t].append(torch.softmax(lg, -1)[:, NUM].sum(-1)); cel[t].append(F_.cross_entropy(lg, y[sl], reduction="none"))
+                    for t in range(1, 9):
+                        csl[t].append(F_.cosine_similarity(r["V"][t], r["V"][t - 1], dim=-1)[pc])
+                pn = {str(t): float(torch.cat(pnl[t]).mean()) for t in range(9)}; ce_t = {t: torch.cat(cel[t]) for t in range(9)}
+                cos = {str(t): float(torch.cat(csl[t]).mean()) for t in range(1, 9)}
                 ce_kn = float(torch.stack([ce_t[int(n)][i] for i, n in enumerate(nn_.tolist())]).mean()); ce_k1_n1 = float(ce_t[1][nn_ == 1].mean())
             o[str(st)] = {"p_num_by_pass": pn, "cos_by_pass": cos, "ce_kn": ce_kn, "ce_k1_n1": ce_k1_n1, "drift": pn["1"] - pn["8"], "c": float(m.c_anneal)}
         o["pass"] = o[str(steps[-1])]["drift"] < o[str(steps[0])]["drift"] and o[str(steps[2])]["ce_kn"] < o[str(steps[1])]["ce_kn"] < o[str(steps[0])]["ce_kn"]
