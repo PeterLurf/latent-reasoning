@@ -1,0 +1,6 @@
+D3HIST intact {'acc_n2': {'1': 1.0, '2': 1.0, '3': 1.0, '4': 1.0, '5': 1.0, '6': 1.0, '7': 1.0, '8': 1.0, '9': 0.853, '10': 0.456, '11': 0.182, '12': 0.129}}
+D3HIST bank_ablate_slva {'acc_n2': {'1': 1.0, '2': 1.0, '3': 1.0, '4': 1.0, '5': 1.0, '6': 1.0, '7': 1.0, '8': 1.0, '9': 0.826, '10': 0.441, '11': 0.17, '12': 0.122}}
+D3HIST other_ablate {'acc_n2': {'1': 1.0, '2': 1.0, '3': 1.0, '4': 1.0, '5': 1.0, '6': 1.0, '7': 1.0, '8': 1.0, '9': 0.826, '10': 0.441, '11': 0.17, '12': 0.122}}
+D3HIST swap {'n_pairs': 4184, 'newest_follow': 1.0, 'newest_own': 0.0, 'bank_follow': 0.0, 'bank_own': 1.0, 'old_follow': 0.0, 'old_own': 1.0}
+DONE boxes/runs_fsq/s211_vb_carry_s1\eval_d3hist.json 362
+GATE boxes/runs_fsq/s211_vb_carry_s1 d3hist n/a (no intact reference)
