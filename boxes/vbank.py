@@ -175,8 +175,14 @@ class VBankN(torch.nn.Module):
         self.gather_split_log = None                                        # eval-only (211-15 A iv): a list -> per pass (t, self, older-same-slot, cross-slot) per item
         self.slot_mask = None                                               # eval-only (212-15 MASKVOID / GAPPED): f(t, V_t) -> (B, T) bool slots REMOVED from every reader
         #   (core / coda bank entries of every version, the current version's keys, the gather) from then on (accumulated; t = 0 is called on V_0)
+        self.input_edit = None                                              # eval-only (213-1 LFK FAULT): f(t, U_t) -> U_t' (the pass input, CARRY / gather / SLVA)
         self.gather_hist_ablate = None                                      # eval-only (212-15 STAB-HIST): "self" | "other" -> the gather's keys (s, j) | (s, i != j),
         #   1 <= s <= t-2, masked for query slot j (rt_d3/rt_hist2.py); None = unchanged
+
+    @property
+    def anneals(self):
+        """capability flag (§213 G-D4): the pass input is an annealed read (c_anneal drives it); the trainer keys the c schedule and its logging on this."""
+        return self.mode == "pa"
 
     def nrm(self, V, rms0):
         return self.gain * (V * (rms0 / V.pow(2).mean(-1, keepdim=True).sqrt()))
@@ -263,7 +269,7 @@ class VBankN(torch.nn.Module):
             for i in LAYERS:
                 kv[i].append(bank_kv(g, i, Vs))
             NV.append(self.nrm(Vs, rms0))
-            if self.mode == "pa":
+            if self.mode != "carry":                                       # PA's gather keys; SLVA's per-slot version keys (boxes/slva.py)
                 gk.append(self.gkey(Vs))
 
         def coda_at(t, Vt):
@@ -274,7 +280,7 @@ class VBankN(torch.nn.Module):
         fkv = fNV = fgk = None
         if ver_sub is not None:
             fkv = {i: [bank_kv(g, i, F_) for F_ in ver_sub] for i in LAYERS}; fNV = [self.nrm(F_, rms0) for F_ in ver_sub]
-            fgk = [self.gkey(F_) for F_ in ver_sub] if self.mode == "pa" else None
+            fgk = [self.gkey(F_) for F_ in ver_sub] if self.mode != "carry" else None
 
         def view(tr, lst, flst):                                            # REPLACE: entry s (1..o) read as F_s when the reading index tr > s + 1
             return lst if flst is None else [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr > s_ + 1 else lst[s_] for s_ in range(len(lst))]
@@ -286,6 +292,8 @@ class VBankN(torch.nn.Module):
             kp_ = self.ver_keep(t, t) if self.ver_keep else None
             h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, view(t, gk, fgk), view(t, NV, fNV), pd, off_, kp_)
             h = h.detach() if sg_input else h
+            if self.input_edit is not None:                                 # eval-only (213-1 LFK FAULT): the pass input U_t -> input_edit(t, U_t)
+                h = self.input_edit(t, h)
             for li, i in enumerate(CORE):
                 kvi = view(t, kv[i], fkv[i] if fkv else None); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
                 bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pd, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
@@ -390,6 +398,16 @@ class VBankN(torch.nn.Module):
         d1, d2 = float((z1 - z0).norm(dim=-1).mean()), float((z2 - z0).norm(dim=-1).mean())
         rr = d1 / d2 / math.exp(shift) if d2 > 0 else None
         return {"dz_beta": d1, "dz_beta_minus5": d2, "z_masked_norm": float(z0.norm(dim=-1).mean()), "ratio_over_e5": rr, "pass": rr is not None and 0.5 <= rr <= 2.0}
+
+
+def make_model(g, mode, table="train"):
+    """the loader / trainer factory (§213 G-D0): mode pa | carry -> VBankN; slva -> boxes.slva.SLVA (table train | frozen). Callers assert
+    type(m).__name__ == args["arch"] (absent in pre-§213 args = "VBankN")."""
+    if mode == "slva":
+        from boxes.slva import SLVA
+        return SLVA(g, table)
+    assert table == "train", "the frozen table is a §213 SLVA cell option"
+    return VBankN(g, mode)
 
 
 def DM_():

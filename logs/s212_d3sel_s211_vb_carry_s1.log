@@ -1,0 +1,18 @@
+D3SEL n 1 {'intact': 1.0, 'maskvoid': 1.0, 'refresh': 1.0}
+D3SEL n 2 {'intact': 1.0, 'maskvoid': 1.0, 'refresh': 0.149}
+D3SEL n 3 {'intact': 1.0, 'maskvoid': 1.0, 'refresh': 0.09}
+D3SEL n 4 {'intact': 1.0, 'maskvoid': 1.0, 'refresh': 0.101}
+D3SEL n 5 {'intact': 1.0, 'maskvoid': 1.0, 'refresh': 0.091}
+D3SEL n 6 {'intact': 1.0, 'maskvoid': 1.0, 'refresh': 0.097}
+D3SEL n 7 {'intact': 1.0, 'maskvoid': 0.998, 'refresh': 0.11}
+D3SEL n 8 {'intact': 1.0, 'maskvoid': 0.995, 'refresh': 0.101}
+D3SEL n 9 {'intact': 0.853, 'maskvoid': 0.509, 'refresh': 0.092}
+D3SEL n 10 {'intact': 0.456, 'maskvoid': 0.351, 'refresh': 0.074}
+D3SEL n 11 {'intact': 0.182, 'maskvoid': 0.133, 'refresh': 0.075}
+D3SEL n 12 {'intact': 0.129, 'maskvoid': 0.116, 'refresh': 0.091}
+D3SEL n 13 {'intact': 0.111, 'maskvoid': 0.123, 'refresh': 0.094}
+D3SEL n 14 {'intact': 0.11, 'maskvoid': 0.104, 'refresh': 0.067}
+D3SEL n 15 {'intact': 0.116, 'maskvoid': 0.096, 'refresh': 0.091}
+D3SEL n 16 {'intact': 0.1, 'maskvoid': 0.101, 'refresh': 0.093}
+DONE boxes/runs_fsq/s211_vb_carry_s1\eval_d3sel.json 616
+GATE boxes/runs_fsq/s211_vb_carry_s1 d3sel acc_n2 True rs cells True ctrl restart True

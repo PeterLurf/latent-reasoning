@@ -1,0 +1,327 @@
+{
+ "cells": {
+  "9_4": {
+   "n_items": 935,
+   "restart": 1.0,
+   "gapped": 0.0962566844919786,
+   "intact": 0.8641711229946524,
+   "maskvoid": 0.5294117647058824,
+   "refresh": 0.08877005347593583
+  },
+  "9_6": {
+   "n_items": 999,
+   "restart": 1.0,
+   "gapped": 0.16716716716716717,
+   "intact": 0.8528528528528528,
+   "maskvoid": 0.5095095095095095,
+   "refresh": 0.0920920920920921
+  },
+  "10_4": {
+   "n_items": 616,
+   "restart": 1.0,
+   "gapped": 0.06818181818181818,
+   "intact": 0.5113636363636364,
+   "maskvoid": 0.41233766233766234,
+   "refresh": 0.0762987012987013
+  },
+  "10_6": {
+   "n_items": 951,
+   "restart": 1.0,
+   "gapped": 0.10515247108307045,
+   "intact": 0.4658254468980021,
+   "maskvoid": 0.35646687697160884,
+   "refresh": 0.07465825446898001
+  },
+  "11_4": {
+   "n_items": 178,
+   "restart": 1.0,
+   "gapped": 0.07865168539325842,
+   "intact": 0.24157303370786518,
+   "maskvoid": 0.15168539325842698,
+   "refresh": 0.09550561797752809
+  },
+  "11_6": {
+   "n_items": 823,
+   "restart": 1.0,
+   "gapped": 0.12515188335358446,
+   "intact": 0.19319562575941676,
+   "maskvoid": 0.1324422843256379,
+   "refresh": 0.07290400972053462
+  },
+  "12_4": {
+   "n_items": 6,
+   "restart": 1.0,
+   "gapped": 0.16666666666666666,
+   "intact": 0.16666666666666666,
+   "maskvoid": 0.0,
+   "refresh": 0.0
+  },
+  "12_6": {
+   "n_items": 573,
+   "restart": 1.0,
+   "gapped": 0.1012216404886562,
+   "intact": 0.1273996509598604,
+   "maskvoid": 0.10645724258289703,
+   "refresh": 0.09424083769633508
+  },
+  "13_4": {
+   "n_items": 0,
+   "restart": null,
+   "gapped": null,
+   "intact": null,
+   "maskvoid": null,
+   "refresh": null
+  },
+  "13_6": {
+   "n_items": 160,
+   "restart": 1.0,
+   "gapped": 0.0875,
+   "intact": 0.13125,
+   "maskvoid": 0.10625,
+   "refresh": 0.125
+  }
+ },
+ "acc_n2": {
+  "intact": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0,
+   "9": 0.853,
+   "10": 0.456,
+   "11": 0.182,
+   "12": 0.129,
+   "13": 0.111,
+   "14": 0.11,
+   "15": 0.116,
+   "16": 0.1
+  },
+  "maskvoid": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 0.998,
+   "8": 0.995,
+   "9": 0.509,
+   "10": 0.351,
+   "11": 0.133,
+   "12": 0.116,
+   "13": 0.123,
+   "14": 0.104,
+   "15": 0.096,
+   "16": 0.101
+  },
+  "refresh": {
+   "1": 1.0,
+   "2": 0.149,
+   "3": 0.09,
+   "4": 0.101,
+   "5": 0.091,
+   "6": 0.097,
+   "7": 0.11,
+   "8": 0.101,
+   "9": 0.092,
+   "10": 0.074,
+   "11": 0.075,
+   "12": 0.091,
+   "13": 0.094,
+   "14": 0.067,
+   "15": 0.091,
+   "16": 0.093
+  }
+ },
+ "gapped_control": {
+  "5_2": {
+   "n_items": 1000,
+   "restart": 1.0,
+   "gapped": 0.216
+  },
+  "5_4": {
+   "n_items": 1000,
+   "restart": 1.0,
+   "gapped": 0.717
+  },
+  "6_2": {
+   "n_items": 1000,
+   "restart": 1.0,
+   "gapped": 0.156
+  },
+  "6_4": {
+   "n_items": 1000,
+   "restart": 1.0,
+   "gapped": 0.345
+  },
+  "7_2": {
+   "n_items": 998,
+   "restart": 1.0,
+   "gapped": 0.11422845691382766
+  },
+  "7_4": {
+   "n_items": 1000,
+   "restart": 1.0,
+   "gapped": 0.15
+  },
+  "8_2": {
+   "n_items": 1000,
+   "restart": 1.0,
+   "gapped": 0.114
+  },
+  "8_4": {
+   "n_items": 999,
+   "restart": 0.998998998998999,
+   "gapped": 0.12912912912912913
+  }
+ },
+ "gapped_supported": true,
+ "exposure": {
+  "maskvoid": {
+   "1": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 6.0
+   },
+   "2": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 18.076
+   },
+   "3": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 32.872
+   },
+   "4": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 50.419
+   },
+   "5": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 70.732
+   },
+   "6": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 94.574
+   },
+   "7": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 121.407
+   },
+   "8": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 149.772
+   },
+   "9": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 185.024
+   },
+   "10": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 226.647
+   },
+   "11": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 274.35
+   },
+   "12": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 329.935
+   },
+   "13": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 384.636
+   },
+   "14": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 445.005
+   },
+   "15": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 511.07
+   },
+   "16": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 582.46
+   }
+  },
+  "refresh": {
+   "1": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 6.312
+   },
+   "2": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 16.255
+   },
+   "3": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 36.428
+   },
+   "4": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 61.363
+   },
+   "5": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 93.005
+   },
+   "6": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 129.394
+   },
+   "7": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 173.79
+   },
+   "8": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 222.59
+   },
+   "9": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 276.958
+   },
+   "10": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 337.274
+   },
+   "11": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 405.074
+   },
+   "12": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 482.232
+   },
+   "13": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 558.886
+   },
+   "14": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 642.811
+   },
+   "15": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 731.144
+   },
+   "16": {
+    "items_exposed": 1.0,
+    "slot_events_per_item": 826.73
+   }
+  }
+ },
+ "gapped_prelude_maxdiff_empty_mask": 0.0,
+ "def": "note 212-15 S0-1 SELECTOR (D3_v1 \u00a76). Arms at K' = n + 2 on the \u00a7170 test set (part_rs's chunks):\nintact; MASKVOID = vbank slot_mask: a slot whose argmax R(V_t[j]) is VOID (t >= 1, the model's own decode; never EOT / ' =') is removed from every reader (core / coda\nbank entries of EVERY stored version, the current version's keys; PA: the gather) for every core pass > t and the coda after pass >= t;\nREFRESH = rollout(edit): at every pass t >= 1, slots whose argmax R(V_t[j]) equals their input class E_0[j] have their stored entry (and the carry)\nset to V_0[j]. RS items (exact decode at t = n - r, part_rs's classify): restart = part_rs's compact fresh run at K' = r + 2, computed over part_rs's\nfull job lists for r in {2, 4, 6} (same batches -> bitwise with eval_rs.json); GAPPED = a fresh run at K' = r + 2 on x with each live slot of the\nreference E_t at its ORIGINAL position (token of its class) and the E_t VOID slots removed from every reader from V_0 on (prelude via an explicit\ninterior key mask, then slot_mask). cells n 9-13 x r {4, 6}; gapped_control n 5-8 x r {2, 4}; acc_n2 per arm n 1..16; exposure = share of items with\n>= 1 masked (MASKVOID) / refreshed (REFRESH) slot at some pass <= n + 2, and the mean count of slot-events.",
+ "run": "boxes/runs_fsq/s211_vb_carry_s1",
+ "mode": "carry",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 2070",
+ "sec": 616
+}
