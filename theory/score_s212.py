@@ -1,0 +1,237 @@
+"""THEORY §212 scoring (VB-2G Stage 0 + Stage 1; registered text docs/THEORY_VB2G_DRAFT_2026-10-16.md at the commit named in §212, plus the
+pre-stated Stage 0 notes 211-13 / 211-15 / 211-16 and §212's notes; Theory is the only scorer).
+
+Part A, Stage 0 on the §211 cells (N2 s211_vb_pa_s1 = base, N1 s211_vb_carry_s1, N3 s211_vb_pamct_s1); descriptive labels and the go rules:
+  RS (eval_rs.json): pooled n 11-16, r in {4,6}: D = RESTART - INTACT; control = n <= 8, all r (|D| <= 0.03 for a readable RS);
+    HISTORY-KEYED D >= 0.20; HISTORY-FREE |D| <= 0.05; cells < 100 items UNREADABLE. HEAD-LIMITED: LONG-STEP(12..16) < 0.95 while LONG-STEP(<= 8) >= 0.99.
+  HALT (eval_vbhalt.json, 211-13): HALT-EXACT pooled n 3..8 exact >= 0.90; NOT-PREMATURE acc_halt >= acc_n2 - 0.02 (n 3..8), - 0.05 (n 9..12);
+    STALL-SHIFT shift >= 0.85 with qualifying >= 200; DEPTH-TIMING n 9 and n 10 each exact >= 0.60, halt_at_8 <= 0.10, frozen_nm8 <= 0.10;
+    CLOCK-HOLD mean frozen_nm8 over n 9-12 >= 0.5; EDGE-COLLAPSE mean halt_at_8 over n 9-12 >= 0.5; STALL-COUNT frozen1 >= 0.5; NO-DONE never > 0.10 at n 3..8.
+  PF (eval_pf.json): cells n_items >= 100; clock gap = weighted mean (S - S0[r]) over k + r > 8 minus the same over k + r <= 8 (in-support);
+    CLOCK-KEYED gap <= -0.15 with in-support |mean| <= 0.03; POSITION-KEYED weighted OLS slope of S on s (within k) <= -0.01 per slot;
+    CONTENT-KEYED |gap| <= 0.05 and |slope| * (s range) <= 0.05.
+  HIST (eval_vb.json bank_ablate vs acc_n2): HISTORY-HURTS n 9-12 mean gain >= 0.10 with n <= 8 change >= -0.03; HISTORY-USED drop >= 0.03 (n <= 8)
+    or >= 0.05 (n 9-16); HISTORY-IGNORED |change| <= 0.02 on both. EVAL-HISTORY-GAIN (eval_hist_arms.json): an arm raises n 9-12 by >= 0.10, n <= 8 >= -0.03.
+  FOREIGN (eval_foreign.json): CLOCK-FOREIGN insert - replace <= -0.10 (mean over o and n 4..12).  REPAIR (eval_repair.json): >= 0.2.
+  STEP trigger (eval_step_rows.json): 5-fold-by-item held-out dLL of adding hh to (t, alive, held, prov, age_max, bdepth) >= 5 nats / 1000 events AND the
+    hh coefficient (per SD) among prov >= 1 rows >= +0.5.
+  Go rules: G1_GO = not (every read model is HISTORY-FREE and HEAD-LIMITED); FT_GO = base N2 reads CLOCK-HOLD / EDGE-COLLAPSE / STALL-COUNT (and is DEEP);
+    S_GO = the STEP trigger fires on a DEEP §211 cell.
+Part B, G1 s212_vb2g_s1: VB2G-C1 = (a) DEEP, PROBE-GAIN, SERIAL-ONSET, SERIAL-STEP (score_s211's definitions) and (b) DEPTH-GENERAL (mean acc_n2 n 9-12
+  >= 0.80), SELF-SIMILAR (RS pooled n 9-16 all r |D| <= 0.05, control <= 0.03, every cell >= 100), STEP-FLAT (eval_stepflat.json) and (c) PF CONTENT-KEYED,
+  NO-CLOCK (STALL >= 0.9) and (d) C5-VB. Reported: HISTORY-USE, KEEP-ACC (cap 0.995 at n 13-16). Censoring: dead (< 48k) or NO-ENTRY on true_answer_ce.
+Part C, FT pair s212_ft_aug_s1 / s212_ft_ctrl_s1: AUG-BEATS = AUG DEPTH-TIMING met and CTRL not; CLOCK-HOLD per arm; NOT-PREMATURE n 9-12 per arm.
+    python theory/score_s212.py
+"""
+import json
+import math
+import os
+import sys
+
+import numpy as np
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+R = os.path.join(ROOT, "boxes", "runs_fsq")
+sys.path.insert(0, os.path.join(ROOT, "theory"))
+import score_s211 as S211  # noqa: E402
+
+EPS = 1e-9
+STAGE0 = {"N2": "s211_vb_pa_s1", "N1": "s211_vb_carry_s1", "N3": "s211_vb_pamct_s1"}
+G1, FT_AUG, FT_CTRL = "s212_vb2g_s1", "s212_ft_aug_s1", "s212_ft_ctrl_s1"
+
+
+def jl(d, f):
+    p = os.path.join(R, d, f)
+    return json.load(open(p)) if os.path.exists(p) else None
+
+
+def wmean(pairs):
+    w = sum(n for n, _ in pairs)
+    return sum(n * v for n, v in pairs) / w if w else None
+
+
+def rs_read(rs, ns, rset, ctrl_ns=range(3, 9)):
+    if rs is None:
+        return None
+    C = rs["cells"]; cell = lambda n, r: C.get("%d_%d" % (n, r))
+    sel = [cell(n, r) for n in ns for r in rset if r < n and cell(n, r)]
+    thin = [c for c in sel if c["n_items"] < 100]
+    d = wmean([(c["n_items"], c["restart"] - c["intact"]) for c in sel if c["n_items"] >= 100])
+    ctl = [cell(n, r) for n in ctrl_ns for r in (2, 4, 6, 8) if r < n and cell(n, r)]
+    dctl = wmean([(c["n_items"], c["restart"] - c["intact"]) for c in ctl if c["n_items"] >= 100])
+    ls = rs.get("long_step") or {}
+    ls_lo = [ls[str(m)]["exact"] for m in range(1, 9) if str(m) in ls]; ls_hi = [ls[str(m)]["exact"] for m in range(12, 17) if str(m) in ls]
+    head = bool(ls_lo and ls_hi and min(ls_lo) >= 0.99 - EPS and min(ls_hi) < 0.95)
+    readable = d is not None and dctl is not None and abs(dctl) <= 0.03 + EPS and not thin
+    return {"D": d, "D_control": dctl, "thin_cells": len(thin), "readable": readable, "HISTORY_KEYED": bool(readable and d >= 0.20 - EPS),
+            "HISTORY_FREE": bool(readable and abs(d) <= 0.05 + EPS), "HEAD_LIMITED": head}
+
+
+def halt_read(h):
+    if h is None:
+        return None
+    B = h["by_n"]; g = lambda n, k: B[str(n)][k]
+    exact_38 = wmean([(g(n, "items"), g(n, "exact")) for n in range(3, 9)])
+    notprem = all(g(n, "acc_halt") >= g(n, "acc_n2") - 0.02 - EPS for n in range(3, 9)) and all(g(n, "acc_halt") >= g(n, "acc_n2") - 0.05 - EPS for n in range(9, 13))
+    st = h["stall"]; ss = st["qualifying"] >= 200 and st["shift"] >= 0.85 - EPS
+    dt = all(g(n, "exact") >= 0.60 - EPS and g(n, "halt_at_8") <= 0.10 + EPS and g(n, "frozen_nm8") <= 0.10 + EPS for n in (9, 10))
+    o = {"HALT_EXACT": bool(exact_38 is not None and exact_38 >= 0.90 - EPS), "exact_3_8": exact_38, "NOT_PREMATURE": bool(notprem),
+         "STALL_SHIFT": bool(ss), "stall_shift": st["shift"], "stall_qualifying": st["qualifying"], "DEPTH_TIMING": bool(dt)}
+    o["C5_VB"] = o["HALT_EXACT"] and o["NOT_PREMATURE"] and o["STALL_SHIFT"] and o["DEPTH_TIMING"]
+    o["CLOCK_HOLD"] = sum(g(n, "frozen_nm8") for n in range(9, 13)) / 4 >= 0.5 - EPS
+    o["EDGE_COLLAPSE"] = sum(g(n, "halt_at_8") for n in range(9, 13)) / 4 >= 0.5 - EPS
+    o["STALL_COUNT"] = st["frozen1"] >= 0.5 - EPS
+    o["NO_DONE"] = any(g(n, "never") > 0.10 + EPS for n in range(3, 9))
+    return o
+
+
+def pf_read(pf):
+    if pf is None:
+        return None
+    G, S0 = pf["grid"], pf["S0"]; cells = []
+    for key, c in G.items():
+        k, s = (int(x) for x in key.split("_"))
+        if c["n_items"] >= 100 and str(c["r"]) in S0:
+            cells.append((k, s, c["r"], c["n_items"], c["S"] - S0[str(c["r"])], c["S"]))
+    ins = wmean([(n, d) for k, s, r, n, d, _ in cells if k + r <= 8]); out = wmean([(n, d) for k, s, r, n, d, _ in cells if k + r > 8])
+    gap = None if ins is None or out is None else out - ins
+    num = den = 0.0; smin, smax = 1e9, -1e9                                 # weighted within-k OLS slope of S on s
+    for k in set(c[0] for c in cells):
+        ck = [c for c in cells if c[0] == k]
+        if len(ck) < 2:
+            continue
+        w = [c[3] for c in ck]; sm = sum(wi * c[1] for wi, c in zip(w, ck)) / sum(w); ym = sum(wi * c[5] for wi, c in zip(w, ck)) / sum(w)
+        num += sum(wi * (c[1] - sm) * (c[5] - ym) for wi, c in zip(w, ck)); den += sum(wi * (c[1] - sm) ** 2 for wi, c in zip(w, ck))
+        smin, smax = min(smin, min(c[1] for c in ck)), max(smax, max(c[1] for c in ck))
+    slope = num / den if den > 0 else None
+    clock = bool(gap is not None and gap <= -0.15 + EPS and ins is not None and abs(ins) <= 0.03 + EPS)
+    pos = bool(slope is not None and slope <= -0.01 + EPS)
+    content = bool(gap is not None and abs(gap) <= 0.05 + EPS and slope is not None and abs(slope) * (smax - smin) <= 0.05 + EPS)
+    return {"gap": gap, "in_support": ins, "slope": slope, "CLOCK_KEYED": clock, "POSITION_KEYED": pos, "CONTENT_KEYED": content, "cells": len(cells)}
+
+
+def hist_read(ev, arms):
+    if ev is None:
+        return None
+    a, b = ev["acc_n2"], (ev.get("bank_ablate") or {}).get("acc_n2")
+    o = {}
+    if b:
+        lo = sum(b[str(n)] - a[str(n)] for n in range(1, 9)) / 8; hi = sum(b[str(n)] - a[str(n)] for n in range(9, 13)) / 4
+        hi16 = sum(b[str(n)] - a[str(n)] for n in range(9, 17)) / 8
+        o.update(trunc_change_le8=lo, trunc_change_9_12=hi, HISTORY_HURTS=bool(hi >= 0.10 - EPS and lo >= -0.03 - EPS),
+                 HISTORY_USED=bool(lo <= -0.03 + EPS or hi16 <= -0.05 + EPS), HISTORY_IGNORED=bool(abs(lo) <= 0.02 + EPS and abs(hi16) <= 0.02 + EPS))
+    if arms:
+        gains = {}
+        for k, v in arms.items():
+            c = v["acc_n2"]; lo = sum(c[str(n)] - a[str(n)] for n in range(1, 9)) / 8; hi = sum(c[str(n)] - a[str(n)] for n in range(9, 13)) / 4
+            gains[k] = {"le8": lo, "9_12": hi, "gain": bool(hi >= 0.10 - EPS and lo >= -0.03 - EPS)}
+        o["arms"] = gains; o["EVAL_HISTORY_GAIN"] = any(g["gain"] for g in gains.values())
+    return o
+
+
+def foreign_read(f):
+    if f is None:
+        return None
+    d = []
+    for o in f["insert"]:
+        if o in f["replace"]:
+            ai, ar = f["insert"][o]["acc_n2"], f["replace"][o]["acc_n2"]
+            d += [ai[str(n)] - ar[str(n)] for n in range(4, 13) if str(n) in ai and str(n) in ar]
+    m = sum(d) / len(d) if d else None
+    return {"insert_minus_replace": m, "CLOCK_FOREIGN": bool(m is not None and m <= -0.10 + EPS)}
+
+
+def logit_fit(X, y, lam=1e-3, it=60):
+    X1 = np.c_[np.ones(len(X)), X]; w = np.zeros(X1.shape[1])
+    for _ in range(it):
+        p = 1 / (1 + np.exp(-(X1 @ w))); W = p * (1 - p) + 1e-9
+        H = X1.T @ (X1 * W[:, None]) + lam * np.eye(X1.shape[1]); w = w + np.linalg.solve(H, X1.T @ (y - p) - lam * w)
+    return w
+
+
+def ll(X, y, w):
+    p = np.clip(1 / (1 + np.exp(-(np.c_[np.ones(len(X)), X] @ w))), 1e-9, 1 - 1e-9)
+    return float(np.sum(y * np.log(p) + (1 - y) * np.log(1 - p)))
+
+
+def step_trigger(rows):
+    if not rows:
+        return None
+    base = ["t", "alive", "held", "prov", "age_max", "bdepth"]
+    X0 = np.array([[r[k] for k in base] for r in rows], float); h = np.array([r["hh"] for r in rows], float)
+    y = 1.0 - np.array([r["correct"] for r in rows], float)                  # model the error
+    mu, sd = X0.mean(0), X0.std(0) + 1e-9; Z0 = (X0 - mu) / sd; hz = (h - h.mean()) / (h.std() + 1e-9); Z1 = np.c_[Z0, hz]
+    items = np.array([r["item"] for r in rows]); uniq = np.unique(items); rng = np.random.default_rng(21212); fold = dict(zip(uniq, rng.integers(0, 5, len(uniq))))
+    f = np.array([fold[i] for i in items]); dll = 0.0
+    for k in range(5):
+        tr, te = f != k, f == k
+        if te.sum() == 0 or tr.sum() == 0:
+            continue
+        dll += ll(Z1[te], y[te], logit_fit(Z1[tr], y[tr])) - ll(Z0[te], y[te], logit_fit(Z0[tr], y[tr]))
+    per1k = 1000.0 * dll / len(rows)
+    sel = np.array([r["prov"] >= 1 for r in rows])
+    coef = None
+    if sel.sum() >= 50 and len(np.unique(y[sel])) > 1:
+        coef = float(logit_fit(Z1[sel], y[sel])[-1])
+    return {"events": len(rows), "dLL_per_1k": per1k, "hh_coef_prov1": coef, "FIRES": bool(per1k >= 5 - EPS and coef is not None and coef >= 0.5 - EPS)}
+
+
+def stage0():
+    out = {}
+    for tag, d in STAGE0.items():
+        ev = jl(d, "eval_vb.json")
+        rep = jl(d, "eval_repair.json"); rows = (jl(d, "eval_step_rows.json") or {}).get("rows")
+        out[tag] = {"RS": rs_read(jl(d, "eval_rs.json"), range(11, 17), (4, 6)), "HALT": halt_read(jl(d, "eval_vbhalt.json")),
+                    "PF": pf_read(jl(d, "eval_pf.json")), "HIST": hist_read(ev, jl(d, "eval_hist_arms.json")), "FOREIGN": foreign_read(jl(d, "eval_foreign.json")),
+                    "REPAIR": None if rep is None else {"p": rep["p_right_after_wrong"], "GE_0_2": rep["p_right_after_wrong"] >= 0.2 - EPS},
+                    "STEP": step_trigger(rows), "DEEP": bool(ev and all(ev["acc_n2"][str(n)] >= 0.90 - EPS for n in range(3, 9)))}
+    rsd = [v["RS"] for v in out.values() if v["RS"]]
+    g1 = None if not rsd else (not all(r["HISTORY_FREE"] and r["HEAD_LIMITED"] for r in rsd))
+    b = out["N2"]; ft = None if b["HALT"] is None else bool(b["DEEP"] and (b["HALT"]["CLOCK_HOLD"] or b["HALT"]["EDGE_COLLAPSE"] or b["HALT"]["STALL_COUNT"]))
+    stp = [v["STEP"]["FIRES"] for v in out.values() if v["STEP"] and v["DEEP"]]
+    out["GO"] = {"G1": g1, "FT": ft, "S": (any(stp) if stp else None), "RS_models_read": len(rsd)}
+    return out
+
+
+def g1_read():
+    ev = jl(G1, "eval_vb.json")
+    if ev is None:
+        return {"label": "pending (not landed)"}
+    a = S211.cell_read("G1", G1)                                             # (a) + censoring via score_s211's definitions (true_answer_ce: see note 212-1)
+    recs = S211.log_recs(G1); e05 = S211.entry_on(recs, "true_answer_ce", 0.5); last = max(recs) if recs else 0
+    dead, noent = last < S211.FULL, e05 is None
+    depth = sum(ev["acc_n2"][str(n)] for n in range(9, 13)) / 4
+    rs = rs_read(jl(G1, "eval_rs.json"), range(9, 17), (2, 4, 6, 8)); sf = jl(G1, "eval_stepflat.json")
+    stepflat = bool(sf and sf.get("strata_dropped_frac", 1) <= 0.20 + EPS and sf["per_step_13_16_reweighted"] >= sf["per_step_le8"] - 0.02 - EPS and sf["per_step_13_16_reweighted"] >= 0.98 - EPS)
+    pf = pf_read(jl(G1, "eval_pf.json")); h = halt_read(jl(G1, "eval_vbhalt.json"))
+    part_a = bool(a.get("DEEP") and a.get("PROBE_GAIN") and (a.get("onset") or {}).get("SERIAL_ONSET") and a.get("SERIAL_STEP"))
+    part_b = bool(depth >= 0.80 - EPS and rs and rs["readable"] and abs(rs["D"]) <= 0.05 + EPS and stepflat)
+    part_c = bool(pf and pf["CONTENT_KEYED"] and a.get("NO_CLOCK"))
+    part_d = bool(h and h["C5_VB"])
+    ka = ev.get("keep_acc") or {}; kcap = [ka[str(n)] for n in range(13, 17) if str(n) in ka]
+    o = {"A_C1": part_a, "B_C2": part_b, "C_clock": part_c, "D_C5": part_d, "DEPTH_9_12": depth, "RS": rs, "STEP_FLAT": stepflat, "PF": pf, "HALT": h,
+         "HIST": hist_read(ev, None), "KEEP_ACC_13_16_min": min(kcap) if kcap else None, "KEEP_CAP": bool(kcap and min(kcap) < 0.995),
+         "dead": dead, "no_entry_true_ce": noent, "s211_style": a.get("label")}
+    o["VB2G_C1"] = bool(part_a and part_b and part_c and part_d and not dead and not noent)
+    o["label"] = ("FAILURE (dead; rule b)" if dead else "NO-ENTRY (true_answer_ce; rule b)" if noent else
+                  "VB2G-C1" if o["VB2G_C1"] else "parts: C1 %s / C2 %s / clock %s / C5 %s" % (part_a, part_b, part_c, part_d))
+    return o
+
+
+def ft_read():
+    A, C = jl(FT_AUG, "eval_vbhalt.json"), jl(FT_CTRL, "eval_vbhalt.json")
+    if A is None or C is None:
+        return {"label": "pending"}
+    ha, hc = halt_read(A), halt_read(C)
+    return {"AUG": ha, "CTRL": hc, "AUG_BEATS": bool(ha["DEPTH_TIMING"] and not hc["DEPTH_TIMING"]),
+            "label": "AUG-BEATS" if (ha["DEPTH_TIMING"] and not hc["DEPTH_TIMING"]) else "no AUG advantage on DEPTH-TIMING"}
+
+
+def main():
+    out = {"stage0": stage0(), "G1": g1_read(), "FT": ft_read()}
+    print("READING: GO %s | G1 %s | FT %s" % (out["stage0"]["GO"], out["G1"]["label"], out["FT"]["label"]))
+    json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s212.json"), "w", newline=chr(10)), indent=1, default=str)
+
+
+if __name__ == "__main__":
+    main()
