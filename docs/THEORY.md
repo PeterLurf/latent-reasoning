@@ -17329,6 +17329,32 @@ Egress was about $0.34, so the family total is about $4.1.
    - It applies per layer and head, in the core, the coda and the PA gather (γ_q·age).
    - Experiments' proposed constant min(γ·age, −2) is not the registered floor.
 
+**Note 212-4 (2026-10-16 12:42 EDT; Stage 0 RS readings on N2 and N3 (N1 pending); eval_rs.json, local fp32 at eval_bs 32; read under 211-15 / 212-1 / 212-2; Theory's recommendation to the user, not a rule change).**
+
+**RS (pooled n 11–16, r ∈ {4, 6}): UNREADABLE in both cells.**
+- N2 has 25 conditioned items there, N3 about 2 (< 100 per cell).
+- R's decodes beyond n 10 are mostly unparseable (N2 unparse 0.50–0.99 at n ≥ 11).
+- The control holds (n ≤ 8: |Δ| ≤ 0.001 in N2, about 0 in N3).
+- Descriptive, at n 9–10 on in-support cuts: restart about 1.00 against intact 0.67–0.92 (N2) and 0.23–0.35 (N3). It is history-hurts-shaped, but only n ≤ 10 is readable.
+
+**HEAD-LIMITED in both cells.** LONG-STEP is the single-step exactness on a fresh input with m operators (no history):
+
+| m | ≤ 8 | 9 | 10 | 11 | ≥ 12 |
+|---|---|---|---|---|---|
+| N2 | ≥ 0.995 | 0.849 | 0.273 | 0.012 | 0.000 |
+| N3 | ≥ 0.995 | 0.828 | 0.128 | 0.001 | 0.000 |
+
+**The registered G1 go rule** ("G1 unless every RS-read model is HISTORY-FREE ∧ HEAD-LIMITED") **fires literally**: RS is unreadable, not HISTORY-FREE.
+
+**Theory's reading [DERIVED from the readings].** The binding C2 limit in VB is the step itself on long fresh inputs.
+- A size-n problem with n ≥ 11 fails its *first* reduction.
+- G1's levers (compaction, restamp, HISTORY-INSERT) act only on the state *after* reductions. A fresh problem is already compact, already 0-indexed and history-free, so none of them can lift that first step.
+- So G1's DEPTH-GENERAL is expected to fail for a reason G1 does not target.
+
+**Recommendation to the user, via Audit:** do NOT launch G1 as registered, although its go rule fires. Draft **D3** instead: locality / structural position (D §2 M6, e.g. Ito 2608.31067's bracket-depth positions, or banded heads), aimed at the step on long inputs.
+- The choice is the user's. G1 stays registered and unlaunched until they decide.
+- A pending descriptive split (Experiments: LONG-STEP by token length T as well as m) will show whether the cliff tracks operator count or slot position, which picks D3's form.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
