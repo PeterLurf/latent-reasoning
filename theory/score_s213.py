@@ -72,6 +72,21 @@ def hist(h, ev):
             "OLD_SWAP_follow": sw.get("old_follow"), "RNN_IN_FUNCTION": rnn}
 
 
+def hold_read(d):
+    """Note 213-14 S0-4 (N1): G_H = pooled (hold - intact) over the 212-18 cells (n 9-12, r in {4, 6}, >= 100 items); D_R from the same cells' restart;
+    HOLD-FIXES iff G_H >= 0.5 D_R and hold acc_n2 >= intact - 0.02 at every n 1..8 (else not met; control failure = UNREADABLE)."""
+    f = jl(d, "eval_hold.json")
+    if f is None:
+        return None
+    C = f["cells"]; sel = [C[k] for k in ("%d_%d" % (n, r) for n in range(9, 13) for r in (4, 6)) if k in C and C[k]["n_items"] >= 100]
+    pool = lambda arm: S212.wmean([(c["n_items"], c[arm] - c["intact"]) for c in sel if c.get(arm) is not None])  # noqa: E731
+    dr, gh, ghv = pool("restart"), pool("hold"), pool("hold_v")
+    A = f["acc_n2"]; ctl = all(A["hold"][str(n)] >= A["intact"][str(n)] - 0.02 - EPS for n in range(1, 9))
+    fixes = bool(ctl and dr is not None and dr >= 0.20 - EPS and gh is not None and gh >= 0.5 * dr - EPS)
+    return {"D_R": dr, "G_H": gh, "G_HV": ghv, "control": ctl, "cells_read": len(sel), "HOLD_FIXES": fixes,
+            "label": "UNREADABLE (control)" if not ctl else ("HOLD-FIXES" if fixes else "not met")}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -150,6 +165,7 @@ def main():
     exp = {"N1": lambda r: r["HISTORY_USED"] is False and r["RNN_IN_FUNCTION"] is True,   # explicit True / False: None (omitted) fails
            "N2": lambda r: r["HISTORY_USED"] is True and r["RNN_IN_FUNCTION"] is False, "N3": lambda r: r["HISTORY_USED"] is True}
     ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
+    ref["HOLD_N1"] = hold_read(S212.STAGE0["N1"])                         # note 213-14 S0-4
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)

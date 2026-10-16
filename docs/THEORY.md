@@ -17930,6 +17930,32 @@ There is **no gather-cross-slot-only arm**. So N3's pattern (all-readers drop 0.
 - HISTORY-USED with self ≈ 0 and other ≈ 0 is therefore described as **redundant use** across SLVA and the core / coda, not as "the SLVA channel carries it".
 - HISTORY-USED with a large self drop is described as **N2-like own-slot use**.
 
+**Note 213-14 (2026-10-16 16:16 EDT; S0-4 COPY-HOLD on N1, pre-stated before any output; $0, 2070, fp32, eval_bs 32, eval-only; Audit's OK needed).**
+
+**Questions.**
+- Is N1's trajectory deficit (RS D_R +0.469, 212-18) caused by **its copy slots' carried code drifting**? 212-18 left this between drift and layout: REFRESH and GAPPED failed their controls.
+- That also tests the **premise of the held ReZero-style per-slot gate** (213-4, 213-10).
+
+**The arm** (part d3sel's machinery, on the same RS items and cells as 212-18, at K′ n + 2):
+- **HOLD:** at every pass t ≥ 2, slots whose own decode is unchanged and non-VOID (argmax R(V_t[j]) = argmax R(V_{t−1}[j]) ≠ VOID) have their stored entry and their carry replaced by **V_{t−1}[j]**: the slot's own previous state, possibly already held, not V_0.
+- **HOLD+V** (descriptive): the same, with VOID slots included.
+
+**Output: eval_hold.json.**
+- cells {"n_r": {n_items, intact, restart, hold, hold_v}}, the same cells as eval_d3sel;
+- acc_n2 and acc_k24 {intact | hold | hold_v: {n}}, n 1..16;
+- exposure (the share of items with ≥ 1 held slot-event, and the mean count of held events).
+
+**Rule.**
+- G_H = pooled (hold − intact) over the 212-18 cells (n 9–12, r ∈ {4, 6}, ≥ 100 items).
+- **HOLD-FIXES iff G_H ≥ 0.5·D_R (≥ 0.235) and hold's acc_n2 ≥ intact − 0.02 at every n 1..8.** Otherwise not met; if the control fails, UNREADABLE.
+
+**Use** (a lead ranking, not a §213 rule):
+- **HOLD-FIXES:** copy-slot drift is N1's main second limit, and the learned per-slot gate becomes the first follow-up if a §213 cell reads LENGTH-FREE ∧ (HISTORY-KEYED or ¬DEPTH-GENERAL).
+- **Not met:** the drift lies in value / VOID slots or in layout, and the gate is deprioritised.
+- **Caveat (one-directional, as 212-18):** a decode-ruled hold on a model never trained with it can false-negative.
+
+theory/score_s213's REFERENCE block adds hold_read().
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
