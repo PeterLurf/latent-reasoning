@@ -740,12 +740,74 @@ def part_stabhist(m, TE, dev, bs):
     return res
 
 
+@torch.no_grad()
+def part_d3hist(m, TE, dev, bs):
+    """note 213-1 eval_d3hist.json (§213; D3_v1 §5 (f) and its labels), local fp32. acc_n2 (K' = n + 2), n 1..12, vbank_eval.part_acc's chunks:
+    intact; bank_ablate_slva = ver_keep vbank_eval.ablate_keep (versions 1..t-2 masked in SLVA, core and coda); self_ablate = gather_hist_ablate "self"
+    (own-slot versions 1..t-2 in SLVA only); other_ablate = ablate_keep with SLVA.keep_bank_only (core and coda only). The intact arm must equal eval_vb.json
+    acc_n2 bitwise (checked by the runner). swap: VALUE-SWAP class A pairs (vbank_eval.make_pairs, rng 21120), swap pass t, K' = n + 2, clean = recipient
+    and donor correct (as vswap): NEWEST = the donor's V_t only as SLVA's newest version (SLVA's read at pass t + 1; slva_view); BANK = the donor's V_t only
+    in the core / coda bank (stored entry = donor, SLVA's reads of entry t at passes >= t + 1 = the recipient's); OLD = the donor's V_1..V_t at every
+    reader with reading index >= t + 2 (rollout ver_sub + ver_sub_from = t + 2; the coda after pass t + 1 reads index t + 2). follow = y_donor, own = y."""
+    assert m.mode == "slva", "eval_d3hist is the §213 SLVA contract"
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {}
+    arms = (("intact", None), ("bank_ablate_slva", "keep"), ("self_ablate", "self"), ("other_ablate", "bank"))
+    for arm, how in arms:
+        A = np.full(len(TE), -1)
+        try:
+            if how in ("keep", "bank"):
+                m.ver_keep = VE.ablate_keep; m.keep_bank_only = how == "bank"
+            elif how == "self":
+                m.gather_hist_ablate = "self"
+            for n in range(1, 13):
+                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev)
+                    r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(len(its), device=dev)})
+                    A[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+        finally:
+            m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None
+        res[arm] = {"acc_n2": {str(n): float((A == Y)[Nn == n].mean()) for n in range(1, 13)}}; print("D3HIST", arm, res[arm], flush=True)
+    pairs, _ = VE.make_pairs(TE, cls="A"); cnt = {k: [0, 0] for k in ("newest", "bank", "old")}; npairs = 0
+    for key in sorted({(p_["n"], p_["t"]) for p_ in pairs}):
+        grp = [p_ for p_ in pairs if (p_["n"], p_["t"]) == key]; n, t = key; K = n + 2
+        for ch in VE.chunks(list(range(len(grp))), bs):
+            ps = [grp[j] for j in ch]; rec = [TE[p_["i"]] for p_ in ps]; don = [p_["donor"] for p_ in ps]; B = len(ps)
+            x, pad, lens = VB.batch_x(rec, dev); xd, pdd, ld = VB.batch_x(don, dev); rows = {K: torch.arange(B, device=dev)}
+            assert torch.equal(pad, pdd) and torch.equal(lens, ld), "swap: donor slots != recipient slots"
+            rr = m.rollout(x, pad, K, coda_rows=rows); rd = m.rollout(xd, pdd, K, coda_rows=rows)
+            y = torch.tensor([it["t"] for it in rec], device=dev); yd = torch.tensor([it["t"] for it in don], device=dev)
+            clean = (m.answer_logits(rr["coda"][K][1], lens)[:, num].argmax(-1) == y) & (m.answer_logits(rd["coda"][K][1], ld)[:, num].argmax(-1) == yd)
+            rms0 = rr["V"][0].pow(2).mean(-1, keepdim=True).sqrt(); Vr, Vd = rr["V"][t], rd["V"][t]
+            kd, nd = m.gkey(Vd), m.nrm(Vd, rms0); kr, nr = m.gkey(Vr), m.nrm(Vr, rms0); dons = [rd["V"][s_] for s_ in range(1, t + 1)]
+            for arm in ("newest", "bank", "old"):
+                kw = {}
+                try:
+                    if arm == "newest":
+                        m.slva_view = lambda tt, gk, NV: ((gk[:t] + [kd] + gk[t + 1:], NV[:t] + [nd] + NV[t + 1:]) if tt == t + 1 else (gk, NV))
+                    elif arm == "bank":
+                        kw["edit"] = lambda tt, V: Vd.clone() if tt == t else None
+                        m.slva_view = lambda tt, gk, NV: ((gk[:t] + [kr] + gk[t + 1:], NV[:t] + [nr] + NV[t + 1:]) if tt >= t + 1 else (gk, NV))
+                    else:
+                        kw["ver_sub"] = dons; m.ver_sub_from = t + 2
+                    ra = m.rollout(x, pad, K, coda_rows=rows, **kw)
+                finally:
+                    m.slva_view = None; m.ver_sub_from = None
+                A_ = m.answer_logits(ra["coda"][K][1], lens)[:, num].argmax(-1); del ra
+                cnt[arm][0] += int(((A_ == yd) & clean).sum()); cnt[arm][1] += int(((A_ == y) & clean).sum())
+            npairs += int(clean.sum()); del rr, rd
+    sw = {"n_pairs": npairs}
+    for arm in ("newest", "bank", "old"):
+        sw[arm + "_follow"] = cnt[arm][0] / npairs if npairs else None; sw[arm + "_own"] = cnt[arm][1] / npairs if npairs else None
+    res["swap"] = sw; res["def"] = part_d3hist.__doc__; print("D3HIST swap", sw, flush=True)
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})

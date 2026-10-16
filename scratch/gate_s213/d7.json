@@ -1,0 +1,13 @@
+{
+ "slva_view_identity": true,
+ "keep_bank_only_no_keep": true,
+ "newest_eq_iii_carry": true,
+ "bank_eq_iii_bank": true,
+ "old_eq_carry": true,
+ "old_moves": true,
+ "other_ablate_eq_carry_keep": true,
+ "newest_moves": true,
+ "bank_moves": true,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 2070"
+}

@@ -175,6 +175,7 @@ class VBankN(torch.nn.Module):
         self.gather_split_log = None                                        # eval-only (211-15 A iv): a list -> per pass (t, self, older-same-slot, cross-slot) per item
         self.slot_mask = None                                               # eval-only (212-15 MASKVOID / GAPPED): f(t, V_t) -> (B, T) bool slots REMOVED from every reader
         #   (core / coda bank entries of every version, the current version's keys, the gather) from then on (accumulated; t = 0 is called on V_0)
+        self.ver_sub_from = None                                            # eval-only (§213 OLD-SWAP): rollout's ver_sub replaces entries for reading index >= this
         self.input_edit = None                                              # eval-only (213-1 LFK FAULT): f(t, U_t) -> U_t' (the pass input, CARRY / gather / SLVA)
         self.gather_hist_ablate = None                                      # eval-only (212-15 STAB-HIST): "self" | "other" -> the gather's keys (s, j) | (s, i != j),
         #   1 <= s <= t-2, masked for query slot j (rt_d3/rt_hist2.py); None = unchanged
@@ -283,7 +284,11 @@ class VBankN(torch.nn.Module):
             fgk = [self.gkey(F_) for F_ in ver_sub] if self.mode != "carry" else None
 
         def view(tr, lst, flst):                                            # REPLACE: entry s (1..o) read as F_s when the reading index tr > s + 1
-            return lst if flst is None else [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr > s_ + 1 else lst[s_] for s_ in range(len(lst))]
+            if flst is None:                                                # (ver_sub_from, eval-only §213 OLD-SWAP: ... when tr >= ver_sub_from instead)
+                return lst
+            if self.ver_sub_from is None:
+                return [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr > s_ + 1 else lst[s_] for s_ in range(len(lst))]
+            return [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr >= self.ver_sub_from else lst[s_] for s_ in range(len(lst))]
         coda_at(0, V0); push(V0); carry = V0
         for F_ in (prefix or []):                                           # INSERT: foreign versions after V_0
             Vc.append(F_); St.append(F_); push(F_)
