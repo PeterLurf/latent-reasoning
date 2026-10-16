@@ -1,0 +1,8 @@
+{
+ "p_right_after_wrong": 1.0,
+ "n_events": 2,
+ "p_final_correct_given_wrong": 0.9333333333333333,
+ "n_items": 15,
+ "n_events_consumed_next": 7,
+ "def": "211-16 \u00a72: events = (item, t < n) with R's value slot wrong at t and every other real slot right, and the slot not consumed at t + 1; right_after = R right at that slot at t + 1. items = n 3..8 items with >= 1 wrong value slot at t <= n; final = the coda at K' = n + 2"
+}
