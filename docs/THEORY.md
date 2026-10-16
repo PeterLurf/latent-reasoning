@@ -16840,6 +16840,19 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 - NO-ENTRY is defined on the last bins, so a mid-run bump does not affect it.
 - **Expectation, stated now [CONJECTURE]:** answer_ce back below 0.3 within about 4k steps of c = 0, i.e. by 12k.
 
+**Note 211-10 (2026-10-16 01:04 EDT; pre-stated before N1 reaches 8k (N1 is at about 2.5k), at Audit's request; descriptive attribution of N2's anneal-end bump; no reading changed).** Data: log.jsonl answer_ce, in the fixed 1k bins of basin_entry, for N2 (s211_vb_pa_s1) and N1 (s211_vb_carry_s1). adv = each cell's first curriculum advance to n ≤ 5, from its advance line.
+
+- **(A) Absolute window, which locates the anneal.** D_abs = the mean over bins 7k–10k of (N2 − N1) answer_ce.
+  - N2's anneal runs to c = 0 at 8k; N1 has none.
+- **(B) Advance-aligned window, which locates the curriculum.** D_adv = the mean over bins [adv, adv + 2k] of (N2 − N1), each cell aligned on its own adv.
+- **Labels (descriptive):**
+  - **ANNEAL-COSTLY:** D_abs ≥ 0.20 nats, and N1's own answer_ce returns below 0.3 within 2k of its adv.
+  - **CURRICULUM-ONLY:** D_abs < 0.10 and D_adv < 0.10.
+  - **NOT-SEPARABLE:** N1's adv lies within 7k–10k, so the windows overlap. Report both curves.
+  - Otherwise **MIXED**.
+- **Reported beside:** each cell's peak above its pre-advance bin, the steps back to < 0.3, N2's off-self mass and gather_gn over 6k–10k, and N1's adv step.
+- **Use:** this informs any future schedule (e.g. a longer or gentler final c-segment). It is not a §211 reading, and no §211 cell changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
