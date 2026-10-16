@@ -75,7 +75,46 @@
     "FIRES": false
    },
    "DEEP": true,
-   "D3DIAG": null
+   "D3DIAG": {
+    "target_cells_n": {
+     "8_31": 35,
+     "8_33": 1,
+     "9_31": 482,
+     "9_33": 160,
+     "10_31": 627,
+     "10_33": 614
+    },
+    "gs24": {
+     "target": 0.19906201146430433,
+     "target_intact": 0.2256383533090151,
+     "rise": -0.026576341844710777,
+     "control": 0.793800539083558,
+     "control_intact": 0.995058400718778,
+     "control_change": -0.20125786163522008,
+     "control_cells_differing": 4,
+     "label": "UNREADABLE (exposed control drops -0.201)"
+    },
+    "wpe_b1": {
+     "target": 0.0,
+     "target_intact": 0.2256383533090151,
+     "rise": -0.2256383533090151,
+     "control": 0.5080862533692723,
+     "control_intact": 0.995058400718778,
+     "control_change": -0.4869721473495058,
+     "control_cells_differing": 6,
+     "label": "UNREADABLE (exposed control drops -0.487)"
+    },
+    "wpe_b2": {
+     "target": 0.0,
+     "target_intact": 0.2256383533090151,
+     "rise": -0.2256383533090151,
+     "control": 0.0,
+     "control_intact": 0.995058400718778,
+     "control_change": -0.995058400718778,
+     "control_cells_differing": 7,
+     "label": "UNREADABLE (exposed control drops -0.995)"
+    }
+   }
   },
   "N1": {
    "RS": {
@@ -152,7 +191,36 @@
     "FIRES": false
    },
    "DEEP": true,
-   "D3DIAG": null
+   "D3DIAG": {
+    "target_cells_n": {
+     "8_31": 35,
+     "8_33": 1,
+     "9_31": 482,
+     "9_33": 160,
+     "10_31": 627,
+     "10_33": 614
+    },
+    "wpe_b1": {
+     "target": 0.9994788952579469,
+     "target_intact": 0.9973944762897342,
+     "rise": 0.0020844189682126535,
+     "control": 1.0,
+     "control_intact": 1.0,
+     "control_change": 0.0,
+     "control_cells_differing": 0,
+     "label": "NOT"
+    },
+    "wpe_b2": {
+     "target": 0.9989577905158937,
+     "target_intact": 0.9973944762897342,
+     "rise": 0.0015633142261595179,
+     "control": 1.0,
+     "control_intact": 1.0,
+     "control_change": 0.0,
+     "control_cells_differing": 0,
+     "label": "NOT"
+    }
+   }
   },
   "N3": {
    "RS": {
@@ -229,7 +297,46 @@
     "FIRES": false
    },
    "DEEP": true,
-   "D3DIAG": null
+   "D3DIAG": {
+    "target_cells_n": {
+     "8_31": 35,
+     "8_33": 1,
+     "9_31": 482,
+     "9_33": 160,
+     "10_31": 627,
+     "10_33": 614
+    },
+    "gs24": {
+     "target": 0.0010422094841063053,
+     "target_intact": 0.19541427826993227,
+     "rise": -0.19437206878582597,
+     "control": 0.5911949685534591,
+     "control_intact": 0.9932614555256065,
+     "control_change": -0.4020664869721474,
+     "control_cells_differing": 4,
+     "label": "UNREADABLE (exposed control drops -0.402)"
+    },
+    "wpe_b1": {
+     "target": 0.0,
+     "target_intact": 0.19541427826993227,
+     "rise": -0.19541427826993227,
+     "control": 0.5575022461814915,
+     "control_intact": 0.9932614555256065,
+     "control_change": -0.43575920934411505,
+     "control_cells_differing": 6,
+     "label": "UNREADABLE (exposed control drops -0.436)"
+    },
+    "wpe_b2": {
+     "target": 0.0,
+     "target_intact": 0.19541427826993227,
+     "rise": -0.19541427826993227,
+     "control": 0.0,
+     "control_intact": 0.9932614555256065,
+     "control_change": -0.9932614555256065,
+     "control_cells_differing": 7,
+     "label": "UNREADABLE (exposed control drops -0.993)"
+    }
+   }
   },
   "GO": {
    "G1": true,
