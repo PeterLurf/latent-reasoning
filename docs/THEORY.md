@@ -17856,6 +17856,14 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 
 Precondition (i) of 213-4 (what zeroes a copy slot's deviation without a rule) is still the design question. Any port must be checked against this absorbing-state argument before a derivation is drafted.
 
+**Note 213-8 (2026-10-16 15:03 EDT; addendum to 213-7, after Audit's point on Literature's e4dcd4ad).**
+
+In VBank, core_t depends on the pass-global bank at pass t, so "cache core(V_0) once" does not hold. Both readings of the port fail 213-7's absorbing-state test [PROVED by induction, δ_0 = 0]:
+- **The exact form** (core_t(V_0) recomputed with the bank at pass t, about 2× core compute): δ_{t+1} = δ_t + core_t(V_0 + δ_t) − core_t(V_0). If δ_s = 0 for every s ≤ t, then δ_{t+1} = core_t(V_0) − core_t(V_0) = **0 exactly**. The trajectory is frozen at V_0 for every t, and no reduction ever happens.
+- **The cacheable form** (subtracting a bank-free core(V_0)): δ_{t+1} = core_t(V_0) − core(V_0). This is nonzero only through the bank's content, which is t copies of V_0. So the state moves only as a function of the version count: **a clock** (213-7).
+
+Any SCSE-style transfer must therefore inject the input-driven change outside the anchor difference. Per 213-7, that means a per-slot fixed point at the slot's own current state, which leaves precondition (i) as the design question. The derivation must pick its form and prove that pass 1 can reduce.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
