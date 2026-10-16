@@ -134,6 +134,13 @@ def pair(T, F):
 def main():
     out = {t: cell(t, d) for t, d in CELLS.items()}
     out["PAIR"] = pair(out["D3-T"], out["D3-F"])
+    ref = {}                                                                # note 213-11: d3hist references on the §211 cells (harness check, descriptive)
+    for k, d in S212.STAGE0.items():
+        h, ev = jl(d, "eval_d3hist.json"), jl(d, "eval_vb.json")
+        ref[k] = hist(h, ev) if (h and ev) else None
+    exp = {"N1": lambda r: (not r["HISTORY_USED"]) and r["RNN_IN_FUNCTION"], "N2": lambda r: r["HISTORY_USED"] and not r["RNN_IN_FUNCTION"], "N3": lambda r: r["HISTORY_USED"]}
+    ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
+    out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
 

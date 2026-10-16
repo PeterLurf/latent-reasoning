@@ -17875,6 +17875,25 @@ Any SCSE-style transfer must therefore inject the input-driven change outside th
 - **A faithful VB port** therefore needs a learned H_0 and a deviation-only core. That is far off-distribution for pretrained GPT-2 blocks, against NORTH_STAR's one-pretrained-LM requirement. It is not pursued.
 - **The per-slot gated form of 213-7 is not SCSE.** It is a ReZero-style gated residual (Bachlechner et al., arXiv 2003.04887, verified by Literature). If §213's trigger fires, it needs its own derivation under that name.
 
+**Note 213-11 (2026-10-16 15:36 EDT; a $0 reference row, pre-stated before any output; it is a harness check of eval_d3hist's code path and changes no §213 rule).**
+
+**The row.** vbank_diag part d3hist (5b327ca9) on the §211 cells, each on its own eval_vb card so the intact == eval_vb gate is bitwise:
+- **N1** s211_vb_carry_s1 on the 2070;
+- **N2** s211_vb_pa_s1 on the 4060;
+- **N3** s211_vb_pamct_s1 on the 3070, before §213 lands;
+- fp32, eval_bs 32.
+
+The arms are as in 213-1. For PA cells, "SLVA" reads as the PA gather: self_ablate is the gather's own-slot mid versions (S0-3's arm); NEWEST / BANK / OLD map onto the gather's version-t reads, the stored entry, and versions 1..t. Arms a cell's mode cannot express are omitted and listed.
+
+**Pre-stated expectations** (from §211's eval_vb, M2 and 212-19):
+- **N1:** HISTORY-USED **not met** (drop ≤ 0.02; BANK-ABLATE ≈ intact) and **RNN-IN-FUNCTION** (newest_follow ≥ 0.95, as carry-swap 1.000; old_follow ≤ 0.02).
+- **N2:** HISTORY-USED **met** (the drop at n 6–8 is about 0.4; registered BANK-ABLATE n 8 → 0.321). The self_ablate drop is about 0.31 (stabhist: 0.917 / 0.697 / 0.469). Not RNN-IN-FUNCTION.
+- **N3:** HISTORY-USED **met** (§211: USED).
+
+**Rule (a harness check):** if any expectation fails, the d3hist code path is debugged, and the reference re-run, before §213's (f) is scored. The §213 readings and thresholds are unchanged.
+
+theory/score_s213.py adds a REFERENCE block that applies hist() to these files (descriptive).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
