@@ -16792,6 +16792,15 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
      - If pa's n 4–8 is flat or falling: hold N3 for Theory, as a possible MCT side effect (confident errors beyond the curriculum).
    - Either way, the n 4–8 split is reported beside §211's N3 result, descriptively.
 
+**Note 211-7 (2026-10-16 00:24 EDT; before any §211 output; corrects note 211-4 item 3).** **eval_bs = 32 for every §211 reading and every re-check**, not 64.
+* An fp32 rollout at n 16, K′ 24 holds the bank K/V for 25 versions × 6 layers, plus the gather transients. Measured on the 4060 (T 55, all 18 coda readouts):
+  * bs 64 runs out of memory at about 6.6 GB allocated by pass 24;
+  * bs 48 peaks at 6.46 GiB, too tight on 8 GB;
+  * bs 32 peaks at 4.47 GiB.
+* No reading had been computed, so nothing is invalidated.
+* Padded batched = per-item to 5.7e-15 in fp64, so batch composition is not a confound. Readings are in fp32; any re-check uses bs 32 regardless.
+* vbank.py is unchanged; all cells run identical code.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
