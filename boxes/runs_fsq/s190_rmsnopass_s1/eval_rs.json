@@ -1,0 +1,579 @@
+{
+ "cells": {
+  "3_2": {
+   "n": 3,
+   "r": 2,
+   "t": 1,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "4_2": {
+   "n": 4,
+   "r": 2,
+   "t": 2,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "5_2": {
+   "n": 5,
+   "r": 2,
+   "t": 3,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "5_4": {
+   "n": 5,
+   "r": 4,
+   "t": 1,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "6_2": {
+   "n": 6,
+   "r": 2,
+   "t": 4,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "6_4": {
+   "n": 6,
+   "r": 4,
+   "t": 2,
+   "exact_rate": 0.999,
+   "n_items": 999,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "7_2": {
+   "n": 7,
+   "r": 2,
+   "t": 5,
+   "exact_rate": 0.999,
+   "n_items": 999,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.999
+  },
+  "7_4": {
+   "n": 7,
+   "r": 4,
+   "t": 3,
+   "exact_rate": 0.999,
+   "n_items": 999,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.999
+  },
+  "7_6": {
+   "n": 7,
+   "r": 6,
+   "t": 1,
+   "exact_rate": 0.998,
+   "n_items": 998,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.999
+  },
+  "8_2": {
+   "n": 8,
+   "r": 2,
+   "t": 6,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "8_4": {
+   "n": 8,
+   "r": 4,
+   "t": 4,
+   "exact_rate": 0.997,
+   "n_items": 997,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "8_6": {
+   "n": 8,
+   "r": 6,
+   "t": 2,
+   "exact_rate": 0.997,
+   "n_items": 997,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "9_2": {
+   "n": 9,
+   "r": 2,
+   "t": 7,
+   "exact_rate": 0.985,
+   "n_items": 985,
+   "intact": 0.9979695431472081,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.993
+  },
+  "9_4": {
+   "n": 9,
+   "r": 4,
+   "t": 5,
+   "exact_rate": 0.978,
+   "n_items": 978,
+   "intact": 0.9959100204498977,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.993
+  },
+  "9_6": {
+   "n": 9,
+   "r": 6,
+   "t": 3,
+   "exact_rate": 0.985,
+   "n_items": 985,
+   "intact": 0.9928934010152284,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.993
+  },
+  "9_8": {
+   "n": 9,
+   "r": 8,
+   "t": 1,
+   "exact_rate": 0.859,
+   "n_items": 859,
+   "intact": 0.9953434225844005,
+   "restart": 0.9988358556461001,
+   "unparse_rate": null,
+   "intact_all": 0.993
+  },
+  "10_2": {
+   "n": 10,
+   "r": 2,
+   "t": 8,
+   "exact_rate": 0.679,
+   "n_items": 679,
+   "intact": 0.9896907216494846,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.895
+  },
+  "10_4": {
+   "n": 10,
+   "r": 4,
+   "t": 6,
+   "exact_rate": 0.782,
+   "n_items": 782,
+   "intact": 0.9437340153452686,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.895
+  },
+  "10_6": {
+   "n": 10,
+   "r": 6,
+   "t": 4,
+   "exact_rate": 0.808,
+   "n_items": 808,
+   "intact": 0.9108910891089109,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.895
+  },
+  "10_8": {
+   "n": 10,
+   "r": 8,
+   "t": 2,
+   "exact_rate": 0.368,
+   "n_items": 368,
+   "intact": 0.9103260869565217,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.895
+  },
+  "11_2": {
+   "n": 11,
+   "r": 2,
+   "t": 9,
+   "exact_rate": 0.075,
+   "n_items": 75,
+   "intact": 0.96,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.524
+  },
+  "11_4": {
+   "n": 11,
+   "r": 4,
+   "t": 7,
+   "exact_rate": 0.189,
+   "n_items": 189,
+   "intact": 0.7566137566137566,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.524
+  },
+  "11_6": {
+   "n": 11,
+   "r": 6,
+   "t": 5,
+   "exact_rate": 0.308,
+   "n_items": 308,
+   "intact": 0.5876623376623377,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.524
+  },
+  "11_8": {
+   "n": 11,
+   "r": 8,
+   "t": 3,
+   "exact_rate": 0.109,
+   "n_items": 109,
+   "intact": 0.5596330275229358,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.524
+  },
+  "12_2": {
+   "n": 12,
+   "r": 2,
+   "t": 10,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.231
+  },
+  "12_4": {
+   "n": 12,
+   "r": 4,
+   "t": 8,
+   "exact_rate": 0.007,
+   "n_items": 7,
+   "intact": 0.42857142857142855,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.231
+  },
+  "12_6": {
+   "n": 12,
+   "r": 6,
+   "t": 6,
+   "exact_rate": 0.032,
+   "n_items": 32,
+   "intact": 0.21875,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.231
+  },
+  "12_8": {
+   "n": 12,
+   "r": 8,
+   "t": 4,
+   "exact_rate": 0.016,
+   "n_items": 16,
+   "intact": 0.1875,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.231
+  },
+  "13_2": {
+   "n": 13,
+   "r": 2,
+   "t": 11,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.155
+  },
+  "13_4": {
+   "n": 13,
+   "r": 4,
+   "t": 9,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.155
+  },
+  "13_6": {
+   "n": 13,
+   "r": 6,
+   "t": 7,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.155
+  },
+  "13_8": {
+   "n": 13,
+   "r": 8,
+   "t": 5,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.155
+  },
+  "14_2": {
+   "n": 14,
+   "r": 2,
+   "t": 12,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "14_4": {
+   "n": 14,
+   "r": 4,
+   "t": 10,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "14_6": {
+   "n": 14,
+   "r": 6,
+   "t": 8,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "14_8": {
+   "n": 14,
+   "r": 8,
+   "t": 6,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "15_2": {
+   "n": 15,
+   "r": 2,
+   "t": 13,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.139
+  },
+  "15_4": {
+   "n": 15,
+   "r": 4,
+   "t": 11,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.139
+  },
+  "15_6": {
+   "n": 15,
+   "r": 6,
+   "t": 9,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.139
+  },
+  "15_8": {
+   "n": 15,
+   "r": 8,
+   "t": 7,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.139
+  },
+  "16_2": {
+   "n": 16,
+   "r": 2,
+   "t": 14,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.129
+  },
+  "16_4": {
+   "n": 16,
+   "r": 4,
+   "t": 12,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.129
+  },
+  "16_6": {
+   "n": 16,
+   "r": 6,
+   "t": 10,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.129
+  },
+  "16_8": {
+   "n": 16,
+   "r": 8,
+   "t": 8,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.129
+  }
+ },
+ "long_step": {
+  "1": {
+   "n_steps": 8945,
+   "exact": 1.0,
+   "n_exact": 8945
+  },
+  "2": {
+   "n_steps": 7945,
+   "exact": 1.0,
+   "n_exact": 7945
+  },
+  "3": {
+   "n_steps": 6945,
+   "exact": 1.0,
+   "n_exact": 6945
+  },
+  "4": {
+   "n_steps": 5945,
+   "exact": 1.0,
+   "n_exact": 5945
+  },
+  "5": {
+   "n_steps": 4947,
+   "exact": 0.9995957145744896,
+   "n_exact": 4945
+  },
+  "6": {
+   "n_steps": 3949,
+   "exact": 0.9994935426690301,
+   "n_exact": 3947
+  },
+  "7": {
+   "n_steps": 2956,
+   "exact": 0.9976319350473613,
+   "n_exact": 2949
+  },
+  "8": {
+   "n_steps": 1974,
+   "exact": 0.9908814589665653,
+   "n_exact": 1956
+  },
+  "9": {
+   "n_steps": 1121,
+   "exact": 0.8688670829616414,
+   "n_exact": 974
+  },
+  "10": {
+   "n_steps": 1000,
+   "exact": 0.121,
+   "n_exact": 121
+  },
+  "11": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "12": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "13": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "14": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "15": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "16": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  }
+ },
+ "def": "D \u00a71.2 RS on INJECT: decode = aux_greedy at pass t, exact = ids(cot_steps[t]) + EOT; intact at K' = n + 2; restart = the item reduced t times run fresh at K' = r + 2; unparse_rate is not defined for a greedy token decode (null); exact_rate = exact / all items of n",
+ "run": "s190_rmsnopass_s1",
+ "card": "NVIDIA GeForce RTX 4060",
+ "bs": 250,
+ "eval_bs": 250,
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "fast_add": true,
+ "aux_nopass": true,
+ "sec": 507
+}

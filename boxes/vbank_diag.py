@@ -55,7 +55,7 @@ def classify(dec_syms, target_syms):
 
 
 @torch.no_grad()
-def part_rs(m, TE, dev, bs):
+def part_rs(m, TE, dev, bs, do_long=True):
     num = torch.tensor(N.NUM_IDS, device=dev); out = {"cells": {}, "decode": {}}
     Nn = np.array([it["n"] for it in TE]); jobs = {r: [] for r in RS_R}       # restart jobs per r: (item index, t)
     intact_ok = np.zeros(len(TE), dtype=bool); exact = {}                   # exact[(i, t)] = bool
@@ -85,7 +85,7 @@ def part_rs(m, TE, dev, bs):
             a_ = m.answer_logits(rr["coda"][r + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del rr
             for k_, (j, t) in enumerate(part):
                 rest_ok[(j, t)] = bool(a_[k_] == TE[j]["t"])
-    for n in range(1, 17):
+    for n in sorted({int(v) for v in Nn}):                                  # every n 1..16 on the full test set
         for r in RS_R:
             t = n - r
             if t < 1:
@@ -96,7 +96,7 @@ def part_rs(m, TE, dev, bs):
             out["cells"]["%d_%d" % (n, r)] = {"n_items": len(js), "intact": ic, "restart": rs, "unparse_rate": dc["unparseable"] / tot if tot else None,   # Theory's contract
                                              "n": n, "r": r, "t": t, "delta": (rs - ic) if js else None, "wrong_rate": dc["wrong"] / tot if tot else None,
                                              "exact_rate": dc["exact"] / tot if tot else None, "intact_all": float(intact_ok[Nn == n].mean())}
-    out["long_step"] = long_step(m, TE, dev, bs)
+    out["long_step"] = long_step(m, TE, dev, bs) if do_long else None
     out["def"] = ("D §1.2 / note 211-15 B: cells '<n>_<r>' (t = n - r >= 1): n_items = items exact at t; intact = acc at K' = n + 2 on them; restart = acc of the "
                   "item reduced t times run fresh at K' = r + 2; unparse_rate / wrong_rate / exact_rate over all items of n; n <= 8 = control; long_step '<m>': "
                   "n_steps attempted single steps on fresh inputs with m operators, exact = their exact rate (chains stop at the first inexact step)")
@@ -450,12 +450,45 @@ def part_d3diag(m, TE, dev, bs, J=24):
     return res
 
 
+@torch.no_grad()
+def part_wpereset(m, TE, dev, bs):
+    """Theory 10-16 ~14:00 (N1-WPE-RESET; $0, descriptive, for D3's FT-from-N1 reset choice): every wpe row PRETRAINED GPT-2 (d3diag's wpe_b2), arms
+    intact / wpe_b2. Per arm: acc_n2 {n: acc at K' = n + 2} and acc_k24 {n: acc at K' = 24}, n 1..16, from one K' 24 rollout per chunk (vbank_eval.part_acc's
+    chunking and coda rows -> the intact arm must equal eval_vb.json's acc_n2 / acc_k['24']; checked in main's caller); rs_n9_13 = part_rs's cells on the
+    n 9-13 test items (no LONG-STEP). The table's data is swapped at eval and an exact clone restored (asserted)."""
+    import boxes.s5 as S5
+    pre = torch.load(os.path.join(S5.ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"), map_location="cpu", weights_only=True)["wpe.weight"].to(dev)
+    W = m.g.p["wpe_weight"]; orig = W.data.clone(); assert pre.shape == W.shape, (pre.shape, W.shape)
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {}
+    sub = [it for it in TE if 9 <= it["n"] <= 13]
+    for arm in ("intact", "wpe_b2"):
+        A2 = np.full(len(TE), -1); A24 = np.full(len(TE), -1)
+        try:
+            if arm == "wpe_b2":
+                W.data[:] = pre.to(W.dtype)
+            for n in range(1, 17):
+                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev)
+                    r_ = m.rollout(x, pad, 24, coda_rows={t: torch.arange(len(its), device=dev) for t in set(VE.KS) | {n + 2}})
+                    A2[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy()
+                    A24[ch] = m.answer_logits(r_["coda"][24][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+            rs = part_rs(m, sub, dev, bs, do_long=False)["cells"]
+        finally:
+            W.data.copy_(orig)
+        assert torch.equal(W.data, orig), "wpereset: wpe not restored"
+        by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 17)}  # noqa: E731
+        res[arm] = {"acc_n2": by_n(A2), "acc_k24": by_n(A24), "rs_n9_13": rs}
+        print("WPE", arm, "acc_n2", {k: round(v, 3) for k, v in res[arm]["acc_n2"].items()}, flush=True)
+    res["def"] = part_wpereset.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
