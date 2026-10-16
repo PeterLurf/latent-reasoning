@@ -1,0 +1,29 @@
+FIXTURE {'content': 300, 'collapse': 300, 'stuck1': 300, 'clockhold': 300, 'stall_shift': 300, 'n': 300, 'pass': True}
+HALT n 1 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 2 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 3 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 4 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 5 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 6 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 7 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 8 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 9 {'exact': 0.34, 'premature': 0.0, 'never': 0.003, 'gprog': 0.653, 'acc_halt': 0.341, 'acc_n2': 0.853}
+HALT n 10 {'exact': 0.006, 'premature': 0.0, 'never': 0.027, 'gprog': 0.967, 'acc_halt': 0.004, 'acc_n2': 0.456}
+HALT n 11 {'exact': 0.0, 'premature': 0.0, 'never': 0.064, 'gprog': 0.936, 'acc_halt': 0.0, 'acc_n2': 0.182}
+HALT n 12 {'exact': 0.0, 'premature': 0.0, 'never': 0.115, 'gprog': 0.885, 'acc_halt': 0.0, 'acc_n2': 0.129}
+HALT n 13 {'exact': 0.0, 'premature': 0.0, 'never': 0.204, 'gprog': 0.796, 'acc_halt': 0.0, 'acc_n2': 0.111}
+HALT n 14 {'exact': 0.0, 'premature': 0.0, 'never': 0.358, 'gprog': 0.642, 'acc_halt': 0.0, 'acc_n2': 0.11}
+[W1016 13:01:33.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 136314880 bytes (free: 0, total: 8589606912).
+HALT n 15 {'exact': 0.0, 'premature': 0.0, 'never': 0.498, 'gprog': 0.502, 'acc_halt': 0.0, 'acc_n2': 0.116}
+[W1016 13:02:59.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 146800640 bytes (free: 0, total: 8589606912).
+HALT n 16 {'exact': 0.0, 'premature': 0.0, 'never': 0.565, 'gprog': 0.435, 'acc_halt': 0.0, 'acc_n2': 0.1}
+STALL n 4 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 2}
+STALL n 5 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 3}
+STALL n 6 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 3}
+STALL n 7 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 4}
+STALL n 8 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 4}
+STALL n 9 {'qualifying': 340, 'shift': 0.9941176470588236, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0058823529411764705, 'other': 0.0, 'stall_t': 5}
+STALL n 10 {'qualifying': 6, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 5}
+STALL n 11 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 6}
+STALL n 12 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 6}
+DONE boxes/runs_fsq/s211_vb_carry_s1\eval_vbhalt.json 973 gate True
