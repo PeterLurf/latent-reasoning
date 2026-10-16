@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\vbank_eval.py", line 357, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\vbank_eval.py", line 347, in main
+    r = {"acc": lambda: part_acc(m, TE, dev, a.eval_bs), "probe": lambda: part_probe(m, TE, dev, a.eval_bs, tuple(int(v) for v in a.probe_ts.split(",")), a.probe_steps),
+         "vswap": lambda: part_vswap(m, TE, dev, a.eval_bs), "stall": lambda: part_stall(m, TE, dev, a.eval_bs), "tf": lambda: part_tf(m, TE, dev, a.eval_bs)}[part]()
+  File "D:\Latent\boxes\vbank_eval.py", line 347, in <lambda>
+    r = {"acc": lambda: part_acc(m, TE, dev, a.eval_bs), "probe": lambda: part_probe(m, TE, dev, a.eval_bs, tuple(int(v) for v in a.probe_ts.split(",")), a.probe_steps),
+                        ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\vbank_eval.py", line 126, in part_acc
+    rb = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(B, device=dev)}); m.bank_off = off0
+  File "D:\Latent\boxes\vbank.py", line 240, in rollout
+    Vc.append(h); coda_at(t, h)
+                  ~~~~~~~^^^^^^
+  File "D:\Latent\boxes\vbank.py", line 228, in coda_at
+    out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in kv[i]] for i in CODA}, pad[r_]))
+                  ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\vbank.py", line 205, in coda
+    h = block_bank(src, i, h, bk, bv, bb)
+  File "D:\Latent\boxes\vbank.py", line 87, in block_bank
+    o = F.scaled_dot_product_attention(q, torch.cat([bk.to(q.dtype), k], 2), torch.cat([bv.to(q.dtype), v], 2), attn_mask=mask)
+RuntimeError: CUDA driver error: out of memory
+The CUDA driver logged these messages, which may provide useful details:
+Returning 2 (CUDA_ERROR_OUT_OF_MEMORY) from cuMemSetAccess
+
