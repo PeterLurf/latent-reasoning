@@ -16853,6 +16853,28 @@ If N3 reads NO-ENTRY or LOSES-ONE-PASS, stage-1 overconfidence is named as a can
 - **Reported beside:** each cell's peak above its pre-advance bin, the steps back to < 0.3, N2's off-self mass and gather_gn over 6k–10k, and N1's adv step.
 - **Use:** this informs any future schedule (e.g. a longer or gentler final c-segment). It is not a §211 reading, and no §211 cell changes.
 
+**Note 211-11 (2026-10-16 01:34 EDT; the descriptive readings that notes 211-10 and 211-8 pre-stated; in-training logs; no §211 reading).**
+
+**1. The 211-10 attribution reads ANNEAL-COSTLY.**
+- Data: scratch/gate_s211/bins_211_10.json (basin_entry binning, 10 records per bin).
+- **D_abs** (mean of N2 − N1 answer_ce over bins 7k–10k) = (0.548 + 0.653 − 0.196)/3 = **0.335**.
+- **D_adv** ([adv, adv + 2k]; both cells advanced to n ≤ 5 at 6000) = (0.044 + 0.548)/2 = **0.296**.
+- N1 is back below 0.3 at 6.7k, within 2k of its advance. So ANNEAL-COSTLY: D_abs ≥ 0.20 and N1 recovered.
+- **Caveat (not anticipated in 211-10):** N1 made its *second* advance (5 → 8) at 9000, inside the window. Its stage bump puts the opposite sign on the 9k–10k bin, which only lowers D_abs. The two bins free of it (7k–9k) give **0.60**, so the label holds either way. NOT-SEPARABLE applies only to the first advance, as pre-stated.
+- **Reading:** the curriculum advance costs the same in both cells (peak about 1.17 at +100; back to about 0.3 within 700–800 steps). N2's second bump (7.2k–9.8k, peak 1.17 at c = 0) is the anneal's cost: off-self mass rose 0.40 → 0.85, with gather_gn 2–3 and heavy clipping. N2 was back below 0.3 by about 9.8k.
+- **For future schedules:** a longer or gentler final c-segment. No §211 cell changes.
+
+**2. The 211-8 watch: N3's first advance (n 3 → 5) at 5000 was earlier than N1 / N2 (6000) and cheaper.**
+
+| cell | jump at +100 | back below 0.3 |
+|---|---|---|
+| N3 | +0.65 | about 400 steps |
+| N1 | +1.14 | about 700 steps |
+| N2 | +1.06 | about 800 steps |
+
+- N3's stage-1 out-of-range overconfidence (211-8) did not make admitting n 4–5 costlier. It was cheaper.
+- **Caveat:** p_TF ≈ 0.95 at 5k, so most bank entries were still MCT-corrected. This recovery is mostly teacher-forced.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
