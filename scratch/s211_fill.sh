@@ -4,7 +4,8 @@
 # 580.x (offer_pick). Per cell: deploy (gen_deploy_120 also arms the gen8 drain watcher) -> HOSTPROBE OK -> queue line 1 = G-TIME (60 forced final-stage
 # steps: n <= 8, K 12, --auto_micro) -> admission: proj = (gtime s/step x 48000 / 3600 + SETUP_H) x the host's $/h must be <= $3.00 (per cell) AND the
 # admitted family sum + this proj (+ BAD-host spend) <= $9.00; then the off-host ckpt mirror (scratch/ckpt_mirror.py, every 2 h) and a per-cell
-# cost_guard (cap $3, alert only) start. A refused host: vdestroy, drain watcher stopped by pid, drained_hosts + exclude list, billed minutes logged.
+# cost_guard (cap $3, alert only) start, and on the first admit the FAMILY guard s211fam ($9, GUARD_STOP=1; Audit 23:4x); marks 1k / 4k / 12k / 20k
+# (the cumulative rate under-projects while the curriculum is in its cheap stages, REDTEAM F10). A refused host: vdestroy, drain watcher stopped by pid, drained_hosts + exclude list, billed minutes logged.
 # A family projection above $9 is never resolved by dropping a cell: the filler holds and says so (Audit / the user decide). BAD / refused hosts: 4 -> held;
 # cumulative BAD-host spend > $1.00 -> held.
 #   nohup bash scratch/s211_fill.sh >> logs/fill_s211.out 2>&1 &
@@ -63,8 +64,12 @@ for cell in $QS; do
     if python -c "import sys; sys.exit(0 if $proj <= $CAPC and $fs + $proj <= $CAPF else 1)"; then
       echo "$n:$run $h:$p $iid \$$dph/h sps $sps $proj" >> "$ADMLOG"; log "b$n: ADMIT $run on $h:$p (instance $iid): \$$proj"
       nohup python scratch/ckpt_mirror.py "$n:$run" --every_h 2 > "logs/ckpt_mirror_b$n.out" 2>&1 &
-      nohup python scratch/cost_guard.py "s211_b$n" 3.00 "$STEPS" "$n:$run:$proj" > "logs/s211_guard_b$n.out" 2>&1 &
+      GUARD_MARKS=1000,4000,12000,20000 nohup python scratch/cost_guard.py "s211_b$n" 3.00 "$STEPS" "$n:$run:$proj" > "logs/s211_guard_b$n.out" 2>&1 &
       log "b$n: ckpt mirror + cost guard (\$3, alert only) started"
+      if ! ps -ef | grep "cost_guard.py s211fam " | grep -v grep > /dev/null; then   # Audit 23:4x: the FAMILY \$9 guard with GUARD_STOP=1 (BAD hosts included)
+        GUARD_STOP=1 GUARD_MARKS=1000,4000,12000,20000 nohup python scratch/cost_guard.py s211fam 9.00 "$STEPS" 304:s211_vb_pa_s1:3.0 305:s211_vb_carry_s1:3.0 306:s211_vb_pamct_s1:3.0 > logs/s211fam_guard.out 2>&1 &
+        log "family guard s211fam (\$9, GUARD_STOP=1; unstarted cells at \$3) started"
+      fi
       sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; break
     fi
     log "b$n: projection \$$proj (cell cap \$$CAPC; family \$$fs + \$$proj vs \$$CAPF) NOT admitted on $h:$p - HOLD: no cell is dropped silently; tell Audit / the user"
