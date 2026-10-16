@@ -7,6 +7,8 @@ User request 21:58 EDT (via Audit): invent a training paradigm and a recurrent m
 - C_forced_recoding.md: LEDGER + RE-POSE (Opus inventor C, forced re-coding)
 - SYNTH_spec_v0.md: Theory's synthesis spec, under proof check and red-team
 - REDTEAM_v0.md: Opus red-team of the synthesis (2 blockers, 6 major; all 8 recommended changes adopted)
+- PROOFS_v0.md: Opus proof pass (18 claims; 4 false as written, all restated)
+- Final draft: docs/THEORY_VERSIONBANK_DRAFT_2026-10-15.md
 - Prior art: docs/LIT_PASSUSE_PRIORART_2026-10-15.md
 
 Drafts only. Nothing is registered; any spend needs the user's OK via Audit.
