@@ -1,4 +1,4 @@
-"""THEORY §211 eval_vb.json (note 211-1 contract; read by theory/score_s211.py) for a landed VERSION-BANK cell: local fp32 (no autocast), --eval_bs
+"""THEORY §211 eval_vb.json (note 211-1 contract; read by theory/score_s211.py) for a landed VERSION-BANK cell: local fp32 (no autocast), --eval_bs (32, note 211-7)
 items per batch (grouped by n; padded == per item to 5.7e-15 in fp64, scratch/gate_s211/maskk.json), the §170 test set (1,000 items per n, n 1..16), card
 recorded. Parts (each merged into <run>/eval_vb.json as it finishes, so a late crash keeps the earlier parts):
   acc      acc_n2 {n: acc at K' = n + 2}; acc_k {K': {n: acc}} K' 0..16, 24; test_meta {n, height}; carry_likeness (PA: mean gather self-mass on (t-1, j),
@@ -11,7 +11,7 @@ recorded. Parts (each merged into <run>/eval_vb.json as it finishes, so a late c
            (ii) the whole V_t, (iii) N1 only: bank-swap / carry-swap, (iv) = (ii) with V_0 masked for passes > t
   stall    at t = ceil(n / 2) the stored entry is a copy of V_{t-1}; recovery = pooled acc(n 4..8, K' = n + 1, stalled) / pooled acc(n 4..8, K' = n)
   tf       (N3) acc_tf_n3_8: pooled n 3..8 at K' = n + 2 with MCT applied to every bank entry t >= 1
-    python -m boxes.vbank_eval --run boxes/runs_fsq/s211_vb_pa_s1 --device cuda:0 [--parts acc,probe,vswap,stall,tf] [--eval_bs 64]"""
+    python -m boxes.vbank_eval --run boxes/runs_fsq/s211_vb_pa_s1 --device cuda:0 [--parts acc,probe,vswap,stall,tf]   (eval_bs 32 for every reading)"""
 import argparse
 import json
 import math
@@ -124,7 +124,7 @@ def part_acc(m, TE, dev, bs):
                         val_ok += int(hit[r_]); val_n += 1
             off0 = m.bank_off; m.bank_off = True                            # BANK-ABLATE (descriptive): every bank logit -inf, K' = n + 2
             rb = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(B, device=dev)}); m.bank_off = off0
-            abl[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy()
+            abl[ch] = ans(m, rb["coda"][n + 2][1], lens).cpu().numpy(); del r, rb, dec, E    # free this chunk's bank before the next (8 GB cards)
     by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 17)}  # noqa: E731
     by_ta = {k: {"acc": v[0] / v[1], "n": v[1]} for k, v in sorted(sc.items(), key=lambda kv: tuple(int(z) for z in kv[0].split(",")))}
     slopes = []
@@ -162,9 +162,9 @@ def probe_t(m, t, pool, TE, dev, bs, steps=2000, pbs=64, lr=1e-4, seed=21131):
     def fwd(its):
         x, pad, lens = VB.batch_x(its, dev)
         with torch.no_grad():
-            r = m.rollout(x, pad, t)
-        kvs = {i: [(None, None)] + [VB.bank_kv(src, i, r["S"][s]) for s in range(1, t)] for i in VB.CODA}
-        return m.answer_logits(m.coda(t, r["V"][t], kvs, pad, src=src, bp=(beta, beta0, gam)), lens)
+            r = m.rollout(x, pad, t); S_ = r["S"]; Vt = r["V"][t]; del r                      # keep only the versions the coda reads
+        kvs = {i: [(None, None)] + [VB.bank_kv(src, i, S_[s]) for s in range(1, t)] for i in VB.CODA}
+        return m.answer_logits(m.coda(t, Vt, kvs, pad, src=src, bp=(beta, beta0, gam)), lens)
     for st in range(steps):
         its = [pool[j] for j in rng.integers(0, len(pool), pbs)]; y = torch.tensor(N.NUM_IDS[[it["t"] for it in its]], device=dev)
         loss = F.cross_entropy(fwd(its), y); opt.zero_grad(set_to_none=True); loss.backward(); opt.step(); ces.append(float(loss))
@@ -276,9 +276,9 @@ def vswap_class(m, TE, dev, bs, cls):
                         return Vd.clone()
                     return (Vd.clone(), V) if arm == "iii_bank" else (V, Vd.clone())
                 ra = m.rollout(x, pad, K, coda_rows=rows, edit=edit, v0_off_after=t if arm == "iv" else None); A_ = ans(m, ra["coda"][K][1], lens)
-                d_ = res.setdefault(arm, {}).setdefault(str(n), {"follow": 0, "own": 0, "pairs": 0})
+                del ra; d_ = res.setdefault(arm, {}).setdefault(str(n), {"follow": 0, "own": 0, "pairs": 0})
                 d_["follow"] += int(((A_ == yd) & clean).sum()); d_["own"] += int(((A_ == y) & clean).sum()); d_["pairs"] += int(clean.sum())
-            dd = res.setdefault("_all", {}).setdefault(str(n), [0, 0]); dd[0] += int(clean.sum()); dd[1] += B
+            dd = res.setdefault("_all", {}).setdefault(str(n), [0, 0]); dd[0] += int(clean.sum()); dd[1] += B; del rr, rd, Vd
     tot = lambda arm, f: (sum(v[f] for v in res[arm].values()) / max(1, sum(v["pairs"] for v in res[arm].values()))) if arm in res else None  # noqa: E731
     npairs = sum(v["pairs"] for v in res.get("ii", {}).values())
     out = {"n_pairs": npairs, "follow_i": tot("i", "follow"), "own_i": tot("i", "own"), "follow_ii": tot("ii", "follow"), "own_ii": tot("ii", "own"),
@@ -312,6 +312,7 @@ def part_stall(m, TE, dev, bs):
             ri = m.rollout(x, pad, n, coda_rows={n: torch.arange(B, device=dev)}); ok_i += int((ans(m, ri["coda"][n][1], lens) == y).sum())
             r0 = m.rollout(x, pad, 0); st[0] = r0["V"][0]
             rs = m.rollout(x, pad, n + 1, coda_rows={n + 1: torch.arange(B, device=dev)}, edit=edit); ok_s += int((ans(m, rs["coda"][n + 1][1], lens) == y).sum()); cnt += B
+            del ri, rs, r0; st.clear()
         by[str(n)] = {"intact_kn": ok_i / cnt, "stalled_kn1": ok_s / cnt, "stall_t": ts, "items": cnt}
     pi = np.mean([v["intact_kn"] for v in by.values()]); ps = np.mean([v["stalled_kn1"] for v in by.values()])
     return {"stall": {"recovery": float(ps / pi) if pi > 0 else None, "by_n": by, "def": "stored V_t := V_{t-1} at t = ceil(n/2); stalled acc at K' = n + 1 / intact acc at K' = n, pooled n 4..8"}}
@@ -325,14 +326,14 @@ def part_tf(m, TE, dev, bs):
         for ch in chunks(np.nonzero(Nn == n)[0], bs):
             its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); E = VB.rec_targets(its, n + 2, x.shape[1], dev); y = torch.tensor([it["t"] for it in its], device=dev)
             r = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(len(its), device=dev)}, edit=lambda t, V: m.mct(V, E[:, t], pad)[0])
-            o_ += int((ans(m, r["coda"][n + 2][1], lens) == y).sum()); c_ += len(its)
+            o_ += int((ans(m, r["coda"][n + 2][1], lens) == y).sum()); c_ += len(its); del r
         by[str(n)] = o_ / c_; ok += o_; cnt += c_
     return {"acc_tf_n3_8": ok / cnt, "acc_tf_by_n": by}
 
 
 def main():
     global NUM
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=64)
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32)
     ap.add_argument("--parts", default="acc,probe,vswap,stall,tf"); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--probe_ts", default=",".join(map(str, T_SET))); ap.add_argument("--probe_steps", type=int, default=2000, help="smokes only")
     a = ap.parse_args(); dev = a.device; NUM = torch.tensor(N.NUM_IDS, device=dev); torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = load(a.run, dev); TE = N.test_set(a.per_n); fo = os.path.join(a.run, "eval_vb.json")
