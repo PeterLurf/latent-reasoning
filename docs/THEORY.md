@@ -17432,6 +17432,23 @@ Egress was about $0.34, so the family total is about $4.1.
   - N1's CARRY-trained blocks handle T to 55 on the same items, with a residual slope (about 0.72 at T 47–49; Audit).
   - 212-6's gather-query hypothesis is falsified for both cells. The caveat that GS's input is off-distribution for a PA-trained core still applies; mod31 is the direct addressing test and is null.
 
+**Note 212-9 (2026-10-16 13:11 EDT; N1's Stage 0 readings, completing 212-7; eval_rs.json and eval_vbhalt.json on the 2070, fp32, eval_bs 32).**
+
+**RS: HISTORY-KEYED.**
+- Pooled n 11–16, r ∈ {4, 6}: 1,740 items, intact 0.171 against restart 1.000, Δ = **+0.83**. The n 12 / r 4 cell (6 items) is excluded per 212-2; the control's max |Δ| is 0.001.
+- **RESTART is 1.000 in every readable cell.** Whenever N1 decodes its state exactly, running that state fresh always finishes correctly, while its own continuation fails.
+- LONG-STEP(12..16) = 0.988 / 0.961 / 0.913 / 0.831 / 0.625. That reads HEAD-LIMITED by score_s212's pre-committed form (the minimum over m 12..16 < 0.95), as graceful decay rather than the PA cells' cliff. N1 is not head-limited at m 12–13.
+- **Reading:** N1's step can do the work at depth, and its trajectory (the carried state) breaks it beyond about 8 passes.
+
+**CONTENT-HALT.**
+- n 1–8: exact 1.000, G-PROG 0, acc_halt 1.000. **STALL-SHIFT 1.000** (5,000 qualifying).
+- So HALT-EXACT, NOT-PREMATURE and STALL-SHIFT are all met. N1 is the cleanest in-range halter: HALT-IN-RANGE.
+- **DEPTH-TIMING fails** (n 9: exact 0.340, G-PROG 0.653, halt_at_8 0.375; n 10: 0.006). CLOCK-HOLD and EDGE-COLLAPSE are not met (halt_at_8 below 0.5).
+
+**Cross-cell summary of Stage 0's depth findings:**
+- N1 (CARRY) is HISTORY-KEYED with a robust fresh step.
+- N2 / N3 (PA) are HISTORY-unreadable (no decodes past n 11) with a length-keyed step, and NOT-GATHER.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
