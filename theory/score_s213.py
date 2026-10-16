@@ -128,7 +128,8 @@ def cell(tag, d):
         c2 = c2a = lfree = dg = False
     o.update(dead=dead, no_entry=noent, entry_answer_ce_05=a["entry_answer_ce_05"], VB_C1=a["VB_C1"], NO_KNEE=nk, LFK=lf, LENGTH_FREE=lfree, COUNT=count,
              STEP_GENERAL=sg, STEP_GENERAL_mean_12_16=sg_mean, DEPTH_9_12=a["DEPTH_9_12"], DEPTH_GENERAL=dg, RS=ss, SELF_SIMILAR=selfsim, HIST=hr,
-             D3_C2=c2, D3_C2_ATTN=c2a)
+             D3_C2=c2, D3_C2_ATTN=c2a,
+             HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None)   # 213-17 add-on: descriptive (C5), not part of D3-C2
     o["label"] = ("FAILURE (dead; rule b)" if dead else "NO-ENTRY (rule b)" if noent else
                   "D3-C2-ATTN (C2 in a pass-global attention memory)" if c2a else
                   "D3-C2 (C2 with the memory in form only)" if c2 else
