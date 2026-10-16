@@ -17449,6 +17449,22 @@ Egress was about $0.34, so the family total is about $4.1.
 - N1 (CARRY) is HISTORY-KEYED with a robust fresh step.
 - N2 / N3 (PA) are HISTORY-unreadable (no decodes past n 11) with a length-keyed step, and NOT-GATHER.
 
+**Note 212-10 (2026-10-16 13:19 EDT; a correction to 212-6's GATHER-SPLICE design, found by the D3 inventor and verified by Theory on N2's eval_gsplice.json; it qualifies 212-7 §3 and 212-8).**
+
+**Two design flaws.**
+- **(1) The pre-stated control was vacuous.** It used T ≤ 27, m ≤ 8, and those items have no slot ≥ J0 = 29, so the GS arm is *identical* to intact there. Verified: 0 control cells differ.
+  - The informative in-support check would have been m ≤ 8 at T 29–31. There GS against intact is m 7 / T 29: 1.000 vs 1.000; m 8 / T 29: 0.984 vs 0.984; m 8 / T 31: 0.714 vs 0.743.
+- **(2) J0 = 29 lies to the right of N2's failure locus.** The D3 inventor's per-slot analysis puts the median first wrong slot at 25–27 for every T ≥ 29. Splicing only j ≥ 29 cannot repair errors at slots 25–28.
+
+**Consequence.** **NOT-GATHER (N2, N3) does not exclude a gather contribution to the cliff.** The direct mod31 query test (null) stands as weaker evidence, and "the cliff sits in the PA-trained blocks, not the gather" (212-7 / 212-8) is downgraded to **[CONJECTURE]**.
+
+**The D3 inventor's mechanistic account** (descriptive, not yet reproduced):
+- PA training moved the learned position table about 7× more than CARRY training did.
+- Rows ≥ 33 changed only by weight decay, leaving a seam at the trained edge.
+- N2's gather mis-addresses at j ≥ 33.
+
+D3 does not depend on the gather / no-gather distinction.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
