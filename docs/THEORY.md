@@ -17465,6 +17465,35 @@ Egress was about $0.34, so the family total is about $4.1.
 
 D3 does not depend on the gather / no-gather distinction.
 
+**Note 212-11 (2026-10-16 13:36 EDT; PRE-STATED before running; two $0 eval-only tests of the D3 diagnosis, independent of D3's design and of its red team; within Audit's remit (Audit, 13:35); on the fresh single-step grid of eval_steppos B (same items and seeds), local fp32 at eval_bs 32; models N2 / N3, plus N1 as reference).**
+
+**Shared sets** (fixing 212-10's flaw):
+- **Exposed control:** m ≤ 8 at T 25–29, in support. N2's intact is ≥ 0.98 there, and every item has slots ≥ 24, so the intervention touches it.
+- **Target:** T ∈ {31, 33}, m 8–10, as in 212-6.
+
+**A. GATHER-SPLICE-2** (N2, N3).
+- The 212-6 splice with **J0 = 24**, left of N2's median first wrong slot (25–27): the gather output at slots j ≥ 24 is replaced by N(V_{t−1}[j]).
+- **GATHER-BOTTLENECK:** target exact rises by ≥ 0.30 with the exposed control ≥ intact − 0.02.
+- **NOT-GATHER:** the rise is < 0.10, control intact.
+- **UNREADABLE:** the exposed control drops by more than 0.02 (the splice is off-distribution for the PA-trained core).
+
+**B. WPE-RESTORE** (N2, N3; N1 descriptive). It tests D3's seam claim directly. The learned position table's rows are replaced by pretrained GPT-2 rows at evaluation:
+- **(b1)** rows ≥ 24 only;
+- **(b2)** every row.
+
+Readings:
+- **SEAM-CAUSAL:** (b1) raises target exact by ≥ 0.30 with the exposed control ≥ intact − 0.02.
+- **NOT-SEAM:** the (b1) rise is < 0.10, control intact.
+- **UNREADABLE:** the (b1) control drops by more than 0.02.
+- (b2) and N1 are reported beside, descriptive.
+
+**Output:** eval_d3diag.json:
+```
+{"gs24" | "wpe_b1" | "wpe_b2" | "intact": {"fresh_m_T": {"m_T": {n_steps, exact}}},
+ "summary": {arm: {"target": [exact, n], "control_exposed": [exact, n]}}}
+```
+plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
