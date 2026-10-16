@@ -263,7 +263,78 @@
     "GAP_share": null,
     "COMPACTION_TRIGGER": false
    },
-   "LFK": null,
+   "LFK": {
+    "acc_le28": 0.9860228842469043,
+    "acc_29_32": 0.9495547659779796,
+    "acc_ge33": 0.9813117751653937,
+    "events_ge33": 277822,
+    "readable": true,
+    "by_kind": {
+     "all_29_32": 0.9495547659779796,
+     "all_ge33": 0.9813117751653937,
+     "all_le28": 0.9860228842469043,
+     "changed_29_32": 0.8827501534683855,
+     "changed_ge33": 0.7528089887640449,
+     "changed_le28": 0.9895726420381203,
+     "copy_29_32": 0.9503463690458569,
+     "copy_ge33": 0.981384999261881,
+     "copy_le28": 0.9758612623206823,
+     "void_29_32": 1.0,
+     "void_ge33": null,
+     "void_le28": 0.9999762102443446
+    },
+    "MEETS": true,
+    "fault": {
+     "acc_le28": 0.9894006727791366,
+     "acc_29_32": 0.9738462689172006,
+     "acc_ge33": 0.9509856153436335,
+     "events_ge33": 116374,
+     "readable": true,
+     "by_kind": {
+      "all_29_32": 0.9738462689172006,
+      "all_ge33": 0.9509856153436335,
+      "all_le28": 0.9894006727791366,
+      "changed_29_32": 0.8881889763779528,
+      "changed_ge33": 0.7333333333333333,
+      "changed_le28": 0.9930833428604093,
+      "copy_29_32": 0.9745226932793706,
+      "copy_ge33": 0.9510136732010416,
+      "copy_le28": 0.9828482271131307,
+      "void_29_32": 1.0,
+      "void_ge33": null,
+      "void_le28": 1.0
+     },
+     "MEETS": false,
+     "paired": {
+      "le28": {
+       "events_both": 801720,
+       "intact_correct": 793223,
+       "fault_correct": 793222,
+       "diff": -1.2473182657286834e-06
+      },
+      "29_32": {
+       "events_both": 80214,
+       "intact_correct": 78117,
+       "fault_correct": 78116,
+       "diff": -1.2466651706684619e-05
+      },
+      "ge33": {
+       "events_both": 116362,
+       "intact_correct": 115698,
+       "fault_correct": 110658,
+       "diff": -0.04331310909059659
+      }
+     },
+     "realised": {
+      "ge33": {
+       "faults": 5775,
+       "faults_class_differs": 5011
+      }
+     }
+    },
+    "SENSITIVE": true,
+    "fault_low_realised": false
+   },
    "STABHIST": null
   },
   "N3": {
@@ -464,8 +535,8 @@
   },
   "D3": {
    "ADD_VOIDMASK": false,
-   "LFK_DISCRIMINATES": null,
-   "LFK_SENSITIVE": null,
+   "LFK_DISCRIMINATES": true,
+   "LFK_SENSITIVE": true,
    "OWN_HISTORY_STABILISES": false
   }
  },

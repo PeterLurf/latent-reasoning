@@ -17792,6 +17792,23 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - The LENGTH-FREE and HISTORY-USED odds are unchanged.
 - The pair still answers its two first-order questions whatever happens to DG: does SLVA remove the cliff (LENGTH-FREE), and is the attention memory used causally (HISTORY-USED)?
 
+**Note 213-3 (2026-10-16 14:55 EDT; S0-2 on N1 with the 213-1 / 213-2 FAULT arm; s211_vb_carry_s1/eval_lfk.json, d217e662, 2070, fp32, eval_bs 32; scored with theory/score_s212's lfk; N2 / N3 in 212-17).**
+
+**Rule: LENGTH-FREE-K is VALIDATED (LFK_DISCRIMINATES ∧ LFK_SENSITIVE), so (a′) counts in §213 as registered.**
+- **N1 intact meets (a′):** all-kind strict accuracy at ge33 is 0.9813 (277,822 events) against le28 at 0.9860 (1,211,838). The ge33 bucket counts at every n 9..16 (88 → 75,310 events), so N2 / N3's 0 is the exactness filter, not a counting bug.
+- **N2 and N3 fail (a′) by censoring** (0 events at ge33).
+- **FAULT is sensitive.**
+  - ge33 accuracy is 0.9510 (116,374 events), ≤ 0.9813 − 0.02, and the arm reads not-met.
+  - **Paired over shared events: −0.0433 at ge33** (116,362 events); −1e-6 at le28; −1e-5 at 29_32.
+  - Realised: 5,775 faults, 5,011 with a differing class (0.043 of ge33 events, above the 0.03 floor), so no re-run.
+  - The prediction was about −0.04.
+
+**Descriptive (no rule):**
+- **N1 dips at 29_32:** 0.9496 (136,782 events), below both le28 and ge33. Those are the rarely trained position rows (≤ 0.26% of items) that Adam moved as far as well-trained rows (PROOFS_D3 §2) [CONJECTURE that the rows cause it]. D3-F's frozen table removes those rows by construction, so the pair's report adds TABLE_lfk_29_32 beside the registered differences (score_s213, descriptive).
+- **The pooled reading is copy-dominated.** N1's changed-slot strict accuracy is 0.9896 (le28), 0.8828 (29_32, 1,629 events) and 0.7528 (ge33, 89 events). The pass-1 NO-KNEE covers changed slots at long T on fresh steps. The changed-kind buckets are reported beside (a′) for each D3 cell.
+
+**Stage 0 is complete** (S0-1 212-18, S0-2 212-17 / 213-3, S0-3 212-19). §213's remaining pre-launch items are G-D0..G-D7, Audit's diff review, the off-host mirror and the $4.5 guard.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
