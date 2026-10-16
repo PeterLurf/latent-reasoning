@@ -17309,6 +17309,11 @@ Egress was about $0.34, so the family total is about $4.1.
 - **EVAL-HISTORY-GAIN:** any arm with a mean gain ≥ 0.10 over n 9–12 and ≥ −0.03 over n ≤ 8.
 - **CLOCK-FOREIGN:** the mean over o and n 4..12 of (insert − replace) ≤ −0.10.
 
+**Note 212-2 (2026-10-16 12:39 EDT; before any Stage 0 output; operational fixes to theory/score_s212.py; fixtures re-run, 7 cases; no rule change).**
+1. **PF grid key.** There are two remainder sizes, r ∈ {2, 3}, so Experiments writes "k_s_r" with explicit k / s / r fields, and the scorer now reads those fields. The construction is D §1.2: Q is a size-r item whose render starts with a number v; v is replaced by a random k-operator subtree of value v; the state at step k is asserted to equal render(Q); s is the subtree's span; 20k draws per r, k ~ U{1..12}. S(k, s) = P(correct at K′ = k + r + 2 | R decodes Q exactly at k). S0[r] = fresh Q at K′ = r + 2.
+2. **RS thin cells.** Per 211-15's "cells with < 100 items are UNREADABLE", cells under 100 conditioned items are **excluded from the pooled reading, not fatal to it**. The scorer had made any thin cell void the whole RS. The pooled label uses the readable cells and reports `thin_cells`. RS is unreadable if the control or every pooled cell is thin.
+   - Experiments' smoke shows N2's decodes at n 12, t 8 are mostly unparseable, so some n ≥ 11 cells may be thin.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
