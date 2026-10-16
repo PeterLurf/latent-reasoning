@@ -36,7 +36,24 @@ while [ ! -f scratch/fill_s209b.stop ]; do
       log "b$n: HOSTPROBE OK ($pv s/step) on $h:$p - ADMIT: projection \$$proj (ratio $RATIO, $STEPS steps, \$$dph/h) <= \$$CAP"
       sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; log "b$n: done (admitted)"; exit 0
     fi
-    log "b$n: HOSTPROBE OK ($pv s/step) but projection \$$proj > \$$CAP - refusing $h:$p (instance $iid)"
+    log "b$n: HOSTPROBE OK ($pv s/step) but projection \$$proj > \$$CAP on ratio $RATIO"
+    if [ ! -s logs/s209b_ratio.txt ]; then                               # Audit: the 3090 ratio may not transfer -> measure the real run's s/step at step >= 200 first
+      sps=""; for i in $(seq 1 60); do
+        sps=$(timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$p" "root@$h" "grep -o '\"step\": [0-9]*, \"loss\": [^,]*, \"sec\": [0-9]*' /workspace/Latent/boxes/runs_fsq/gsm_codi_20ep_s1/log.jsonl | tail -n 1" 2>/dev/null \
+              | python -c "import re,sys; m_=re.search(r'\"step\": (\d+), \"loss\": [^,]*, \"sec\": (\d+)', sys.stdin.read()); print(int(m_.group(2)) / int(m_.group(1)) if m_ and int(m_.group(1)) >= 200 else '')")
+        [ -n "$sps" ] && break; sleep 60
+      done
+      if [ -n "$sps" ]; then
+        RATIO=$(python -c "print(round($sps / $pv, 3))"); echo "$(date '+%F %T') A100 probe $pv s/step, train $sps s/step at step >= 200 -> ratio $RATIO ($h:$p)" >> logs/s209b_ratio.txt
+        proj=$(python -c "print(round(($sps * $STEPS / 3600 + 0.45) * $dph, 2))"); log "b$n: measured train $sps s/step (ratio $RATIO) -> projection \$$proj"
+        if python -c "import sys; sys.exit(0 if $proj <= $CAP else 1)"; then
+          log "b$n: ADMIT on the measured rate: projection \$$proj <= \$$CAP"; sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; log "b$n: done (admitted)"; exit 0
+        fi
+      else
+        log "b$n: no step-200 record within 60 min - treating as refused"
+      fi
+    fi
+    log "b$n: refusing $h:$p (instance $iid); projection \$$proj > \$$CAP - tell Audit before the $BADMAX-refusal hold"
   else
     log "b$n: HOSTPROBE ${res:-unknown after 40 min} on $h:$p - refusing (instance $iid)"
   fi
