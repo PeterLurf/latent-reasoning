@@ -1,0 +1,579 @@
+{
+ "cells": {
+  "3_2": {
+   "n": 3,
+   "r": 2,
+   "t": 1,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "4_2": {
+   "n": 4,
+   "r": 2,
+   "t": 2,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "5_2": {
+   "n": 5,
+   "r": 2,
+   "t": 3,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "5_4": {
+   "n": 5,
+   "r": 4,
+   "t": 1,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "6_2": {
+   "n": 6,
+   "r": 2,
+   "t": 4,
+   "exact_rate": 1.0,
+   "n_items": 1000,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "6_4": {
+   "n": 6,
+   "r": 4,
+   "t": 2,
+   "exact_rate": 0.998,
+   "n_items": 998,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 1.0
+  },
+  "7_2": {
+   "n": 7,
+   "r": 2,
+   "t": 5,
+   "exact_rate": 0.992,
+   "n_items": 992,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.998
+  },
+  "7_4": {
+   "n": 7,
+   "r": 4,
+   "t": 3,
+   "exact_rate": 0.993,
+   "n_items": 993,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.998
+  },
+  "7_6": {
+   "n": 7,
+   "r": 6,
+   "t": 1,
+   "exact_rate": 0.995,
+   "n_items": 995,
+   "intact": 0.9979899497487437,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.998
+  },
+  "8_2": {
+   "n": 8,
+   "r": 2,
+   "t": 6,
+   "exact_rate": 0.988,
+   "n_items": 988,
+   "intact": 0.9989878542510121,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.997
+  },
+  "8_4": {
+   "n": 8,
+   "r": 4,
+   "t": 4,
+   "exact_rate": 0.99,
+   "n_items": 990,
+   "intact": 0.998989898989899,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.997
+  },
+  "8_6": {
+   "n": 8,
+   "r": 6,
+   "t": 2,
+   "exact_rate": 0.994,
+   "n_items": 994,
+   "intact": 0.9979879275653923,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.997
+  },
+  "9_2": {
+   "n": 9,
+   "r": 2,
+   "t": 7,
+   "exact_rate": 0.952,
+   "n_items": 952,
+   "intact": 0.9978991596638656,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.994
+  },
+  "9_4": {
+   "n": 9,
+   "r": 4,
+   "t": 5,
+   "exact_rate": 0.938,
+   "n_items": 938,
+   "intact": 0.9957356076759062,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.994
+  },
+  "9_6": {
+   "n": 9,
+   "r": 6,
+   "t": 3,
+   "exact_rate": 0.94,
+   "n_items": 940,
+   "intact": 0.9936170212765958,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.994
+  },
+  "9_8": {
+   "n": 9,
+   "r": 8,
+   "t": 1,
+   "exact_rate": 0.8,
+   "n_items": 800,
+   "intact": 0.9925,
+   "restart": 0.99875,
+   "unparse_rate": null,
+   "intact_all": 0.994
+  },
+  "10_2": {
+   "n": 10,
+   "r": 2,
+   "t": 8,
+   "exact_rate": 0.538,
+   "n_items": 538,
+   "intact": 0.9739776951672863,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.915
+  },
+  "10_4": {
+   "n": 10,
+   "r": 4,
+   "t": 6,
+   "exact_rate": 0.201,
+   "n_items": 201,
+   "intact": 0.9502487562189055,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.915
+  },
+  "10_6": {
+   "n": 10,
+   "r": 6,
+   "t": 4,
+   "exact_rate": 0.27,
+   "n_items": 270,
+   "intact": 0.9407407407407408,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.915
+  },
+  "10_8": {
+   "n": 10,
+   "r": 8,
+   "t": 2,
+   "exact_rate": 0.036,
+   "n_items": 36,
+   "intact": 0.8333333333333334,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.915
+  },
+  "11_2": {
+   "n": 11,
+   "r": 2,
+   "t": 9,
+   "exact_rate": 0.024,
+   "n_items": 24,
+   "intact": 0.6666666666666666,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.601
+  },
+  "11_4": {
+   "n": 11,
+   "r": 4,
+   "t": 7,
+   "exact_rate": 0.003,
+   "n_items": 3,
+   "intact": 0.6666666666666666,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.601
+  },
+  "11_6": {
+   "n": 11,
+   "r": 6,
+   "t": 5,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.601
+  },
+  "11_8": {
+   "n": 11,
+   "r": 8,
+   "t": 3,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.601
+  },
+  "12_2": {
+   "n": 12,
+   "r": 2,
+   "t": 10,
+   "exact_rate": 0.002,
+   "n_items": 2,
+   "intact": 0.5,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.242
+  },
+  "12_4": {
+   "n": 12,
+   "r": 4,
+   "t": 8,
+   "exact_rate": 0.009,
+   "n_items": 9,
+   "intact": 0.5555555555555556,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.242
+  },
+  "12_6": {
+   "n": 12,
+   "r": 6,
+   "t": 6,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.242
+  },
+  "12_8": {
+   "n": 12,
+   "r": 8,
+   "t": 4,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.242
+  },
+  "13_2": {
+   "n": 13,
+   "r": 2,
+   "t": 11,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "13_4": {
+   "n": 13,
+   "r": 4,
+   "t": 9,
+   "exact_rate": 0.019,
+   "n_items": 19,
+   "intact": 0.10526315789473684,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "13_6": {
+   "n": 13,
+   "r": 6,
+   "t": 7,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "13_8": {
+   "n": 13,
+   "r": 8,
+   "t": 5,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.142
+  },
+  "14_2": {
+   "n": 14,
+   "r": 2,
+   "t": 12,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.163
+  },
+  "14_4": {
+   "n": 14,
+   "r": 4,
+   "t": 10,
+   "exact_rate": 0.002,
+   "n_items": 2,
+   "intact": 0.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.163
+  },
+  "14_6": {
+   "n": 14,
+   "r": 6,
+   "t": 8,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.163
+  },
+  "14_8": {
+   "n": 14,
+   "r": 8,
+   "t": 6,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.163
+  },
+  "15_2": {
+   "n": 15,
+   "r": 2,
+   "t": 13,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.135
+  },
+  "15_4": {
+   "n": 15,
+   "r": 4,
+   "t": 11,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.135
+  },
+  "15_6": {
+   "n": 15,
+   "r": 6,
+   "t": 9,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.135
+  },
+  "15_8": {
+   "n": 15,
+   "r": 8,
+   "t": 7,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.135
+  },
+  "16_2": {
+   "n": 16,
+   "r": 2,
+   "t": 14,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.122
+  },
+  "16_4": {
+   "n": 16,
+   "r": 4,
+   "t": 12,
+   "exact_rate": 0.001,
+   "n_items": 1,
+   "intact": 1.0,
+   "restart": 1.0,
+   "unparse_rate": null,
+   "intact_all": 0.122
+  },
+  "16_6": {
+   "n": 16,
+   "r": 6,
+   "t": 10,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.122
+  },
+  "16_8": {
+   "n": 16,
+   "r": 8,
+   "t": 8,
+   "exact_rate": 0.0,
+   "n_items": 0,
+   "intact": null,
+   "restart": null,
+   "unparse_rate": null,
+   "intact_all": 0.122
+  }
+ },
+ "long_step": {
+  "1": {
+   "n_steps": 8780,
+   "exact": 1.0,
+   "n_exact": 8780
+  },
+  "2": {
+   "n_steps": 7780,
+   "exact": 1.0,
+   "n_exact": 7780
+  },
+  "3": {
+   "n_steps": 6780,
+   "exact": 1.0,
+   "n_exact": 6780
+  },
+  "4": {
+   "n_steps": 5780,
+   "exact": 1.0,
+   "n_exact": 5780
+  },
+  "5": {
+   "n_steps": 4783,
+   "exact": 0.9993727785908426,
+   "n_exact": 4780
+  },
+  "6": {
+   "n_steps": 3788,
+   "exact": 0.9986800422386484,
+   "n_exact": 3783
+  },
+  "7": {
+   "n_steps": 2802,
+   "exact": 0.9950035688793719,
+   "n_exact": 2788
+  },
+  "8": {
+   "n_steps": 1827,
+   "exact": 0.9863163656267104,
+   "n_exact": 1802
+  },
+  "9": {
+   "n_steps": 1028,
+   "exact": 0.8044747081712063,
+   "n_exact": 827
+  },
+  "10": {
+   "n_steps": 1000,
+   "exact": 0.028,
+   "n_exact": 28
+  },
+  "11": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "12": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "13": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "14": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "15": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  },
+  "16": {
+   "n_steps": 1000,
+   "exact": 0.0,
+   "n_exact": 0
+  }
+ },
+ "def": "D \u00a71.2 RS on INJECT: decode = aux_greedy at pass t, exact = ids(cot_steps[t]) + EOT; intact at K' = n + 2; restart = the item reduced t times run fresh at K' = r + 2; unparse_rate is not defined for a greedy token decode (null); exact_rate = exact / all items of n",
+ "run": "s193_rmswin_s1",
+ "card": "NVIDIA GeForce RTX 4060",
+ "bs": 250,
+ "eval_bs": 250,
+ "dtype": "bf16 autocast trunk, fp32 memory branch",
+ "fast_add": true,
+ "aux_nopass": false,
+ "sec": 513
+}
