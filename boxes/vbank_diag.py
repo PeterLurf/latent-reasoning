@@ -600,21 +600,40 @@ def part_d3sel(m, TE, dev, bs):
             "gapped_prelude_maxdiff_empty_mask": pre_diff, "def": part_d3sel.__doc__}
 
 
+FAULT_P, FAULT_SEED, FAULT_J = 0.05, 21302, 33
+
+
 @torch.no_grad()
-def part_lfk(m, TE, dev, bs):
-    """note 212-15 S0-2 LENGTH-FREE-K reference (D3_v1 §5 (a')): §170 test items n 9-16, the intact rollout (K' = n); every pass t in 2..n whose input
-    V_{t-1} decodes STRICT exact (argmax R == E_{t-1} at every real slot, VOIDs in place); per real slot j (EOT and ' =' included) strict R(V_t[j]) == E_t[j].
-    kind: changed (E_t[j] != E_{t-1}[j], consumption included) / copy (unchanged, non-VOID) / void (unchanged VOID) / all; bucket on the slot index j:
-    le28 (j <= 28) / 29_32 / ge33. step {n: events, strict_exact, voiddrop_exact (rerender equality)}; first_wrong {T bucket of the item length T
-    (tokens incl. EOT and ' ='): [first wrong slot j]} over events that are not strict exact."""
+def _lfk_core(m, TE, dev, bs, fault, p_=FAULT_P, seed=FAULT_SEED):
+    """one LENGTH-FREE-K pass over n 9-16 (see part_lfk); fault: the 213-1 FAULT arm via vbank input_edit (p_, seed; False = intact).
+    -> (result dict, per-event {(item, t): {bucket: (all-kind slot-events, strict correct)}} for the 213-2 pairing)."""
     Nn = np.array([it["n"] for it in TE]); KINDS = ("copy", "changed", "void", "all"); BK = (("le28", 0, 28), ("29_32", 29, 32), ("ge33", 33, 10 ** 6))
-    slot = {"%s_%s" % (k, b[0]): [0, 0] for k in KINDS for b in BK}; step = {}; fw = {b[0]: [] for b in BK}
+    slot = {"%s_%s" % (k, b[0]): [0, 0] for k in KINDS for b in BK}; step = {}; fw = {b[0]: [] for b in BK}; ge33_by_n = {}; nf = [0, 0]
     bname = lambda v: "le28" if v <= 28 else "29_32" if v <= 32 else "ge33"  # noqa: E731
+    rng = np.random.default_rng(seed) if fault else None; ev = {}; rz = [0, 0]
     for n in range(9, 17):
         st = step.setdefault(str(n), {"events": 0, "strict_exact": 0, "voiddrop_exact": 0})
         for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
             its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B, T = x.shape; E = VB.rec_targets(its, n, T, dev)
-            r_ = m.rollout(x, pad, n); dec = [m.rec_logits(r_["V"][t]).argmax(-1) for t in range(n + 1)]; del r_
+            if fault:                                                       # draws per (item, t, j) in a fixed order: items in test-set order, t 2..n, j FAULT_J..L-1
+                fm = torch.zeros(n + 1, B, T, dtype=torch.bool)
+                for i_ in range(B):
+                    for t in range(2, n + 1):
+                        for j_ in range(FAULT_J, int(lens[i_])):
+                            fm[t, i_, j_] = bool(rng.random() < p_)
+                fm = fm.to(dev); nf[0] += int(fm.sum()); nf[1] += sum(max(0, int(L_) - FAULT_J) for L_ in lens) * (n - 1)
+
+                def fe(t, U, fm=fm):
+                    if t < 2 or not bool(fm[t].any()):
+                        return U
+                    sh = torch.cat([U[:, :1], U[:, :-1]], 1)                # sh[:, j] = U[:, j - 1]
+                    return torch.where(fm[t][..., None], sh, U)
+                m.input_edit = fe
+            try:
+                r_ = m.rollout(x, pad, n)
+            finally:
+                m.input_edit = None
+            dec = [m.rec_logits(r_["V"][t]).argmax(-1) for t in range(n + 1)]; del r_
             col = torch.arange(T, device=dev)[None, :].expand(B, T)
             for t in range(2, n + 1):
                 ok_in = ((dec[t - 1] == E[:, t - 1]) | ~pad).all(1)
@@ -625,14 +644,67 @@ def part_lfk(m, TE, dev, bs):
                 for k in KINDS:
                     for b, lo, hi in BK:
                         sel = base & km[k] & (col >= lo) & (col <= hi); c_ = slot["%s_%s" % (k, b)]; c_[0] += int(sel.sum()); c_[1] += int((sel & cor).sum())
+                ge33_by_n[str(n)] = ge33_by_n.get(str(n), 0) + int((base & (col >= 33)).sum())
+                for b, lo, hi in BK:                                        # 213-2: per-event all-kind counts for the pairing
+                    sel = base & (col >= lo) & (col <= hi); ne = sel.sum(1).cpu().numpy(); nc = (sel & cor).sum(1).cpu().numpy()
+                    for i in np.nonzero(ne)[0]:
+                        ev.setdefault((int(ch[i]), t), {})[b] = (int(ne[i]), int(nc[i]))
+                if fault:                                                   # 213-2 realised: faulted ge33 slot-events; class(j-1) != class(j) in E_{t-1}
+                    ff = base & fm[t] & (col >= 33); prev = torch.cat([Ep[:, :1], Ep[:, :-1]], 1)
+                    rz[0] += int(ff.sum()); rz[1] += int((ff & (prev != Ep)).sum())
                 strict = (cor | ~pad).all(1); dc = dec[t].cpu().numpy(); ec = Et.cpu().numpy(); okc = ok_in.cpu().numpy(); sc = strict.cpu().numpy()
                 for i in np.nonzero(okc)[0]:
                     L = int(lens[i]); st["events"] += 1; st["strict_exact"] += int(sc[i]); st["voiddrop_exact"] += int(VB.rerender(list(dc[i, :L])) == VB.rerender(list(ec[i, :L])))
                     if not sc[i]:
                         fw[bname(L)].append(int(np.nonzero(dc[i, :L] != ec[i, :L])[0][0]))
-        print("LFK n", n, st, flush=True)
-    return {"slot": {k: {"events": v[0], "strict_correct": v[1], "acc": v[1] / v[0] if v[0] else None} for k, v in slot.items()}, "step": step, "first_wrong": fw,
-            "def": part_lfk.__doc__}
+        print("LFK", "fault" if fault else "intact", "n", n, st, flush=True)
+    out = {"slot": {k: {"events": v[0], "strict_correct": v[1], "acc": v[1] / v[0] if v[0] else None} for k, v in slot.items()}, "step": step, "first_wrong": fw,
+           "ge33_events_by_n": ge33_by_n}
+    if fault:
+        out["fault_draws"] = {"faulted": nf[0], "eligible": nf[1]}
+        out["realised"] = {"ge33": {"faults": rz[0], "faults_class_differs": rz[1]}}
+    return out, ev
+
+
+def _lfk_paired(ev_i, ev_f):
+    """213-2: over (item, t) events counted in both arms, per bucket: slot-events, intact / fault strict correct, diff = (fault - intact) / events_both."""
+    out = {}
+    for b in ("le28", "29_32", "ge33"):
+        ks = [k for k in ev_i if k in ev_f and b in ev_i[k] and b in ev_f[k]]
+        n_ = sum(ev_i[k][b][0] for k in ks); ci = sum(ev_i[k][b][1] for k in ks); cf = sum(ev_f[k][b][1] for k in ks)
+        out[b] = {"events_both": n_, "intact_correct": ci, "fault_correct": cf, "diff": (cf - ci) / n_ if n_ else None}
+    return out
+
+
+def _lfk_sensitive(intact, fault):
+    """213-1 LFK_SENSITIVE: FAULT readable (>= 500 ge33 slot-events), all-kind ge33 strict acc <= intact's - 0.02, and FAULT reads not-met (ge33 < le28 - 0.01)."""
+    fs, is_ = fault["slot"], intact["slot"]
+    if fs["all_ge33"]["events"] < 500 or is_["all_ge33"]["acc"] is None:
+        return False
+    return fs["all_ge33"]["acc"] <= is_["all_ge33"]["acc"] - 0.02 and fs["all_ge33"]["acc"] < fs["all_le28"]["acc"] - 0.01
+
+
+@torch.no_grad()
+def part_lfk(m, TE, dev, bs):
+    """note 212-15 S0-2 LENGTH-FREE-K reference (D3_v1 §5 (a')): §170 test items n 9-16, the intact rollout (K' = n); every pass t in 2..n whose input
+    V_{t-1} decodes STRICT exact (argmax R == E_{t-1} at every real slot, VOIDs in place); per real slot j (EOT and ' =' included) strict R(V_t[j]) == E_t[j].
+    kind: changed (E_t[j] != E_{t-1}[j], consumption included) / copy (unchanged, non-VOID) / void (unchanged VOID) / all; bucket on the slot index j:
+    le28 (j <= 28) / 29_32 / ge33. step {n: events, strict_exact, voiddrop_exact (rerender equality)}; first_wrong {T bucket of the item length T
+    (tokens incl. EOT and ' ='): [first wrong slot j]} over events that are not strict exact; ge33_events_by_n = slot-events at j >= 33 per n.
+    "fault" (note 213-1, the sensitivity control): the same reading with, at every pass t >= 2, each real slot j >= 33 (' =' included) independently
+    with p 0.05 (np rng 21302, per (item, t, j): items in test-set order, t 2..n, j ascending) given slot j - 1's PASS INPUT (vbank input_edit:
+    U_t[j] := U_t[j-1], after the carry's N(.) / the gather); stored bank entries untouched. 213-2: fault.paired {bucket: events_both, intact_correct,
+    fault_correct, diff} over (item, t) events counted in both arms; fault.realised.ge33 {faults (faulted ge33 slot-events), faults_class_differs (E_{t-1}
+    class at j - 1 != at j)}; fault.sensitive (LFK_SENSITIVE as computed here; the scorer decides). If not sensitive and faults_class_differs < 0.03 x the
+    ge33 slot-events: "fault2" = the same at p 0.10, rng 21303."""
+    out, ev_i = _lfk_core(m, TE, dev, bs, False); f_, ev_f = _lfk_core(m, TE, dev, bs, True); f_["paired"] = _lfk_paired(ev_i, ev_f); out["fault"] = f_
+    sens = _lfk_sensitive(out, f_); f_["sensitive"] = sens
+    if not sens and f_["realised"]["ge33"]["faults_class_differs"] < 0.03 * f_["slot"]["all_ge33"]["events"]:   # 213-2 branch: once at p 0.10, rng 21303
+        f2, ev_2 = _lfk_core(m, TE, dev, bs, True, 0.10, 21303); f2["paired"] = _lfk_paired(ev_i, ev_2); f2["sensitive"] = _lfk_sensitive(out, f2); out["fault2"] = f2
+    out["fault_def"] = ("213-1 FAULT: pass input U_t[j] := U_t[j-1] for real slots j >= %d (incl. ' ='), p %.2f per (item, t >= 2, j), np rng %d in test-set item "
+                        "order, t ascending, j ascending; bank entries untouched; same items / reading as the top level" % (FAULT_J, FAULT_P, FAULT_SEED))
+    out["def"] = part_lfk.__doc__
+    return out
 
 
 @torch.no_grad()
