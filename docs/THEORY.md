@@ -297,6 +297,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
+| 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on an A100; REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 
 ## Live sections
 
@@ -16444,6 +16445,97 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
   - m ≤ 2 (n 422): CODI 0.313 vs A 0.225, +0.088 (z 3.9); C 0.493, so r ≈ 0.33.
   - m ≥ 3 (n 879): CODI 0.132 vs A 0.109, +0.023 (z 1.9); C 0.242, so r ≈ 0.17.
 * **Reading:** CODI's design mostly helps on chains of 1–2 steps. On deep items it is close to A, while text is 1.8× CODI there (2.2× A). The multi-step shortfall is common to both latent designs at this budget.
+
+## 210. CODI-BUDGET-20: does budget close the latent gap? §209's step 2, CODI at 20 epochs (USER APPROVED 2026-10-15 20:15 EDT, "approve", typed in Audit's session and relayed verbatim, the time read from Audit's clock; one cell; A100 SXM4; cap $12; pre-registered 2026-10-15 20:17 EDT, before any §210 code or run)
+
+**Question:**
+* §209 read MIXED: CODI at 4 epochs scored 0.189, against our latent arm A 0.147 and text CoT C 0.321.
+* CODI's paper reports 41.6 at 20 epochs with γ 2 (Table A5; LIT_WARMCOT_CHECK_2026-10-14).
+* **Does the same recipe, in our pipeline, reach that level with 5× the budget?** And does it close the gap to text CoT at matched exposure?
+
+**Design (one change against gsm_codi_4ep_s1: the budget):**
+* **Cell `gsm_codi_20ep_s1`:** boxes/codi_port.py with gsm_codi_4ep_s1's arguments except --epochs 20.
+  - γ 2, LoRA r 128 / α 32, AdamW at lr 3e-3, cosine with 3% warm-up, effective bs 128, CODI's filters, 6 latents, smooth-L1, seed 1, the final checkpoint.
+  - **20.0 epochs by examples seen:** 20 × 382,859 = 7,657,180 examples ≈ 59,822 steps.
+* **Card: A100 SXM4** (the user's choice; speed over the 3090). The micro-batch / accumulation split may change, but the product must stay at 128 (stated in args.json).
+* **Evaluation:** §209's port (theory/codi_probe.py recipe) on the 1,319 test items, then:
+  - the k-latent ablation (0 / 6);
+  - the decoded-text check on both arms (share of outputs with "<<", mean ntok; eval_latent_texts.json);
+  - eval_items.json.
+* **Logging:** valid accuracy every ~0.5 epoch (the port's default, so every epoch is covered); train_gpu in args.json.
+* **Test hygiene:** the test is never used for selection.
+
+**Decision rule. Primary label on CODI20 = acc with 6 latents, T = 0.028:**
+* **REACHES-PUBLISHED:** CODI20 ≥ 0.348.
+  - Budget is the lever: our pipeline reproduces CODI's 20-epoch level, so the 4-epoch shortfall was budget.
+* **STAYS-LOW:** CODI20 ≤ 0.217 (= CODI4 + T).
+  - Five times the budget buys less than T. Budget is not the lever in our pipeline, and the port's training (not its eval, G1) becomes the suspect.
+* **PARTIAL:** otherwise. Budget helps, but our pipeline falls short of the published curve.
+
+**Secondary label, latent vs text at matched exposure:**
+* TXT20 = the 0-latent arm, read as text CoT only if ≥ 50% of its outputs contain "<<". Otherwise TXT20 is UNREAD.
+* **GAP-CLOSES:** CODI20 ≥ TXT20 − T.
+* **GAP-PERSISTS:** CODI20 ≤ TXT20 − 0.068 (half of §209's 4-epoch gap of 0.136 remains).
+* **GAP-NARROWS:** otherwise.
+
+**Derivation of the bars (tagged):**
+* **[DATA]** CODI Table A5, GPT-2, γ 2: 41.6 at 20 epochs, 41.9 at 40. Our port scores the released checkpoint at 42.5 vs 43.7 published (offset −0.012; docs/GSM8K_REPRO.md). §209: CODI4 0.189 on a 3090.
+* **[ASSUMED, A1]** The port's −0.012 eval offset carries over from the released checkpoint to a model trained in our pipeline.
+  - Under faithful reproduction (H_R), CODI20 ≈ 0.416 − 0.012 = **0.404**.
+* **[ASSUMED, A2]** One-seed SD σ = 0.017–0.024. This is the test SE (0.0135 at p 0.4) combined with a seed SD of 0.01–0.02 (the §209 band). GPU-class numerics are not in σ (see Caveats).
+* **[DERIVED]** REACHES bar = 0.404 − 2T = 0.348: about 2.3–3.3 σ below H_R, and 0.048 above a "budget helps halfway" value of 0.30.
+* **[DERIVED]** STAYS-LOW bar = CODI4 + T, the project's standard "no change" margin, applied to the budget.
+* **[DERIVED]** GAP-PERSISTS = half the measured 4-epoch gap. GAP-CLOSES = within T, matching §209's MATCHES convention.
+
+**OC block (rule a; one seed; normal approximation; σ 0.0168 / 0.0242):**
+
+| true CODI20 | P(REACHES) | P(STAYS-LOW) |
+|---|---|---|
+| 0.404 (H_R) | 0.9996 / 0.990 | 0 / 0 |
+| 0.36 | 0.76 / 0.69 | 0 / 0 |
+| 0.30 | 0.002 / 0.024 | 0 / 0.0003 |
+| 0.25 | 0 / 0 | 0.025 / 0.086 |
+| 0.22 | 0 / 0 | 0.43 / 0.45 |
+| 0.189 (no gain) | 0 / 0 | 0.95 / 0.88 |
+
+* **Misread zones:** true values within about 1 σ of 0.348 or 0.217. A result landing there is reported as such.
+
+**Censoring (rule b):**
+* A run that dies is resumed from its latest checkpoint under the same name (the port checkpoints optimizer, schedule and RNG state every 500 steps). That is the same run.
+* A run that cannot reach 20.0 epochs within the cap gives **no label (UNREAD)**. In any later tally it counts as NOT REACHES-PUBLISHED. The last valid point is reported descriptively.
+* A missing valid record is reported as missing.
+
+**Gates (before and at launch):**
+* **(G1′)** On the A100 host, before training, the port re-scores the released zen-E/CODI-gpt2 checkpoint (about 1 min).
+  - It must lie within 0.010 of 0.425. Otherwise stop and report: an eval shift on that GPU class.
+* **(G-TIME)** At step 200: projected total $ (steps × s/step × $/h, plus evals and setup) ≤ $11.5. Otherwise stop and report; no silent truncation.
+  - The projection is about 1.1 s/step (CODI's 36 A100-h for 40 epochs) ≈ 18 h ≈ $8.6 at $0.47 / h. At 1.5 s/step it would be $11.7.
+* No port code change is expected. Any change (e.g. the micro split) gets Audit's diff review, plus a 1-step smoke of the unchanged 3090 path.
+* A running guard at $12.
+
+**Caveats, stated now:**
+* **GPU class:** 3090 (CODI4) vs A100 (CODI20). GPU class shifted outcomes before (fsq120). The STAYS-LOW comparison against CODI4 therefore crosses GPU classes, and G1′ checks only the eval side.
+* **Schedule:** the valid curve's 4-epoch point is NOT comparable to gsm_codi_4ep_s1. At epoch 4 the 20-epoch cosine still has the LR at 0.93 of its peak, while the 4-epoch run had annealed to 0.
+
+**Descriptive, beside the labels:**
+* the valid curve and the first epoch at which valid reaches 0.9 of its final value;
+* CODI20 by depth (m ≤ 2 / m ≥ 3, as in note 209-3), vs CODI4 / A / C;
+* CODI20 − CODI4 with the paired test SE;
+* TXT20 vs C's 4-epoch 0.321.
+
+**Prior (stated before output):**
+* The published curve plus a faithful port (H_R) give about 0.40.
+* §209 showed CODI's latents learn more slowly than text at 4 epochs, which does not contradict the published 20-epoch level.
+* P(REACHES) ≈ 0.5, P(PARTIAL) ≈ 0.4, P(STAYS-LOW) ≈ 0.1; central 0.35. GAP-CLOSES if REACHES.
+
+**What each label leads to (not registered here):**
+* **REACHES:** the question becomes whether our DeltaMem arm scales with budget the same way, i.e. A at 20 epochs. That is a separate decision.
+* **STAYS-LOW:** audit the port's training against CODI's code before any further spend.
+* **PARTIAL:** both of the above, at lower priority.
+
+**Retention:** keep trainable.pt, eval_items.json, eval_latent_texts.json and the final checkpoint until the reading is recorded. Intermediate checkpoints are deleted.
+
+**Cost:** about $8.6 projected; **cap $12**. Realised $ replaces the projection.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
