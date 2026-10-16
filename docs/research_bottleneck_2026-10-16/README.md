@@ -11,3 +11,4 @@ Opus subagents: step capability (S), depth invariance (D), learned stopping (H),
 - PROOFS2_v0.md: proof pass (Lemma 0/1 proved; A2 false in GPT-2; restamp-at-storage, normaliser and CANON-vs-COMMUTE fixes)
 - Final draft: docs/THEORY_VB2G_DRAFT_2026-10-16.md
 - D3_long_input_step.md: D3 draft (SLVA + frozen position table; COPY-REFRESH selector), user B 12:45; scripts/d3/
+- PROOFS_D3.md: proof pass on D3 (LENGTH-FREE fails by construction as defined; COPY-ANCHOR issues; freeze semantics)
