@@ -124,7 +124,10 @@ def pair(T, F):
     et, ef = T["entry_answer_ce_05"], F["entry_answer_ce_05"]
     conf = et is None or ef is None or abs(et - ef) > 5000
     return {"TABLE_step_general_12_16": F["STEP_GENERAL_mean_12_16"] - T["STEP_GENERAL_mean_12_16"], "TABLE_depth_9_12": F["DEPTH_9_12"] - T["DEPTH_9_12"],
-            "TABLE_lfk_ge33": (F["LFK"]["acc_ge33"] or 0) - (T["LFK"]["acc_ge33"] or 0), "entry_T": et, "entry_F": ef, "CONFOUNDED": conf,
+            "TABLE_lfk_ge33": (F["LFK"]["acc_ge33"] or 0) - (T["LFK"]["acc_ge33"] or 0),
+            "TABLE_lfk_29_32": (F["LFK"]["acc_29_32"] or 0) - (T["LFK"]["acc_29_32"] or 0),  # note 213-3: descriptive (N1's rare-row dip)
+            "lfk_changed_ge33": {"T": T["LFK"]["by_kind"].get("changed_ge33"), "F": F["LFK"]["by_kind"].get("changed_ge33")},
+            "entry_T": et, "entry_F": ef, "CONFOUNDED": conf,
             "label": "descriptive (one seed each)%s" % (" - CONFOUNDED (entry gap > 5k)" if conf else "")}
 
 
