@@ -1,0 +1,85 @@
+{
+ "omitted": [],
+ "intact": {
+  "acc_n2": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.999,
+   "9": 0.794,
+   "10": 0.218,
+   "11": 0.121,
+   "12": 0.108
+  }
+ },
+ "bank_ablate_slva": {
+  "acc_n2": {
+   "1": 1.0,
+   "2": 0.994,
+   "3": 0.997,
+   "4": 0.937,
+   "5": 0.672,
+   "6": 0.513,
+   "7": 0.434,
+   "8": 0.291,
+   "9": 0.173,
+   "10": 0.127,
+   "11": 0.095,
+   "12": 0.109
+  }
+ },
+ "self_ablate": {
+  "acc_n2": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.999,
+   "6": 0.993,
+   "7": 0.968,
+   "8": 0.926,
+   "9": 0.79,
+   "10": 0.194,
+   "11": 0.132,
+   "12": 0.121
+  }
+ },
+ "other_ablate": {
+  "acc_n2": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.999,
+   "9": 0.808,
+   "10": 0.214,
+   "11": 0.118,
+   "12": 0.1
+  }
+ },
+ "swap": {
+  "n_pairs": 4182,
+  "newest_follow": 0.8986131037780966,
+  "newest_own": 0.0824964131994261,
+  "bank_follow": 0.0,
+  "bank_own": 1.0,
+  "old_follow": 0.01649928263988522,
+  "old_own": 0.9806312769010043
+ },
+ "def": "note 213-1 eval_d3hist.json (\u00a7213; D3_v1 \u00a75 (f) and its labels), local fp32. acc_n2 (K' = n + 2), n 1..12, vbank_eval.part_acc's chunks:\nintact; bank_ablate_slva = ver_keep vbank_eval.ablate_keep (versions 1..t-2 masked in SLVA, core and coda); self_ablate = gather_hist_ablate \"self\"\n(own-slot versions 1..t-2 in SLVA only); other_ablate = ablate_keep with SLVA.keep_bank_only (core and coda only). The intact arm must equal eval_vb.json\nacc_n2 bitwise (checked by the runner). swap: VALUE-SWAP class A pairs (vbank_eval.make_pairs, rng 21120), swap pass t, K' = n + 2, clean = recipient\nand donor correct (as vswap): NEWEST = the donor's V_t only as SLVA's newest version (SLVA's read at pass t + 1; slva_view); BANK = the donor's V_t only\nin the core / coda bank (stored entry = donor, SLVA's reads of entry t at passes >= t + 1 = the recipient's); OLD = the donor's V_1..V_t at every\nreader with reading index >= t + 2 (rollout ver_sub + ver_sub_from = t + 2; the coda after pass t + 1 reads index t + 2). follow = y_donor, own = y.\nNote 213-11 (the \u00a7211 cells, a known-answer harness check): PA maps SLVA's arms onto the gather (self_ablate = the gather's own-slot versions\n1..t-2; other_ablate = ver_keep with keep_bank_only; NEWEST / BANK via gather_view on the gather's version-t keys / values); CARRY: self_ablate\nomitted (no gather), other_ablate = ablate_keep (core / coda are its only version readers), NEWEST = edit -> (V_t, donor) (vswap iii_carry), BANK =\nedit -> (donor, V_t) (iii_bank). Arms a mode cannot express are listed in \"omitted\".",
+ "run": "boxes/runs_fsq/s211_vb_pamct_s1",
+ "mode": "pa",
+ "mct": true,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 311
+}
