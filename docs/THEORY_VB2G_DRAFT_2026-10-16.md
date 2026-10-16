@@ -209,3 +209,43 @@ The definitions are in 211-1 / 211-13 / 211-15 / 211-16. Each part is also repor
 - **HISTORY-HURTS** as in 211-16.
 
 The VB2G-C1 row states which of these holds.
+
+---
+
+## Addendum 2 (2026-10-16 08:09 EDT; §211 closed, 045a1043): base and triggers updated from the results
+
+**§211 outcome** (one seed per cell; THEORY "§211 N1 result and family close"):
+
+| cell | label | history use | note |
+|---|---|---|---|
+| **N2** PURE-ANNEAL | **VB-C1** | **HISTORY-USED** (pass-global use) | stable at K′ 24 |
+| N1 CARRY | VB-C1 | carry only (bank V_t unused; Markov) | unstable at K′ 24 |
+| N3 + MCT | COUNT-KEYED (STALL 0.499) | — | — |
+
+- **C2 is not met** (DEPTH 0.31–0.41).
+- In-range STEP-CAP ≈ 1.0 in every cell (value n 6–8 ≥ 0.999). CARRY-NO-STEP does not occur.
+
+**Base: N2,** per 211-16's rule: N2 entered and is DEEP. No constraint question arises.
+
+**The deep failure is size-keyed, not pass-budget-keyed [MEASURED, N2].**
+- Accuracy at n 9 / 10 / 11 / 12 is 0.947 / 0.425 / 0.157 / 0.127 at K′ 12, and **unchanged at K′ 16 (0.947 / 0.432 / 0.151 / 0.125) and K′ 24**. More passes do not help, so the limit is not the pass budget.
+- The cliff between n 9 and n 10 lines up with D's raw-span measurement: at ≥ 1 step the handle's neighbourhood exceeds the training span in 0.2% / 21% / 94% of items at n 9 / 10 / 12 [MEASURED, D §1.1].
+- This is consistent with the length / position cue that compaction plus restamp targets [CONJECTURE until RS / PF run].
+
+**Updated triggers:**
+
+| cell | status after §211 |
+|---|---|
+| **G1 (main)** | **proposed**: §211 fails DEPTH-GENERAL in every cell (its trigger) |
+| S (COMMUTE) | **deprioritised**: in-range STEP-CAP ≈ 1.0 everywhere, so the 211-16 STEP trigger is not expected to fire. It is still evaluated formally in Stage 0 |
+| FT (STALL-AUG fine-tune) | decided by the CONTENT-HALT eval on N2 (211-13). N2's in-range STALL is 0.997; the deep fail mode (CLOCK-HOLD vs EDGE-COLLAPSE vs size) is unknown until then |
+| G1+C (self-CANON) | unchanged trigger (HISTORY-KEYED with CLOCK-PROBE) |
+
+- **HISTORY-INSERT stays the default:** N2 uses its history, so a design that keeps own history informative is the right one.
+- **Gentler anneal end** (§2 item 5) stays: N2 paid ANNEAL-COSTLY.
+
+**Proposed decision for the user:**
+- **(i)** Run Stage 0 ($0, eval-only, on N2 / N1 / N3 and the INJECT models).
+- **(ii)** Then G1, about $1.6–2.6 (cap $3), if Stage 0 does not read all-HISTORY-FREE ∧ HEAD-LIMITED.
+- **(iii)** FT (about $0.6) only on its trigger.
+- **Family cap $6** as before.
