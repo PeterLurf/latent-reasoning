@@ -1,0 +1,82 @@
+{
+ "intact": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.999
+  },
+  "acc_k24": {
+   "3": 0.999,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.998
+  }
+ },
+ "self_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 0.917,
+   "7": 0.697,
+   "8": 0.469
+  },
+  "acc_k24": {
+   "3": 0.916,
+   "4": 0.966,
+   "5": 0.91,
+   "6": 0.844,
+   "7": 0.67,
+   "8": 0.422
+  }
+ },
+ "other_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.995
+  },
+  "acc_k24": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.995
+  }
+ },
+ "check_split_n8_chunk0": {
+  "intact": {
+   "older_same_slot_incl_V0_mass_max": 0.3693672716617584,
+   "self_mass_mean": 0.08077618922106922,
+   "cross_slot_mass_mean": 0.7685223842660586
+  },
+  "self_ablate": {
+   "older_same_slot_incl_V0_mass_max": 0.3124307096004486,
+   "self_mass_mean": 0.0881010665713499,
+   "cross_slot_mass_mean": 0.8670592506726583
+  },
+  "other_ablate": {
+   "older_same_slot_incl_V0_mass_max": 0.6599931120872498,
+   "self_mass_mean": 0.1017783594628175,
+   "cross_slot_mass_mean": 0.5377930713196596
+  }
+ },
+ "def": "note 212-15 S0-3 STAB-HIST (D3_v1 \u00a76): arms intact / self_ablate / other_ablate = vbank gather_hist_ablate None / \"self\" / \"other\" (the PA gather\nonly: for query slot j the keys (s, j) resp. (s, i != j) at 1 <= s <= t-2 are masked; core / coda untouched; rt_d3/rt_hist2.py). acc_n2 (K' = n + 2)\nand acc_k24 (K' = 24) for n 3..8 from one K' 24 rollout per chunk (vbank_eval.part_acc's chunks; intact must equal eval_vb.json bitwise). check_split\n(descriptive): gather_split_log on the first chunk of n 8 - its older-same-slot mass INCLUDES V_0[j], which self_ablate keeps (the exact-zero mid-version\ncheck is scratch/gate_s212_d3.py g3).",
+ "run": "boxes/runs_fsq/s211_vb_pa_s1",
+ "mode": "pa",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 4060",
+ "sec": 262
+}
