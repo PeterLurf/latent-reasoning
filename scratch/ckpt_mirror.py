@@ -1,7 +1,7 @@
 """Off-host checkpoint mirror (user "checkpoints remember", relayed by Audit 21:5x 10-15): every --every_h hours, for each listed live cell, copy the host's
 <run>/ckpt_last.pt (model + optimizer + scheduler / RNG state, so resume is exact) to scratch/ckpt_mirror/<run>/ckpt_last.pt. Read-only on the host.
 Per fetch: remote sha256 + size -> scp to scratch/_tmp/ckmirror/<run>.part -> remote sha256 again (nested170 writes ckpt_last in place: a change during
-the copy is a retry) -> local sha256 == both -> torch.load check (step present) -> os.replace into the mirror (the previous copy replaced: one copy per
+the copy is a retry) -> local sha256 == the pre-copy sha (2026-10-16: s2 may differ when the trainer replaced the file mid-copy) -> torch.load check (step present) -> os.replace into the mirror (the previous copy replaced: one copy per
 run). A separate local dir: never the run dir a gen8 drain writes into (no-manual-fetch-during-drain lesson). Cells whose host is drained / destroyed are
 skipped; their mirror is deleted once <run>/eval.json exists locally (retention: delete after landing + drain). -> logs/ckpt_mirror.log
     nohup python scratch/ckpt_mirror.py 296:s205_iit_s1 297:s205_iit_s2 303:gsm_codi_20ep_s1 [--every_h 2] > logs/ckpt_mirror.out 2>&1 &"""
@@ -63,7 +63,9 @@ def mirror(n, run):
         if r.returncode != 0 or not os.path.exists(part):
             log("MIRROR_RETRY %s scp rc %s" % (run, r.returncode)); continue
         sl = sha_local(part)
-        if not (s1 == s2 == sl):
+        if sl != s1:                                                        # 2026-10-16: the trainer renames ckpt_last -> ckpt_prev, then writes a NEW file;
+            # an scp that opened the old file keeps reading it unchanged, so local == the pre-copy sha (+ the torch.load / step check below) is a
+            # consistent copy even if the path was replaced meanwhile (s2 != s1). §211 cells checkpoint every ~5.5 min; a 1.5 GB copy takes longer.
             log("MIRROR_RETRY %s sha changed / mismatch (attempt %d)" % (run, attempt + 1)); os.remove(part); time.sleep(60); continue
         import torch
         ck = torch.load(part, map_location="cpu", weights_only=False); step = ck.get("step") if isinstance(ck, dict) else None; del ck
