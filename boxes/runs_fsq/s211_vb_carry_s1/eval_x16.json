@@ -1,0 +1,81 @@
+{
+ "step_rows": 32986,
+ "repair": {
+  "p_right_after_wrong": null,
+  "n_events": 0,
+  "p_final_correct_given_wrong": null,
+  "n_items": 0,
+  "n_events_consumed_next": 0,
+  "def": "211-16 \u00a72: events = (item, t < n) with R's value slot wrong at t and every other real slot right, and the slot not consumed at t + 1; right_after = R right at that slot at t + 1. items = n 3..8 items with >= 1 wrong value slot at t <= n; final = the coda at K' = n + 2"
+ },
+ "hist_arms": {
+  "v0off": {
+   "acc_n2": {
+    "1": 0.999,
+    "2": 1.0,
+    "3": 0.995,
+    "4": 0.974,
+    "5": 0.708,
+    "6": 0.435,
+    "7": 0.257,
+    "8": 0.189,
+    "9": 0.159,
+    "10": 0.132,
+    "11": 0.108,
+    "12": 0.108,
+    "13": 0.086,
+    "14": 0.099,
+    "15": 0.089,
+    "16": 0.084
+   }
+  },
+  "recent1": {
+   "acc_n2": {
+    "1": 0.999,
+    "2": 1.0,
+    "3": 0.996,
+    "4": 0.937,
+    "5": 0.546,
+    "6": 0.301,
+    "7": 0.195,
+    "8": 0.128,
+    "9": 0.119,
+    "10": 0.107,
+    "11": 0.107,
+    "12": 0.103,
+    "13": 0.081,
+    "14": 0.092,
+    "15": 0.086,
+    "16": 0.082
+   }
+  },
+  "floor2": {
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.83,
+    "10": 0.446,
+    "11": 0.173,
+    "12": 0.122,
+    "13": 0.113,
+    "14": 0.109,
+    "15": 0.112,
+    "16": 0.093
+   }
+  }
+ },
+ "run": "boxes/runs_fsq/s211_vb_carry_s1",
+ "mode": "carry",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 2070",
+ "sec": 578
+}

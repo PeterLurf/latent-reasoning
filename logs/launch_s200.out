@@ -1,3 +1,6 @@
 2026-10-14 02:10:24 s200 b287-b290: launched on ADDITIONAL hosts (user permission via Audit 01:5x; projection ~$6.6 <= $7)
 2026-10-14 03:01:22 s200re: A b287, B b288, D b290 sequential, DPH_MAX 0.26 (Audit's $7 arithmetic); one filler
 2026-10-14 03:36:14 s200re restarted after the DPH_MAX quoting fix (the single-quoted search passed the literal ${DPH_MAX...}; 0 offers, no spend)
+2026-10-14 05:05:55 s200re D (b290) filler STOPPED by Experiments before its retry: guard @A 2k projects $6.54 without D; D at <= $0.26 x 2.2 h would reach $6.99-7.11 (cap $7) - decision to Audit / the user
+2026-10-14 11:51:48 s200 D (b290): user pre-approval via Audit ~12:0x - cap $7.50; launching on the cheapest passing 3090 (DPH_MAX 0.26)
+2026-10-14 13:00:48 s200 D: no offer <= $0.26 for 2 retries; DPH_MAX raised to 0.30 (family $6.58 + D <= 2.2 h x $0.30 ~ $7.24 <= the $7.50 cap)

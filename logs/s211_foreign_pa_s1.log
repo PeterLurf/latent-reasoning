@@ -1,0 +1,10 @@
+FOREIGN n 4 {'intact': 1.0, 'insert3': 0.087, 'insert6': 0.086, 'replace3': 0.883, 'replace6': 0.19}
+FOREIGN n 5 {'intact': 1.0, 'insert3': 0.086, 'insert6': 0.101, 'replace3': 0.677, 'replace6': 0.155}
+FOREIGN n 6 {'intact': 1.0, 'insert3': 0.102, 'insert6': 0.088, 'replace3': 0.54, 'replace6': 0.163}
+FOREIGN n 7 {'intact': 1.0, 'insert3': 0.101, 'insert6': 0.105, 'replace3': 0.451, 'replace6': 0.33}
+FOREIGN n 8 {'intact': 0.999, 'insert3': 0.114, 'insert6': 0.095, 'replace3': 0.392, 'replace6': 0.231}
+FOREIGN n 9 {'intact': 0.948, 'insert3': 0.101, 'insert6': 0.094, 'replace3': 0.356, 'replace6': 0.156}
+FOREIGN n 10 {'intact': 0.425, 'insert3': 0.121, 'insert6': 0.102, 'replace3': 0.206, 'replace6': 0.152}
+FOREIGN n 11 {'intact': 0.155, 'insert3': 0.079, 'insert6': 0.09, 'replace3': 0.105, 'replace6': 0.074}
+FOREIGN n 12 {'intact': 0.127, 'insert3': 0.079, 'insert6': 0.072, 'replace3': 0.095, 'replace6': 0.082}
+DONE boxes/runs_fsq/s211_vb_pa_s1\eval_foreign.json 397

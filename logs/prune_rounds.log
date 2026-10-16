@@ -8,3 +8,6 @@
 00:25:29 retention sweep: deleted 251 stale transfer tarballs (> 1 h old) in /tmp (C:), 34.4952 GB
 01:13:37 gen-d6 PRUNED boxes/runs_s5/s112_f010_s22 max_gate 0.9995581708272248 never_labelled 1.0 cum512 0.9645
 01:51:35 gen-d6 PRUNED boxes/runs_s5/s112_f010_s25 max_gate 0.009717987804878049 never_labelled 0.39266975308641977 cum512 0.0
+02:57:15 gen-d7 PRUNED boxes/runs_s5/s112_f010_s23 max_gate 1.0 never_labelled 1.0 cum512 0.9985
+03:40:37 gen-d7 PRUNED boxes/runs_s5/s112_f010_s24 max_gate 0.004189944134078212 never_labelled 0.022839506172839506 cum512 0.0
+2026-10-08 10:17:31 Experiments: deleted preview models/ckpts (eval/log/args kept): proto154_shift_s501_3070, proto157_{ccq,periodic}_s1_3070, proto157_multiread_s1_2070, proto158_free_s1_4060, proto160_ar_s1_2070, proto161_mix_s1_4060, proto156_{pause,plain,sep}_s1_4060 (§156 closed; evals skipped after OOM) - ~4.8 GB

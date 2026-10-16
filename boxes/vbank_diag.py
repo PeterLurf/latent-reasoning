@@ -366,12 +366,96 @@ def part_gsplice(m, TE, dev, bs, J=29):
     return res
 
 
+
+@torch.no_grad()
+def part_a15(m, TE, dev, bs):
+    """note 211-15 A descriptives: (iii) RE-ROOT-VB - pass-1 STEP-CAP on render(E_{t-1}) as a fresh problem, test items n 3..8, t 2..n, by the original
+    handle height hh (S's steps_features), exact = the full next-step decode; (v) the same after o in {2, 4} prepended V_0 copies (INSERT prefix of V_0,
+    then one real pass); (iv, PA only) the gather mass split at passes 2..n of the intact rollout to n: on (t-1, j) / on (s < t-1, j) / on (., i != j)."""
+    F_ = _feat_mod(); Nn = np.array([it["n"] for it in TE]); res = {"reroot": {}, "split": None}
+    jobs = []
+    for j in np.nonzero((Nn >= 3) & (Nn <= 8))[0]:
+        fts = F_.steps_features(TE[j]["root"])
+        for t in range(2, TE[j]["n"] + 1):
+            jobs.append((int(j), t, min(fts[t - 1]["hh"], 5)))
+    for o in (0, 2, 4):
+        cnt = {}
+        for c0 in range(0, len(jobs), bs):
+            part = jobs[c0:c0 + bs]; roots = [reduce_k(TE[j]["root"], t - 1) for j, t, _ in part]; its = [{"syms": N.render(r_)} for r_ in roots]
+            x, pad, lens = VB.batch_x(its, dev)
+            if o:
+                V0 = m.rollout(x, pad, 0)["V"][0]; rr = m.rollout(x, pad, o + 1, prefix=[V0] * o); Vn = rr["V"][o + 1]
+            else:
+                rr = m.rollout(x, pad, 1); Vn = rr["V"][1]
+            dec = m.rec_logits(Vn).argmax(-1).cpu().numpy(); del rr
+            for k_, (j, t, hh) in enumerate(part):
+                ok = VB.rerender(list(dec[k_, :int(lens[k_])])) == N.render(reduce_k(roots[k_], 1)); c_ = cnt.setdefault(str(hh), [0, 0]); c_[0] += 1; c_[1] += int(ok)
+        res["reroot"]["o%d" % o] = {h: {"n": v[0], "exact": v[1] / v[0]} for h, v in sorted(cnt.items())}
+        print("REROOT o", o, {h: round(v[1] / v[0], 4) for h, v in sorted(cnt.items())}, flush=True)
+    if m.mode == "pa":
+        acc = {}
+        for n in range(3, 9):
+            for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); m.gather_split_log = []
+                try:
+                    m.rollout(x, pad, n)
+                    for t, a_, b_, c_ in m.gather_split_log:
+                        if t >= 2:
+                            z = acc.setdefault(str(t), [0, 0.0, 0.0, 0.0]); z[0] += len(its); z[1] += float(a_.sum()); z[2] += float(b_.sum()); z[3] += float(c_.sum())
+                finally:
+                    m.gather_split_log = None
+        res["split"] = {t: {"n": z[0], "self_t1_j": z[1] / z[0], "older_same_j": z[2] / z[0], "cross_slot": z[3] / z[0]} for t, z in sorted(acc.items(), key=lambda kv: int(kv[0]))}
+        tot = [sum(z[k] for z in acc.values()) for k in range(4)]; res["split_pooled"] = {"self_t1_j": tot[1] / tot[0], "older_same_j": tot[2] / tot[0], "cross_slot": tot[3] / tot[0]}
+        print("SPLIT", res["split_pooled"], flush=True)
+    res["def"] = part_a15.__doc__
+    return res
+
+
+
+def part_d3diag(m, TE, dev, bs, J=24):
+    """note 212-11 ($0, eval-only, Audit-OK'd): the fresh single-step grid of eval_steppos B (2,000 items per m 1..16, seed 21600 + m) under intact /
+    gs24 (gather_splice J = 24; PA only) / wpe_b1 (the fine-tuned wpe rows >= 24 replaced by PRETRAINED GPT-2 wpe rows) / wpe_b2 (every wpe row pretrained).
+    The wpe arms swap the table's data at eval and restore an exact clone (off = bitwise default; asserted). summary: target = T in {31, 33}, m 8-10;
+    control_exposed = m <= 8, T 25-29 (items with slots >= 24)."""
+    import boxes.s5 as S5
+    pre = torch.load(os.path.join(S5.ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"), map_location="cpu", weights_only=True)["wpe.weight"].to(dev)
+    W = m.g.p["wpe_weight"]; orig = W.data.clone(); assert pre.shape == W.shape, (pre.shape, W.shape)
+    arms = {"intact": None, "wpe_b1": "b1", "wpe_b2": "b2"}
+    if m.mode == "pa":
+        arms["gs24"] = "gs"
+    res = {}
+    for arm, how in arms.items():
+        trip = []
+        try:
+            if how == "gs":
+                m.gather_splice = J
+            elif how == "b1":
+                W.data[J:] = pre[J:].to(W.dtype)
+            elif how == "b2":
+                W.data[:] = pre.to(W.dtype)
+            for mo in range(1, 17):
+                trip += single_step(m, fresh_items(mo, 2000, 21600 + mo), dev, bs)
+        finally:
+            m.gather_splice = None; W.data.copy_(orig)
+        assert torch.equal(W.data, orig), "d3diag: wpe not restored"
+        res[arm] = {"fresh_m_T": agg(trip, lambda a_, b_: "%d_%d" % (a_, b_)), "fresh_m": agg(trip, lambda a_, b_: str(a_))}
+        print("D3", arm, {k: round(v["exact"], 3) for k, v in res[arm]["fresh_m"].items()}, flush=True)
+
+    def pooled(arm, cond):
+        c_ = [(v["n_steps"], v["exact"]) for k, v in res[arm]["fresh_m_T"].items() if cond(*(int(z) for z in k.split("_")))]
+        n_ = sum(a for a, _ in c_); return [sum(a * b for a, b in c_) / n_ if n_ else None, n_]
+    res["summary"] = {arm: {"target": pooled(arm, lambda mo, T: 8 <= mo <= 10 and T in (31, 33)), "control_exposed": pooled(arm, lambda mo, T: mo <= 8 and 25 <= T <= 29)}
+                      for arm in arms}
+    res["J"] = J; res["def"] = part_d3diag.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})

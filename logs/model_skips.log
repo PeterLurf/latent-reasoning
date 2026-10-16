@@ -12,3 +12,14 @@
 2026-10-06 11:55:22 local s116_none_s41 model.pt (475 MB) deleted: did not learn (final_state_acc_512 0.006, k1 not certified); data-retention rule
 2026-10-06 13:59:41 54488708 gen_d8 boxes/runs_s5/s119_codi_s2 model.pt 578067890 bytes NOT FETCHED: SKIP not exact (cumulative_512 0.0000, extension_2048_512 0.0000, extension_2048_1024 0.0000, extension_2048_2048 0.0000) | posthoc: none registered
 2026-10-06 13:59:41 54488708 gen_d8 boxes/runs_s5/s119_codi_s3 model.pt 578067890 bytes NOT FETCHED: SKIP not exact (cumulative_512 0.0000, extension_2048_512 0.0000, extension_2048_1024 0.0000, extension_2048_2048 0.0000) | posthoc: none registered
+2026-10-06 20:06:52 54548656 gen_b66 boxes/runs_fsq/s133_soft64_s101 model.pt 498206014 bytes NOT FETCHED: SKIP not exact (long_acc 0.9020, ext_2048 0.6460) | posthoc: fp32 contraction (present)
+2026-10-06 21:10:00 54556101 gen_b68 boxes/runs_fsq/s133_pin64_s101 model.pt 498206014 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 22:12:57 54559982 gen_b76 boxes/runs_fsq/s135_base_s5_s1 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 22:31:08 54561299 gen_b77 boxes/runs_fsq/s135_tsd_s5_s2 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 23:01:36 54565399 gen_b81 boxes/runs_fsq/s135_tsd_s5_s4 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 23:01:56 54562170 gen_b79 boxes/runs_fsq/s135_tsd_s5_s3 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 23:24:39 54565781 gen_b80 boxes/runs_fsq/s135_base_s5_s3 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-06 23:33:19 54563141 gen_b82 boxes/runs_fsq/s135_base_s5_s4 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-07 00:02:23 54559974 gen_b75 boxes/runs_fsq/s135_tsd_s5_s1 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-07 00:32:01 54568208 gen_b89 boxes/runs_fsq/s135_base_s5_s2 model.pt 499437678 bytes NOT FETCHED: SKIP not exact (long_acc 0.0000, ext_2048 0.0000) | posthoc: fp32 contraction (present)
+2026-10-08 06:27:44 54801571 gen_b164 boxes/runs_fsq/s155_rg0_4x4_s1 model.pt 507358854 bytes NOT FETCHED: SKIP not exact (long_acc 0.5870) | posthoc: none registered

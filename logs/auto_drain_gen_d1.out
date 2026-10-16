@@ -1,4 +1,2 @@
-00:15:55 gen_d1 DRAIN FAILED:
-
-00:16:58 gen_d1 restarted after the Audit 00:11 drain abort (rounds/ deleted on-host)
-00:28:53 ALL_DRAINED
+00:19:44 gen_d1 fetch retry 1: FETCH_INCOMPLETE 54411699 (status)
+01:18:12 ALL_DRAINED

@@ -169,6 +169,7 @@ class VBankN(torch.nn.Module):
         self.age_floor = None                                               # eval-only (note 212-3): slope floor mu on the age term of versions 1..t-2 (None = off)
         self.gather_splice = None                                           # eval-only (note 212-6): J -> gather output replaced by N(V_{t-1}) at slots j >= J
         self.gather_qmod = None                                             # eval-only (note 212-6): gather query position j -> j mod this (None = wpe_slice)
+        self.gather_split_log = None                                        # eval-only (211-15 A iv): a list -> per pass (t, self, older-same-slot, cross-slot) per item
 
     def nrm(self, V, rms0):
         return self.gain * (V * (rms0 / V.pow(2).mean(-1, keepdim=True).sqrt()))
@@ -203,6 +204,11 @@ class VBankN(torch.nn.Module):
             if self.gather_log is not None:
                 sm = w[:, :, torch.arange(T, device=dev), (t - 1) * T + torch.arange(T, device=dev)].detach()                # (B, H, T)
                 self.gather_log.append((t, (sm.mean(1) * pad).sum(1) / pad.sum(1)))
+            if self.gather_split_log is not None:                           # eval-only (211-15 A iv): mass on (t-1, j) / on (s < t-1, j) / on (., i != j)
+                same = (i_idx[None, :] == torch.arange(T, device=dev)[:, None]).to(w.dtype)                                  # (T, tT): slot j in any version
+                sm_ = w[:, :, torch.arange(T, device=dev), (t - 1) * T + torch.arange(T, device=dev)]; sa_ = (w * same[None, None]).sum(-1)
+                mean_ = lambda z: ((z.mean(1) * pad).sum(1) / pad.sum(1)).detach()  # noqa: E731
+                self.gather_split_log.append((t, mean_(sm_), mean_(sa_ - sm_), mean_(1 - sa_)))
         if self.gather_splice is not None:                                  # eval-only (note 212-6 GATHER-SPLICE): slots j >= J take the CARRY value N(V_{t-1}[j])
             U = torch.cat([U[:, :self.gather_splice], NV[t - 1].to(U.dtype)[:, self.gather_splice:]], 1)
         return U.to(NV[0].dtype)
