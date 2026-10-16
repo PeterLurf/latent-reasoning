@@ -110,6 +110,9 @@ def cell_read(tag, d):
     last = max(recs) if recs else 0; o["last_step"] = last
     if ev is None:
         o["label"] = "pending (eval_vb.json missing)" if recs else "pending (not started)"; return o
+    need = [k for k in ("acc_n2", "probe", "test_meta", "vswap", "stall", "stepcap") if k not in ev]
+    if need:                                                                # a partial eval_vb.json (parts still running) is pending, never scored
+        o["label"] = "pending (eval_vb.json partial; missing %s)" % need; return o
     dead = last < FULL; e05 = entry_on(recs, "answer_ce", 0.5); o.update(dead=dead, entry_answer_ce_05=e05,
                                                                         entry_loss_05=entry_on(recs, "loss", 0.5), entry_answer_ce_01=entry_on(recs, "answer_ce", 0.1))
     no_entry = e05 is None

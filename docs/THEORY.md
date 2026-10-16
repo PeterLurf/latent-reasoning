@@ -17112,6 +17112,41 @@ So 205-4's sentence "fit by subtree height alone (no pass term)" is **not suppor
 - **Reading:** the 8k checkpoint precedes entry for every seed (s1 entered at 21k, s2 at 22k, s3 never). The direction tests therefore cannot separate the classes at 8k, and nothing is read from them.
 - **Retention:** ckpt_model_8000.pt is no longer needed and is deleted. model.pt is kept for s1 / s2 / s3, because s205_iit_s3 is an input to the bottleneck session's in-range INJECT diagnostic (211-15 C / S's D1).
 
+**§211 N2 result (2026-10-16 08:01 EDT; s211_vb_pa_s1, b304, RTX 3090, seed 1, 48k (log complete to 48,000); eval_vb.json local fp32 at eval_bs 32 on the 4060; theory/score_s211.py; realised $ pending invoice (admitted at a $1.38 projection)). N2 (PURE-ANNEAL, the main cell) reads VB-C1: supervised serial latent computation in a pass-global attention memory, at one seed.**
+* **DEEP:** acc at K′ = n + 2 is 1.000 at n 1..7 and 0.999 at n 8 (pooled n 3..8 0.9998).
+* **PROBE-GAIN 0.868** (≥ 0.50).
+  * PROBE(0) / PROBE(1) pooled = 0.119 / 0.132 (chance).
+  * PROBE-VALID: PROBE(12) = 1.000.
+  * **ONESHOT-PRECOMPUTE does not fire:** PROBE(2) at n 8 is 0.117.
+* **SERIAL-ONSET.**
+  * Coverage ≥ 0.999 at every n.
+  * Median onset by n 3..8: **2 / 3 / 4 / 6 / 6 / 8** (the probe set is {0, 1, 2, 3, 4, 6, 8, 12}).
+  * OLS slope on tree height 1.29 (on n 1.17); med(8) − med(3) = 6.
+  * The probe follows the depth pass by pass: n 3 decodable at t = 2 (0.694), n 5 at t = 4 (0.681), n 8 at t = 8 (0.999).
+* **VALUE-SWAP SERIAL-STEP** (class A, 4,183 clean pairs):
+  * (ii) whole V_t: **follow 1.000 / own 0.000** at every n 4..8;
+  * (i) slot b only: 0.658 / 0.307;
+  * (iv) V_0 masked after t: 0.510 / 0.055.
+  * RECOMPUTE-V0 does not fire.
+  * Class B (descriptive, 4,835 pairs): (ii) 1.000 / 0.000, (i) 0.757 / 0.218.
+* **NO-CLOCK:** STALL recovery 0.997 (stalled at K′ = n + 1 vs intact at K′ = n, n 4..8: 1.000 / 1.000 / 0.999 / 0.996 / 0.990).
+* **Entry:** answer-CE entry(0.5) 16k, entry(0.1) 26k; loss entry(0.5) 21k.
+* **Descriptive:**
+  * **HISTORY-USED (pass-global use, not just access).** The registered BANK-ABLATE (versions 1..t−2 masked; V_0 and the newest kept) gives 1.000 to n 4, then 0.996 / 0.746 / 0.526 / 0.321 at n 5..8. The carry cell N1 is unaffected by the same ablation (1.000 at n 1..8).
+  * bank_off: 0.80 / 0.53 / 0.26 at n 1..3, then chance.
+  * **STABLE:** K′ 24 is 1.00 at n 2–8 (N1: 0.40–0.54).
+  * CARRY-LIKENESS **0.220**.
+  * stepcap: copy 0.9997, value n 6–8 0.99984, stationary slope −0.007 (not CARRY-NO-STEP).
+  * **DEPTH (n 9–12 at K′ n + 2) 0.414:** 0.948 / 0.425 / 0.155 / 0.127. REACH(0.8) = 9; n 13–16 is about 0.13. **C2 is not met.**
+* **Predictions:**
+  * P(VB-C1 | N2) 0.3: the positive occurred.
+  * CARRY-LIKENESS ≥ 0.8 (P 0.7) **missed** (0.22). 211-5's expected recovery did not happen: the gather reads mainly off-self.
+  * DEPTH central 0.65 if DEEP **missed** (0.41).
+  * CARRY-NO-STEP 0.3: not observed.
+* **OC (registered):** P(VB-C1 | no serial use) ≤ 0.05. A positive at one seed is strong evidence for the mechanism, not a seed rate. A rate claim needs ≥ 3 seeds and the user's OK.
+* **Scorer disclosure.** After N2's output was read, theory/score_s211.py gained one robustness guard: a *partial* eval_vb.json (parts still running, as for N1 / N3 now) reads "pending" instead of raising KeyError. No reading or threshold changed, and the 11 fixtures re-run identically.
+* N1 and N3 are pending their vswap / stall parts.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
