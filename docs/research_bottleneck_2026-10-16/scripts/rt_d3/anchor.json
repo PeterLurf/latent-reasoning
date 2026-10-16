@@ -1,0 +1,114 @@
+{
+ "1": {
+  "value_slot_anchored_per_reduction": 0.104,
+  "items_with_any": 0.104,
+  "share_slots_anchored": 0.0347,
+  "distinct_classes_per_slot_mean": 1.965,
+  "distinct_max": 2
+ },
+ "2": {
+  "value_slot_anchored_per_reduction": 0.063,
+  "items_with_any": 0.121,
+  "share_slots_anchored": 0.1759,
+  "distinct_classes_per_slot_mean": 2.135,
+  "distinct_max": 3
+ },
+ "3": {
+  "value_slot_anchored_per_reduction": 0.0447,
+  "items_with_any": 0.127,
+  "share_slots_anchored": 0.26,
+  "distinct_classes_per_slot_mean": 2.197,
+  "distinct_max": 4
+ },
+ "4": {
+  "value_slot_anchored_per_reduction": 0.0398,
+  "items_with_any": 0.148,
+  "share_slots_anchored": 0.3065,
+  "distinct_classes_per_slot_mean": 2.227,
+  "distinct_max": 5
+ },
+ "5": {
+  "value_slot_anchored_per_reduction": 0.0386,
+  "items_with_any": 0.182,
+  "share_slots_anchored": 0.3411,
+  "distinct_classes_per_slot_mean": 2.244,
+  "distinct_max": 5
+ },
+ "6": {
+  "value_slot_anchored_per_reduction": 0.036,
+  "items_with_any": 0.192,
+  "share_slots_anchored": 0.3605,
+  "distinct_classes_per_slot_mean": 2.257,
+  "distinct_max": 5
+ },
+ "7": {
+  "value_slot_anchored_per_reduction": 0.0329,
+  "items_with_any": 0.202,
+  "share_slots_anchored": 0.3786,
+  "distinct_classes_per_slot_mean": 2.265,
+  "distinct_max": 5
+ },
+ "8": {
+  "value_slot_anchored_per_reduction": 0.034,
+  "items_with_any": 0.243,
+  "share_slots_anchored": 0.3916,
+  "distinct_classes_per_slot_mean": 2.272,
+  "distinct_max": 5
+ },
+ "9": {
+  "value_slot_anchored_per_reduction": 0.0343,
+  "items_with_any": 0.279,
+  "share_slots_anchored": 0.4013,
+  "distinct_classes_per_slot_mean": 2.276,
+  "distinct_max": 5
+ },
+ "10": {
+  "value_slot_anchored_per_reduction": 0.0353,
+  "items_with_any": 0.294,
+  "share_slots_anchored": 0.4096,
+  "distinct_classes_per_slot_mean": 2.28,
+  "distinct_max": 5
+ },
+ "11": {
+  "value_slot_anchored_per_reduction": 0.0307,
+  "items_with_any": 0.295,
+  "share_slots_anchored": 0.4168,
+  "distinct_classes_per_slot_mean": 2.285,
+  "distinct_max": 5
+ },
+ "12": {
+  "value_slot_anchored_per_reduction": 0.0296,
+  "items_with_any": 0.299,
+  "share_slots_anchored": 0.4226,
+  "distinct_classes_per_slot_mean": 2.283,
+  "distinct_max": 5
+ },
+ "13": {
+  "value_slot_anchored_per_reduction": 0.0276,
+  "items_with_any": 0.303,
+  "share_slots_anchored": 0.4269,
+  "distinct_classes_per_slot_mean": 2.289,
+  "distinct_max": 5
+ },
+ "14": {
+  "value_slot_anchored_per_reduction": 0.0329,
+  "items_with_any": 0.367,
+  "share_slots_anchored": 0.4326,
+  "distinct_classes_per_slot_mean": 2.289,
+  "distinct_max": 5
+ },
+ "15": {
+  "value_slot_anchored_per_reduction": 0.0279,
+  "items_with_any": 0.346,
+  "share_slots_anchored": 0.4347,
+  "distinct_classes_per_slot_mean": 2.292,
+  "distinct_max": 5
+ },
+ "16": {
+  "value_slot_anchored_per_reduction": 0.0324,
+  "items_with_any": 0.409,
+  "share_slots_anchored": 0.4387,
+  "distinct_classes_per_slot_mean": 2.292,
+  "distinct_max": 5
+ }
+}

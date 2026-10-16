@@ -1,0 +1,15 @@
+{
+ "validation_maxdiff_VK": 0.0,
+ "mine_intact": {
+  "6": 1.0,
+  "8": 0.9933
+ },
+ "ablate_cross": {
+  "6": 1.0,
+  "8": 0.9933
+ },
+ "ablate_self": {
+  "6": 0.9,
+  "8": 0.4867
+ }
+}
