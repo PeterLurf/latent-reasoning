@@ -16559,6 +16559,8 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
     - RMS alone is DEEP but decays by K′24–32 in both seeds.
   - K′32 (0.934 / 0.862) is outside the claim. Some post-completion decay remains there.
 
+**Note 193-cost (2026-10-15 20:26 EDT; billed figures from Experiments, Vast invoices for instance 55989781).** s193_rmswin_s2's realised cost is **about $6.70**, which replaces the "about $7–8" estimate in the s2 result. The rate is $0.2434/h (GPU $0.2267 + storage $0.0167) plus a $0.014 upload, over about 27.5 h (16:50 10-14 to the 20:21 10-15 destroy). The invoiced part so far is 24.3 h, $5.93. §193 total: about $14.5 (s1 $7.81 + s2 $6.70).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
