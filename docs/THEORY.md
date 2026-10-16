@@ -17549,6 +17549,34 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - The N2 gs24 lift at m 11–12 hints that the far-slot gather contributes to the failure beyond T ≈ 33 (descriptive).
 - The causal mechanism remains [CONJECTURE].
 
+**Note 205-7 (2026-10-16 13:46 EDT; the in-range item-level test that 205-5 required, from §212 Stage 0 part C (S's D1, pre-stated in 211-15 C); boxes/runs_fsq/<run>/eval_injectD1.json, scratch/inject_d1.py; bf16 trunk / fp32 memory, bs 250, FAST_ADD; test n 3..8, 300 per n).**
+
+**Accuracy by subtree height** (hh classes 1 / 2 / 3 / 4 / ≥ 5), in-trajectory (the teacher-forced aux handle at pass t) against RE-ROOT (the item reduced t − 1 times and run fresh):
+
+| model | in-trajectory | RE-ROOT |
+|---|---|---|
+| s185_rms_s3 (failed) | 0.9995 / 0.995 / 0.862 / **0.535** / **0.308** | 0.999 / 1.000 / 0.999 / 0.999 / 1.000 |
+| s205_iit_s3 (failed) | 0.990 / 0.950 / 0.767 / **0.455** / **0.272** | 0.994 / 0.998 / 0.995 / 0.995 / 0.994 |
+| s185_rms_s1 (converged) | 0.999 / 0.998 / 0.997 / 0.997 / 0.995 | 0.9997–1.000 |
+
+- **205-4's pre-stated prediction HOLDS:** the failed seeds show q(4) < 0.8 in-trajectory, with RE-ROOT ≥ 0.98 in every class. The falsifier (RE-ROOT also falling with hh) does not fire.
+
+**The discriminating item-level fit** (score_s212.step_trigger's form: 5-fold-by-item held-out ΔLL of adding hh to (t, alive, held, prov, age_max, bdepth); the hh coefficient fitted among prov ≥ 1):
+
+| model | ΔLL / 1,000 events | hh coefficient (prov ≥ 1) |
+|---|---|---|
+| s185_rms_s3 (failed) | **20.6** | **+1.45** |
+| s205_iit_s3 (failed) | **26.4** | **+1.38** |
+| s185_rms_s1 (converged) | −0.38 | −0.11 |
+
+(9,900 events each.)
+
+**Reading.**
+- **In range, with pass held fixed, subtree height adds large first-error hazard only in the failed seeds.** Yet the same step on a fresh, re-rooted input is exact at every height.
+- So the failed seeds' in-trajectory failure is not a weak step. It is the inability to obtain *computed* operand values from their own memory. Consistent with 205-4 (they write nothing usable after pass 2), they recompute from the re-shown input, and that is bounded by subtree height.
+- **205-5's "recompute" account moves from CONJECTURE to supported in range** (2 failed seeds vs 1 converged, INJECT family). It is beyond-training as well (Audit-reproduced on 3 failed vs 5 converged).
+- The causal claim that recompute *wins the early race* (S's race model) remains [DERIVED under assumptions], not tested.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
