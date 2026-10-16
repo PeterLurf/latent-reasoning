@@ -1,0 +1,4 @@
+WPE intact acc_n2 {'1': 1.0, '2': 1.0, '3': 1.0, '4': 1.0, '5': 1.0, '6': 1.0, '7': 1.0, '8': 0.999, '9': 0.794, '10': 0.218, '11': 0.121, '12': 0.108, '13': 0.104, '14': 0.09, '15': 0.106, '16': 0.1}
+WPE wpe_b2 acc_n2 {'1': 0.354, '2': 0.176, '3': 0.118, '4': 0.135, '5': 0.094, '6': 0.11, '7': 0.081, '8': 0.1, '9': 0.107, '10': 0.091, '11': 0.096, '12': 0.099, '13': 0.085, '14': 0.081, '15': 0.093, '16': 0.093}
+DONE boxes/runs_fsq/s211_vb_pamct_s1\eval_wpereset.json 740
+GATE boxes/runs_fsq/s211_vb_pamct_s1 card NVIDIA GeForce RTX 3070 vs eval_vb NVIDIA GeForce RTX 3070 rs NVIDIA GeForce RTX 3070 acc_n2 True acc_k24 True rs cells True

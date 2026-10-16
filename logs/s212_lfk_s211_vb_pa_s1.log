@@ -1,0 +1,10 @@
+LFK n 9 {'events': 6180, 'strict_exact': 5699, 'voiddrop_exact': 5699}
+LFK n 10 {'events': 1866, 'strict_exact': 1464, 'voiddrop_exact': 1464}
+LFK n 11 {'events': 124, 'strict_exact': 90, 'voiddrop_exact': 90}
+LFK n 12 {'events': 0, 'strict_exact': 0, 'voiddrop_exact': 0}
+LFK n 13 {'events': 0, 'strict_exact': 0, 'voiddrop_exact': 0}
+LFK n 14 {'events': 0, 'strict_exact': 0, 'voiddrop_exact': 0}
+LFK n 15 {'events': 0, 'strict_exact': 0, 'voiddrop_exact': 0}
+LFK n 16 {'events': 0, 'strict_exact': 0, 'voiddrop_exact': 0}
+DONE boxes/runs_fsq/s211_vb_pa_s1\eval_lfk.json 105
+GATE boxes/runs_fsq/s211_vb_pa_s1 lfk n/a (no intact reference)
