@@ -5,6 +5,7 @@ Primary: REACHES-PUBLISHED acc >= 0.348 / STAYS-LOW acc <= 0.217 / PARTIAL. Seco
 outputs contain "<<"): GAP-CLOSES acc >= TXT20 - T / GAP-PERSISTS acc <= TXT20 - 0.068 / GAP-NARROWS. Censoring (rule b): epochs < 20 -> UNREAD.
     python theory/score_s210.py
 """
+import bisect
 import json
 import math
 import os
@@ -48,6 +49,17 @@ def main():
         if vh:
             fin = vh[-1][1]; first = next((s for s, v in vh if v >= 0.9 * fin - EPS), None)
             out.update(valid_final=fin, epoch_valid_0p9_final=None if first is None else first * per, valid_n=len(vh))
+            lr = {}; lf = os.path.join(R, CELL, "log.jsonl")                 # Audit's ask: LR beside each valid point (log lr every 50 steps; nearest at or before)
+            if os.path.exists(lf):
+                for line in open(lf):
+                    r = json.loads(line)
+                    if "lr" in r and "step" in r:
+                        lr[int(r["step"])] = r["lr"]
+            ks = sorted(lr); cur = []
+            for s, v in vh:
+                i = bisect.bisect_right(ks, s)
+                cur.append([s, round(s * per, 3), v, lr[ks[i - 1]] if i else None])   # [step, epoch, valid_acc, lr]
+            out["valid_curve"] = cur
         by = e.get("by_steps") or {}; ref = jl(REF)
         out["by_depth"] = {"m<=2": depth(by, 0, 2), "m>=3": depth(by, 3, 99)}
         a, b = jl(CELL, "eval_items.json"), jl(REF, "eval_items.json")
