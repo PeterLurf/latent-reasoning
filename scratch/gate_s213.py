@@ -260,7 +260,7 @@ def g_g1b(dev, runs=("s213_g1b_T", "s213_g1b_F"), steps=(0, 1000, 2000)):
         o["pass_gd3"] = all(o["wpe_equal_pretrained"].values()) if a["table"] == "frozen" else (o["wpe_equal_pretrained"]["0"] and not o["wpe_equal_pretrained"][str(steps[-1])])
         # G-D4 (first 2k): every logged c == c_at(step, 1000, 8000); SLVA grad exactly 0 while c = 1e4 and > 0 after
         lg_ = [json.loads(l_) for l_ in open(os.path.join(d, "log.jsonl")) if '"loss"' in l_]
-        o["c_log_matches"] = all(abs(r_["c"] - VB.c_at(r_["step"], 1000, 8000)) <= 1e-9 * max(1.0, r_["c"]) for r_ in lg_)
+        o["c_log_matches"] = all(abs(r_["c"] - VB.c_at(r_["step"], 1000, 8000)) <= 1e-6 * max(1.0, r_["c"]) for r_ in lg_)   # the c buffer is fp32
         o["slva_gn_zero_at_c1e4"] = all(r_["slva_gn"] == 0.0 for r_ in lg_ if r_["step"] <= 1000); o["slva_gn_pos_after"] = all(r_["slva_gn"] > 0 for r_ in lg_ if r_["step"] > 1000)
         o["c_at_1500_2000"] = [r_["c"] for r_ in lg_ if r_["step"] in (1500, 2000)]
         o["pass"] = o["pass_g1b"] and o["pass_gd3"] and o["c_log_matches"] and o["slva_gn_zero_at_c1e4"] and o["slva_gn_pos_after"]
