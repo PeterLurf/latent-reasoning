@@ -77,7 +77,7 @@ def args_diff(d):
 def lfk_valid():
     """Note 213-1: (a') counts only if LFK_DISCRIMINATES (N1 meets; N2 and N3 do not, on the §211 cells) and LFK_SENSITIVE (N1's FAULT arm)."""
     L = {k: S212.lfk(v) for k, v in S212.STAGE0.items()}
-    if any(v is None for v in L.values()) or "SENSITIVE" not in L["N1"]:
+    if any(v is None for v in L.values()) or L["N1"].get("SENSITIVE") is None:
         return None
     return bool(L["N1"]["MEETS"] and not L["N2"]["MEETS"] and not L["N3"]["MEETS"] and L["N1"]["SENSITIVE"])
 
