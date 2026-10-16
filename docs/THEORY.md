@@ -299,7 +299,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
-| 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 drafting** |
+| 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 
 ## Live sections
 
@@ -17576,6 +17576,70 @@ plus card, bs and dtype. The intact arm must reproduce eval_steppos B.
 - So the failed seeds' in-trajectory failure is not a weak step. It is the inability to obtain *computed* operand values from their own memory. Consistent with 205-4 (they write nothing usable after pass 2), they recompute from the re-shown input, and that is bounded by subtree height.
 - **205-5's "recompute" account moves from CONJECTURE to supported in range** (2 failed seeds vs 1 converged, INJECT family). It is beyond-training as well (Audit-reproduced on 3 failed vs 5 converged).
 - The causal claim that recompute *wins the early race* (S's race model) remains [DERIVED under assumptions], not tested.
+
+**Note 212-14 (2026-10-16 14:27 EDT; N1-WPE-RESET, descriptive, as pre-stated ~14:00; s211_vb_carry_s1/eval_wpereset.json, dbaa1d1b, 2070, fp32, eval_bs 32; read from raw by Theory, and Audit reproduced it; the intact arm equals eval_vb's acc_n2 / acc_k['24'] and eval_rs's cells exactly).**
+
+**Every wpe row pretrained (wpe_b2) against intact:**
+
+| | intact | wpe_b2 |
+|---|---|---|
+| acc_n2 at n 6 / 7 / 8 | 1.000 / 1.000 / 1.000 | 0.987 / 0.814 / 0.519 |
+| DEPTH (mean n 9–12 at K′ n + 2) | 0.405 | 0.302 |
+| acc_k24 at n 8 / 9 | 0.542 / 0.536 | 0.357 / 0.342 |
+| RS restart at r 8, n 9 / 10 / 12 (fresh 8-op problems, K′ 10) | ≥ 0.998 | 0.531 / 0.519 / 0.457 |
+| RS restart at r 6 | ≥ 0.998 | 0.97–0.99 |
+
+**Reading.**
+- With the pretrained table, N1's **single step improves** (212-13: m 16 0.616 → 0.860) but its **multi-pass rollout degrades from about pass 7**, including in range.
+- So "the pretrained table is length-tolerant" holds per step, not for the trajectory (Audit 14:2x).
+- The swap puts a model trained on one table onto another, so it predicts nothing about a model *trained* on the pretrained table [ASSUMED].
+
+**Consequences for D3** (docs/research_bottleneck_2026-10-16/D3_v1.md):
+- FROZEN-WPE is cited on its per-step evidence only, and the table is tested as a factorial (D3-T vs D3-F), not assumed.
+- The FT from N1 with a reset table starts below N1 at n 7–8, so it is demoted to optional.
+
+**Note 212-15 (2026-10-16 14:27 EDT; D3 Stage 0 rows, pre-stated before any output; $0, local fp32, eval_bs 32, eval-only; the card = each model's eval card; theory/score_s212 will add a reader before any file lands; Audit's OK is needed to run them; definitions in D3_v1.md §5–§6).**
+
+**S0-1 SELECTOR on N1 (2070) → eval_d3sel.json.**
+- **Fields:**
+  - cells {"n_r": {n_items, intact, restart, maskvoid, refresh, gapped}} for n 9–13, r ∈ {4, 6}, on the RS items (exact decode at t = n − r), acc at K′ n + 2 (restart and gapped are fresh runs at K′ r + 2);
+  - acc_n2 {arm: {n}} for intact, maskvoid and refresh, n 1..16;
+  - gapped_control {"n_r": {n_items, restart, gapped}} for n 5–8, r ∈ {2, 4};
+  - gapped_supported.
+- **Arms:**
+  - **MASKVOID:** the intact rollout with each VOID slot's keys masked at every bank reader (core and coda, current and stored) from the pass it becomes VOID;
+  - **REFRESH:** at every pass t ≥ 1, slots whose argmax R(V_t[j]) equals their input class have their stored entry and their carry set to V_0[j] (rollout(edit=…));
+  - **GAPPED:** a fresh run from the exact decode, with the remaining symbols at their original positions and the consumed positions pad-masked. If the harness cannot mask interior positions, gapped_supported is false and the arm is omitted.
+- **Rule:**
+  - D_R = pooled (restart − intact) over n 9–12, r ∈ {4, 6}, cells ≥ 100 items, item-weighted;
+  - G_MV = the same pooling of (maskvoid − intact);
+  - **ADD-VOIDMASK iff G_MV ≥ 0.5·D_R and acc_n2(maskvoid) ≥ acc_n2(intact) − 0.02 at every n 1..8.** Otherwise no add-on.
+  - REFRESH's and GAPPED's shares are descriptive.
+
+**S0-2 LENGTH-FREE-K reference on N1 (2070), N2 (4060) and N3 (3070) → eval_lfk.json.**
+- **Fields:**
+  - slot {"kind_bucket": {events, strict_correct}}, kind ∈ {copy, changed, void, all}, bucket ∈ {le28, 29_32, ge33};
+  - step {"n": {events, strict_exact, voiddrop_exact}};
+  - first_wrong {"T_bucket": [slots]}.
+- **Definition:**
+  - §170 test items, n 9–16; every in-trajectory pass t ≥ 2 whose input V_{t−1} decodes strictly exact against the reference state (the reduction trajectory with VOIDs in place);
+  - per slot, R(V_t[j]) strict against the reference at t;
+  - changed = the reference class changes at t (consumption included); copy = unchanged and non-VOID; void = unchanged VOID.
+- **Reading (a′):** all-kind strict accuracy at ge33 ≥ the same at le28 − 0.01, readable with ≥ 500 events at ge33.
+- **Pre-stated:** N1 meets; N2 and N3 do not. If N1 fails or N2 meets, (a′) is replaced before any D3 use.
+
+**S0-3 STAB-HIST on N2 (4060) → eval_stabhist.json.**
+- **Fields:** {intact | self_ablate | other_ablate: {acc_n2 {n}, acc_k24 {n}}}, n 3..8. The intact arm must equal eval_vb bitwise.
+- **Arms:**
+  - **self_ablate:** in the gather only, at query slot j, the keys (s, j) for 1 ≤ s ≤ t−2 are masked;
+  - **other_ablate:** the keys (s, i ≠ j), same s;
+  - the reference implementation is scripts/rt_d3/rt_hist2.py.
+- **Rule:** STAB = the mean over n 3..6 of [(acc_n2 − acc_k24) under self_ablate] − [(acc_n2 − acc_k24) intact]. **OWN-HISTORY-STABILISES iff STAB ≥ 0.10.**
+- **Pre-stated consequence:** if not met, P(DG | DEEP) in D3's OC drops from 0.3 to 0.15, and the thesis "own-slot history gives N2 its stability" is reported as unsupported. This is a support reading only: P(met | no effect) ≈ 0.2–0.3 [ASSUMED].
+
+**Status.**
+- D3 v1 is drafted (Theory's revision after PROOFS_D3, REDTEAM_D3 and 212-14). It goes to Audit for review, then the training choice goes to the user (options A–C in D3_v1 §6; recommended A: D3-T + D3-F, cap $4.5).
+- No training code or spend before the user's OK. G1 stays held.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
