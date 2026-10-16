@@ -1,0 +1,5 @@
+[W1016 14:25:26.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+WPE intact acc_n2 {'1': 1.0, '2': 1.0, '3': 1.0, '4': 1.0, '5': 1.0, '6': 1.0, '7': 1.0, '8': 0.999, '9': 0.948, '10': 0.425, '11': 0.155, '12': 0.127, '13': 0.14, '14': 0.123, '15': 0.143, '16': 0.132}
+WPE wpe_b2 acc_n2 {'1': 0.261, '2': 0.262, '3': 0.114, '4': 0.132, '5': 0.117, '6': 0.111, '7': 0.12, '8': 0.101, '9': 0.113, '10': 0.109, '11': 0.088, '12': 0.093, '13': 0.103, '14': 0.112, '15': 0.113, '16': 0.102}
+DONE boxes/runs_fsq/s211_vb_pa_s1\eval_wpereset.json 947
+GATE boxes/runs_fsq/s211_vb_pa_s1 card NVIDIA GeForce RTX 4060 vs eval_vb NVIDIA GeForce RTX 4060 rs NVIDIA GeForce RTX 4060 acc_n2 True acc_k24 True rs cells True
