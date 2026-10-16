@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# §209 step 2 filler (Audit 20:3x 10-15): one cell, b303 gsm_codi_20ep_s1 on an A100 SXM4 (GPU_NAME=A100_SXM4), offer cap PMAX (default $0.60/h), never 580.x
+# §210 filler (user 21:5x 'go back to 3090s': RTX 3090 by default, PMAX $0.25; GPUS env lists card classes). Was the §209 step 2 A100 filler (Audit 20:3x 10-15): one cell, b303 gsm_codi_20ep_s1 on an A100 SXM4 (GPU_NAME=A100_SXM4), offer cap PMAX (default $0.60/h), never 580.x
 # (offer_pick). At HOSTPROBE OK the run is admitted only if its projection <= CAP ($12):
 #   hours = probe s/step x RATIO x STEPS / 3600 + 0.45 (setup + 20 valid evals + final eval / ablation), cost = hours x the host's $/h;
 #   RATIO = train s/step / probe s/step: 3.22 from the 3090 (b302: 2.11 / 0.6561) until an A100 host has measured its own (logged, then used).
@@ -30,12 +30,12 @@ while [ ! -f scratch/fill_s209b.stop ]; do
   bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
   bt=$(awk '!/^#/ {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0)       # Audit 21:4x: cumulative BAD-host spend cap $1.00
   if python -c "import sys; sys.exit(0 if $bt > 1.0 else 1)"; then log "CAP: §210 BAD-host spend \$$bt > \$1.00 - held; tell Audit"; exit 3; fi
-  best=""; for gn in A100_SXM4 A100_PCIE; do                            # Audit 21:4x: SXM4 or PCIe 40 / 80 GB (same sm80 chip), the cheapest qualifying offer
+  best=""; for gn in ${GPUS:-RTX_3090}; do                                   # user 21:5x 'go back to 3090s' (was A100_SXM4 A100_PCIE; GPUS env overrides)                            # Audit 21:4x: SXM4 or PCIe 40 / 80 GB (same sm80 chip), the cheapest qualifying offer
     r_=$(GPU_NAME=$gn python scratch/offer_pick.py - "$PMAX"); [ -z "$r_" ] && continue
     if [ -z "$best" ] || python -c "import sys; sys.exit(0 if float('$(echo $r_ | cut -d' ' -f3)') < float('$(echo $best | cut -d' ' -f3)') else 1)"; then best="$r_"; bgn=$gn; fi
   done
   read -r o ip dph <<<"$best"
-  if [ -z "${o:-}" ]; then log "b$n: no A100 (SXM4 / PCIe) offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
+  if [ -z "${o:-}" ]; then log "b$n: no ${GPUS:-RTX_3090} offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
   log "b$n: deploying on offer $o ($ip, $bgn, \$$dph/h)"; t0=$(date +%s); bash scratch/gen_deploy_120.sh "$o $n"
   line=$(grep "gen host b$n offer $o:" logs/gen_deploy.log | tail -1)
   if ! echo "$line" | grep -q STARTED; then
