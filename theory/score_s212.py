@@ -62,7 +62,7 @@ def rs_read(rs, ns, rset, ctrl_ns=range(3, 9)):
     ls = rs.get("long_step") or {}
     ls_lo = [ls[str(m)]["exact"] for m in range(1, 9) if str(m) in ls]; ls_hi = [ls[str(m)]["exact"] for m in range(12, 17) if str(m) in ls]
     head = bool(ls_lo and ls_hi and min(ls_lo) >= 0.99 - EPS and min(ls_hi) < 0.95)
-    readable = d is not None and dctl is not None and abs(dctl) <= 0.03 + EPS and not thin
+    readable = d is not None and dctl is not None and abs(dctl) <= 0.03 + EPS                 # thin cells (< 100) are excluded, not fatal (211-15; note 212-2)
     return {"D": d, "D_control": dctl, "thin_cells": len(thin), "readable": readable, "HISTORY_KEYED": bool(readable and d >= 0.20 - EPS),
             "HISTORY_FREE": bool(readable and abs(d) <= 0.05 + EPS), "HEAD_LIMITED": head}
 
@@ -90,7 +90,7 @@ def pf_read(pf):
         return None
     G, S0 = pf["grid"], pf["S0"]; cells = []
     for key, c in G.items():
-        k, s = (int(x) for x in key.split("_"))
+        parts = key.split("_"); k = int(c.get("k", parts[0])); s = int(c.get("s", parts[1]))       # key "k_s" or "k_s_r" (note 212-2)
         if c["n_items"] >= 100 and str(c["r"]) in S0:
             cells.append((k, s, c["r"], c["n_items"], c["S"] - S0[str(c["r"])], c["S"]))
     ins = wmean([(n, d) for k, s, r, n, d, _ in cells if k + r <= 8]); out = wmean([(n, d) for k, s, r, n, d, _ in cells if k + r > 8])
