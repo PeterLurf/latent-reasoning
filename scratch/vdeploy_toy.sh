@@ -45,7 +45,7 @@ sleep 3; rmdir $CAPLOCK 2>/dev/null                                      # the n
 echo "$ID vast offer $O created $(date '+%Y-%m-%d %H:%M'): label $LBL, queue $Q (logged at create by vdeploy_toy.sh)" >> scratch/pods.txt
 # STUCK_POLL_BEGIN (Audit 2026-10-09 ~17:16: b240 lost 3 hosts that read cur_state stopped mid image pull) - a poll counts toward STUCK_LOADING only if
 # cur_state is stopped AND status_msg shows no image-pull progress (actual_status dropped 18:1x: real stuck hosts read loading); the 60-poll (20-min) loop stays the hard cap.
-stuck_poll() { [ "$1" = "stopped" ] && ! echo "$3" | grep -qiE "pull|download|extract|waiting"; }   # 17:5x: b241 sat loading / stopped / empty msg 20+ min -> actual_status is not a progress signal ($2 kept for the log)
+stuck_poll() { { [ "$1" = "stopped" ] || echo "$3" | grep -qi "retrying in"; } && ! echo "$3" | grep -qiE "pull|download|extract|waiting"; }   # 2026-10-15 (Audit): + cur_state running with an image-pull "Retrying in" loop (b303 56183853 sat 22 min)   # 17:5x: b241 sat loading / stopped / empty msg 20+ min -> actual_status is not a progress signal ($2 kept for the log)
 # STUCK_POLL_END
 for i in $(seq 1 60); do
   j=$(bash "$V" show instance $ID --raw 2>/dev/null)
