@@ -16779,6 +16779,19 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
    - CE(K′ = n): 6.80 → 2.70 → 2.31 (pa), 6.80 → 2.58 → 2.01 (carry).
    - pamct is still running, with answer_ce 0.98 at 1k vs 2.12 for pa (descriptive).
 
+**Note 211-6 (2026-10-16 00:23 EDT; before any §211 output; the G1b gate definition, at Audit's request, and Audit's N3 release rule, fixed before its comparison smoke was read; gates only, no reading changed).**
+
+1. **G1b's CE criterion, for this and every future gate, is the trained-range CE.**
+   - The criterion is CE(K′ = n) pooled over n ≤ the curriculum's current n_max at the smoke's end (n ≤ 3 at 2k under R4). Out-of-range n are reported descriptively.
+   - **Why:** under the curriculum, items above n_max are never trained during the smoke. Their CE at K′ = n is untrained extrapolation, which can rise (confidently wrong) without any drift fault. The pooled form mixed the two.
+   - The drift criterion (the per-pass cos / P(num) drift falls below its init value) is unchanged.
+2. **N3 (pamct) G1b.**
+   - The pooled CE failed: 6.80 → 4.95 → 6.43. Split: the trained range n ≤ 3 fell cleanly (1.50 → 1.31); the untrained n 4–8 rose to 10.5; free-running ≈ MCT-applied.
+   - **Release rule (Audit, fixed before the comparison was read):** run a like-for-like pa smoke to 2k with the same split.
+     - If pa's n 4–8 CE also rises: release N3 (curriculum extrapolation, common to both).
+     - If pa's n 4–8 is flat or falling: hold N3 for Theory, as a possible MCT side effect (confident errors beyond the curriculum).
+   - Either way, the n 4–8 split is reported beside §211's N3 result, descriptively.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
