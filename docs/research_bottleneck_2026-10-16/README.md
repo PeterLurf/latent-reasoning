@@ -9,3 +9,4 @@ Opus subagents: step capability (S), depth invariance (D), learned stopping (H),
 - SYNTH2_spec_v0.md: Theory synthesis VB-2 (superseded by the red team)
 - REDTEAM2_v0.md: red team (2 blockers; smallest cell set D / S / FT; VB-2G constraint-faithful variant)
 - PROOFS2_v0.md: proof pass (Lemma 0/1 proved; A2 false in GPT-2; restamp-at-storage, normaliser and CANON-vs-COMMUTE fixes)
+- Final draft: docs/THEORY_VB2G_DRAFT_2026-10-16.md
