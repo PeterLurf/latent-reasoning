@@ -297,7 +297,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
-| 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on an A100; REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
+| 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 
 ## Live sections
 
@@ -16536,6 +16536,15 @@ The F-NR outcome table (MORE-SERIAL / NO-CHANGE + CLOCK-REBUILT / NO-CHANGE / HU
 **Retention:** keep trainable.pt, eval_items.json, eval_latent_texts.json and the final checkpoint until the reading is recorded. Intermediate checkpoints are deleted.
 
 **Cost:** about $8.6 projected; **cap $12**. Realised $ replaces the projection.
+
+**Note 210-1 (2026-10-15 21:55 EDT; before any §210 output; the user's decision "go back to 3090s", typed in Audit's session ~21:5x EDT (Audit's clock) and relayed verbatim). Card change; bars and rules unchanged.**
+* **Card: RTX 3090, replacing the A100 SXM4.**
+  - Experiments' G-TIME on the A100 measured 1.735 s/step, vs the 3090's 2.11 (only +18%; the loop is launch-bound). That projected $14.2, above the $12 cap.
+  - On the 3090: 59,822 steps × 2.11 s ≈ 35 h ≈ $7.4–9.1 at $0.21–0.26/h. The cap stays $12; G-TIME at step 200 (≤ $11.5 projected) still applies.
+  - No valid or test output from the A100 probe was read.
+* **The GPU-class caveat is removed.** The 3090 is the same class as gsm_codi_4ep_s1, so STAYS-LOW's comparison with CODI4 no longer crosses GPU classes.
+* **G1′ is re-scored on the 3090 host** (the released checkpoint within 0.010 of 0.425).
+* Everything else in §210 stands: REACHES-PUBLISHED ≥ 0.348, STAYS-LOW ≤ 0.217, PARTIAL; the GAP labels; the OC block; censoring; retention.
 
 **§193 s2 result (2026-10-15 20:25 EDT; s193_rmswin_s2, b291, RTX 3090 / 590.48.01, 48k, 0 non-finite, train_sec 96,556; about 27.5 h of host time, the $/h not logged by the filler (about $7–8 at fleet 3090 rates, an estimate); theory/score_s193.py). s2 reads JOINT + LONG-STABLE, so the C6 CLAIM holds at 2 / 2 (registered: JOINT and LONG-STABLE in both seeds).**
 * **s2 by K′** (pooled n 3–8):
