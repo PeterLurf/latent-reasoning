@@ -33,6 +33,7 @@
     "other_ablate": 0.0
    },
    "HISTORY_USED": true,
+   "HIST_PATTERN": "OWN-SLOT (N2-like)",
    "swap": {
     "n_pairs": 4183,
     "newest_follow": 0.9940234281616065,
@@ -56,6 +57,7 @@
     "other_ablate": 0.0
    },
    "HISTORY_USED": false,
+   "HIST_PATTERN": null,
    "swap": {
     "n_pairs": 4184,
     "newest_follow": 1.0,
@@ -81,6 +83,7 @@
     "other_ablate": 0.0
    },
    "HISTORY_USED": true,
+   "HIST_PATTERN": "REDUNDANT or CROSS-SLOT GATHER (PA arms cannot separate; 213-13)",
    "swap": {
     "n_pairs": 4182,
     "newest_follow": 0.8986131037780966,

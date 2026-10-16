@@ -64,7 +64,11 @@ def hist(h, ev):
     sw = h.get("swap") or {}
     sw_ok = sw.get("n_pairs", 0) >= 100 and sw.get("newest_follow") is not None and sw.get("old_follow") is not None
     rnn = None if (not sw_ok or used is None) else bool(sw["newest_follow"] >= 0.95 - EPS and sw["old_follow"] <= 0.02 + EPS and not used)
-    return {"intact_n6_8": I, "gate_intact_equals_eval_vb": gate, "readable": readable, "drop": drop, "HISTORY_USED": used, "swap": sw, "omitted": h.get("omitted"),
+    ds, do = drop["self_ablate"], drop["other_ablate"]                     # note 213-13: descriptive pattern of a HISTORY-USED cell
+    pat = (None if used is not True else "OWN-SLOT (N2-like)" if (ds is not None and ds >= 0.10 - EPS) else
+           "CORE/CODA" if (do is not None and do >= 0.10 - EPS) else
+           "REDUNDANT (self and other each < 0.10)" if (ds is not None and do is not None) else "unresolved (arm omitted)")
+    return {"intact_n6_8": I, "gate_intact_equals_eval_vb": gate, "readable": readable, "drop": drop, "HISTORY_USED": used, "HIST_PATTERN": pat, "swap": sw, "omitted": h.get("omitted"),
             "OLD_SWAP_follow": sw.get("old_follow"), "RNN_IN_FUNCTION": rnn}
 
 
@@ -114,7 +118,8 @@ def cell(tag, d):
                   "D3-C2-ATTN (C2 in a pass-global attention memory)" if c2a else
                   "D3-C2 (C2 with the memory in form only)" if c2 else
                   "parts: LENGTH-FREE %s / DEPTH-GENERAL %s (%.3f) / VB-C1 %s / HISTORY-USED %s" % (lfree, dg, a["DEPTH_9_12"], a["VB_C1"], hr["HISTORY_USED"]))
-    o["label"] += " | OLD-SWAP follow %s%s" % (hr["OLD_SWAP_follow"], " | RNN-IN-FUNCTION" if hr["RNN_IN_FUNCTION"] else "")
+    o["label"] += " | OLD-SWAP follow %s%s%s" % (hr["OLD_SWAP_follow"], " | RNN-IN-FUNCTION" if hr["RNN_IN_FUNCTION"] else "",
+                                                (" | history: " + hr["HIST_PATTERN"]) if hr["HIST_PATTERN"] else "")
     return o
 
 
@@ -140,6 +145,8 @@ def main():
     for k, d in S212.STAGE0.items():
         h, ev = jl(d, "eval_d3hist.json"), jl(d, "eval_vb.json")
         ref[k] = hist(h, ev) if (h and ev) else None
+        if ref[k] and k in ("N2", "N3") and (ref[k]["HIST_PATTERN"] or "").startswith("REDUNDANT"):   # 213-13: PA arms lack a cross-slot-only arm
+            ref[k]["HIST_PATTERN"] = "REDUNDANT or CROSS-SLOT GATHER (PA arms cannot separate; 213-13)"
     exp = {"N1": lambda r: r["HISTORY_USED"] is False and r["RNN_IN_FUNCTION"] is True,   # explicit True / False: None (omitted) fails
            "N2": lambda r: r["HISTORY_USED"] is True and r["RNN_IN_FUNCTION"] is False, "N3": lambda r: r["HISTORY_USED"] is True}
     ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
