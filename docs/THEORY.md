@@ -17864,6 +17864,11 @@ In VBank, core_t depends on the pass-global bank at pass t, so "cache core(V_0) 
 
 Any SCSE-style transfer must therefore inject the input-driven change outside the anchor difference. Per 213-7, that means a per-slot fixed point at the slot's own current state, which leaves precondition (i) as the design question. The derivation must pick its form and prove that pass 1 can reduce.
 
+**Note 213-9 (2026-10-16 15:03 EDT; closes 213-7 / 213-8 with Audit's answer; the lead stays held).**
+- **Why SCSE's loop leaves its anchor:** it starts at h_0 = e, while the anchor is h̄ = e + a(e), so δ_0 = −a(e) ≠ 0. The loop **relaxes toward a once-computed target**.
+- **In VERSION-BANK no such target exists up front.** The serial answer is what the passes compute; a one-pass target is exactly what PROBE(0) / (1) show is unavailable (0.12–0.13).
+- **So the anchor form does not transfer.** If the trigger fires, the design shape is the per-slot gated update with its fixed point at the slot's own current state (Audit agrees).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
