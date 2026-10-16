@@ -7,4 +7,3 @@ prosqa/ckpt_ext/hf/data/gsm8k_test.json
 prosqa/ckpt_ext/hf/simcot_codi/vocab.json
 prosqa/ckpt_ext/hf/simcot_codi/merges.txt
 theory/codi_probe.py
-prosqa/ckpt_ext/hf/codi/pytorch_model.bin

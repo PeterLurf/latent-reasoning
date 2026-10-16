@@ -6,7 +6,7 @@
 # A refused host: vdestroy, its gen8 drain watcher stopped by pid, drained_hosts + exclude list, billed minutes logged; stays pending. 4 BAD / refused hosts -> held.
 #   PMAX=0.60 nohup bash scratch/s209b_fill.sh >> logs/fill_s209b.out 2>&1 &
 cd "$(dirname "$0")/.."
-PMAX=${PMAX:-0.60}; CAP=11.5; STEPS=59822; RATIO=${RATIO:-3.22}; n=303; BADN=0; BADMAX=4; BADLOG=logs/s209b_bad_cost.log
+PMAX=${PMAX:-0.60}; CAP=11.5; STEPS=59822; RATIO=${RATIO:-3.22}; n=303; BADN=${BAD0:-0}; BADMAX=4; BADLOG=logs/s209b_bad_cost.log
 export GPU_NAME=A100_SXM4; export EXTRA_120="$(tr '\n' ' ' < scratch/gen_q_b303.extra)"
 log() { echo "$(date +%T) fill_s209b $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 probe() {   # host port -> "OK <s/step>" / "SLOW" / ""
