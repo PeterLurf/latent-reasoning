@@ -118,7 +118,7 @@ def alibi_init(H=12, n_alibi=6):
     return torch.tensor([-(2.0 ** (-8.0 * (h + 1) / n_alibi)) if h < n_alibi else 0.0 for h in range(H)])
 
 
-def bias_row(b, b0, gm, t, nver, pad, off_v0=False, off=False):
+def bias_row(b, b0, gm, t, nver, pad, off_v0=False, off=False, keep=None):
     """the bank logit bias over stored versions 0..nver-1, read at pass (or coda) index t: beta0 (version 0, no age term) or beta + gamma * (t - 1 - s);
     -inf on padded slots (pad (B, T) bool, True = real), on version 0 when off_v0, everywhere when off. b, b0, gm: (H,) -> (B, H, 1, nver * T)."""
     B, T = pad.shape; s = torch.arange(nver, device=pad.device); age = (t - 1 - s).to(b.dtype)
@@ -127,6 +127,8 @@ def bias_row(b, b0, gm, t, nver, pad, off_v0=False, off=False):
     valid = pad[:, None, :].expand(B, nver, T).reshape(B, nver * T)
     if off_v0:
         valid = valid & (s.repeat_interleave(T) != 0)[None]
+    if keep is not None:                                                    # eval-only (note 211-14): a (nver,) bool of versions kept readable
+        valid = valid & keep.to(pad.device).repeat_interleave(T)[None]
     if off:
         valid = torch.zeros_like(valid)
     return torch.where(valid[:, None, None, :], row[None, :, None, :], torch.full((), NEG, dtype=row.dtype, device=row.device))
@@ -160,6 +162,7 @@ class VBankN(torch.nn.Module):
         self.bank_off = False                                               # True: every bank logit -inf (G1 / the calibration rollout = exact CARRY)
         self.cap = None                                                     # calibration: a dict -> {("core" | "coda", layer, t): the layer's input h}
         self.gather_log = None                                              # a list -> per pass (t, (B,) mean self-mass on (t-1, j) over heads / real slots)
+        self.ver_keep = None                                                # eval-only (note 211-14): f(t, nver) -> (nver,) bool of bank versions kept (None = all)
 
     def nrm(self, V, rms0):
         return self.gain * (V * (rms0 / V.pow(2).mean(-1, keepdim=True).sqrt()))
@@ -168,7 +171,7 @@ class VBankN(torch.nn.Module):
         B, T, D = V.shape; a = F.layer_norm(V, (D,), self.gln_w, self.gln_b)
         return (a @ self.gk_w + self.gk_b).view(B, T, self.H, self.hd).transpose(1, 2)
 
-    def gather(self, t, gk, NV, pad, off_v0=False):
+    def gather(self, t, gk, NV, pad, off_v0=False, keep=None):
         """PURE-ANNEAL (draft §3): U[j] = sum_{s < t, i} softmax(l_{j,(s,i)} - c * 1[(s, i) != (t-1, j)]) N(V_s)[i], per head on its 64-d slice; fp32 (fp64 in
         the gates), autocast off: at c = 1e4 the weights are exactly one-hot, so U == N(V_{t-1}) bitwise (gate_carry_bitwise)."""
         B, T = pad.shape; H, hd = self.H, self.hd; dev = pad.device; dt = torch.float64 if NV[0].dtype == torch.float64 else torch.float32
@@ -182,6 +185,8 @@ class VBankN(torch.nn.Module):
             valid = pad[:, None, :].expand(B, t, T).reshape(B, t * T)
             if off_v0:
                 valid = valid & (s_idx != 0)[None]
+            if keep is not None:
+                valid = valid & keep.to(dev).repeat_interleave(T)[None]
             w = torch.softmax(lg.masked_fill(~valid[:, None, None, :], NEG), -1)
             U = (w @ torch.cat(NV[:t], 1).to(dt).view(B, t * T, H, hd).transpose(1, 2)).transpose(1, 2).reshape(B, T, H * hd)
             if self.gather_log is not None:
@@ -199,7 +204,7 @@ class VBankN(torch.nn.Module):
                 h = block_bank(src, i, h, None, None, None)
             else:
                 bk = torch.cat([k for k, _ in kvs[i][1:t]], 2); bv = torch.cat([v for _, v in kvs[i][1:t]], 2); T_ = h.shape[1]
-                bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, False, self.bank_off)[..., T_:].expand(-1, -1, T_, -1)
+                bb = bias_row(bp[0][r], bp[1][r], bp[2][r], t, t, pad, False, self.bank_off, self.ver_keep(t, t) if self.ver_keep else None)[..., T_:].expand(-1, -1, T_, -1)
                 if self.cap is not None:
                     self.cap[("coda", i, t)] = h.detach()
                 h = block_bank(src, i, h, bk, bv, bb)
@@ -229,11 +234,12 @@ class VBankN(torch.nn.Module):
         coda_at(0, V0); push(V0); carry = V0
         for t in range(1, K + 1):
             off_ = v0_off_after is not None and t > v0_off_after
-            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, gk, NV, pad, off_)
+            kp_ = self.ver_keep(t, t) if self.ver_keep else None
+            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, gk, NV, pad, off_, kp_)
             h = h.detach() if sg_input else h
             for li, i in enumerate(CORE):
                 bk = torch.cat([k for k, _ in kv[i]], 2); bv = torch.cat([v for _, v in kv[i]], 2)
-                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pad, off_, self.bank_off).expand(-1, -1, T, -1)
+                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pad, off_, self.bank_off, kp_).expand(-1, -1, T, -1)
                 if self.cap is not None:
                     self.cap[("core", i, t)] = h.detach()
                 h = block_bank(g, i, h, bk, bv, bb)
