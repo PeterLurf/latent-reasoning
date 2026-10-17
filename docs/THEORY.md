@@ -18083,6 +18083,26 @@ Entry is at 11k (answer_ce), the same as N1.
   - STAB_dup < 0.05 with STAB_dup_foreign < 0.05: the bank's size, not its content, matters;
   - STAB_dup < 0.05 with STAB_dup_foreign ≥ 0.10: the newest-content flood is what rescues it.
 
+**Note 213-23 (2026-10-16 22:33 EDT; the 213-21 / 213-22 content controls on the references; 4e1e6764: N1 on the 2070, N2 on the 4060; the earlier arms reproduce ae8d67b6 bitwise; intact = eval_vb; scored with theory/score_s213's hist24).**
+
+**Both references read CONTENT-STABILISES** (STAB, mean over n 3..6):
+
+| cell | bank | dup_newest | dup_foreign (descriptive) | self | other |
+|---|---|---|---|---|---|
+| N1 CARRY | 0.282 | **0.277** | 0.300 | omitted | 0.282 |
+| N2 PA | 0.840 | **0.764** | 0.050 * | 0.070 | 0.220 |
+
+\* N2's dup_foreign also destroys acc_n2 (0.252 / 0.120 at n 3 / 4). STAB is the extra loss at K′ 24 *beyond* K′ n + 2, so it under-reads an arm that breaks both. That row is read from the raw accuracies, not from STAB.
+
+**Reading.**
+- **Size is not what matters; history content is.** Keeping the entry count while replacing versions 1..t−2 with copies of the newest version removes K′ 24 stability as fully as removing them. Both cells use the **content** of their older versions for long-run behaviour.
+- **N1:** its K′ n + 2 answer ignores the bank's mid-version content, even foreign content (acc_n2 ≈ 1.000 in every arm). Its K′ 24 behaviour depends on that content.
+  - So §211's "N1 computes through the carry alone" (bank-swap 0.000) holds **for the step at K′ n + 2**. For the long horizon, N1's core / coda use stored history content.
+  - This extends 213-21's correction.
+- **N2** reads mid-version content even at K′ n + 2: foreign content collapses it from n 3.
+
+**For §213's cells** (their hist24 runs last in the 3070 chain), the 213-20 / 213-21 reporting applies as pre-stated: CONTENT-STABILISES is reported as "memory used causally for long-run stability (C6), not for the step", beside the registered (f).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
