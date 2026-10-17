@@ -16,8 +16,8 @@ Notation a(n) = eval_vb acc_n2[n] (K' n + 2); a_k(n) = eval_vb acc_k[k][n]. Per 
     (a_24 >= 0.99 at n 1-8); KEEPS-SELF-STAB (score_s213.hist24 CONTENT-STABILISES and STAB_self >= 0.5; else MEM-TRADED).
   Claims: SD-SELF = ABSORB and LENGTH-FREE and VB-C1 and K24-STABLE; SD-C2 = SD-SELF and DBS; SD-C2-MEM = SD-C2 and KEEPS-SELF-STAB.
 Pair (v1 §4.4): SELF-ATTRIBUTED iff SELF STOP-MOVED and CTRL not; FT-EFFECT iff CTRL STOP-MOVED; MEM attribution; CTRL missing -> UNREAD.
-GATE-1 (eval_gate.json by_n {n: {n_kept, keep, pi, pi_E}}, pooled {pi, pi_E}): pi_pool >= 0.995 and pi_n >= 0.99 every n 9-12 and pi_E_pool >= 0.99 and
-  keep_n >= 0.70 every n.
+GATE-1 (eval_gate.json by_n {n: {items, n_keep, n_kept, keep_kv, pi, pi_E, pi_ci95, pi_E_ci95}}, pooled {pi, pi_E}): pi_pool >= 0.995 and pi_n >= 0.99
+  every n 9-12 and pi_E_pool >= 0.99 and keep_kv_n >= 0.70 every n.
     python theory/score_s215.py
 """
 import json
@@ -118,9 +118,11 @@ def gate1():
     if g is None:
         return None
     B, P = g["by_n"], g["pooled"]
-    ok = bool(P["pi"] >= 0.995 - EPS and P["pi_E"] >= 0.99 - EPS and all(str(n) in B and B[str(n)]["pi"] >= 0.99 - EPS and B[str(n)]["keep"] >= 0.70 - EPS
-                                                                       for n in range(9, 13)))
-    return {"GATE_1": ok, "pooled": P, "by_n": {n: {k: B[n].get(k) for k in ("n_kept", "keep", "pi", "pi_E")} for n in sorted(B, key=int)}}
+    kv = lambda r: r.get("keep_kv", r.get("keep"))                         # v1 §4.1's field name is keep_kv (= n_kept / items)  # noqa: E731
+    ok = bool(P["pi"] >= 0.995 - EPS and P["pi_E"] >= 0.99 - EPS and all(str(n) in B and B[str(n)]["pi"] >= 0.99 - EPS and kv(B[str(n)]) is not None
+                                                                       and kv(B[str(n)]) >= 0.70 - EPS for n in range(9, 13)))
+    return {"GATE_1": ok, "pooled": P, "by_n": {n: {"n_kept": B[n].get("n_kept"), "keep_kv": kv(B[n]), "pi": B[n].get("pi"), "pi_E": B[n].get("pi_E"),
+                                                    "pi_ci95": B[n].get("pi_ci95"), "pi_E_ci95": B[n].get("pi_E_ci95")} for n in sorted(B, key=int)}}
 
 
 def main():
