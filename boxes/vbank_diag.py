@@ -1133,12 +1133,119 @@ def part_carrier(m, TE, dev, bs, rd):
     return res
 
 
+def _parse_tree(syms):
+    """decoded symbols -> a nested170 Node tree (shunting-yard; precedence + left associativity + brackets), or None if the symbols are not one valid
+    expression over values 0..P-1 (empty, unbalanced brackets, adjacent operands / operators, unknown tokens). Redundant brackets parse."""
+    out, st = [], []
+    prev = "op"                                                             # what the previous token allows next: "op" -> an operand or "(" may follow
+
+    def red():
+        if len(out) < 2:
+            raise ValueError
+        b, a = out.pop(), out.pop(); out.append(N.Node(op=st.pop(), l=a, r=b))
+    try:
+        for s_ in syms:
+            w = s_.strip()
+            if w.isdigit():
+                if prev != "op" or not 0 <= int(w) < N.P:
+                    return None
+                out.append(N.Node(v=int(w))); prev = "val"
+            elif w in N.PREC:
+                if prev != "val":
+                    return None
+                while st and st[-1] in N.PREC and N.PREC[st[-1]] >= N.PREC[w]:
+                    red()
+                st.append(w); prev = "op"
+            elif w == "(":
+                if prev != "op":
+                    return None
+                st.append(w)
+            elif w == ")":
+                if prev != "val":
+                    return None
+                while st and st[-1] != "(":
+                    red()
+                if not st:
+                    return None
+                st.pop()
+            else:
+                return None
+        if prev != "val":
+            return None
+        while st:
+            if st[-1] == "(":
+                return None
+            red()
+    except (ValueError, IndexError):
+        return None
+    return out[0] if len(out) == 1 else None
+
+
+@torch.no_grad()
+def part_chainlabel(m, TE, dev, bs):
+    """note 213-33 CHAIN-LABEL ($0): §170 test items n 9..16. Per item cur = its expression; loop: a 1-pass rollout on batch_x(render(cur)) (batched by
+    rendered length - no padding effects, as long_step), dec = argmax R(V_1), s = VB.rerender(dec) (VOIDs dropped); s must parse into one valid expression
+    (_parse_tree) else FAIL; cur = the parsed tree; stop when cur has no operator (label = its value) or after 24 steps (FAIL). Always the model's own decode.
+    chain_exact: every step's s equalled render(reduce_k(true current state, 1)) (so the chain followed the true trajectory to the end). agree: label ==
+    the latent answer at K' n + 2 (recomputed here, vbank_eval.part_acc's chunks). by_n {items, precision (label == y; FAIL wrong), fail, chain_exact,
+    agree, prec_agree (precision among items whose label agrees with the latent answer), n_agree, steps_mean}. Note 213-34: precision_strict (label == y AND
+    exactly n steps), right_value_wrong_steps (label == y, steps != n), steps_minus_n {k: count} (k = steps - n; FAIL chains under "fail")."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE])
+    idx = np.nonzero(Nn >= 9)[0]; lat = {}
+    for n in range(9, 17):
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev)
+            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: torch.arange(len(its), device=dev)}); a_ = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+            for k_, j in enumerate(ch):
+                lat[int(j)] = int(a_[k_])
+    cur = {int(j): N._copy(TE[j]["root"]) for j in idx}; true = {int(j): N._copy(TE[j]["root"]) for j in idx}; exact = {int(j): True for j in idx}
+    label, steps = {}, {int(j): 0 for j in idx}; active = set(cur)
+    for _ in range(24):
+        if not active:
+            break
+        order = sorted(active, key=lambda j: len(N.render(cur[j]))); nxt = set()
+        for c0 in range(0, len(order), bs):
+            part = order[c0:c0 + bs]; its = [{"syms": N.render(cur[j])} for j in part]; x, pad, lens = VB.batch_x(its, dev)
+            rr = m.rollout(x, pad, 1); dec = m.rec_logits(rr["V"][1]).argmax(-1).cpu().numpy(); del rr
+            for k_, j in enumerate(part):
+                s_ = VB.rerender(list(dec[k_, :int(lens[k_])])); steps[j] += 1
+                if true[j].op is not None:
+                    tn = reduce_k(true[j], 1); exact[j] = exact[j] and s_ == N.render(tn); true[j] = tn
+                else:
+                    exact[j] = False
+                t_ = _parse_tree(s_)
+                if t_ is None:
+                    label[j] = None; exact[j] = False; continue
+                cur[j] = t_
+                if t_.op is None:
+                    label[j] = t_.v
+                else:
+                    nxt.add(j)
+        active = nxt
+    for j in active:                                                        # still operating after 24 steps
+        label[j] = None; exact[j] = False
+    out = {}
+    for n in range(9, 17):
+        js = [int(j) for j in np.nonzero(Nn == n)[0]]; L = [label.get(j) for j in js]
+        ok = [l_ is not None and l_ == TE[j]["t"] for l_, j in zip(L, js)]; ag = [l_ is not None and l_ == lat[j] for l_, j in zip(L, js)]
+        okag = [o for o, a_ in zip(ok, ag) if a_]; hist = {}
+        for l_, j in zip(L, js):                                            # 213-34: steps - n per chain; FAIL chains under "fail"
+            k_ = "fail" if l_ is None else str(steps[j] - n); hist[k_] = hist.get(k_, 0) + 1
+        strict = [o and steps[j] == n for o, j in zip(ok, js)]; rvws = [o and steps[j] != n for o, j in zip(ok, js)]
+        out[str(n)] = {"items": len(js), "precision": float(np.mean(ok)), "precision_strict": float(np.mean(strict)), "right_value_wrong_steps": float(np.mean(rvws)),
+                       "steps_minus_n": dict(sorted(hist.items(), key=lambda kv: (kv[0] == "fail", int(kv[0]) if kv[0] != "fail" else 0))), "fail": float(np.mean([l_ is None for l_ in L])), "chain_exact": float(np.mean([exact[j] for j in js])),
+                       "agree": float(np.mean(ag)), "prec_agree": float(np.mean(okag)) if okag else None, "n_agree": len(okag),
+                       "latent_acc": float(np.mean([lat[j] == TE[j]["t"] for j in js])), "steps_mean": float(np.mean([steps[j] for j in js]))}
+        print("CHAIN n", n, {k: (round(v, 3) if isinstance(v, float) else v) for k, v in out[str(n)].items()}, flush=True)
+    return {"by_n": out, "def": part_chainlabel.__doc__}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
