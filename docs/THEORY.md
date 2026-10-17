@@ -18223,6 +18223,45 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **Note 213-29 (2026-10-17 00:39 EDT; an erratum to 213-28, recorded before eval_ageproj.json exists).** 213-28's formula ΔU_rand = |U·ŵ − c₅| · s · r̂ with s = sign(U·r̂ − c_r) contradicts its own words ("moves it toward its own t = 5 mean"). The intended and implemented form (fd7c3299) is **ΔU_rand = −|U·ŵ − c₅| · sign(U·r̂ − c_r) · r̂** (sign(0) = +1). It moves U toward c_r along r̂, with ‖ΔU_rand‖ = ‖ΔU_age‖, asserted in the run. The rule is unchanged.
 
+**Note 213-30 (2026-10-17 00:43 EDT; §213's descriptive add-ons on both cells, all pre-stated: 213-17 vbhalt, 213-18 / 213-24 STEP-BY-T + EDGE, 213-26 ACC-GAIN-AFTER-10, 213-20 / 213-21 / 213-22 HIST-AT-K24 with DUP. 2f27701a / ef1f7e1c / 4d67bac0, all on the 3070, fp32, eval_bs 32, intact gates bitwise. theory/score_s213.py. None of this changes §213's registered labels: both cells read parts.)**
+
+**HIST-AT-K24: both cells read CONTENT-STABILISES, through SLVA's own-slot history.** STAB is the mean over n 3..6:
+
+| cell | bank (all readers) | **self (SLVA own-slot)** | other (core / coda) | dup_newest | dup_foreign * |
+|---|---|---|---|---|---|
+| **D3-T** | 0.796 | **0.782** | 0.000 | 0.900 | 0.119 |
+| **D3-F** | 0.907 | **0.556** | 0.019 | 0.835 | 0.160 |
+| N1 (ref) | 0.282 | — | 0.282 | 0.277 | 0.300 |
+| N2 (ref) | 0.840 | 0.070 | 0.220 | 0.764 | 0.050 |
+
+\* dup_foreign also breaks acc_n2 (D3-T 0.544 / 0.130 at n 3 / 4), so its STAB under-reads (213-23).
+
+- **D3-T's K′ 24 stability** (1.000 at n 1–8, which N1 lacks) **is carried by the content of SLVA's reads of each slot's own older versions.**
+  - Masking those versions inside SLVA alone takes acc_k24 from 1.000 to 0.21–0.28.
+  - Masking the same versions in the core / coda alone changes nothing.
+  - Keeping the count with newest copies takes it to about 0.1.
+- **This is the D3 thesis channel** (D3_v1 §1, M2: N2's own-slot history), now **causal in the SLVA cells for long-run stability (C6)**.
+  - It is reported as pre-stated (213-20 / 213-21): "memory used causally for long-run stability (C6), not for the step". The registered (f) at K′ n + 2 is still 0.000.
+  - It answers 213-19's open question. In N2 the same pattern was redundant: self 0.070 of 0.840.
+- **At K′ n + 2,** SLVA *reads* the history content (foreign content misleads it from n 3–4) but does not *need* it (masking costs 0.000). The newest version suffices for the step; the older versions keep the state from drifting over long horizons.
+
+**The depth limit (decode-free and decode-level):**
+- **ACC-GAIN-AFTER-10:** −0.003 (D3-T) / −0.001 (D3-F). Both read STOPS-AT-10, like N1–N3.
+- **STEP-BY-T:** both read GRADUAL-DRIFT by 213-18's rule (exact-input step 0.97 → 0.66 / 0.95 → 0.70 from t 2–4 to t 5–8). Changed slots stay ≥ 0.93 to t 8.
+- **EDGE (decode-level, descriptive per 213-26):**
+  - h_7_9 is 0.613 / 0.599;
+  - the median decoded t_fin is 9 at n 9–12 (D3-T) and 9–13 (D3-F);
+  - ORS_6_8 is 0.746 / 0.770 (ORD).
+- **vbhalt:**
+  - HALT-EXACT ✓ and STALL-SHIFT ✓ (shift 1.000; 5,000 qualifying);
+  - NOT-PREMATURE ✗, DEPTH-TIMING ✗, C5-VB ✗;
+  - halt exact at n 9 is 0.464 / 0.822 and about 0 at n ≥ 10, where items halt at the right count with a wrong state; never-halting rises to 0.35 / 0.68 at n 16.
+
+**What §213 leaves for D4:**
+- the step is length-free;
+- the slot-local attention memory is causally used for long-run stability;
+- what remains is the answer-level stop after pass 10.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
