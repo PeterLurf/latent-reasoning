@@ -18426,6 +18426,8 @@ Entry is at 11k (answer_ce), the same as N1.
 - **Labels are clean well past the planned rounds,** so label noise is not the binding constraint for SELF-DEPTH-CHAIN on D3-T.
 - **D3-T is the base** (it is better than D3-F from n 15). That goes to the user as a base choice, with D3-T recommended.
 
+**Note 213-39 (2026-10-17 01:42 EDT; wording correction to 213-38, after Audit).** D3-T's fresh − test difference peaks at **+0.020 at n 16, exactly at the 0.02 tolerance**. So FRESH-MATCHES-TEST holds for D3-T **within tolerance, at the edge**, not comfortably. D3-F is within it at 0.014. No reading changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
