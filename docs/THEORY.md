@@ -18384,6 +18384,29 @@ Entry is at 11k (answer_ce), the same as N1.
 - right_value_wrong_steps is ≤ 0.001 at every n, and every value-correct chain is chain-exact. So Audit's keep filter ("parses, and exactly n steps") gives clean targets in both cells.
 - **For SELF-DEPTH-CHAIN's base choice:** D3-F labels n ≤ 12 marginally better, and D3-T labels n ≥ 13 clearly better. With rounds past n 12 in mind, D3-T is the better labeller (descriptive; it goes to the user as a base choice).
 
+**Note 213-37 (2026-10-17 01:35 EDT; CHAIN-LABEL-FRESH, a $0 descriptive row for the SELF-DEPTH-CHAIN draft's Stage 0, pre-stated before any output; eval-only, D3-T then D3-F on the 3070, fp32, eval_bs 32; Audit's OK needed).**
+
+**Why.** 213-35 / 213-36 measured the labeller on §170 *test* items at n ≤ 16. Training rounds would label **fresh** items (Audit's rule), and later rounds would go **past n 16**.
+
+**The arm.**
+- **Items:** freshly generated with nested170.generate(rng, n), rng seed 21337, 1,000 per n for **n 9–20**.
+- **Exclusion:** the §170 test set (and the SERIAL pool), by exact rendered-syms match, as the trainer's EXCL does. Excluded draws are redrawn. Report the collision rate per n.
+- **Labelling:** the same RE-ROOT CHAIN as 213-33, always on the model's own decode, with step cap n + 4.
+- **Gold:** generator values, **for evaluation only**.
+
+**Per n, report:**
+- strict precision (right value in exactly n steps); fail; right_value_wrong_steps; steps − n;
+- **keep rate under Audit's filter** ("parses at every step and finishes in exactly n steps"; it needs only the generator's n);
+- **post-filter precision** (precision among kept items);
+- the exclusion collision rate;
+- wall-seconds per item.
+
+**Descriptive readings** (no rule fires here; they feed the draft):
+- **FRESH-MATCHES-TEST:** |strict precision fresh − test| ≤ 0.02 at n 9–16.
+- **The labelling horizon:** the largest n with post-filter precision ≥ 0.99 and keep ≥ 0.5.
+
+**Output:** <cell>/eval_chainlabel_fresh.json, with by_n {n: {items, precision_strict, fail, right_value_wrong_steps, steps_minus_n, keep, prec_kept, collide_rate, sec_per_item}}.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
