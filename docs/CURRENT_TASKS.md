@@ -27,6 +27,7 @@ touching fsq120 / table132 / core. Never edit a module while a deploy is in flig
 deltas5). One fill_generic at a time. Destroy with scratch/vdestroy.sh (bare `vast destroy` aborts at its y/N prompt).
 
 ### Vast (7 hosts, ~$1.4/h; 14:27 2026-10-10)
+* 07:37 10-17 (Experiments): §210 CODI-20 LANDED + scored by Theory REACHES-PUBLISHED (acc 0.379; 0-latent 0.171, '<<' 0.074; caf5fc90 / dd50825d); realised ~$9.28 / $12; mirror deleted, trainable.pt kept. NO Vast instances. Also overnight (all committed, Theory has them): CHAIN-LABEL + CHAIN-LABEL-FRESH on D3-T / D3-F (strict n 9-12 >= 0.976; D3-T fresh n 20 0.781), D4 S0 rows, AGE-PROJ. All local cards idle; no approved work queued.
 * 02:3x 10-15 (Experiments): §205 IIT-SERIAL: s205_fill (one filler, driver-pinned) - b298 s3 RUNNING on 209.226.246.174:53250 (56051379, 595.84,
   STARTED 01:53, HOSTPROBE OK); b296 s1 / b297 s2 wait for a 570.172.08 offer <= $0.28 (retry every 10 min); guard s205 cap $18. gpu_watch is now driven
   by scratch/gpuwatch_autoadd.sh (291 295 296 297 298; restarts gpu_watch by its own pid when a cell STARTs or the watcher exits). §206 JOINT-COT: harness
