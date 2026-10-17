@@ -1,0 +1,29 @@
+{
+ "ref": "scratch/s213_args_ref_n2.json",
+ "diff": {
+  "arch": [
+   null,
+   "SLVA"
+  ],
+  "eval_bs": [
+   250,
+   64
+  ],
+  "mode": [
+   "pa",
+   "slva"
+  ],
+  "out": [
+   "boxes/runs_fsq/s211_vb_pa_s1",
+   "boxes/runs_fsq/s213_d3t_s1"
+  ],
+  "table": [
+   null,
+   "train"
+  ],
+  "train_driver": [
+   "595.71.05",
+   "595.58.03"
+  ]
+ }
+}
