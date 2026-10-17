@@ -28,6 +28,10 @@ TREE = "D:/Latent/scratch/_tmp/sd215_tree"
 for i, v in enumerate(sys.argv):
     if v == "--tree":
         TREE = sys.argv[i + 1]
+PRE = "D:/Latent"                                                           # s7's pre-edit tree (final-tree run: --tree D:/Latent --pre scratch/_tmp/pre_tree)
+for i, v in enumerate(sys.argv):
+    if v == "--pre":
+        PRE = sys.argv[i + 1]
 sys.path.insert(0, TREE)
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
@@ -99,7 +103,7 @@ def g_s7(dev):
     o = {}; base = "D:/Latent/scratch/_tmp/s215_plain"
     for mode in ("pa", "carry", "slva"):
         logs = {}
-        for tag, cwd in (("pre", "D:/Latent"), ("new", TREE)):
+        for tag, cwd in (("pre", PRE), ("new", TREE)):
             out = "%s/%s_%s" % (base, mode, tag); os.makedirs(out, exist_ok=True)
             for f_ in os.listdir(out):
                 os.remove(os.path.join(out, f_))
@@ -179,11 +183,11 @@ def g_s4(dev):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cpu"); ap.add_argument("--tree", default=TREE); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cpu"); ap.add_argument("--tree", default=TREE); ap.add_argument("--pre", default=PRE); a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; os.makedirs(OUT, exist_ok=True); os.chdir("D:/Latent")
     assert os.path.abspath(VB.__file__).replace("\\", "/").startswith(TREE.rstrip("/") + "/boxes"), (VB.__file__, TREE)
     r = {"fix": lambda d: {"n": len(fixture(d)), "pass": True}, "s0": g_s0, "s2": g_s2, "s4": g_s4, "s7": g_s7, "s8": g_s8}[a.gate](a.device)
-    r["device"] = torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu"; r["tree"] = TREE; r["vbank_file"] = VB.__file__
+    r["device"] = torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu"; r["tree"] = TREE; r["pre"] = PRE; r["vbank_file"] = VB.__file__
     json.dump(r, open(os.path.join(OUT, "%s.json" % a.gate), "w", newline="\n"), indent=1); print(a.gate, "PASS" if r["pass"] else "FAIL", json.dumps(r)[:1600], flush=True)
 
 

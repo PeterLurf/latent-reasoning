@@ -1,0 +1,10 @@
+{
+ "note": "G-S7 on the committed tree (85e49560) vs the pre-edit tree (HEAD~1 vbank.py / vbank_diag.py): pa and slva bitwise; carry differed only in step 3's loss (7.381218433 vs 7.381217956; steps 1-2 and step 3's gn_preclip identical). Two re-runs of the NEW code gave both values (new2 7.381218433, new3 7.381217956 == pre bitwise): CPU run-to-run reduction-order nondeterminism (OMP 4 threads), not the edit. The WIP-tree run of the same code (identical file, cmp) was bitwise on all three modes.",
+ "carry_new_runs_step3_loss": {
+  "new1": 7.381218433380127,
+  "new2": 7.381218433380127,
+  "new3": 7.381217956542969,
+  "pre": 7.381217956542969
+ },
+ "verdict": "PASS (carry: new3 == pre bitwise; new vs new nondeterministic at the same ulp)"
+}

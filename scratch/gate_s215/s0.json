@@ -1,0 +1,34 @@
+{
+ "vbank_chain_label": 0,
+ "vbank_s215_gate": 0,
+ "selfdepth_chain_label_reads": [
+  "rec[\"chain_label\"] @ line 146"
+ ],
+ "sd_label_map_line": [
+  "it[\"t\"] = rec[\"chain_label\"]  # SD-LABEL-MAP"
+ ],
+ "self_item_keys": [
+  "E_self",
+  "n",
+  "syms",
+  "t"
+ ],
+ "mass_stats_self": {
+  "chg": [
+   15.391432166099548,
+   298
+  ],
+  "copy": [
+   386.63965129852295,
+   1176
+  ]
+ },
+ "recode_calls_self_vb_loss": 0,
+ "recode_calls_self_mass_stats": 0,
+ "recode_calls_plain_vb_loss": 4,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 4060",
+ "tree": "D:/Latent",
+ "pre": "D:/Latent",
+ "vbank_file": "D:\\Latent\\boxes\\vbank.py"
+}
