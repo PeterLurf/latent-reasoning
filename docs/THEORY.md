@@ -18678,6 +18678,8 @@ Entry is at 11k (answer_ce), the same as N1.
   - Check: b310's current projection $0.57 + BAD $0.212 + b311 ≤ $0.55 = **$1.33 ≤ $1.50**.
 - **No other change:** FT-SELF's bounds ($0.95 / $1.05), the readings, the stream and the steps are unchanged, and steps are never reduced.
 
+**Note 215-4 (2026-10-17 15:55 EDT; which bounds applied).** b311 (FT-CTRL) was **admitted 15:54 at a projected $0.33 under the original bounds**: ≤ $0.356 = min($0.40, $0.45 − BAD); host $0.1747/h; G-TIME 0.4529 s/step. **215-3's raise ($0.55 / $0.70) was not applied:** it was not needed, and Experiments' session had no user confirmation of it. So b311 runs under the registered $0.40 / $0.45. b310 (FT-SELF) was admitted at $0.63. Both cells are training; landing ~17:30 / ~18:00, then the §4.1 evals on the 3070.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
