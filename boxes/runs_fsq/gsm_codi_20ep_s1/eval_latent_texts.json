@@ -1,0 +1,136 @@
+{
+ "0": {
+  "acc": 0.17058377558756635,
+  "mean_ntok": 8.125094768764216,
+  "share_txt_with_<<": 0.07354056103108415,
+  "examples": [
+   {
+    "txt": "The answer is: 40",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 3",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 20000",
+    "ntok": 7,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 180",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 20",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 80",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 140",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 80",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 260",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 540",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 258",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 668",
+    "ntok": 7,
+    "ok": false
+   }
+  ]
+ },
+ "6": {
+  "acc": 0.37907505686125853,
+  "mean_ntok": 6.2266868840030325,
+  "share_txt_with_<<": 0.0,
+  "examples": [
+   {
+    "txt": "The answer is: 18",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 3",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 25000",
+    "ntok": 7,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 540",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 20",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 104",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 260",
+    "ntok": 6,
+    "ok": true
+   },
+   {
+    "txt": "The answer is: 120",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 160",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 520",
+    "ntok": 6,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 462",
+    "ntok": 7,
+    "ok": false
+   },
+   {
+    "txt": "The answer is: 726",
+    "ntok": 7,
+    "ok": false
+   }
+  ]
+ }
+}
