@@ -1344,12 +1344,81 @@ def part_pause(m, TE, dev, bs):
     return res
 
 
+@torch.no_grad()
+def _acc_n2_items(m, items, dev, bs):
+    """per item (syms, n, y) the argmax answer correct at K' = n + 2 (length-grouped chunks, one rollout per chunk to K' n + 2)."""
+    num = torch.tensor(N.NUM_IDS, device=dev); out = np.zeros(len(items), dtype=np.int64); by_n = {}
+    for j, it in enumerate(items):
+        by_n.setdefault(it["n"], []).append(j)
+    for n, idx in by_n.items():
+        idx = sorted(idx, key=lambda j: len(items[j]["syms"])); K = n + 2
+        for c0 in range(0, len(idx), bs):
+            ch = idx[c0:c0 + bs]; its = [items[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+            r_ = m.rollout(x, pad, K, coda_rows={K: rows}); pr = m.answer_logits(r_["coda"][K][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+            for k_, j in enumerate(ch):
+                out[j] = int(pr[k_] == items[j]["y"])
+    return out
+
+
+def part_selfdepth(m, TE, dev, bs, run):
+    """§215 eval_selfdepth.json (SELFDEPTH_v1 §4.1 / §4.3 at 5ded8703). Gold only here (from syms: _parse_tree -> N.value / VB.recode_targets).
+    consumed = pool_r1.jsonl[:cursor], cursor = the last pool_cursor in this run's log.jsonl (FT-CTRL, no pool steps: FT-SELF's, recorded as cursor_src).
+      memo: n 9..12, acc at K' n + 2 on the first 2,000 consumed records of n (pool order) vs the 2,000 GATE-1 items of n (MEMO-GAP = |difference|).
+      label_audit: 5,000 consumed records (default_rng(21970).choice, no replacement): pi_label = #{chain_label == gold value} / N, pi_state =
+        #{compose_E(t) == recode_targets(t) for all t 0..n} / N, Wilson 95 % CIs; kept_wrong = [{syms, n, step (first wrong t or None), pattern
+        (label / state / both), label, gold}].
+      items_n2: §170 test items n 9..16, per item 0/1 at K' n + 2 with T = len(syms) + 2 (T-split).
+      contamination: pool_test_hits = #{consumed records with syms in test_set(1000, n_max 20)}."""
+    import boxes.selfdepth as SD
+
+    def wilson(k, n, z=1.959964):                                           # as scratch/s215_gate1.py (GATE-1's CIs)
+        p_ = k / n; d = 1 + z * z / n; c = (p_ + z * z / (2 * n)) / d; h = z * np.sqrt(p_ * (1 - p_) / n + z * z / (4 * n * n)) / d
+        return [float(c - h), float(c + h)]
+    pdir = "boxes/runs_fsq/s215_pool"; pool, meta = SD.load_pool(os.path.join(pdir, "pool_r1.jsonl"), os.path.join(pdir, "pool_meta.json"))
+
+    def last_cursor(rd):
+        cur = None
+        if os.path.exists(os.path.join(rd, "log.jsonl")):
+            for ln in open(os.path.join(rd, "log.jsonl")):
+                r = json.loads(ln); cur = r.get("pool_cursor", cur)
+        return cur
+    cursor = last_cursor(run); src = run
+    if cursor is None:
+        src = os.path.join(os.path.dirname(run.rstrip("/")), "s215_ftself_s1"); cursor = last_cursor(src)
+    assert cursor is not None and cursor > 0, ("no pool_cursor in", run, "or", src)
+    used = pool[:cursor]; res = {"cursor": cursor, "cursor_src": src, "pool_sha256": meta["sha256"], "memo": {}, "label_audit": {}, "items_n2": {}, "T": {}}
+    gate = json.load(open("boxes/runs_fsq/s215_gate1/gate_items.json"))["items"]
+    for n in (9, 10, 11, 12):
+        pr = [dict(r, y=int(N.value(_parse_tree(r["syms"])))) for r in used if r["n"] == n][:2000]
+        gf = [dict(g, y=int(N.value(_parse_tree(g["syms"])))) for g in gate if g["n"] == n]
+        ap_, af_ = _acc_n2_items(m, pr, dev, bs), _acc_n2_items(m, gf, dev, bs)
+        res["memo"][str(n)] = {"acc_pool": float(ap_.mean()) if len(pr) else None, "acc_fresh": float(af_.mean()), "items": [len(pr), len(gf)]}
+        print("MEMO n", n, res["memo"][str(n)], flush=True)
+    sel = np.random.default_rng(21970).choice(len(used), min(5000, len(used)), replace=False); wl = ws = 0; kw = []
+    for i in sel:
+        r = used[int(i)]; tree = _parse_tree(r["syms"]); gold = int(N.value(tree)); Eg = VB.recode_targets(tree); Es = SD.compose_E(r["syms"], r["steps"], r["n"])
+        bad = [t for t in range(r["n"] + 1) if Es[t] != Eg[t]]; bl = r["chain_label"] != gold; wl += int(bl); ws += int(bool(bad))
+        if bl or bad:
+            kw.append({"syms": r["syms"], "n": r["n"], "step": bad[0] if bad else None, "pattern": "both" if (bl and bad) else ("label" if bl else "state"),
+                       "label": r["chain_label"], "gold": gold})
+    Na = len(sel); res["label_audit"] = {"n_audit": Na, "pi_label": 1 - wl / Na, "pi_state": 1 - ws / Na, "pi_label_ci95": wilson(Na - wl, Na),
+                                         "pi_state_ci95": wilson(Na - ws, Na), "kept_wrong": kw, "seed": 21970}
+    print("LABEL_AUDIT", {k: v for k, v in res["label_audit"].items() if k != "kept_wrong"}, flush=True)
+    for n in range(9, 17):
+        its = [dict(it, y=int(it["t"])) for it in TE if it["n"] == n]; c = _acc_n2_items(m, its, dev, bs)
+        res["items_n2"][str(n)] = [int(v) for v in c]; res["T"][str(n)] = [len(it["syms"]) + 2 for it in its]
+    test = {tuple(it["syms"]) for it in N.test_set(1000, n_max=20)}; res["contamination"] = {"pool_test_hits": sum(tuple(r["syms"]) in test for r in used)}
+    print("CONTAMINATION", res["contamination"], flush=True)
+    res["def"] = part_selfdepth.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run) if a.part == "selfdepth" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})

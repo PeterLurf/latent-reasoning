@@ -6,6 +6,7 @@ Part 1 (this commit): the per-slot recode targets E_t and their re-render gate.
   and its own brackets - only the reduced node's brackets can vanish, an ancestor's depend on the ancestor's operator) goes VOID and the span's LAST
   slot takes the value; E_t = E_n for t > n (HOLD).
   Gate (draft §9 Stage 0 item 5): dropping VOIDs from E_t re-renders exactly cot_steps(root)[t] inside [EOT .. " ="], for every t, on 100k items."""
+import hashlib
 import math
 
 import numpy as np
@@ -476,7 +477,11 @@ def rec_targets(items, Kb, T, dev):
     """(B, Kb + 1, T) class ids of E_0..E_Kb (HOLD past n) on each item's slots; -100 on padding."""
     E = np.full((len(items), Kb + 1, T), -100, dtype=np.int64)
     for r, it in enumerate(items):
-        e = np.array(recode_targets(it["root"], Kb)); E[r, :, :e.shape[1]] = e
+        if "E_self" in it:                                                  # §215: a self item's composed targets (no root, no gold), HOLD-padded to Kb
+            es = it["E_self"]; es = es[:Kb + 1] + [es[-1]] * (Kb + 1 - len(es)); e = np.array(es)
+        else:
+            e = np.array(recode_targets(it["root"], Kb))
+        E[r, :, :e.shape[1]] = e
     return torch.tensor(E, device=dev)
 
 
@@ -597,6 +602,11 @@ def main():
     ap.add_argument("--pause", default="none", choices=["none", "A"], help="§214 D4: A = PAUSE-A (computed pause passes, lastR)")
     ap.add_argument("--pause_p", type=float, default=0.5); ap.add_argument("--pause_max", type=int, default=8)
     ap.add_argument("--mem_check_steps", type=int, default=1, help="§214 G-P6: optimizer steps in --mem_check (2 allocates the AdamW moments first)")
+    ap.add_argument("--self_pool", default="", help="§215 SELF-DEPTH: the round's pool jsonl (pool_meta.json beside it); empty = no self steps (FT-CTRL)")
+    ap.add_argument("--p_self", type=float, default=0.0); ap.add_argument("--self_kmax", type=int, default=16); ap.add_argument("--self_kextra", type=int, default=4)
+    ap.add_argument("--self_micro", type=int, default=2, help="§215: micro on self steps (auto-picked at the deepest self shape when --auto_micro)")
+    ap.add_argument("--mem_check_self", action="store_true", help="§215 G-S9: --mem_check at the 64 longest n 12 pool records, K self_kmax, micro self_micro")
+    ap.add_argument("--draws_log_steps", type=int, default=0, help="§215 G-S3: steps 1..N logged to draws_log.json (both FT cells: 20000); 0 = off")
     ap.add_argument("--init_from", default="", help="FT (SELF-DEPTH / D4): a base model.pt; strict load (only pause_vec may be missing), calibrate() NOT called, "
                     "the base dir's calibration.json copied; a fresh optimizer")
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--lr", type=float, default=1e-4)
@@ -628,6 +638,11 @@ def main():
     assert DMm.POS_OFFSET == 0 and not DMm.POS_KEEP0, "training needs the plain position table (POS_OFFSET 0)"   # §213 G-D7
     m = make_model(s5.load_gpt2(dev), a.mode, a.table, a.pause).to(dev); a.arch = type(m).__name__
     rng_p = np.random.default_rng(a.seed + 21300) if a.pause != "none" else None   # §214: the coin, P, D and positions only (G-P12); rng / rng_k untouched
+    pool, rng_s, selfst = None, None, {"cursor": 0, "n_self_steps": 0, "self_reuse": 0}   # not "sd" (init_from binds and dels sd)
+    if a.self_pool:                                                         # §215: the pool (sha + key-set checked); rng_s = seed + 21800 (coin + self U only)
+        import boxes.selfdepth as SD
+        pool, pool_meta = SD.load_pool(a.self_pool, os.path.join(os.path.dirname(a.self_pool), "pool_meta.json")); rng_s = np.random.default_rng(a.seed + 21800)
+        print("SELF_POOL", a.self_pool, len(pool), "records, sha", pool_meta["sha256"][:16], flush=True)
     wpe0 = None
     if a.table == "frozen":                                                 # §213 D3-F: frozen BEFORE the optimizer is built (no decoupled decay)
         from boxes.slva import wpe_sha
@@ -640,12 +655,15 @@ def main():
         rng.bit_generator.state = ck["np_rng"]; rng_k.bit_generator.state = ck["rng_k"]; rng_tf.bit_generator.state = ck["rng_tf"]; torch.set_rng_state(ck["torch_rng"].cpu())
         if rng_p is not None:
             rng_p.bit_generator.state = ck["rng_p"]
+        if rng_s is not None:                                               # §215: cursor, rng_s and self counters
+            rng_s.bit_generator.state = ck["rng_s"]; selfst.update(ck["self_state"])
         GATE.load(ck["gate"]); step0 = ck["step"] + 1; t_prev = ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; cal = ck["calibration"]
         print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
     else:                                                                   # pin 3: beta0 / beta calibrated at step 0 (CARRY rollout, bank masked; fp32)
         if a.init_from:                                                     # FT: the base's weights and calibration; calibrate() would overwrite beta / beta0
             sd = torch.load(a.init_from, map_location=dev, weights_only=True); mk = m.load_state_dict(sd, strict=False); del sd
             assert not mk.unexpected_keys and all(k_ == "pause_vec" for k_ in mk.missing_keys), mk
+            assert a.pause != "none" or mk.missing_keys == [], ("§215: init_from must load every key", mk.missing_keys)
             cal = json.load(open(os.path.join(os.path.dirname(a.init_from), "calibration.json")))
             print("INIT_FROM %s (missing: %s); calibrate() NOT called; base calibration.json copied" % (a.init_from, mk.missing_keys), flush=True)
         else:
@@ -679,6 +697,25 @@ def main():
                 a.micro = mic; break
         torch.cuda.empty_cache(); log_am = {"auto_micro": a.micro, "peak_gib_by_micro": am, "mem_budget": a.mem_budget}; print("AUTO_MICRO", log_am, flush=True)
         json.dump(log_am, open(os.path.join(a.out, "auto_micro.json"), "w", newline="\n"), indent=1)
+    if pool is not None:                                                    # §215 G-S9: the deepest self shape (the 64 longest n 12 records, K self_kmax)
+        deep = sorted([r for r in pool if r["n"] == max(r_["n"] for r_ in pool)], key=lambda r: -len(r["syms"]))[:a.bs]
+        deep_its = [SD.self_item(r, a.self_kmax) for r in deep]
+        if a.auto_micro and dev.startswith("cuda"):
+            amS = {}
+            for mic in (1, 2, 4):
+                torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); ok = True
+                try:
+                    for k_ in range(mic):
+                        sub = deep_its[k_ * (a.bs // mic):(k_ + 1) * (a.bs // mic)]; L_, _, _ = vb_loss(m, sub, [a.self_kmax] * len(sub), dev, ac, a.rec_w, 0.0); (L_ / mic).backward(); del L_
+                        if a.mct:
+                            L_, _, _ = vb_loss(m, sub, [a.self_kmax] * len(sub), dev, ac, a.rec_w, 1.0, np.random.default_rng(0)); (L_ / mic).backward(); del L_
+                except torch.OutOfMemoryError:
+                    ok = False
+                m.zero_grad(set_to_none=True); pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30; amS[str(mic)] = round(pk, 2) if ok else "OOM"
+                if ok and pk <= a.mem_budget:
+                    a.self_micro = mic; break
+            torch.cuda.empty_cache(); log_amS = {"self_micro": a.self_micro, "peak_gib_by_micro": amS, "mem_budget": a.mem_budget}; print("AUTO_MICRO_SELF", log_amS, flush=True)
+            json.dump(log_amS, open(os.path.join(a.out, "auto_micro_self.json"), "w", newline="\n"), indent=1)
     KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
     if 0 in KEEP and step0 == 1:
         torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
@@ -700,7 +737,36 @@ def main():
                 Ks = [k_ + sum(z) for k_, z in zip(Ks, pz)]
             assert all(len(z) <= k_ for z, k_ in zip(pz, Ks)), "K < n + P"
         return its, Ks, pz
+
+    def draw_step(nmax, step):
+        """§215: the plain batch is drawn every step (rng, rng_k: FT-CTRL's stream); rng_s's coin then may replace it by the next bs pool records
+        (self U from rng_s). Forced shapes: mem_check_self = the deepest self shape; time_steps with a pool alternates self (odd) / plain steps.
+        -> its, Ks, pz, is_self, the draws_log record (None when forced or not logged)."""
+        its, Ks, pz = draw(nmax)
+        if pool is not None and a.mem_check and a.mem_check_self:
+            return deep_its, [a.self_kmax] * len(deep_its), None, True, None
+        lg = (not forced) and step <= a.draws_log_steps
+        if pool is None and not lg:
+            return its, Ks, pz, False, None
+        dl = {"step": step, "plain_hash": hashlib.sha1(json.dumps([[it["syms"], k_] for it, k_ in zip(its, Ks)]).encode()).hexdigest()} if lg else None
+        coin = False if pool is None else ((step % 2 == 1) if a.time_steps else bool(rng_s.random() < a.p_self))
+        if not coin:
+            if lg:
+                dl.update({"coin": False, "n": [it["n"] for it in its], "U": [k_ - it["n"] for it, k_ in zip(its, Ks)]})
+            return its, Ks, pz, False, dl
+        c0 = selfst["cursor"]
+        if c0 + a.bs > len(pool):
+            raise RuntimeError("§215: the self pool is exhausted (no reuse allowed)")
+        recs = pool[c0:c0 + a.bs]; selfst["cursor"] = c0 + a.bs; selfst["n_self_steps"] += 1
+        U = [int(rng_s.integers(0, a.self_kextra + 1)) for _ in recs]
+        its = [SD.self_item(r, a.self_kmax) for r in recs]; Ks = [a.self_kmax if forced else min(r["n"] + u, a.self_kmax) for r, u in zip(recs, U)]
+        if lg:
+            dl.update({"coin": True, "self_n": [r["n"] for r in recs], "U": U})
+        return its, Ks, None, True, dl
     last = step0 + a.time_steps - 1 if a.time_steps else (a.mem_check_steps if a.mem_check else (min(a.steps, a.stop_at) if a.stop_at else a.steps))
+    draws_log = []; tself = [0.0, 0, 0.0, 0]
+    if a.resume and os.path.exists(os.path.join(a.out, "draws_log.json")):
+        draws_log = [d for d in json.load(open(os.path.join(a.out, "draws_log.json"))) if d["step"] < step0]                                 # §215: (self time, self steps, plain time, plain steps) for G-TIME
     if dev.startswith("cuda"):
         torch.cuda.reset_peak_memory_stats(dev)
     for step in range(step0, last + 1):
@@ -708,14 +774,17 @@ def main():
         for gr in opt.param_groups:
             gr["lr"] = lr
         m.c_anneal.fill_(c_at(step, ch0, ch1) if m.anneals else 1e4); tfp = tf_at(step, tf0, tf1) if a.mct else 0.0   # §213 G-D4: the capability flag
-        m.train(); its, Ks, pz = draw(GATE.n_max()); opt.zero_grad(set_to_none=True); tot = 0.0; ch = a.bs // a.micro; sts = []
+        ts0 = time.time(); m.train(); its, Ks, pz, is_self, dl = draw_step(GATE.n_max(), step); opt.zero_grad(set_to_none=True); tot = 0.0
+        mic = a.self_micro if is_self else a.micro; ch = len(its) // mic; sts = []
+        if dl is not None:
+            draws_log.append(dl)
         m.gather_log = [] if (a.mode == "pa" and step % a.log_every == 0) else None
         slog = a.mode == "slva" and step % a.log_every == 0; sm_ = {"chg": [0.0, 0], "copy": [0.0, 0]}
-        for k_ in range(a.micro):
+        for k_ in range(mic):
             if slog:
                 m.slva_log = []
             L, st_, _ = vb_loss(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, ac, a.rec_w, tfp, rng_tf, a.mu, pz=pz[k_ * ch:(k_ + 1) * ch] if pz else None)
-            (L / a.micro).backward(); tot += float(L.item()) / a.micro; sts.append(st_)
+            (L / mic).backward(); tot += float(L.item()) / mic; st_["is_self"] = is_self; sts.append(st_)
             if slog:                                                        # §213 G-D4: SLVA off-newest mass on changed / copy slots
                 from boxes.slva import mass_stats
                 ms_ = mass_stats(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, pz=pz[k_ * ch:(k_ + 1) * ch] if pz else None)
@@ -733,7 +802,11 @@ def main():
             n_nonfinite += 1; opt.zero_grad(set_to_none=True); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush(); ans_g = None
         else:
             opt.step(); acc.append((tot, ans, rec, sts)); ans_g = ans
-        adv = None if forced else GATE.update(step, ans_g)
+        if dev.startswith("cuda"):
+            torch.cuda.synchronize(dev)
+        if pool is not None:
+            tself[0 if is_self else 2] += time.time() - ts0; tself[1 if is_self else 3] += 1
+        adv = None if (forced or is_self) else GATE.update(step, ans_g)   # §215: no self CurGate
         if adv is not None:
             log.write(json.dumps({"step": step, "cur_stage": adv[0], "n_max_train": GATE.n_max(), "reason": adv[1], "bin_mean": adv[2]}) + "\n"); log.flush()
         if step % a.log_every == 0 or step == last:
@@ -745,6 +818,11 @@ def main():
                 ss = [s_ for v in acc for s_ in v[3]]; tot_ = sum(s_["tf_tot"] for s_ in ss); sl = sum(s_["mct_slots"] for s_ in ss); rl = [x_ for s_ in ss for x_ in s_["mct_rel"]]
                 rec_.update({"tf_p": tfp, "tf_frac": (sum(s_["tf_n"] for s_ in ss) / tot_) if tot_ else None, "mct_multi_frac": (sum(s_["mct_multi"] for s_ in ss) / sl) if sl else None,
                              "mct_rel_mean": float(np.mean(rl)) if rl else None})
+            if pool is not None:                                            # §215 fields
+                sv = [v for v in acc if v[3] and v[3][0].get("is_self")]; pv = [v for v in acc if v[3] and not v[3][0].get("is_self")]
+                rec_.update({"self_frac": len(sv) / len(acc) if acc else None, "self_answer_ce": float(np.mean([v[1] for v in sv])) if sv else None,
+                             "self_rec_ce": float(np.mean([v[2] for v in sv])) if sv else None, "plain_answer_ce": float(np.mean([v[1] for v in pv])) if pv else None,
+                             "pool_cursor": selfst["cursor"], "n_self_steps": selfst["n_self_steps"], "self_reuse": selfst["self_reuse"]})
             if rng_p is not None:                                           # §214: share of paused items over the log window
                 rec_["pause_item_frac"] = float(np.mean([s_.get("n_paused", 0) / max(1, ch) for v in acc for s_ in v[3]])) if acc else None
             if slog:
@@ -765,7 +843,10 @@ def main():
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "rng_k": rng_k.bit_generator.state, "rng_tf": rng_tf.bit_generator.state,
                         "torch_rng": torch.get_rng_state(), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "calibration": cal,
-                        **({"rng_p": rng_p.bit_generator.state} if rng_p is not None else {})}, cp)
+                        **({"rng_p": rng_p.bit_generator.state} if rng_p is not None else {}),
+                        **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {})}, cp)
+            if draws_log:
+                json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
     if a.mem_check:
         pk_train = torch.cuda.max_memory_allocated(dev) / 2 ** 30; opt.zero_grad(set_to_none=True); torch.cuda.reset_peak_memory_stats(dev); m.eval()
         ev = sorted([it for it in TE if it["n"] == 16], key=lambda it: -len(it["syms"]))[:a.eval_bs]; xe, pe, le = batch_x(ev, dev)
@@ -776,10 +857,15 @@ def main():
         for f_ in ("mem_check.json", "eval.json"):                         # eval.json: the queue / drain line-done marker (§213 queue line 1, as --time_steps)
             json.dump(mj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
         print("MEMCHECK", pk_train, pk_eval, flush=True); return
+    if draws_log:
+        json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
     if a.time_steps:
         sps = (time.time() - tt0) / a.time_steps
+        if pool is not None:                                                # §215 G-S10: the p_self-weighted mix of the forced self / plain step times
+            sps_self = tself[0] / max(1, tself[1]); sps_plain = tself[2] / max(1, tself[3]); sps = a.p_self * sps_self + (1 - a.p_self) * sps_plain
         tj = {"mode": a.mode, "mct": a.mct, "steps_timed": a.time_steps, "sec_per_step": sps, "est_hours": sps * a.steps / 3600, "gpu": info["train_gpu"], "micro": a.micro,
-              "forced": "final stage n <= 8, K = 12 every item"}
+              **({"sec_per_step_self": tself[0] / max(1, tself[1]), "sec_per_step_plain": tself[2] / max(1, tself[3]), "self_micro": a.self_micro, "p_self": a.p_self} if pool is not None else {}),
+              "forced": "final stage n <= 8, K = 12 every item" + ("; with a pool: odd steps self (pool order, K self_kmax), even steps plain; sec_per_step = p_self-weighted mix" if pool is not None else "")}
         for f_ in ("timing.json", "eval.json"):
             json.dump(tj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
         print("TIMING", sps, flush=True); return
