@@ -18667,6 +18667,10 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **§215's cells b310 (FT-SELF) / b311 (FT-CTRL) may launch.** The conditions are as registered: G-TIME admission at $0.95 / $0.40, guards at $1.05 / $0.45, ARGS-DIFF in the launch log, the off-host mirror, drain waiters, and 3090 only.
 
+**Note 215-2 (2026-10-17 15:08 EDT; clarifies v1 §8's admission retries, per Audit's ruling; no rule change).** "Up to 2 more 3090 hosts per cell" counts **measured G-TIME projection refusals** only. A host that never starts (stuck loading, known BAD) is a BAD host and does not use a try. Its spend still counts toward the cell's guard and the BAD-spend accounting.
+- **b311 (FT-CTRL):** try 1 projected $0.41 > $0.40 and was refused as registered. Try 2 was a stuck-loading BAD host, so not a try. b311 may take one more host if try 3 refuses.
+- The admission bounds ($0.95 / $0.40) and the guards ($1.05 / $0.45) are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
