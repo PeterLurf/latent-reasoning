@@ -297,7 +297,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 207 | GSM-SWAP (descriptive, $0): state swap / input swap on the GSM8K latent models - is one-pass dominance the nested failed seeds' recompute-from-input mode? RECOMPUTES-FROM-INPUT / CARRIES-STATE / MIXED | done (descriptive) | **6/6 GSM8K latent models recompute from the input (INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; memory = scaffold, not carrier); B MIXED by a 0.001 miss** |
 | 208 | QUESTION-ONCE + ANSWER-BOTTLENECK + NOPASS (user-approved, cap $3.20): pass 1 reads the question, passes 2-10 a fixed filler, decoder memory-only; ITER-GAIN (comparator-free) decides whether memory-only passes compute; QO-SERIAL / TWO-STAGE / PASS1 / QO-CAPACITY-BOUND | closed | **PASS1-PRECOMPUTE: ITER-GAIN -0.005 (K'1 0.143 = K'10 0.138), ONSET 1 everywhere, transplant P_hyb 0, not capacity-bound; ACC MATCHES A (0.138): the GSM8K latent accuracy is one forward pass** |
 | 209 | CODI-AT-OUR-BUDGET (user-approved, cap $4): CODI GPT-2 design trained in our pipeline at 4.0 epochs; ARCHITECTURE-BOUND (>= 0.251) / BUDGET-BOUND (<= 0.175) / MIXED on the A -> C equal-budget scale | closed | **MIXED: CODI4 0.189 (r 0.24 on A 0.147 -> C 0.321), +0.042 vs A, ARCH-BOUND excluded, BUDGET-BOUND within 1 SD; the same weights decode text CoT at 0.325 with 0 latents; ~$1.51** |
-| 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
+| 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | **CLOSED 10-17: REACHES-PUBLISHED (0.379; +0.190 vs CODI4, SE 0.013); GAP UNREAD (0-latent arm direct, << 0.074); latents used (0.379 vs 0.171); ~$9.28** |
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
@@ -18427,6 +18427,25 @@ Entry is at 11k (answer_ce), the same as N1.
 - **D3-T is the base** (it is better than D3-F from n 15). That goes to the user as a base choice, with D3-T recommended.
 
 **Note 213-39 (2026-10-17 01:42 EDT; wording correction to 213-38, after Audit).** D3-T's fresh − test difference peaks at **+0.020 at n 16, exactly at the 0.02 tolerance**. So FRESH-MATCHES-TEST holds for D3-T **within tolerance, at the edge**, not comfortably. D3-F is within it at 0.014. No reading changes.
+
+**§210 result (2026-10-17 07:37 EDT; gsm_codi_20ep_s1, b303, RTX 3090 (note 210-1), 20.0 epochs (log complete); eval.json on the host (LoRA-merged fp32, bs 16, CODI's GSM8K test, 1,319 items); eval_latent_texts.json on the 3070 (dd50825d); theory/score_s210.py. Realised ≈ $9.28 of $12: main host $8.61 + 7 BAD / refused hosts $0.68. Audit-reproduced (primary). Retention: trainable.pt kept; mirror deleted.)**
+
+**Primary: REACHES-PUBLISHED.**
+- CODI20 acc **0.3791** ≥ 0.348. It sits 0.031 above the bar, outside the 1σ (0.024) misread zone.
+- **Paired against CODI4** (§209, the same 3090 class): **+0.190 (SE 0.013)** on 1,319 shared items (0.379 vs 0.189).
+- **By depth:** m ≤ 2 0.621 (422); **m ≥ 3 0.265 (879)**.
+- **Valid:** 0.9 × final first reached at epoch 14.5; peak 0.368 at epoch 18.0; 0.352 final.
+
+**Secondary: UNREAD by rule.** The 0-latent arm is no longer text CoT: "<<" appears in **0.074** of its outputs (< 0.5). It answers directly ("The answer is: 40"; mean 8.1 tokens). §209's 4-epoch 0-latent arm decoded "<<" in 0.87. So TXT20 = 0.171 is a direct-answer baseline, not a CoT reference, and the GAP labels do not apply.
+
+**Descriptive.**
+- **The latents are used:** 6 latents 0.379 vs 0 latents 0.171, a drop of 0.21 on removal.
+- **Budget closed the §209 shortfall:** 4 epochs 0.189 → 20 epochs 0.379, reaching CODI's published range.
+- **Depth is the weak axis,** as in our VB work: m ≥ 3 sits at 0.265.
+
+**§209 → §210 family close.**
+- CODI's recipe reproduces the published result **when given the published budget**. The 4-epoch shortfall was budget, not architecture.
+- Total ≈ $1.51 (§209) + $9.28 (§210).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
