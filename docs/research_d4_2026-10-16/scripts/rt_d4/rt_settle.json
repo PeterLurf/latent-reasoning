@@ -1,0 +1,252 @@
+{
+ "N1_carry": {
+  "by_n": {
+   "4": {
+    "median_t_settle": 4.0,
+    "median_t_right(correct items)": 4.0,
+    "n_correct": 1000,
+    "median_t_fin": 4.0,
+    "mean_settle_minus_tfin": -0.23,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.852
+   },
+   "5": {
+    "median_t_settle": 5.0,
+    "median_t_right(correct items)": 5.0,
+    "n_correct": 1000,
+    "median_t_fin": 5.0,
+    "mean_settle_minus_tfin": -0.2,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.851
+   },
+   "6": {
+    "median_t_settle": 6.0,
+    "median_t_right(correct items)": 6.0,
+    "n_correct": 1000,
+    "median_t_fin": 6.0,
+    "mean_settle_minus_tfin": -0.24,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.824
+   },
+   "7": {
+    "median_t_settle": 7.0,
+    "median_t_right(correct items)": 7.0,
+    "n_correct": 1000,
+    "median_t_fin": 7.0,
+    "mean_settle_minus_tfin": -0.22,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.856
+   },
+   "8": {
+    "median_t_settle": 8.0,
+    "median_t_right(correct items)": 8.0,
+    "n_correct": 1000,
+    "median_t_fin": 8.0,
+    "mean_settle_minus_tfin": -0.23,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.849
+   },
+   "9": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 853,
+    "median_t_fin": 8.0,
+    "mean_settle_minus_tfin": 0.15,
+    "p_settle_le_9": 0.962,
+    "p_settle_ge_n": 0.702
+   },
+   "10": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 456,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.29,
+    "p_settle_le_9": 0.787,
+    "p_settle_ge_n": 0.213
+   },
+   "11": {
+    "median_t_settle": 10.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 182,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 1.19,
+    "p_settle_le_9": 0.432,
+    "p_settle_ge_n": 0.413
+   },
+   "12": {
+    "median_t_settle": 11.0,
+    "median_t_right(correct items)": 11.0,
+    "n_correct": 129,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 1.98,
+    "p_settle_le_9": 0.204,
+    "p_settle_ge_n": 0.46
+   },
+   "13": {
+    "median_t_settle": 12.0,
+    "median_t_right(correct items)": 11.0,
+    "n_correct": 111,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 2.45,
+    "p_settle_le_9": 0.077,
+    "p_settle_ge_n": 0.31
+   },
+   "14": {
+    "median_t_settle": 13.0,
+    "median_t_right(correct items)": 12.0,
+    "n_correct": 110,
+    "median_t_fin": 10.0,
+    "mean_settle_minus_tfin": 3.36,
+    "p_settle_le_9": 0.048,
+    "p_settle_ge_n": 0.416
+   },
+   "15": {
+    "median_t_settle": 16.0,
+    "median_t_right(correct items)": 16.0,
+    "n_correct": 116,
+    "median_t_fin": 10.0,
+    "mean_settle_minus_tfin": 4.82,
+    "p_settle_le_9": 0.031,
+    "p_settle_ge_n": 0.762
+   },
+   "16": {
+    "median_t_settle": 16.0,
+    "median_t_right(correct items)": 16.0,
+    "n_correct": 100,
+    "median_t_fin": 11.0,
+    "mean_settle_minus_tfin": 4.99,
+    "p_settle_le_9": 0.044,
+    "p_settle_ge_n": 0.637
+   }
+  },
+  "slope_tfin_9_14": 0.2857142857142857,
+  "spread_tfin_9_14": 2.0,
+  "slope_settle_9_14": 0.8571428571428571,
+  "spread_settle_9_14": 4.0
+ },
+ "N2_pa": {
+  "by_n": {
+   "4": {
+    "median_t_settle": 4.0,
+    "median_t_right(correct items)": 4.0,
+    "n_correct": 1000,
+    "median_t_fin": 4.0,
+    "mean_settle_minus_tfin": -0.23,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.828
+   },
+   "5": {
+    "median_t_settle": 5.0,
+    "median_t_right(correct items)": 5.0,
+    "n_correct": 1000,
+    "median_t_fin": 5.0,
+    "mean_settle_minus_tfin": -0.24,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.806
+   },
+   "6": {
+    "median_t_settle": 6.0,
+    "median_t_right(correct items)": 6.0,
+    "n_correct": 1000,
+    "median_t_fin": 6.0,
+    "mean_settle_minus_tfin": -0.33,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.792
+   },
+   "7": {
+    "median_t_settle": 7.0,
+    "median_t_right(correct items)": 7.0,
+    "n_correct": 1000,
+    "median_t_fin": 7.0,
+    "mean_settle_minus_tfin": -0.22,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.852
+   },
+   "8": {
+    "median_t_settle": 8.0,
+    "median_t_right(correct items)": 8.0,
+    "n_correct": 999,
+    "median_t_fin": 8.0,
+    "mean_settle_minus_tfin": -0.22,
+    "p_settle_le_9": 1.0,
+    "p_settle_ge_n": 0.844
+   },
+   "9": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 948,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": -0.06,
+    "p_settle_le_9": 0.988,
+    "p_settle_ge_n": 0.785
+   },
+   "10": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 425,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.36,
+    "p_settle_le_9": 0.69,
+    "p_settle_ge_n": 0.31
+   },
+   "11": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 155,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.69,
+    "p_settle_le_9": 0.531,
+    "p_settle_ge_n": 0.188
+   },
+   "12": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 127,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.59,
+    "p_settle_le_9": 0.583,
+    "p_settle_ge_n": 0.051
+   },
+   "13": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 140,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.68,
+    "p_settle_le_9": 0.575,
+    "p_settle_ge_n": 0.05
+   },
+   "14": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 123,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.72,
+    "p_settle_le_9": 0.54,
+    "p_settle_ge_n": 0.045
+   },
+   "15": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 143,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.97,
+    "p_settle_le_9": 0.502,
+    "p_settle_ge_n": 0.042
+   },
+   "16": {
+    "median_t_settle": 9.0,
+    "median_t_right(correct items)": 9.0,
+    "n_correct": 132,
+    "median_t_fin": 9.0,
+    "mean_settle_minus_tfin": 0.87,
+    "p_settle_le_9": 0.512,
+    "p_settle_ge_n": 0.032
+   }
+  },
+  "slope_tfin_9_14": 0.0,
+  "spread_tfin_9_14": 0.0,
+  "slope_settle_9_14": 0.0,
+  "spread_settle_9_14": 0.0
+ }
+}

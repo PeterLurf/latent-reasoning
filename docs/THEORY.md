@@ -18151,6 +18151,36 @@ Entry is at 11k (answer_ce), the same as N1.
 - **The table question is answered descriptively:** freezing neither helps nor hurts depth (+0.014). It trades the longest fresh steps (−) against rare-row and changed-slot accuracy (+).
 - **The registered §213 readings are closed.** The follow-up is D4 (docs/research_d4_2026-10-16/, under red team and proof review), which needs the user's OK before any spend.
 
+**Note 213-26 (2026-10-17 00:23 EDT; corrects 213-24 after REDTEAM_D4 (docs/research_d4_2026-10-16/REDTEAM_D4.md; Opus subagent, $0) and a decode-free check by Theory; the scorer adds a decode-free reading).**
+
+**Decode-free and verified by Theory from eval_vb acc_k: every VB cell stops improving after pass 10.**
+- On n 11–14, acc at K′ n + 2 minus acc at K′ 10 averages **−0.017 (N1), −0.003 (N2), −0.004 (N3), −0.003 (D3-T), −0.001 (D3-F)**. All five read STOPS-AT-10 (mean gain ≤ 0.02; score_s213 `acc_gain_after10`).
+- For example, D3-T at n 11 is 0.168 / 0.273 / 0.266 / 0.250 at K′ 9 / 10 / 13 / 24, and D3-F at n 11 is 0.158 / 0.323 / 0.326 / 0.315.
+- Whatever the cells compute after pass 10 adds nothing to the answer. **An answer-level stop at about pass 10 is established without the decode.**
+
+**Corrections to 213-24's decode-based reading** (red team, [MEASURED] by the subagent; to be reproduced by Audit):
+- **R's decode is unfaithful beyond range.** At n 9, 42% of N1's items that the decode calls finished early are wrong at t_fin but right at K′ n + 2. N2's decoded alive count *rises* mid-trajectory in 40–71% of items.
+  - So EDGE-COLLAPSE, t_fin, the hazard h(t) and ORS are **decode-only** readings, not faithful descriptions of the state.
+- **The keying differs between cells:**
+  - N1's hazard is pass-keyed (t-only deviance 538; size adds nothing);
+  - **N2's is size-keyed** (t + T deviance 555 vs t-only 1,327);
+  - D3-T is not size-keyed (per-item PROBE(12) size slope −0.035, SE 0.017, vs N2 −0.186).
+- **The EC rule is therefore not specific:** N2 passes it while being size-keyed.
+- **213-24's "N1 and N2 read EDGE-COLLAPSE: a pass-indexed deadline" is narrowed to:**
+  - every cell stops improving at the answer level after pass ~10 (decode-free);
+  - N1's decoded over-reduction is pass-keyed;
+  - N2's is size-keyed;
+  - the decode-level EC label is descriptive and non-specific.
+- 213-24's correction of 213-18's N1 label (over-reduction rather than drift) stands **as a decode-level description**.
+
+**For D4 v1** (red team blockers; proof-pass fixes in PROOFS_D4.md):
+- decode-free readings (ACC-GAIN-AFTER-10, PAUSE-EARLY) lead;
+- DEADLINE-GONE counts never-finishing as a failure, with stuck and shifted-deadline fixtures;
+- a stop clause applies if the stop is keyed on size;
+- a moved-deadline scan over t 9–16 and START-D regressed on n + D;
+- a C2 reading at n 13–16;
+- the trailing-pause spec is settled.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

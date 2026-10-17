@@ -168,6 +168,17 @@ def edge_collapse(d):
     return o
 
 
+def acc_gain_after10(d):
+    """Note 213-26 (descriptive, decode-free; REDTEAM_D4 blocker 2): per n 11..14, acc_n2 - acc at K' 10, and acc at K' 24 - acc at K' 10, from eval_vb acc_k;
+    STOPS-AT-10 iff the mean of (acc_n2 - acc_k10) over n 11..14 is <= 0.02 (accuracy does not rise after pass 10)."""
+    ev = jl(d, "eval_vb.json")
+    if ev is None or "acc_k" not in ev or "10" not in ev["acc_k"]:
+        return None
+    K = ev["acc_k"]; g = {n: ev["acc_n2"][str(n)] - K["10"][str(n)] for n in range(11, 15)}; g24 = {n: K["24"][str(n)] - K["10"][str(n)] for n in range(11, 15)}
+    m = sum(g.values()) / 4
+    return {"gain_n2_minus_k10": g, "gain_k24_minus_k10": g24, "mean_gain": m, "STOPS_AT_10": bool(m <= 0.02 + EPS)}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -211,7 +222,7 @@ def cell(tag, d):
              STEP_GENERAL=sg, STEP_GENERAL_mean_12_16=sg_mean, DEPTH_9_12=a["DEPTH_9_12"], DEPTH_GENERAL=dg, RS=ss, SELF_SIMILAR=selfsim, HIST=hr,
              D3_C2=c2, D3_C2_ATTN=c2a,
              HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None, STEP_BY_T=step_by_t(d),
-             HIST24=hist24(d), EDGE=edge_collapse(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
+             HIST24=hist24(d), EDGE=edge_collapse(d), ACC_GAIN_AFTER_10=acc_gain_after10(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
     o["label"] = ("FAILURE (dead; rule b)" if dead else "NO-ENTRY (rule b)" if noent else
                   "D3-C2-ATTN (C2 in a pass-global attention memory)" if c2a else
                   "D3-C2 (C2 with the memory in form only)" if c2 else
@@ -251,7 +262,8 @@ def main():
     ref["HOLD_N1"] = hold_read(S212.STAGE0["N1"])
     ref["STEP_BY_T_N1"] = step_by_t(S212.STAGE0["N1"])
     ref["HIST24"] = {k: hist24(S212.STAGE0[k]) for k in ("N1", "N2")}
-    ref["EDGE"] = {k: edge_collapse(S212.STAGE0[k]) for k in ("N1", "N2")}   # note 213-24 references         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
+    ref["EDGE"] = {k: edge_collapse(S212.STAGE0[k]) for k in ("N1", "N2")}
+    ref["ACC_GAIN_AFTER_10"] = {k: acc_gain_after10(S212.STAGE0[k]) for k in ("N1", "N2", "N3")}   # note 213-26   # note 213-24 references         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
