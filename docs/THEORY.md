@@ -18347,6 +18347,16 @@ Entry is at 11k (answer_ce), the same as N1.
   - the explicit re-render is a **training-time labeller only**; test-time computation stays latent (C1).
 - **If not GO,** the chain's failure is localised (fail vs wrong-value, by n) and SELF-DEPTH is not proposed.
 
+**Note 213-34 (2026-10-17 01:14 EDT; amends 213-33 after Audit's OK, before any eval_chainlabel.json output exists).**
+- **Strict precision.** A chain counts as correct only if label == y **and** the chain took exactly n steps, i.e. one reduction per step: no early or merged reductions, no extra steps. A right value reached in a different number of steps is counted as a **FAIL** and reported separately as `right_value_wrong_steps`. Its intermediate states would make non-canonical R2 targets.
+- **CHAIN-LABEL-GO uses the strict precision:** ≥ 0.95 at every n 9–12.
+- **Reported beside, per n:**
+  - **predicted** = ∏_{m=1..n} long_step exact(m), from the cell's eval_steppos (independence);
+  - measured strict precision;
+  - the gap (measured − predicted). A negative gap shows correlated step errors;
+  - the step-count distribution (steps − n).
+- **Fields added to by_n:** precision_strict, right_value_wrong_steps, steps_minus_n {k: count}. The scorer computes `predicted`.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
