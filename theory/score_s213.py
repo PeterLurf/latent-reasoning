@@ -125,7 +125,8 @@ def hist24(d):
     st = {a: ((sum(g(a, n) - g("intact", n) for n in range(3, 7)) / 4) if a in f else None) for a in ("bank_ablate_slva", "self_ablate", "other_ablate")}
     stab = bool(gate and st["bank_ablate_slva"] is not None and st["bank_ablate_slva"] >= 0.10 - EPS)
     return {"gate": gate, "STAB": st, "HISTORY_STABILISES": stab if gate else None, "omitted": f.get("omitted"),
-            "label": "UNREADABLE (gate)" if not gate else ("HISTORY-STABILISES (memory used for C6, not the step)" if stab else "not met")}
+            "label": "UNREADABLE (gate)" if not gate else ("HISTORY-STABILISES (memory used for C6, not the step)" if stab else
+                                                         "not met: stability without memory history (Audit, 213-20)")}
 
 
 def args_diff(d):
