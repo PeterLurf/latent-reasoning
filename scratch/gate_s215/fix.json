@@ -1,0 +1,7 @@
+{
+ "n": 16,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 4060",
+ "tree": "D:/Latent/scratch/_tmp/sd215_tree",
+ "vbank_file": "D:\\Latent/scratch/_tmp/sd215_tree\\boxes\\vbank.py"
+}

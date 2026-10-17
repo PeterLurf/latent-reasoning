@@ -1,0 +1,53 @@
+{
+ "ckpt0_keys_equal": true,
+ "ckpt0_bitwise": true,
+ "init_line": [
+  "INIT_FROM D:/Latent/boxes/runs_fsq/s213_d3t_s1/model.pt (missing: []); calibrate() NOT called; base calibration.json copied"
+ ],
+ "init_ok": true,
+ "calibration_equal": true,
+ "ckpt_step2": 2,
+ "ckpt_prev_step1": 1,
+ "resume_line": true,
+ "final_step": [
+  3,
+  3
+ ],
+ "self_state": [
+  {
+   "cursor": 64,
+   "n_self_steps": 1,
+   "self_reuse": 0
+  },
+  {
+   "cursor": 64,
+   "n_self_steps": 1,
+   "self_reuse": 0
+  }
+ ],
+ "rng_s_equal": true,
+ "np_rng_equal": true,
+ "adam_steps": [
+  3.0,
+  3.0
+ ],
+ "adam_state_n": [
+  166,
+  166
+ ],
+ "draws_log_equal": true,
+ "draws_steps": [
+  1,
+  2,
+  3
+ ],
+ "draws_coins": [
+  false,
+  true,
+  false
+ ],
+ "pass": true,
+ "device": "cpu",
+ "tree": "D:/Latent/scratch/_tmp/sd215_tree",
+ "vbank_file": "D:\\Latent/scratch/_tmp/sd215_tree\\boxes\\vbank.py"
+}

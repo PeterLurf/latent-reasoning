@@ -1,0 +1,42 @@
+{
+ "R1": {
+  "slva_wq": 0.5658467411994934,
+  "slva_wk": 0.7138494253158569,
+  "rec.weight": 0.0,
+  "g.p.h_7_attn_c_attn_weight": 2.3901524543762207,
+  "g.p.h_10_attn_c_attn_weight": 0.4460621178150177,
+  "beta": 0.04440898448228836
+ },
+ "R2": {
+  "slva_wq": 0.2920668125152588,
+  "slva_wk": 0.3553566038608551,
+  "rec.weight": 0.6212377548217773,
+  "g.p.h_7_attn_c_attn_weight": 2.290497064590454,
+  "g.p.h_10_attn_c_attn_weight": 4.4151011024951003e-07,
+  "beta": 0.022106485441327095
+ },
+ "decorators": {
+  "rec_targets": [],
+  "vb_loss": [],
+  "main": []
+ },
+ "mass_stats": {
+  "chg": [
+   15.391432166099548,
+   298
+  ],
+  "copy": [
+   388.39131927490234,
+   1173
+  ]
+ },
+ "mass_stats_recode_calls": 0,
+ "R1_skip": [
+  "rec.weight (the R head is not on the answer path)"
+ ],
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 4060",
+ "tree": "D:/Latent",
+ "pre": "D:/Latent",
+ "vbank_file": "D:\\Latent\\boxes\\vbank.py"
+}
