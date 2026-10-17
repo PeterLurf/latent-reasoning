@@ -1,0 +1,17 @@
+LFK intact n 9 {'events': 7490, 'strict_exact': 7120, 'voiddrop_exact': 7120}
+LFK intact n 10 {'events': 6107, 'strict_exact': 5084, 'voiddrop_exact': 5084}
+LFK intact n 11 {'events': 5697, 'strict_exact': 4645, 'voiddrop_exact': 4645}
+LFK intact n 12 {'events': 5266, 'strict_exact': 4209, 'voiddrop_exact': 4209}
+LFK intact n 13 {'events': 5089, 'strict_exact': 4051, 'voiddrop_exact': 4051}
+LFK intact n 14 {'events': 4878, 'strict_exact': 3839, 'voiddrop_exact': 3839}
+LFK intact n 15 {'events': 4635, 'strict_exact': 3593, 'voiddrop_exact': 3593}
+LFK intact n 16 {'events': 4359, 'strict_exact': 3364, 'voiddrop_exact': 3364}
+LFK fault n 9 {'events': 7485, 'strict_exact': 7113, 'voiddrop_exact': 7115}
+LFK fault n 10 {'events': 6027, 'strict_exact': 4965, 'voiddrop_exact': 5008}
+LFK fault n 11 {'events': 5281, 'strict_exact': 4014, 'voiddrop_exact': 4144}
+LFK fault n 12 {'events': 4457, 'strict_exact': 2958, 'voiddrop_exact': 3102}
+LFK fault n 13 {'events': 3821, 'strict_exact': 2147, 'voiddrop_exact': 2273}
+LFK fault n 14 {'events': 3358, 'strict_exact': 1677, 'voiddrop_exact': 1769}
+LFK fault n 15 {'events': 2845, 'strict_exact': 1200, 'voiddrop_exact': 1251}
+LFK fault n 16 {'events': 2458, 'strict_exact': 947, 'voiddrop_exact': 994}
+DONE boxes/runs_fsq/s213_d3f_s1\eval_lfk.json 184
