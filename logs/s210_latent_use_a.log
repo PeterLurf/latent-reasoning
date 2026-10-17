@@ -1,0 +1,8 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+OOD gsm-hard 6 0.0879
+OOD gsm-hard 0 0.0379
+OOD multi-arith 6 0.9222
+OOD multi-arith 0 0.1389
+OOD svamp 6 0.415
+OOD svamp 0 0.387
+DONE boxes/runs_fsq/gsm_codi_20ep_s1\eval_ood.json

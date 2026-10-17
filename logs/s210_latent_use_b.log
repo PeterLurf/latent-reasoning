@@ -1,0 +1,18 @@
+KSWEEP 0 0.1706
+KSWEEP 1 0.1509
+KSWEEP 2 0.1251
+KSWEEP 3 0.2873
+KSWEEP 4 0.2934
+KSWEEP 5 0.3715
+KSWEEP 6 0.3791
+KSWEEP 8 0.3783
+KSWEEP 10 0.37
+SWAP all {'follow': 0.04, 'own': 0.084, 'other': 0.876, 'pool_size': 500, 'n_pairs': 500, 'coincidence_floor': 0.0}
+SWAP pos 1 {'follow': 0.0, 'own': 1.0, 'other': 0.0}
+SWAP pos 2 {'follow': 0.002, 'own': 0.826, 'other': 0.172}
+SWAP pos 3 {'follow': 0.004, 'own': 0.536, 'other': 0.46}
+SWAP pos 4 {'follow': 0.0, 'own': 0.854, 'other': 0.146}
+SWAP pos 5 {'follow': 0.008, 'own': 0.448, 'other': 0.544}
+SWAP pos 6 {'follow': 0.0, 'own': 0.956, 'other': 0.044}
+NOISE 0.1478
+DONE boxes/runs_fsq/gsm_codi_20ep_s1\eval_latent_use.json
