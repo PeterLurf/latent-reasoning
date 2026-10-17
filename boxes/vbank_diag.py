@@ -951,12 +951,124 @@ def part_hist24(m, TE, dev, bs):
     return res
 
 
+@torch.no_grad()
+def part_ageproj(m, TE, dev, bs):
+    """note 213-27 AGE-PROJ ($0; D3-T). FIT: §170 train-distribution items n 3..8, 300 per n (np rng 21327, N.generate with exactly n operators; test set +
+    SERIAL pool excluded as in the trainer), rolled out to K' 20 with input_edit recording the pass input U_t (after SLVA / the carry's N(.), before block 6)
+    at every real slot. Ridge regression of t on U_t over IDLE passes t in [n + 1, 20], with an unpenalised intercept, 5 folds by item (item index mod 5),
+    lambda in {1e-2, 1, 1e2, 1e4} by pooled held-out R^2, computed exactly from per-fold fp64 sufficient statistics ([U, 1]^T [U, 1], [U, 1]^T t, sum t^2);
+    the final w is refit on all folds; w_hat = w / ||w||. c5 = mean w_hat . U over in-range computing passes t = 5 of items n 6..8 at changed or copy real
+    slots (E_5 != E_4, or unchanged and non-VOID). ARMS (input_edit at every pass t >= 2, every real slot; §170 test set n 1..14, vbank_eval.part_acc's chunks;
+    one rollout per chunk to K' = max(10, n + 2), read at K' 10 and K' n + 2): intact; proj_out U - (U . w_hat) w_hat; age_clamp U - (U . w_hat - c5) w_hat;
+    rand_clamp (note 213-28, size-matched): r = a random unit vector (np rng 21328, Gaussian, orthogonalised to w_hat); per slot and pass
+    dU = -|U . w_hat - c5| * sign(U . r - c5_r) * r (toward its own t = 5 mean c5_r; sign(0) = +1), so |dU_rand| = |dU_age| exactly (asserted <= 1e-4 rel).
+    fit also reports (descriptive, 213-28) r2_t_minus_n (target t - n on [U, 1]) and r2_t_given_n (t on [U, n, 1], n unpenalised); the rule stays R^2(t)."""
+    num = torch.tensor(N.NUM_IDS, device=dev); D = m.D; LAMS = (1e-2, 1.0, 1e2, 1e4)
+    excl = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)
+    for _ in range(2200):
+        excl.add(tuple(N.render(N.generate(r_sp, 8)[0])))
+    rng = np.random.default_rng(21327); fit_items = []
+    for n in range(3, 9):
+        got = 0
+        while got < 300:
+            r_, y_ = N.generate(rng, n); s_ = N.render(r_)
+            if n_ops(r_) == n and tuple(s_) not in excl:
+                fit_items.append({"syms": s_, "t": y_, "root": r_, "n": n}); got += 1
+    A3 = torch.zeros(5, D + 2, D + 2, dtype=torch.float64, device=dev); bt_ = torch.zeros(5, D + 2, dtype=torch.float64, device=dev)   # columns [U (D), n, 1]; target t
+    bm_ = torch.zeros(5, D + 2, dtype=torch.float64, device=dev); yy = torch.zeros(5, dtype=torch.float64); sy = torch.zeros(5, dtype=torch.float64)  # bm_: target t - n
+    yym = torch.zeros(5, dtype=torch.float64); sym = torch.zeros(5, dtype=torch.float64); cnt = torch.zeros(5, dtype=torch.float64); U5 = []
+    for n in range(3, 9):
+        idx = [i for i, it in enumerate(fit_items) if it["n"] == n]
+        for c0 in range(0, len(idx), bs):
+            ch = idx[c0:c0 + bs]; its = [fit_items[i] for i in ch]; x, pad, lens = VB.batch_x(its, dev); E = VB.rec_targets(its, 20, x.shape[1], dev)
+            fold = torch.tensor([i % 5 for i in ch], device=dev); cap = {}
+
+            def rec(t, U, cap=cap):
+                cap[t] = U.detach(); return U
+            m.input_edit = rec
+            try:
+                m.rollout(x, pad, 20)
+            finally:
+                m.input_edit = None
+            for t in range(n + 1, 21):
+                U = cap[t].double()
+                for f in range(5):
+                    sel = pad & (fold == f)[:, None]
+                    if not bool(sel.any()):
+                        continue
+                    k_ = int(sel.sum()); X = torch.cat([U[sel], torch.full((k_, 1), float(n), dtype=torch.float64, device=dev), torch.ones(k_, 1, dtype=torch.float64, device=dev)], 1)
+                    A3[f] += X.T @ X; bt_[f] += X.T @ torch.full((k_,), float(t), dtype=torch.float64, device=dev); bm_[f] += X.T @ torch.full((k_,), float(t - n), dtype=torch.float64, device=dev)
+                    yy[f] += float(t) ** 2 * k_; sy[f] += float(t) * k_; yym[f] += float(t - n) ** 2 * k_; sym[f] += float(t - n) * k_; cnt[f] += k_
+            if n >= 6:                                                      # t = 5 is in range (computing) for n 6..8
+                E5, E4 = E[:, 5], E[:, 4]; sel = pad & ((E5 != E4) | (E5 != VB.VOID)); U5.append(cap[5][sel].double().cpu())
+            del cap
+    A3, bt_, bm_ = A3.cpu(), bt_.cpu(), bm_.cpu(); keep = list(range(D)) + [D + 1]                       # [U, 1] (the rule's design) drops the n column
+
+    def cv(A, b, yy_, sy_, unpen):
+        """pooled 5-fold held-out R^2 per lambda (exact, from fp64 statistics); unpen = unpenalised columns. -> ({lam: r2}, best lam)."""
+        I_ = torch.eye(A.shape[1], dtype=torch.float64)
+        for j in unpen:
+            I_[j, j] = 0.0
+        out = {}
+        for lam in LAMS:
+            sse = sst = 0.0
+            for f in range(5):
+                w = torch.linalg.solve(A.sum(0) - A[f] + lam * I_, b.sum(0) - b[f])
+                sse += float(yy_[f] - 2 * w @ b[f] + w @ A[f] @ w); sst += float(yy_[f] - sy_[f] ** 2 / cnt[f])
+            out[str(lam)] = 1 - sse / sst
+        return out, max(LAMS, key=lambda l_: out[str(l_)]), I_
+    A = A3[:, keep][:, :, keep]; bvec = bt_[:, keep]
+    r2s, best, I_ = cv(A, bvec, yy, sy, [D])                                 # the rule: R^2(t) on [U, 1]
+    r2m, bestm, _ = cv(A, bm_[:, keep], yym, sym, [D])                      # descriptive: target t - n
+    r2g, bestg, _ = cv(A3, bt_, yy, sy, [D, D + 1])                         # descriptive: t with n as an (unpenalised) covariate
+    w = torch.linalg.solve(A.sum(0) + best * I_, bvec.sum(0)); wv = w[:D]; wn = float(wv.norm()); w_hat = (wv / wv.norm()).float()
+    U5 = torch.cat(U5, 0).float(); c5 = float((U5 @ w_hat).mean())
+    g = np.random.default_rng(21328); rv = torch.tensor(g.standard_normal(D), dtype=torch.float32); rv = rv - (rv @ w_hat) * w_hat; rv = rv / rv.norm()
+    c5r = float((U5 @ rv).mean()); fit = {"r2_heldout": r2s[str(best)], "r2_by_lambda": r2s, "lambda": best, "n_samples": int(cnt.sum()), "c5": c5, "w_norm": wn,
+                                          "r2_t_minus_n": r2m[str(bestm)], "r2_t_minus_n_by_lambda": r2m, "r2_t_given_n": r2g[str(bestg)], "r2_t_given_n_by_lambda": r2g,
+                                          "c5_rand": c5r, "n_t5_slots": int(U5.shape[0]), "w_hat_dot_rand": float(rv @ w_hat)}
+    print("AGEPROJ fit", fit, flush=True)
+    wd, rd = w_hat.to(dev), rv.to(dev)
+    Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); arms = {}; chk = {"max_rel_size_mismatch": 0.0}
+
+    def mk(kind, pad):
+        def f(t, U):
+            if t < 2:
+                return U
+            if kind == "proj_out":
+                U2 = U - (U @ wd)[..., None] * wd
+            elif kind == "age_clamp":
+                U2 = U - ((U @ wd) - c5)[..., None] * wd
+            else:                                                           # 213-28: |dU| = |U . w_hat - c5| (age_clamp's size), along r toward c5_r
+                mag = ((U @ wd) - c5).abs(); sg = torch.where((U @ rd) - c5r >= 0, 1.0, -1.0).to(U.dtype)
+                U2 = U - (mag * sg)[..., None] * rd
+                dn = (U2 - U).norm(dim=-1); da = mag * float(wd.norm())
+                chk["max_rel_size_mismatch"] = max(chk["max_rel_size_mismatch"], float(((dn - da).abs() / da.clamp_min(1e-12))[pad].max()))
+            return torch.where(pad[..., None], U2.to(U.dtype), U)
+        return f
+    for arm in ("intact", "proj_out", "age_clamp", "rand_clamp"):
+        A10 = np.full(len(TE), -1); A2 = np.full(len(TE), -1)
+        for n in range(1, 15):
+            for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev); K = max(10, n + 2)
+                m.input_edit = None if arm == "intact" else mk(arm, pad)
+                try:
+                    r_ = m.rollout(x, pad, K, coda_rows={10: rows, n + 2: rows})
+                finally:
+                    m.input_edit = None
+                A10[ch] = m.answer_logits(r_["coda"][10][1], lens)[:, num].argmax(-1).cpu().numpy(); A2[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+        by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 15)}  # noqa: E731
+        arms[arm] = {"acc_k10": by_n(A10), "acc_n2": by_n(A2)}; print("AGEPROJ", arm, {k: [round(v, 3) for v in d_.values()] for k, d_ in arms[arm].items()}, flush=True)
+    assert chk["max_rel_size_mismatch"] <= 1e-4, chk                       # 213-28: |dU_rand| == |dU_age| per slot and pass
+    return {"fit": fit, "arms": arms, "rand_size_check": chk, "def": part_ageproj.__doc__}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
