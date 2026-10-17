@@ -200,6 +200,47 @@ def ageproj(d):
             "depth_9_12": {a: sum(A[a]["acc_n2"][str(n)] for n in range(9, 13)) / 4 for a in A}, "label": lab}
 
 
+def d4_stage0(d):
+    """D4 v1 §7 Stage 0 readers (pre-stated before output). S0-3 eval_agerevert.json {arm: {D: {acc_k_pre {n}, acc_n2 {n}}}, intact {acc_n2}}:
+    per arm (revert / mct): control = acc_n2 at D 2 >= 0.97 at every n 1..4; HIDDEN-WORK = ER pooled n 3..6 at D 4 > 0.30, ER = (mean acc_pre - 0.1) /
+    (mean acc_n2 - 0.1); readable = control and not HIDDEN-WORK; drop78 = mean intact acc_n2 n 7..8 - mean arm acc_n2 n 7..8 at D 4; ARM-NULL iff readable
+    and drop78 < 0.10. S0-2 eval_carrier.json {prestall {s: {acc_n2 {n}}}, foreign {acc_n2 {n}}}: BANK-BORNE iff drop at s 8 (pooled n 6..8) >= 0.15;
+    BANK-NULL iff drop at s 8 <= 0.05 and FOREIGN o 6 drop (n 6..8) <= 0.05. AGE-CLOCK iff a readable arm has drop78 >= 0.20 and prestall s 4 drops n 7..8
+    by <= 0.05. PROGRESS-ONLY (hard stop) iff both arms readable and ARM-NULL, BANK-NULL, and 213-27 AGE_UNLOCKS is False. Intact gates: |intact - eval_vb|
+    <= 0.005 at every n."""
+    ev = jl(d, "eval_vb.json"); ar, ca, ap = jl(d, "eval_agerevert.json"), jl(d, "eval_carrier.json"), ageproj(d)
+    if ev is None or (ar is None and ca is None):
+        return None
+    E = ev["acc_n2"]; mean = lambda A, ns: sum(A[str(n)] for n in ns) / len(ns)  # noqa: E731
+    o = {}
+    if ar is not None:
+        I = ar["intact"]["acc_n2"]; o["s03_gate"] = all(abs(I[str(n)] - E[str(n)]) <= 0.005 + EPS for n in range(1, 9)); arms = {}
+        for arm in ("revert", "mct"):
+            if arm not in ar:
+                arms[arm] = None; continue
+            A2, A4 = ar[arm]["2"], ar[arm]["4"]
+            ctl = all(A2["acc_n2"][str(n)] >= 0.97 - EPS for n in range(1, 5))
+            den = mean(A4["acc_n2"], range(3, 7)) - 0.1
+            er = ((mean(A4["acc_k_pre"], range(3, 7)) - 0.1) / den) if den > EPS else None
+            hidden = er is None or er > 0.30 + EPS
+            drop78 = mean(I, (7, 8)) - mean(A4["acc_n2"], (7, 8)); readable = bool(ctl and not hidden and o["s03_gate"])
+            arms[arm] = {"control": ctl, "ER": er, "HIDDEN_WORK": hidden, "readable": readable, "drop78": drop78,
+                         "ARM_NULL": bool(readable and drop78 < 0.10 - EPS)}
+        o["S0_3"] = arms
+    if ca is not None:
+        P = ca["prestall"]; F = ca["foreign"]["acc_n2"]; I2 = E
+        d8 = mean(I2, (6, 7, 8)) - mean(P["8"]["acc_n2"], (6, 7, 8)); d4_78 = mean(I2, (7, 8)) - mean(P["4"]["acc_n2"], (7, 8))
+        df = mean(I2, (6, 7, 8)) - mean(F, (6, 7, 8))
+        o["S0_2"] = {"drop_s8": d8, "drop_s4_78": d4_78, "drop_foreign": df, "BANK_BORNE": bool(d8 >= 0.15 - EPS),
+                     "BANK_NULL": bool(d8 <= 0.05 + EPS and df <= 0.05 + EPS)}
+    a3, b2 = o.get("S0_3"), o.get("S0_2")
+    if a3 and b2:
+        o["AGE_CLOCK"] = bool(any(v and v["readable"] and v["drop78"] >= 0.20 - EPS for v in a3.values()) and b2["drop_s4_78"] <= 0.05 + EPS)
+        both_null = all(v and v["readable"] and v["ARM_NULL"] for v in a3.values())
+        o["PROGRESS_ONLY"] = bool(both_null and b2["BANK_NULL"] and ap is not None and ap["AGE_UNLOCKS"] is False)
+    return o
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -286,6 +327,7 @@ def main():
     ref["EDGE"] = {k: edge_collapse(S212.STAGE0[k]) for k in ("N1", "N2")}
     ref["ACC_GAIN_AFTER_10"] = {k: acc_gain_after10(S212.STAGE0[k]) for k in ("N1", "N2", "N3")}   # note 213-26   # note 213-24 references         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
     ref["AGEPROJ_D3T"] = ageproj(CELLS["D3-T"])                          # note 213-27 (D4 Stage 0)
+    ref["D4_STAGE0_D3T"] = d4_stage0(CELLS["D3-T"])                        # D4 v1 §7 S0-3 / S0-2 / PROGRESS-ONLY
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
