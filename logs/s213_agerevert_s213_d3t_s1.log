@@ -1,0 +1,5 @@
+AGEREVERT revert 2 {'acc_k_pre': [0.998, 0.399, 0.515, 0.338, 0.403, 0.465, 0.473, 0.482], 'acc_n2': [1.0, 0.676, 0.513, 0.321, 0.403, 0.465, 0.471, 0.479]} {'reverted_slot_events_per_item': 10.067125}
+AGEREVERT revert 4 {'acc_k_pre': [0.992, 0.389, 0.487, 0.27, 0.145, 0.177, 0.188, 0.215], 'acc_n2': [0.996, 0.626, 0.48, 0.26, 0.14, 0.161, 0.184, 0.209]} {'reverted_slot_events_per_item': 28.952875}
+AGEREVERT age_mct 2 {'acc_k_pre': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 'acc_n2': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]} {'mct_entries_exact_share': 1.0}
+AGEREVERT age_mct 4 {'acc_k_pre': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 'acc_n2': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]} {'mct_entries_exact_share': 1.0}
+DONE boxes/runs_fsq/s213_d3t_s1\eval_agerevert.json 164

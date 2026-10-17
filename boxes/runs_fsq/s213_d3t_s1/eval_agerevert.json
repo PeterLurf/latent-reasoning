@@ -1,0 +1,129 @@
+{
+ "intact": {
+  "acc_n2": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0
+  }
+ },
+ "revert": {
+  "2": {
+   "acc_k_pre": {
+    "1": 0.998,
+    "2": 0.399,
+    "3": 0.515,
+    "4": 0.338,
+    "5": 0.403,
+    "6": 0.465,
+    "7": 0.473,
+    "8": 0.482
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 0.676,
+    "3": 0.513,
+    "4": 0.321,
+    "5": 0.403,
+    "6": 0.465,
+    "7": 0.471,
+    "8": 0.479
+   }
+  },
+  "4": {
+   "acc_k_pre": {
+    "1": 0.992,
+    "2": 0.389,
+    "3": 0.487,
+    "4": 0.27,
+    "5": 0.145,
+    "6": 0.177,
+    "7": 0.188,
+    "8": 0.215
+   },
+   "acc_n2": {
+    "1": 0.996,
+    "2": 0.626,
+    "3": 0.48,
+    "4": 0.26,
+    "5": 0.14,
+    "6": 0.161,
+    "7": 0.184,
+    "8": 0.209
+   }
+  }
+ },
+ "age_mct": {
+  "2": {
+   "acc_k_pre": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   }
+  },
+  "4": {
+   "acc_k_pre": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   }
+  }
+ },
+ "exposure": {
+  "revert_2": {
+   "reverted_slot_events_per_item": 10.067125
+  },
+  "revert_4": {
+   "reverted_slot_events_per_item": 28.952875
+  },
+  "age_mct_2": {
+   "mct_entries_exact_share": 1.0
+  },
+  "age_mct_4": {
+   "mct_entries_exact_share": 1.0
+  }
+ },
+ "def": "D4_v1 \u00a77 S0-3 AGE-REVERT + AGE-MCT ($0; D3-T). \u00a7170 test items n 1..8 (vbank_eval.part_acc's chunks). D in {2, 4}: passes 1..D compute V_t and then\nstore an EDITED entry (rollout(edit=...); SLVA / the bank read the stored entry); normal passes follow; acc read at K' D + n - 1 (acc_k_pre) and\nK' D + n + 2 (acc_n2) from one rollout per chunk. REVERT: at pass t <= D, real slots whose argmax R(V_t[j]) differs from the decode of the previous\nSTORED entry S_{t-1}[j] are set back to S_{t-1}[j] (S_0 = V_0; under CARRY the carry gets the same entry). MCT: at pass t <= D the stored entry is\nm.mct(V_t, E_0, pad, mu 1.0) (key \"age_mct\"; the no_grad minimum-norm edit in R's row space, so R decodes E_0 at every real slot; every slot keeps its aged vector).\nintact = acc at K' n + 2 (the runner gates it against eval_vb.json acc_n2, bitwise on the eval card). Exposure: reverted slot-events per item (REVERT),\nand the share of MCT stored entries decoding E_0 at every real slot.",
+ "run": "boxes/runs_fsq/s213_d3t_s1",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 164
+}
