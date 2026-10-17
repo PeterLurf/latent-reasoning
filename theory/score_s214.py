@@ -110,7 +110,7 @@ def ladder(d, ev):
         sd = P.get("start_d") or {}
         for key, blk in sd.items():
             n, D = (int(x) for x in key.split("_"))
-            if 9 <= n <= 12 and 12 <= n + D <= 20:
+            if 9 <= n <= 12 and 12 <= n + D <= 20 and not blk.get("extra"):     # descriptive extras (e.g. D 0 at n 9-11) never enter L3 or its floor
                 f = fin_k(curve_from_acc_k(blk["acc_k"]), n + D + 2); sd_cells.append((n, D, f))
         rd = [(n + D, f) for n, D, f in sd_cells if f is not None]
         if len(rd) >= 12:
