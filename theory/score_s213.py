@@ -246,6 +246,17 @@ def d4_stage0(d):
     return o
 
 
+def chainlabel(d):
+    """Note 213-33 (SELF-DEPTH precondition, descriptive lead): eval_chainlabel.json {by_n: {n: {items, precision, fail, chain_exact, agree, prec_agree}}};
+    CHAIN-LABEL-GO iff precision >= 0.95 at every n 9..12 (FAIL counted wrong)."""
+    f = jl(d, "eval_chainlabel.json")
+    if f is None:
+        return None
+    B = f["by_n"]; go = all(str(n) in B and B[str(n)]["precision"] >= 0.95 - EPS for n in range(9, 13))
+    return {"precision": {n: B[n]["precision"] for n in sorted(B, key=int)}, "fail": {n: B[n].get("fail") for n in sorted(B, key=int)},
+            "CHAIN_LABEL_GO": go, "label": "CHAIN-LABEL-GO" if go else "not GO"}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -333,6 +344,7 @@ def main():
     ref["ACC_GAIN_AFTER_10"] = {k: acc_gain_after10(S212.STAGE0[k]) for k in ("N1", "N2", "N3")}   # note 213-26   # note 213-24 references         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
     ref["AGEPROJ_D3T"] = ageproj(CELLS["D3-T"])                          # note 213-27 (D4 Stage 0)
     ref["D4_STAGE0_D3T"] = d4_stage0(CELLS["D3-T"])                        # D4 v1 §7 S0-3 / S0-2 / PROGRESS-ONLY
+    ref["CHAINLABEL"] = {k: chainlabel(d) for k, d in CELLS.items()}         # note 213-33
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
