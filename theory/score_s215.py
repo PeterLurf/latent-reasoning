@@ -35,7 +35,8 @@ EPS = 1e-9
 CELLS = {"SELF": "s215_ftself_s1", "CTRL": "s215_ftctrl_s1"}
 BASE, GATE, FULL = "s213_d3t_s1", "s215_gate1", 12000
 ALLOWED = {"lr", "steps", "cur", "c_sched", "init_from", "args_ref", "self_pool", "p_self", "self_kmax", "self_kextra", "self_micro", "mem_check_self",
-           "mem_check_steps", "pause", "pause_p", "pause_max", "keep_ckpt_steps", "stop_at"}
+           "mem_check_steps", "pause", "pause_p", "pause_max", "keep_ckpt_steps", "stop_at",
+           "draws_log_steps"}   # note 215-5: the registered draw log's length (v1 §2.3 / G-S3); logging only (vbank.py 751-770), omitted from this list at registration
 
 
 def jl(d, f):
