@@ -907,6 +907,7 @@ def part_stepbyt(m, TE, dev, bs):
         for v in d_.values():                                               # slot_<kind>[_ge33]: [slot-events, strict correct] -> + acc
             for k_ in [k for k in v if k.startswith("slot_")]:
                 v[k_] = {"events": v[k_][0], "strict_correct": v[k_][1], "acc": v[k_][1] / v[k_][0] if v[k_][0] else None}
+            v["changed_events"] = v["slot_changed"]["events"]; v["changed_correct"] = v["slot_changed"]["strict_correct"]   # score_s213 a19fb453's field names
     return {"step_by_t": out, "step": tot, "def": part_stepbyt.__doc__}
 
 
