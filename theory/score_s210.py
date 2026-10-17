@@ -33,8 +33,11 @@ def latent_use():
     if f is None:
         return None
     ks = f["ksweep"]; gap = ks["6"]["acc"] - ks["0"]["acc"]; sw = f["swap"]
-    causal = bool(gap >= 0.10 - EPS and sw["follow"] >= 0.30 - EPS); recomp = bool(sw["own"] >= 0.70 - EPS)
-    return {"gap_6_0": gap, "follow": sw["follow"], "own": sw["own"], "ksweep": {k: v["acc"] for k, v in ks.items()},
+    floor = sw.get("coincidence_floor")                                    # note 210-3: follow must also clear the floor + 0.25
+    causal = bool(gap >= 0.10 - EPS and sw["follow"] >= 0.30 - EPS and floor is not None and sw["follow"] >= floor + 0.25 - EPS)
+    recomp = bool(sw["own"] >= 0.70 - EPS)
+    return {"gap_6_0": gap, "follow": sw["follow"], "own": sw["own"], "neither": sw.get("other", sw.get("neither")), "floor": floor,
+            "pool_size": sw.get("pool_size"), "n_pairs": sw.get("n_pairs"), "ksweep": {k: v["acc"] for k, v in ks.items()},
             "label": "LATENTS-CAUSAL" if causal else ("RECOMPUTES" if recomp else "MIXED")}
 
 
