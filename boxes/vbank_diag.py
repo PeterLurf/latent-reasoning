@@ -1069,17 +1069,17 @@ def part_agerevert(m, TE, dev, bs):
     store an EDITED entry (rollout(edit=...); SLVA / the bank read the stored entry); normal passes follow; acc read at K' D + n - 1 (acc_k_pre) and
     K' D + n + 2 (acc_n2) from one rollout per chunk. REVERT: at pass t <= D, real slots whose argmax R(V_t[j]) differs from the decode of the previous
     STORED entry S_{t-1}[j] are set back to S_{t-1}[j] (S_0 = V_0; under CARRY the carry gets the same entry). MCT: at pass t <= D the stored entry is
-    m.mct(V_t, E_0, pad, mu 1.0) (the no_grad minimum-norm edit in R's row space, so R decodes E_0 at every real slot; every slot keeps its aged vector).
+    m.mct(V_t, E_0, pad, mu 1.0) (key "age_mct"; the no_grad minimum-norm edit in R's row space, so R decodes E_0 at every real slot; every slot keeps its aged vector).
     intact = acc at K' n + 2 (the runner gates it against eval_vb.json acc_n2, bitwise on the eval card). Exposure: reverted slot-events per item (REVERT),
     and the share of MCT stored entries decoding E_0 at every real slot."""
     num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE])
-    res = {"intact": {}, "revert": {}, "mct": {}, "exposure": {}}; A0 = np.full(len(TE), -1)
+    res = {"intact": {}, "revert": {}, "age_mct": {}, "exposure": {}}; A0 = np.full(len(TE), -1)   # "age_mct": main() adds a top-level "mct" (the run's flag)
     for n in range(1, 9):
         for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
             its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
             r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}); A0[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
     res["intact"]["acc_n2"] = {str(n): float((A0 == Y)[Nn == n].mean()) for n in range(1, 9)}
-    for arm in ("revert", "mct"):
+    for arm in ("revert", "age_mct"):
         for D in (2, 4):
             Ap = np.full(len(TE), -1); A2 = np.full(len(TE), -1); ex = {"events": 0, "items": 0, "mct_exact": 0, "mct_entries": 0}
             for n in range(1, 9):
