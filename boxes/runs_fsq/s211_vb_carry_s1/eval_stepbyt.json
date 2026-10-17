@@ -1,0 +1,2439 @@
+{
+ "step_by_t": {
+  "9": {
+   "2": {
+    "events": 1000,
+    "strict_exact": 1000,
+    "voiddrop_exact": 1000,
+    "slot_changed": {
+     "events": 3764,
+     "strict_correct": 3764,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 22346,
+     "strict_correct": 22346,
+     "acc": 1.0
+    },
+    "slot_copy_ge33": {
+     "events": 16,
+     "strict_correct": 16,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 2770,
+     "strict_correct": 2770,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3764,
+    "changed_correct": 3764
+   },
+   "3": {
+    "events": 1000,
+    "strict_exact": 999,
+    "voiddrop_exact": 999,
+    "slot_changed": {
+     "events": 3826,
+     "strict_correct": 3826,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 19452,
+     "strict_correct": 19451,
+     "acc": 0.9999485914044828
+    },
+    "slot_copy_ge33": {
+     "events": 16,
+     "strict_correct": 16,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 5602,
+     "strict_correct": 5602,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3826,
+    "changed_correct": 3826
+   },
+   "4": {
+    "events": 999,
+    "strict_exact": 991,
+    "voiddrop_exact": 991,
+    "slot_changed": {
+     "events": 3856,
+     "strict_correct": 3855,
+     "acc": 0.9997406639004149
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 16523,
+     "strict_correct": 16510,
+     "acc": 0.999213217938631
+    },
+    "slot_copy_ge33": {
+     "events": 16,
+     "strict_correct": 16,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 8476,
+     "strict_correct": 8476,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3856,
+    "changed_correct": 3855
+   },
+   "5": {
+    "events": 992,
+    "strict_exact": 931,
+    "voiddrop_exact": 931,
+    "slot_changed": {
+     "events": 3819,
+     "strict_correct": 3805,
+     "acc": 0.9963341188792878
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 13505,
+     "strict_correct": 13389,
+     "acc": 0.9914105886708626
+    },
+    "slot_copy_ge33": {
+     "events": 16,
+     "strict_correct": 16,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 11310,
+     "strict_correct": 11310,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3819,
+    "changed_correct": 3805
+   },
+   "6": {
+    "events": 935,
+    "strict_exact": 720,
+    "voiddrop_exact": 720,
+    "slot_changed": {
+     "events": 3682,
+     "strict_correct": 3648,
+     "acc": 0.9907658881042911
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 9869,
+     "strict_correct": 9368,
+     "acc": 0.9492349782146114
+    },
+    "slot_copy_ge33": {
+     "events": 16,
+     "strict_correct": 16,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 13416,
+     "strict_correct": 13416,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3682,
+    "changed_correct": 3648
+   },
+   "7": {
+    "events": 731,
+    "strict_exact": 392,
+    "voiddrop_exact": 392,
+    "slot_changed": {
+     "events": 2841,
+     "strict_correct": 2773,
+     "acc": 0.9760647659274904
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 5400,
+     "strict_correct": 4635,
+     "acc": 0.8583333333333333
+    },
+    "slot_copy_ge33": {
+     "events": 8,
+     "strict_correct": 4,
+     "acc": 0.5
+    },
+    "slot_void": {
+     "events": 12702,
+     "strict_correct": 12702,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2841,
+    "changed_correct": 2773
+   },
+   "8": {
+    "events": 417,
+    "strict_exact": 290,
+    "voiddrop_exact": 290,
+    "slot_changed": {
+     "events": 1566,
+     "strict_correct": 1566,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 1697,
+     "strict_correct": 1519,
+     "acc": 0.8951090159104301
+    },
+    "slot_copy_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_void": {
+     "events": 8544,
+     "strict_correct": 8544,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 1566,
+    "changed_correct": 1566
+   },
+   "9": {
+    "events": 406,
+    "strict_exact": 399,
+    "voiddrop_exact": 399,
+    "slot_changed": {
+     "events": 1177,
+     "strict_correct": 1169,
+     "acc": 0.9932030586236194
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 853,
+     "strict_correct": 853,
+     "acc": 1.0
+    },
+    "slot_copy_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_void": {
+     "events": 9458,
+     "strict_correct": 9458,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 1177,
+    "changed_correct": 1169
+   }
+  },
+  "10": {
+   "2": {
+    "events": 995,
+    "strict_exact": 981,
+    "voiddrop_exact": 981,
+    "slot_changed": {
+     "events": 3689,
+     "strict_correct": 3688,
+     "acc": 0.9997289238275956
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 25206,
+     "strict_correct": 25191,
+     "acc": 0.9994049035943823
+    },
+    "slot_copy_ge33": {
+     "events": 398,
+     "strict_correct": 398,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 2802,
+     "strict_correct": 2802,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3689,
+    "changed_correct": 3688
+   },
+   "3": {
+    "events": 983,
+    "strict_exact": 967,
+    "voiddrop_exact": 967,
+    "slot_changed": {
+     "events": 3767,
+     "strict_correct": 3767,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 22038,
+     "strict_correct": 22017,
+     "acc": 0.999047100462837
+    },
+    "slot_copy_ge33": {
+     "events": 392,
+     "strict_correct": 392,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 5500,
+     "strict_correct": 5500,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3767,
+    "changed_correct": 3767
+   },
+   "4": {
+    "events": 968,
+    "strict_exact": 944,
+    "voiddrop_exact": 944,
+    "slot_changed": {
+     "events": 3751,
+     "strict_correct": 3749,
+     "acc": 0.999466808850973
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 18853,
+     "strict_correct": 18820,
+     "acc": 0.9982496154458177
+    },
+    "slot_copy_ge33": {
+     "events": 386,
+     "strict_correct": 386,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 8216,
+     "strict_correct": 8216,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3751,
+    "changed_correct": 3749
+   },
+   "5": {
+    "events": 951,
+    "strict_exact": 862,
+    "voiddrop_exact": 862,
+    "slot_changed": {
+     "events": 3622,
+     "strict_correct": 3604,
+     "acc": 0.9950303699613473
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 1,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 15767,
+     "strict_correct": 15561,
+     "acc": 0.986934737109152
+    },
+    "slot_copy_ge33": {
+     "events": 381,
+     "strict_correct": 380,
+     "acc": 0.9973753280839895
+    },
+    "slot_void": {
+     "events": 10884,
+     "strict_correct": 10884,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3622,
+    "changed_correct": 3604
+   },
+   "6": {
+    "events": 866,
+    "strict_exact": 612,
+    "voiddrop_exact": 612,
+    "slot_changed": {
+     "events": 3301,
+     "strict_correct": 3241,
+     "acc": 0.9818236897909725
+    },
+    "slot_changed_ge33": {
+     "events": 4,
+     "strict_correct": 4,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 11741,
+     "strict_correct": 11063,
+     "acc": 0.9422536410867899
+    },
+    "slot_copy_ge33": {
+     "events": 332,
+     "strict_correct": 324,
+     "acc": 0.9759036144578314
+    },
+    "slot_void": {
+     "events": 12474,
+     "strict_correct": 12474,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3301,
+    "changed_correct": 3241
+   },
+   "7": {
+    "events": 616,
+    "strict_exact": 199,
+    "voiddrop_exact": 199,
+    "slot_changed": {
+     "events": 2289,
+     "strict_correct": 2181,
+     "acc": 0.9528178243774574
+    },
+    "slot_changed_ge33": {
+     "events": 4,
+     "strict_correct": 3,
+     "acc": 0.75
+    },
+    "slot_copy": {
+     "events": 6487,
+     "strict_correct": 5208,
+     "acc": 0.8028364421149993
+    },
+    "slot_copy_ge33": {
+     "events": 206,
+     "strict_correct": 192,
+     "acc": 0.9320388349514563
+    },
+    "slot_void": {
+     "events": 10702,
+     "strict_correct": 10702,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2289,
+    "changed_correct": 2181
+   },
+   "8": {
+    "events": 206,
+    "strict_exact": 21,
+    "voiddrop_exact": 21,
+    "slot_changed": {
+     "events": 715,
+     "strict_correct": 680,
+     "acc": 0.951048951048951
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 1515,
+     "strict_correct": 830,
+     "acc": 0.5478547854785478
+    },
+    "slot_copy_ge33": {
+     "events": 60,
+     "strict_correct": 32,
+     "acc": 0.5333333333333333
+    },
+    "slot_void": {
+     "events": 4252,
+     "strict_correct": 4252,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 715,
+    "changed_correct": 680
+   },
+   "9": {
+    "events": 34,
+    "strict_exact": 2,
+    "voiddrop_exact": 2,
+    "slot_changed": {
+     "events": 94,
+     "strict_correct": 85,
+     "acc": 0.9042553191489362
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 144,
+     "strict_correct": 84,
+     "acc": 0.5833333333333334
+    },
+    "slot_copy_ge33": {
+     "events": 2,
+     "strict_correct": 2,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 798,
+     "strict_correct": 798,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 94,
+    "changed_correct": 85
+   },
+   "10": {
+    "events": 10,
+    "strict_exact": 6,
+    "voiddrop_exact": 6,
+    "slot_changed": {
+     "events": 30,
+     "strict_correct": 26,
+     "acc": 0.8666666666666667
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 20,
+     "strict_correct": 20,
+     "acc": 1.0
+    },
+    "slot_copy_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_void": {
+     "events": 260,
+     "strict_correct": 260,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 30,
+    "changed_correct": 26
+   }
+  },
+  "11": {
+   "2": {
+    "events": 984,
+    "strict_exact": 971,
+    "voiddrop_exact": 971,
+    "slot_changed": {
+     "events": 3732,
+     "strict_correct": 3732,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 27878,
+     "strict_correct": 27862,
+     "acc": 0.9994260707367817
+    },
+    "slot_copy_ge33": {
+     "events": 2130,
+     "strict_correct": 2130,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 2736,
+     "strict_correct": 2736,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3732,
+    "changed_correct": 3732
+   },
+   "3": {
+    "events": 976,
+    "strict_exact": 953,
+    "voiddrop_exact": 953,
+    "slot_changed": {
+     "events": 3711,
+     "strict_correct": 3710,
+     "acc": 0.9997305308542171
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 24847,
+     "strict_correct": 24813,
+     "acc": 0.9986316255483559
+    },
+    "slot_copy_ge33": {
+     "events": 2106,
+     "strict_correct": 2106,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 5498,
+     "strict_correct": 5498,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3711,
+    "changed_correct": 3710
+   },
+   "4": {
+    "events": 953,
+    "strict_exact": 922,
+    "voiddrop_exact": 922,
+    "slot_changed": {
+     "events": 3681,
+     "strict_correct": 3678,
+     "acc": 0.9991850040749797
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 21454,
+     "strict_correct": 21405,
+     "acc": 0.9977160436282279
+    },
+    "slot_copy_ge33": {
+     "events": 2062,
+     "strict_correct": 2062,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 8124,
+     "strict_correct": 8124,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3681,
+    "changed_correct": 3678
+   },
+   "5": {
+    "events": 922,
+    "strict_exact": 814,
+    "voiddrop_exact": 814,
+    "slot_changed": {
+     "events": 3530,
+     "strict_correct": 3511,
+     "acc": 0.9946175637393768
+    },
+    "slot_changed_ge33": {
+     "events": 2,
+     "strict_correct": 1,
+     "acc": 0.5
+    },
+    "slot_copy": {
+     "events": 18088,
+     "strict_correct": 17850,
+     "acc": 0.9868421052631579
+    },
+    "slot_copy_ge33": {
+     "events": 2004,
+     "strict_correct": 2004,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 10572,
+     "strict_correct": 10572,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3530,
+    "changed_correct": 3511
+   },
+   "6": {
+    "events": 823,
+    "strict_exact": 554,
+    "voiddrop_exact": 554,
+    "slot_changed": {
+     "events": 3191,
+     "strict_correct": 3108,
+     "acc": 0.973989345032905
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 1,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 13660,
+     "strict_correct": 12883,
+     "acc": 0.9431185944363104
+    },
+    "slot_copy_ge33": {
+     "events": 1773,
+     "strict_correct": 1750,
+     "acc": 0.9870276367738297
+    },
+    "slot_void": {
+     "events": 11868,
+     "strict_correct": 11868,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3191,
+    "changed_correct": 3108
+   },
+   "7": {
+    "events": 566,
+    "strict_exact": 174,
+    "voiddrop_exact": 174,
+    "slot_changed": {
+     "events": 2096,
+     "strict_correct": 2006,
+     "acc": 0.9570610687022901
+    },
+    "slot_changed_ge33": {
+     "events": 10,
+     "strict_correct": 9,
+     "acc": 0.9
+    },
+    "slot_copy": {
+     "events": 7692,
+     "strict_correct": 6173,
+     "acc": 0.8025221008840354
+    },
+    "slot_copy_ge33": {
+     "events": 1164,
+     "strict_correct": 1040,
+     "acc": 0.8934707903780069
+    },
+    "slot_void": {
+     "events": 9938,
+     "strict_correct": 9938,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2096,
+    "changed_correct": 2006
+   },
+   "8": {
+    "events": 178,
+    "strict_exact": 4,
+    "voiddrop_exact": 4,
+    "slot_changed": {
+     "events": 608,
+     "strict_correct": 573,
+     "acc": 0.9424342105263158
+    },
+    "slot_changed_ge33": {
+     "events": 2,
+     "strict_correct": 2,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 1864,
+     "strict_correct": 885,
+     "acc": 0.4747854077253219
+    },
+    "slot_copy_ge33": {
+     "events": 340,
+     "strict_correct": 172,
+     "acc": 0.5058823529411764
+    },
+    "slot_void": {
+     "events": 3696,
+     "strict_correct": 3696,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 608,
+    "changed_correct": 573
+   },
+   "9": {
+    "events": 9,
+    "strict_exact": 1,
+    "voiddrop_exact": 1,
+    "slot_changed": {
+     "events": 26,
+     "strict_correct": 25,
+     "acc": 0.9615384615384616
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 59,
+     "strict_correct": 29,
+     "acc": 0.4915254237288136
+    },
+    "slot_copy_ge33": {
+     "events": 10,
+     "strict_correct": 6,
+     "acc": 0.6
+    },
+    "slot_void": {
+     "events": 208,
+     "strict_correct": 208,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 26,
+    "changed_correct": 25
+   },
+   "10": {
+    "events": 1,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 3,
+     "strict_correct": 2,
+     "acc": 0.6666666666666666
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 4,
+     "strict_correct": 2,
+     "acc": 0.5
+    },
+    "slot_copy_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_void": {
+     "events": 20,
+     "strict_correct": 20,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3,
+    "changed_correct": 2
+   }
+  },
+  "12": {
+   "2": {
+    "events": 983,
+    "strict_exact": 948,
+    "voiddrop_exact": 948,
+    "slot_changed": {
+     "events": 3736,
+     "strict_correct": 3736,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 31069,
+     "strict_correct": 31024,
+     "acc": 0.9985516109305095
+    },
+    "slot_copy_ge33": {
+     "events": 5148,
+     "strict_correct": 5148,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 2778,
+     "strict_correct": 2778,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3736,
+    "changed_correct": 3736
+   },
+   "3": {
+    "events": 959,
+    "strict_exact": 936,
+    "voiddrop_exact": 936,
+    "slot_changed": {
+     "events": 3686,
+     "strict_correct": 3685,
+     "acc": 0.9997287032013022
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 27529,
+     "strict_correct": 27493,
+     "acc": 0.9986922881325148
+    },
+    "slot_copy_ge33": {
+     "events": 5026,
+     "strict_correct": 5026,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 5454,
+     "strict_correct": 5454,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3686,
+    "changed_correct": 3685
+   },
+   "4": {
+    "events": 940,
+    "strict_exact": 883,
+    "voiddrop_exact": 883,
+    "slot_changed": {
+     "events": 3650,
+     "strict_correct": 3636,
+     "acc": 0.9961643835616438
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 24242,
+     "strict_correct": 24124,
+     "acc": 0.9951324148172593
+    },
+    "slot_copy_ge33": {
+     "events": 4958,
+     "strict_correct": 4954,
+     "acc": 0.9991932230738201
+    },
+    "slot_void": {
+     "events": 8082,
+     "strict_correct": 8082,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3650,
+    "changed_correct": 3636
+   },
+   "5": {
+    "events": 889,
+    "strict_exact": 779,
+    "voiddrop_exact": 779,
+    "slot_changed": {
+     "events": 3478,
+     "strict_correct": 3442,
+     "acc": 0.9896492236917769
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 1,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 20267,
+     "strict_correct": 20037,
+     "acc": 0.9886515024423941
+    },
+    "slot_copy_ge33": {
+     "events": 4685,
+     "strict_correct": 4681,
+     "acc": 0.9991462113127001
+    },
+    "slot_void": {
+     "events": 10278,
+     "strict_correct": 10278,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3478,
+    "changed_correct": 3442
+   },
+   "6": {
+    "events": 787,
+    "strict_exact": 562,
+    "voiddrop_exact": 562,
+    "slot_changed": {
+     "events": 3057,
+     "strict_correct": 2977,
+     "acc": 0.9738305528295714
+    },
+    "slot_changed_ge33": {
+     "events": 3,
+     "strict_correct": 1,
+     "acc": 0.3333333333333333
+    },
+    "slot_copy": {
+     "events": 15532,
+     "strict_correct": 14850,
+     "acc": 0.9560906515580736
+    },
+    "slot_copy_ge33": {
+     "events": 4067,
+     "strict_correct": 4021,
+     "acc": 0.9886894516842881
+    },
+    "slot_void": {
+     "events": 11452,
+     "strict_correct": 11452,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3057,
+    "changed_correct": 2977
+   },
+   "7": {
+    "events": 573,
+    "strict_exact": 164,
+    "voiddrop_exact": 164,
+    "slot_changed": {
+     "events": 2122,
+     "strict_correct": 2025,
+     "acc": 0.9542884071630537
+    },
+    "slot_changed_ge33": {
+     "events": 9,
+     "strict_correct": 6,
+     "acc": 0.6666666666666666
+    },
+    "slot_copy": {
+     "events": 9553,
+     "strict_correct": 7824,
+     "acc": 0.8190097351617293
+    },
+    "slot_copy_ge33": {
+     "events": 2879,
+     "strict_correct": 2573,
+     "acc": 0.8937130948245918
+    },
+    "slot_void": {
+     "events": 10122,
+     "strict_correct": 10122,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2122,
+    "changed_correct": 2025
+   },
+   "8": {
+    "events": 169,
+    "strict_exact": 5,
+    "voiddrop_exact": 5,
+    "slot_changed": {
+     "events": 601,
+     "strict_correct": 565,
+     "acc": 0.940099833610649
+    },
+    "slot_changed_ge33": {
+     "events": 10,
+     "strict_correct": 8,
+     "acc": 0.8
+    },
+    "slot_copy": {
+     "events": 2256,
+     "strict_correct": 1128,
+     "acc": 0.5
+    },
+    "slot_copy_ge33": {
+     "events": 816,
+     "strict_correct": 466,
+     "acc": 0.571078431372549
+    },
+    "slot_void": {
+     "events": 3546,
+     "strict_correct": 3546,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 601,
+    "changed_correct": 565
+   },
+   "9": {
+    "events": 6,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 18,
+     "strict_correct": 18,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 58,
+     "strict_correct": 19,
+     "acc": 0.3275862068965517
+    },
+    "slot_copy_ge33": {
+     "events": 22,
+     "strict_correct": 8,
+     "acc": 0.36363636363636365
+    },
+    "slot_void": {
+     "events": 144,
+     "strict_correct": 144,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 18,
+    "changed_correct": 18
+   }
+  },
+  "13": {
+   "2": {
+    "events": 920,
+    "strict_exact": 894,
+    "voiddrop_exact": 894,
+    "slot_changed": {
+     "events": 3536,
+     "strict_correct": 3535,
+     "acc": 0.9997171945701357
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 31692,
+     "strict_correct": 31664,
+     "acc": 0.9991164962766629
+    },
+    "slot_copy_ge33": {
+     "events": 7462,
+     "strict_correct": 7462,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 2594,
+     "strict_correct": 2594,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3536,
+    "changed_correct": 3535
+   },
+   "3": {
+    "events": 949,
+    "strict_exact": 913,
+    "voiddrop_exact": 913,
+    "slot_changed": {
+     "events": 3637,
+     "strict_correct": 3634,
+     "acc": 0.9991751443497388
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 29932,
+     "strict_correct": 29888,
+     "acc": 0.9985300013363624
+    },
+    "slot_copy_ge33": {
+     "events": 7652,
+     "strict_correct": 7651,
+     "acc": 0.9998693152117094
+    },
+    "slot_void": {
+     "events": 5400,
+     "strict_correct": 5400,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3637,
+    "changed_correct": 3634
+   },
+   "4": {
+    "events": 920,
+    "strict_exact": 875,
+    "voiddrop_exact": 875,
+    "slot_changed": {
+     "events": 3609,
+     "strict_correct": 3605,
+     "acc": 0.9988916597395401
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 26247,
+     "strict_correct": 26171,
+     "acc": 0.9971044309825885
+    },
+    "slot_copy_ge33": {
+     "events": 7420,
+     "strict_correct": 7420,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 7924,
+     "strict_correct": 7924,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3609,
+    "changed_correct": 3605
+   },
+   "5": {
+    "events": 887,
+    "strict_exact": 787,
+    "voiddrop_exact": 787,
+    "slot_changed": {
+     "events": 3456,
+     "strict_correct": 3405,
+     "acc": 0.9852430555555556
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 22683,
+     "strict_correct": 22462,
+     "acc": 0.9902570206762774
+    },
+    "slot_copy_ge33": {
+     "events": 7176,
+     "strict_correct": 7172,
+     "acc": 0.9994425863991081
+    },
+    "slot_void": {
+     "events": 10308,
+     "strict_correct": 10308,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3456,
+    "changed_correct": 3405
+   },
+   "6": {
+    "events": 796,
+    "strict_exact": 534,
+    "voiddrop_exact": 534,
+    "slot_changed": {
+     "events": 3066,
+     "strict_correct": 2987,
+     "acc": 0.9742335290280496
+    },
+    "slot_changed_ge33": {
+     "events": 9,
+     "strict_correct": 7,
+     "acc": 0.7777777777777778
+    },
+    "slot_copy": {
+     "events": 17946,
+     "strict_correct": 17150,
+     "acc": 0.9556447119135183
+    },
+    "slot_copy_ge33": {
+     "events": 6363,
+     "strict_correct": 6252,
+     "acc": 0.9825553983969826
+    },
+    "slot_void": {
+     "events": 11628,
+     "strict_correct": 11628,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3066,
+    "changed_correct": 2987
+   },
+   "7": {
+    "events": 542,
+    "strict_exact": 154,
+    "voiddrop_exact": 154,
+    "slot_changed": {
+     "events": 2039,
+     "strict_correct": 1960,
+     "acc": 0.9612555174104953
+    },
+    "slot_changed_ge33": {
+     "events": 9,
+     "strict_correct": 5,
+     "acc": 0.5555555555555556
+    },
+    "slot_copy": {
+     "events": 10565,
+     "strict_correct": 8930,
+     "acc": 0.8452437292948415
+    },
+    "slot_copy_ge33": {
+     "events": 4275,
+     "strict_correct": 3908,
+     "acc": 0.9141520467836257
+    },
+    "slot_void": {
+     "events": 9566,
+     "strict_correct": 9566,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2039,
+    "changed_correct": 1960
+   },
+   "8": {
+    "events": 160,
+    "strict_exact": 2,
+    "voiddrop_exact": 2,
+    "slot_changed": {
+     "events": 576,
+     "strict_correct": 528,
+     "acc": 0.9166666666666666
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 0,
+     "acc": 0.0
+    },
+    "slot_copy": {
+     "events": 2610,
+     "strict_correct": 1426,
+     "acc": 0.546360153256705
+    },
+    "slot_copy_ge33": {
+     "events": 1237,
+     "strict_correct": 753,
+     "acc": 0.608730800323363
+    },
+    "slot_void": {
+     "events": 3332,
+     "strict_correct": 3332,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 576,
+    "changed_correct": 528
+   },
+   "9": {
+    "events": 2,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 6,
+     "strict_correct": 6,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 26,
+     "strict_correct": 10,
+     "acc": 0.38461538461538464
+    },
+    "slot_copy_ge33": {
+     "events": 16,
+     "strict_correct": 7,
+     "acc": 0.4375
+    },
+    "slot_void": {
+     "events": 50,
+     "strict_correct": 50,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 6,
+    "changed_correct": 6
+   }
+  },
+  "14": {
+   "2": {
+    "events": 833,
+    "strict_exact": 797,
+    "voiddrop_exact": 797,
+    "slot_changed": {
+     "events": 3185,
+     "strict_correct": 3185,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 31214,
+     "strict_correct": 31164,
+     "acc": 0.9983981546741847
+    },
+    "slot_copy_ge33": {
+     "events": 9218,
+     "strict_correct": 9217,
+     "acc": 0.9998915165979605
+    },
+    "slot_void": {
+     "events": 2308,
+     "strict_correct": 2308,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3185,
+    "changed_correct": 3185
+   },
+   "3": {
+    "events": 930,
+    "strict_exact": 892,
+    "voiddrop_exact": 892,
+    "slot_changed": {
+     "events": 3542,
+     "strict_correct": 3542,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 32100,
+     "strict_correct": 32037,
+     "acc": 0.9980373831775701
+    },
+    "slot_copy_ge33": {
+     "events": 10208,
+     "strict_correct": 10208,
+     "acc": 1.0
+    },
+    "slot_void": {
+     "events": 5256,
+     "strict_correct": 5256,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3542,
+    "changed_correct": 3542
+   },
+   "4": {
+    "events": 902,
+    "strict_exact": 854,
+    "voiddrop_exact": 854,
+    "slot_changed": {
+     "events": 3548,
+     "strict_correct": 3544,
+     "acc": 0.9988726042841037
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 28400,
+     "strict_correct": 28316,
+     "acc": 0.9970422535211267
+    },
+    "slot_copy_ge33": {
+     "events": 9880,
+     "strict_correct": 9878,
+     "acc": 0.9997975708502024
+    },
+    "slot_void": {
+     "events": 7698,
+     "strict_correct": 7698,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3548,
+    "changed_correct": 3544
+   },
+   "5": {
+    "events": 860,
+    "strict_exact": 754,
+    "voiddrop_exact": 754,
+    "slot_changed": {
+     "events": 3331,
+     "strict_correct": 3295,
+     "acc": 0.989192434704293
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 1,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 24523,
+     "strict_correct": 24285,
+     "acc": 0.9902948252660767
+    },
+    "slot_copy_ge33": {
+     "events": 9421,
+     "strict_correct": 9410,
+     "acc": 0.9988323957117079
+    },
+    "slot_void": {
+     "events": 9948,
+     "strict_correct": 9948,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3331,
+    "changed_correct": 3295
+   },
+   "6": {
+    "events": 764,
+    "strict_exact": 509,
+    "voiddrop_exact": 509,
+    "slot_changed": {
+     "events": 2911,
+     "strict_correct": 2806,
+     "acc": 0.9639299209893507
+    },
+    "slot_changed_ge33": {
+     "events": 3,
+     "strict_correct": 2,
+     "acc": 0.6666666666666666
+    },
+    "slot_copy": {
+     "events": 19505,
+     "strict_correct": 18812,
+     "acc": 0.9644706485516534
+    },
+    "slot_copy_ge33": {
+     "events": 8307,
+     "strict_correct": 8231,
+     "acc": 0.9908510894426388
+    },
+    "slot_void": {
+     "events": 11106,
+     "strict_correct": 11104,
+     "acc": 0.9998199171618944
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2911,
+    "changed_correct": 2806
+   },
+   "7": {
+    "events": 523,
+    "strict_exact": 115,
+    "voiddrop_exact": 115,
+    "slot_changed": {
+     "events": 1979,
+     "strict_correct": 1884,
+     "acc": 0.9519959575543203
+    },
+    "slot_changed_ge33": {
+     "events": 5,
+     "strict_correct": 5,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 11740,
+     "strict_correct": 9955,
+     "acc": 0.8479557069846678
+    },
+    "slot_copy_ge33": {
+     "events": 5659,
+     "strict_correct": 5152,
+     "acc": 0.9104081993285033
+    },
+    "slot_void": {
+     "events": 9204,
+     "strict_correct": 9204,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 1979,
+    "changed_correct": 1884
+   },
+   "8": {
+    "events": 121,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 431,
+     "strict_correct": 398,
+     "acc": 0.9234338747099768
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 2294,
+     "strict_correct": 1334,
+     "acc": 0.5815170008718396
+    },
+    "slot_copy_ge33": {
+     "events": 1264,
+     "strict_correct": 846,
+     "acc": 0.6693037974683544
+    },
+    "slot_void": {
+     "events": 2532,
+     "strict_correct": 2532,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 431,
+    "changed_correct": 398
+   }
+  },
+  "15": {
+   "2": {
+    "events": 751,
+    "strict_exact": 721,
+    "voiddrop_exact": 721,
+    "slot_changed": {
+     "events": 2906,
+     "strict_correct": 2905,
+     "acc": 0.9996558843771507
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 30397,
+     "strict_correct": 30366,
+     "acc": 0.9989801625160377
+    },
+    "slot_copy_ge33": {
+     "events": 10702,
+     "strict_correct": 10700,
+     "acc": 0.9998131190431695
+    },
+    "slot_void": {
+     "events": 2182,
+     "strict_correct": 2182,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2906,
+    "changed_correct": 2905
+   },
+   "3": {
+    "events": 904,
+    "strict_exact": 848,
+    "voiddrop_exact": 848,
+    "slot_changed": {
+     "events": 3498,
+     "strict_correct": 3497,
+     "acc": 0.9997141223556318
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 33830,
+     "strict_correct": 33758,
+     "acc": 0.9978717114986698
+    },
+    "slot_copy_ge33": {
+     "events": 12694,
+     "strict_correct": 12690,
+     "acc": 0.9996848904994485
+    },
+    "slot_void": {
+     "events": 5198,
+     "strict_correct": 5198,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3498,
+    "changed_correct": 3497
+   },
+   "4": {
+    "events": 864,
+    "strict_exact": 819,
+    "voiddrop_exact": 819,
+    "slot_changed": {
+     "events": 3335,
+     "strict_correct": 3328,
+     "acc": 0.9979010494752624
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 29777,
+     "strict_correct": 29709,
+     "acc": 0.9977163582630889
+    },
+    "slot_copy_ge33": {
+     "events": 12096,
+     "strict_correct": 12093,
+     "acc": 0.9997519841269841
+    },
+    "slot_void": {
+     "events": 7496,
+     "strict_correct": 7495,
+     "acc": 0.9998665955176094
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3335,
+    "changed_correct": 3328
+   },
+   "5": {
+    "events": 838,
+    "strict_exact": 716,
+    "voiddrop_exact": 716,
+    "slot_changed": {
+     "events": 3257,
+     "strict_correct": 3216,
+     "acc": 0.987411728584587
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 26441,
+     "strict_correct": 26190,
+     "acc": 0.9905071668998903
+    },
+    "slot_copy_ge33": {
+     "events": 11802,
+     "strict_correct": 11790,
+     "acc": 0.9989832231825114
+    },
+    "slot_void": {
+     "events": 9758,
+     "strict_correct": 9757,
+     "acc": 0.9998975199836032
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3257,
+    "changed_correct": 3216
+   },
+   "6": {
+    "events": 721,
+    "strict_exact": 472,
+    "voiddrop_exact": 472,
+    "slot_changed": {
+     "events": 2764,
+     "strict_correct": 2677,
+     "acc": 0.9685238784370478
+    },
+    "slot_changed_ge33": {
+     "events": 3,
+     "strict_correct": 3,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 20541,
+     "strict_correct": 19852,
+     "acc": 0.9664573292439511
+    },
+    "slot_copy_ge33": {
+     "events": 10057,
+     "strict_correct": 9974,
+     "acc": 0.9917470418613901
+    },
+    "slot_void": {
+     "events": 10548,
+     "strict_correct": 10548,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2764,
+    "changed_correct": 2677
+   },
+   "7": {
+    "events": 487,
+    "strict_exact": 93,
+    "voiddrop_exact": 93,
+    "slot_changed": {
+     "events": 1837,
+     "strict_correct": 1759,
+     "acc": 0.9575394665215025
+    },
+    "slot_changed_ge33": {
+     "events": 4,
+     "strict_correct": 2,
+     "acc": 0.5
+    },
+    "slot_copy": {
+     "events": 12428,
+     "strict_correct": 10794,
+     "acc": 0.8685226906984229
+    },
+    "slot_copy_ge33": {
+     "events": 6768,
+     "strict_correct": 6273,
+     "acc": 0.9268617021276596
+    },
+    "slot_void": {
+     "events": 8578,
+     "strict_correct": 8576,
+     "acc": 0.9997668454185125
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 1837,
+    "changed_correct": 1759
+   },
+   "8": {
+    "events": 95,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 334,
+     "strict_correct": 313,
+     "acc": 0.937125748502994
+    },
+    "slot_changed_ge33": {
+     "events": 2,
+     "strict_correct": 1,
+     "acc": 0.5
+    },
+    "slot_copy": {
+     "events": 2111,
+     "strict_correct": 1268,
+     "acc": 0.600663192799621
+    },
+    "slot_copy_ge33": {
+     "events": 1290,
+     "strict_correct": 859,
+     "acc": 0.665891472868217
+    },
+    "slot_void": {
+     "events": 1982,
+     "strict_correct": 1982,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 334,
+    "changed_correct": 313
+   },
+   "9": {
+    "events": 2,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 6,
+     "strict_correct": 6,
+     "acc": 1.0
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 36,
+     "strict_correct": 15,
+     "acc": 0.4166666666666667
+    },
+    "slot_copy_ge33": {
+     "events": 26,
+     "strict_correct": 11,
+     "acc": 0.4230769230769231
+    },
+    "slot_void": {
+     "events": 50,
+     "strict_correct": 50,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 6,
+    "changed_correct": 6
+   }
+  },
+  "16": {
+   "2": {
+    "events": 625,
+    "strict_exact": 603,
+    "voiddrop_exact": 603,
+    "slot_changed": {
+     "events": 2420,
+     "strict_correct": 2419,
+     "acc": 0.9995867768595041
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 27323,
+     "strict_correct": 27298,
+     "acc": 0.9990850199465652
+    },
+    "slot_copy_ge33": {
+     "events": 10898,
+     "strict_correct": 10895,
+     "acc": 0.9997247201321343
+    },
+    "slot_void": {
+     "events": 1780,
+     "strict_correct": 1780,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2420,
+    "changed_correct": 2419
+   },
+   "3": {
+    "events": 902,
+    "strict_exact": 851,
+    "voiddrop_exact": 851,
+    "slot_changed": {
+     "events": 3462,
+     "strict_correct": 3461,
+     "acc": 0.9997111496244945
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 36550,
+     "strict_correct": 36481,
+     "acc": 0.9981121751025992
+    },
+    "slot_copy_ge33": {
+     "events": 15366,
+     "strict_correct": 15364,
+     "acc": 0.9998698425094364
+    },
+    "slot_void": {
+     "events": 5120,
+     "strict_correct": 5120,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3462,
+    "changed_correct": 3461
+   },
+   "4": {
+    "events": 880,
+    "strict_exact": 813,
+    "voiddrop_exact": 813,
+    "slot_changed": {
+     "events": 3412,
+     "strict_correct": 3401,
+     "acc": 0.9967760844079718
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 33062,
+     "strict_correct": 32957,
+     "acc": 0.9968241485693545
+    },
+    "slot_copy_ge33": {
+     "events": 15016,
+     "strict_correct": 15005,
+     "acc": 0.9992674480554076
+    },
+    "slot_void": {
+     "events": 7582,
+     "strict_correct": 7582,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3412,
+    "changed_correct": 3401
+   },
+   "5": {
+    "events": 829,
+    "strict_exact": 673,
+    "voiddrop_exact": 673,
+    "slot_changed": {
+     "events": 3228,
+     "strict_correct": 3169,
+     "acc": 0.9817224287484511
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 1,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 28689,
+     "strict_correct": 28363,
+     "acc": 0.9886367597336958
+    },
+    "slot_copy_ge33": {
+     "events": 14155,
+     "strict_correct": 14129,
+     "acc": 0.9981631932179442
+    },
+    "slot_void": {
+     "events": 9596,
+     "strict_correct": 9595,
+     "acc": 0.9998957899124635
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 3228,
+    "changed_correct": 3169
+   },
+   "6": {
+    "events": 683,
+    "strict_exact": 422,
+    "voiddrop_exact": 422,
+    "slot_changed": {
+     "events": 2613,
+     "strict_correct": 2529,
+     "acc": 0.9678530424799081
+    },
+    "slot_changed_ge33": {
+     "events": 1,
+     "strict_correct": 1,
+     "acc": 1.0
+    },
+    "slot_copy": {
+     "events": 21512,
+     "strict_correct": 20729,
+     "acc": 0.9636017106731127
+    },
+    "slot_copy_ge33": {
+     "events": 11557,
+     "strict_correct": 11422,
+     "acc": 0.9883187678463269
+    },
+    "slot_void": {
+     "events": 9972,
+     "strict_correct": 9972,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 2613,
+    "changed_correct": 2529
+   },
+   "7": {
+    "events": 433,
+    "strict_exact": 63,
+    "voiddrop_exact": 63,
+    "slot_changed": {
+     "events": 1648,
+     "strict_correct": 1583,
+     "acc": 0.9605582524271845
+    },
+    "slot_changed_ge33": {
+     "events": 3,
+     "strict_correct": 2,
+     "acc": 0.6666666666666666
+    },
+    "slot_copy": {
+     "events": 12259,
+     "strict_correct": 10709,
+     "acc": 0.8735622807733094
+    },
+    "slot_copy_ge33": {
+     "events": 7245,
+     "strict_correct": 6698,
+     "acc": 0.9244996549344375
+    },
+    "slot_void": {
+     "events": 7630,
+     "strict_correct": 7627,
+     "acc": 0.9996068152031454
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 1648,
+    "changed_correct": 1583
+   },
+   "8": {
+    "events": 66,
+    "strict_exact": 0,
+    "voiddrop_exact": 0,
+    "slot_changed": {
+     "events": 244,
+     "strict_correct": 229,
+     "acc": 0.9385245901639344
+    },
+    "slot_changed_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "slot_copy": {
+     "events": 1624,
+     "strict_correct": 1015,
+     "acc": 0.625
+    },
+    "slot_copy_ge33": {
+     "events": 1068,
+     "strict_correct": 756,
+     "acc": 0.7078651685393258
+    },
+    "slot_void": {
+     "events": 1378,
+     "strict_correct": 1378,
+     "acc": 1.0
+    },
+    "slot_void_ge33": {
+     "events": 0,
+     "strict_correct": 0,
+     "acc": null
+    },
+    "changed_events": 244,
+    "changed_correct": 229
+   }
+  }
+ },
+ "step": {
+  "9": {
+   "events": 6480,
+   "strict_exact": 5722,
+   "voiddrop_exact": 5722
+  },
+  "10": {
+   "events": 5629,
+   "strict_exact": 4594,
+   "voiddrop_exact": 4594
+  },
+  "11": {
+   "events": 5412,
+   "strict_exact": 4393,
+   "voiddrop_exact": 4393
+  },
+  "12": {
+   "events": 5306,
+   "strict_exact": 4277,
+   "voiddrop_exact": 4277
+  },
+  "13": {
+   "events": 5176,
+   "strict_exact": 4159,
+   "voiddrop_exact": 4159
+  },
+  "14": {
+   "events": 4933,
+   "strict_exact": 3921,
+   "voiddrop_exact": 3921
+  },
+  "15": {
+   "events": 4662,
+   "strict_exact": 3669,
+   "voiddrop_exact": 3669
+  },
+  "16": {
+   "events": 4418,
+   "strict_exact": 3425,
+   "voiddrop_exact": 3425
+  }
+ },
+ "def": "note 213-18 STEP-BY-T ($0): eval_lfk's intact \"step\" events split by pass index t: step_by_t {n: {t: {events, strict_exact, voiddrop_exact}}}, n 9-16,\nt 2..n; an event = pass t whose input V_{t-1} decodes STRICT exact (VOIDs in place); strict_exact = every real slot of R(V_t) == E_t; the same chunks,\nrollout (K' = n) and decodes as _lfk_core's intact arm. step = the per-n sums (the runner checks them against eval_lfk.json's step block). Audit 213-18:\nper (n, t) also slot_<changed | copy | void>[_ge33] {events, strict_correct, acc} over the events' real slots (kinds as in lfk; _ge33 = slots j >= 33).",
+ "run": "boxes/runs_fsq/s211_vb_carry_s1",
+ "mode": "carry",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 2070",
+ "sec": 105
+}
