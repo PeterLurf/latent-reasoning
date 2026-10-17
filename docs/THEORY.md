@@ -302,6 +302,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
 | 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **gates + Audit diff review; not launched** |
+| 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **pool + GATE-1 + gates + Audit diff review; not launched** |
 
 ## Live sections
 
@@ -18556,6 +18557,75 @@ Entry is at 11k (answer_ce), the same as N1.
 - the off-host mirror and a drain waiter; 3090 only.
 
 **Cost.** Projected $1.41–2.04. **Cap $2.5** (guard), not poolable with §215. The realised $ replaces the projection.
+
+## 215. SELF-DEPTH-CHAIN round 1: self-training by depth with the model's own re-rooted single-step chain (USER APPROVED 2026-10-17 11:58 EDT: "both approve", relayed verbatim by Audit = this FT pair (cap $1.5) and §214 (cap $2.5); the caps are not poolable; pre-registered 2026-10-17 12:20 EDT, before any pool, GATE-1 or trainer output for §215)
+
+**Registered text.**
+- docs/research_selfdepth_2026-10-17/SELFDEPTH_v1.md **at 5ded8703** is the registered text for every definition, rule, label, contamination rule and gate. That file is now frozen.
+- **The precondition data:** notes 213-33…213-39 (CHAIN-LABEL, CHAIN-LABEL-FRESH; D3-T's labelling horizon 20).
+- **Derivation** (math-backing rule): v1 §3 (S0 support identity, S1, S2 noise on states, S3, S4), with the corrections of PROOFS_SELFDEPTH and REDTEAM_SELFDEPTH (v1 §1, 24 rows).
+- **References:** Lee 2502.01612 is the filtered-rounds precedent (+1 per round; error avalanche). Huang 2511.07378 is motivation only, a token-CoT theorem (Literature a84321b9).
+- **Scorer:** theory/score_s215.py (this commit), fixture-checked on 14 cases plus a GATE-1 test:
+  - H_shift reads SHIFT (STOP 14, M 0.480, K′-BEYOND −0.002);
+  - GROW, FULL (SD-C2-MEM), MIXED, SHRINK;
+  - ¬ABSORB reads UNLABELLED;
+  - CTRL FT-EFFECT;
+  - dead, FT-DIVERGED, LABEL-NOISY, CONTAMINATED and ARGS-DIFF are censored;
+  - MEM-TRADED;
+  - a missing CTRL reads UNREAD.
+
+**Cells** (RTX 3090 only, seed 1, 12k × bs 64, FT from s213_d3t_s1/model.pt via --init_from: strict load, missing = [], no calibrate(), `cal` = the base calibration.json):
+- **s215_ftself_s1** (p_self 0.5): self items from the round-1 pool, n 9–12, uniform.
+- **s215_ftctrl_s1** (p_self 0): SD's own control. Matched plain stream; there is no sharing with §214, which is a scratch cell.
+- **The recipe:** D3-T's args + `--lr 3e-5 --steps 12000 --cur 8 --c_sched 0,1`; FT-SELF adds the self flags (v1 §2.3).
+
+**Contamination rules** (v1 §2.2, registration text):
+- **training on fresh generated items only:** pool seed 21900, 110,000 kept per n 9–12, fresh-once;
+- exclusion by exact syms against test_set(1000, n_max 20) ∪ SERIAL ∪ GATE-1, with collisions logged;
+- **no gold field in any pool record**, enforced by builder patches, a key-set assert and a grep (G-S0);
+- gold used only for evaluation and GATE-1 / LABEL-AUDIT;
+- **the extrapolation test is the untouched §170 test set at n 13–16;**
+- the n 17–20 extension is sealed for round 2;
+- any hit, gold key, reuse or exhaustion makes the cell **CONTAMINATED / void**.
+
+**Claims** (v1 §5.1, with the wording rules):
+- **SD-SELF** = ABSORB (min acc_n2 n 9–12 ≥ 0.95) ∧ LENGTH-FREE ∧ VB-C1 ∧ K′24-STABLE. It is *in support*: **never worded as C2 or C4**, an enabler only.
+- **SD-C2** = SD-SELF ∧ DEPTH-BEYOND-SELF (mean acc_n2 n 13–16 ≥ 0.80).
+- **SD-C2-MEM** = SD-C2 ∧ KEEPS-SELF-STAB; MEM-TRADED is stated beside any positive.
+- **Plainly: one round mainly tests ABSORB.** C2 needs many rounds, or a boundary that stops binding.
+- **Mechanism labels** FULL / GROW / SHIFT / MIXED / SHRINK / UNLABELLED, from M and STOP-LOC. K′-BEYOND (≥ 0.25) is the C2-literal row.
+
+**OC (one seed per cell; v1 §6):**
+- **headline P(SD-C2) ≈ 0.032** (red-team shaded), with the draft's 0.076 beside it;
+- P(ABSORB) 0.65; P(SD-SELF) ≈ 0.45;
+- P(SD-C2 | no effect) ≈ 0.007; P(SD-C2 | H_full) ≈ 0.62;
+- STOP-MOVED, SELF-ATTRIBUTED, THINK-GAIN-BEYOND, C2-TAIL and DEPTH-GENERAL are **non-discriminating** (they pass under H_shift).
+
+**Censoring (v1 §5.2):** dead (last step < 12,000, guard stops included), FT-DIVERGED, LABEL-NOISY, CONTAMINATED or an ARGS-DIFF mismatch fails every reading of that cell. A failed GATE-1 means no round 1.
+
+**Gates G-S0…G-S15** (v1 §7):
+- NO-GOLD, EXCLUSION, COMPOSE, STREAMS, INIT + RESUME;
+- **ARGS-DIFF printed in the launch log**;
+- LOAD, PLAIN-PATH on the final tree after §214's edits, GRADFLOW;
+- the 2-step mem_check at the deepest round shape, G-TIME, the off-host mirror;
+- fixtures (done);
+- **Audit's diff review**;
+- drain waiters and a 3090-only launch; GATE-1 on the 3070 before the pool is used.
+- **No module edit while any deploy (§214 or §215) is in flight.**
+
+**Cost** (v1 §8):
+- The pair is projected at $0.82–1.43; **cap $1.5** (guard), not poolable with §214.
+- **Admission:** a cell launches only if its G-TIME projection is ≤ $0.95 (FT-SELF) / $0.40 (FT-CTRL). Otherwise there is no launch on that host, with at most 2 more hosts per cell; **steps are never reduced**.
+- **In-flight guards:** $1.05 / $0.45.
+- Labelling and evals are local ($0). Round 2 is not registered and not funded.
+
+**Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
+- **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
+- **What 20k draws gave:** a 0.524 augmented share, failing I(t; M) alone (0.0514).
+- **Reweighted to the 0.5 share,** the same draws give 0.4908 / 0.988 / 0.0466, against exact 0.4908 / 0.988 / 0.0458.
+- **200k draws pass every statistic:** P(F = 0 | t ≥ 9) 0.4900, I(t; ρ) 0.996, I(t; M) 0.0444, corr(P, n) 0.003, no trailing pauses, P(n = 1) 0.0163 (scratch/gate_s214/p3_200k.json).
+- **G-P3 is therefore read on 200k draws** (Audit's ruling). The trainer and schedule are unchanged, and a 48k run carries about 48k coins.
+- **Status:** the trainer is Audit-approved (11f98a8c); b309 is queued on hold (025603dc). eval_pause.json is to be built, gated and Audit-reviewed before landing.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
