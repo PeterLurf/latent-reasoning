@@ -213,13 +213,22 @@
  },
  "D3-F": {
   "cell": "s213_d3f_s1",
-  "ARGS_DIFF": null,
+  "ARGS_DIFF": {
+   "shared_diffs": {},
+   "new_keys": [
+    "arch",
+    "args_ref",
+    "table"
+   ],
+   "mode": "slva",
+   "ok": true
+  },
   "s211": {
    "cell": "s213_d3f_s1",
-   "last_step": 0,
-   "label": "pending (not started)"
+   "last_step": 48000,
+   "label": "pending (eval_vb.json partial; missing ['probe', 'vswap', 'stall'])"
   },
-  "label": "pending (not started)"
+  "label": "pending (eval_vb.json partial; missing ['probe', 'vswap', 'stall'])"
  },
  "PAIR": {
   "label": "pending"
@@ -427,24 +436,30 @@
     "STAB": {
      "bank_ablate_slva": 0.28200000000000003,
      "self_ablate": null,
-     "other_ablate": 0.28200000000000003
+     "other_ablate": 0.28200000000000003,
+     "dup_newest": 0.27725,
+     "dup_foreign": 0.2995
     },
     "HISTORY_STABILISES": true,
+    "CONTENT": "CONTENT-STABILISES",
     "omitted": [
      "self_ablate"
     ],
-    "label": "HISTORY-STABILISES (memory used for C6, not the step)"
+    "label": "memory used causally for long-run stability (CONTENT-STABILISES)"
    },
    "N2": {
     "gate": true,
     "STAB": {
      "bank_ablate_slva": 0.84025,
      "self_ablate": 0.07,
-     "other_ablate": 0.22025
+     "other_ablate": 0.22025,
+     "dup_newest": 0.7642500000000001,
+     "dup_foreign": 0.050249999999999996
     },
     "HISTORY_STABILISES": true,
+    "CONTENT": "CONTENT-STABILISES",
     "omitted": [],
-    "label": "HISTORY-STABILISES (memory used for C6, not the step)"
+    "label": "memory used causally for long-run stability (CONTENT-STABILISES)"
    }
   }
  }
