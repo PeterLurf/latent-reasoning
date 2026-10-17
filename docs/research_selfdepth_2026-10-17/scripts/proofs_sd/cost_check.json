@@ -1,0 +1,118 @@
+{
+ "padded_T": {
+  "plain": [
+   29.02,
+   31
+  ],
+  "self_R1B": [
+   42.346666666666664,
+   45
+  ],
+  "self_R1A": [
+   36.486666666666665,
+   39
+  ],
+  "self_R2": [
+   54.2,
+   57
+  ]
+ },
+ "rows": {
+  "R1 self K16": {
+   "draft_GiB": 23.17,
+   "draft_micro": 2,
+   "corrected_GiB_forced": 26.01,
+   "micro": 2,
+   "s_lo": 1.1,
+   "s_hi_typicalT": 1.605,
+   "s_hi_forcedT": 1.668
+  },
+  "R1 self kextra2 K14": {
+   "draft_GiB": 19.79,
+   "draft_micro": 1,
+   "corrected_GiB_forced": 22.3,
+   "micro": 2,
+   "s_lo": 0.962,
+   "s_hi_typicalT": 1.405,
+   "s_hi_forcedT": 1.459
+  },
+  "R2 self K20": {
+   "draft_GiB": 43.72,
+   "draft_micro": 4,
+   "corrected_GiB_forced": 48.73,
+   "micro": 4,
+   "s_lo": 2.75,
+   "s_hi_typicalT": 5.136,
+   "s_hi_forcedT": 5.411
+  },
+  "R2 self kextra2 K18": {
+   "draft_GiB": 37.96,
+   "draft_micro": 2,
+   "corrected_GiB_forced": 42.35,
+   "micro": 4,
+   "s_lo": 2.475,
+   "s_hi_typicalT": 4.623,
+   "s_hi_forcedT": 4.87
+  }
+ },
+ "proj": {
+  "R1 self K16": {
+   "hours": [
+    2.91,
+    3.86
+   ],
+   "usd": [
+    0.52,
+    1.0
+   ]
+  },
+  "R1 self kextra2 K14": {
+   "hours": [
+    2.68,
+    3.51
+   ],
+   "usd": [
+    0.48,
+    0.91
+   ]
+  },
+  "R2 self K20": {
+   "hours": [
+    6.26,
+    10.7
+   ],
+   "usd": [
+    1.13,
+    2.78
+   ]
+  },
+  "R2 self kextra2 K18": {
+   "hours": [
+    5.8,
+    9.79
+   ],
+   "usd": [
+    1.04,
+    2.55
+   ]
+  },
+  "FT-CTRL": {
+   "hours": 1.66,
+   "usd": [
+    0.3,
+    0.43
+   ],
+   "with G-TIME 0.462 s": [
+    0.33,
+    0.48
+   ]
+  },
+  "pair S1-A": [
+   0.82,
+   1.43
+  ],
+  "pair S1-A, G-TIME rates (high end)": 1.59
+ },
+ "TREF": 31,
+ "ADAM_GiB": 0.93
+}
