@@ -883,7 +883,8 @@ def part_hold(m, TE, dev, bs):
 def part_stepbyt(m, TE, dev, bs):
     """note 213-18 STEP-BY-T ($0): eval_lfk's intact "step" events split by pass index t: step_by_t {n: {t: {events, strict_exact, voiddrop_exact}}}, n 9-16,
     t 2..n; an event = pass t whose input V_{t-1} decodes STRICT exact (VOIDs in place); strict_exact = every real slot of R(V_t) == E_t; the same chunks,
-    rollout (K' = n) and decodes as _lfk_core's intact arm. step = the per-n sums (the runner checks them against eval_lfk.json's step block)."""
+    rollout (K' = n) and decodes as _lfk_core's intact arm. step = the per-n sums (the runner checks them against eval_lfk.json's step block). Audit 213-18:
+    per (n, t) also slot_<changed | copy | void>[_ge33] {events, strict_correct, acc} over the events' real slots (kinds as in lfk; _ge33 = slots j >= 33)."""
     Nn = np.array([it["n"] for it in TE]); out = {}; tot = {}
     for n in range(9, 17):
         d_ = out.setdefault(str(n), {})
@@ -895,9 +896,17 @@ def part_stepbyt(m, TE, dev, bs):
                 if not bool(ok_in.any()):
                     continue
                 Et = E[:, t]; strict = ((dec[t] == Et) | ~pad).all(1); dc = dec[t].cpu().numpy(); ec = Et.cpu().numpy(); c_ = d_.setdefault(str(t), {"events": 0, "strict_exact": 0, "voiddrop_exact": 0})
+                Ep = E[:, t - 1]; chg = Et != Ep; cor = dec[t] == Et; base = pad & ok_in[:, None]   # Audit 213-18: slot-level strict by kind (all slots / j >= 33)
+                col = torch.arange(x.shape[1], device=dev)[None, :]
+                for kd, km in (("changed", chg), ("copy", ~chg & (Et != VB.VOID)), ("void", ~chg & (Et == VB.VOID))):
+                    for tag, cm in ((kd, base & km), (kd + "_ge33", base & km & (col >= 33))):
+                        z = c_.setdefault("slot_" + tag, [0, 0]); z[0] += int(cm.sum()); z[1] += int((cm & cor).sum())
                 for i in np.nonzero(ok_in.cpu().numpy())[0]:
                     L = int(lens[i]); c_["events"] += 1; c_["strict_exact"] += int(strict[i]); c_["voiddrop_exact"] += int(VB.rerender(list(dc[i, :L])) == VB.rerender(list(ec[i, :L])))
         tot[str(n)] = {k: sum(v[k] for v in d_.values()) for k in ("events", "strict_exact", "voiddrop_exact")}; print("STEPBYT n", n, tot[str(n)], flush=True)
+        for v in d_.values():                                               # slot_<kind>[_ge33]: [slot-events, strict correct] -> + acc
+            for k_ in [k for k in v if k.startswith("slot_")]:
+                v[k_] = {"events": v[k_][0], "strict_correct": v[k_][1], "acc": v[k_][1] / v[k_][0] if v[k_][0] else None}
     return {"step_by_t": out, "step": tot, "def": part_stepbyt.__doc__}
 
 
