@@ -911,12 +911,42 @@ def part_stepbyt(m, TE, dev, bs):
     return {"step_by_t": out, "step": tot, "def": part_stepbyt.__doc__}
 
 
+@torch.no_grad()
+def part_hist24(m, TE, dev, bs):
+    """note 213-20 HIST-AT-K24 ($0): eval_d3hist's arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode mapping as part_d3hist;
+    CARRY omits self_ablate and its other_ablate = ablate_keep) read at K' = n + 2 AND K' = 24 from one K' 24 rollout per chunk (STAB-HIST's method;
+    vbank_eval.part_acc's chunks), n 3..8 -> {arm: {acc_n2 {n}, acc_k24 {n}}} + "omitted". The intact arm must equal eval_vb.json acc_n2 / acc_k['24']."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {"omitted": []}
+    arms = (("intact", None), ("bank_ablate_slva", "keep"), ("self_ablate", "self"), ("other_ablate", "bank"))
+    if m.mode == "carry":
+        arms = (("intact", None), ("bank_ablate_slva", "keep"), ("other_ablate", "keep")); res["omitted"].append("self_ablate")
+    for arm, how in arms:
+        A2 = np.full(len(TE), -1); A24 = np.full(len(TE), -1)
+        try:
+            if how in ("keep", "bank"):
+                m.ver_keep = VE.ablate_keep; m.keep_bank_only = how == "bank"
+            elif how == "self":
+                m.gather_hist_ablate = "self"
+            for n in range(3, 9):
+                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+                    r_ = m.rollout(x, pad, 24, coda_rows={n + 2: rows, 24: rows})
+                    A2[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy()
+                    A24[ch] = m.answer_logits(r_["coda"][24][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+        finally:
+            m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None
+        by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(3, 9)}  # noqa: E731
+        res[arm] = {"acc_n2": by_n(A2), "acc_k24": by_n(A24)}; print("HIST24", arm, res[arm], flush=True)
+    res["def"] = part_hist24.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
