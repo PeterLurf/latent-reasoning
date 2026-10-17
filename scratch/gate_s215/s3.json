@@ -1,0 +1,56 @@
+{
+ "P": {
+  "9": {
+   "P": 0.4934276334746635,
+   "P_lossw": 0.48923274548728285
+  },
+  "10": {
+   "P": 0.39645486912956973,
+   "P_lossw": 0.39350323399298986
+  },
+  "11": {
+   "P": 0.2816121478637221,
+   "P_lossw": 0.28057925012851437
+  },
+  "12": {
+   "P": 0.14472505632175936,
+   "P_lossw": 0.14526954501622827
+  },
+  "13": {
+   "P": 0.0,
+   "P_lossw": 0.0
+  },
+  "14": {
+   "P": 0.0,
+   "P_lossw": 0.0
+  },
+  "15": {
+   "P": 0.0,
+   "P_lossw": 0.0
+  },
+  "16": {
+   "P": 0.0,
+   "P_lossw": 0.0
+  },
+  "17": {
+   "P": null,
+   "P_lossw": null
+  }
+ },
+ "n_items": 768000,
+ "steps_self": 12000,
+ "steps_ctrl": 12000,
+ "hash_common_steps": 12000,
+ "hash_mismatch_steps": [],
+ "n_mismatch": 0,
+ "hash_1_200_equal": true,
+ "self_share": 0.49933333333333335,
+ "self_n_counts": {
+  "9": 95820,
+  "10": 95852,
+  "11": 95841,
+  "12": 95975
+ },
+ "pass": true,
+ "def": "\u00a7215 G-S3 STREAMS (SELFDEPTH_v1 \u00a76 at 5ded8703; PROOFS_SELFDEPTH \u00a72 support_check.mixture, empirical): from the two cells' draws_log.json.\n(a) P(t*) = sum over logged items of max(0, min(n, K) - t* + 1) / sum of max(0, K - t* + 1), t* 9..17 (plain items: n, K = n + U; self items:\n    self_n, K = min(n + U, 16)), on FT-SELF's actual training draws; target P(9) = 0.494 +- 0.01 (trainer law, stage B), P(t*) = 0 at t* >= 13.\n    Also the loss-weighted variant (weight 1 / K per pass) vs 0.490.\n(b) FT-SELF's plain_hash == FT-CTRL's at every logged step (the plain batch is drawn every step before the self coin), steps 1..200 (the registered\n    window) and all common steps; self U are rng_s draws only, so (b) also shows U never touched rng / rng_k.\n(c) self share: #coin / #steps vs p_self 0.5; self n uniform over 9..12 (counts).\n  python scratch/s215_gs3.py"
+}
