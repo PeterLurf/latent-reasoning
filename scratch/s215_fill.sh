@@ -11,7 +11,7 @@
 # x $/h <= the cell's cap AND admitted + BAD spend + proj <= $1.50. BAD / refused hosts: 4 -> held; BAD-host spend > $0.30 -> held.
 #   nohup bash scratch/s215_fill.sh >> logs/fill_s215.out 2>&1 &
 cd "$(dirname "$0")/.."
-PMAX=${PMAX:-0.25}; CAPF=1.50; STEPS=12000; SETUP_H=0.4; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=3; BADLOG=logs/s215_bad_cost.log; ADMLOG=logs/s215_admitted.log
+PMAX=${PMAX:-0.25}; CAPF=1.50; STEPS=12000; SETUP_H=0.4; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s215_bad_cost.log; ADMLOG=logs/s215_admitted.log
 QS="${QS:-310:s215_ftself_s1:0.95:1.05 311:s215_ftctrl_s1:0.40:0.45}"
 BASE="scratch/s214_args_ref_d3t.json boxes/runs_fsq/s213_d3t_s1/model.pt boxes/runs_fsq/s213_d3t_s1/calibration.json"; POOLF="boxes/runs_fsq/s215_pool/pool_r1.jsonl boxes/runs_fsq/s215_pool/pool_meta.json"
 log() { echo "$(date +%T) fill_s215 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
