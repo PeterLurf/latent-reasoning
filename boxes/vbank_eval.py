@@ -357,6 +357,8 @@ def main():
         if part == "tf" and not args.get("mct"):
             continue
         t0 = time.time()
+        if dev.startswith("cuda"):                                          # §213 (20:54 10-16): release the previous part's cached blocks (an SLVA acc pass left the
+            torch.cuda.empty_cache()                                        # 8 GB 3070 unable to create the probe's backward cuBLAS handle); no numeric effect
         r = {"acc": lambda: part_acc(m, TE, dev, a.eval_bs), "probe": lambda: part_probe(m, TE, dev, a.eval_bs, tuple(int(v) for v in a.probe_ts.split(",")), a.probe_steps),
              "vswap": lambda: part_vswap(m, TE, dev, a.eval_bs), "stall": lambda: part_stall(m, TE, dev, a.eval_bs), "tf": lambda: part_tf(m, TE, dev, a.eval_bs)}[part]()
         if part == "probe" and "probe" in out:
