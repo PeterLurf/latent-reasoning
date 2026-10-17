@@ -18035,6 +18035,24 @@ Entry is at 11k (answer_ce), the same as N1.
 - **At n 9**, the only n where ablation bites, bank / self ablation costs 0.16 (0.923 → 0.761).
 - Whether SLVA's off-newest mass is what gives that stability at K′ 24 is not read by (f), which is fixed at K′ n + 2. Note 213-20 pre-states that test.
 
+**Note 213-20 (2026-10-16 22:08 EDT; HIST-AT-K24, a $0 descriptive add-on pre-stated after the D3-T result and before any D3-F eval output; it does not change §213's registered (f), which stays at K′ n + 2).**
+
+**Question.** D3-T is K′ 24-stable at n 1–8 (1.000) while N1 is not (0.40–0.73), yet its registered history ablation at K′ n + 2 is 0.000. Is SLVA's off-newest mass (18%) what gives that stability, i.e. is the memory used for C6 rather than for the step?
+
+**The add-on.** d3hist's arms (intact / bank_ablate_slva / self_ablate / other_ablate), each read at K′ n + 2 **and K′ 24** from one K′ 24 rollout per chunk (as STAB-HIST, 212-15), n 3..8 → <cell>/eval_hist24.json.
+- **Cells:** D3-T and D3-F (3070, after their registered evals and STEP-BY-T).
+- **References:** N1 (2070) and N2 (4060).
+- **Gate:** the intact arm equals eval_vb's acc_n2 and acc_k['24'] bitwise.
+
+**Reading** (the 212-15 form):
+- STAB_arm = mean over n 3..6 of [(acc_n2 − acc_k24) under the arm] − [(acc_n2 − acc_k24) intact].
+- **HISTORY-STABILISES iff STAB_bank ≥ 0.10.** The self / other arms say which channel carries it (the 213-13 wording).
+
+**How it is reported** (pre-stated):
+- HISTORY-STABILISES in a §213 cell is reported as **"memory used causally for long-run stability (C6), not for the step"**, beside the registered (f). It does not turn a "parts" label into D3-C2-ATTN.
+- If it is not met, the stability comes from elsewhere (SLVA's read or the trained weights), and the memory is unused in both senses.
+- **Prediction:** HISTORY-STABILISES in D3-T, P ≈ 0.4 [ASSUMED]. N2's own-slot STAB was 0.070, below the bar, but N2 had cross-slot backups that SLVA lacks.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
