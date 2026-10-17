@@ -1,0 +1,9245 @@
+{
+ "n_latent": 0,
+ "acc": 0.17058377558756635,
+ "share_txt_with_<<": 0.07354056103108415,
+ "n": 1319,
+ "matches_eval_latent_texts": {
+  "acc": true,
+  "share": true
+ },
+ "items": [
+  {
+   "id": 0,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 2,
+   "text": "The answer is: 20000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 3,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 4,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 5,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 6,
+   "text": "The answer is: 140",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 7,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 8,
+   "text": "The answer is: 260",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 9,
+   "text": "The answer is: 540",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 10,
+   "text": "The answer is: 258",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 11,
+   "text": "The answer is: 668",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 12,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 13,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 14,
+   "text": "<<20*20/100=4>> <<20-4=16>> <<25/100*16=4>> <<16-4=12>> <<20+12=32>>The",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 15,
+   "text": "The answer is: 800",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 16,
+   "text": "The answer is: 230",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 17,
+   "text": "The answer is: 10500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 18,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 19,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 20,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 21,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 22,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 23,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 24,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 25,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 26,
+   "text": "The answer is: 162",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 27,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 28,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 29,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 30,
+   "text": "The answer is: 72",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 31,
+   "text": "<<80/2=40>> <<40+20=60>> <<80*1.25=100>> <<60+100+80=240>>The answer is: 80",
+   "ntok": 38,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 32,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 33,
+   "text": "The answer is: 65",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 34,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 35,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 36,
+   "text": "The answer is: 75",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 37,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 38,
+   "text": "The answer is: 7.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 39,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 40,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 41,
+   "text": "The answer is: 2400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 42,
+   "text": "The answer is: 26",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 43,
+   "text": "The answer is: 700",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 44,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 45,
+   "text": "<<5*2/5=2>> <<5+2=7>> <<5+7=12>> <<4*12=48>> <<2*7=14>>The answer is",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 46,
+   "text": "The answer is: 147",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 47,
+   "text": "The answer is: 2000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 48,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 49,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 50,
+   "text": "The answer is: 42",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 51,
+   "text": "The answer is: 1.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 52,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 53,
+   "text": "The answer is: 320",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 54,
+   "text": "The answer is: 28",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 55,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 56,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 57,
+   "text": "The answer is: 217",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 58,
+   "text": "The answer is: 47",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 59,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 60,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 61,
+   "text": "The answer is: 1350",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 62,
+   "text": "The answer is: 5500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 63,
+   "text": "The answer is: 1512",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 64,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 65,
+   "text": "<<2/2=1>> <<1+2=3>> <<3*3=9>>The answer is: 36",
+   "ntok": 27,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 66,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 67,
+   "text": "The answer is: 1090",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 68,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 69,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 70,
+   "text": "<<5*5=25>> <<25+8=33>> <<33*15=495.00>>The answer is: 7425",
+   "ntok": 30,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 71,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 72,
+   "text": "The answer is: 191",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 73,
+   "text": "The answer is: 165",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 74,
+   "text": "The answer is: 55.96",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 75,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 76,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 77,
+   "text": "The answer is: 600",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 78,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 79,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 80,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 81,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 82,
+   "text": "The answer is: 537",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 83,
+   "text": "The answer is: 600",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 84,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 85,
+   "text": "The answer is: 136",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 86,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 87,
+   "text": "The answer is: 6660",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 88,
+   "text": "The answer is: 8333",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 89,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 90,
+   "text": "<<10/2=5>> <<5*20=100>> <<10*5=50>>The answer is: 150",
+   "ntok": 27,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 91,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 92,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 93,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 94,
+   "text": "The answer is: 228",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 95,
+   "text": "<<200*2/5=80>> <<200-80=120>> <<120*2/3=80>>The answer is: 40",
+   "ntok": 31,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 96,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 97,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 98,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 99,
+   "text": "The answer is: 98",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 100,
+   "text": "The answer is: 145",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 101,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 102,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 103,
+   "text": "The answer is: 140",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 104,
+   "text": "The answer is: 500",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 105,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 106,
+   "text": "The answer is: 144",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 107,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 108,
+   "text": "The answer is: 42.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 109,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 110,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 111,
+   "text": "The answer is: 128",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 112,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 113,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 114,
+   "text": "The answer is: 9000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 115,
+   "text": "<<10*10=100>> <<10*4=40>> <<16*10=160>> <<100+40=140>> <<140*.5=70>> <<140-70=",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 116,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 117,
+   "text": "The answer is: 360",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 118,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 119,
+   "text": "The answer is: 140000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 120,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 121,
+   "text": "The answer is: 34",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 122,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 123,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 124,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 125,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 126,
+   "text": "The answer is: 88",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 127,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 128,
+   "text": "<<15*3=45>> <<45*4=180>> <<15-5=10>> <<10*20=200>> <<15*10=150>>The answer is: 5",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 129,
+   "text": "The answer is: 15000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 130,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 131,
+   "text": "The answer is: 1040",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 132,
+   "text": "<<2+4=6>> <<6*2=12>> <<12*6=72>> <<2*6=12>>The answer is: 84",
+   "ntok": 34,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 133,
+   "text": "The answer is: 31",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 134,
+   "text": "The answer is: 720",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 135,
+   "text": "The answer is: 55",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 136,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 137,
+   "text": "<<2*7.5=15.00>> <<2*1.5=3.00>> <<2*1=2.00>> <<15+3+2+5=",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 138,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 139,
+   "text": "The answer is: 68",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 140,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 141,
+   "text": "The answer is: 233",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 142,
+   "text": "The answer is: 140",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 143,
+   "text": "<<2+3+3+3+4=15>> <<15*.1=1.5>>The answer is: 16.5",
+   "ntok": 30,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 144,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 145,
+   "text": "The answer is: 4000",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 146,
+   "text": "The answer is: 1725",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 147,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 148,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 149,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 150,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 151,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 152,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 153,
+   "text": "The answer is: 84",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 154,
+   "text": "The answer is: 384",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 155,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 156,
+   "text": "The answer is: 1000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 157,
+   "text": "The answer is: 400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 158,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 159,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 160,
+   "text": "The answer is: 18.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 161,
+   "text": "The answer is: 34",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 162,
+   "text": "The answer is: 28.8",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 163,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 164,
+   "text": "The answer is: 55",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 165,
+   "text": "The answer is: 531",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 166,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 167,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 168,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 169,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 170,
+   "text": "The answer is: 125",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 171,
+   "text": "The answer is: 830",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 172,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 173,
+   "text": "The answer is: 9000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 174,
+   "text": "The answer is: 75",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 175,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 176,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 177,
+   "text": "<<6000*1/4=1500>> <<6000*1/3=2000>> <<6000-1500-2000=2500>> <<2500/2=1250>> <<25",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 178,
+   "text": "The answer is: 146",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 179,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 180,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 181,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 182,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 183,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 184,
+   "text": "The answer is: 26",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 185,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 186,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 187,
+   "text": "The answer is: 102",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 188,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 189,
+   "text": "The answer is: 21.75",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 190,
+   "text": "The answer is: 360",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 191,
+   "text": "The answer is: 0.35",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 192,
+   "text": "The answer is: 45",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 193,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 194,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 195,
+   "text": "The answer is: 11.20",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 196,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 197,
+   "text": "The answer is: 8500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 198,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 199,
+   "text": "The answer is: 250",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 200,
+   "text": "The answer is: 45",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 201,
+   "text": "The answer is: 110000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 202,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 203,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 204,
+   "text": "The answer is: 76",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 205,
+   "text": "The answer is: 93",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 206,
+   "text": "The answer is: 260",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 207,
+   "text": "<<40*2=80>> <<80*25=2000>> <<40*80=3200>>The answer is: 5200",
+   "ntok": 29,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 208,
+   "text": "The answer is: 56",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 209,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 210,
+   "text": "<<20*2=40>> <<30+40=70>> <<5*4=20>> <<70-20=50>>The answer is: 13",
+   "ntok": 34,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 211,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 212,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 213,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 214,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 215,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 216,
+   "text": "The answer is: 1530",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 217,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 218,
+   "text": "<<21+21=42>> <<21/2=10.5>> <<42+10.5=52.5>> <<52.5+21=73.5>>The answer",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 219,
+   "text": "The answer is: 73",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 220,
+   "text": "The answer is: 130",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 221,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 222,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 223,
+   "text": "The answer is: 20000",
+   "ntok": 7,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 224,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 225,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 226,
+   "text": "The answer is: 35.71",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 227,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 228,
+   "text": "<<4/2=2>> <<4+2=6>> <<360/6=60>>The answer is: 1",
+   "ntok": 27,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 229,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 230,
+   "text": "The answer is: 264000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 231,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 232,
+   "text": "The answer is: 75",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 233,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 234,
+   "text": "<<6*2=12>> <<12/7=1.14>>The answer is: 2",
+   "ntok": 22,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 235,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 236,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 237,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 238,
+   "text": "The answer is: 67",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 239,
+   "text": "<<1000*30/100=300>> <<1000-300=700>> <<3*700=2100>> <<3/5*2100=1260>>The answer ",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 240,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 241,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 242,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 243,
+   "text": "The answer is: 500",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 244,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 245,
+   "text": "The answer is: 64",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 246,
+   "text": "The answer is: 13500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 247,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 248,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 249,
+   "text": "The answer is: 4000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 250,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 251,
+   "text": "The answer is: 76",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 252,
+   "text": "The answer is: 58",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 253,
+   "text": "The answer is: 26",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 254,
+   "text": "<<30*.3=9>> <<30-9=21>>The answer is: 84",
+   "ntok": 20,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 255,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 256,
+   "text": "The answer is: 19",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 257,
+   "text": "The answer is: 1200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 258,
+   "text": "The answer is: 4.50",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 259,
+   "text": "The answer is: 136",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 260,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 261,
+   "text": "The answer is: 599.99",
+   "ntok": 9,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 262,
+   "text": "The answer is: 270",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 263,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 264,
+   "text": "The answer is: 325",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 265,
+   "text": "The answer is: 35000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 266,
+   "text": "The answer is: 250000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 267,
+   "text": "The answer is: 105",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 268,
+   "text": "The answer is: 825",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 269,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 270,
+   "text": "The answer is: 612",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 271,
+   "text": "<<2*3=6>> <<6*2=12>> <<2*4=8>>The answer is: 20",
+   "ntok": 27,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 272,
+   "text": "The answer is: 10.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 273,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 274,
+   "text": "The answer is: 2200",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 275,
+   "text": "The answer is: 162",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 276,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 277,
+   "text": "The answer is: 12.25",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 278,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 279,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 280,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 281,
+   "text": "<<70/2=35>> <<40*35=1400>> <<60*60=3600>> <<1400+3600=5000>>The answer is: 2500",
+   "ntok": 38,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 282,
+   "text": "<<12+3=15>> <<15*2=30>> <<30/3=10>>The answer is: 150",
+   "ntok": 27,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 283,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 284,
+   "text": "The answer is: 420",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 285,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 286,
+   "text": "The answer is: 0",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 287,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 288,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 289,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 290,
+   "text": "The answer is: 200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 291,
+   "text": "The answer is: 4.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 292,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 293,
+   "text": "The answer is: 73",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 294,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 295,
+   "text": "The answer is: 570",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 296,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 297,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 298,
+   "text": "The answer is: 750",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 299,
+   "text": "<<30*2=60>> <<60*5=300>> <<300*50=15000>> <<150*12=1800>>The answer is: 16200",
+   "ntok": 36,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 300,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 301,
+   "text": "The answer is: 104",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 302,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 303,
+   "text": "The answer is: 9500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 304,
+   "text": "<<10*10=100>> <<100*5=500>> <<500*4=2000>>The answer is: 2300",
+   "ntok": 28,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 305,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 306,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 307,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 308,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 309,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 310,
+   "text": "The answer is: 3200",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 311,
+   "text": "The answer is: 63",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 312,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 313,
+   "text": "The answer is: 132000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 314,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 315,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 316,
+   "text": "<<20+50=70>> <<2/5*20=8>> <<20+8=28>>The answer is: 56",
+   "ntok": 29,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 317,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 318,
+   "text": "The answer is: 149",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 319,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 320,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 321,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 322,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 323,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 324,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 325,
+   "text": "<<2/5*100=40>> <<100+40=140>> <<140*2000=280000>> <<400+2000=2400>> <<2400*140=3",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 326,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 327,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 328,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 329,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 330,
+   "text": "The answer is: 81",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 331,
+   "text": "The answer is: 17000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 332,
+   "text": "The answer is: 44",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 333,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 334,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 335,
+   "text": "The answer is: 320",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 336,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 337,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 338,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 339,
+   "text": "<<60/3=20>> <<20*2=40>> <<20*4=80>>The answer is: 120",
+   "ntok": 27,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 340,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 341,
+   "text": "The answer is: 220",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 342,
+   "text": "The answer is: 63",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 343,
+   "text": "The answer is: 90000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 344,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 345,
+   "text": "The answer is: 230",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 346,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 347,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 348,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 349,
+   "text": "The answer is: 1200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 350,
+   "text": "The answer is: 10.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 351,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 352,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 353,
+   "text": "<<6/2=3>> <<3*2=6>> <<6+3=9>> <<9/.3=30>>The answer is: 9",
+   "ntok": 34,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 354,
+   "text": "The answer is: 225",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 355,
+   "text": "The answer is: 38",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 356,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 357,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 358,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 359,
+   "text": "The answer is: 13.33",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 360,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 361,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 362,
+   "text": "The answer is: 28",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 363,
+   "text": "The answer is: 4.57",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 364,
+   "text": "The answer is: 43",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 365,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 366,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 367,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 368,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 369,
+   "text": "The answer is: 912",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 370,
+   "text": "The answer is: 480",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 371,
+   "text": "The answer is: 44",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 372,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 373,
+   "text": "The answer is: 240000",
+   "ntok": 7,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 374,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 375,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 376,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 377,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 378,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 379,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 380,
+   "text": "The answer is: 665",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 381,
+   "text": "The answer is: 77",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 382,
+   "text": "The answer is: 260",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 383,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 384,
+   "text": "The answer is: 34",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 385,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 386,
+   "text": "The answer is: 85",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 387,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 388,
+   "text": "The answer is: 88",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 389,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 390,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 391,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 392,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 393,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 394,
+   "text": "The answer is: 92",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 395,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 396,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 397,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 398,
+   "text": "The answer is: 228",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 399,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 400,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 401,
+   "text": "The answer is: 12000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 402,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 403,
+   "text": "<<900*8=7200>> <<7200/1000=7.2>> <<7.2-5=2.2>> <<900*2.2=2020>> <<",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 404,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 405,
+   "text": "The answer is: 140",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 406,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 407,
+   "text": "The answer is: 3000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 408,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 409,
+   "text": "<<40*15=600>> <<600*40=24000>> <<1/4*40=10>> <<40-10=30>> <<30*15=450>> <<450",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 410,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 411,
+   "text": "<<400*2=800>> <<400+800=1200>> <<1200*20/100=240>> <<1200-240=960>>The answer is",
+   "ntok": 37,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 412,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 413,
+   "text": "The answer is: 5000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 414,
+   "text": "The answer is: 56",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 415,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 416,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 417,
+   "text": "<<200*4=800>> <<800*0.3=240>> <<800-240=560>> <<300*2=600>>The answer is: 1160",
+   "ntok": 37,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 418,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 419,
+   "text": "The answer is: 7000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 420,
+   "text": "The answer is: 14000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 421,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 422,
+   "text": "The answer is: 336",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 423,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 424,
+   "text": "The answer is: 420",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 425,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 426,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 427,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 428,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 429,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 430,
+   "text": "The answer is: 104",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 431,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 432,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 433,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 434,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 435,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 436,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 437,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 438,
+   "text": "The answer is: 1.33",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 439,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 440,
+   "text": "The answer is: 108",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 441,
+   "text": "The answer is: 200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 442,
+   "text": "The answer is: 55",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 443,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 444,
+   "text": "The answer is: 26.25",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 445,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 446,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 447,
+   "text": "The answer is: 224",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 448,
+   "text": "The answer is: 191",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 449,
+   "text": "The answer is: 64",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 450,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 451,
+   "text": "The answer is: 940",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 452,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 453,
+   "text": "The answer is: 2000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 454,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 455,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 456,
+   "text": "<<60/100*15=9>> <<15+9=24>> <<15+24=39>>The answer is: 78",
+   "ntok": 29,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 457,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 458,
+   "text": "The answer is: 37.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 459,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 460,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 461,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 462,
+   "text": "The answer is: 71",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 463,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 464,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 465,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 466,
+   "text": "The answer is: 0.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 467,
+   "text": "The answer is: 3200",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 468,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 469,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 470,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 471,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 472,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 473,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 474,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 475,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 476,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 477,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 478,
+   "text": "The answer is: 624",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 479,
+   "text": "<<1500*3=4500>> <<5000*.2=1000>> <<5000+1000=6000>> <<6000*3=18000>>The answer i",
+   "ntok": 37,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 480,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 481,
+   "text": "The answer is: 108",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 482,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 483,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 484,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 485,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 486,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 487,
+   "text": "<<5*2=10>> <<10*4=40>> <<40*5=200>>The answer is: 4",
+   "ntok": 27,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 488,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 489,
+   "text": "The answer is: 0.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 490,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 491,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 492,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 493,
+   "text": "<<4*2=8.00>> <<8-2=6.00>> <<4/2=2.00>>The answer is: 100",
+   "ntok": 33,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 494,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 495,
+   "text": "The answer is: 200",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 496,
+   "text": "The answer is: 38",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 497,
+   "text": "The answer is: 196",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 498,
+   "text": "<<5*10=50>> <<50+20=70>> <<50+70=120>>The answer is: 40",
+   "ntok": 27,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 499,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 500,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 501,
+   "text": "The answer is: 117",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 502,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 503,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 504,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 505,
+   "text": "The answer is: 400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 506,
+   "text": "The answer is: 72",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 507,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 508,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 509,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 510,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 511,
+   "text": "The answer is: 200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 512,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 513,
+   "text": "The answer is: 375",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 514,
+   "text": "The answer is: 90,000",
+   "ntok": 8,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 515,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 516,
+   "text": "The answer is: 375",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 517,
+   "text": "<<36/4=9>>The answer is: 18",
+   "ntok": 13,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 518,
+   "text": "<<4*10=40>> <<6*20=120>> <<40+120=160>> <<160/2=80>> <<160-80=80>> <<3/5*",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 519,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 520,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 521,
+   "text": "<<12*3=36>> <<12+36=48>> <<100-48=52>> <<52/4=13>>The answer is: 39",
+   "ntok": 34,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 522,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 523,
+   "text": "The answer is: 86",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 524,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 525,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 526,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 527,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 528,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 529,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 530,
+   "text": "The answer is: 58",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 531,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 532,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 533,
+   "text": "The answer is: 700",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 534,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 535,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 536,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 537,
+   "text": "The answer is: 226",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 538,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 539,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 540,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 541,
+   "text": "The answer is: 375",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 542,
+   "text": "The answer is: 3.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 543,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 544,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 545,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 546,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 547,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 548,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 549,
+   "text": "The answer is: 502",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 550,
+   "text": "The answer is: 49.35",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 551,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 552,
+   "text": "The answer is: 350",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 553,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 554,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 555,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 556,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 557,
+   "text": "The answer is: 34",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 558,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 559,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 560,
+   "text": "The answer is: 33",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 561,
+   "text": "<<150-20=130>> <<130*2=260>> <<150+130+260=580>>The answer is: 183.33",
+   "ntok": 31,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 562,
+   "text": "The answer is: 45",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 563,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 564,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 565,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 566,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 567,
+   "text": "The answer is: 11.50",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 568,
+   "text": "The answer is: 215",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 569,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 570,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 571,
+   "text": "The answer is: 272",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 572,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 573,
+   "text": "The answer is: 2400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 574,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 575,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 576,
+   "text": "The answer is: 568",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 577,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 578,
+   "text": "The answer is: 0",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 579,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 580,
+   "text": "The answer is: 9.2",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 581,
+   "text": "The answer is: 265",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 582,
+   "text": "The answer is: 1046000",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 583,
+   "text": "The answer is: 76",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 584,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 585,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 586,
+   "text": "The answer is: 1000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 587,
+   "text": "The answer is: 225",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 588,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 589,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 590,
+   "text": "The answer is: 258",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 591,
+   "text": "The answer is: 544",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 592,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 593,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 594,
+   "text": "The answer is: 1400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 595,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 596,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 597,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 598,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 599,
+   "text": "The answer is: 72",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 600,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 601,
+   "text": "The answer is: 54",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 602,
+   "text": "The answer is: 1.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 603,
+   "text": "The answer is: 1080",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 604,
+   "text": "The answer is: 44",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 605,
+   "text": "The answer is: 39",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 606,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 607,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 608,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 609,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 610,
+   "text": "The answer is: 9400",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 611,
+   "text": "The answer is: 675000",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 612,
+   "text": "The answer is: 96",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 613,
+   "text": "The answer is: 9000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 614,
+   "text": "The answer is: 156",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 615,
+   "text": "The answer is: 26",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 616,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 617,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 618,
+   "text": "<<4*18=72>> <<72*1/4=18>> <<72-18=54>> <<54*1/3=18>>The answer is: 36",
+   "ntok": 38,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 619,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 620,
+   "text": "The answer is: 531",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 621,
+   "text": "2*2=4>> <<4*6=24>>The answer is: 3000",
+   "ntok": 19,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 622,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 623,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 624,
+   "text": "The answer is: 42",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 625,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 626,
+   "text": "The answer is: 120000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 627,
+   "text": "The answer is: 56",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 628,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 629,
+   "text": " <<25000*0.3=7500>> <<25000-7500=17500>> <<17500*0.1=1750>>The answer is: 17500",
+   "ntok": 39,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 630,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 631,
+   "text": "The answer is: 4400",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 632,
+   "text": "The answer is: 43",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 633,
+   "text": "The answer is: 1.75",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 634,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 635,
+   "text": "The answer is: 0",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 636,
+   "text": "<<50*2=100>> <<100+50=150>>The answer is: 1050",
+   "ntok": 20,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 637,
+   "text": "The answer is: 2.2",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 638,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 639,
+   "text": "The answer is: 72",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 640,
+   "text": "The answer is: 40000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 641,
+   "text": "The answer is: 234000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 642,
+   "text": "<<10*750=7500>> <<750/5=150>> <<150*10=1500>> <<60*10=600>>The answer is: 9600",
+   "ntok": 36,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 643,
+   "text": "The answer is: 1520",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 644,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 645,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 646,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 647,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 648,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 649,
+   "text": "The answer is: 24000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 650,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 651,
+   "text": "<<400*2=800>> <<3/4*800=600>>The answer is: 1400",
+   "ntok": 22,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 652,
+   "text": "The answer is: 210",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 653,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 654,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 655,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 656,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 657,
+   "text": "The answer is: 450000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 658,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 659,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 660,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 661,
+   "text": "<<5*20*.01=1>> <<5+1=6>> <<6*7=42>>The answer is: 44",
+   "ntok": 29,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 662,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 663,
+   "text": "The answer is: 37",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 664,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 665,
+   "text": "The answer is: 540",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 666,
+   "text": "The answer is: 135",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 667,
+   "text": "The answer is: 57",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 668,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 669,
+   "text": "The answer is: 256",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 670,
+   "text": "The answer is: 1.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 671,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 672,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 673,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 674,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 675,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 676,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 677,
+   "text": "The answer is: 64",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 678,
+   "text": "<<10*3=30>> <<30*2=60>>The answer is: 120",
+   "ntok": 20,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 679,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 680,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 681,
+   "text": "The answer is: 177",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 682,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 683,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 684,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 685,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 686,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 687,
+   "text": "The answer is: 13",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 688,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 689,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 690,
+   "text": "<<2/5*20=8>> <<20+8=28>> <<20+28=48>>The answer is: 5120",
+   "ntok": 30,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 691,
+   "text": "<<2*20=40>> <<40+60=100>> <<100*0.6=60>>The answer is: 35",
+   "ntok": 29,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 692,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 693,
+   "text": "The answer is: 54",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 694,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 695,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 696,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 697,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 698,
+   "text": "The answer is: 960",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 699,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 700,
+   "text": "The answer is: 165",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 701,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 702,
+   "text": "The answer is: 1200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 703,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 704,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 705,
+   "text": "The answer is: 600",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 706,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 707,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 708,
+   "text": "The answer is: 168",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 709,
+   "text": "The answer is: 1200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 710,
+   "text": "<<5*3=15.00>> <<4*2.5=10.00>> <<3*4=12.00>> <<13*1=13.00>> <<15",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 711,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 712,
+   "text": "<<4*14=56>> <<3*14=42>> <<56+42=98>>The answer is: 2",
+   "ntok": 27,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 713,
+   "text": "The answer is: 576",
+   "ntok": 7,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 714,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 715,
+   "text": "10*700=73500>>The answer is: 383500",
+   "ntok": 16,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 716,
+   "text": "The answer is: 480",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 717,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 718,
+   "text": "<<100*0.3=30>> <<30*0.2=6>>The answer is: 2",
+   "ntok": 24,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 719,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 720,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 721,
+   "text": "The answer is: 1900",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 722,
+   "text": "The answer is: 165",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 723,
+   "text": "The answer is: 152",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 724,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 725,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 726,
+   "text": "The answer is: 6.36",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 727,
+   "text": "<<64*1/4=16>> <<32*3/4=24>>The answer is: 40",
+   "ntok": 24,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 728,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 729,
+   "text": "The answer is: 1333",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 730,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 731,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 732,
+   "text": "The answer is: 47",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 733,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 734,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 735,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 736,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 737,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 738,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 739,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 740,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 741,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 742,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 743,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 744,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 745,
+   "text": "<<1800*3=5400>> <<4000+1000=5000>> <<50*30=1500>> <<5000+1500=6500>>The answer i",
+   "ntok": 36,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 746,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 747,
+   "text": "The answer is: 1400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 748,
+   "text": "The answer is: 280",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 749,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 750,
+   "text": "The answer is: 4000",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 751,
+   "text": "The answer is: 31",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 752,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 753,
+   "text": "The answer is: 114",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 754,
+   "text": "<<30*1=30>> <<40*3=120>> <<30*.9=27>> <<120*.5=60>> <<27+60=87>> <<30+120=",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 755,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 756,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 757,
+   "text": "The answer is: 67",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 758,
+   "text": "The answer is: 126",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 759,
+   "text": "The answer is: 20000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 760,
+   "text": "<<50*20/100=10>> <<50-10=40>> <<40*60/100=24>> <<40-24=16>>The answer is: 4",
+   "ntok": 38,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 761,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 762,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 763,
+   "text": "The answer is: 125",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 764,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 765,
+   "text": "The answer is: 430",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 766,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 767,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 768,
+   "text": "The answer is: 600",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 769,
+   "text": "The answer is: 145",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 770,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 771,
+   "text": "The answer is: 5.4",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 772,
+   "text": "<<7+5=12>> <<12-3=9>> <<9/3=3>> <<9-3=6>>The answer is: 50",
+   "ntok": 34,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 773,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 774,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 775,
+   "text": "The answer is: 0",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 776,
+   "text": "The answer is: 800",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 777,
+   "text": "<<600/3=200>> <<200*6=1200>> <<600-200=400>> <<400*5=2000>> <<200*10=2000>>The a",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 778,
+   "text": "The answer is: 46",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 779,
+   "text": "The answer is: 275",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 780,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 781,
+   "text": "The answer is: 19",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 782,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 783,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 784,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 785,
+   "text": "The answer is: 84",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 786,
+   "text": "The answer is: 154",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 787,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 788,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 789,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 790,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 791,
+   "text": "The answer is: 132",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 792,
+   "text": "The answer is: 75",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 793,
+   "text": "The answer is: 230",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 794,
+   "text": "The answer is: 42",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 795,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 796,
+   "text": "The answer is: 2400000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 797,
+   "text": "The answer is: 390",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 798,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 799,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 800,
+   "text": "The answer is: 459",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 801,
+   "text": "The answer is: 1240",
+   "ntok": 7,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 802,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 803,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 804,
+   "text": "The answer is: 140",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 805,
+   "text": "30/100*600=180>> <<600+180=780>>The answer is: 1080",
+   "ntok": 21,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 806,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 807,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 808,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 809,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 810,
+   "text": "The answer is: 310",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 811,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 812,
+   "text": "The answer is: 99",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 813,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 814,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 815,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 816,
+   "text": "The answer is: 4500",
+   "ntok": 7,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 817,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 818,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 819,
+   "text": "The answer is: 1250",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 820,
+   "text": "<<8/2=4>> <<8+4=12>>The answer is: 720",
+   "ntok": 20,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 821,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 822,
+   "text": "The answer is: 378",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 823,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 824,
+   "text": "The answer is: 42",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 825,
+   "text": "The answer is: 243",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 826,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 827,
+   "text": "The answer is: 0.56",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 828,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 829,
+   "text": "The answer is: 12000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 830,
+   "text": "The answer is: 144",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 831,
+   "text": "The answer is: 495",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 832,
+   "text": "The answer is: 28",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 833,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 834,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 835,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 836,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 837,
+   "text": "The answer is: 320",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 838,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 839,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 840,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 841,
+   "text": "The answer is: 7200",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 842,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 843,
+   "text": "The answer is: 19",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 844,
+   "text": "The answer is: 270",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 845,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 846,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 847,
+   "text": "The answer is: 675",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 848,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 849,
+   "text": "The answer is: 75",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 850,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 851,
+   "text": "The answer is: 220",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 852,
+   "text": "The answer is: 54",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 853,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 854,
+   "text": "The answer is: 72",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 855,
+   "text": "The answer is: 28",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 856,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 857,
+   "text": "The answer is: 16000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 858,
+   "text": "The answer is: 160",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 859,
+   "text": "The answer is: 800",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 860,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 861,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 862,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 863,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 864,
+   "text": "The answer is: 380",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 865,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 866,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 867,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 868,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 869,
+   "text": "The answer is: 3000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 870,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 871,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 872,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 873,
+   "text": "The answer is: 0.48",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 874,
+   "text": "The answer is: 132",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 875,
+   "text": "The answer is: 63",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 876,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 877,
+   "text": "The answer is: 9000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 878,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 879,
+   "text": "The answer is: 650",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 880,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 881,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 882,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 883,
+   "text": "The answer is: 32.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 884,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 885,
+   "text": "The answer is: 500",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 886,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 887,
+   "text": "The answer is: 34",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 888,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 889,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 890,
+   "text": "<<100*1/4=25>> <<100-25=75>> <<75*2/3=50>> <<75-50=25>>The answer is: 25",
+   "ntok": 38,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 891,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 892,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 893,
+   "text": "The answer is: 400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 894,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 895,
+   "text": "The answer is: 63",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 896,
+   "text": "The answer is: 2500",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 897,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 898,
+   "text": "The answer is: 110",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 899,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 900,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 901,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 902,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 903,
+   "text": "The answer is: 22.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 904,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 905,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 906,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 907,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 908,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 909,
+   "text": "The answer is: 52",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 910,
+   "text": "The answer is: 500",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 911,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 912,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 913,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 914,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 915,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 916,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 917,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 918,
+   "text": "The answer is: 66",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 919,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 920,
+   "text": "<<3*3=9>> <<9-2=7>> <<7*3=21>> <<21/3=7>>The answer is: 67",
+   "ntok": 34,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 921,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 922,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 923,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 924,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 925,
+   "text": "The answer is: 3000",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 926,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 927,
+   "text": "The answer is: 15000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 928,
+   "text": "The answer is: 39",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 929,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 930,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 931,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 932,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 933,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 934,
+   "text": "The answer is: 420",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 935,
+   "text": "The answer is: 216000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 936,
+   "text": "The answer is: 320",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 937,
+   "text": "The answer is: 105",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 938,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 939,
+   "text": "The answer is: 350",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 940,
+   "text": "The answer is: 280",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 941,
+   "text": "The answer is: 2100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 942,
+   "text": "The answer is: 145",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 943,
+   "text": "<<10*15=150>> <<150*.4=60>> <<150-60=90>> <<5*15=75>> <<90*40=3600>>The answer i",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 944,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 945,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 946,
+   "text": "The answer is: 290",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 947,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 948,
+   "text": "The answer is: 37",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 949,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 950,
+   "text": "The answer is: 17.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 951,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 952,
+   "text": "The answer is: 1440",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 953,
+   "text": "The answer is: 95",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 954,
+   "text": "The answer is: 26",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 955,
+   "text": "The answer is: 700",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 956,
+   "text": "<<16-7=9>> <<9*(2/3)=6>>The answer is: 2",
+   "ntok": 23,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 957,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 958,
+   "text": "The answer is: 57",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 959,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 960,
+   "text": "The answer is: 38",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 961,
+   "text": "The answer is: 155",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 962,
+   "text": "The answer is: 600",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 963,
+   "text": "The answer is: 33",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 964,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 965,
+   "text": "The answer is: 656",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 966,
+   "text": "The answer is: 54",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 967,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 968,
+   "text": "The answer is: 162",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 969,
+   "text": "The answer is: 1800",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 970,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 971,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 972,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 973,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 974,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 975,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 976,
+   "text": "<<10+4=14>> <<10+14=24>> <<10+5=15>> <<14+15=29>> <<24*6=144>> <<15*15=",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 977,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 978,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 979,
+   "text": "The answer is: 112",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 980,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 981,
+   "text": "<<3*4=12>> <<12/2=6>> <<3+12+6=21>>The answer is: 7",
+   "ntok": 29,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 982,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 983,
+   "text": "The answer is: 12.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 984,
+   "text": "The answer is: 102",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 985,
+   "text": "The answer is: 63",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 986,
+   "text": "<<3*5=15>> <<2.5*5=12.5>> <<15+12.5=27.5>>The answer is: 137.5",
+   "ntok": 37,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 987,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 988,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 989,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 990,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 991,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 992,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 993,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 994,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 995,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 996,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 997,
+   "text": "The answer is: 3300",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 998,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 999,
+   "text": "The answer is: 16.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1000,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1001,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1002,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1003,
+   "text": "<<25+1.5*10=40>> <<40*3=120>>The answer is: 480",
+   "ntok": 24,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 1004,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1005,
+   "text": "<<50*3/5=30>> <<30*4=120>> <<120*12=1440>>The answer is: 1510",
+   "ntok": 31,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1006,
+   "text": "The answer is: 130",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1007,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1008,
+   "text": "The answer is: 125",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1009,
+   "text": "The answer is: 1500",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1010,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1011,
+   "text": "The answer is: 4500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1012,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1013,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1014,
+   "text": "<<3*0.5=1.5>> <<4*0.75=3>> <<2*1=2>> <<5*0.25=1.25>> <<1",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1015,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1016,
+   "text": "The answer is: 128.25",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1017,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1018,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1019,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1020,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1021,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1022,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1023,
+   "text": "The answer is: 49",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1024,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1025,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1026,
+   "text": "<<12*2=24>> <<24*50*.01=12>> <<24+12=36>> <<36*30=1080>> <<12*40=480>>The answer",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1027,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1028,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1029,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1030,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1031,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1032,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1033,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1034,
+   "text": "The answer is: 58",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1035,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1036,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1037,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1038,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1039,
+   "text": "The answer is: 208",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1040,
+   "text": "The answer is: 912",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1041,
+   "text": "The answer is: 132",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1042,
+   "text": "The answer is: 13.33",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1043,
+   "text": "The answer is: 130000",
+   "ntok": 7,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1044,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1045,
+   "text": "The answer is: 480",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1046,
+   "text": "The answer is: 4.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1047,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1048,
+   "text": "The answer is: 16000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1049,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1050,
+   "text": "The answer is: 1650",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1051,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1052,
+   "text": "The answer is: 170",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1053,
+   "text": "The answer is: 46",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1054,
+   "text": "The answer is: 2400",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1055,
+   "text": "The answer is: 1536",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1056,
+   "text": "The answer is: 104",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1057,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1058,
+   "text": "The answer is: 200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1059,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1060,
+   "text": "The answer is: 55",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1061,
+   "text": "The answer is: 56",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1062,
+   "text": "The answer is: 910",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1063,
+   "text": "The answer is: 400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1064,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1065,
+   "text": "The answer is: 75",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1066,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1067,
+   "text": "<<700*2=1400>> <<700*5=3500>> <<1400*15=21000>>The answer is: 215",
+   "ntok": 31,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1068,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1069,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1070,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1071,
+   "text": "The answer is: 741",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1072,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1073,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1074,
+   "text": "The answer is: 500",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1075,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1076,
+   "text": "The answer is: 91",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1077,
+   "text": "The answer is: 110",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1078,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1079,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1080,
+   "text": "The answer is: 1200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1081,
+   "text": "The answer is: 195",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1082,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1083,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1084,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1085,
+   "text": "The answer is: 26",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1086,
+   "text": "<<300*0.5=150>> <<300-150-450=75>> <<150*500=75000>> <<75*450=33750>> <<300*0.15",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1087,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1088,
+   "text": "<<2*40=80>> <<80*5=400>> <<400*1/16=25>> <<25*2=50>> <<400+50=450>>The answer is",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1089,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1090,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1091,
+   "text": "The answer is: 1000",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1092,
+   "text": "The answer is: 540",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1093,
+   "text": "The answer is: 96",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1094,
+   "text": "The answer is: 41.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1095,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1096,
+   "text": "<<2*3=6>> <<31-19=12>> <<12*6=72>> <<72*20*.01=14.4>> <<72+14.4=86",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1097,
+   "text": "The answer is: 692",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1098,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1099,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1100,
+   "text": "The answer is: 12.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1101,
+   "text": "The answer is: 25.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1102,
+   "text": "The answer is: 55",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1103,
+   "text": "The answer is: 45",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1104,
+   "text": "3*4=12>>The answer is: 36",
+   "ntok": 12,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1105,
+   "text": "<<100000*0.2=20000>> <<20000*0.4=8000>>The answer is: 5",
+   "ntok": 27,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1106,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1107,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1108,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1109,
+   "text": "<<3*2=6>> <<4+6=10>>The answer is: 3.33",
+   "ntok": 22,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1110,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1111,
+   "text": "The answer is: 162",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1112,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1113,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1114,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1115,
+   "text": "<<16-2=14>> <<14-4=10>>The answer is: 5",
+   "ntok": 20,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 1116,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1117,
+   "text": "The answer is: 21.4",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1118,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1119,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1120,
+   "text": "The answer is: 140",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1121,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1122,
+   "text": "<<6*2=12>> <<4*2=8>> <<12+8=20>> <<400-20=380>> <<10-2-2=6>>The answer is",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1123,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1124,
+   "text": "The answer is: 18",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1125,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1126,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1127,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1128,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1129,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1130,
+   "text": "The answer is: 12.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1131,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1132,
+   "text": "The answer is: 22500",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1133,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1134,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1135,
+   "text": "The answer is: 37",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1136,
+   "text": "The answer is: 34",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1137,
+   "text": "The answer is: 37",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1138,
+   "text": "The answer is: 1270",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1139,
+   "text": "The answer is: 9.33",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1140,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1141,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1142,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1143,
+   "text": "The answer is: 60000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1144,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1145,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1146,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1147,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1148,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1149,
+   "text": "The answer is: 93",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1150,
+   "text": "The answer is: 39",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1151,
+   "text": "The answer is: 46.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1152,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1153,
+   "text": "The answer is: 16",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1154,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1155,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1156,
+   "text": "<<20*2=40>> <<20*2=40>> <<40*4=160>> <<40*2=80>>The answer is: 240",
+   "ntok": 34,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1157,
+   "text": "The answer is: 1.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1158,
+   "text": "The answer is: 4400",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1159,
+   "text": "The answer is: 40",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1160,
+   "text": "The answer is: 546",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1161,
+   "text": "The answer is: 1350",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1162,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1163,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1164,
+   "text": "<<3*12=36>> <<5*2=10>> <<10-2=8>> <<8/2=4>> <<4+8+4=16>>The answer is",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1165,
+   "text": "<<200*2=400>> <<400+200=600>> <<600*.4=240>> <<600+240=840>> <<600+840=1440>>The",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1166,
+   "text": "The answer is: 1250",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1167,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1168,
+   "text": "The answer is: 28",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1169,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1170,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1171,
+   "text": "The answer is: 7200",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1172,
+   "text": "The answer is: 45",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1173,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1174,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1175,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1176,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1177,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1178,
+   "text": "The answer is: 17",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1179,
+   "text": "The answer is: 46.67",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1180,
+   "text": "The answer is: 1400",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1181,
+   "text": "The answer is: 3",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1182,
+   "text": "The answer is: 54",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1183,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1184,
+   "text": "The answer is: 324",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1185,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1186,
+   "text": "The answer is: 19",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1187,
+   "text": "The answer is: 90",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1188,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1189,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1190,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1191,
+   "text": "The answer is: 400",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1192,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1193,
+   "text": "The answer is: 7.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1194,
+   "text": "The answer is: 1200",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1195,
+   "text": "The answer is: 200",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1196,
+   "text": "<<5*2=10>> <<5+10=15>>The answer is: 75",
+   "ntok": 20,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 1197,
+   "text": "The answer is: 1500",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1198,
+   "text": "The answer is: 87.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1199,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1200,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1201,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1202,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1203,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1204,
+   "text": "<<700*40/100=280>> <<700-280=420>> <<420*60/100=252>>The answer is: 168",
+   "ntok": 31,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 1205,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1206,
+   "text": "The answer is: 100000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1207,
+   "text": "The answer is: 23",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1208,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1209,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1210,
+   "text": "The answer is: 288",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1211,
+   "text": "The answer is: 112",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1212,
+   "text": "The answer is: 300",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1213,
+   "text": "The answer is: 275",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1214,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1215,
+   "text": "<<6*6*15=540>> <<.15*540=81>> <<900*.30=270>>The answer is: 189",
+   "ntok": 30,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1216,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1217,
+   "text": "<<2*3=6>> <<2*1.5=3>> <<3*3=9>> <<6*5=30>> <<3*3=9>>The answer is",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1218,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1219,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1220,
+   "text": "The answer is: 32",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1221,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1222,
+   "text": "The answer is: 350",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1223,
+   "text": "The answer is: 7.2",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1224,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1225,
+   "text": "The answer is: 2",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1226,
+   "text": "The answer is: 76",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1227,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1228,
+   "text": "The answer is: 19",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1229,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1230,
+   "text": "The answer is: 360",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1231,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1232,
+   "text": "The answer is: 5",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1233,
+   "text": "<<60*2/5=24>> <<60-24=36>> <<25/100*36=9>>The answer is: 27",
+   "ntok": 31,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1234,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1235,
+   "text": "The answer is: 50",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1236,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1237,
+   "text": "The answer is: 86",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1238,
+   "text": "The answer is: 792",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1239,
+   "text": "The answer is: 12.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1240,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1241,
+   "text": "The answer is: 1.60",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1242,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1243,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1244,
+   "text": "The answer is: 42",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1245,
+   "text": "The answer is: 99",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1246,
+   "text": "The answer is: 840",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1247,
+   "text": "The answer is: 6",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1248,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1249,
+   "text": "The answer is: 44",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1250,
+   "text": "The answer is: 11",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1251,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1252,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1253,
+   "text": "The answer is: 120",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1254,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1255,
+   "text": "The answer is: 2.5",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1256,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1257,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1258,
+   "text": "The answer is: 110",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1259,
+   "text": "The answer is: 720",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1260,
+   "text": "The answer is: 35",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1261,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1262,
+   "text": "The answer is: 9",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1263,
+   "text": "<<50+20=70>> <<70*2=140>> <<70+140=210>> <<50+70+140+210=420>> <<60*7=420>>The",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1264,
+   "text": "The answer is: 180",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1265,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1266,
+   "text": "<<5*3=15>> <<3*2=6>> <<15+6=21>>The answer is: 147",
+   "ntok": 27,
+   "ok": true,
+   "has_<<": true
+  },
+  {
+   "id": 1267,
+   "text": "The answer is: 80",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1268,
+   "text": "The answer is: 12",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1269,
+   "text": "The answer is: 108",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1270,
+   "text": "<<9000*30/100=2700>> <<9000-2700=6300>> <<6300*30/100=1890>> <<6300-1890=4",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1271,
+   "text": "The answer is: 66",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1272,
+   "text": "<<80*10/100=8>> <<8*3=24>> <<80*10/100=8>> <<8*1=8>>The answer is: 272",
+   "ntok": 38,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1273,
+   "text": "The answer is: 25",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1274,
+   "text": "The answer is: 22",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1275,
+   "text": "The answer is: 150",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1276,
+   "text": "The answer is: 70",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1277,
+   "text": "The answer is: 48",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1278,
+   "text": "The answer is: 561",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1279,
+   "text": "The answer is: 66",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1280,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1281,
+   "text": "The answer is: 100",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1282,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1283,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1284,
+   "text": "The answer is: 8",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1285,
+   "text": "The answer is: 1246",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1286,
+   "text": "The answer is: 275",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1287,
+   "text": "The answer is: 36",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1288,
+   "text": "The answer is: 60",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1289,
+   "text": "The answer is: 98",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1290,
+   "text": "The answer is: 54",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1291,
+   "text": "The answer is: 27",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1292,
+   "text": "The answer is: 65",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1293,
+   "text": "The answer is: 70000",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1294,
+   "text": "<<8*.5=4>> <<8-4=4>> <<4*2=8>> <<40*.4=16>> <<40-16=24>>The answer is: 32",
+   "ntok": 40,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1295,
+   "text": "The answer is: 4",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1296,
+   "text": "The answer is: 345",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1297,
+   "text": "The answer is: 260",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1298,
+   "text": "The answer is: 13.65",
+   "ntok": 8,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1299,
+   "text": "The answer is: 20",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1300,
+   "text": "The answer is: 240",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1301,
+   "text": "The answer is: 21",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1302,
+   "text": "The answer is: 66",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1303,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1304,
+   "text": "The answer is: 1000",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1305,
+   "text": "The answer is: 2850",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1306,
+   "text": "The answer is: 7",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1307,
+   "text": "The answer is: 0",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1308,
+   "text": "The answer is: 30",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  },
+  {
+   "id": 1309,
+   "text": "The answer is: 1430",
+   "ntok": 7,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1310,
+   "text": "The answer is: 24",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1311,
+   "text": "The answer is: 206",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1312,
+   "text": "<<5*2=10>> <<10+5=15>>The answer is: 30",
+   "ntok": 20,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1313,
+   "text": "The answer is: 1",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1314,
+   "text": "<<12-3=9>> <<9/2=4.5>>The answer is: 29.5",
+   "ntok": 24,
+   "ok": false,
+   "has_<<": true
+  },
+  {
+   "id": 1315,
+   "text": "The answer is: 15",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1316,
+   "text": "The answer is: 330",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1317,
+   "text": "The answer is: 10",
+   "ntok": 6,
+   "ok": false,
+   "has_<<": false
+  },
+  {
+   "id": 1318,
+   "text": "The answer is: 14",
+   "ntok": 6,
+   "ok": true,
+   "has_<<": false
+  }
+ ]
+}
