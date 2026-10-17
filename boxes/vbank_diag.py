@@ -1063,12 +1063,82 @@ def part_ageproj(m, TE, dev, bs):
     return {"fit": fit, "arms": arms, "rand_size_check": chk, "def": part_ageproj.__doc__}
 
 
+@torch.no_grad()
+def part_agerevert(m, TE, dev, bs):
+    """D4_v1 §7 S0-3 AGE-REVERT + AGE-MCT ($0; D3-T). §170 test items n 1..8 (vbank_eval.part_acc's chunks). D in {2, 4}: passes 1..D compute V_t and then
+    store an EDITED entry (rollout(edit=...); SLVA / the bank read the stored entry); normal passes follow; acc read at K' D + n - 1 (acc_k_pre) and
+    K' D + n + 2 (acc_n2) from one rollout per chunk. REVERT: at pass t <= D, real slots whose argmax R(V_t[j]) differs from the decode of the previous
+    STORED entry S_{t-1}[j] are set back to S_{t-1}[j] (S_0 = V_0; under CARRY the carry gets the same entry). MCT: at pass t <= D the stored entry is
+    m.mct(V_t, E_0, pad, mu 1.0) (the no_grad minimum-norm edit in R's row space, so R decodes E_0 at every real slot; every slot keeps its aged vector).
+    intact = acc at K' n + 2 (the runner gates it against eval_vb.json acc_n2, bitwise on the eval card). Exposure: reverted slot-events per item (REVERT),
+    and the share of MCT stored entries decoding E_0 at every real slot."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE])
+    res = {"intact": {}, "revert": {}, "mct": {}, "exposure": {}}; A0 = np.full(len(TE), -1)
+    for n in range(1, 9):
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}); A0[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+    res["intact"]["acc_n2"] = {str(n): float((A0 == Y)[Nn == n].mean()) for n in range(1, 9)}
+    for arm in ("revert", "mct"):
+        for D in (2, 4):
+            Ap = np.full(len(TE), -1); A2 = np.full(len(TE), -1); ex = {"events": 0, "items": 0, "mct_exact": 0, "mct_entries": 0}
+            for n in range(1, 9):
+                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B = len(its); rows = torch.arange(B, device=dev); K = D + n + 2
+                    E0 = VB.rec_targets(its, 0, x.shape[1], dev)[:, 0]; st = {"prev": m.rollout(x, pad, 0)["V"][0]}
+
+                    def edit(t, V, st=st, pad=pad, E0=E0, D=D, arm=arm, ex=ex):
+                        if t > D:
+                            return None
+                        if arm == "revert":
+                            ch_ = (m.rec_logits(V).argmax(-1) != m.rec_logits(st["prev"]).argmax(-1)) & pad
+                            ex["events"] += int(ch_.sum()); out = torch.where(ch_[..., None], st["prev"], V)
+                        else:
+                            out = m.mct(V, E0, pad, 1.0)[0].to(V.dtype); ok = ((m.rec_logits(out).argmax(-1) == E0) | ~pad).all(1)
+                            ex["mct_exact"] += int(ok.sum()); ex["mct_entries"] += int(ok.numel())
+                        st["prev"] = out
+                        return out
+                    r_ = m.rollout(x, pad, K, coda_rows={D + n - 1: rows, K: rows}, edit=edit); ex["items"] += B
+                    lp = m.answer_logits(r_["coda"][D + n - 1][1], lens); l2 = m.answer_logits(r_["coda"][K][1], lens)
+                    assert bool(torch.isfinite(lp).all() and torch.isfinite(l2).all()), (arm, D)
+                    Ap[ch] = lp[:, num].argmax(-1).cpu().numpy(); A2[ch] = l2[:, num].argmax(-1).cpu().numpy(); del r_
+            by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 9)}  # noqa: E731
+            res[arm][str(D)] = {"acc_k_pre": by_n(Ap), "acc_n2": by_n(A2)}
+            res["exposure"]["%s_%d" % (arm, D)] = ({"reverted_slot_events_per_item": ex["events"] / ex["items"]} if arm == "revert"
+                                                   else {"mct_entries_exact_share": ex["mct_exact"] / max(1, ex["mct_entries"])})
+            print("AGEREVERT", arm, D, {k: [round(v, 3) for v in d_.values()] for k, d_ in res[arm][str(D)].items()}, res["exposure"]["%s_%d" % (arm, D)], flush=True)
+    res["def"] = part_agerevert.__doc__
+    return res
+
+
+@torch.no_grad()
+def part_carrier(m, TE, dev, bs, rd):
+    """D4_v1 §7 S0-2 CARRIER ($0; D3-T). prestall s in {4, 8}: s copies of V_0 stored before pass 1 (rollout prefix = [V_0] * s; INSERT semantics, the
+    CARRY stays V_0; SLVA / the gather read the stored copies), then n + 2 real passes (K' = s + n + 2), n 1..12 (vbank_eval.part_acc's chunks); intact =
+    acc at K' n + 2 (gated against eval_vb by the runner). foreign = part_foreign at o 6 (its own pairs: n 4..12, length-matched partner, rng 21500 - the
+    same partner draws as eval_foreign's (3, 6) run), insert and replace."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {"prestall": {}}
+    A0 = np.full(len(TE), -1); AS = {s_: np.full(len(TE), -1) for s_ in (4, 8)}
+    for n in range(1, 13):
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+            r_ = m.rollout(x, pad, n + 2, coda_rows={n + 2: rows}); A0[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy(); V0 = r_["V"][0]; del r_
+            for s_ in (4, 8):
+                K = s_ + n + 2; r_ = m.rollout(x, pad, K, coda_rows={K: rows}, prefix=[V0] * s_)
+                AS[s_][ch] = m.answer_logits(r_["coda"][K][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
+    by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(1, 13)}  # noqa: E731
+    res["intact"] = {"acc_n2": by_n(A0)}; res["prestall"] = {str(s_): {"acc_n2": by_n(AS[s_])} for s_ in (4, 8)}
+    print("CARRIER prestall", {k: [round(v, 3) for v in d_["acc_n2"].values()] for k, d_ in res["prestall"].items()}, flush=True)
+    res["foreign_o6"] = part_foreign(m, TE, dev, bs, rd, os_=(6,)); res["def"] = part_carrier.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
