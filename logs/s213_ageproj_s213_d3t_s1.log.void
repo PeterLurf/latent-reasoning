@@ -1,0 +1,22 @@
+AGEPROJ fit {'r2_heldout': 0.9661766652686332, 'r2_by_lambda': {'0.01': 0.9659871765770053, '1.0': 0.9659872145209742, '100.0': 0.9659909837401973, '10000.0': 0.9661766652686332}, 'lambda': 10000.0, 'n_samples': 468924, 'c5': -0.8271731734275818, 'w_norm': 1.0885624340057825, 'r2_t_minus_n': 0.9491651935042761, 'r2_t_minus_n_by_lambda': {'0.01': 0.9489537794165122, '1.0': 0.9489538265486885, '100.0': 0.9489585051492728, '10000.0': 0.9491651935042761}, 'r2_t_given_n': 0.9679372806225532, 'r2_t_given_n_by_lambda': {'0.01': 0.9677652649561806, '1.0': 0.9677653002304467, '100.0': 0.9677688037664837, '10000.0': 0.9679372806225532}, 'c5_rand': -21.28046417236328, 'n_t5_slots': 10312, 'w_hat_dot_rand': -4.6566128730773926e-09}
+AGEPROJ intact {'acc_k10': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.926, 0.609, 0.273, 0.123, 0.132, 0.144], 'acc_n2': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.923, 0.603, 0.266, 0.127, 0.141, 0.127]}
+AGEPROJ proj_out {'acc_k10': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.868, 0.59, 0.259, 0.126, 0.128, 0.144], 'acc_n2': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.866, 0.588, 0.254, 0.127, 0.14, 0.132]}
+AGEPROJ age_clamp {'acc_k10': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.874, 0.588, 0.26, 0.127, 0.132, 0.144], 'acc_n2': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.872, 0.593, 0.253, 0.127, 0.14, 0.133]}
+AGEPROJ rand_clamp {'acc_k10': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.91, 0.611, 0.272, 0.124, 0.133, 0.147], 'acc_n2': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.909, 0.606, 0.261, 0.124, 0.14, 0.134]}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\vbank_diag.py", line 1080, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\vbank_diag.py", line 1071, in main
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+                                                                                                                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                                                                   "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
+                                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\vbank_diag.py", line 1062, in part_ageproj
+    assert chk["max_rel_size_mismatch"] <= 1e-4, chk                       # 213-28: |dU_rand| == |dU_age| per slot and pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'max_rel_size_mismatch': 0.41954880952835083}
