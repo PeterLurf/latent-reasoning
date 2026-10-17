@@ -179,6 +179,26 @@ def acc_gain_after10(d):
     return {"gain_n2_minus_k10": g, "gain_k24_minus_k10": g24, "mean_gain": m, "STOPS_AT_10": bool(m <= 0.02 + EPS)}
 
 
+def ageproj(d):
+    """Note 213-27 (D4 Stage 0 premise test, descriptive): AGE-READABLE iff fit r2_heldout >= 0.5; G_arm = mean over n 11..14 of
+    [acc_n2 - acc_k10] under the arm minus the same intact; control: arm acc_n2 >= intact - 0.02 at every n 1..8; AGE-UNLOCKS iff AGE-READABLE, age_clamp
+    control holds, G_age_clamp >= +0.05 and G_rand_clamp <= +0.02; gate: |intact - eval_vb| <= 0.005 (acc_n2 n 1..14 and acc_k10)."""
+    f, ev = jl(d, "eval_ageproj.json"), jl(d, "eval_vb.json")
+    if f is None or ev is None:
+        return None
+    A = f["arms"]; I = A["intact"]
+    gate = all(abs(I["acc_n2"][str(n)] - ev["acc_n2"][str(n)]) <= 0.005 + EPS for n in range(1, 15)) and         all(abs(I["acc_k10"][str(n)] - ev["acc_k"]["10"][str(n)]) <= 0.005 + EPS for n in range(1, 15))
+    gi = lambda a: sum(A[a]["acc_n2"][str(n)] - A[a]["acc_k10"][str(n)] for n in range(11, 15)) / 4  # noqa: E731
+    G = {a: gi(a) - gi("intact") for a in A if a != "intact"}
+    ctl = {a: all(A[a]["acc_n2"][str(n)] >= I["acc_n2"][str(n)] - 0.02 - EPS for n in range(1, 9)) for a in A if a != "intact"}
+    readable = f["fit"]["r2_heldout"] >= 0.5 - EPS
+    unlocks = bool(gate and readable and ctl.get("age_clamp") and G.get("age_clamp", -1) >= 0.05 - EPS and G.get("rand_clamp", 1) <= 0.02 + EPS)
+    lab = ("UNREADABLE (gate)" if not gate else "NO-LINEAR-AGE (r2 %.3f)" % f["fit"]["r2_heldout"] if not readable else
+           "UNREADABLE (age_clamp control)" if not ctl.get("age_clamp") else "AGE-UNLOCKS" if unlocks else "not met")
+    return {"gate": gate, "r2": f["fit"]["r2_heldout"], "G": G, "control": ctl, "AGE_UNLOCKS": unlocks,
+            "depth_9_12": {a: sum(A[a]["acc_n2"][str(n)] for n in range(9, 13)) / 4 for a in A}, "label": lab}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -264,6 +284,7 @@ def main():
     ref["HIST24"] = {k: hist24(S212.STAGE0[k]) for k in ("N1", "N2")}
     ref["EDGE"] = {k: edge_collapse(S212.STAGE0[k]) for k in ("N1", "N2")}
     ref["ACC_GAIN_AFTER_10"] = {k: acc_gain_after10(S212.STAGE0[k]) for k in ("N1", "N2", "N3")}   # note 213-26   # note 213-24 references         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
+    ref["AGEPROJ_D3T"] = ageproj(CELLS["D3-T"])                          # note 213-27 (D4 Stage 0)
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
