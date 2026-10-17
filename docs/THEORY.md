@@ -18378,6 +18378,12 @@ Entry is at 11k (answer_ce), the same as N1.
 - **D3-T's own one-step competence labels deep items far beyond its latent depth:** latent accuracy at n 12 is 0.127, chain accuracy 0.977.
 - **SELF-DEPTH-CHAIN's precondition is met.** Theory drafts it with a derivation (math rule), test-set exclusion and fresh items, and the extrapolation test on the untouched §170 set past the last round (Audit 01:5x). The draft goes to the user only via Audit. No spend.
 
+**Note 213-36 (2026-10-17 01:22 EDT; CHAIN-LABEL on D3-F, the 213-33 / 213-34 rule; s213_d3f_s1/eval_chainlabel.json, ac3d0362, 3070; theory/score_s213 chainlabel()).**
+- **D3-F reads CHAIN-LABEL-GO.** Strict precision at n 9–12 is **1.000 / 0.996 / 0.991 / 0.982**, slightly above D3-T's 1.000 / 0.995 / 0.986 / 0.977.
+- **Beyond n 12 it is weaker:** n 13–16 reads 0.953 / 0.912 / 0.861 / 0.764 (D3-T 0.970 / 0.958 / 0.932 / 0.897). That is consistent with its fresh step at m 14–16 (0.965 / 0.922 / 0.845).
+- right_value_wrong_steps is ≤ 0.001 at every n, and every value-correct chain is chain-exact. So Audit's keep filter ("parses, and exactly n steps") gives clean targets in both cells.
+- **For SELF-DEPTH-CHAIN's base choice:** D3-F labels n ≤ 12 marginally better, and D3-T labels n ≥ 13 clearly better. With rounds past n 12 in mind, D3-T is the better labeller (descriptive; it goes to the user as a base choice).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
