@@ -698,7 +698,8 @@ def main():
         torch.cuda.empty_cache(); log_am = {"auto_micro": a.micro, "peak_gib_by_micro": am, "mem_budget": a.mem_budget}; print("AUTO_MICRO", log_am, flush=True)
         json.dump(log_am, open(os.path.join(a.out, "auto_micro.json"), "w", newline="\n"), indent=1)
     if pool is not None:                                                    # §215 G-S9: the deepest self shape (the 64 longest n 12 records, K self_kmax)
-        deep = sorted([r for r in pool if r["n"] == max(r_["n"] for r_ in pool)], key=lambda r: -len(r["syms"]))[:a.bs]
+        n_top = max(r_["n"] for r_ in pool)                                 # once (inside the comprehension it was O(N^2): b310's mem_check hung 25 min)
+        deep = sorted([r for r in pool if r["n"] == n_top], key=lambda r: -len(r["syms"]))[:a.bs]
         deep_its = [SD.self_item(r, a.self_kmax) for r in deep]
         if a.auto_micro and dev.startswith("cuda"):
             amS = {}
@@ -714,6 +715,8 @@ def main():
                 m.zero_grad(set_to_none=True); pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30; amS[str(mic)] = round(pk, 2) if ok else "OOM"
                 if ok and pk <= a.mem_budget:
                     a.self_micro = mic; break
+            else:
+                raise RuntimeError("G-S9: no self micro in {1, 2, 4} fits the deepest self shape within mem_budget %.1f GiB: %s" % (a.mem_budget, amS))
             torch.cuda.empty_cache(); log_amS = {"self_micro": a.self_micro, "peak_gib_by_micro": amS, "mem_budget": a.mem_budget}; print("AUTO_MICRO_SELF", log_amS, flush=True)
             json.dump(log_amS, open(os.path.join(a.out, "auto_micro_self.json"), "w", newline="\n"), indent=1)
     KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
