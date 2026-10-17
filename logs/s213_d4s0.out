@@ -1,0 +1,5 @@
+2026-10-17 00:56:54 agerevert rc 0 DONE boxes/runs_fsq/s213_d3t_s1\eval_agerevert.json 176
+2026-10-17 00:56:54 GATE agerevert intact == eval_vb acc_n2 (n 1..8): True
+2026-10-17 01:03:35 carrier rc 0 DONE boxes/runs_fsq/s213_d3t_s1\eval_carrier.json 395
+2026-10-17 01:03:35 GATE carrier intact == eval_vb acc_n2 (n 1..12): True
+2026-10-17 01:03:35 d4 S0-2/S0-3 done

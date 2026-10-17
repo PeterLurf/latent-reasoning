@@ -1,0 +1,117 @@
+{
+ "prestall": {
+  "4": {
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 0.995,
+    "8": 0.986,
+    "9": 0.978,
+    "10": 0.563,
+    "11": 0.254,
+    "12": 0.148
+   }
+  },
+  "8": {
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 0.998,
+    "7": 0.991,
+    "8": 0.951,
+    "9": 0.917,
+    "10": 0.581,
+    "11": 0.259,
+    "12": 0.134
+   }
+  }
+ },
+ "intact": {
+  "acc_n2": {
+   "1": 1.0,
+   "2": 1.0,
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0,
+   "9": 0.923,
+   "10": 0.603,
+   "11": 0.266,
+   "12": 0.127
+  }
+ },
+ "foreign_o6": {
+  "insert": {
+   "6": {
+    "acc_n2": {
+     "4": 0.086,
+     "5": 0.101,
+     "6": 0.089,
+     "7": 0.103,
+     "8": 0.097,
+     "9": 0.088,
+     "10": 0.089,
+     "11": 0.08,
+     "12": 0.088
+    }
+   }
+  },
+  "replace": {
+   "6": {
+    "acc_n2": {
+     "4": 0.787,
+     "5": 0.499,
+     "6": 0.279,
+     "7": 0.179,
+     "8": 0.12,
+     "9": 0.106,
+     "10": 0.099,
+     "11": 0.085,
+     "12": 0.082
+    }
+   }
+  },
+  "intact": {
+   "acc_n2": {
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.923,
+    "10": 0.603,
+    "11": 0.266,
+    "12": 0.127
+   }
+  },
+  "skipped_no_partner": {
+   "4": 0,
+   "5": 0,
+   "6": 0,
+   "7": 0,
+   "8": 0,
+   "9": 0,
+   "10": 0,
+   "11": 0,
+   "12": 0
+  }
+ },
+ "def": "D4_v1 \u00a77 S0-2 CARRIER ($0; D3-T). prestall s in {4, 8}: s copies of V_0 stored before pass 1 (rollout prefix = [V_0] * s; INSERT semantics, the\nCARRY stays V_0; SLVA / the gather read the stored copies), then n + 2 real passes (K' = s + n + 2), n 1..12 (vbank_eval.part_acc's chunks); intact =\nacc at K' n + 2 (gated against eval_vb by the runner). foreign = part_foreign at o 6 (its own pairs: n 4..12, length-matched partner, rng 21500 - the\nsame partner draws as eval_foreign's (3, 6) run), insert and replace.",
+ "run": "boxes/runs_fsq/s213_d3t_s1",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 395
+}

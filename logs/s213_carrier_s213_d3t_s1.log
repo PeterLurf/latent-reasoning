@@ -1,0 +1,11 @@
+CARRIER prestall {'4': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.995, 0.986, 0.978, 0.563, 0.254, 0.148], '8': [1.0, 1.0, 1.0, 1.0, 1.0, 0.998, 0.991, 0.951, 0.917, 0.581, 0.259, 0.134]}
+FOREIGN n 4 {'intact': 1.0, 'insert6': 0.086, 'replace6': 0.787}
+FOREIGN n 5 {'intact': 1.0, 'insert6': 0.101, 'replace6': 0.499}
+FOREIGN n 6 {'intact': 1.0, 'insert6': 0.089, 'replace6': 0.279}
+FOREIGN n 7 {'intact': 1.0, 'insert6': 0.103, 'replace6': 0.179}
+FOREIGN n 8 {'intact': 1.0, 'insert6': 0.097, 'replace6': 0.12}
+FOREIGN n 9 {'intact': 0.923, 'insert6': 0.088, 'replace6': 0.106}
+FOREIGN n 10 {'intact': 0.603, 'insert6': 0.089, 'replace6': 0.099}
+FOREIGN n 11 {'intact': 0.266, 'insert6': 0.08, 'replace6': 0.085}
+FOREIGN n 12 {'intact': 0.127, 'insert6': 0.088, 'replace6': 0.082}
+DONE boxes/runs_fsq/s213_d3t_s1\eval_carrier.json 395
