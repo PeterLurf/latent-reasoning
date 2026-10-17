@@ -18407,6 +18407,25 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **Output:** <cell>/eval_chainlabel_fresh.json, with by_n {n: {items, precision_strict, fail, right_value_wrong_steps, steps_minus_n, keep, prec_kept, collide_rate, sec_per_item}}.
 
+**Note 213-38 (2026-10-17 01:41 EDT; CHAIN-LABEL-FRESH, the 213-37 readings; f0394813: D3-T on the 3070, D3-F on the 4060; fresh nested170 items, seed 21337, 1,000 per n, n 9–20; §170 test + SERIAL exclusion (excl_size 17,607), **collide_rate 0.000 at every n**; generator checks pass; theory/score_s213 chainlabel_fresh()).**
+
+**FRESH-MATCHES-TEST in both cells:** |fresh − test| strict precision ≤ 0.02 at every n 9–16 (max 0.020 for D3-T, 0.014 for D3-F).
+
+**The labelling horizon:**
+- **D3-T = 20, the whole tested range.** D3-F = 17.
+
+| n | 9 | 12 | 14 | 16 | 17 | 18 | 19 | 20 |
+|---|---|---|---|---|---|---|---|---|
+| **D3-T keep** | 1.000 | 0.976 | 0.952 | 0.917 | 0.892 | 0.839 | 0.809 | **0.781** |
+| **D3-T post-filter precision** | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 0.999 | **1.000** |
+| D3-F keep | 0.999 | 0.968 | 0.926 | 0.753 | 0.627 | 0.444 | 0.383 | 0.282 |
+| D3-F post-filter precision | 1.000 | 1.000 | 0.999 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+**Reading.**
+- With Audit's filter ("parses at every step and finishes in exactly n steps", which needs only the generator's n), **D3-T self-labels fresh items to n 20 with ≥ 0.997 precision**, keeping 78–100% of them.
+- **Labels are clean well past the planned rounds,** so label noise is not the binding constraint for SELF-DEPTH-CHAIN on D3-T.
+- **D3-T is the base** (it is better than D3-F from n 15). That goes to the user as a base choice, with D3-T recommended.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
