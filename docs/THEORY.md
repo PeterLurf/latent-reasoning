@@ -18642,6 +18642,31 @@ Entry is at 11k (answer_ce), the same as N1.
 - **The realistic cost** [ASSUMED, from one G-TIME point and the exact lastR Kb law] is about **$2.6–3.0** with auto_micro's single micro 2. The realised $ replaces it.
 - **No other change:** recipe, schedule, readings, OC, censoring and gates are as registered (D4_v1 @ 10187c1b; 214-1 for G-P3).
 
+**Note 215-1 (2026-10-17 13:32 EDT; GATE-1 and the round-1 pool, before any §215 training; s215_gate1/eval_gate.json (8fb4bd84) and s215_pool/pool_meta.json; 3070, fp32, bs 32; scored with theory/score_s215 gate1(). Audit approved the trainer code (G-S13).)**
+
+**GATE-1: PASS** (all four terms).
+
+| n | n_kept / 2,000 | keep_kv | π (label) | π^E (state) |
+|---|---|---|---|---|
+| 9 | 1,999 | 0.9995 | 1.000 | 0.9995 |
+| 10 | 1,992 | 0.9960 | 1.000 | 1.000 |
+| 11 | 1,974 | 0.9870 | 1.000 | 1.000 |
+| 12 | 1,958 | 0.9790 | 1.000 | 1.000 |
+
+- **Pooled π is 1.000** (0 wrong labels among 7,923 kept; 95% CI [0.9995, 1]). **π^E is 0.99987** (CI [0.9993, 0.99998]). The single wrong state, at n 9, still has the right label.
+
+**The pool:**
+- 440,000 records, 110,000 kept per n, sha256 c2e226ae…, builder 6d22f024;
+- **0 collisions** with test ∪ SERIAL ∪ gate, 0 duplicates;
+- keep_all 0.9993 / 0.9976 / 0.9894 / 0.9789 (keep_to_target equal to 4 decimals); labelled 110,592 / 110,592 / 114,688 / 114,688.
+
+**G-S2 COMPOSE: PASS.**
+- E_self equals recode_targets at Kb 16 on 7,922 / 7,923 GATE-1 kept items. The one difference is the wrong-state item.
+- On the pool's first 1,000 records, 999 are equal. The one difference has a wrong label (≈ 0.1%, against 0 / 7,923 on GATE-1). That is consistent with π ≈ 0.999.
+- LABEL-AUDIT at landing (5,000 consumed records) tests the overlap with GATE-1's CIs.
+
+**§215's cells b310 (FT-SELF) / b311 (FT-CTRL) may launch.** The conditions are as registered: G-TIME admission at $0.95 / $0.40, guards at $1.05 / $0.45, ARGS-DIFF in the launch log, the off-host mirror, drain waiters, and 3090 only.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
