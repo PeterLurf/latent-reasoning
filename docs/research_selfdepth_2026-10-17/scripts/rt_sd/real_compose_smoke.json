@@ -1,0 +1,49 @@
+{
+ "run": "D:/Latent/boxes/runs_fsq/s213_d3t_s1",
+ "device": "cpu fp32",
+ "threads": 3,
+ "bs": 32,
+ "per_n": 32,
+ "by_n": {
+  "9": {
+   "items": 32,
+   "keep": 32,
+   "compose_valid": 32,
+   "kept_wrong": 0,
+   "cv_wrong": 0,
+   "cv_E_wrong": 0,
+   "cv_E_right": 32,
+   "keep_not_cv": 0,
+   "keep_not_cv_valright": 0,
+   "fail_flag_among_keep": {
+    "FRAME": 0,
+    "SPAN": 0,
+    "ORDER": 0,
+    "CANON": 0,
+    "ONE_OP": 0
+   },
+   "steps_total": 288,
+   "step_flag_fail": {
+    "FRAME": 0,
+    "SPAN": 0,
+    "ORDER": 0,
+    "CANON": 0,
+    "ONE_OP": 0
+   },
+   "value_slot": {
+    "last": 288,
+    "first": 0,
+    "other": 0,
+    "none": 0
+   },
+   "frame_bad_steps": 0,
+   "examples": [],
+   "keep_rate": 1.0,
+   "cv_rate": 1.0,
+   "prec_kept": 1.0,
+   "prec_cv": 1.0,
+   "piE": 1.0,
+   "sec": 6.9
+  }
+ }
+}

@@ -1,0 +1,84 @@
+{
+ "run": "D:/Latent/boxes/runs_fsq/s213_d3t_s1",
+ "device": "cpu fp32",
+ "threads": 3,
+ "bs": 32,
+ "per_n": 1000,
+ "by_n": {
+  "9": {
+   "items": 1000,
+   "keep": 1000,
+   "compose_valid": 1000,
+   "kept_wrong": 0,
+   "cv_wrong": 0,
+   "cv_E_wrong": 1,
+   "cv_E_right": 999,
+   "keep_not_cv": 0,
+   "keep_not_cv_valright": 0,
+   "fail_flag_among_keep": {
+    "FRAME": 0,
+    "SPAN": 0,
+    "ORDER": 0,
+    "CANON": 0,
+    "ONE_OP": 0
+   },
+   "steps_total": 9000,
+   "step_flag_fail": {
+    "FRAME": 0,
+    "SPAN": 0,
+    "ORDER": 0,
+    "CANON": 0,
+    "ONE_OP": 0
+   },
+   "value_slot": {
+    "last": 9000,
+    "first": 0,
+    "other": 0,
+    "none": 0
+   },
+   "frame_bad_steps": 0,
+   "examples": [],
+   "examples_E": [
+    {
+     "j": 98,
+     "input": " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - ( 0 - 7 ) / 8 - 9 ) ) )",
+     "label_right": true,
+     "t_bad": [
+      3,
+      4
+     ],
+     "self_states": [
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - ( 0 - 7 ) / 8 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - 4 / 8 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - 6 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 6 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / 8 ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 ) )",
+      " 3 - 6 * ( 5 / 4 )",
+      " 3 - 6 * 4",
+      " 3 - 2",
+      " 1"
+     ],
+     "gold_states": [
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - ( 0 - 7 ) / 8 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - 4 / 8 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 8 - 6 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / ( 2 - 9 ) ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 / 4 ) )",
+      " 3 - 6 * ( 5 / ( 4 + 0 ) )",
+      " 3 - 6 * ( 5 / 4 )",
+      " 3 - 6 * 4",
+      " 3 - 2",
+      " 1"
+     ]
+    }
+   ],
+   "keep_rate": 1.0,
+   "cv_rate": 1.0,
+   "prec_kept": 1.0,
+   "prec_cv": 1.0,
+   "piE": 0.999,
+   "sec": 189.2
+  }
+ }
+}
