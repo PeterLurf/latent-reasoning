@@ -1,0 +1,72 @@
+{
+ "a_chain_exact_not_compose_valid": {
+  "items": 1000,
+  "string_chain_exact_all_steps": 1000,
+  "compose_valid": 0,
+  "keep": 1000
+ },
+ "b_one_wrong_step": {
+  "items": 3000,
+  "cv": 3000,
+  "E_eq_gold": 0,
+  "E_eq_gold_label_wrong": 0,
+  "label_right_E_wrong(compensated)": 107
+ },
+ "c_mem_check_batch_T": {
+  "padded_T": 31,
+  "min_T_in_batch": 25
+ },
+ "c_mem_projection": {
+  "K16_T47": {
+   "Tref33": 23.17,
+   "Tref_actual": 25.08
+  },
+  "K14_T47": {
+   "Tref33": 19.79,
+   "Tref_actual": 21.37
+  },
+  "K20_T61": {
+   "Tref33": 43.72,
+   "Tref_actual": 47.8
+  },
+  "K18_T61": {
+   "Tref33": 37.96,
+   "Tref_actual": 41.42
+  }
+ },
+ "d_item_space": {
+  "min_PAIRS": 10,
+  "bound": {
+   "4": {
+    "pmax_bound": 3.5511363636363643e-08,
+    "draws": 5000,
+    "E_dup_pairs_bound": 0.4438920454545455
+   },
+   "5": {
+    "pmax_bound": 8.877840909090912e-10,
+    "draws": 50000,
+    "E_dup_pairs_bound": 1.109730113636364
+   },
+   "9": {
+    "pmax_bound": 3.467906605113638e-16,
+    "draws": 135000,
+    "E_dup_pairs_bound": 3.1601298939098027e-06
+   },
+   "12": {
+    "pmax_bound": 5.4186040704900604e-21,
+    "draws": 135000,
+    "E_dup_pairs_bound": 4.9377029592340675e-11
+   },
+   "16": {
+    "pmax_bound": 2.11664221503518e-27,
+    "draws": 135000,
+    "E_dup_pairs_bound": 1.928790218450808e-17
+   },
+   "20": {
+    "pmax_bound": 8.268133652481176e-34,
+    "draws": 135000,
+    "E_dup_pairs_bound": 7.534336790823471e-24
+   }
+  }
+ }
+}
