@@ -18468,6 +18468,12 @@ Entry is at 11k (answer_ce), the same as N1.
 - gsm_codi_20ep_s1/eval_latent_use.json: ksweep {K: {acc, by_steps}}, swap {follow, own, other, pos {k: {follow, own}}, noise {acc}}, items [...];
 - gsm_codi_20ep_s1/eval_ood.json.
 
+**Note 210-3 (2026-10-17 11:13 EDT; amends 210-2 after Audit's OK, before any eval_latent_use.json / eval_ood.json output exists).**
+- **The DONOR-SWAP pool:** the recipients are the items correct at K 6, about 500 of 1,319. Each is used once, with a donor drawn by rng 21002 among clean items with a different gold answer. Report **pool_size** and **n_pairs**. (210-2's "1,319 pairs" meant one pair per eligible recipient.)
+- **The coincidence floor:** report P(the recipient's intact K-6 prediction == the donor's gold) over the same pairs, beside follow. Report follow, own and neither separately.
+- **The rule:** LATENTS-CAUSAL also needs follow ≥ the floor + 0.25 (the floor is expected ≈ 0.0, since recipients are correct and golds differ). The 0.30 bar stands.
+- **OOD:** use CODI's released evaluation splits (from the CODI repo, if present) for GSM-Hard / SVAMP / MultiArith, and record the source, so the reproduction check is like for like.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
