@@ -270,6 +270,28 @@ def chainlabel(d):
             "CHAIN_LABEL_GO": go, "label": "CHAIN-LABEL-GO" if go else "not GO"}
 
 
+def chainlabel_fresh(d):
+    """Note 213-37 (descriptive; SELF-DEPTH-CHAIN Stage 0): eval_chainlabel_fresh.json by_n {n: {precision_strict, keep, prec_kept, collide_rate, ...}};
+    FRESH-MATCHES-TEST iff |fresh - test strict precision| <= 0.02 at every n 9..16 (test = eval_chainlabel.json); HORIZON = the largest n with
+    prec_kept >= 0.99 and keep >= 0.5."""
+    f, g = jl(d, "eval_chainlabel_fresh.json"), jl(d, "eval_chainlabel.json")
+    if f is None:
+        return None
+    B = f["by_n"]; T_ = (g or {}).get("by_n", {})
+    diff = {n: (B[n]["precision_strict"] - T_[n]["precision_strict"]) for n in B if n in T_ and T_[n].get("precision_strict") is not None}
+    match = bool(diff) and all(abs(diff[str(n)]) <= 0.02 + EPS for n in range(9, 17) if str(n) in diff) and all(str(n) in diff for n in range(9, 17))
+    ok = [int(n) for n in B if B[n].get("prec_kept") is not None and B[n]["prec_kept"] >= 0.99 - EPS and B[n].get("keep", 0) >= 0.5 - EPS]
+    hz = None
+    for n in sorted(int(k) for k in B):
+        if n in ok:
+            hz = n
+        else:
+            break
+    return {"fresh_minus_test": diff, "FRESH_MATCHES_TEST": match, "HORIZON": hz,
+            "keep": {n: B[n].get("keep") for n in sorted(B, key=int)}, "prec_kept": {n: B[n].get("prec_kept") for n in sorted(B, key=int)},
+            "collide_rate": {n: B[n].get("collide_rate") for n in sorted(B, key=int)}}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -358,6 +380,7 @@ def main():
     ref["AGEPROJ_D3T"] = ageproj(CELLS["D3-T"])                          # note 213-27 (D4 Stage 0)
     ref["D4_STAGE0_D3T"] = d4_stage0(CELLS["D3-T"])                        # D4 v1 §7 S0-3 / S0-2 / PROGRESS-ONLY
     ref["CHAINLABEL"] = {k: chainlabel(d) for k, d in CELLS.items()}         # note 213-33
+    ref["CHAINLABEL_FRESH"] = {k: chainlabel_fresh(d) for k, d in CELLS.items()}   # note 213-37
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
