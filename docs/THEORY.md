@@ -18447,6 +18447,27 @@ Entry is at 11k (answer_ce), the same as N1.
 - CODI's recipe reproduces the published result **when given the published budget**. The 4-epoch shortfall was budget, not architecture.
 - Total ≈ $1.51 (§209) + $9.28 (§210).
 
+**Note 210-2 (2026-10-17 11:12 EDT; $0 eval-only follow-ups on gsm_codi_20ep_s1/trainable.pt, pre-stated before any output; local fp32 on an 8 GB card (the 3070 class, as eval_latent_texts); CODI's GSM8K test set, 1,319 items; boxes/codi_port.evaluate / codi_probe.run; Audit's OK needed. Every per-item output is stored, per the share-gate rule.)**
+
+**(b) LATENT-USE: is CODI20's latent computation causally used? Primary.**
+- **K-SWEEP:** acc at n_latent K ∈ {0, 1, 2, 3, 4, 5, 6, 8, 10} (trained at 6). Reported per K and by_steps.
+- **DONOR-SWAP:**
+  - **Pairs:** 1,319 recipient / donor pairs, the donor drawn at random (rng 21002) among items with a different gold answer, both correct at K 6.
+  - **The swap:** the recipient's 6 continuous latent states are replaced by the donor's (computed on the donor's question). The answer is then decoded in the recipient's question context.
+  - **The scores:** **follow** = output == the donor's answer; **own** = output == the recipient's answer; other = neither.
+  - **Beside it (descriptive):** POS-SWAP k (only latent k swapped, k = 1..6, follow / own per k), and NOISE (latents replaced by Gaussian vectors of matched per-position norm, rng 21003).
+- **Readings:**
+  - **LATENTS-CAUSAL iff** acc(K 6) − acc(K 0) ≥ 0.10 **and** DONOR-SWAP follow ≥ 0.30. A latent channel that carries the answer moves it with the donor. Under "latents unused", follow ≈ the chance that a wrong answer coincides, ≤ 0.02 [ASSUMED].
+  - **RECOMPUTES iff** own ≥ 0.70 under DONOR-SWAP. The answer is recomputed from the question despite foreign latents.
+  - **Otherwise MIXED.** The K-sweep shape (monotone to 6? does K > 6 help?) is descriptive.
+- **OC:** P(follow ≥ 0.30 | latents unused) ≤ 0.01; P(| latents carry the answer) ≈ 0.7 [ASSUMED]. The 0.21 K 0 → 6 gap is already measured.
+
+**(a) OOD (descriptive).** acc at K 6 and K 0 on GSM-Hard, SVAMP and MultiArith (the HF datasets as SIM-CoT / CODI report them; Literature to confirm the exact splits). Per-item outputs are stored. No bar: compared with the CODI paper's numbers, as a reproduction check only.
+
+**Outputs:**
+- gsm_codi_20ep_s1/eval_latent_use.json: ksweep {K: {acc, by_steps}}, swap {follow, own, other, pos {k: {follow, own}}, noise {acc}}, items [...];
+- gsm_codi_20ep_s1/eval_ood.json.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
