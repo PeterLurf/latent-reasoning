@@ -26,6 +26,18 @@ def depth(by, lo, hi):
     return (sum(by[k][0] * by[k][1] for k in ks) / n, n) if n else (None, 0)
 
 
+def latent_use():
+    """Note 210-2 (b): eval_latent_use.json {ksweep {K: {acc}}, swap {follow, own, other, pos, noise}}; LATENTS-CAUSAL iff acc(K 6) - acc(K 0) >= 0.10 and
+    swap follow >= 0.30; RECOMPUTES iff swap own >= 0.70; else MIXED."""
+    f = jl(CELL, "eval_latent_use.json")
+    if f is None:
+        return None
+    ks = f["ksweep"]; gap = ks["6"]["acc"] - ks["0"]["acc"]; sw = f["swap"]
+    causal = bool(gap >= 0.10 - EPS and sw["follow"] >= 0.30 - EPS); recomp = bool(sw["own"] >= 0.70 - EPS)
+    return {"gap_6_0": gap, "follow": sw["follow"], "own": sw["own"], "ksweep": {k: v["acc"] for k, v in ks.items()},
+            "label": "LATENTS-CAUSAL" if causal else ("RECOMPUTES" if recomp else "MIXED")}
+
+
 def main():
     e = jl(CELL); out = {}
     if e is None:
@@ -71,6 +83,9 @@ def main():
         out["reading"] = "%s (CODI20 %.3f%s) | %s (TXT20 %s, gap %s) | vs CODI4 %s (SE %s)" % (
             lab, x, ("; " + out["misread_zone"]) if zone else "", gap_lab, t20, None if gap is None else round(gap, 3),
             None if "minus_codi4" not in out else round(out["minus_codi4"], 3), None if "paired_se" not in out else round(out["paired_se"], 4))
+    out["LATENT_USE"] = latent_use()                                      # note 210-2
+    if out["LATENT_USE"]:
+        out["reading"] += " | LATENT-USE %s (follow %.3f, own %.3f)" % (out["LATENT_USE"]["label"], out["LATENT_USE"]["follow"], out["LATENT_USE"]["own"])
     print("READING:", out["reading"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s210.json"), "w", newline=chr(10)), indent=1, default=str)
 
