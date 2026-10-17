@@ -1,0 +1,84 @@
+{
+ "omitted": [],
+ "intact": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.999
+  },
+  "acc_k24": {
+   "3": 0.999,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.998
+  }
+ },
+ "bank_ablate_slva": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.996,
+   "6": 0.746,
+   "7": 0.526,
+   "8": 0.321
+  },
+  "acc_k24": {
+   "3": 0.1,
+   "4": 0.086,
+   "5": 0.091,
+   "6": 0.103,
+   "7": 0.105,
+   "8": 0.097
+  }
+ },
+ "self_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 0.917,
+   "7": 0.697,
+   "8": 0.469
+  },
+  "acc_k24": {
+   "3": 0.916,
+   "4": 0.966,
+   "5": 0.91,
+   "6": 0.844,
+   "7": 0.67,
+   "8": 0.422
+  }
+ },
+ "other_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 0.999
+  },
+  "acc_k24": {
+   "3": 0.372,
+   "4": 0.762,
+   "5": 0.989,
+   "6": 0.995,
+   "7": 0.993,
+   "8": 0.974
+  }
+ },
+ "def": "note 213-20 HIST-AT-K24 ($0): eval_d3hist's arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode mapping as part_d3hist;\nCARRY omits self_ablate and its other_ablate = ablate_keep) read at K' = n + 2 AND K' = 24 from one K' 24 rollout per chunk (STAB-HIST's method;\nvbank_eval.part_acc's chunks), n 3..8 -> {arm: {acc_n2 {n}, acc_k24 {n}}} + \"omitted\". The intact arm must equal eval_vb.json acc_n2 / acc_k['24'].",
+ "run": "boxes/runs_fsq/s211_vb_pa_s1",
+ "mode": "pa",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 4060",
+ "sec": 357
+}
