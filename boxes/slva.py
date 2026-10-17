@@ -105,10 +105,16 @@ def wpe_sha(m):
 
 
 @torch.no_grad()
-def mass_stats(m, items, Ks, dev):
+def mass_stats(m, items, Ks, dev, pz=None):
     """trainer diagnostics (G-D4) from m.slva_log after one micro-batch's vb_loss: summed off-newest SLVA mass and slot counts on changed
     (E_t != E_{t-1}) and copy (unchanged, non-VOID) real slots, t <= K_i. -> {"chg": [sum, n], "copy": [sum, n]}; clears m.slva_log."""
-    x, pad, lens = VB.batch_x(items, dev); B, T = x.shape; E = VB.rec_targets(items, int(max(Ks)), T, dev); Kt = torch.tensor(Ks, device=dev); out = {"chg": [0.0, 0], "copy": [0.0, 0]}
+    x, pad, lens = VB.batch_x(items, dev); B, T = x.shape; Kb = int(max(Ks)); E = VB.rec_targets(items, Kb, T, dev); Kt = torch.tensor(Ks, device=dev); out = {"chg": [0.0, 0], "copy": [0.0, 0]}
+    if pz is not None and any(z is not None for z in pz):                   # §214 G-P14: the mapped targets E_{rho(t)} on paused items (diagnostic)
+        rho = torch.arange(Kb + 1, device=dev)[None, :].repeat(B, 1)
+        for b, z in enumerate(pz):
+            if z is not None:
+                pm = torch.zeros(Kb + 1, dtype=torch.long, device=dev); pm[1:len(z) + 1] = torch.tensor(z, device=dev).long(); rho[b] = rho[b] - torch.cumsum(pm, 0)
+        E = E.gather(1, rho.clamp(0, Kb)[:, :, None].expand(-1, -1, T))
     for t, nw in (m.slva_log or []):
         live = pad & (t <= Kt)[:, None]; Et, Ep = E[:, t], E[:, t - 1]; off = 1.0 - nw.float()
         for k_, sel in (("chg", (Et != Ep) & live), ("copy", (Et == Ep) & (Et != VB.VOID) & live)):

@@ -1,0 +1,18 @@
+{
+ "grad": {
+  "pause_vec": 8.719669342041016,
+  "slva_wq": 8.595002174377441,
+  "slva_wk": 7.800469875335693,
+  "rec.weight": 5.807892799377441,
+  "g.p.h_7_attn_c_attn_weight": 50.170753479003906,
+  "g.p.h_10_attn_c_attn_weight": 3.9070513248443604,
+  "beta": 0.10110782831907272
+ },
+ "decorators": {
+  "pause_schedule": [],
+  "vb_loss": [],
+  "rollout": []
+ },
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

@@ -258,7 +258,7 @@ class VBankN(torch.nn.Module):
                 h = block_bank(src, i, h, bk, bv, bb, km)
         return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
 
-    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None, v0=None):
+    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None, v0=None, pause=None):
         """x (B, T) token ids [EOT, expr, ' ='] right-padded; pad (B, T) real-slot mask; K passes.
         coda_rows {t: LongTensor rows}: the coda after pass t (t = 0: on V_0) on those rows -> out["coda"][t] = (rows, h (b, T, D)).
         edit(t, V_t) -> the stored entry V_t' (bank, and the carry), or (bank_t, carry_t) under CARRY (VALUE-SWAP iii); None = V_t (interventions, MCT).
@@ -268,6 +268,8 @@ class VBankN(torch.nn.Module):
         K absolute; the carry stays V_0); ver_sub = [F_1..F_o]: entry s in 1..o is READ as F_s by every pass t > s + 1 and by the coda after pass t >= s + 1
         (REPLACE; the pass that consumes V_s still reads the real V_s). None = unchanged.
         Eval-only (212-15): v0 = a given V_0 (GAPPED's interior-masked prelude); self.slot_mask (see __init__). None = unchanged.
+        §214 (D4, training + eval_pause only): pause = (B, K + 1) bool -> at pass t, U_t += pause_vec at every real slot of the items with pause[:, t]
+        (after the input read and sg_input, before block 6); the computed V_t is stored and carried as at any pass. None = unchanged.
         -> {"V": computed V_0..V_K, "S": stored entries, "coda": {...}, "kv": the bank K / V}."""
         g = self.g; B, T = x.shape; V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]) if v0 is None else v0; rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
         M = None if self.slot_mask is None else self.slot_mask(0, V0).bool() & pad     # removed slots so far (212-15); None = the default path
@@ -317,6 +319,8 @@ class VBankN(torch.nn.Module):
             kp_ = self.ver_keep(t, t) if self.ver_keep else None
             h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, dup(view(t, gk, fgk), t, "gk"), dup(view(t, NV, fNV), t, "NV"), pd, off_, kp_)
             h = h.detach() if sg_input else h
+            if pause is not None:                                           # §214 computed PAUSE pass
+                h = h + ((pause[:, t][:, None] & pad).to(h.dtype)[..., None] * self.pause_vec.to(h.dtype))
             if self.input_edit is not None:                                 # eval-only (213-1 LFK FAULT): the pass input U_t -> input_edit(t, U_t)
                 h = self.input_edit(t, h)
             for li, i in enumerate(CORE):
@@ -425,14 +429,31 @@ class VBankN(torch.nn.Module):
         return {"dz_beta": d1, "dz_beta_minus5": d2, "z_masked_norm": float(z0.norm(dim=-1).mean()), "ratio_over_e5": rr, "pass": rr is not None and 0.5 <= rr <= 2.0}
 
 
-def make_model(g, mode, table="train"):
+def make_model(g, mode, table="train", pause="none"):
     """the loader / trainer factory (§213 G-D0): mode pa | carry -> VBankN; slva -> boxes.slva.SLVA (table train | frozen). Callers assert
-    type(m).__name__ == args["arch"] (absent in pre-§213 args = "VBankN")."""
+    type(m).__name__ == args["arch"] (absent in pre-§213 args = "VBankN"). §214 (D4): pause != "none" adds the 768-vector pause_vec (init 0), the
+    only new key; absent otherwise, so strict loads of every earlier model are unchanged."""
     if mode == "slva":
         from boxes.slva import SLVA
-        return SLVA(g, table)
-    assert table == "train", "the frozen table is a §213 SLVA cell option"
-    return VBankN(g, mode)
+        m = SLVA(g, table)
+    else:
+        assert table == "train", "the frozen table is a §213 SLVA cell option"
+        m = VBankN(g, mode)
+    if pause != "none":
+        m.pause_vec = torch.nn.Parameter(torch.zeros(m.D, device=g.w("wte.weight").device))
+    return m
+
+
+def pause_schedule(rng_p, n, p_max=8):
+    """§214 PAUSE-A (D4_v1 §2.2, lastR): P ~ U{1..p_max}, D ~ U{0..P} start pauses (passes 1..D), the other S = P - D pauses uniformly over the first
+    n - 1 + S mid positions (the last mid position is a reduction, so the completion pass is n + P). All draws from rng_p.
+    -> a bool list over passes 1..n + P (True = pause)."""
+    P = int(rng_p.integers(1, p_max + 1)); D = int(rng_p.integers(0, P + 1)); S = P - D; L1 = n - 1 + S
+    mid = [False] * (L1 + 1)
+    if S > 0:
+        for j in rng_p.choice(L1, S, replace=False):
+            mid[int(j)] = True
+    return [True] * D + mid
 
 
 def DM_():
@@ -459,15 +480,29 @@ def rec_targets(items, Kb, T, dev):
     return torch.tensor(E, device=dev)
 
 
-def vb_loss(m, items, Ks, dev, ac, rec_w=1.0, tf_p=0.0, tf_rng=None, mu=1.0, sg_input=False, keep=False):
+def vb_loss(m, items, Ks, dev, ac, rec_w=1.0, tf_p=0.0, tf_rng=None, mu=1.0, sg_input=False, keep=False, pz=None):
     """L = L_ans + rec_w * L_rec for items with per-item pass budgets Ks (K_i); pin (c).
     R1: answer CE (full vocabulary, the ' %d' target) of the coda after pass t, t in [n_i, K_i]; mean over t per item, then over items.
     R2: per (item, t), t in 1..K_i: 1/2 the weighted-mean CE of R(V_t) over changed slots (E_t != E_{t-1}) + 1/2 over unchanged real slots, value-class
     targets weighted 2; with no changed slot (HOLD) the unchanged mean alone; mean over t per item, then over items.
     R3 (tf_p > 0; pin (e)): each stored entry V_s (s >= 1) of each item is, with probability tf_p (tf_rng), replaced by sg(MCT(V_s)) in the bank and the
-    carry; the losses read the computed V_s. -> (L, stats, the rollout if keep)."""
+    carry; the losses read the computed V_s. -> (L, stats, the rollout if keep).
+    §214 pz (per item: None = plain, or pause_schedule's bool list over passes 1..n + P): the rollout gets the pause mask; R2's target at pass t is
+    E_{rho(t)}, rho(t) = t - #pauses in passes <= t (so a pause pass is HOLD); R1's window is [tau_i, K_i], tau_i = n_i + P_i (= n_i when plain).
+    Named assertion (G-P2): no paused item has an R1 term at t < tau_i."""
     x, pad, lens = batch_x(items, dev); B, T = x.shape; Kb = int(max(Ks)); n_ = torch.tensor([it["n"] for it in items], device=dev); Kt = torch.tensor(Ks, device=dev)
-    E = rec_targets(items, Kb, T, dev); win = {t: torch.nonzero((n_ <= t) & (t <= Kt)).flatten() for t in range(0, Kb + 1)}; win = {t: r_ for t, r_ in win.items() if len(r_)}
+    E = rec_targets(items, Kb, T, dev); pmask = None; tau = n_
+    if pz is not None and any(z is not None for z in pz):                   # §214: map targets, pause mask, R1 window
+        pmask = torch.zeros(B, Kb + 1, dtype=torch.bool, device=dev); rho = torch.arange(Kb + 1, device=dev)[None, :].repeat(B, 1)
+        for b, z in enumerate(pz):
+            if z is not None:
+                assert len(z) <= Kb and sum(1 for q in z if not q) == int(n_[b]), "pause schedule != n reductions within K"
+                pmask[b, 1:len(z) + 1] = torch.tensor(z, device=dev); rho[b] = torch.arange(Kb + 1, device=dev) - torch.cumsum(pmask[b].long(), 0)
+        E = E.gather(1, rho.clamp(0, Kb)[:, :, None].expand(-1, -1, T))
+        tau = n_ + pmask.sum(1)
+    win = {t: torch.nonzero((tau <= t) & (t <= Kt)).flatten() for t in range(0, Kb + 1)}; win = {t: r_ for t, r_ in win.items() if len(r_)}
+    for t, r_ in win.items():                                               # G-P2 named assertion: no R1 term before an item's completion pass
+        assert bool((tau[r_] <= t).all()), "R1 term before tau"
     st = {"tf_n": 0, "tf_tot": 0, "mct_slots": 0, "mct_multi": 0, "mct_rel": []}
 
     def edit(t, Vt):
@@ -481,7 +516,7 @@ def vb_loss(m, items, Ks, dev, ac, rec_w=1.0, tf_p=0.0, tf_rng=None, mu=1.0, sg_
         st["mct_slots"] += int((stp >= 1).sum()); st["mct_multi"] += int((stp > 1).sum()); st["mct_rel"] += ms["rel"]
         return torch.where(draw[:, None, None], Vm.to(Vt.dtype), Vt)
     with ac():
-        r = m.rollout(x, pad, Kb, coda_rows=win, edit=edit, sg_input=sg_input)
+        r = m.rollout(x, pad, Kb, coda_rows=win, edit=edit, sg_input=sg_input, pause=pmask)
     y = torch.tensor(N.NUM_IDS[[it["t"] for it in items]], device=dev)
     ans_sum = torch.zeros(B, device=dev); ans_cnt = torch.zeros(B, device=dev)
     for t, (rows, h) in r["coda"].items():
@@ -498,7 +533,7 @@ def vb_loss(m, items, Ks, dev, ac, rec_w=1.0, tf_p=0.0, tf_rng=None, mu=1.0, sg_
         live = (t <= Kt).float(); term = torch.where(ch.sum(1) > 0, 0.5 * tc + 0.5 * tu, tu)
         rec_sum = rec_sum + term * live; rec_cnt = rec_cnt + live
     has_a = ans_cnt > 0; L_ans = (ans_sum[has_a] / ans_cnt[has_a]).mean(); L_rec = (rec_sum / rec_cnt.clamp_min(1)).mean()
-    st.update(answer_ce=float(L_ans.detach()), rec_ce=float(L_rec.detach()))
+    st.update(answer_ce=float(L_ans.detach()), rec_ce=float(L_rec.detach()), n_paused=int(sum(z is not None for z in pz)) if pz else 0)
     return L_ans + rec_w * L_rec, st, (r if keep else None)
 
 
@@ -559,6 +594,11 @@ def main():
     ap.add_argument("--mode", required=True, choices=["pa", "carry", "slva"]); ap.add_argument("--mct", action="store_true", help="N3: R3 minimal-correction teacher forcing")
     ap.add_argument("--table", default="train", choices=["train", "frozen"], help="§213: frozen = wpe.requires_grad False before the optimizer (D3-F; slva only)")
     ap.add_argument("--args_ref", default="", help="§213 G-D7: an args.json to diff against; the diff is printed (ARGS-DIFF) and written to args_diff.json")
+    ap.add_argument("--pause", default="none", choices=["none", "A"], help="§214 D4: A = PAUSE-A (computed pause passes, lastR)")
+    ap.add_argument("--pause_p", type=float, default=0.5); ap.add_argument("--pause_max", type=int, default=8)
+    ap.add_argument("--mem_check_steps", type=int, default=1, help="§214 G-P6: optimizer steps in --mem_check (2 allocates the AdamW moments first)")
+    ap.add_argument("--init_from", default="", help="FT (SELF-DEPTH / D4): a base model.pt; strict load (only pause_vec may be missing), calibrate() NOT called, "
+                    "the base dir's calibration.json copied; a fresh optimizer")
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--micro", type=int, default=1); ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--cur", default="3,5,8"); ap.add_argument("--cur_gate", default="0.3:2:8000", help="thr:need:cap (pin (d))")
     ap.add_argument("--c_sched", default="1000,8000"); ap.add_argument("--tf_sched", default="4000,24000"); ap.add_argument("--mu", type=float, default=1.0)
@@ -586,7 +626,8 @@ def main():
     ch0, ch1 = (int(v) for v in a.c_sched.split(",")); tf0, tf1 = (int(v) for v in a.tf_sched.split(","))
     import boxes.deltamem as DMm
     assert DMm.POS_OFFSET == 0 and not DMm.POS_KEEP0, "training needs the plain position table (POS_OFFSET 0)"   # §213 G-D7
-    m = make_model(s5.load_gpt2(dev), a.mode, a.table).to(dev); a.arch = type(m).__name__
+    m = make_model(s5.load_gpt2(dev), a.mode, a.table, a.pause).to(dev); a.arch = type(m).__name__
+    rng_p = np.random.default_rng(a.seed + 21300) if a.pause != "none" else None   # §214: the coin, P, D and positions only (G-P12); rng / rng_k untouched
     wpe0 = None
     if a.table == "frozen":                                                 # §213 D3-F: frozen BEFORE the optimizer is built (no decoupled decay)
         from boxes.slva import wpe_sha
@@ -597,15 +638,23 @@ def main():
     if a.resume and os.path.exists(a.resume):
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
         rng.bit_generator.state = ck["np_rng"]; rng_k.bit_generator.state = ck["rng_k"]; rng_tf.bit_generator.state = ck["rng_tf"]; torch.set_rng_state(ck["torch_rng"].cpu())
+        if rng_p is not None:
+            rng_p.bit_generator.state = ck["rng_p"]
         GATE.load(ck["gate"]); step0 = ck["step"] + 1; t_prev = ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; cal = ck["calibration"]
         print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
     else:                                                                   # pin 3: beta0 / beta calibrated at step 0 (CARRY rollout, bank masked; fp32)
-        r_c = np.random.default_rng(21110); cal_its = []
-        while len(cal_its) < 64:
-            r_, y_ = N.generate(r_c, int(r_c.integers(1, 9))); s_ = N.render(r_)
-            if tuple(s_) not in EXCL:
-                cal_its.append({"syms": s_, "t": y_, "root": r_})
-        xc, pc, lc = batch_x(cal_its, dev); cal = m.calibrate(xc, pc, lc); cal["ratio_test"] = m.ratio_test(xc, pc, lc)
+        if a.init_from:                                                     # FT: the base's weights and calibration; calibrate() would overwrite beta / beta0
+            sd = torch.load(a.init_from, map_location=dev, weights_only=True); mk = m.load_state_dict(sd, strict=False); del sd
+            assert not mk.unexpected_keys and all(k_ == "pause_vec" for k_ in mk.missing_keys), mk
+            cal = json.load(open(os.path.join(os.path.dirname(a.init_from), "calibration.json")))
+            print("INIT_FROM %s (missing: %s); calibrate() NOT called; base calibration.json copied" % (a.init_from, mk.missing_keys), flush=True)
+        else:
+            r_c = np.random.default_rng(21110); cal_its = []
+            while len(cal_its) < 64:
+                r_, y_ = N.generate(r_c, int(r_c.integers(1, 9))); s_ = N.render(r_)
+                if tuple(s_) not in EXCL:
+                    cal_its.append({"syms": s_, "t": y_, "root": r_})
+            xc, pc, lc = batch_x(cal_its, dev); cal = m.calibrate(xc, pc, lc); cal["ratio_test"] = m.ratio_test(xc, pc, lc)
         json.dump(cal, open(os.path.join(a.out, "calibration.json"), "w", newline="\n"), indent=1)
         json.dump({**vars(a), **info}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
         if a.args_ref:                                                      # §213 G-D7 ARGS-DIFF (launch log)
@@ -644,8 +693,14 @@ def main():
         else:
             its = N.train_items(rng, a.bs, nmax, EXCL)
         Ks = [a.kmax if forced else min(it["n"] + int(rng_k.integers(0, a.kextra + 1)), a.kmax) for it in its]
-        return its, Ks
-    last = step0 + a.time_steps - 1 if a.time_steps else (1 if a.mem_check else (min(a.steps, a.stop_at) if a.stop_at else a.steps))
+        pz = None
+        if rng_p is not None and (forced or rng_p.random() < a.pause_p):    # §214 PAUSE-A: one coin per step (forced shapes always augmented)
+            pz = [pause_schedule(rng_p, it["n"], a.pause_max) for it in its]
+            if not forced:                                                  # K = n + P + U, U the plain draw's own (n + U <= 12, so min() never bound)
+                Ks = [k_ + sum(z) for k_, z in zip(Ks, pz)]
+            assert all(len(z) <= k_ for z, k_ in zip(pz, Ks)), "K < n + P"
+        return its, Ks, pz
+    last = step0 + a.time_steps - 1 if a.time_steps else (a.mem_check_steps if a.mem_check else (min(a.steps, a.stop_at) if a.stop_at else a.steps))
     if dev.startswith("cuda"):
         torch.cuda.reset_peak_memory_stats(dev)
     for step in range(step0, last + 1):
@@ -653,17 +708,17 @@ def main():
         for gr in opt.param_groups:
             gr["lr"] = lr
         m.c_anneal.fill_(c_at(step, ch0, ch1) if m.anneals else 1e4); tfp = tf_at(step, tf0, tf1) if a.mct else 0.0   # §213 G-D4: the capability flag
-        m.train(); its, Ks = draw(GATE.n_max()); opt.zero_grad(set_to_none=True); tot = 0.0; ch = a.bs // a.micro; sts = []
+        m.train(); its, Ks, pz = draw(GATE.n_max()); opt.zero_grad(set_to_none=True); tot = 0.0; ch = a.bs // a.micro; sts = []
         m.gather_log = [] if (a.mode == "pa" and step % a.log_every == 0) else None
         slog = a.mode == "slva" and step % a.log_every == 0; sm_ = {"chg": [0.0, 0], "copy": [0.0, 0]}
         for k_ in range(a.micro):
             if slog:
                 m.slva_log = []
-            L, st_, _ = vb_loss(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, ac, a.rec_w, tfp, rng_tf, a.mu)
+            L, st_, _ = vb_loss(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, ac, a.rec_w, tfp, rng_tf, a.mu, pz=pz[k_ * ch:(k_ + 1) * ch] if pz else None)
             (L / a.micro).backward(); tot += float(L.item()) / a.micro; sts.append(st_)
             if slog:                                                        # §213 G-D4: SLVA off-newest mass on changed / copy slots
                 from boxes.slva import mass_stats
-                ms_ = mass_stats(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev)
+                ms_ = mass_stats(m, its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch], dev, pz=pz[k_ * ch:(k_ + 1) * ch] if pz else None)
                 for kk in sm_:
                     sm_[kk][0] += ms_[kk][0]; sm_[kk][1] += ms_[kk][1]
         if slog:
@@ -690,6 +745,8 @@ def main():
                 ss = [s_ for v in acc for s_ in v[3]]; tot_ = sum(s_["tf_tot"] for s_ in ss); sl = sum(s_["mct_slots"] for s_ in ss); rl = [x_ for s_ in ss for x_ in s_["mct_rel"]]
                 rec_.update({"tf_p": tfp, "tf_frac": (sum(s_["tf_n"] for s_ in ss) / tot_) if tot_ else None, "mct_multi_frac": (sum(s_["mct_multi"] for s_ in ss) / sl) if sl else None,
                              "mct_rel_mean": float(np.mean(rl)) if rl else None})
+            if rng_p is not None:                                           # §214: share of paused items over the log window
+                rec_["pause_item_frac"] = float(np.mean([s_.get("n_paused", 0) / max(1, ch) for v in acc for s_ in v[3]])) if acc else None
             if slog:
                 rec_.update({"slva_offnewest_chg": sm_["chg"][0] / sm_["chg"][1] if sm_["chg"][1] else None,
                              "slva_offnewest_copy": sm_["copy"][0] / sm_["copy"][1] if sm_["copy"][1] else None, "slva_gn": slva_gn})
@@ -707,7 +764,8 @@ def main():
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "rng_k": rng_k.bit_generator.state, "rng_tf": rng_tf.bit_generator.state,
-                        "torch_rng": torch.get_rng_state(), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "calibration": cal}, cp)
+                        "torch_rng": torch.get_rng_state(), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "calibration": cal,
+                        **({"rng_p": rng_p.bit_generator.state} if rng_p is not None else {})}, cp)
     if a.mem_check:
         pk_train = torch.cuda.max_memory_allocated(dev) / 2 ** 30; opt.zero_grad(set_to_none=True); torch.cuda.reset_peak_memory_stats(dev); m.eval()
         ev = sorted([it for it in TE if it["n"] == 16], key=lambda it: -len(it["syms"]))[:a.eval_bs]; xe, pe, le = batch_x(ev, dev)

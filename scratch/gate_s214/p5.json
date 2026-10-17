@@ -1,0 +1,19 @@
+{
+ "pa": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3
+ },
+ "carry": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3
+ },
+ "slva": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3
+ },
+ "pass": true,
+ "device": "cpu"
+}
