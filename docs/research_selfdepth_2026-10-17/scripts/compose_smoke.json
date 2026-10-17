@@ -1,0 +1,38 @@
+{
+ "gate": {
+  "items": 2000,
+  "steps": 16949,
+  "failures": 0,
+  "pass": true
+ },
+ "fixtures": {
+  "value_first": {
+   "items": 3000,
+   "keep": 3000,
+   "compose_valid": 125,
+   "label_wrong_kept": 0,
+   "E_wrong_valid": 0
+  },
+  "wrong_value": {
+   "items": 3000,
+   "keep": 3000,
+   "compose_valid": 3000,
+   "label_wrong_kept": 2601,
+   "E_wrong_valid": 2875
+  },
+  "frame": {
+   "items": 3000,
+   "keep": 3000,
+   "compose_valid": 125,
+   "label_wrong_kept": 0,
+   "E_wrong_valid": 0
+  },
+  "keep_op": {
+   "items": 3000,
+   "keep": 132,
+   "compose_valid": 132,
+   "label_wrong_kept": 0,
+   "E_wrong_valid": 0
+  }
+ }
+}

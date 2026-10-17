@@ -1,0 +1,140 @@
+{
+ "R1 (n 9-12)": {
+  "N_kept_per_n": [
+   2000,
+   1992,
+   1976,
+   1952
+  ],
+  "N_pool": 7920,
+  "oc": {
+   "0.9995": {
+    "P_pool": 1.0,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 1.0
+   },
+   "0.999": {
+    "P_pool": 1.0,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 1.0
+   },
+   "0.997": {
+    "P_pool": 0.9986,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 0.9986
+   },
+   "0.995": {
+    "P_pool": 0.5042,
+    "P_all_n": 0.9897,
+    "P_gate_approx_indep": 0.499
+   },
+   "0.993": {
+    "P_pool": 0.0125,
+    "P_all_n": 0.7699,
+    "P_gate_approx_indep": 0.0096
+   },
+   "0.99": {
+    "P_pool": 0.0,
+    "P_all_n": 0.0672,
+    "P_gate_approx_indep": 0.0
+   },
+   "0.98": {
+    "P_pool": 0.0,
+    "P_all_n": 0.0,
+    "P_gate_approx_indep": 0.0
+   }
+  }
+ },
+ "R2 (n 13-16)": {
+  "N_kept_per_n": [
+   1944,
+   1904,
+   1886,
+   1834
+  ],
+  "N_pool": 7568,
+  "oc": {
+   "0.9995": {
+    "P_pool": 1.0,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 1.0
+   },
+   "0.999": {
+    "P_pool": 1.0,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 1.0
+   },
+   "0.997": {
+    "P_pool": 0.998,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 0.9979
+   },
+   "0.995": {
+    "P_pool": 0.4886,
+    "P_all_n": 0.9889,
+    "P_gate_approx_indep": 0.4832
+   },
+   "0.993": {
+    "P_pool": 0.0129,
+    "P_all_n": 0.7699,
+    "P_gate_approx_indep": 0.01
+   },
+   "0.99": {
+    "P_pool": 0.0,
+    "P_all_n": 0.0741,
+    "P_gate_approx_indep": 0.0
+   },
+   "0.98": {
+    "P_pool": 0.0,
+    "P_all_n": 0.0,
+    "P_gate_approx_indep": 0.0
+   }
+  }
+ },
+ "R3 (n 17-20)": {
+  "N_kept_per_n": [
+   1784,
+   1678,
+   1618,
+   1562
+  ],
+  "N_pool": 6642,
+  "oc": {
+   "0.9995": {
+    "P_pool": 1.0,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 1.0
+   },
+   "0.999": {
+    "P_pool": 1.0,
+    "P_all_n": 1.0,
+    "P_gate_approx_indep": 1.0
+   },
+   "0.997": {
+    "P_pool": 0.9975,
+    "P_all_n": 0.9999,
+    "P_gate_approx_indep": 0.9974
+   },
+   "0.995": {
+    "P_pool": 0.5315,
+    "P_all_n": 0.9791,
+    "P_gate_approx_indep": 0.5204
+   },
+   "0.993": {
+    "P_pool": 0.0234,
+    "P_all_n": 0.7111,
+    "P_gate_approx_indep": 0.0167
+   },
+   "0.99": {
+    "P_pool": 0.0,
+    "P_all_n": 0.0653,
+    "P_gate_approx_indep": 0.0
+   },
+   "0.98": {
+    "P_pool": 0.0,
+    "P_all_n": 0.0,
+    "P_gate_approx_indep": 0.0
+   }
+  }
+ }
+}
