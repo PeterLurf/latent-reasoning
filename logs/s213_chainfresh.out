@@ -1,0 +1,5 @@
+2026-10-17 01:40:31 s213_d3f_s1 chainlabel_fresh (cuda:0) rc 0 DONE boxes/runs_fsq/s213_d3f_s1\eval_chainlabel_fresh.json 134
+2026-10-17 01:40:31 s213_d3f_s1 CHECK per_n diag 1000 == trainer 1000 : True | te_items 16000 | excl_size 17607
+2026-10-17 01:40:44 s213_d3t_s1 chainlabel_fresh (cuda:1) rc 0 DONE boxes/runs_fsq/s213_d3t_s1\eval_chainlabel_fresh.json 147
+2026-10-17 01:40:44 s213_d3t_s1 CHECK per_n diag 1000 == trainer 1000 : True | te_items 16000 | excl_size 17607
+2026-10-17 01:40:44 §213 chainlabel_fresh done
