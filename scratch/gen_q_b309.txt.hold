@@ -1,0 +1,6 @@
+# THEORY §214 D4 option B, s214_pausea_s1 (registered 7892a2dc; D4_v1.md at 10187c1b; scorer theory/score_s214.py; user-approved via Audit 11:58 10-17, cap $2.5, own guard). D3-T's recipe + PAUSE-A lastR (--pause A --pause_p 0.5 --pause_max 8 --kmax 20 --mem_check_steps 2), from pretrained, calibrated as D3-T. RTX 3090, non-580, via scratch/s214_fill.sh: HOSTPROBE, line 1 = mem_check (G-P6, 2 optimizer steps at the forced K 20 shape), line 2 = G-TIME (forced augmented batches, K 20) -> admission; line 3 = the cell (48k, bs 64, --auto_micro, ckpt every 1k, ARGS-DIFF vs D3-T's args.json in the launch log; off-host ckpt mirror). Evals local fp32 post-landing (§214 contract).
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s214_pausea_s1_mem boxes.vbank --mode slva --table train --seed 1 --steps 48000 --pause A --pause_p 0.5 --pause_max 8 --kmax 20 --mem_check --mem_check_steps 2 --auto_micro
+boxes/runs_fsq/s214_pausea_s1_gtime boxes.vbank --mode slva --table train --seed 1 --steps 48000 --pause A --pause_p 0.5 --pause_max 8 --kmax 20 --time_steps 60 --auto_micro
+boxes/runs_fsq/s214_pausea_s1 boxes.vbank --mode slva --table train --seed 1 --steps 48000 --pause A --pause_p 0.5 --pause_max 8 --kmax 20 --mem_check_steps 2 --auto_micro --ckpt_every 1000 --args_ref scratch/s214_args_ref_d3t.json
