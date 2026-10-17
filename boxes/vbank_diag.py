@@ -1240,12 +1240,65 @@ def part_chainlabel(m, TE, dev, bs):
     return {"by_n": out, "def": part_chainlabel.__doc__}
 
 
+@torch.no_grad()
+def part_chainlabel_fresh(m, TE, dev, bs, n_items=1000):
+    """note 213-37 CHAIN-LABEL-FRESH ($0): part_chainlabel's chain (the model's own 1-pass decode re-rooted fresh at every hop, _parse_tree, length-grouped
+    batches) on FRESH items: nested170.generate(rng, n), np rng 21337, 1,000 per n, n 9..20, excluding the §170 test set and the SERIAL pool by exact
+    rendered syms (the trainer's EXCL) - a collision is redrawn and counted (collide_rate = collisions / draws). Step cap n + 4 (FAIL beyond). Gold
+    (the generator's value) is for evaluation only. by_n {items, precision_strict (label == gold AND exactly n steps), fail, right_value_wrong_steps,
+    steps_minus_n {k | "fail": count}, keep (every step parsed AND exactly n steps, whatever the label), prec_kept (precision among kept), collide_rate,
+    sec_per_item}."""
+    excl = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)
+    for _ in range(2200):
+        excl.add(tuple(N.render(N.generate(r_sp, 8)[0])))
+    rng = np.random.default_rng(21337); out = {}
+    for n in range(9, 21):
+        t0 = time.time(); roots, gold, draws = [], [], 0
+        while len(roots) < n_items:                                           # 1,000 as registered (n_items: smokes only)
+            r_, y_ = N.generate(rng, n); draws += 1
+            if tuple(N.render(r_)) in excl:
+                continue
+            roots.append(r_); gold.append(y_)
+        cap = n + 4; cur = {j: N._copy(r_) for j, r_ in enumerate(roots)}; label, steps = {}, {j: 0 for j in cur}; active = set(cur)
+        for _ in range(cap):
+            if not active:
+                break
+            order = sorted(active, key=lambda j: len(N.render(cur[j]))); nxt = set()
+            for c0 in range(0, len(order), bs):
+                part = order[c0:c0 + bs]; its = [{"syms": N.render(cur[j])} for j in part]; x, pad, lens = VB.batch_x(its, dev)
+                rr = m.rollout(x, pad, 1); dec = m.rec_logits(rr["V"][1]).argmax(-1).cpu().numpy(); del rr
+                for k_, j in enumerate(part):
+                    steps[j] += 1; t_ = _parse_tree(VB.rerender(list(dec[k_, :int(lens[k_])])))
+                    if t_ is None:
+                        label[j] = None; continue
+                    cur[j] = t_
+                    if t_.op is None:
+                        label[j] = t_.v
+                    else:
+                        nxt.add(j)
+            active = nxt
+        for j in active:
+            label[j] = None
+        js = list(range(len(roots))); hist = {}
+        for j in js:
+            k_ = "fail" if label[j] is None else str(steps[j] - n); hist[k_] = hist.get(k_, 0) + 1
+        ok = [label[j] is not None and label[j] == gold[j] for j in js]; kept = [label[j] is not None and steps[j] == n for j in js]
+        pk = [o for o, k in zip(ok, kept) if k]
+        out[str(n)] = {"items": len(js), "precision_strict": float(np.mean([o and steps[j] == n for o, j in zip(ok, js)])), "fail": float(np.mean([label[j] is None for j in js])),
+                       "right_value_wrong_steps": float(np.mean([o and steps[j] != n for o, j in zip(ok, js)])),
+                       "steps_minus_n": dict(sorted(hist.items(), key=lambda kv: (kv[0] == "fail", int(kv[0]) if kv[0] != "fail" else 0))),
+                       "keep": float(np.mean(kept)), "prec_kept": float(np.mean(pk)) if pk else None, "n_kept": len(pk), "collide_rate": (draws - len(roots)) / draws,
+                       "draws": draws, "sec_per_item": (time.time() - t0) / len(js), "cap": cap}
+        print("CHAINFRESH n", n, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in out[str(n)].items()}, flush=True)
+    return {"by_n": out, "def": part_chainlabel_fresh.__doc__}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
