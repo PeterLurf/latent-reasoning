@@ -134,6 +134,40 @@ def hist24(d):
     return {"gate": gate, "STAB": st, "HISTORY_STABILISES": stab if gate else None, "CONTENT": content, "omitted": f.get("omitted"), "label": lab}
 
 
+def edge_collapse(d):
+    """Note 213-24 (descriptive; D4 draft S0-1, docs/research_d4_2026-10-16/scripts/d4_edge_collapse.py's read()): on-schedule pass-events at t
+    (alive(E_{t-1}) == n - t + 1 >= 3), n 10..14 pooled, from eval_vbhalt rows; h(t) = P(alive drop >= 2); t_fin = first t with alive 0.
+    EDGE-COLLAPSE iff events(t 7..9) >= 300, h(7..9) >= 0.30, h(8) >= 2 h(5), median t_fin over n 10 / 11 / 12 within 1 pass.
+    ORS_6_8 = sum h(t) events / sum (1 - e(t)) events over t 6..8, e = eval_stepbyt strict_exact pooled n 10..16 (t with >= 200 events)."""
+    v = jl(d, "eval_vbhalt.json")
+    if v is None or "rows" not in v:
+        return None
+    ev, tf = {}, {}
+    for r in v["rows"]:
+        n, al = r["n"], r["alive"]
+        if 10 <= n <= 14:
+            for t_ in range(2, len(al)):
+                if al[t_ - 1] == n - t_ + 1 and al[t_ - 1] >= 3:
+                    e_ = ev.setdefault(t_, [0, 0]); e_[0] += 1; e_[1] += int(al[t_ - 1] - al[t_] >= 2)
+        if 9 <= n <= 16:
+            tz = next((t_ for t_ in range(len(al)) if al[t_] == 0), None); tf.setdefault(n, []).append(99 if tz is None else tz)
+    h = {t_: x[1] / x[0] for t_, x in ev.items() if x[0] >= 30}
+    e79 = sum(ev.get(t_, [0, 0])[0] for t_ in (7, 8, 9)); c79 = sum(ev.get(t_, [0, 0])[1] for t_ in (7, 8, 9)); h79 = c79 / e79 if e79 else None
+    med = {n: float(sorted(x)[len(x) // 2]) if len(x) % 2 else float(sum(sorted(x)[len(x) // 2 - 1:len(x) // 2 + 1]) / 2) for n, x in tf.items()}
+    ok = e79 >= 300 and all(k in med for k in (10, 11, 12))
+    ec = bool(ok and h79 >= 0.30 - EPS and h.get(8, 0) >= 2 * h.get(5, 1e9) and max(med[k] for k in (10, 11, 12)) - min(med[k] for k in (10, 11, 12)) <= 1)
+    o = {"h_by_t": h, "h_7_9": h79, "events_7_9": e79, "median_t_fin": med, "readable": ok, "EDGE_COLLAPSE": ec if ok else None}
+    sb = (jl(d, "eval_stepbyt.json") or {}).get("step_by_t")
+    if sb:
+        num = den = 0.0
+        for t_ in (6, 7, 8):
+            E = sum(sb.get(str(n), {}).get(str(t_), {}).get("events", 0) for n in range(10, 17)); X = sum(sb.get(str(n), {}).get(str(t_), {}).get("strict_exact", 0) for n in range(10, 17))
+            if E >= 200 and t_ in h:
+                num += h[t_] * E; den += (1 - X / E) * E
+        o["ORS_6_8"] = num / den if den else None; o["ORD"] = None if o["ORS_6_8"] is None else bool(o["ORS_6_8"] >= 0.5 - EPS)
+    return o
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -177,7 +211,7 @@ def cell(tag, d):
              STEP_GENERAL=sg, STEP_GENERAL_mean_12_16=sg_mean, DEPTH_9_12=a["DEPTH_9_12"], DEPTH_GENERAL=dg, RS=ss, SELF_SIMILAR=selfsim, HIST=hr,
              D3_C2=c2, D3_C2_ATTN=c2a,
              HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None, STEP_BY_T=step_by_t(d),
-             HIST24=hist24(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
+             HIST24=hist24(d), EDGE=edge_collapse(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
     o["label"] = ("FAILURE (dead; rule b)" if dead else "NO-ENTRY (rule b)" if noent else
                   "D3-C2-ATTN (C2 in a pass-global attention memory)" if c2a else
                   "D3-C2 (C2 with the memory in form only)" if c2 else
@@ -216,7 +250,8 @@ def main():
     ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
     ref["HOLD_N1"] = hold_read(S212.STAGE0["N1"])
     ref["STEP_BY_T_N1"] = step_by_t(S212.STAGE0["N1"])
-    ref["HIST24"] = {k: hist24(S212.STAGE0[k]) for k in ("N1", "N2")}         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
+    ref["HIST24"] = {k: hist24(S212.STAGE0[k]) for k in ("N1", "N2")}
+    ref["EDGE"] = {k: edge_collapse(S212.STAGE0[k]) for k in ("N1", "N2")}   # note 213-24 references         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)

@@ -18103,6 +18103,22 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **For §213's cells** (their hist24 runs last in the 3070 chain), the 213-20 / 213-21 reporting applies as pre-stated: CONTENT-STABILISES is reported as "memory used causally for long-run stability (C6), not for the step", beside the registered (f).
 
+**Note 213-24 (2026-10-16 23:32 EDT; a descriptive amendment to 213-18, pre-stated before any D3-T / D3-F eval_vbhalt, eval_stepbyt or eval_hist24 output exists; §213's registered readings are unchanged; source: the D4 draft, docs/research_d4_2026-10-16/, an Opus subagent's $0 analysis, re-checked by Theory from the raw N1 / N2 eval_vbhalt rows).**
+
+**N1 and N2 read EDGE-COLLAPSE: a pass-indexed deadline.**
+- The hazard h(t) is P(an on-schedule pass removes ≥ 2 operators), with ≥ 3 alive, pooled over n 10–14. **N1:** 0.066 / 0.206 / 0.495 / 0.837 / 0.991 at t 5–9 (4,822 / 4,513 / 3,540 / 1,727 / 317 events). **N2:** 0.24 / 0.36 / 0.53 / 0.72 / 0.94.
+- The decoded state reaches 0 operators at median pass **9 for every n 10–13 (N1)**, and **9 for every n 9–16 (N2)**. All 1,000 items per n finish.
+- In training, every pass with t ≥ 9 holds a finished state. Beyond range, the models compress the remaining work to "finish" by about pass 9.
+- It also matches REDTEAM_D3 a3: at T ≥ 38, N1's late wrong decodes are mostly spurious VOIDs.
+
+**Correction to 213-18's N1 reference label.** "GRADUAL-DRIFT" is, for N1, mostly **over-reduction**: ORS over t 6–8 is 0.69 (h(t) against step failure). The fall of step exactness with t is the deadline's rising hazard, not copy-slot content drift. 213-18's label rule alone would send a cell to the wrong lever.
+
+**For D3-T / D3-F (descriptive, alongside 213-18's labels):** score_s213's `edge_collapse()` reads EDGE-COLLAPSE and ORD (ORS_6_8 ≥ 0.5) from each cell's queued eval_vbhalt + eval_stepbyt.
+- It is d4_edge_collapse.py's read(), ported; it reproduces the script on N1 (h_7_9 0.629, 5,584 events, ORS 0.690). The script's fixture passes: a content-error trajectory reads ¬EC, a deadline trajectory EC.
+- **The D4 branch rule is pre-stated in D4_draft §1.3:** A if EC ∨ ORD ∨ PASS-COUNT-KEYED; B if GRADUAL-DRIFT ∧ ¬EC ∧ ¬ORD; otherwise B.
+
+**D4 status.** D4_draft.md is the subagent's draft: computed PAUSE passes, a derivation (Props D0–D2, Lemmas D3–D5), Goodhart routes, readings, OC, Stage 0 / 1. It is not registered. A red team and a proof pass come next, then Audit, then the user.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
