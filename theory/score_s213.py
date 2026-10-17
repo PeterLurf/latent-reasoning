@@ -247,13 +247,26 @@ def d4_stage0(d):
 
 
 def chainlabel(d):
-    """Note 213-33 (SELF-DEPTH precondition, descriptive lead): eval_chainlabel.json {by_n: {n: {items, precision, fail, chain_exact, agree, prec_agree}}};
-    CHAIN-LABEL-GO iff precision >= 0.95 at every n 9..12 (FAIL counted wrong)."""
+    """Notes 213-33 / 213-34 (SELF-DEPTH precondition, a lead): eval_chainlabel.json {by_n: {n: {items, precision, precision_strict,
+    right_value_wrong_steps, steps_minus_n, fail, chain_exact, agree, prec_agree}}}; CHAIN-LABEL-GO iff precision_strict (right value in exactly n steps;
+    FAIL and wrong-step-count chains counted wrong) >= 0.95 at every n 9..12; predicted = prod over m <= n of eval_steppos long_step exact(m)."""
     f = jl(d, "eval_chainlabel.json")
     if f is None:
         return None
-    B = f["by_n"]; go = all(str(n) in B and B[str(n)]["precision"] >= 0.95 - EPS for n in range(9, 13))
-    return {"precision": {n: B[n]["precision"] for n in sorted(B, key=int)}, "fail": {n: B[n].get("fail") for n in sorted(B, key=int)},
+    B = f["by_n"]; key = "precision_strict"                               # note 213-34: strict = right value AND exactly n steps
+    go = all(str(n) in B and B[str(n)].get(key) is not None and B[str(n)][key] >= 0.95 - EPS for n in range(9, 13))
+    sp = jl(d, "eval_steppos.json"); pred = {}
+    if sp:
+        by = {}
+        for k_, v in sp["long_step_m_T"].items():
+            a_ = by.setdefault(int(k_.split("_")[0]), [0, 0]); a_[0] += v["n_steps"]; a_[1] += v["n_exact"]
+        s_ = 1.0
+        for m in range(1, 17):
+            s_ *= (by[m][1] / by[m][0]) if m in by and by[m][0] else 0.0; pred[str(m)] = s_
+    srt = sorted(B, key=int)
+    return {"precision_strict": {n: B[n].get(key) for n in srt}, "precision_value": {n: B[n].get("precision") for n in srt},
+            "right_value_wrong_steps": {n: B[n].get("right_value_wrong_steps") for n in srt}, "fail": {n: B[n].get("fail") for n in srt},
+            "predicted": {n: pred.get(n) for n in srt}, "gap": {n: (B[n][key] - pred[n]) if (B[n].get(key) is not None and n in pred) else None for n in srt},
             "CHAIN_LABEL_GO": go, "label": "CHAIN-LABEL-GO" if go else "not GO"}
 
 
