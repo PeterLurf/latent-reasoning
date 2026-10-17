@@ -301,7 +301,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
-| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **gates + Audit diff review; not launched** |
+| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **ADMISSION HELD (214-2: G-TIME $4.08 > $2.50 cap; $0.037 spent); user decision pending (hold until §215 reads, recommended)** |
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **pool + GATE-1 + gates + Audit diff review; not launched** |
 
 ## Live sections
@@ -18626,6 +18626,15 @@ Entry is at 11k (answer_ce), the same as N1.
 - **200k draws pass every statistic:** P(F = 0 | t ≥ 9) 0.4900, I(t; ρ) 0.996, I(t; M) 0.0444, corr(P, n) 0.003, no trailing pauses, P(n = 1) 0.0163 (scratch/gate_s214/p3_200k.json).
 - **G-P3 is therefore read on 200k draws** (Audit's ruling). The trainer and schedule are unchanged, and a 48k run carries about 48k coins.
 - **Status:** the trainer is Audit-approved (11f98a8c); b309 is queued on hold (025603dc). eval_pause.json is to be built, gated and Audit-reviewed before landing.
+
+**Note 214-2 (2026-10-17 12:30 EDT; §214's admission rule fired before any training; reported by Experiments).**
+- **What happened:** G-P7 (G-TIME on forced augmented batches: K 20 on every item, micro 2, since micro 1 is OOM at K 20) measured **1.217 s/step**. That projects **$4.08 against the $2.50 cap**, so there was **no launch**. The host was destroyed, with **$0.037 realised**. b309 is held, and no instance runs.
+- **The likelier real cost** [ASSUMED, from one G-TIME point]: forced G-TIME is the worst case, while the real batch mix averages Kb ≈ 15.3 (augmented 18.69, plain 11.84, from the exact lastR law). That gives about $2.6–3.0 with a single micro 2, or about $2.3–2.6 with a per-type micro. It straddles the cap either way.
+- **Options** (the user's decision via Audit; nothing changes without it):
+  - (a) hold D4 until §215 round 1 reads (Theory's recommendation);
+  - (b) per-type micro, plus an amended G-P7 projecting from the Kb law, pre-stated before launch, plus a raised cap ($3.25 suggested);
+  - (c) no run.
+- **The registered readings are unaffected.**
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
