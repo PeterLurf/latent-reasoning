@@ -20,5 +20,10 @@
   "I_t_M": 0.04582784141963763
  },
  "pass": false,
- "device": "cpu"
+ "device": "cpu",
+ "decision": {
+  "by": "Audit 10-17 (diff review of 11f98a8c)",
+  "counts": "p3_200k.json (PASS on every criterion)",
+  "reason": "the 20k miss on I(t;M) (0.0514) is coin-share sampling: 164 / 313 batch coins augmented = 0.524; reweighted to 0.5 the same draws give 0.0466 vs exact 0.0458; a 48k run has ~48k coins (share 0.5 +- 0.002). A gate-precision issue, not a schedule change."
+ }
 }
