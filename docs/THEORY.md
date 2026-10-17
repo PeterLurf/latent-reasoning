@@ -301,6 +301,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
+| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **gates + Audit diff review; not launched** |
 
 ## Live sections
 
@@ -18503,6 +18504,58 @@ Entry is at 11k (answer_ce), the same as N1.
 - The latents add a lot on MultiArith and little on SVAMP. These are a reproduction check against the CODI paper's numbers, for Literature to compare.
 
 **Note 210-5 (2026-10-17 11:27 EDT; a C1 reading of 210-4, after Audit's reproduction from the 500 per-pair items).** CODI20's latents are **content-bearing but context-bound**: a donor's latents mostly yield neither answer (0.876), because they are decoded relative to the recipient's question. This contrasts with VERSION-BANK's VALUE-SWAP (§211 / §213: follow 1.000), where the swapped quantity is a self-contained state that carries the answer by itself. For C1 (causal use), CODI shows **necessary** latent computation (removal or noise breaks it) but not a **portable** latent state. The VB cells show both.
+
+## 214. D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (USER APPROVED 2026-10-17 11:58 EDT: "both approve", typed in Audit's session and relayed verbatim = D4 option B (cap $2.5) and SELF-DEPTH-CHAIN round 1 (§215, cap $1.5); the caps are not poolable; pre-registered 2026-10-17 12:02 EDT, before any D4 trainer code or output)
+
+**Registered text.**
+- docs/research_d4_2026-10-16/D4_v1.md **at 10187c1b** (v1 + Addendum 1) is the registered text for every definition, rule and label. That file is now frozen.
+- Stage 0 is done (notes 213-27…213-32): no hard stop fired.
+- **Derivation** (math-backing rule): D4_v1 §3 (Props D0–D2, Lemmas D3–D5, corrected by PROOFS_D4); REDTEAM_D4's blockers fixed in v1.
+- **Scorer:** theory/score_s214.py (this commit), fixture-checked on 4 cases:
+  - D3-T reads KEPT (L0), not D4-C2;
+  - CONTENT reads REMOVED≤16, D4-C2-MEM;
+  - a stop moved to 14 reads MOVED at L2;
+  - a lost memory channel reads MEM-TRADED.
+
+**Cell s214_pausea_s1** (RTX 3090, seed 1, 48k × bs 64, from pretrained GPT-2, calibrated as D3-T; one GPU class; off-host checkpoint mirror and drain waiter armed at launch; checkpoints deleted at train end):
+- **The recipe:** D3-T's args.json **+ `--pause A --pause_p 0.5 --pause_max 8 --kmax 20 --mem_check_steps 2`**. lr, steps, cur, c_sched and seed are D3-T's.
+- **The pause path** (D4_v1 §2):
+  - PAUSE-A lastR schedule from rng_p = seed + 21300; plain batches are bitwise D3-T's stream;
+  - π = pause_vec (init 0) enters only through the rollout `pause` kwarg (never input_edit);
+  - the R2 target map E_{ρ(t)}; the R1 window [n + P, K], with a named assertion.
+- **No --init_from** (a scratch cell). The FT-only gates G-P1, G-P4 and G-P12 do not apply.
+
+**Claims** (all π-free; D4_v1 §5):
+- **D4-C2** = DEPTH-GENERAL (mean acc_n2 n 9–12 ≥ 0.80) ∧ LENGTH-FREE ∧ VB-C1 ∧ K′24-STABLE.
+- **D4-C2-TAIL** = D4-C2 ∧ C2-TAIL (n 13–16).
+- **D4-C2-MEM** = D4-C2 ∧ KEEPS-SELF-STAB. Losing the channel reads **MEM-TRADED**.
+- **Mechanism:** the decode-free DEADLINE-BOUND ladder (L0 KEPT / L1 / L2 / L3 REMOVED≤16, MOVED, UNRESOLVED), with STOP-GONE = ACC-GAIN-AFTER-10 ≥ 0.10. The π arms (PAUSE-LEARNED, PAUSE-EARLY / HIDDEN-WORK, START-D) only gate L3.
+- Decode-level readings are descriptive (213-26).
+
+**OC (one seed; D4_v1 §6, post-Stage-0):**
+- P(entry) 0.7 [ASSUMED]. Given entry, P(STOP-GONE) ≈ 0.54.
+- **P(D4-C2) ≈ 0.06 as written. ≈ 0.04 with 213-27's 0.3 / 0.45 factor applied (not pre-stated), shown beside it as the honest figure.**
+- P(pass | no effect) ≤ 0.01 for STOP-GONE and about 0.05 for DEPTH-GENERAL.
+- A positive is strong; a null is weak.
+- The cell is treated as a **mechanism test**: does breaking the pass-index / age correlation move the stop? (213-32.)
+
+**Censoring (rule b):**
+- A dead run (log < 48k) or NO-ENTRY (answer_ce) fails every reading.
+- Never finishing (FIN-K unreadable) is a failure.
+- Failing π gates make L3 UNREADABLE (not met).
+- Basin entry against D3-T's 11k: a gap > 5k is CONFOUNDED (descriptive only).
+
+**Eval contract** (local fp32 at eval_bs 32, on one local card class, card recorded):
+- §213's files: eval_vb, eval_steppos, eval_lfk, eval_rs, eval_d3hist;
+- eval_vbhalt (coda per t, for FIN-K), eval_stepbyt, eval_hist24 with the DUP arms (KEEPS-SELF-STAB);
+- **eval_pause.json** {Q, pause_inv {n: {acc_k {K′: acc}}}, start_d {"n_D": {acc_k}}}, the only file that applies π (G-P9). Per-item outputs stored.
+
+**Gates before launch:**
+- G-P0, P2, P3, P5, P6, P7, P8 (ARGS-DIFF vs s213_d3t_s1/args.json printed in the launch log), P9, P10, P11, P14, P15 green;
+- **Audit's diff review** of the trainer edits (the pause kwarg, the target map, the R1 window, the 2-step mem_check);
+- the off-host mirror and a drain waiter; 3090 only.
+
+**Cost.** Projected $1.41–2.04. **Cap $2.5** (guard), not poolable with §215. The realised $ replaces the projection.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
