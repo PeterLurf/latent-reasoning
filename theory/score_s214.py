@@ -16,6 +16,9 @@ Mechanism, the decode-free DEADLINE-BOUND ladder (D4_v1 §5). c = 0.10. acc(K') 
      - c) / (mean acc(K' n + Q + 2) - c) pooled over n 3-8; HIDDEN-WORK iff ER > 0.30.
   Labels: KEPT (L0); MOVED (a readable rung above the reached one fails); UNRESOLVED>Lk (the next rung unreadable); REMOVED<=16 (L3).
   MOVED scan (reported): t_d = the smallest t in 9..20 with FIN-K in [t - 1, t + 1] on >= 3 readable cells (plain n, D 0; START-D (n, D)) with n + D >= t + 2.
+  START-D labels (descriptive, only when the plain cell is L0; D 4 vs D 0 on n 9-12): GATED-COUNT iff the FIN-K shift >= 3 with an acc change < +0.05 at every
+    readable n 9-10; PAUSE-UNLOCKS iff mean acc change over n 9-12 >= +0.10; UNGATED iff the n 9 FIN-K shift <= +1 and acc falls >= 0.05. D 0 is taken from
+    eval_pause start_d["n_0"] when present, else from the plain eval_vb acc_k of the same §170 items on the same card (the D 0 arm applies no pi).
 Censoring (rule b): dead (log < 48k) or NO-ENTRY (answer_ce) fails every reading; never-finishing (FIN-K unreadable) is a failure; pi-arm gates failing make L3
   UNREADABLE. Basin entry vs D3-T 11k: gap > 5k CONFOUNDED (descriptive).
 ARGS-DIFF vs s213_d3t_s1/args.json: only pause / pause_p / pause_max / kmax / mem_check_steps (+ metadata) may differ.
@@ -139,6 +142,35 @@ def ladder(d, ev):
         if len(hit) >= 3:
             td = t; break
     o["MOVED_t_d"] = td
+    # START-D labels (D4_v1 §5; descriptive, read only when the plain cell is L0): D 4 vs D 0 on n 9-12. D 0 comes from eval_pause start_d["n_0"] when
+    # present (Audit asked for D 0 cells at n 9-11 as extras), else from the plain eval_vb acc_k curve of the same §170 items on the same card (the D 0 arm
+    # applies no pi, so it is the plain rollout).
+    if not stop_gone and P is not None:
+        sd = P.get("start_d") or {}
+        def cur_of(n, D):
+            k = "%d_%d" % (n, D)
+            if k in sd:
+                return curve_from_acc_k(sd[k]["acc_k"])
+            if D == 0:
+                return {int(kk): float(v[str(n)]) for kk, v in ev["acc_k"].items() if str(n) in v}
+            return None
+        rows = {}
+        for n in range(9, 13):
+            c0, c4 = cur_of(n, 0), cur_of(n, 4)
+            if c0 is None or c4 is None or (n + 2) not in c0 or (n + 6) not in c4:
+                continue
+            f0, f4 = fin_k(c0, n + 2), fin_k(c4, n + 6)
+            rows[n] = {"acc_D0": c0[n + 2], "acc_D4": c4[n + 6], "fin_D0": f0, "fin_D4": f4,
+                       "shift": (f4 - f0) if (f0 is not None and f4 is not None) else None}
+        lab_sd = []
+        r910 = [rows[n] for n in (9, 10) if n in rows and rows[n]["shift"] is not None]
+        if r910 and all(r["shift"] >= 3 - EPS and r["acc_D4"] - r["acc_D0"] < 0.05 for r in r910):
+            lab_sd.append("GATED-COUNT")
+        if all(n in rows for n in range(9, 13)) and sum(rows[n]["acc_D4"] - rows[n]["acc_D0"] for n in range(9, 13)) / 4 >= 0.10 - EPS:
+            lab_sd.append("PAUSE-UNLOCKS")
+        if 9 in rows and rows[9]["shift"] is not None and rows[9]["shift"] <= 1 + EPS and rows[9]["acc_D0"] - rows[9]["acc_D4"] >= 0.05 - EPS:
+            lab_sd.append("UNGATED")
+        o["START_D_rows"] = rows; o["START_D_labels"] = lab_sd or ["none"]
     return o
 
 
