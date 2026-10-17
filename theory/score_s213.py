@@ -216,10 +216,11 @@ def d4_stage0(d):
     o = {}
     if ar is not None:
         I = ar["intact"]["acc_n2"]; o["s03_gate"] = all(abs(I[str(n)] - E[str(n)]) <= 0.005 + EPS for n in range(1, 9)); arms = {}
-        for arm in ("revert", "mct"):
-            if arm not in ar:
+        for arm, key in (("revert", "revert"), ("mct", "age_mct")):          # Experiments 1133d371: the MCT arm key is age_mct (a run-metadata
+            blk = ar.get(key)                                                   # key 'mct' collided); never read a non-dict block
+            if not isinstance(blk, dict):
                 arms[arm] = None; continue
-            A2, A4 = ar[arm]["2"], ar[arm]["4"]
+            A2, A4 = blk["2"], blk["4"]
             ctl = all(A2["acc_n2"][str(n)] >= 0.97 - EPS for n in range(1, 5))
             den = mean(A4["acc_n2"], range(3, 7)) - 0.1
             er = ((mean(A4["acc_k_pre"], range(3, 7)) - 0.1) / den) if den > EPS else None
@@ -240,7 +241,7 @@ def d4_stage0(d):
     a3, b2 = o.get("S0_3"), o.get("S0_2")
     if a3 and b2:
         o["AGE_CLOCK"] = bool(any(v and v["readable"] and v["drop78"] >= 0.20 - EPS for v in a3.values()) and b2["drop_s4_78"] <= 0.05 + EPS)
-        both_null = all(v and v["readable"] and v["ARM_NULL"] for v in a3.values())
+        both_null = len(a3) == 2 and all(v and v["readable"] and v["ARM_NULL"] for v in a3.values())
         o["PROGRESS_ONLY"] = bool(both_null and b2["BANK_NULL"] and ap is not None and ap["AGE_UNLOCKS"] is False)
     return o
 
