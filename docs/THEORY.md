@@ -18502,6 +18502,8 @@ Entry is at 11k (answer_ce), the same as N1.
 - SVAMP 0.415 / 0.387 (n 1,000).
 - The latents add a lot on MultiArith and little on SVAMP. These are a reproduction check against the CODI paper's numbers, for Literature to compare.
 
+**Note 210-5 (2026-10-17 11:27 EDT; a C1 reading of 210-4, after Audit's reproduction from the 500 per-pair items).** CODI20's latents are **content-bearing but context-bound**: a donor's latents mostly yield neither answer (0.876), because they are decoded relative to the recipient's question. This contrasts with VERSION-BANK's VALUE-SWAP (§211 / §213: follow 1.000), where the swapped quantity is a self-contained state that carries the answer by itself. For C1 (causal use), CODI shows **necessary** latent computation (removal or noise breaks it) but not a **portable** latent state. The VB cells show both.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
