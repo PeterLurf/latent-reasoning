@@ -1,0 +1,26 @@
+{
+ "extra_keys_A": [
+  "pause_vec"
+ ],
+ "extra_keys_none_vs_A": [],
+ "pause_vec_zero": true,
+ "load_s213_d3t_s1": [
+  "SLVA",
+  false
+ ],
+ "load_s213_d3f_s1": [
+  "SLVA",
+  false
+ ],
+ "load_s211_vb_carry_s1": [
+  "VBankN",
+  false
+ ],
+ "load_s211_vb_pa_s1": [
+  "VBankN",
+  false
+ ],
+ "roundtrip_strict": true,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

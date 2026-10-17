@@ -1,0 +1,52 @@
+{
+ "r1_windows": {
+  "1": [
+   3,
+   4
+  ],
+  "0": [
+   5,
+   6,
+   7
+  ],
+  "3": [
+   5,
+   6
+  ],
+  "2": [
+   8,
+   9,
+   10
+  ]
+ },
+ "r1_windows_expected": {
+  "0": [
+   5,
+   6,
+   7
+  ],
+  "1": [
+   3,
+   4
+  ],
+  "2": [
+   8,
+   9,
+   10
+  ],
+  "3": [
+   5,
+   6
+  ]
+ },
+ "r1_window_exact": true,
+ "rho_counts_n": true,
+ "lastR": true,
+ "E_map_eq_hand": true,
+ "hold_at_pause": true,
+ "pi0_paused_eq_plain": true,
+ "pi_moves_paused_only": true,
+ "n_paused_logged": 2,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

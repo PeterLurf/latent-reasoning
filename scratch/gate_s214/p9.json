@@ -1,0 +1,14 @@
+{
+ "rollout_pause_callers": {
+  "boxes/vbank.py": [
+   "r = m.rollout(x, pad, Kb, coda_rows=win, edit=edit, sg_input=sg_input, pause=pmask)"
+  ],
+  "boxes/vbank_eval.py": [],
+  "boxes/vbank_diag.py": [],
+  "boxes/vbank_halt.py": [],
+  "boxes/slva.py": []
+ },
+ "input_edit_set_in_main": false,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 3070"
+}

@@ -37,7 +37,7 @@ def height(nd):
 
 def load(run, dev):
     from boxes import s5
-    a = json.load(open(os.path.join(run, "args.json"))); m = VB.make_model(s5.load_gpt2(dev), a["mode"], a.get("table", "train")).to(dev)   # §213 G-D0 factory
+    a = json.load(open(os.path.join(run, "args.json"))); m = VB.make_model(s5.load_gpt2(dev), a["mode"], a.get("table", "train"), a.get("pause", "none")).to(dev)   # §213 G-D0 factory
     assert type(m).__name__ == a.get("arch", "VBankN"), (type(m).__name__, a.get("arch"))
     m.load_state_dict(torch.load(os.path.join(run, "model.pt"), map_location=dev, weights_only=True)); m.eval()
     for p_ in m.parameters():
