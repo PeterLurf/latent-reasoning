@@ -879,12 +879,34 @@ def part_hold(m, TE, dev, bs):
             "exposure": {a_: {n: {"items_exposed": v[0] / v[2], "held_events_per_item": v[1] / v[2]} for n, v in d.items()} for a_, d in expo.items()}, "def": part_hold.__doc__}
 
 
+@torch.no_grad()
+def part_stepbyt(m, TE, dev, bs):
+    """note 213-18 STEP-BY-T ($0): eval_lfk's intact "step" events split by pass index t: step_by_t {n: {t: {events, strict_exact, voiddrop_exact}}}, n 9-16,
+    t 2..n; an event = pass t whose input V_{t-1} decodes STRICT exact (VOIDs in place); strict_exact = every real slot of R(V_t) == E_t; the same chunks,
+    rollout (K' = n) and decodes as _lfk_core's intact arm. step = the per-n sums (the runner checks them against eval_lfk.json's step block)."""
+    Nn = np.array([it["n"] for it in TE]); out = {}; tot = {}
+    for n in range(9, 17):
+        d_ = out.setdefault(str(n), {})
+        for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+            its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); E = VB.rec_targets(its, n, x.shape[1], dev)
+            r_ = m.rollout(x, pad, n); dec = [m.rec_logits(r_["V"][t]).argmax(-1) for t in range(n + 1)]; del r_
+            for t in range(2, n + 1):
+                ok_in = ((dec[t - 1] == E[:, t - 1]) | ~pad).all(1)
+                if not bool(ok_in.any()):
+                    continue
+                Et = E[:, t]; strict = ((dec[t] == Et) | ~pad).all(1); dc = dec[t].cpu().numpy(); ec = Et.cpu().numpy(); c_ = d_.setdefault(str(t), {"events": 0, "strict_exact": 0, "voiddrop_exact": 0})
+                for i in np.nonzero(ok_in.cpu().numpy())[0]:
+                    L = int(lens[i]); c_["events"] += 1; c_["strict_exact"] += int(strict[i]); c_["voiddrop_exact"] += int(VB.rerender(list(dc[i, :L])) == VB.rerender(list(ec[i, :L])))
+        tot[str(n)] = {k: sum(v[k] for v in d_.values()) for k in ("events", "strict_exact", "voiddrop_exact")}; print("STEPBYT n", n, tot[str(n)], flush=True)
+    return {"step_by_t": out, "step": tot, "def": part_stepbyt.__doc__}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
