@@ -282,10 +282,162 @@
    ],
    "label": "VB-C1"
   },
-  "label": "pending (missing ['eval_lfk', 'eval_rs', 'eval_d3hist'])"
+  "dead": false,
+  "no_entry": false,
+  "entry_answer_ce_05": 11000,
+  "VB_C1": true,
+  "NO_KNEE": {
+   "9": {
+    "n_le29": 1343,
+    "exact_le29": 1.0,
+    "n_ge33": 175,
+    "exact_ge33": 1.0,
+    "readable": true,
+    "met": true
+   },
+   "10": {
+    "n_le29": 392,
+    "exact_le29": 1.0,
+    "n_ge33": 981,
+    "exact_ge33": 0.9989806320081549,
+    "readable": true,
+    "met": true
+   },
+   "NO_KNEE": true
+  },
+  "LFK": {
+   "acc_le28": 0.987857955211117,
+   "acc_29_32": 0.9673117380904349,
+   "acc_ge33": 0.9887056318721381,
+   "events_ge33": 274296,
+   "readable": true,
+   "by_kind": {
+    "all_29_32": 0.9673117380904349,
+    "all_ge33": 0.9887056318721381,
+    "all_le28": 0.987857955211117,
+    "changed_29_32": 0.9095975232198142,
+    "changed_ge33": 0.8607594936708861,
+    "changed_le28": 0.9944453271085147,
+    "copy_29_32": 0.9686431225392792,
+    "copy_ge33": 0.9888900653160472,
+    "copy_le28": 0.9776647576982582,
+    "void_29_32": 1.0,
+    "void_ge33": 1.0,
+    "void_le28": 0.9999888864439066
+   },
+   "MEETS": true,
+   "fault": {
+    "acc_le28": 0.9891704330077271,
+    "acc_29_32": 0.9712374581939799,
+    "acc_ge33": 0.9467334181556675,
+    "events_ge33": 180770,
+    "readable": true,
+    "by_kind": {
+     "all_29_32": 0.9712374581939799,
+     "all_ge33": 0.9467334181556675,
+     "all_le28": 0.9891704330077271,
+     "changed_29_32": 0.9153039832285115,
+     "changed_ge33": 0.8583690987124464,
+     "changed_le28": 0.9946972748019869,
+     "copy_29_32": 0.9724653676358654,
+     "copy_ge33": 0.9468474606313387,
+     "copy_le28": 0.9805542033396935,
+     "void_29_32": 1.0,
+     "void_ge33": null,
+     "void_le28": 0.9999860573155871
+    },
+    "MEETS": false,
+    "paired": {
+     "le28": {
+      "events_both": 1028705,
+      "intact_correct": 1017568,
+      "fault_correct": 1017569,
+      "diff": 9.72095984757535e-07
+     },
+     "29_32": {
+      "events_both": 107620,
+      "intact_correct": 104533,
+      "fault_correct": 104532,
+      "diff": -9.291953168556031e-06
+     },
+     "ge33": {
+      "events_both": 180712,
+      "intact_correct": 178973,
+      "fault_correct": 171100,
+      "diff": -0.04356655894461906
+     }
+    },
+    "realised": {
+     "ge33": {
+      "faults": 8968,
+      "faults_class_differs": 7923
+     }
+    }
+   },
+   "SENSITIVE": true,
+   "fault_low_realised": false
+  },
+  "LENGTH_FREE": true,
+  "COUNT": true,
+  "STEP_GENERAL": false,
+  "STEP_GENERAL_mean_12_16": 0.9410999999999999,
+  "DEPTH_9_12": 0.494,
+  "DEPTH_GENERAL": false,
+  "RS": {
+   "D": 0.38374064837905236,
+   "D_control": 0.0,
+   "thin_cells": 4,
+   "readable": true,
+   "HISTORY_KEYED": true,
+   "HISTORY_FREE": false,
+   "HEAD_LIMITED": true
+  },
+  "SELF_SIMILAR": false,
+  "HIST": {
+   "intact_n6_8": 1.0,
+   "gate_intact_equals_eval_vb": true,
+   "readable": true,
+   "drop": {
+    "bank_ablate_slva": 0.0,
+    "self_ablate": 0.0,
+    "other_ablate": 0.0
+   },
+   "HISTORY_USED": false,
+   "HIST_PATTERN": null,
+   "swap": {
+    "n_pairs": 4183,
+    "newest_follow": 1.0,
+    "newest_own": 0.0,
+    "bank_follow": 0.0,
+    "bank_own": 1.0,
+    "old_follow": 0.0,
+    "old_own": 1.0
+   },
+   "omitted": [],
+   "OLD_SWAP_follow": 0.0,
+   "RNN_IN_FUNCTION": true
+  },
+  "D3_C2": false,
+  "D3_C2_ATTN": false,
+  "HALT": null,
+  "STEP_BY_T": null,
+  "HIST24": null,
+  "EDGE": null,
+  "label": "parts: LENGTH-FREE True / DEPTH-GENERAL False (0.494) / VB-C1 True / HISTORY-USED False | OLD-SWAP follow 0.0 | RNN-IN-FUNCTION"
  },
  "PAIR": {
-  "label": "pending"
+  "TABLE_step_general_12_16": -0.03870000000000007,
+  "TABLE_depth_9_12": 0.014249999999999985,
+  "TABLE_lfk_ge33": 0.008176978407572255,
+  "TABLE_lfk_29_32": 0.021791849174319533,
+  "lfk_changed_ge33": {
+   "T": 0.5864661654135338,
+   "F": 0.8607594936708861
+  },
+  "entry_T": 11000,
+  "entry_F": 11000,
+  "CONFOUNDED": false,
+  "label": "descriptive (one seed each)"
  },
  "REFERENCE": {
   "N2": {
