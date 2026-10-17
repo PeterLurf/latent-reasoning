@@ -114,6 +114,20 @@ def step_by_t(d):
             "label": "PASS-COUNT-KEYED" if pc else ("GRADUAL-DRIFT" if gd else "MIXED")}
 
 
+def hist24(d):
+    """Note 213-20 (descriptive): STAB_arm = mean over n 3..6 of [(acc_n2 - acc_k24) arm] - [(acc_n2 - acc_k24) intact]; HISTORY-STABILISES iff STAB_bank
+    >= 0.10 and the intact arm equals eval_vb (acc_n2, acc_k['24']) bitwise."""
+    f, ev = jl(d, "eval_hist24.json"), jl(d, "eval_vb.json")
+    if f is None or ev is None:
+        return None
+    gate = all(f["intact"]["acc_n2"][str(n)] == ev["acc_n2"][str(n)] and f["intact"]["acc_k24"][str(n)] == ev["acc_k"]["24"][str(n)] for n in range(3, 9))
+    g = lambda arm, n: f[arm]["acc_n2"][str(n)] - f[arm]["acc_k24"][str(n)]  # noqa: E731
+    st = {a: ((sum(g(a, n) - g("intact", n) for n in range(3, 7)) / 4) if a in f else None) for a in ("bank_ablate_slva", "self_ablate", "other_ablate")}
+    stab = bool(gate and st["bank_ablate_slva"] is not None and st["bank_ablate_slva"] >= 0.10 - EPS)
+    return {"gate": gate, "STAB": st, "HISTORY_STABILISES": stab if gate else None, "omitted": f.get("omitted"),
+            "label": "UNREADABLE (gate)" if not gate else ("HISTORY-STABILISES (memory used for C6, not the step)" if stab else "not met")}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -156,7 +170,8 @@ def cell(tag, d):
     o.update(dead=dead, no_entry=noent, entry_answer_ce_05=a["entry_answer_ce_05"], VB_C1=a["VB_C1"], NO_KNEE=nk, LFK=lf, LENGTH_FREE=lfree, COUNT=count,
              STEP_GENERAL=sg, STEP_GENERAL_mean_12_16=sg_mean, DEPTH_9_12=a["DEPTH_9_12"], DEPTH_GENERAL=dg, RS=ss, SELF_SIMILAR=selfsim, HIST=hr,
              D3_C2=c2, D3_C2_ATTN=c2a,
-             HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None, STEP_BY_T=step_by_t(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
+             HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None, STEP_BY_T=step_by_t(d),
+             HIST24=hist24(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
     o["label"] = ("FAILURE (dead; rule b)" if dead else "NO-ENTRY (rule b)" if noent else
                   "D3-C2-ATTN (C2 in a pass-global attention memory)" if c2a else
                   "D3-C2 (C2 with the memory in form only)" if c2 else
@@ -194,7 +209,8 @@ def main():
            "N2": lambda r: r["HISTORY_USED"] is True and r["RNN_IN_FUNCTION"] is False, "N3": lambda r: r["HISTORY_USED"] is True}
     ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
     ref["HOLD_N1"] = hold_read(S212.STAGE0["N1"])
-    ref["STEP_BY_T_N1"] = step_by_t(S212.STAGE0["N1"])                    # note 213-18 reference                         # note 213-14 S0-4
+    ref["STEP_BY_T_N1"] = step_by_t(S212.STAGE0["N1"])
+    ref["HIST24"] = {k: hist24(S212.STAGE0[k]) for k in ("N1", "N2")}         # note 213-20 references                    # note 213-18 reference                         # note 213-14 S0-4
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
