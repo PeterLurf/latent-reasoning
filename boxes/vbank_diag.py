@@ -1290,7 +1290,7 @@ def part_chainlabel_fresh(m, TE, dev, bs, n_items=1000):
                        "keep": float(np.mean(kept)), "prec_kept": float(np.mean(pk)) if pk else None, "n_kept": len(pk), "collide_rate": (draws - len(roots)) / draws,
                        "draws": draws, "sec_per_item": (time.time() - t0) / len(js), "cap": cap}
         print("CHAINFRESH n", n, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in out[str(n)].items()}, flush=True)
-    return {"by_n": out, "def": part_chainlabel_fresh.__doc__}
+    return {"by_n": out, "excl_size": len(excl), "te_items": len(TE), "def": part_chainlabel_fresh.__doc__}   # Audit: EXCL derives from TE (per_n)
 
 
 def main():

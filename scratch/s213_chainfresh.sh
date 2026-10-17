@@ -3,6 +3,9 @@
 # the card is recorded per file), fp32, eval_bs 32 -> <cell>/eval_chainlabel_fresh.json.   nohup bash scratch/s213_chainfresh.sh >> logs/s213_chainfresh.out 2>&1 &
 cd "$(dirname "$0")/.."
 one() { python -m boxes.vbank_diag --run boxes/runs_fsq/$1 --part chainlabel_fresh --device $2 --eval_bs 32 > logs/s213_chainfresh_$1.log 2>&1; rc=$?
-  echo "$(date '+%F %T') $1 chainlabel_fresh ($2) rc $rc $(tail -n 1 logs/s213_chainfresh_$1.log | cut -c1-140)"; }
+  echo "$(date '+%F %T') $1 chainlabel_fresh ($2) rc $rc $(tail -n 1 logs/s213_chainfresh_$1.log | cut -c1-140)"
+  python -c "
+import json; R = 'boxes/runs_fsq/$1'; d = json.load(open(R + '/eval_chainlabel_fresh.json')); a = json.load(open(R + '/args.json'))
+print('CHECK per_n diag', d['per_n'], '== trainer', a['per_n'], ':', d['per_n'] == a['per_n'], '| te_items', d['te_items'], '| excl_size', d['excl_size'])" 2>&1 | sed "s/^/$(date '+%F %T') $1 /"; }
 one s213_d3t_s1 cuda:1 & one s213_d3f_s1 cuda:0 & wait
 echo "$(date '+%F %T') §213 chainlabel_fresh done"
