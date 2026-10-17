@@ -1,0 +1,168 @@
+{
+ "stop_loc_base_k_7_15": {
+  "G": {
+   "7": 0.565,
+   "8": 0.303,
+   "9": 0.0495,
+   "10": -0.0028,
+   "11": -0.002,
+   "12": -0.0035,
+   "13": -0.0033,
+   "14": -0.003,
+   "15": -0.01
+  },
+  "STOP": 10
+ },
+ "stop_loc_Hshift_k_9_15": {
+  "G": {
+   "9": 0.8433,
+   "10": 0.746,
+   "11": 0.565,
+   "12": 0.303,
+   "13": 0.061,
+   "14": -0.0015,
+   "15": 0.001
+  },
+  "STOP": 14
+ },
+ "kbeyond": {
+  "base_analogue_n11_12_vs_K10": -0.0015,
+  "Hshift_n15_16_vs_K14": -0.0015,
+  "rise_past_kmax_base_analogue_n11_12_vs_K12": -0.0005,
+  "in_range_saturation": {
+   "3": {
+    "K'=n-1": 0.193,
+    "K'=n": 1.0,
+    "K'=n+2": 1.0,
+    "K'=24": 1.0
+   },
+   "4": {
+    "K'=n-1": 0.216,
+    "K'=n": 1.0,
+    "K'=n+2": 1.0,
+    "K'=24": 1.0
+   },
+   "5": {
+    "K'=n-1": 0.204,
+    "K'=n": 1.0,
+    "K'=n+2": 1.0,
+    "K'=24": 1.0
+   },
+   "6": {
+    "K'=n-1": 0.224,
+    "K'=n": 1.0,
+    "K'=n+2": 1.0,
+    "K'=24": 1.0
+   },
+   "7": {
+    "K'=n-1": 0.193,
+    "K'=n": 1.0,
+    "K'=n+2": 1.0,
+    "K'=24": 1.0
+   },
+   "8": {
+    "K'=n-1": 0.179,
+    "K'=n": 1.0,
+    "K'=n+2": 1.0,
+    "K'=24": 1.0
+   },
+   "9": {
+    "K'=n-1": 0.329,
+    "K'=n": 0.928,
+    "K'=n+2": 0.923,
+    "K'=24": 0.913
+   }
+  },
+  "Hfull_panel": {
+   "acc_n2_15_16": [
+    0.85,
+    0.8
+   ],
+   "acc_k14_15_16": [
+    0.179,
+    0.13
+   ],
+   "KB": 0.6705
+  },
+  "Hgrow_panel_bounds": {
+   "if_acc_k14 = one/two-short levels": 0.3355,
+   "if_acc_k14 = 0.5 * acc_n2": 0.245
+  }
+ },
+ "mechanism_panels": {
+  "Hshift": [
+   0.4798,
+   14,
+   "SHIFT"
+  ],
+  "Hgrow_0.69": "GROW",
+  "Hfull_0.85": "FULL",
+  "shrink_0.30": "SHRINK",
+  "mixed_0.50_stop12": "MIXED",
+  "noabsorb": "UNLABELLED (not ABSORB)"
+ },
+ "Hshift_curve_13_16": [
+  0.923,
+  0.603,
+  0.266,
+  0.127
+ ],
+ "Hshift_mean_SE": 0.0062,
+ "piE_OC": {
+  "N_pooled_kept": 7920,
+  "c_allowed": 79,
+  "P(pass|piE=0.9997)": 1.0,
+  "P(pass|piE=0.997)": 1.0,
+  "P(pass|piE=0.993)": 0.9989,
+  "P(pass|piE=0.99)": 0.5209,
+  "P(pass|piE=0.988)": 0.0513,
+  "P(pass|piE=0.985)": 0.0001
+ },
+ "keep_OC_note": "keep_n (KEEP and CV) >= 0.70 per n at N 2,000: at true 0.976 the binomial lower tail at 0.70 is < 1e-100; at 0.70 ~ 0.5",
+ "pool_v1": {
+  "pool_total": 440000,
+  "per_n": 110000,
+  "self_steps_mean": 5999.87165,
+  "self_steps_max_sim": 6224,
+  "items_used_mean": 383991.7856,
+  "items_used_max_sim": 398336,
+  "P(exhaust)": 0.0,
+  "z_exhaust": 16.0,
+  "per_n_used_mean": 96000,
+  "per_n_used_sd_approx": 917,
+  "note": "per-n use is the permutation's prefix count; the pool holds 110k per n, so no n can run out before the global cursor"
+ },
+ "OC": {
+  "draft": {
+   "P_ABSORB": 0.65,
+   "P_SD_SELF": 0.4475,
+   "P_MG": 0.2558,
+   "P_DBS": 0.1108,
+   "P_SD_C2": 0.0763,
+   "P_SD_C2_MEM": 0.0534,
+   "P_SD_C2|Hshift": 0.0069,
+   "P_SD_C2|Hfull": 0.6197
+  },
+  "RT_shaded": {
+   "P_ABSORB": 0.65,
+   "P_SD_SELF": 0.4475,
+   "P_MG": 0.1872,
+   "P_DBS": 0.0461,
+   "P_SD_C2": 0.0318,
+   "P_SD_C2_MEM": 0.0222,
+   "P_SD_C2|Hshift": 0.0069,
+   "P_SD_C2|Hfull": 0.6197
+  },
+  "shaded_ABSORB_0.45": {
+   "P_ABSORB": 0.45,
+   "P_SD_SELF": 0.3098,
+   "P_MG": 0.1296,
+   "P_DBS": 0.0319,
+   "P_SD_C2": 0.022,
+   "P_SD_C2_MEM": 0.0154,
+   "P_SD_C2|Hshift": 0.0069,
+   "P_SD_C2|Hfull": 0.6197
+  },
+  "kept_factor": 0.6885
+ }
+}
