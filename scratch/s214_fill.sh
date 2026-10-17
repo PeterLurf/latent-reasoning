@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# §214 D4-B filler (registered 7892a2dc; user-approved via Audit 11:58 10-17, cap $2.5 for the single cell, its own guard - not poolable with §215; Audit reviews the vbank diff and this queue before the .hold file is renamed). Copied from scratch/s213_fill.sh; changed: one cell b309, caps $2.50 / $2.50, logs and guard names, the ARGS-DIFF reference scratch/s214_args_ref_d3t.json.
+# §214 D4-B filler (registered 7892a2dc; user-approved via Audit 11:58 10-17, cap $2.5 for the single cell, raised to $4.50 by the user 12:34 10-17 (note 214-3 ff0a2194; approved in the Experiments session 12:5x), its own guard - not poolable with §215; Audit reviews the vbank diff and this queue before the .hold file is renamed). Copied from scratch/s213_fill.sh; changed: one cell b309, caps $4.50 / $4.50, logs and guard names, the ARGS-DIFF reference scratch/s214_args_ref_d3t.json.
 # ONE filler, the one cell b309 s214_pausea_s1, each on its own RTX 3090 (GPUS env), offer <= PMAX (default $0.25/h), never 580.x
 # (offer_pick). Per cell: deploy (gen_deploy_120 also arms the gen8 drain watcher) -> HOSTPROBE OK -> queue line 1 = mem_check (G-D7), line 2 = G-TIME
 # (60 forced final-stage steps: n <= 8, K 12, --auto_micro) -> admission: proj = (gtime s/step x 48000 / 3600 + SETUP_H) x the host's $/h must be
-# <= $2.50 (per cell) AND the admitted sum + this proj (+ BAD-host spend) <= $2.50; then the off-host ckpt mirror (scratch/ckpt_mirror.py, every
-# 2 h) and a per-cell cost_guard ($2.5, alert only) start, and on the first admit the guard s214fam ($2.5, GUARD_STOP=1); marks 1k / 4k / 12k / 20k.
-# A refused host: vdestroy, drain watcher stopped by pid, drained_hosts + exclude list, billed minutes logged. A projection above $2.5 is never
+# <= $4.50 (per cell) AND the admitted sum + this proj (+ BAD-host spend) <= $4.50; then the off-host ckpt mirror (scratch/ckpt_mirror.py, every
+# 2 h) and a per-cell cost_guard ($4.5, alert only) start, and on the first admit the guard s214fam ($4.5, GUARD_STOP=1); marks 1k / 4k / 12k / 20k.
+# A refused host: vdestroy, drain watcher stopped by pid, drained_hosts + exclude list, billed minutes logged. A projection above $4.5 is never
 # resolved by dropping a cell: the filler holds and says so (Audit / the user decide). BAD / refused hosts: 4 -> held; BAD-host spend > $0.75 -> held.
 #   nohup bash scratch/s214_fill.sh >> logs/fill_s214.out 2>&1 &
 cd "$(dirname "$0")/.."
-PMAX=${PMAX:-0.25}; CAPC=2.50; CAPF=2.50; STEPS=48000; SETUP_H=0.5; BADN=${BAD0:-0}; BADMAX=4; BADLOG=logs/s214_bad_cost.log; ADMLOG=logs/s214_admitted.log
+PMAX=${PMAX:-0.25}; CAPC=4.50; CAPF=4.50; STEPS=48000; SETUP_H=0.5; BADN=${BAD0:-0}; BADMAX=4; BADLOG=logs/s214_bad_cost.log; ADMLOG=logs/s214_admitted.log
 QS="${QS:-309:s214_pausea_s1}"; export EXTRA_120="scratch/s214_args_ref_d3t.json"
 log() { echo "$(date +%T) fill_s214 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 sq() { timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "$3" 2>/dev/null; }
@@ -63,11 +63,11 @@ for cell in $QS; do
     if python -c "import sys; sys.exit(0 if $proj <= $CAPC and $fs + $proj <= $CAPF else 1)"; then
       echo "$n:$run $h:$p $iid \$$dph/h sps $sps $proj" >> "$ADMLOG"; log "b$n: ADMIT $run on $h:$p (instance $iid): \$$proj"
       nohup python scratch/ckpt_mirror.py "$n:$run" --every_h 2 > "logs/ckpt_mirror_b$n.out" 2>&1 &
-      GUARD_MARKS=1000,4000,12000,20000 nohup python scratch/cost_guard.py "s214_b$n" 2.50 "$STEPS" "$n:$run:$proj" > "logs/s214_guard_b$n.out" 2>&1 &
-      log "b$n: ckpt mirror + cost guard (\$2.5, alert only) started"
+      GUARD_MARKS=1000,4000,12000,20000 nohup python scratch/cost_guard.py "s214_b$n" 4.50 "$STEPS" "$n:$run:$proj" > "logs/s214_guard_b$n.out" 2>&1 &
+      log "b$n: ckpt mirror + cost guard (\$4.5, alert only) started"
       if ! ps -ef | grep "cost_guard.py s214fam " | grep -v grep > /dev/null; then   # the FAMILY \$4.5 guard with GUARD_STOP=1 (BAD hosts included; §211 practice)
-        GUARD_STOP=1 GUARD_MARKS=1000,4000,12000,20000 nohup python scratch/cost_guard.py s214fam 2.50 "$STEPS" 309:s214_pausea_s1:2.5 > logs/s214fam_guard.out 2>&1 &
-        log "guard s214fam (\$2.5, GUARD_STOP=1) started"
+        GUARD_STOP=1 GUARD_MARKS=1000,4000,12000,20000 nohup python scratch/cost_guard.py s214fam 4.50 "$STEPS" 309:s214_pausea_s1:4.5 > logs/s214fam_guard.out 2>&1 &
+        log "guard s214fam (\$4.5, GUARD_STOP=1) started"
       fi
       sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; break
     fi
