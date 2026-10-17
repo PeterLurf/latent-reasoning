@@ -208,6 +208,7 @@
   "D3_C2_ATTN": false,
   "HALT": null,
   "STEP_BY_T": null,
+  "HIST24": null,
   "label": "parts: LENGTH-FREE True / DEPTH-GENERAL False (0.480) / VB-C1 True / HISTORY-USED False | OLD-SWAP follow 0.0 | RNN-IN-FUNCTION"
  },
  "D3-F": {
@@ -419,6 +420,32 @@
     }
    },
    "label": "GRADUAL-DRIFT"
+  },
+  "HIST24": {
+   "N1": {
+    "gate": true,
+    "STAB": {
+     "bank_ablate_slva": 0.28200000000000003,
+     "self_ablate": null,
+     "other_ablate": 0.28200000000000003
+    },
+    "HISTORY_STABILISES": true,
+    "omitted": [
+     "self_ablate"
+    ],
+    "label": "HISTORY-STABILISES (memory used for C6, not the step)"
+   },
+   "N2": {
+    "gate": true,
+    "STAB": {
+     "bank_ablate_slva": 0.84025,
+     "self_ablate": 0.07,
+     "other_ablate": 0.22025
+    },
+    "HISTORY_STABILISES": true,
+    "omitted": [],
+    "label": "HISTORY-STABILISES (memory used for C6, not the step)"
+   }
   }
  }
 }
