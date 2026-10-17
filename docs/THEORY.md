@@ -301,7 +301,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
-| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **ADMISSION HELD (214-2: G-TIME $4.08 > $2.50 cap; $0.037 spent); user decision pending (hold until §215 reads, recommended)** |
+| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **cap raised to $4.50 by the user 12:34 (214-3; forced G-TIME $4.08 admits; realistic ~$2.6-3.0); relaunch pending** |
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **pool + GATE-1 + gates + Audit diff review; not launched** |
 
 ## Live sections
@@ -18635,6 +18635,12 @@ Entry is at 11k (answer_ce), the same as N1.
   - (b) per-type micro, plus an amended G-P7 projecting from the Kb law, pre-stated before launch, plus a raised cap ($3.25 suggested);
   - (c) no run.
 - **The registered readings are unaffected.**
+
+**Note 214-3 (2026-10-17 12:34 EDT; §214 cap amendment before relaunch. USER DECISION 2026-10-17 12:34 EDT: "Raise cap to $4.50, launch as registered", typed in Audit's session and relayed verbatim. The user was offered Drop / Speed-up / Raise, including Theory's "hold until §215 reads" as the Drop option, and chose the raise.)**
+- **§214's cap is $4.50**, per cell and family (GUARD_STOP = 1); it was $2.50. It is still not poolable with §215's $1.5.
+- **G-P7's admission stays as registered:** the forced G-TIME projection, now compared with $4.50. The measured $4.08 (214-2) admits.
+- **The realistic cost** [ASSUMED, from one G-TIME point and the exact lastR Kb law] is about **$2.6–3.0** with auto_micro's single micro 2. The realised $ replaces it.
+- **No other change:** recipe, schedule, readings, OC, censoring and gates are as registered (D4_v1 @ 10187c1b; 214-1 for G-P3).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
