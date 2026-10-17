@@ -18181,6 +18181,41 @@ Entry is at 11k (answer_ce), the same as N1.
 - a C2 reading at n 13–16;
 - the trailing-pause spec is settled.
 
+**Note 213-27 (2026-10-17 00:36 EDT; D4 Stage 0 premise test AGE-PROJECT on D3-T, pre-stated before any output (REDTEAM_D4's cheaper $0 test, specified here); $0, eval-only, local fp32, eval_bs 32; Audit's OK needed; independent of D4 v1's text).**
+
+**Question.** Is D3-T's decode-free stop after pass 10 (213-26, STOPS-AT-10) carried by a **linearly decodable age code** in the pass input U_t? Answering it pre-tests D4's premise: that a lineage-age signal, which computed pauses decouple, carries the stop.
+
+**Fit** (s213_d3t_s1/model.pt):
+- **Samples:** §170 *train*-distribution items with n 3..8, 300 per n (fixed seed 21327), rolled out to K′ 20. Only **idle passes** t ∈ [n + 1, 20] are used: the state is finished, so content is fixed and only age varies. Every real slot's U_t (768-d, the pass input after SLVA, before block 6) is one sample, with target t.
+- **Model:** ridge regression of t on U_t, 5-fold by item, λ chosen on held-out R² from {1e-2, 1, 1e2, 1e4}.
+- **The direction:** ŵ = w / ‖w‖. **AGE-READABLE iff held-out R² ≥ 0.5.** Otherwise the result is NO-LINEAR-AGE: the premise is untested by this arm, and nothing further is concluded.
+- **The clamp value:** c₅ = the mean of ŵ·U over in-range *computing* passes at t = 5 (n 6–8 items, slots with changed or copy kind).
+
+**Arms**, applied through vbank's `input_edit(t, U_t)` at every pass t ≥ 2 and every real slot, on the §170 test set n 1..14:
+- **intact;**
+- **PROJ-OUT:** U ← U − (U·ŵ)ŵ;
+- **AGE-CLAMP:** U ← U − (U·ŵ − c₅)ŵ;
+- **RAND-CLAMP:** AGE-CLAMP with a random unit direction (rng 21328, orthogonalised to ŵ), clamped to its own t = 5 mean. This is the generic-perturbation control.
+- Each arm reports acc at K′ 10 and K′ n + 2 per n (from one K′ n + 2 rollout per chunk, with coda rows at 10 and n + 2).
+
+**Readings (decode-free):**
+- **Control:** an arm whose acc_n2 at any n 1..8 is below intact − 0.02 is UNREADABLE.
+- **G_arm** = the mean over n 11–14 of [acc(K′ n + 2) − acc(K′ 10)] under the arm, minus the same intact.
+- **AGE-UNLOCKS iff** AGE-READABLE, the AGE-CLAMP control holds, G_AGE-CLAMP ≥ +0.05, and G_RAND-CLAMP ≤ +0.02.
+- PROJ-OUT and the n 9–12 depth (acc_n2) under each arm are reported beside.
+
+**Use** (one-directional, an untrained edit; D4's OC):
+- **AGE-UNLOCKS:** supports D4's premise; P(deadline removed) for the FT rises from 0.45 to 0.6.
+- **¬AGE-UNLOCKS with the control holding:** the premise is unsupported at eval; P falls from 0.45 to 0.3. A nonlinear or distributed age code is not excluded.
+- **AGE-READABLE ∧ the control fails:** the age code is load-bearing in range too. That is descriptive.
+
+**Card.** D3-T was evaluated on the 3070. On the 4060 the intact gate is **non-bitwise with tolerance:** intact acc_n2 within ±0.005 of eval_vb at every n 1..14, and K′ 10 within ±0.005 of eval_vb's acc_k['10']. Otherwise the run is re-done on the 3070.
+
+**Output: s213_d3t_s1/eval_ageproj.json.**
+- fit {r2_heldout, lambda, n_samples, c5, w_norm};
+- arms {intact | proj_out | age_clamp | rand_clamp: {acc_k10 {n}, acc_n2 {n}}};
+- gate {max_abs_diff_n2, max_abs_diff_k10, card}.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
