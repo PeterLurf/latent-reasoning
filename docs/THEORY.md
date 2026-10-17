@@ -18474,6 +18474,34 @@ Entry is at 11k (answer_ce), the same as N1.
 - **The rule:** LATENTS-CAUSAL also needs follow ≥ the floor + 0.25 (the floor is expected ≈ 0.0, since recipients are correct and golds differ). The 0.30 bar stands.
 - **OOD:** use CODI's released evaluation splits (from the CODI repo, if present) for GSM-Hard / SVAMP / MultiArith, and record the source, so the reproduction check is like for like.
 
+**Note 210-4 (2026-10-17 11:26 EDT; the 210-2 / 210-3 follow-ups on CODI20; eval_latent_use.json and eval_ood.json, 3070, fp32, LoRA merged, bs 16; every per-item output stored; theory/score_s210.py latent_use()).**
+
+**(b) LATENT-USE reads MIXED**: neither LATENTS-CAUSAL nor RECOMPUTES.
+- **DONOR-SWAP** (pool 500, n_pairs 500): **follow 0.040 / own 0.084 / neither 0.876**, coincidence floor 0.000.
+  - follow < 0.30, so not CAUSAL; own < 0.70, so not RECOMPUTES.
+- **The latents are necessary:**
+  - K 6 vs K 0 is +0.21;
+  - **NOISE latents (matched norm) score 0.148, below K 0**;
+  - a donor's latents mostly destroy the answer.
+- **But they are not portable:** they carry the donor's answer only 4% of the time. The answer is computed jointly from the question and its own latents, and foreign latents break it rather than redirect it.
+- **POS-SWAP** (one latent swapped; follow / own):
+  - k1 0.000 / 1.000;
+  - k2 0.002 / 0.826;
+  - **k3 0.004 / 0.536**;
+  - k4 0.000 / 0.854;
+  - **k5 0.008 / 0.448**;
+  - k6 0.000 / 0.956.
+  - The middle latents (3, 5) are the load-bearing ones; the first is inert.
+- **K-SWEEP** (trained at K 6), acc at K 0 / 1 / 2 / 3 / 4 / 5 / 6 / 8 / 10: 0.171 / 0.151 / 0.125 / 0.287 / 0.293 / 0.372 / **0.379** / 0.378 / 0.370.
+  - It is non-monotone: K 1–2 sit below K 0, then a jump at K 3.
+  - **There is no gain past the trained K.** That is the same "no improvement beyond the trained depth" pattern as STOPS-AT-10 in the VB cells (213-26).
+
+**(a) OOD (descriptive; CODI's test.py sources, recorded per set), K 6 / K 0:**
+- GSM-Hard 0.088 / 0.038 (n 1,319);
+- **MultiArith 0.922 / 0.139** (n 180);
+- SVAMP 0.415 / 0.387 (n 1,000).
+- The latents add a lot on MultiArith and little on SVAMP. These are a reproduction check against the CODI paper's numbers, for Literature to compare.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
