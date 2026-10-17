@@ -18288,6 +18288,27 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **S0-3 so far:** REVERT, from the first run (the re-run gate must reproduce it), drops n 2 to 0.676 at D 2. Its control (n 1–4 ≥ 0.97) fails, so it is UNREADABLE. AGE-MCT is pending.
 
+**Note 213-32 (2026-10-17 01:07 EDT; D4 Stage 0 closed. S0-3 AGE-REVERT / AGE-MCT re-run on the 3070: intact = eval_vb, REVERT = the first run bitwise; scored with theory/score_s213's d4_stage0(); 213-31 holds the other rows.)**
+
+**S0-3: both arms are UNREADABLE**, by the pre-stated rule.
+- **REVERT:** its control fails (n 2 at D 2 is 0.676 < 0.97), and ER is 1.06 (HIDDEN-WORK).
+- **AGE-MCT:** acc is **1.000 at K′ D + n − 1 and at K′ D + n + 2, at every n 1–8 and D ∈ {2, 4}**, while every edited stored entry decodes E_0 at every real slot (exact share 1.0). So ER = 1.0, which reads HIDDEN-WORK.
+  - **Descriptive:** making R decode the input state for D passes does not pause D3-T at all. Its progress is carried **outside R's row space**, and the reductions continue on schedule.
+- **So S0-3 gives no stop** and no AGE-CLOCK. The OC keeps 213-27's value (D4 v1 §7).
+
+**D4 Stage 0 as a whole: no hard stop fires** (PROGRESS-ONLY needs BANK-NULL and readable S0-3 arms; SIZE-KEYED did not fire, at −0.035). Pre-stated OC after Stage 0:
+- **FT-PAUSE:** P(deadline removed) 0.3, P(STOP-GONE) ≈ 0.27, **P(D4-C2) ≈ 0.045**.
+- **48k cell:** P(D4-C2) ≈ 0.06 as written. **≈ 0.04 with the same factor applied (not pre-stated)**, shown beside it as the honest figure (Audit).
+- **Selection note (Audit):** 213-27's λ was chosen on held-out R² (0.96599–0.96618 across λ). That is a negligible selection effect on the reported 0.966.
+
+**Synthesis for the user** (descriptive, beyond the rules):
+- **The two non-progress clocks that could be cleanly tested show no causal role:**
+  - the linear age code at U_t is inert (AGE-CLAMP +0.0003);
+  - adding bank index barely matters (prestall s 8: 0.020).
+- **The third test (S0-3) could not be read,** and FOREIGN is a content intervention in SLVA.
+- **So the evidence leans toward a stop keyed on content-visible progress, or on a nonlinear / distributed code.** In the first case, pauses provably cannot act (Prop D0a): every state with ρ + r ≥ 9 is outside any n ≤ 8 training, the "content / support limit" of §190.
+- **This is not a stop by rule.** But it is the honest reason to treat D4 as a **mechanism test** (does breaking the pass-index / age correlation move the stop?) rather than an expected depth fix.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
