@@ -122,11 +122,16 @@ def hist24(d):
         return None
     gate = all(f["intact"]["acc_n2"][str(n)] == ev["acc_n2"][str(n)] and f["intact"]["acc_k24"][str(n)] == ev["acc_k"]["24"][str(n)] for n in range(3, 9))
     g = lambda arm, n: f[arm]["acc_n2"][str(n)] - f[arm]["acc_k24"][str(n)]  # noqa: E731
-    st = {a: ((sum(g(a, n) - g("intact", n) for n in range(3, 7)) / 4) if a in f else None) for a in ("bank_ablate_slva", "self_ablate", "other_ablate")}
+    st = {a: ((sum(g(a, n) - g("intact", n) for n in range(3, 7)) / 4) if a in f else None)
+          for a in ("bank_ablate_slva", "self_ablate", "other_ablate", "dup_newest")}
     stab = bool(gate and st["bank_ablate_slva"] is not None and st["bank_ablate_slva"] >= 0.10 - EPS)
-    return {"gate": gate, "STAB": st, "HISTORY_STABILISES": stab if gate else None, "omitted": f.get("omitted"),
-            "label": "UNREADABLE (gate)" if not gate else ("HISTORY-STABILISES (memory used for C6, not the step)" if stab else
-                                                         "not met: stability without memory history (Audit, 213-20)")}
+    sd = st["dup_newest"]                                                  # note 213-21: content control
+    content = None if (not stab or sd is None) else ("CONTENT-STABILISES" if sd >= 0.10 - EPS else "COUNT-LIKE" if sd < 0.05 else "MIXED")
+    lab = ("UNREADABLE (gate)" if not gate else "not met: stability without memory history (Audit, 213-20)" if not stab else
+           "HISTORY-STABILISES, content control pending (213-21)" if content is None else
+           "memory used causally for long-run stability (CONTENT-STABILISES)" if content == "CONTENT-STABILISES" else
+           "stability depends on the bank's size, not its history (COUNT-LIKE)" if content == "COUNT-LIKE" else "HISTORY-STABILISES, MIXED content control")
+    return {"gate": gate, "STAB": st, "HISTORY_STABILISES": stab if gate else None, "CONTENT": content, "omitted": f.get("omitted"), "label": lab}
 
 
 def args_diff(d):

@@ -18053,6 +18053,29 @@ Entry is at 11k (answer_ce), the same as N1.
 - If it is not met, the stability comes from elsewhere (SLVA's read or the trained weights), and the memory is unused in both senses.
 - **Prediction:** HISTORY-STABILISES in D3-T, P ≈ 0.4 [ASSUMED]. N2's own-slot STAB was 0.070, below the bar, but N2 had cross-slot backups that SLVA lacks.
 
+**Note 213-21 (2026-10-16 22:18 EDT; HIST-AT-K24 references (213-20), and a content control pre-stated before any D3-T / D3-F eval_hist24.json output; ae8d67b6: N1 on the 2070, N2 on the 4060, fp32, eval_bs 32; intact gates bitwise vs eval_vb's acc_n2 and acc_k['24']).**
+
+**References (STAB, mean over n 3..6):**
+
+| cell | STAB_bank | STAB_self | STAB_other | label |
+|---|---|---|---|---|
+| N1 CARRY | **0.282** | omitted | 0.282 | HISTORY-STABILISES |
+| N2 PA | **0.840** | 0.070 | 0.220 | HISTORY-STABILISES |
+
+- **N1:** masking versions 1..t−2 leaves acc_n2 at 1.000 but takes acc_k24 from 0.40–0.54 to 0.11–0.31.
+- **N2:** full masking takes acc_k24 from 1.000 to 0.09–0.10 (chance). The other arm (core / coda only) bites only at n 3–4 (0.372 / 0.762).
+
+**Correction to §211's N1 reading** (descriptive): "N1 is Markov in its versions" (BANK-ABLATE ≈ intact) holds **at K′ n + 2 only**. At K′ 24, N1's core / coda reads of versions 1..t−2 sustain part of its long-run behaviour. The registered BANK-ABLATE at K′ n + 2 cannot see this, and the same holds for §213's (f).
+
+**The confound, and the control (pre-stated).**
+- At K′ 24 the ablation masks up to 22 of about 24 entries. So it removes the bank's **size and statistics** as well as its **content**: the off-distribution caveat Audit raised for (f), now much larger.
+- **DUP arm**, added to hist24 for D3-T and D3-F (before their output) and re-run on N1 and N2: at every reader, versions 1..t−2 are **replaced by copies of the newest stored version V_{t−1}**. The entry count and positions are kept; history content is removed. The same rollout and gate as hist24; field "dup_newest".
+- **Labels:**
+  - **CONTENT-STABILISES** iff STAB_bank ≥ 0.10 **and** STAB_dup ≥ 0.10;
+  - **COUNT-LIKE** iff STAB_bank ≥ 0.10 and STAB_dup < 0.05: the stability needs the bank's size or structure, not its history;
+  - **MIXED** otherwise.
+- **How it is reported:** "memory used causally for long-run stability" (213-20) is stated **only under CONTENT-STABILISES**. A COUNT-LIKE result is reported as "stability depends on the bank's size, not its history".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
