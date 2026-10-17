@@ -1,0 +1,19 @@
+{
+ "pool_first_1000": {
+  "n_cmp": 1000,
+  "n_equal": 999,
+  "n_diff": 1,
+  "n_diff_label_correct": 0
+ },
+ "gate1_gs2": {
+  "n_cmp": 7923,
+  "n_equal": 7922,
+  "diff_not_wrong_state": 0,
+  "PASS": true
+ },
+ "pass": true,
+ "device": "cpu",
+ "tree": "D:/Latent",
+ "pre": "D:/Latent",
+ "vbank_file": "D:\\Latent\\boxes\\vbank.py"
+}
