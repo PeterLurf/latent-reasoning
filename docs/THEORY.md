@@ -18216,6 +18216,11 @@ Entry is at 11k (answer_ce), the same as N1.
 - arms {intact | proj_out | age_clamp | rand_clamp: {acc_k10 {n}, acc_n2 {n}}};
 - gate {max_abs_diff_n2, max_abs_diff_k10, card}.
 
+**Note 213-28 (2026-10-17 00:37 EDT; amends 213-27 after Audit's OK, before any eval_ageproj.json output exists).**
+- **RAND-CLAMP is size-matched.** Per slot and pass, the random-direction edit applies the same ‖ΔU‖ as AGE-CLAMP's edit along ŵ, with the same sign convention: ΔU_rand = |(U·ŵ − c₅)| · s · r̂, where r̂ is the random unit direction (rng 21328, orthogonal to ŵ) and s = sign(U·r̂ − c_r) moves it toward its own t = 5 mean c_r. So G_rand ≤ 0.02 cannot come from a smaller kick.
+- **Descriptive fit variants** (the rule stays on R²(t)): held-out R² for target **t − n** (time since finish), and for **t with n as a covariate**. These go in fit {r2_t_minus_n, r2_t_given_n}. Reading: R²(t | n) ≫ R²(t − n | n) would mean "age" is pass index rather than time since done.
+- score_s213's ageproj() reports both if present.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

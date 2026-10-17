@@ -195,7 +195,8 @@ def ageproj(d):
     unlocks = bool(gate and readable and ctl.get("age_clamp") and G.get("age_clamp", -1) >= 0.05 - EPS and G.get("rand_clamp", 1) <= 0.02 + EPS)
     lab = ("UNREADABLE (gate)" if not gate else "NO-LINEAR-AGE (r2 %.3f)" % f["fit"]["r2_heldout"] if not readable else
            "UNREADABLE (age_clamp control)" if not ctl.get("age_clamp") else "AGE-UNLOCKS" if unlocks else "not met")
-    return {"gate": gate, "r2": f["fit"]["r2_heldout"], "G": G, "control": ctl, "AGE_UNLOCKS": unlocks,
+    return {"gate": gate, "r2": f["fit"]["r2_heldout"], "r2_t_minus_n": f["fit"].get("r2_t_minus_n"), "r2_t_given_n": f["fit"].get("r2_t_given_n"),
+            "G": G, "control": ctl, "AGE_UNLOCKS": unlocks,
             "depth_9_12": {a: sum(A[a]["acc_n2"][str(n)] for n in range(9, 13)) / 4 for a in A}, "label": lab}
 
 
