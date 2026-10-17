@@ -18262,6 +18262,32 @@ Entry is at 11k (answer_ce), the same as N1.
 - the slot-local attention memory is causally used for long-run stability;
 - what remains is the answer-level stop after pass 10.
 
+**Note 213-31 (2026-10-17 01:05 EDT; D4 Stage 0 results so far: 213-27 AGE-PROJECT (e7e8086f, 4060, gate max |Δ| 0.0 vs eval_vb at acc_n2 and acc_k10; rand_size_check 1.7e-7) and S0-2 CARRIER (8b7fea6b, 3070, intact bitwise); scored with theory/score_s213's ageproj() / d4_stage0(). S0-3's age_mct re-run is pending, and its first file is kept .void after a key collision.)**
+
+**213-27 AGE-PROJECT: AGE-READABLE, but not AGE-UNLOCKS.**
+- **The fit:** held-out R²(t) 0.966 (λ 1e4; 468,924 idle-pass slot samples); R²(t − n) 0.949; R²(t | n) 0.968. **D3-T's pass input carries a strong linear age code.**
+- **The edit:**
+  - G (gain after K′ 10 on n 11–14, relative to intact): PROJ-OUT +0.0018, **AGE-CLAMP +0.0003**, size-matched RAND-CLAMP −0.0015;
+  - every arm's control holds (acc_n2 1.000 at n 1–8);
+  - n 9–12 depth: intact 0.480, AGE-CLAMP 0.461, PROJ-OUT 0.459, RAND 0.475.
+- **Reading** (one-directional): the age code is decodable but **causally inert at the pass input**, both for in-range computation and for the stop. Clamping it changes nothing.
+  - Age also remains available from the bank (the version count, SLVA's history), so a U_t-only edit cannot remove it everywhere. A nonlinear or distributed carrier is not excluded.
+- **Pre-stated shift (213-27; D4 v1 §6):** ¬AGE-UNLOCKS with the control holding sets the FT's **P(deadline removed) from 0.45 to 0.3**. The FT then reads **P(STOP-GONE) ≈ 0.27 and P(D4-C2) ≈ 0.045**.
+  - AGE-READABLE selects Addendum 1's H_gated 0.40 row. After the shift fixes P(removed) at 0.3, that row only changes how the remaining 0.7 splits between H0 and H_gated, which leaves STOP-GONE and D4-C2 unchanged.
+  - 213-27's shift is written for the FT. **For the 48k cell** the as-written figure is P(D4-C2) ≈ 0.06. Applying the same 0.3 / 0.45 factor gives ≈ 0.04, reported beside it as the honest figure.
+
+**S0-2 CARRIER: neither BANK-BORNE nor BANK-NULL**, by the pre-stated rule.
+- **prestall** (s copies of V_0 stored before pass 1; the bank index +s; content benign):
+  - pooled n 6–8 drop **0.020 at s 8** (< 0.15, so not BANK-BORNE) and 0.006 at s 4; s 4 at n 7–8: 0.0095;
+  - n 9 / 10 / 11 / 12 at s 4: 0.978 / 0.563 / 0.254 / 0.148; at s 8: 0.917 / 0.581 / 0.259 / 0.134. Intact is 0.923 / 0.603 / 0.266 / 0.127.
+  - So adding bank index barely moves D3-T, in range or beyond.
+- **FOREIGN INSERT o 6** (length-matched, n 4..12): about chance everywhere (pooled n 6–8 drop **0.904**). REPLACE o 6 reads 0.79 / 0.50 / 0.28 at n 4 / 5 / 6.
+  - BANK-NULL needs FOREIGN ≤ 0.05, so it is not met.
+  - **Descriptive caveat:** in an SLVA cell, inserted foreign versions are read by SLVA as each slot's own older versions. That makes FOREIGN a **content** intervention here (as dup_foreign was, 213-30), not the clean bank-index test it was in N1 CARRY, where the clause came from.
+  - The rule is applied as written: **PROGRESS-ONLY cannot fire**, because it requires BANK-NULL.
+
+**S0-3 so far:** REVERT, from the first run (the re-run gate must reproduce it), drops n 2 to 0.676 at D 2. Its control (n 1–4 ≥ 0.97) fails, so it is UNREADABLE. AGE-MCT is pending.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

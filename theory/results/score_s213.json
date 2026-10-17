@@ -1141,6 +1141,38 @@
     "STOPS_AT_10": true
    }
   },
-  "AGEPROJ_D3T": null
+  "AGEPROJ_D3T": {
+   "gate": true,
+   "r2": 0.9661766652686332,
+   "r2_t_minus_n": 0.9491651935042761,
+   "r2_t_given_n": 0.9679372806225532,
+   "G": {
+    "proj_out": 0.0017500000000000085,
+    "age_clamp": 0.00025000000000000716,
+    "rand_clamp": -0.0014999999999999944
+   },
+   "control": {
+    "proj_out": true,
+    "age_clamp": true,
+    "rand_clamp": true
+   },
+   "AGE_UNLOCKS": false,
+   "depth_9_12": {
+    "intact": 0.47975,
+    "proj_out": 0.45875,
+    "age_clamp": 0.46125,
+    "rand_clamp": 0.475
+   },
+   "label": "not met"
+  },
+  "D4_STAGE0_D3T": {
+   "S0_2": {
+    "drop_s8": 0.020000000000000018,
+    "drop_s4_78": 0.009500000000000064,
+    "drop_foreign": 0.9036666666666666,
+    "BANK_BORNE": false,
+    "BANK_NULL": false
+   }
+  }
  }
 }
