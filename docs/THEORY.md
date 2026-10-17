@@ -18221,6 +18221,8 @@ Entry is at 11k (answer_ce), the same as N1.
 - **Descriptive fit variants** (the rule stays on R²(t)): held-out R² for target **t − n** (time since finish), and for **t with n as a covariate**. These go in fit {r2_t_minus_n, r2_t_given_n}. Reading: R²(t | n) ≫ R²(t − n | n) would mean "age" is pass index rather than time since done.
 - score_s213's ageproj() reports both if present.
 
+**Note 213-29 (2026-10-17 00:39 EDT; an erratum to 213-28, recorded before eval_ageproj.json exists).** 213-28's formula ΔU_rand = |U·ŵ − c₅| · s · r̂ with s = sign(U·r̂ − c_r) contradicts its own words ("moves it toward its own t = 5 mean"). The intended and implemented form (fd7c3299) is **ΔU_rand = −|U·ŵ − c₅| · sign(U·r̂ − c_r) · r̂** (sign(0) = +1). It moves U toward c_r along r̂, with ‖ΔU_rand‖ = ‖ΔU_age‖, asserted in the run. The rule is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
