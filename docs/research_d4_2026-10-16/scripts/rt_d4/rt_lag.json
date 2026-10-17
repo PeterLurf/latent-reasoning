@@ -1,0 +1,122 @@
+{
+ "N1_carry": {
+  "behind_collapse_events": 849,
+  "share_landing_exactly_on_schedule": 0.229,
+  "by_n": {
+   "9": {
+    "lagcatch_first": {
+     "items": 2,
+     "acc_n2": 1.0
+    },
+    "overreduce_first": {
+     "items": 443,
+     "acc_n2": 0.693
+    },
+    "clean_to_n_minus_2": {
+     "items": 555,
+     "acc_n2": 0.98
+    },
+    "other_first": {
+     "items": 0,
+     "acc_n2": null
+    }
+   },
+   "10": {
+    "lagcatch_first": {
+     "items": 1,
+     "acc_n2": 1.0
+    },
+    "overreduce_first": {
+     "items": 940,
+     "acc_n2": 0.453
+    },
+    "clean_to_n_minus_2": {
+     "items": 55,
+     "acc_n2": 0.527
+    },
+    "other_first": {
+     "items": 4,
+     "acc_n2": 0.0
+    }
+   },
+   "11": {
+    "lagcatch_first": {
+     "items": 1,
+     "acc_n2": 0.0
+    },
+    "overreduce_first": {
+     "items": 980,
+     "acc_n2": 0.184
+    },
+    "clean_to_n_minus_2": {
+     "items": 1,
+     "acc_n2": 0.0
+    },
+    "other_first": {
+     "items": 18,
+     "acc_n2": 0.111
+    }
+   }
+  }
+ },
+ "N2_pa": {
+  "behind_collapse_events": 1169,
+  "share_landing_exactly_on_schedule": 0.472,
+  "by_n": {
+   "9": {
+    "lagcatch_first": {
+     "items": 44,
+     "acc_n2": 0.909
+    },
+    "overreduce_first": {
+     "items": 219,
+     "acc_n2": 0.826
+    },
+    "clean_to_n_minus_2": {
+     "items": 708,
+     "acc_n2": 0.997
+    },
+    "other_first": {
+     "items": 29,
+     "acc_n2": 0.724
+    }
+   },
+   "10": {
+    "lagcatch_first": {
+     "items": 51,
+     "acc_n2": 0.49
+    },
+    "overreduce_first": {
+     "items": 702,
+     "acc_n2": 0.397
+    },
+    "clean_to_n_minus_2": {
+     "items": 83,
+     "acc_n2": 0.892
+    },
+    "other_first": {
+     "items": 164,
+     "acc_n2": 0.287
+    }
+   },
+   "11": {
+    "lagcatch_first": {
+     "items": 39,
+     "acc_n2": 0.128
+    },
+    "overreduce_first": {
+     "items": 683,
+     "acc_n2": 0.163
+    },
+    "clean_to_n_minus_2": {
+     "items": 0,
+     "acc_n2": null
+    },
+    "other_first": {
+     "items": 278,
+     "acc_n2": 0.14
+    }
+   }
+  }
+ }
+}

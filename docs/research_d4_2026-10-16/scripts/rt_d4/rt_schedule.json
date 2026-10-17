@@ -1,0 +1,48 @@
+{
+ "as_simulated": {
+  "trailing_pause_share_of_aug": 0.306,
+  "mean_n_plus_P_minus_completion": 0.508,
+  "share_completion_before_n_plus_P": 0.306,
+  "P_unf_given_t_ge": {
+   "9": 0.4214,
+   "12": 0.3151,
+   "14": 0.1934,
+   "16": 0.0502,
+   "17": 0.0
+  },
+  "unfinished_passes_per_item_t_ge": {
+   "9": 0.8217,
+   "12": 0.2301,
+   "14": 0.0622,
+   "16": 0.0055,
+   "17": 0.0
+  },
+  "test_stratum_t_ge_9_no_pause_unfinished": 0,
+  "P_unf_t_ge_9_given_H0": 0.0,
+  "P_unf_t_ge_9_given_H1": 0.4835,
+  "max_unmarked_count_on_unfinished": 7
+ },
+ "constrained": {
+  "trailing_pause_share_of_aug": 0.0,
+  "mean_n_plus_P_minus_completion": 0.0,
+  "share_completion_before_n_plus_P": 0.0,
+  "P_unf_given_t_ge": {
+   "9": 0.4815,
+   "12": 0.3755,
+   "14": 0.2437,
+   "16": 0.0712,
+   "17": 0.0
+  },
+  "unfinished_passes_per_item_t_ge": {
+   "9": 0.9389,
+   "12": 0.2742,
+   "14": 0.0784,
+   "16": 0.0078,
+   "17": 0.0
+  },
+  "test_stratum_t_ge_9_no_pause_unfinished": 0,
+  "P_unf_t_ge_9_given_H0": 0.0,
+  "P_unf_t_ge_9_given_H1": 0.5524,
+  "max_unmarked_count_on_unfinished": 7
+ }
+}

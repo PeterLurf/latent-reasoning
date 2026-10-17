@@ -1,0 +1,306 @@
+{
+ "N1_carry": {
+  "6": {
+   "clean": {
+    "items": 1000,
+    "acc_n2": 1.0,
+    "acc_24": 0.475,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 0.456,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "7": {
+   "clean": {
+    "items": 1000,
+    "acc_n2": 1.0,
+    "acc_24": 0.526,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 0.521,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "8": {
+   "clean": {
+    "items": 1000,
+    "acc_n2": 1.0,
+    "acc_24": 0.542,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 0.537,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "9": {
+   "collapse": {
+    "items": 656,
+    "acc_n2": 0.779,
+    "acc_24": 0.482,
+    "acc_at_tfin": 0.369,
+    "answer_frozen_tfin_to_24": 0.216,
+    "wrong_at_tfin_right_at_24": 0.302
+   },
+   "clean": {
+    "items": 344,
+    "acc_n2": 0.994,
+    "acc_24": 0.64,
+    "acc_at_tfin": 0.994,
+    "answer_frozen_tfin_to_24": 0.628,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "10": {
+   "collapse": {
+    "items": 994,
+    "acc_n2": 0.455,
+    "acc_24": 0.283,
+    "acc_at_tfin": 0.409,
+    "answer_frozen_tfin_to_24": 0.326,
+    "wrong_at_tfin_right_at_24": 0.078
+   },
+   "clean": {
+    "items": 6,
+    "acc_n2": 0.667,
+    "acc_24": 0.333,
+    "acc_at_tfin": 0.667,
+    "answer_frozen_tfin_to_24": 0.167,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "11": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.182,
+    "acc_24": 0.147,
+    "acc_at_tfin": 0.17,
+    "answer_frozen_tfin_to_24": 0.142,
+    "wrong_at_tfin_right_at_24": 0.1
+   }
+  },
+  "12": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.129,
+    "acc_24": 0.116,
+    "acc_at_tfin": 0.123,
+    "answer_frozen_tfin_to_24": 0.051,
+    "wrong_at_tfin_right_at_24": 0.1
+   }
+  },
+  "13": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.111,
+    "acc_24": 0.101,
+    "acc_at_tfin": 0.127,
+    "answer_frozen_tfin_to_24": 0.025,
+    "wrong_at_tfin_right_at_24": 0.093
+   }
+  },
+  "14": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.11,
+    "acc_24": 0.106,
+    "acc_at_tfin": 0.124,
+    "answer_frozen_tfin_to_24": 0.008,
+    "wrong_at_tfin_right_at_24": 0.102
+   }
+  },
+  "15": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.116,
+    "acc_24": 0.105,
+    "acc_at_tfin": 0.106,
+    "answer_frozen_tfin_to_24": 0.006,
+    "wrong_at_tfin_right_at_24": 0.102
+   }
+  },
+  "16": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.1,
+    "acc_24": 0.082,
+    "acc_at_tfin": 0.135,
+    "answer_frozen_tfin_to_24": 0.011,
+    "wrong_at_tfin_right_at_24": 0.079
+   }
+  }
+ },
+ "N2_pa": {
+  "6": {
+   "collapse": {
+    "items": 69,
+    "acc_n2": 1.0,
+    "acc_24": 1.0,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 1.0,
+    "wrong_at_tfin_right_at_24": 0.0
+   },
+   "clean": {
+    "items": 931,
+    "acc_n2": 1.0,
+    "acc_24": 1.0,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 1.0,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "7": {
+   "collapse": {
+    "items": 53,
+    "acc_n2": 1.0,
+    "acc_24": 1.0,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 1.0,
+    "wrong_at_tfin_right_at_24": 0.0
+   },
+   "clean": {
+    "items": 947,
+    "acc_n2": 1.0,
+    "acc_24": 1.0,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 1.0,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "8": {
+   "collapse": {
+    "items": 66,
+    "acc_n2": 0.985,
+    "acc_24": 0.97,
+    "acc_at_tfin": 0.985,
+    "answer_frozen_tfin_to_24": 0.985,
+    "wrong_at_tfin_right_at_24": 0.0
+   },
+   "clean": {
+    "items": 934,
+    "acc_n2": 1.0,
+    "acc_24": 1.0,
+    "acc_at_tfin": 1.0,
+    "answer_frozen_tfin_to_24": 1.0,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "9": {
+   "collapse": {
+    "items": 381,
+    "acc_n2": 0.887,
+    "acc_24": 0.856,
+    "acc_at_tfin": 0.525,
+    "answer_frozen_tfin_to_24": 0.546,
+    "wrong_at_tfin_right_at_24": 0.349
+   },
+   "clean": {
+    "items": 619,
+    "acc_n2": 0.985,
+    "acc_24": 0.985,
+    "acc_at_tfin": 0.976,
+    "answer_frozen_tfin_to_24": 0.982,
+    "wrong_at_tfin_right_at_24": 0.01
+   }
+  },
+  "10": {
+   "collapse": {
+    "items": 910,
+    "acc_n2": 0.413,
+    "acc_24": 0.391,
+    "acc_at_tfin": 0.263,
+    "answer_frozen_tfin_to_24": 0.415,
+    "wrong_at_tfin_right_at_24": 0.179
+   },
+   "clean": {
+    "items": 90,
+    "acc_n2": 0.544,
+    "acc_24": 0.522,
+    "acc_at_tfin": 0.411,
+    "answer_frozen_tfin_to_24": 0.611,
+    "wrong_at_tfin_right_at_24": 0.122
+   }
+  },
+  "11": {
+   "collapse": {
+    "items": 971,
+    "acc_n2": 0.152,
+    "acc_24": 0.152,
+    "acc_at_tfin": 0.122,
+    "answer_frozen_tfin_to_24": 0.307,
+    "wrong_at_tfin_right_at_24": 0.076
+   },
+   "clean": {
+    "items": 29,
+    "acc_n2": 0.241,
+    "acc_24": 0.241,
+    "acc_at_tfin": 0.207,
+    "answer_frozen_tfin_to_24": 0.345,
+    "wrong_at_tfin_right_at_24": 0.069
+   }
+  },
+  "12": {
+   "collapse": {
+    "items": 992,
+    "acc_n2": 0.128,
+    "acc_24": 0.118,
+    "acc_at_tfin": 0.13,
+    "answer_frozen_tfin_to_24": 0.334,
+    "wrong_at_tfin_right_at_24": 0.046
+   },
+   "clean": {
+    "items": 8,
+    "acc_n2": 0.0,
+    "acc_24": 0.0,
+    "acc_at_tfin": 0.125,
+    "answer_frozen_tfin_to_24": 0.5,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "13": {
+   "collapse": {
+    "items": 997,
+    "acc_n2": 0.14,
+    "acc_24": 0.131,
+    "acc_at_tfin": 0.126,
+    "answer_frozen_tfin_to_24": 0.384,
+    "wrong_at_tfin_right_at_24": 0.053
+   },
+   "clean": {
+    "items": 3,
+    "acc_n2": 0.0,
+    "acc_24": 0.0,
+    "acc_at_tfin": 0.333,
+    "answer_frozen_tfin_to_24": 0.333,
+    "wrong_at_tfin_right_at_24": 0.0
+   }
+  },
+  "14": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.123,
+    "acc_24": 0.119,
+    "acc_at_tfin": 0.122,
+    "answer_frozen_tfin_to_24": 0.401,
+    "wrong_at_tfin_right_at_24": 0.041
+   }
+  },
+  "15": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.143,
+    "acc_24": 0.127,
+    "acc_at_tfin": 0.113,
+    "answer_frozen_tfin_to_24": 0.394,
+    "wrong_at_tfin_right_at_24": 0.058
+   }
+  },
+  "16": {
+   "collapse": {
+    "items": 1000,
+    "acc_n2": 0.132,
+    "acc_24": 0.136,
+    "acc_at_tfin": 0.126,
+    "answer_frozen_tfin_to_24": 0.436,
+    "wrong_at_tfin_right_at_24": 0.057
+   }
+  }
+ }
+}
