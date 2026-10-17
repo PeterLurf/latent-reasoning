@@ -18007,6 +18007,34 @@ theory/score_s213's REFERENCE block adds hold_read().
 - PASS-COUNT-KEYED points at LONG-K training (213-4: passes beyond 8 made in-distribution), or pass-index-free conditioning.
 - GRADUAL-DRIFT points at the representational levers (213-4, 213-16 / 213-17).
 
+**§213 D3-T result (2026-10-16 22:07 EDT; s213_d3t_s1, b307, RTX 3090, seed 1, 48k (log complete); realised ≈ $1.12; local fp32 at eval_bs 32 on the 3070. Files: eval_vb (two runs merged; acc block unchanged by the merge, provenance in the file), eval_steppos, eval_lfk, eval_rs, eval_d3hist (intact gate bitwise). theory/score_s213.py. ARGS-DIFF ok: no shared-key diffs; new keys arch / args_ref / table only.)**
+
+**Label: parts.** LENGTH-FREE ✓ / DEPTH-GENERAL ✗ (0.480) / VB-C1 ✓ / HISTORY-USED ✗ (drop 0.000), **RNN-IN-FUNCTION**. So D3-C2 is not met and D3-C2-ATTN is not met.
+
+| reading | value | met |
+|---|---|---|
+| NO-KNEE (pass 1) | m 9 1.000 (175) vs 0.9993 (1,343); m 10 0.999 (981) vs 0.9949 (392) | ✓ |
+| LENGTH-FREE-K (t ≥ 2) | ge33 0.9805 (304,396) vs le28 0.9867; FAULT paired −0.0446 | ✓ |
+| COUNT (reported) | min fresh m 9–12 0.9865 | ✓ |
+| **STEP-GENERAL** (stretch) | fresh m 12–16: 0.9865 / 0.9905 / 0.9795 / 0.973 / 0.9695 | **✓** (first VB cell; N1 0.616 at m 16; predicted P 0.2) |
+| DEPTH-GENERAL | acc_n2 n 9–12: 0.923 / 0.603 / 0.266 / 0.127, mean **0.480** | ✗ (N1 0.405, N2 0.414) |
+| VB-C1 | DEEP; PROBE-GAIN 0.87; SERIAL-ONSET (median 2 / 3 / 4 / 6 / 6 / 8, slope 1.17); VALUE-SWAP (ii) 1.000 / 0.000; STALL 1.000 | ✓ |
+| HISTORY-USED (f) | pooled n 6–8: every arm 1.000, so the drop is 0.000 (self 0.000, other 0.000) | ✗ |
+| swap triple | NEWEST 1.000 / BANK 0.000 / OLD 0.000 (4,184 pairs) | RNN-IN-FUNCTION |
+| SELF-SIMILAR (reported) | RS n 9–12, all r: D = +0.418 (restart 1.000 in every readable cell); control 0.000 | ✗ (HISTORY-KEYED) |
+
+Entry is at 11k (answer_ce), the same as N1.
+
+**Reading.**
+- **Removing the content-free cross-slot gather removed the length cliff.** SLVA's step is exact at every length to T 55, and the fresh step is length-general to m 16. This is the clearest support yet for M1 (the gather is the per-slot cause) and for the D3 premise. The premise falsifier (D3-T ¬NO-KNEE) did not fire.
+- **SLVA collapsed to CARRY in function,** as Prop 6 predicted (P 0.7–0.85). About 18% of its mass sits off the newest version (carry_likeness 0.824), but masking it changes nothing at n ≤ 8. In the registered sense the memory is used in form only.
+- **The second limit remains, and it is trajectory-bound:** RS +0.418, and a restart from an exact decode is always 1.000. STEP-BY-T (213-18) will split it into pass count vs drift. N1's reference reads GRADUAL-DRIFT (copy slots decay with t).
+
+**Descriptive, outside the registered readings:**
+- **D3-T is K′ 24-stable in range:** acc_k24 1.000 at every n 1–8. N1 reads 0.40–0.73 and N2 0.95–1.00.
+- **At n 9**, the only n where ablation bites, bank / self ablation costs 0.16 (0.923 → 0.761).
+- Whether SLVA's off-newest mass is what gives that stability at K′ 24 is not read by (f), which is fixed at K′ n + 2. Note 213-20 pre-states that test.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
