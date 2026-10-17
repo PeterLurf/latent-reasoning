@@ -1,0 +1,190 @@
+{
+ "fit": {
+  "r2_heldout": 0.9661766652686332,
+  "r2_by_lambda": {
+   "0.01": 0.9659871765770053,
+   "1.0": 0.9659872145209742,
+   "100.0": 0.9659909837401973,
+   "10000.0": 0.9661766652686332
+  },
+  "lambda": 10000.0,
+  "n_samples": 468924,
+  "c5": -0.8271731734275818,
+  "w_norm": 1.0885624340057825,
+  "r2_t_minus_n": 0.9491651935042761,
+  "r2_t_minus_n_by_lambda": {
+   "0.01": 0.9489537794165122,
+   "1.0": 0.9489538265486885,
+   "100.0": 0.9489585051492728,
+   "10000.0": 0.9491651935042761
+  },
+  "r2_t_given_n": 0.9679372806225532,
+  "r2_t_given_n_by_lambda": {
+   "0.01": 0.9677652649561806,
+   "1.0": 0.9677653002304467,
+   "100.0": 0.9677688037664837,
+   "10000.0": 0.9679372806225532
+  },
+  "c5_rand": -21.28046417236328,
+  "n_t5_slots": 10312,
+  "w_hat_dot_rand": -4.6566128730773926e-09
+ },
+ "arms": {
+  "intact": {
+   "acc_k10": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.926,
+    "10": 0.609,
+    "11": 0.273,
+    "12": 0.123,
+    "13": 0.132,
+    "14": 0.144
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.923,
+    "10": 0.603,
+    "11": 0.266,
+    "12": 0.127,
+    "13": 0.141,
+    "14": 0.127
+   }
+  },
+  "proj_out": {
+   "acc_k10": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.868,
+    "10": 0.59,
+    "11": 0.259,
+    "12": 0.126,
+    "13": 0.128,
+    "14": 0.144
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.866,
+    "10": 0.588,
+    "11": 0.254,
+    "12": 0.127,
+    "13": 0.14,
+    "14": 0.132
+   }
+  },
+  "age_clamp": {
+   "acc_k10": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.874,
+    "10": 0.588,
+    "11": 0.26,
+    "12": 0.127,
+    "13": 0.132,
+    "14": 0.144
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.872,
+    "10": 0.593,
+    "11": 0.253,
+    "12": 0.127,
+    "13": 0.14,
+    "14": 0.133
+   }
+  },
+  "rand_clamp": {
+   "acc_k10": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.91,
+    "10": 0.611,
+    "11": 0.272,
+    "12": 0.124,
+    "13": 0.133,
+    "14": 0.147
+   },
+   "acc_n2": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.909,
+    "10": 0.606,
+    "11": 0.261,
+    "12": 0.124,
+    "13": 0.14,
+    "14": 0.134
+   }
+  }
+ },
+ "rand_size_check": {
+  "max_rel_size_mismatch": 1.6907036126667663e-07
+ },
+ "def": "note 213-27 AGE-PROJ ($0; D3-T). FIT: \u00a7170 train-distribution items n 3..8, 300 per n (np rng 21327, N.generate with exactly n operators; test set +\nSERIAL pool excluded as in the trainer), rolled out to K' 20 with input_edit recording the pass input U_t (after SLVA / the carry's N(.), before block 6)\nat every real slot. Ridge regression of t on U_t over IDLE passes t in [n + 1, 20], with an unpenalised intercept, 5 folds by item (item index mod 5),\nlambda in {1e-2, 1, 1e2, 1e4} by pooled held-out R^2, computed exactly from per-fold fp64 sufficient statistics ([U, 1]^T [U, 1], [U, 1]^T t, sum t^2);\nthe final w is refit on all folds; w_hat = w / ||w||. c5 = mean w_hat . U over in-range computing passes t = 5 of items n 6..8 at changed or copy real\nslots (E_5 != E_4, or unchanged and non-VOID). ARMS (input_edit at every pass t >= 2, every real slot; \u00a7170 test set n 1..14, vbank_eval.part_acc's chunks;\none rollout per chunk to K' = max(10, n + 2), read at K' 10 and K' n + 2): intact; proj_out U - (U . w_hat) w_hat; age_clamp U - (U . w_hat - c5) w_hat;\nrand_clamp (note 213-28, size-matched): r = a random unit vector (np rng 21328, Gaussian, orthogonalised to w_hat); per slot and pass\ndU = -|U . w_hat - c5| * sign(U . r - c5_r) * r (toward its own t = 5 mean c5_r; sign(0) = +1), so |dU_rand| = |dU_age| exactly (asserted <= 1e-4 rel).\nfit also reports (descriptive, 213-28) r2_t_minus_n (target t - n on [U, 1]) and r2_t_given_n (t on [U, n, 1], n unpenalised); the rule stays R^2(t).",
+ "run": "boxes/runs_fsq/s213_d3t_s1",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 4060",
+ "sec": 494,
+ "gate": {
+  "max_abs_diff_n2": 0.0,
+  "max_abs_diff_k10": 0.0,
+  "card": "NVIDIA GeForce RTX 4060",
+  "ref_card": "NVIDIA GeForce RTX 3070",
+  "tol": 0.005,
+  "pass": true
+ }
+}

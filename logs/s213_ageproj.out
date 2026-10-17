@@ -2,3 +2,5 @@
 Traceback (most recent call last):
   File "<stdin>", line 2, in <module>
 FileNotFoundError: [Errno 2] No such file or directory: 'boxes/runs_fsq/s213_d3t_s1/eval_ageproj.json'
+2026-10-17 01:03:05 ageproj rc 0 DONE boxes/runs_fsq/s213_d3t_s1\eval_ageproj.json 494
+GATE ageproj intact vs eval_vb: {'max_abs_diff_n2': 0.0, 'max_abs_diff_k10': 0.0, 'card': 'NVIDIA GeForce RTX 4060', 'ref_card': 'NVIDIA GeForce RTX 3070', 'tol': 0.005, 'pass': True}
