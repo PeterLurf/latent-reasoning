@@ -264,5 +264,26 @@
  "minus_codi4": 0.19029567854435178,
  "paired_se": 0.012809196910456642,
  "train_gpu_note": "CODI20 on NVIDIA GeForce RTX 3090 vs CODI4 on NVIDIA GeForce RTX 3090 (GPU-class caveat)",
- "reading": "REACHES-PUBLISHED (CODI20 0.379) | UNREAD (0-latent arm not text CoT: share 0.07354056103108415) (TXT20 0.17058377558756635, gap None) | vs CODI4 0.19 (SE 0.0128)"
+ "reading": "REACHES-PUBLISHED (CODI20 0.379) | UNREAD (0-latent arm not text CoT: share 0.07354056103108415) (TXT20 0.17058377558756635, gap None) | vs CODI4 0.19 (SE 0.0128) | LATENT-USE MIXED (follow 0.040, own 0.084)",
+ "LATENT_USE": {
+  "gap_6_0": 0.20849128127369218,
+  "follow": 0.04,
+  "own": 0.084,
+  "neither": 0.876,
+  "floor": 0.0,
+  "pool_size": 500,
+  "n_pairs": 500,
+  "ksweep": {
+   "0": 0.17058377558756635,
+   "1": 0.1508718726307809,
+   "2": 0.12509476876421532,
+   "3": 0.287338893100834,
+   "4": 0.2934040940106141,
+   "5": 0.37149355572403336,
+   "6": 0.37907505686125853,
+   "8": 0.378316906747536,
+   "10": 0.36997725549658833
+  },
+  "label": "MIXED"
+ }
 }
