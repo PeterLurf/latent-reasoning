@@ -18357,6 +18357,27 @@ Entry is at 11k (answer_ce), the same as N1.
   - the step-count distribution (steps − n).
 - **Fields added to by_n:** precision_strict, right_value_wrong_steps, steps_minus_n {k: count}. The scorer computes `predicted`.
 
+**Note 213-35 (2026-10-17 01:20 EDT; CHAIN-LABEL on D3-T, the 213-33 / 213-34 rule; s213_d3t_s1/eval_chainlabel.json, 3070, fp32, eval_bs 32; scored with theory/score_s213's chainlabel(). D3-F is running.)**
+
+**D3-T reads CHAIN-LABEL-GO:** strict precision (the right value in exactly n steps) ≥ 0.95 at every n 9–12.
+
+| n | strict precision | predicted (∏ long_step exact) | gap | fail (unparseable / cap) | latent acc (K′ n + 2) |
+|---|---|---|---|---|---|
+| 9 | **1.000** | 0.997 | +0.003 | 0.000 | 0.923 |
+| 10 | **0.995** | 0.992 | +0.003 | 0.004 | 0.603 |
+| 11 | **0.986** | 0.983 | +0.003 | 0.012 | 0.266 |
+| 12 | **0.977** | 0.975 | +0.002 | 0.022 | 0.127 |
+| 13 | 0.970 | 0.965 | +0.005 | 0.028 | 0.141 |
+| 14 | 0.958 | 0.954 | +0.005 | 0.042 | 0.127 |
+| 15 | 0.932 | 0.937 | −0.005 | 0.064 | 0.135 |
+| 16 | 0.897 | 0.913 | −0.016 | 0.093 | 0.115 |
+
+**Reading.**
+- **Step errors are close to independent.** The measured precision matches the product prediction within ±0.005 through n 15.
+- **Almost every failure announces itself.** Failures are unparseable decodes or short chains, not confident wrong labels: right_value_wrong_steps is 0 except 3 items at n 15, and every value-correct chain is chain-exact. So a round can **discard FAIL chains and keep labels that are about 100% correct**. Among non-FAIL chains, precision is ≈ 1.000 at n 9–14.
+- **D3-T's own one-step competence labels deep items far beyond its latent depth:** latent accuracy at n 12 is 0.127, chain accuracy 0.977.
+- **SELF-DEPTH-CHAIN's precondition is met.** Theory drafts it with a derivation (math rule), test-set exclusion and fresh items, and the extrapolation test on the untouched §170 set past the last round (Audit 01:5x). The draft goes to the user only via Audit. No spend.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
