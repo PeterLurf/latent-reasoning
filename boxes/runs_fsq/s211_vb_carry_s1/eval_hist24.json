@@ -1,0 +1,68 @@
+{
+ "omitted": [
+  "self_ablate"
+ ],
+ "intact": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0
+  },
+  "acc_k24": {
+   "3": 0.5,
+   "4": 0.401,
+   "5": 0.4,
+   "6": 0.475,
+   "7": 0.526,
+   "8": 0.542
+  }
+ },
+ "bank_ablate_slva": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0
+  },
+  "acc_k24": {
+   "3": 0.107,
+   "4": 0.145,
+   "5": 0.156,
+   "6": 0.24,
+   "7": 0.288,
+   "8": 0.313
+  }
+ },
+ "other_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 1.0,
+   "7": 1.0,
+   "8": 1.0
+  },
+  "acc_k24": {
+   "3": 0.107,
+   "4": 0.145,
+   "5": 0.156,
+   "6": 0.24,
+   "7": 0.288,
+   "8": 0.313
+  }
+ },
+ "def": "note 213-20 HIST-AT-K24 ($0): eval_d3hist's arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode mapping as part_d3hist;\nCARRY omits self_ablate and its other_ablate = ablate_keep) read at K' = n + 2 AND K' = 24 from one K' 24 rollout per chunk (STAB-HIST's method;\nvbank_eval.part_acc's chunks), n 3..8 -> {arm: {acc_n2 {n}, acc_k24 {n}}} + \"omitted\". The intact arm must equal eval_vb.json acc_n2 / acc_k['24'].",
+ "run": "boxes/runs_fsq/s211_vb_carry_s1",
+ "mode": "carry",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 2070",
+ "sec": 267
+}
