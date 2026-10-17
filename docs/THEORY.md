@@ -18680,6 +18680,41 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **Note 215-4 (2026-10-17 15:55 EDT; which bounds applied).** b311 (FT-CTRL) was **admitted 15:54 at a projected $0.33 under the original bounds**: ≤ $0.356 = min($0.40, $0.45 − BAD); host $0.1747/h; G-TIME 0.4529 s/step. **215-3's raise ($0.55 / $0.70) was not applied:** it was not needed, and Experiments' session had no user confirmation of it. So b311 runs under the registered $0.40 / $0.45. b310 (FT-SELF) was admitted at $0.63. Both cells are training; landing ~17:30 / ~18:00, then the §4.1 evals on the 3070.
 
+**Note 215-5 (2026-10-17 18:47 EDT; a scorer whitelist correction, DISCLOSED as made after FT-SELF's output was read; Audit to confirm).**
+- **What fired:** score_s215's ARGS-DIFF censored FT-SELF on one new key, **`draws_log_steps`** (= 20000 in both cells). It was not in the scorer's allowed list.
+- **Why it is not a recipe change:**
+  - The flag sets the length of the **registered draw log** (v1 §2.3: "draws_log.json: per step 1..20,000"; G-S3 reads it).
+  - In boxes/vbank.py (751–770) it only sets `lg`, which decides whether a draws_log record is built. It does not change which batch is drawn and consumes no rng. rng_s's coin is drawn whenever a pool exists, independent of `lg`; FT-CTRL has no pool and never draws a coin.
+  - **The flag is logging only** [VERIFIED by reading the code].
+- **The correction:** `draws_log_steps` is added to the allowed list as a registered logging flag. **No other rule changes**, and the shared-key diff is empty.
+
+**§215 FT-SELF result (2026-10-17 18:47 EDT; s215_ftself_s1, b310, RTX 3090, 12,000 steps (log complete), c 0, 0 nonfinite; self steps 5,992, pool cursor 383,488 of 440,000, no reuse; local fp32 at eval_bs 32 on the 3070 (668cd6e8); every part rc 0; d3hist gate True; theory/score_s215.py. Realised ≈ $0.68 (incl. the $0.118 bug host). FT-CTRL is pending, so the §4.4 attribution rows read UNREAD.)**
+
+**Label: SD-SELF (in support; not C2) | mechanism GROW | MEM-TRADED (at the edge).**
+
+| reading | value | met |
+|---|---|---|
+| **ABSORB** (min acc_n2 n 9–12 ≥ 0.95) | 1.000 / 1.000 / 1.000 / 1.000 (D3-T: 0.923 / 0.603 / 0.266 / 0.127) | ✓ (in support; enabler only, never C2 / C4) |
+| **DEPTH-BEYOND-SELF** (M = mean n 13–16 ≥ 0.80) | 0.999 / 0.893 / 0.633 / 0.344, **M 0.717** | ✗ (the C2 reading) |
+| **MARGIN-GROWS** (M ≥ 0.63) | 0.717 against the exact-H_shift 0.480 | ✓ → **GROW** |
+| STOP-LOC | G(k) 0.863 / 0.841 / 0.747 / 0.576 / 0.427 / 0.155 / 0.008 at k 9–15, so STOP 15 (STOP-TO-SUPPORT) | descriptive |
+| K′-BEYOND (mean n 15–16 of a − a_14 ≥ 0.25) | 0.155 | ✗ |
+| LENGTH-FREE | NO-KNEE ✓; LFK ge33 0.9908 vs le28 0.9989 | ✓ |
+| VB-C1 | DEEP, PROBE-GAIN, SERIAL-ONSET, SERIAL-STEP, NO-CLOCK | ✓ |
+| K′24-STABLE | min acc_k24 over n 1–8 **0.990** (n 1) | ✓ **at the edge** |
+| KEEPS-SELF-STAB | CONTENT-STABILISES (bank 0.648, dup_newest 0.877), but **STAB_self 0.489 < 0.5** (D3-T 0.782); other 0.000 | ✗ → **MEM-TRADED** (by 0.011) |
+| LABEL-AUDIT | 5,000 consumed: π_label 0.9996, π_state 0.9996 (CI [0.9985, 0.9999], overlapping GATE-1's) | ✓ |
+| CONTAMINATED | pool_test_hits 0; self_reuse 0 | not contaminated |
+| MEMO-GAP | acc on pool vs fresh items 1.000 / 1.000 at n 9–12 | no memorisation gap |
+
+**Reading.**
+- **Self-training by depth worked in support, and the margin grew past it.**
+  - The latent loop solves n 9–12 perfectly. It was trained without gold labels beyond n 8, on its own re-rooted single-step chain.
+  - Past the new support it reaches **n 13 0.999, n 14 0.893, n 15 0.633**: about +2.5 depths of margin, against D3-T's +1–2 (213-19). That is well above an exact shift (0.923 / 0.603 / 0.266). M is 0.717, short of the 0.80 C2 bar.
+- **The memory channel is kept in content but thinner in the own-slot share.** History content still carries K′ 24 stability (dup_newest takes acc_k24 to about 0.1). SLVA's own-slot share fell from 0.78 to 0.49, just under the bar, so MEM-TRADED by rule. FT-CTRL will say whether the self items or the FT itself did it.
+- **A better labeller for round 2:** the FT-SELF model's chain at n 13–16 is 0.992 / 0.989 / 0.980 / 0.951 (D3-T 0.970 / 0.958 / 0.932 / 0.897).
+- **Pending:** FT-CTRL's evals, then the pair's SELF-ATTRIBUTED / FT-EFFECT / MEM attribution.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
