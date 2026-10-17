@@ -204,7 +204,8 @@ def d4_stage0(d):
     """D4 v1 §7 Stage 0 readers (pre-stated before output). S0-3 eval_agerevert.json {arm: {D: {acc_k_pre {n}, acc_n2 {n}}}, intact {acc_n2}}:
     per arm (revert / mct): control = acc_n2 at D 2 >= 0.97 at every n 1..4; HIDDEN-WORK = ER pooled n 3..6 at D 4 > 0.30, ER = (mean acc_pre - 0.1) /
     (mean acc_n2 - 0.1); readable = control and not HIDDEN-WORK; drop78 = mean intact acc_n2 n 7..8 - mean arm acc_n2 n 7..8 at D 4; ARM-NULL iff readable
-    and drop78 < 0.10. S0-2 eval_carrier.json {prestall {s: {acc_n2 {n}}}, foreign {acc_n2 {n}}}: BANK-BORNE iff drop at s 8 (pooled n 6..8) >= 0.15;
+    and drop78 < 0.10. S0-2 eval_carrier.json {intact, prestall {s: {acc_n2 {n}}}, foreign_o6 {insert {"6": {acc_n2}}, intact}} (FOREIGN covers n 4..12;
+    its INSERT o 6 is compared with its own intact): BANK-BORNE iff drop at s 8 (pooled n 6..8) >= 0.15;
     BANK-NULL iff drop at s 8 <= 0.05 and FOREIGN o 6 drop (n 6..8) <= 0.05. AGE-CLOCK iff a readable arm has drop78 >= 0.20 and prestall s 4 drops n 7..8
     by <= 0.05. PROGRESS-ONLY (hard stop) iff both arms readable and ARM-NULL, BANK-NULL, and 213-27 AGE_UNLOCKS is False. Intact gates: |intact - eval_vb|
     <= 0.005 at every n."""
@@ -228,9 +229,12 @@ def d4_stage0(d):
                          "ARM_NULL": bool(readable and drop78 < 0.10 - EPS)}
         o["S0_3"] = arms
     if ca is not None:
-        P = ca["prestall"]; F = ca["foreign"]["acc_n2"]; I2 = E
-        d8 = mean(I2, (6, 7, 8)) - mean(P["8"]["acc_n2"], (6, 7, 8)); d4_78 = mean(I2, (7, 8)) - mean(P["4"]["acc_n2"], (7, 8))
-        df = mean(I2, (6, 7, 8)) - mean(F, (6, 7, 8))
+        P = ca["prestall"]; un = lambda x: x.get("acc_n2", x) if isinstance(x, dict) else x  # noqa: E731
+        I2 = un(ca["intact"]) if "intact" in ca else E                      # prestall intact: the test set n 1..12 (bitwise eval_vb)
+        fo = ca.get("foreign_o6") or {}                                      # Experiments 10-17: part_foreign's own output, n 4..12 (length-matched
+        F = un(fo["insert"]["6"]); FI = un(fo["intact"]) if "intact" in fo else I2    # partners); INSERT o 6 vs its own intact on the same items
+        d8 = mean(I2, (6, 7, 8)) - mean(un(P["8"]), (6, 7, 8)); d4_78 = mean(I2, (7, 8)) - mean(un(P["4"]), (7, 8))
+        df = mean(FI, (6, 7, 8)) - mean(F, (6, 7, 8))
         o["S0_2"] = {"drop_s8": d8, "drop_s4_78": d4_78, "drop_foreign": df, "BANK_BORNE": bool(d8 >= 0.15 - EPS),
                      "BANK_NULL": bool(d8 <= 0.05 + EPS and df <= 0.05 + EPS)}
     a3, b2 = o.get("S0_3"), o.get("S0_2")
