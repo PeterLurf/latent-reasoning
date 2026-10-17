@@ -1,0 +1,4 @@
+2026-10-17 00:46:57 ageproj rc 1 AssertionError: {'max_rel_size_mismatch': 0.41954880952835083}
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: 'boxes/runs_fsq/s213_d3t_s1/eval_ageproj.json'

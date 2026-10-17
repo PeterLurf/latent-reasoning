@@ -1041,8 +1041,8 @@ def part_ageproj(m, TE, dev, bs):
                 U2 = U - ((U @ wd) - c5)[..., None] * wd
             else:                                                           # 213-28: |dU| = |U . w_hat - c5| (age_clamp's size), along r toward c5_r
                 mag = ((U @ wd) - c5).abs(); sg = torch.where((U @ rd) - c5r >= 0, 1.0, -1.0).to(U.dtype)
-                U2 = U - (mag * sg)[..., None] * rd
-                dn = (U2 - U).norm(dim=-1); da = mag * float(wd.norm())
+                dU = (mag * sg)[..., None] * rd; U2 = U - dU                       # the size check is on dU itself: (U - dU) - U cancels in fp32
+                dn = dU.norm(dim=-1); da = mag * float(wd.norm())                   # (|dU_age| = mag * |w_hat| = mag)
                 chk["max_rel_size_mismatch"] = max(chk["max_rel_size_mismatch"], float(((dn - da).abs() / da.clamp_min(1e-12))[pad].max()))
             return torch.where(pad[..., None], U2.to(U.dtype), U)
         return f
