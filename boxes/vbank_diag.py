@@ -1300,6 +1300,7 @@ def part_pause(m, TE, dev, bs):
       (lastR: the last mid position is a reduction; np rng 21410, drawn per item in test order), completion pass n + 6; one rollout per chunk to
       K' n + 8, read at every K' 0..n + 8 -> acc_k {K': acc}.
     start_d: n 9..12 x D in {0, 2, 4, 6, 8} with 12 <= n + D <= 20: D start pauses only (passes 1..D), completion n + D; read at K' 0..n + D + 2.
+      Plus D 0 at n 9-11 (Audit 10-17) as descriptive extras ("extra": true; outside the registered grid / L3 regression).
     items: per item and K' the argmax answer (pause_inv: ids by n; start_d: by "n_D")."""
     assert hasattr(m, "pause_vec"), "eval_pause needs a --pause model (pause_vec)"
     num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); rng = np.random.default_rng(21410)
@@ -1332,10 +1333,11 @@ def part_pause(m, TE, dev, bs):
         print("PAUSE_INV n", n, {k: round(v, 3) for k, v in res["pause_inv"][str(n)]["acc_k"].items() if int(k) >= n}, flush=True)
     for n in range(9, 13):
         for D in (0, 2, 4, 6, 8):
-            if not 12 <= n + D <= 20:
+            extra = D == 0 and n + D < 12                                   # Audit 10-17: D 0 at n 9-11 as descriptive extras (outside the L3 regression)
+            if not (12 <= n + D <= 20 or extra):
                 continue
             idx = np.nonzero(Nn == n)[0]; Kmax = n + D + 2; pr = run(idx, Kmax, lambda j, D=D: [True] * D + [False] * TE[j]["n"])
-            key = "%d_%d" % (n, D); res["start_d"][key] = {"n": n, "D": D, "acc_k": {str(k): float((pr[k] == Y[idx]).mean()) for k in range(Kmax + 1)}, "completion": n + D}
+            key = "%d_%d" % (n, D); res["start_d"][key] = {"n": n, "D": D, "acc_k": {str(k): float((pr[k] == Y[idx]).mean()) for k in range(Kmax + 1)}, "completion": n + D, "extra": extra}
             res["items"]["start_d"][key] = {"ids": [int(j) for j in idx], "pred": {str(k): [int(v) for v in pr[k]] for k in range(Kmax + 1)}}
             print("START_D", key, {k: round(v, 3) for k, v in res["start_d"][key]["acc_k"].items() if int(k) >= n + D - 1}, flush=True)
     res["def"] = part_pause.__doc__
