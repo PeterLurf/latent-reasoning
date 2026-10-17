@@ -915,11 +915,15 @@ def part_stepbyt(m, TE, dev, bs):
 def part_hist24(m, TE, dev, bs):
     """note 213-20 HIST-AT-K24 ($0): eval_d3hist's arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode mapping as part_d3hist;
     CARRY omits self_ablate and its other_ablate = ablate_keep) read at K' = n + 2 AND K' = 24 from one K' 24 rollout per chunk (STAB-HIST's method;
-    vbank_eval.part_acc's chunks), n 3..8 -> {arm: {acc_n2 {n}, acc_k24 {n}}} + "omitted". The intact arm must equal eval_vb.json acc_n2 / acc_k['24']."""
+    vbank_eval.part_acc's chunks), n 3..8 -> {arm: {acc_n2 {n}, acc_k24 {n}}} + "omitted". The intact arm must equal eval_vb.json acc_n2 / acc_k['24'].
+    Note 213-21 DUP: dup_newest = vbank dup_newest (at pass t, every reader's versions 1..t-2 read as the newest stored V_{t-1}; entry count / positions kept).
+    Note 213-22: dup_foreign = versions 1..t-2 read as a DONOR's stored S_{t-1} (donor = the next item of the same n in test order, wrapping; its own intact
+    K' 24 rollout; recipients and donors padded together so slots align by position - a shorter donor contributes its padding rows at the recipient's
+    extra slots; the recipient batch is then padded to the joint length, so this arm's batches differ from eval_vb's)."""
     num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {"omitted": []}
-    arms = (("intact", None), ("bank_ablate_slva", "keep"), ("self_ablate", "self"), ("other_ablate", "bank"))
+    arms = (("intact", None), ("bank_ablate_slva", "keep"), ("self_ablate", "self"), ("other_ablate", "bank"), ("dup_newest", "dup"), ("dup_foreign", "dupf"))
     if m.mode == "carry":
-        arms = (("intact", None), ("bank_ablate_slva", "keep"), ("other_ablate", "keep")); res["omitted"].append("self_ablate")
+        arms = (("intact", None), ("bank_ablate_slva", "keep"), ("other_ablate", "keep"), ("dup_newest", "dup"), ("dup_foreign", "dupf")); res["omitted"].append("self_ablate")
     for arm, how in arms:
         A2 = np.full(len(TE), -1); A24 = np.full(len(TE), -1)
         try:
@@ -927,14 +931,20 @@ def part_hist24(m, TE, dev, bs):
                 m.ver_keep = VE.ablate_keep; m.keep_bank_only = how == "bank"
             elif how == "self":
                 m.gather_hist_ablate = "self"
+            elif how == "dup":                                              # 213-21 content control: versions 1..t-2 := V_{t-1} at every reader
+                m.dup_newest = True
             for n in range(3, 9):
-                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                pool = np.nonzero(Nn == n)[0]; nxt = {int(j): int(pool[(q + 1) % len(pool)]) for q, j in enumerate(pool)}   # 213-22 donor: next same-n item, wrapping
+                for ch in VE.chunks(pool, bs):
                     its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
-                    r_ = m.rollout(x, pad, 24, coda_rows={n + 2: rows, 24: rows})
+                    if how == "dupf":                                       # recipients + donors padded together (slots aligned by position), donor intact S_0..S_24
+                        B = len(its); xa, pa_, la = VB.batch_x(its + [TE[nxt[int(j)]] for j in ch], dev); x, pad, lens = xa[:B], pa_[:B], la[:B]
+                        m.dup_foreign = m.rollout(xa[B:], pa_[B:], 24)["S"]
+                    r_ = m.rollout(x, pad, 24, coda_rows={n + 2: rows, 24: rows}); m.dup_foreign = None
                     A2[ch] = m.answer_logits(r_["coda"][n + 2][1], lens)[:, num].argmax(-1).cpu().numpy()
                     A24[ch] = m.answer_logits(r_["coda"][24][1], lens)[:, num].argmax(-1).cpu().numpy(); del r_
         finally:
-            m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None
+            m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None; m.dup_newest = False; m.dup_foreign = None
         by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(3, 9)}  # noqa: E731
         res[arm] = {"acc_n2": by_n(A2), "acc_k24": by_n(A24)}; print("HIST24", arm, res[arm], flush=True)
     res["def"] = part_hist24.__doc__

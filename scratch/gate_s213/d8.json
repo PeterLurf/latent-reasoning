@@ -9,5 +9,5 @@
  "other_ablate_eq_carry_keep": true,
  "other_moves": true,
  "pass": true,
- "device": "NVIDIA GeForce RTX 3070"
+ "device": "NVIDIA GeForce RTX 2070"
 }

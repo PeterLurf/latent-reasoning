@@ -1,0 +1,14 @@
+{
+ "dup_K2_noop": true,
+ "dup_off_default": true,
+ "slva_dup_eq_carry_dup_c1e4": true,
+ "dup_moves_carry": true,
+ "n2_dup_k24_maxdiff": 76.79537200927734,
+ "n2_dup_finite": true,
+ "foreign_self_eq_newest_K3": true,
+ "n2_foreign_k24_maxdiff": 34.20793151855469,
+ "foreign_finite": true,
+ "off_after_foreign_default": true,
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 2070"
+}

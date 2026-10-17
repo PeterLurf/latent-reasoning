@@ -354,10 +354,40 @@ def g_d8(dev):
     o["pass"] = all(o.values()); return o
 
 
+@torch.no_grad()
+def g_d9(dev):
+    """note 213-21 DUP hook (vbank dup_newest, eval-only, default off): off == default bitwise (the flag reset after use); on at K <= 2 == off (no versions
+    1..t-2 exist); at c 1e4 SLVA + dup == CARRY + dup bitwise (N1 weights); on N2 (PA, trained c 0) dup moves the K' 24 coda logits (history is read)."""
+    s, c = pair(dev); s.c_anneal.fill_(1e4); its = items([6], 8); x, pad, lens = VB.batch_x(its, dev); K = 10; rows = {K: torch.arange(x.shape[0], device=dev)}; o = {}
+    eq = lambda r1, r2: bool(all(torch.equal(a_, b_) for a_, b_ in zip(r1["V"], r2["V"])) and torch.equal(r1["coda"][K][1], r2["coda"][K][1]))  # noqa: E731
+    r0 = s.rollout(x, pad, K, coda_rows=rows)
+    s.dup_newest = True; r2a = s.rollout(x, pad, 2, coda_rows={2: rows[K]}); s.dup_newest = False; r2b = s.rollout(x, pad, 2, coda_rows={2: rows[K]})
+    o["dup_K2_noop"] = bool(torch.equal(r2a["V"][2], r2b["V"][2]) and torch.equal(r2a["coda"][2][1], r2b["coda"][2][1]))
+    o["dup_off_default"] = eq(r0, s.rollout(x, pad, K, coda_rows=rows))
+    s.dup_newest = True; c.dup_newest = True; a1 = s.rollout(x, pad, K, coda_rows=rows); b1 = c.rollout(x, pad, K, coda_rows=rows); s.dup_newest = c.dup_newest = False
+    o["slva_dup_eq_carry_dup_c1e4"] = eq(a1, b1); o["dup_moves_carry"] = not eq(b1, c.rollout(x, pad, K, coda_rows=rows))
+    sd = torch.load(os.path.join(N2, "model.pt"), map_location=dev, weights_only=True); pa = VB.VBankN(s5.load_gpt2(dev), "pa").to(dev); pa.load_state_dict(sd); pa.eval()
+    rows24 = {24: torch.arange(x.shape[0], device=dev)}; l0 = pa.answer_logits(pa.rollout(x, pad, 24, coda_rows=rows24)["coda"][24][1], lens)
+    pa.dup_newest = True; l1 = pa.answer_logits(pa.rollout(x, pad, 24, coda_rows=rows24)["coda"][24][1], lens); pa.dup_newest = False
+    o["n2_dup_k24_maxdiff"] = float((l1 - l0).abs().max()); o["n2_dup_finite"] = bool(torch.isfinite(l1).all())
+    # 213-22 dup_foreign: donor = the item's own intact trajectory -> at K 3 (t = 3 reads entry 1 := S_2, which dup_newest's own S_2 equals) == dup_newest bitwise;
+    # a real donor (rows rolled by 1) moves N2's K' 24 logits; defaults reset
+    rows3 = {3: torch.arange(x.shape[0], device=dev)}; S_own = pa.rollout(x, pad, 24)["S"]
+    pa.dup_foreign = S_own; f3 = pa.rollout(x, pad, 3, coda_rows=rows3); pa.dup_foreign = None
+    pa.dup_newest = True; d3 = pa.rollout(x, pad, 3, coda_rows=rows3); pa.dup_newest = False
+    o["foreign_self_eq_newest_K3"] = bool(torch.equal(f3["V"][3], d3["V"][3]) and torch.equal(f3["coda"][3][1], d3["coda"][3][1]))
+    pa.dup_foreign = [v.roll(1, 0) for v in S_own]; l2 = pa.answer_logits(pa.rollout(x, pad, 24, coda_rows=rows24)["coda"][24][1], lens); pa.dup_foreign = None
+    o["n2_foreign_k24_maxdiff"] = float((l2 - l0).abs().max()); o["foreign_finite"] = bool(torch.isfinite(l2).all())
+    o["off_after_foreign_default"] = bool(torch.equal(pa.answer_logits(pa.rollout(x, pad, 24, coda_rows=rows24)["coda"][24][1], lens), l0))
+    o["pass"] = (o["dup_K2_noop"] and o["dup_off_default"] and o["slva_dup_eq_carry_dup_c1e4"] and o["dup_moves_carry"] and o["n2_dup_k24_maxdiff"] > 0 and o["n2_dup_finite"]
+                 and o["foreign_self_eq_newest_K3"] and o["n2_foreign_k24_maxdiff"] > 0 and o["foreign_finite"] and o["off_after_foreign_default"])
+    return o
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cuda:1"); a = ap.parse_args()
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; os.makedirs(OUT, exist_ok=True)
-    r = {"d0": g_d0, "d1": g_d1, "d2": g_d2, "d4": g_d4, "d5": g_d5, "d6": g_d6, "d7": g_d7, "d8": g_d8, "plain": g_plain, "g1b": g_g1b}[a.gate](a.device)
+    r = {"d0": g_d0, "d1": g_d1, "d2": g_d2, "d4": g_d4, "d5": g_d5, "d6": g_d6, "d7": g_d7, "d8": g_d8, "d9": g_d9, "plain": g_plain, "g1b": g_g1b}[a.gate](a.device)
     r["device"] = torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu"
     json.dump(r, open(os.path.join(OUT, "%s.json" % a.gate), "w", newline="\n"), indent=1); print(a.gate, "PASS" if r["pass"] else "FAIL", json.dumps(r)[:1500], flush=True)
 

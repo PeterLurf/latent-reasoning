@@ -177,6 +177,8 @@ class VBankN(torch.nn.Module):
         #   (core / coda bank entries of every version, the current version's keys, the gather) from then on (accumulated; t = 0 is called on V_0)
         self.gather_view = None                                             # eval-only (note 213-11, PA d3hist swaps): f(t, gk, NV) -> (gk', NV') for the gather at pass t
         self.keep_bank_only = False                                         # eval-only (note 213-11, PA OTHER-ABLATE): ver_keep reaches the core / coda bank, not the gather
+        self.dup_foreign = None                                             # eval-only (note 213-22): [donor stored S_0..S_K] -> versions 1..t-2 := the donor's S_{t-1}
+        self.dup_newest = False                                             # eval-only (note 213-21 DUP): at pass t every reader's versions 1..t-2 := the newest stored V_{t-1}
         self.ver_sub_from = None                                            # eval-only (§213 OLD-SWAP): rollout's ver_sub replaces entries for reading index >= this
         self.input_edit = None                                              # eval-only (213-1 LFK FAULT): f(t, U_t) -> U_t' (the pass input, CARRY / gather / SLVA)
         self.gather_hist_ablate = None                                      # eval-only (212-15 STAB-HIST): "self" | "other" -> the gather's keys (s, j) | (s, i != j),
@@ -282,12 +284,24 @@ class VBankN(torch.nn.Module):
         def coda_at(t, Vt):
             if coda_rows and t in coda_rows:
                 r_ = coda_rows[t]
-                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in view(t + 1, kv[i], fkv[i] if fkv else None)] for i in CODA}, pd[r_],
+                out[t] = (r_, self.coda(t, Vt[r_], {i: [(k[r_], v[r_]) for k, v in dup(view(t + 1, kv[i], fkv[i] if fkv else None), t, ("kv", i))] for i in CODA}, pd[r_],
                                         km=None if M is None else M[r_]))
         fkv = fNV = fgk = None
         if ver_sub is not None:
             fkv = {i: [bank_kv(g, i, F_) for F_ in ver_sub] for i in LAYERS}; fNV = [self.nrm(F_, rms0) for F_ in ver_sub]
             fgk = [self.gkey(F_) for F_ in ver_sub] if self.mode != "carry" else None
+
+        fc = {}
+
+        def dup(lst, t, kind):                                              # 213-21 / 213-22 DUP (eval-only): entries 1..t-2 read as entry t-1 (dup_newest) or as the
+            if t < 3 or not (self.dup_newest or self.dup_foreign is not None):   # donor's S_{t-1} (dup_foreign; per reader kind: ("kv", layer) / "gk" / "NV")
+                return lst
+            if self.dup_newest:
+                return [lst[0]] + [lst[t - 1]] * (t - 2) + lst[t - 1:]
+            if (kind, t) not in fc:
+                Vd = self.dup_foreign[t - 1]
+                fc[(kind, t)] = self.nrm(Vd, rms0) if kind == "NV" else self.gkey(Vd) if kind == "gk" else bank_kv(g, kind[1], Vd)
+            return [lst[0]] + [fc[(kind, t)]] * (t - 2) + lst[t - 1:]
 
         def view(tr, lst, flst):                                            # REPLACE: entry s (1..o) read as F_s when the reading index tr > s + 1
             if flst is None:                                                # (ver_sub_from, eval-only §213 OLD-SWAP: ... when tr >= ver_sub_from instead)
@@ -301,12 +315,12 @@ class VBankN(torch.nn.Module):
         for t in range(1 + len(prefix or []), K + 1):
             off_ = v0_off_after is not None and t > v0_off_after
             kp_ = self.ver_keep(t, t) if self.ver_keep else None
-            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, view(t, gk, fgk), view(t, NV, fNV), pd, off_, kp_)
+            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, dup(view(t, gk, fgk), t, "gk"), dup(view(t, NV, fNV), t, "NV"), pd, off_, kp_)
             h = h.detach() if sg_input else h
             if self.input_edit is not None:                                 # eval-only (213-1 LFK FAULT): the pass input U_t -> input_edit(t, U_t)
                 h = self.input_edit(t, h)
             for li, i in enumerate(CORE):
-                kvi = view(t, kv[i], fkv[i] if fkv else None); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
+                kvi = dup(view(t, kv[i], fkv[i] if fkv else None), t, ("kv", i)); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
                 bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pd, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
                 if self.cap is not None:
                     self.cap[("core", i, t)] = h.detach()
