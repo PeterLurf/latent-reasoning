@@ -1,0 +1,629 @@
+{
+ "N1_drop_law": {
+  "2": 0.6227520711254799,
+  "3": 0.24813093554253385,
+  "4": 0.09698929076581128,
+  "5": 0.026469993938169328,
+  "6": 0.005657708628005658
+ },
+ "N1_collapse_to_zero_frac": 0.031319458476459894,
+ "models": {
+  "N1_measured": {
+   "medians": {
+    "9": 8.0,
+    "10": 9.0,
+    "11": 9.0,
+    "12": 9.0,
+    "13": 9.0,
+    "14": 10.0,
+    "15": 10.0,
+    "16": 11.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.286,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.5,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.345,
+    "spread": 3.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "N2_measured": {
+   "medians": {
+    "9": 9.0,
+    "10": 9.0,
+    "11": 9.0,
+    "12": 9.0,
+    "13": 9.0,
+    "14": 9.0,
+    "15": 9.0,
+    "16": 9.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "CONTENT(q=0.00)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 16.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 1.0,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 1.0,
+    "spread": 7.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "CONTENT(q=0.05)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 15.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.8,
+    "spread": 3.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 0.917,
+    "spread": 6.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "CONTENT(q=0.10)": {
+   "medians": {
+    "9": 8.0,
+    "10": 9.0,
+    "11": 10.0,
+    "12": 11.0,
+    "13": 12.0,
+    "14": 13.0,
+    "15": 14.0,
+    "16": 15.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 1.0,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 1.0,
+    "spread": 7.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "SOFT(Delta=0.0)": {
+   "medians": {
+    "9": 8.0,
+    "10": 9.0,
+    "11": 9.0,
+    "12": 9.0,
+    "13": 10.0,
+    "14": 10.0,
+    "15": 11.0,
+    "16": 11.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.371,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.5,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.417,
+    "spread": 3.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "SOFT(Delta=2.0)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 10.0,
+    "12": 11.0,
+    "13": 11.0,
+    "14": 11.0,
+    "15": 12.0,
+    "16": 12.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.4,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.3,
+    "spread": 1.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.405,
+    "spread": 3.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "SOFT(Delta=3.0)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 11.0,
+    "13": 12.0,
+    "14": 12.0,
+    "15": 12.0,
+    "16": 13.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.6,
+    "spread": 3.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.4,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.5,
+    "spread": 4.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "SOFT(Delta=4.5)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 13.0,
+    "15": 13.0,
+    "16": 14.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.857,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.4,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.679,
+    "spread": 5.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "SOFT(Delta=6.5)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 15.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.8,
+    "spread": 3.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 0.917,
+    "spread": 6.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "SOFT(Delta=8.0)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 16.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 1.0,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 1.0,
+    "spread": 7.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "HARD(t_d=9)": {
+   "medians": {
+    "9": 9.0,
+    "10": 9.0,
+    "11": 9.0,
+    "12": 9.0,
+    "13": 9.0,
+    "14": 9.0,
+    "15": 9.0,
+    "16": 9.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "HARD(t_d=11)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 11.0,
+    "13": 11.0,
+    "14": 11.0,
+    "15": 11.0,
+    "16": 11.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.371,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.226,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "HARD(t_d=12)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 12.0,
+    "14": 12.0,
+    "15": 12.0,
+    "16": 12.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.629,
+    "spread": 3.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n12-16": {
+    "slope": 0.0,
+    "spread": 0.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.405,
+    "spread": 3.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "HARD(t_d=12.5)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 12.5,
+    "14": 12.5,
+    "15": 12.5,
+    "16": 12.5
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.743,
+    "spread": 3.5,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.1,
+    "spread": 0.5,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.5,
+    "spread": 3.5,
+    "PASS(content-tracking)": false
+   }
+  },
+  "HARD(t_d=13)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 13.0,
+    "15": 13.0,
+    "16": 13.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.857,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.2,
+    "spread": 1.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.595,
+    "spread": 4.0,
+    "PASS(content-tracking)": false
+   }
+  },
+  "HARD(t_d=13.5)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 13.5,
+    "15": 13.5,
+    "16": 13.5
+   },
+   "F_AUDIT n9-14": {
+    "slope": 0.929,
+    "spread": 4.5,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.35,
+    "spread": 1.5,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.685,
+    "spread": 4.5,
+    "PASS(content-tracking)": false
+   }
+  },
+  "HARD(t_d=14)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 14.0,
+    "16": 14.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.5,
+    "spread": 2.0,
+    "PASS(content-tracking)": false
+   },
+   "alt n9-16": {
+    "slope": 0.774,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "HARD(t_d=15.5)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 15.5
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 0.9,
+    "spread": 3.5,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 0.958,
+    "spread": 6.5,
+    "PASS(content-tracking)": true
+   }
+  },
+  "HARD(t_d=16)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 16.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 1.0,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 1.0,
+    "spread": 7.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "HARD(t_d=17)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 16.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 1.0,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 1.0,
+    "spread": 7.0,
+    "PASS(content-tracking)": true
+   }
+  },
+  "HARD(t_d=20)": {
+   "medians": {
+    "9": 9.0,
+    "10": 10.0,
+    "11": 11.0,
+    "12": 12.0,
+    "13": 13.0,
+    "14": 14.0,
+    "15": 15.0,
+    "16": 16.0
+   },
+   "F_AUDIT n9-14": {
+    "slope": 1.0,
+    "spread": 5.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n12-16": {
+    "slope": 1.0,
+    "spread": 4.0,
+    "PASS(content-tracking)": true
+   },
+   "alt n9-16": {
+    "slope": 1.0,
+    "spread": 7.0,
+    "PASS(content-tracking)": true
+   }
+  }
+ },
+ "HARD_min_t_d_passing_F_AUDIT": 12.25,
+ "START_D_variant": {
+  "CONTENT": {
+   "slope_on_n_plus_D (cells n+D in 12..20)": 1.0,
+   "max_minus_min": 8
+  },
+  "HARD(13.5)": {
+   "slope_on_n_plus_D (cells n+D in 12..20)": 0.144,
+   "max_minus_min": 1.5
+  },
+  "HARD(16)": {
+   "slope_on_n_plus_D (cells n+D in 12..20)": 0.557,
+   "max_minus_min": 4.0
+  },
+  "HARD(20)": {
+   "slope_on_n_plus_D (cells n+D in 12..20)": 1.0,
+   "max_minus_min": 8.0
+  },
+  "GATED-9 (unlocked by any pause)": {
+   "slope_on_n_plus_D (cells n+D in 12..20)": 1.116,
+   "max_minus_min": 11
+  }
+ }
+}
