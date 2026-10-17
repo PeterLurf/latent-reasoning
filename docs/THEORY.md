@@ -17983,6 +17983,30 @@ theory/score_s213's REFERENCE block adds hold_read().
 - N2 shows the same shape: acc_halt 0.93–1.00 at n 1..8 and 0.606 at n 9 (acc_n2 0.948).
 - **So the C6 lead "freeze after completion" reduces to C5's beyond-range halting.** That is read by §212's halt_read (HALT-EXACT, DEPTH-TIMING) and, for §213's cells, by their vbhalt readings if run after landing. No local row is needed now.
 
+**Note 213-18 (2026-10-16 21:02 EDT; a $0 descriptive add-on, pre-stated after D3-T's eval_steppos / eval_lfk and before its eval_rs, eval_d3hist or merged eval_vb; changes no §213 rule).**
+
+**Why.**
+- D3-T's fresh single step is length-general to m 16 (fresh_m 0.97–1.00 at m 9–16; NO-KNEE met; LFK ge33 0.9805 vs le28 0.9867).
+- Yet its in-trajectory exact-input step (lfk "step", t ≥ 2) is only **0.79–0.90 at n 9–16**, and **flat in n** (n 10–16: 0.822 → 0.794).
+- Flat in n means not length. Two accounts remain:
+  - **PASS-COUNT:** training never needed more than 8 computing passes (n ≤ 8);
+  - **DRIFT:** accumulated in-trajectory representation drift.
+
+**The add-on, STEP-BY-T.** lfk's step events split by pass index t: step_by_t {"n": {"t": {events, strict_exact}}}, n 9–16, the same events and definitions as eval_lfk's "step".
+- D3-T, then D3-F, on the 3070 after s213_post_halt.sh;
+- N1 as the reference on the 2070 (idle).
+- Output: eval_lfk.json gains "step_by_t", or a separate eval_stepbyt.json.
+
+**Pre-stated descriptive labels**, pooled over n 9–16, per cell:
+- **PASS-COUNT-KEYED** iff exact-input step exactness pooled over t ≤ 8 is ≥ 0.97 and pooled over t ≥ 10 is ≤ 0.90;
+- **GRADUAL-DRIFT** iff exactness pooled over t 2–4 is ≤ 0.95, or the drop from t 2–4 to t 5–8 is ≥ 0.03, with no pass-count step;
+- **MIXED** otherwise.
+- Cells with < 200 events are excluded.
+
+**Use** (lead ranking only):
+- PASS-COUNT-KEYED points at LONG-K training (213-4: passes beyond 8 made in-distribution), or pass-index-free conditioning.
+- GRADUAL-DRIFT points at the representational levers (213-4, 213-16 / 213-17).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
