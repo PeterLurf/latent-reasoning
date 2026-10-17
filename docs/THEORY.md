@@ -300,7 +300,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 210 | CODI-BUDGET-20 (user-approved 20:15 10-15, cap $12): §209 step 2, the same CODI recipe at 20.0 epochs on a 3090 (210-1; A100 dropped); REACHES-PUBLISHED (>= 0.348) / STAYS-LOW (<= 0.217) / PARTIAL; GAP vs the 0-latent text read | registered | pending (G1prime + G-TIME) |
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
-| 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, "what reccomend approve" = option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **LAUNCHED 15:25 10-16 (b307 D3-T, b308 D3-F; gates G-D0..7 PASS, Audit diff OK 2b257d93; no VOID masks, 212-18; Stage 0 done 212-17..19, 213-3)** |
+| 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
 
 ## Live sections
 
@@ -18118,6 +18118,38 @@ Entry is at 11k (answer_ce), the same as N1.
 - **The D4 branch rule is pre-stated in D4_draft §1.3:** A if EC ∨ ORD ∨ PASS-COUNT-KEYED; B if GRADUAL-DRIFT ∧ ¬EC ∧ ¬ORD; otherwise B.
 
 **D4 status.** D4_draft.md is the subagent's draft: computed PAUSE passes, a derivation (Props D0–D2, Lemmas D3–D5), Goodhart routes, readings, OC, Stage 0 / 1. It is not registered. A red team and a proof pass come next, then Audit, then the user.
+
+**§213 D3-F result and family close (2026-10-17 00:03 EDT; s213_d3f_s1, b308, RTX 3090, seed 1, 48k (log complete); realised ≈ $1.48, model.pt wpe bitwise pretrained; local fp32 at eval_bs 32 on the 3070, recovered after the 23:37 reboot (the voided first rs kept as .void); eval_vb (single run), eval_steppos, eval_lfk, eval_rs, eval_d3hist (intact gate bitwise); theory/score_s213.py; ARGS-DIFF ok. Family realised ≈ $2.68 of the $4.5 cap.)**
+
+**D3-F label: parts.** LENGTH-FREE ✓ / DEPTH-GENERAL ✗ (0.494) / VB-C1 ✓ / HISTORY-USED ✗ (drop 0.000), **RNN-IN-FUNCTION**. So D3-C2 is not met and D3-C2-ATTN is not met.
+
+| reading | D3-T (trained table) | D3-F (frozen pretrained table) |
+|---|---|---|
+| NO-KNEE m 9 / m 10 | ✓ / ✓ | ✓ (1.000 vs 1.000) / ✓ (0.999 vs 1.000) |
+| LENGTH-FREE-K ge33 vs le28 | 0.9805 vs 0.9867 ✓ | 0.9887 vs 0.9879 ✓ |
+| STEP-GENERAL (fresh m 12–16) | **✓** 0.987 / 0.991 / 0.980 / 0.973 / 0.970 | ✗ 0.991 / 0.984 / 0.965 / **0.923 / 0.845** |
+| DEPTH-GENERAL (acc_n2 n 9–12) | ✗ 0.923 / 0.603 / 0.266 / 0.127 = 0.480 | ✗ 0.986 / 0.494 / 0.326 / 0.170 = 0.494 |
+| VB-C1 | ✓ (PROBE-GAIN 0.87) | ✓ (PROBE-GAIN 0.873; onset slope 1.17; VALUE-SWAP (ii) 1.000; STALL 1.000) |
+| HISTORY-USED (f) | ✗ 0.000 | ✗ 0.000 (self 0.000, other 0.000) |
+| swap NEWEST / BANK / OLD | 1.000 / 0 / 0 | 1.000 / 0 / 0 (4,183 pairs) |
+| SELF-SIMILAR (RS, n 9–12, all r) | ✗ D +0.418 | ✗ D +0.384 (HEAD-LIMITED: long step at m 15–16 < 0.95) |
+| acc_k24 at n 1–8 | 1.000 at every n | 0.835 / 0.965 / 0.981 / ≥ 0.998 |
+| entry (answer_ce 0.5) | 11k | 11k (not CONFOUNDED) |
+
+**The pair (descriptive, one seed each).** Values are TABLE = D3-F − D3-T:
+- STEP-GENERAL mean m 12–16: **−0.039**;
+- DEPTH n 9–12: **+0.014**;
+- LFK ge33: +0.008;
+- **LFK 29_32: +0.022.** The frozen table removes the rare-row dip of 213-3.
+- **Changed slots at ge33: 0.861 (395 events) vs 0.586 (133).** The frozen table is better at changed far slots, but worse at the longest fresh steps.
+
+**§213 family result.**
+- **The cliff is removed in both cells.** Removing the content-free cross-slot gather (SLVA) makes the step length-free in training from pretrained, with a trained table or a frozen one. M1 and the D3 premise are supported, and the premise falsifier did not fire.
+- **D3-T's single step is length-general to m 16.** That is the first VB cell to meet STEP-GENERAL.
+- **Both cells collapsed to CARRY in function** (Prop 6; P 0.7–0.85 pre-stated). By the registered (f) at K′ n + 2, the memory is used in form only.
+- **Depth stays at 0.48–0.49** (N1 0.405, N2 0.414). The limit is trajectory-bound: a restart from an exact decode is 1.000 everywhere. 213-24 identifies it in N1 / N2 as a pass-indexed deadline (EDGE-COLLAPSE). The §213 cells' EDGE / STEP-BY-T / HIST-AT-K24 readings are still running (descriptive) and will be added as notes.
+- **The table question is answered descriptively:** freezing neither helps nor hurts depth (+0.014). It trades the longest fresh steps (−) against rare-row and changed-slot accuracy (+).
+- **The registered §213 readings are closed.** The follow-up is D4 (docs/research_d4_2026-10-16/, under red team and proof review), which needs the user's OK before any spend.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
