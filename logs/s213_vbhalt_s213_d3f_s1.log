@@ -1,0 +1,29 @@
+FIXTURE {'content': 300, 'collapse': 300, 'stuck1': 300, 'clockhold': 300, 'stall_shift': 300, 'n': 300, 'pass': True}
+HALT n 1 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 2 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 3 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 4 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 5 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 6 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 7 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 8 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 9 {'exact': 0.822, 'premature': 0.0, 'never': 0.0, 'gprog': 0.177, 'acc_halt': 0.823, 'acc_n2': 0.986}
+HALT n 10 {'exact': 0.037, 'premature': 0.0, 'never': 0.018, 'gprog': 0.944, 'acc_halt': 0.034, 'acc_n2': 0.494}
+HALT n 11 {'exact': 0.0, 'premature': 0.0, 'never': 0.081, 'gprog': 0.919, 'acc_halt': 0.0, 'acc_n2': 0.326}
+HALT n 12 {'exact': 0.0, 'premature': 0.0, 'never': 0.166, 'gprog': 0.834, 'acc_halt': 0.0, 'acc_n2': 0.17}
+HALT n 13 {'exact': 0.0, 'premature': 0.0, 'never': 0.298, 'gprog': 0.702, 'acc_halt': 0.0, 'acc_n2': 0.141}
+HALT n 14 {'exact': 0.0, 'premature': 0.0, 'never': 0.429, 'gprog': 0.571, 'acc_halt': 0.0, 'acc_n2': 0.124}
+[W1017 00:17:32.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 136314880 bytes (free: 0, total: 8589410304).
+HALT n 15 {'exact': 0.0, 'premature': 0.0, 'never': 0.55, 'gprog': 0.45, 'acc_halt': 0.0, 'acc_n2': 0.108}
+HALT n 16 {'exact': 0.0, 'premature': 0.0, 'never': 0.678, 'gprog': 0.322, 'acc_halt': 0.0, 'acc_n2': 0.11}
+STALL n 4 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 2}
+STALL n 5 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 3}
+STALL n 6 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 3}
+STALL n 7 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 4}
+STALL n 8 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 4}
+[W1017 00:21:53.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 2097152 bytes (free: 0, total: 8589410304).
+STALL n 9 {'qualifying': 822, 'shift': 0.8856447688564477, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.11435523114355231, 'other': 0.0, 'stall_t': 5}
+STALL n 10 {'qualifying': 37, 'shift': 0.7837837837837838, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.02702702702702703, 'gprog': 0.1891891891891892, 'other': 0.0, 'stall_t': 5}
+STALL n 11 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 6}
+STALL n 12 {'qualifying': 0, 'shift': None, 'frozen1': None, 'other_never': None, 'at_n': None, 'ge_n2': None, 'gprog': None, 'other': None, 'stall_t': 6}
+DONE boxes/runs_fsq/s213_d3f_s1\eval_vbhalt.json 637 gate True
