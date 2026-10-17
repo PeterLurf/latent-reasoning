@@ -18671,6 +18671,13 @@ Entry is at 11k (answer_ce), the same as N1.
 - **b311 (FT-CTRL):** try 1 projected $0.41 > $0.40 and was refused as registered. Try 2 was a stuck-loading BAD host, so not a try. b311 may take one more host if try 3 refuses.
 - The admission bounds ($0.95 / $0.40) and the guards ($1.05 / $0.45) are unchanged.
 
+**Note 215-3 (2026-10-17 15:29 EDT; amends §215's FT-CTRL bounds before b311's relaunch. USER DECISION 2026-10-17 15:29 EDT: "raise limit", typed in Audit's session and relayed verbatim, in answer to Audit's offer to raise FT-CTRL's limit inside the $1.50 pair cap.)**
+- **b311 (FT-CTRL) admission bound: $0.55** (was $0.40). Its **per-cell guard is $0.70**, GUARD_STOP = 1 (was $0.45). That includes its $0.094 BAD spend, so the run room is $0.606, above the $0.55 bound.
+- **PMAX is back to $0.25/h.**
+- **The pair cap stays $1.50**, GUARD_STOP = 1.
+  - Check: b310's current projection $0.57 + BAD $0.212 + b311 ≤ $0.55 = **$1.33 ≤ $1.50**.
+- **No other change:** FT-SELF's bounds ($0.95 / $1.05), the readings, the stream and the steps are unchanged, and steps are never reduced.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
