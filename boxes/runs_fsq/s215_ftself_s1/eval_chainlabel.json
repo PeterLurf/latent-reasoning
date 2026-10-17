@@ -1,0 +1,149 @@
+{
+ "by_n": {
+  "9": {
+   "items": 1000,
+   "precision": 1.0,
+   "precision_strict": 1.0,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 1000
+   },
+   "fail": 0.0,
+   "chain_exact": 1.0,
+   "agree": 1.0,
+   "prec_agree": 1.0,
+   "n_agree": 1000,
+   "latent_acc": 1.0,
+   "steps_mean": 9.0
+  },
+  "10": {
+   "items": 1000,
+   "precision": 1.0,
+   "precision_strict": 1.0,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 1000
+   },
+   "fail": 0.0,
+   "chain_exact": 1.0,
+   "agree": 1.0,
+   "prec_agree": 1.0,
+   "n_agree": 1000,
+   "latent_acc": 1.0,
+   "steps_mean": 10.0
+  },
+  "11": {
+   "items": 1000,
+   "precision": 0.999,
+   "precision_strict": 0.999,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 1,
+    "0": 999
+   },
+   "fail": 0.0,
+   "chain_exact": 0.999,
+   "agree": 0.999,
+   "prec_agree": 1.0,
+   "n_agree": 999,
+   "latent_acc": 1.0,
+   "steps_mean": 10.999
+  },
+  "12": {
+   "items": 1000,
+   "precision": 0.998,
+   "precision_strict": 0.998,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 1,
+    "0": 999
+   },
+   "fail": 0.0,
+   "chain_exact": 0.998,
+   "agree": 0.998,
+   "prec_agree": 1.0,
+   "n_agree": 998,
+   "latent_acc": 1.0,
+   "steps_mean": 11.999
+  },
+  "13": {
+   "items": 1000,
+   "precision": 0.992,
+   "precision_strict": 0.992,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 992,
+    "fail": 8
+   },
+   "fail": 0.008,
+   "chain_exact": 0.992,
+   "agree": 0.991,
+   "prec_agree": 1.0,
+   "n_agree": 991,
+   "latent_acc": 0.999,
+   "steps_mean": 12.915
+  },
+  "14": {
+   "items": 1000,
+   "precision": 0.989,
+   "precision_strict": 0.989,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 990,
+    "fail": 10
+   },
+   "fail": 0.01,
+   "chain_exact": 0.989,
+   "agree": 0.884,
+   "prec_agree": 1.0,
+   "n_agree": 884,
+   "latent_acc": 0.893,
+   "steps_mean": 13.885
+  },
+  "15": {
+   "items": 1000,
+   "precision": 0.981,
+   "precision_strict": 0.98,
+   "right_value_wrong_steps": 0.001,
+   "steps_minus_n": {
+    "-1": 4,
+    "0": 980,
+    "fail": 16
+   },
+   "fail": 0.016,
+   "chain_exact": 0.98,
+   "agree": 0.622,
+   "prec_agree": 1.0,
+   "n_agree": 622,
+   "latent_acc": 0.633,
+   "steps_mean": 14.807
+  },
+  "16": {
+   "items": 1000,
+   "precision": 0.951,
+   "precision_strict": 0.951,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 5,
+    "0": 952,
+    "fail": 43
+   },
+   "fail": 0.043,
+   "chain_exact": 0.95,
+   "agree": 0.329,
+   "prec_agree": 1.0,
+   "n_agree": 329,
+   "latent_acc": 0.344,
+   "steps_mean": 15.416
+  }
+ },
+ "def": "note 213-33 CHAIN-LABEL ($0): \u00a7170 test items n 9..16. Per item cur = its expression; loop: a 1-pass rollout on batch_x(render(cur)) (batched by\nrendered length - no padding effects, as long_step), dec = argmax R(V_1), s = VB.rerender(dec) (VOIDs dropped); s must parse into one valid expression\n(_parse_tree) else FAIL; cur = the parsed tree; stop when cur has no operator (label = its value) or after 24 steps (FAIL). Always the model's own decode.\nchain_exact: every step's s equalled render(reduce_k(true current state, 1)) (so the chain followed the true trajectory to the end). agree: label ==\nthe latent answer at K' n + 2 (recomputed here, vbank_eval.part_acc's chunks). by_n {items, precision (label == y; FAIL wrong), fail, chain_exact,\nagree, prec_agree (precision among items whose label agrees with the latent answer), n_agree, steps_mean}. Note 213-34: precision_strict (label == y AND\nexactly n steps), right_value_wrong_steps (label == y, steps != n), steps_minus_n {k: count} (k = steps - n; FAIL chains under \"fail\").",
+ "run": "boxes/runs_fsq/s215_ftself_s1",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 166
+}
