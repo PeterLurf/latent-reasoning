@@ -1,0 +1,15 @@
+{
+ "checks": [
+  {
+   "micro": 64,
+   "peak_gib": Infinity
+  },
+  {
+   "micro": 32,
+   "peak_gib": 18.767399787902832
+  }
+ ],
+ "micro": 32,
+ "accumulation": 4,
+ "longest_ref_tokens": 219
+}
