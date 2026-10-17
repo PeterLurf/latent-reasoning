@@ -1,0 +1,9 @@
+STEPBYT n 9 {'events': 7490, 'strict_exact': 7120, 'voiddrop_exact': 7120}
+STEPBYT n 10 {'events': 6107, 'strict_exact': 5084, 'voiddrop_exact': 5084}
+STEPBYT n 11 {'events': 5697, 'strict_exact': 4645, 'voiddrop_exact': 4645}
+STEPBYT n 12 {'events': 5266, 'strict_exact': 4209, 'voiddrop_exact': 4209}
+STEPBYT n 13 {'events': 5089, 'strict_exact': 4051, 'voiddrop_exact': 4051}
+STEPBYT n 14 {'events': 4878, 'strict_exact': 3839, 'voiddrop_exact': 3839}
+STEPBYT n 15 {'events': 4635, 'strict_exact': 3593, 'voiddrop_exact': 3593}
+STEPBYT n 16 {'events': 4359, 'strict_exact': 3364, 'voiddrop_exact': 3364}
+DONE boxes/runs_fsq/s213_d3f_s1\eval_stepbyt.json 85
