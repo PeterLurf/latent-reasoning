@@ -84,7 +84,11 @@ def extract(s):
 
 
 @torch.no_grad()
-def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_new=40, dev="cpu"):
+def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_new=40, dev="cpu", latent_capture=None, latent_override=None):
+    """latent_capture (eval-only, §210 note 210-2): a list -> one (b, n_latent, D) tensor per chunk of the continuous-thought INPUTS (the prj output fed at
+    latent positions 1..n_latent), in data order. latent_override: {"lat": (N, n_latent, D) tensor in data order, "pos": positions (1-based) replaced, "rows":
+    optional (N,) bool of items replaced} -> at latent position j in pos, the input of each replaced item is lat[item, j - 1] (later positions are computed
+    from the model's own outputs). Both None = the original computation."""
     V = m.config.vocab_size
     bot, eot = V - 2, V - 1
     wte = m.transformer.wte
@@ -100,9 +104,16 @@ def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_n
         pkv = out.past_key_values
         P = ids.shape[1]
         h = prj(out.hidden_states[-1][:, -1:, :])
+        caps = [] if latent_capture is not None else None
         lat_mask = mask.clone()
         nextpos = pos[:, -1:] + 1
         for j in range(1, n_latent + 1):
+            if latent_override is not None and j in latent_override["pos"]:          # 210-2: externally supplied latent inputs
+                lo = latent_override["lat"][i:i + len(chunk), j - 1].to(h.device, h.dtype)[:, None, :]
+                rw = latent_override.get("rows")
+                h = lo if rw is None else torch.where(rw[i:i + len(chunk)].to(h.device)[:, None, None], lo, h)
+            if caps is not None:
+                caps.append(h[:, 0].detach().cpu())
             cur = torch.ones(len(chunk), 1, dtype=torch.long, device=dev)
             am = torch.cat([lat_mask, cur], 1)
             if block_from is not None and j >= block_from:
@@ -120,6 +131,8 @@ def run(m, prj, tok, data, n_latent=6, block_from=None, attn=False, bs=16, max_n
             lat_mask = torch.cat([lat_mask, cur], 1)
             nextpos = nextpos + 1
             h = prj(o.hidden_states[-1][:, -1:, :])
+        if caps is not None:
+            latent_capture.append(torch.stack(caps, 1))
         # answer: <eot> then greedy decoding; answer tokens see everything
         x = wte(torch.full((len(chunk), 1), eot, device=dev))
         am = lat_mask
