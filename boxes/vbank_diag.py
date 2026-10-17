@@ -1293,12 +1293,61 @@ def part_chainlabel_fresh(m, TE, dev, bs, n_items=1000):
     return {"by_n": out, "excl_size": len(excl), "te_items": len(TE), "def": part_chainlabel_fresh.__doc__}   # Audit: EXCL derives from TE (per_n)
 
 
+@torch.no_grad()
+def part_pause(m, TE, dev, bs):
+    """§214 eval_pause.json (registered 7892a2dc; the ONLY eval file that applies pi = pause_vec). §170 test items, vbank_eval.part_acc's chunks, fp32.
+    pause_inv: n 1..8, Q = 6 pauses per item = D 3 start pauses (passes 1..3) + 3 scattered pauses uniformly over the first n - 1 + 3 mid positions
+      (lastR: the last mid position is a reduction; np rng 21410, drawn per item in test order), completion pass n + 6; one rollout per chunk to
+      K' n + 8, read at every K' 0..n + 8 -> acc_k {K': acc}.
+    start_d: n 9..12 x D in {0, 2, 4, 6, 8} with 12 <= n + D <= 20: D start pauses only (passes 1..D), completion n + D; read at K' 0..n + D + 2.
+    items: per item and K' the argmax answer (pause_inv: ids by n; start_d: by "n_D")."""
+    assert hasattr(m, "pause_vec"), "eval_pause needs a --pause model (pause_vec)"
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); rng = np.random.default_rng(21410)
+    res = {"Q": 6, "pause_inv": {}, "start_d": {}, "items": {"pause_inv": {}, "start_d": {}}}
+
+    def run(idx, Kmax, sched):
+        """sched(j) -> bool list over passes 1..L (L <= Kmax) for test item j; -> {K': (len(idx),) preds}."""
+        preds = {k: np.full(len(idx), -1) for k in range(Kmax + 1)}
+        for c0 in range(0, len(idx), bs):
+            ch = idx[c0:c0 + bs]; its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); B = len(its)
+            pm = torch.zeros(B, Kmax + 1, dtype=torch.bool, device=dev)
+            for b, j in enumerate(ch):
+                z = sched(int(j)); pm[b, 1:len(z) + 1] = torch.tensor(z, device=dev)
+            rows = torch.arange(B, device=dev); r_ = m.rollout(x, pad, Kmax, coda_rows={k: rows for k in range(Kmax + 1)}, pause=pm)
+            for k in range(Kmax + 1):
+                preds[k][c0:c0 + B] = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
+            del r_
+        return preds
+    sch = {}
+    for n in range(1, 9):                                                   # draws per item in test order (rng 21410)
+        for j in np.nonzero(Nn == n)[0]:
+            S = 3; L1 = n - 1 + S; mid = [False] * (L1 + 1)
+            for q in rng.choice(L1, S, replace=False):
+                mid[int(q)] = True
+            sch[int(j)] = [True] * 3 + mid
+    for n in range(1, 9):
+        idx = np.nonzero(Nn == n)[0]; Kmax = n + 8; pr = run(idx, Kmax, lambda j: sch[j])
+        res["pause_inv"][str(n)] = {"acc_k": {str(k): float((pr[k] == Y[idx]).mean()) for k in range(Kmax + 1)}, "completion": n + 6}
+        res["items"]["pause_inv"][str(n)] = {"ids": [int(j) for j in idx], "pred": {str(k): [int(v) for v in pr[k]] for k in range(Kmax + 1)}}
+        print("PAUSE_INV n", n, {k: round(v, 3) for k, v in res["pause_inv"][str(n)]["acc_k"].items() if int(k) >= n}, flush=True)
+    for n in range(9, 13):
+        for D in (0, 2, 4, 6, 8):
+            if not 12 <= n + D <= 20:
+                continue
+            idx = np.nonzero(Nn == n)[0]; Kmax = n + D + 2; pr = run(idx, Kmax, lambda j, D=D: [True] * D + [False] * TE[j]["n"])
+            key = "%d_%d" % (n, D); res["start_d"][key] = {"n": n, "D": D, "acc_k": {str(k): float((pr[k] == Y[idx]).mean()) for k in range(Kmax + 1)}, "completion": n + D}
+            res["items"]["start_d"][key] = {"ids": [int(j) for j in idx], "pred": {str(k): [int(v) for v in pr[k]] for k in range(Kmax + 1)}}
+            print("START_D", key, {k: round(v, 3) for k, v in res["start_d"][key]["acc_k"].items() if int(k) >= n + D - 1}, flush=True)
+    res["def"] = part_pause.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
