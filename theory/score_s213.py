@@ -87,6 +87,33 @@ def hold_read(d):
             "label": "UNREADABLE (control)" if not ctl else ("HOLD-FIXES" if fixes else "not met")}
 
 
+def step_by_t(d):
+    """Note 213-18 (descriptive): exact-input in-trajectory step exactness by pass index t, pooled over n 9-16 (cells < 200 events excluded).
+    PASS-COUNT-KEYED iff pooled t <= 8 >= 0.97 and pooled t >= 10 <= 0.90; GRADUAL-DRIFT iff pooled t 2-4 <= 0.95 or (t 2-4) - (t 5-8) >= 0.03 (and not
+    PASS-COUNT-KEYED); else MIXED."""
+    f = jl(d, "eval_stepbyt.json") or {}
+    st = f.get("step_by_t") or (jl(d, "eval_lfk.json") or {}).get("step_by_t")
+    if not st:
+        return None
+    cells = [(int(t_), c["events"], c["strict_exact"]) for n_, T_ in st.items() if 9 <= int(n_) <= 16 for t_, c in T_.items() if c["events"] >= 200]
+    def pool(lo, hi):
+        e = sum(ev for t_, ev, _ in cells if lo <= t_ <= hi); s = sum(x for t_, _, x in cells if lo <= t_ <= hi)
+        return (s / e) if e else None
+    a8, a10, a24, a58 = pool(2, 8), pool(10, 99), pool(2, 4), pool(5, 8)
+    curve = {t_: pool(t_, t_) for t_ in sorted({c[0] for c in cells})}
+    ch = {}                                                                 # Audit on 213-18: changed-slot accuracy by t, and the n mix per t
+    for n_, T_ in st.items():
+        if 9 <= int(n_) <= 16:
+            for t_, c in T_.items():
+                z = ch.setdefault(int(t_), [0, 0, {}]); z[0] += c.get("changed_events", 0); z[1] += c.get("changed_correct", 0); z[2][n_] = c["events"]
+    changed_curve = {t_: ((z[1] / z[0]) if z[0] else None) for t_, z in sorted(ch.items())}
+    n_mix = {t_: z[2] for t_, z in sorted(ch.items())}
+    pc = bool(a8 is not None and a10 is not None and a8 >= 0.97 - EPS and a10 <= 0.90 + EPS)
+    gd = bool(not pc and a24 is not None and (a24 <= 0.95 + EPS or (a58 is not None and a24 - a58 >= 0.03 - EPS)))
+    return {"t_le8": a8, "t_ge10": a10, "t2_4": a24, "t5_8": a58, "curve": curve, "changed_curve": changed_curve, "n_mix_by_t": n_mix,
+            "label": "PASS-COUNT-KEYED" if pc else ("GRADUAL-DRIFT" if gd else "MIXED")}
+
+
 def args_diff(d):
     a, b = jl(d, "args.json"), jl(N2, "args.json")
     if a is None or b is None:
@@ -129,7 +156,7 @@ def cell(tag, d):
     o.update(dead=dead, no_entry=noent, entry_answer_ce_05=a["entry_answer_ce_05"], VB_C1=a["VB_C1"], NO_KNEE=nk, LFK=lf, LENGTH_FREE=lfree, COUNT=count,
              STEP_GENERAL=sg, STEP_GENERAL_mean_12_16=sg_mean, DEPTH_9_12=a["DEPTH_9_12"], DEPTH_GENERAL=dg, RS=ss, SELF_SIMILAR=selfsim, HIST=hr,
              D3_C2=c2, D3_C2_ATTN=c2a,
-             HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None)   # 213-17 add-on: descriptive (C5), not part of D3-C2
+             HALT=S212.halt_read(jl(d, "eval_vbhalt.json")) if jl(d, "eval_vbhalt.json") else None, STEP_BY_T=step_by_t(d))   # 213-17 add-on: descriptive (C5), not part of D3-C2
     o["label"] = ("FAILURE (dead; rule b)" if dead else "NO-ENTRY (rule b)" if noent else
                   "D3-C2-ATTN (C2 in a pass-global attention memory)" if c2a else
                   "D3-C2 (C2 with the memory in form only)" if c2 else
@@ -166,7 +193,8 @@ def main():
     exp = {"N1": lambda r: r["HISTORY_USED"] is False and r["RNN_IN_FUNCTION"] is True,   # explicit True / False: None (omitted) fails
            "N2": lambda r: r["HISTORY_USED"] is True and r["RNN_IN_FUNCTION"] is False, "N3": lambda r: r["HISTORY_USED"] is True}
     ref["EXPECTATIONS_MET"] = None if any(ref[k] is None for k in exp) else all(exp[k](ref[k]) for k in exp)
-    ref["HOLD_N1"] = hold_read(S212.STAGE0["N1"])                         # note 213-14 S0-4
+    ref["HOLD_N1"] = hold_read(S212.STAGE0["N1"])
+    ref["STEP_BY_T_N1"] = step_by_t(S212.STAGE0["N1"])                    # note 213-18 reference                         # note 213-14 S0-4
     out["REFERENCE"] = ref
     print("READING: " + " || ".join("%s: %s" % (t, out[t]["label"]) for t in CELLS) + " || PAIR: " + out["PAIR"]["label"])
     json.dump(out, open(os.path.join(ROOT, "theory", "results", "score_s213.json"), "w", newline=chr(10)), indent=1, default=str)
