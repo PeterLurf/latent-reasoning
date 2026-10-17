@@ -65,11 +65,11 @@ def main():
                 gcoll[str(n)] += 1; continue
             assert SD.n_of(s_) == n; gate.append({"syms": s_, "n": n}); excl.add(tuple(s_)); got += 1
     json.dump({"items": gate, "seed": 21960, "per_n": a.gate_n, "collide_n": gcoll}, open(os.path.join(outg, "gate_items.json"), "w", newline="\n"))
-    rp = np.random.default_rng(21900); kept, draws, coll, dup, keepn, seen = [], {}, {}, {}, {}, set()
+    rp = np.random.default_rng(21900); kept, draws, coll, dup, keepn, seen = [], {}, {}, {}, {}, set(); at_target = {}; labn, dropn = {}, {}
     for n in NS:
-        draws[str(n)] = coll[str(n)] = dup[str(n)] = 0; kn = 0; nlab = 0
+        draws[str(n)] = coll[str(n)] = dup[str(n)] = 0; kn = 0; nlab = 0; dropn[str(n)] = 0
         while kn < a.per_n:
-            batch = []
+            batch = []; bdraw = []
             while len(batch) < 4096:
                 r_, _ = N.generate(rp, n); s_ = N.render(r_); del r_; draws[str(n)] += 1
                 ts = tuple(s_)
@@ -77,19 +77,25 @@ def main():
                     coll[str(n)] += 1; continue
                 if ts in seen:
                     dup[str(n)] += 1; continue
-                assert SD.n_of(s_) == n; seen.add(ts); batch.append(s_)
-            lab = SD.label_chains(m, batch, dev, bs=32); nlab += len(batch)
-            for s_, o in zip(batch, lab):
+                assert SD.n_of(s_) == n; seen.add(ts); batch.append(s_); bdraw.append(draws[str(n)])
+            lab = SD.label_chains(m, batch, dev, bs=32)
+            for q, (s_, o) in enumerate(zip(batch, lab)):
+                if o["keep"] and o["cv"] and kn >= a.per_n:
+                    dropn[str(n)] += 1                                      # kept-eligible beyond the target in the last chunk: dropped, never trained
                 if o["keep"] and o["cv"] and kn < a.per_n:
                     kept.append({"syms": s_, "n": n, "chain_label": o["label"], "steps": o["steps"]}); kn += 1
-        keepn[str(n)] = kn / nlab
+                    if kn == a.per_n:                                       # both counts logged (Theory 10-17): up to the target's kept item
+                        at_target[str(n)] = {"draws": bdraw[q], "labelled": nlab + q + 1, "keep": kn / (nlab + q + 1)}
+            nlab += len(batch)
+        keepn[str(n)] = (kn + dropn[str(n)]) / nlab; labn[str(n)] = nlab
         print("POOL n", n, "kept", kn, "labelled", nlab, "keep %.4f" % keepn[str(n)], "draws", draws[str(n)], "coll", coll[str(n)], "dup", dup[str(n)], "%.0f s" % (time.time() - t0), flush=True)
     perm = np.random.default_rng(21901).permutation(len(kept)); fp = os.path.join(outp, "pool_r1.jsonl")
     with open(fp, "w", encoding="utf-8", newline="\n") as f:
         for i in perm:
             r = kept[int(i)]; assert set(r) == SD.REC_KEYS; f.write(json.dumps(r, separators=(",", ":")) + "\n")
     meta = {"seed": 21900, "perm_seed": 21901, "per_n": a.per_n, "ns": list(NS), "n_records": len(kept), "draws_n": draws, "collide_n": coll, "dup_n": dup,
-            "keep_n": keepn, "gate_seed": 21960, "gate_per_n": a.gate_n, "gate_collide_n": gcoll, "excl": {"test_n_max20": n_test, "serial": n_serial, "s213_37": len(ex37)},
+            "keep_all": keepn, "keep_all_def": "kept-eligible (KEEP and CV) / all labelled, incl. the last chunk's overshoot", "keep_to_target": {k: v["keep"] for k, v in at_target.items()},
+            "at_target": at_target, "labelled_n": labn, "dropped_extra_n": dropn, "gate_seed": 21960, "gate_per_n": a.gate_n, "gate_collide_n": gcoll, "excl": {"test_n_max20": n_test, "serial": n_serial, "s213_37": len(ex37)},
             "sha256": SD.file_sha256(fp), "builder_commit": subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip(),
             "labeller": "boxes/runs_fsq/s213_d3t_s1/model.pt", "card": torch.cuda.get_device_name(dev), "dtype": "fp32", "bs": 32, "cap": "n + 4",
             "filter": "KEEP and COMPOSE-VALID", "sec": round(time.time() - t0)}
