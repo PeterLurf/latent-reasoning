@@ -1,0 +1,10 @@
+{
+ "schedules_checked": 101120,
+ "violations": {
+  "D0": 0,
+  "D0b": 50912,
+  "D0b_gated_eq_rho": 0,
+  "D1": 0,
+  "trmax": 0
+ }
+}

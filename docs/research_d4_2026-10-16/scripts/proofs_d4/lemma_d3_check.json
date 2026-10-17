@@ -1,0 +1,75 @@
+{
+ "identity_max_abs_err": 3.552713678800501e-15,
+ "identity_scale": 7.596479200343898,
+ "scaling": [
+  {
+   "eps": 0.1,
+   "max_grad": 0.12643990192984622,
+   "max_abs(grad - leading)": 0.0012599087147582844
+  },
+  {
+   "eps": 0.03,
+   "max_grad": 0.011458965422715933,
+   "max_abs(grad - leading)": 3.4017535298469515e-05
+  },
+  {
+   "eps": 0.01,
+   "max_grad": 0.0012757381977312964,
+   "max_abs(grad - leading)": 1.2599087147483964e-06
+  },
+  {
+   "eps": 0.003,
+   "max_grad": 0.00011489581204484665,
+   "max_abs(grad - leading)": 3.401753529737187e-08
+  },
+  {
+   "eps": 0.001,
+   "max_grad": 1.276872115574623e-05,
+   "max_abs(grad - leading)": 1.2599087142174762e-09
+  },
+  {
+   "eps": 0.0003,
+   "max_grad": 1.1492642782661375e-06,
+   "max_abs(grad - leading)": 3.401753530263533e-11
+  }
+ ],
+ "loglog_slope_grad": [
+  1.994226674500256,
+  1.9982003322965765,
+  1.9994260040740772,
+  1.9998203529557113,
+  1.999942633541227
+ ],
+ "loglog_slope_remainder": [
+  3.000000000000101,
+  3.0000000000070335,
+  3.0000000000203806,
+  3.0000000003612355,
+  2.999999999541864
+ ],
+ "direction_opposite_sign": {
+  "drift_norms": [
+   0.01,
+   0.02
+  ],
+  "grad_l": [
+   1.8899999999999775e-05,
+   -1.8899999999999694e-05
+  ],
+  "descent_raises_version": 2,
+  "more_drifted_version": 2
+ },
+ "direction_same_sign": {
+  "drift_norms": [
+   0.01,
+   0.02
+  ],
+  "grad_l": [
+   -9.899999999999751e-06,
+   9.899999999999929e-06
+  ],
+  "descent_raises_version": 1,
+  "more_drifted_version": 2
+ },
+ "slva_algebra_identity_max_abs_err": 6.661338147750939e-16
+}
