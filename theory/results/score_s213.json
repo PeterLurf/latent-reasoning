@@ -1166,13 +1166,34 @@
    "label": "not met"
   },
   "D4_STAGE0_D3T": {
+   "s03_gate": true,
+   "S0_3": {
+    "revert": {
+     "control": false,
+     "ER": 1.0592823712948518,
+     "HIDDEN_WORK": true,
+     "readable": false,
+     "drop78": 0.8035,
+     "ARM_NULL": false
+    },
+    "mct": {
+     "control": true,
+     "ER": 1.0,
+     "HIDDEN_WORK": true,
+     "readable": false,
+     "drop78": 0.0,
+     "ARM_NULL": false
+    }
+   },
    "S0_2": {
     "drop_s8": 0.020000000000000018,
     "drop_s4_78": 0.009500000000000064,
     "drop_foreign": 0.9036666666666666,
     "BANK_BORNE": false,
     "BANK_NULL": false
-   }
+   },
+   "AGE_CLOCK": false,
+   "PROGRESS_ONLY": false
   }
  }
 }
