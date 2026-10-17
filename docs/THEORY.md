@@ -18076,6 +18076,13 @@ Entry is at 11k (answer_ce), the same as N1.
   - **MIXED** otherwise.
 - **How it is reported:** "memory used causally for long-run stability" (213-20) is stated **only under CONTENT-STABILISES**. A COUNT-LIKE result is reported as "stability depends on the bank's size, not its history".
 
+**Note 213-22 (2026-10-16 22:19 EDT; Audit's caveat on 213-21's DUP control, before any eval_hist24.json with DUP exists; descriptive only; 213-21's labels are unchanged).**
+- **The caveat:** DUP floods the bank with copies of V_{t−1}, which concentrates attention on the newest content. A COUNT-LIKE result could therefore partly be "more newest helps", rather than "size, not history".
+- **The added arm, "dup_foreign":** versions 1..t−2 are replaced at every reader by copies of a **donor item's** V_{t−1}. The donor is the next item of the same n in test order, wrapping, so the shapes match; the count and positions are kept; the content is foreign. Same rollout and gate as hist24.
+- **Reported beside STAB_dup:** STAB_dup_foreign. It reads like this:
+  - STAB_dup < 0.05 with STAB_dup_foreign < 0.05: the bank's size, not its content, matters;
+  - STAB_dup < 0.05 with STAB_dup_foreign ≥ 0.10: the newest-content flood is what rescues it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
