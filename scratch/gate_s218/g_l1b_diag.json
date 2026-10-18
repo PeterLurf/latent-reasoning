@@ -1,0 +1,24 @@
+{
+ "c_final": {
+  "c": 17.14285659790039,
+  "acc": 0.578125,
+  "cand_ce": 0.8850367208069656,
+  "slva_newest_mass": 0.9999999219880384,
+  "slva_offnewest_mass": 7.80119615573227e-08
+ },
+ "items": 64,
+ "c_1e4": {
+  "c": 10000.0,
+  "acc": 0.578125,
+  "cand_ce": 0.8850364483660087,
+  "slva_newest_mass": 1.0,
+  "slva_offnewest_mass": 0.0
+ },
+ "c_19.86": {
+  "c": 19.86,
+  "acc": 0.578125,
+  "cand_ce": 0.8850375508773141,
+  "slva_newest_mass": 1.0,
+  "slva_offnewest_mass": 0.0
+ }
+}

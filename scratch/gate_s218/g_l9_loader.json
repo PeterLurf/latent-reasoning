@@ -1,0 +1,167 @@
+{
+ "steps": 24000,
+ "bs": 64,
+ "D_law": "U{3..8} (final stage)",
+ "exclusion_sec": 40.9,
+ "sec_total": 1538.7,
+ "sec_per_step": 0.06411186811327935,
+ "collisions": 0,
+ "draws_by_D": {
+  "5": 255679,
+  "6": 255750,
+  "7": 255950,
+  "8": 255926,
+  "3": 256248,
+  "4": 256447
+ },
+ "t_max": 974,
+ "s_max": 113,
+ "marks": [
+  {
+   "step": 1000,
+   "sec": 96.1,
+   "sec_per_step": 0.0961,
+   "collisions": 0
+  },
+  {
+   "step": 2000,
+   "sec": 180.4,
+   "sec_per_step": 0.0902,
+   "collisions": 0
+  },
+  {
+   "step": 3000,
+   "sec": 261.1,
+   "sec_per_step": 0.087,
+   "collisions": 0
+  },
+  {
+   "step": 4000,
+   "sec": 335.4,
+   "sec_per_step": 0.0838,
+   "collisions": 0
+  },
+  {
+   "step": 5000,
+   "sec": 400.5,
+   "sec_per_step": 0.0801,
+   "collisions": 0
+  },
+  {
+   "step": 6000,
+   "sec": 455.4,
+   "sec_per_step": 0.0759,
+   "collisions": 0
+  },
+  {
+   "step": 7000,
+   "sec": 508.7,
+   "sec_per_step": 0.0727,
+   "collisions": 0
+  },
+  {
+   "step": 8000,
+   "sec": 565.1,
+   "sec_per_step": 0.0706,
+   "collisions": 0
+  },
+  {
+   "step": 9000,
+   "sec": 623.6,
+   "sec_per_step": 0.0693,
+   "collisions": 0
+  },
+  {
+   "step": 10000,
+   "sec": 679.0,
+   "sec_per_step": 0.0679,
+   "collisions": 0
+  },
+  {
+   "step": 11000,
+   "sec": 735.4,
+   "sec_per_step": 0.0669,
+   "collisions": 0
+  },
+  {
+   "step": 12000,
+   "sec": 789.6,
+   "sec_per_step": 0.0658,
+   "collisions": 0
+  },
+  {
+   "step": 13000,
+   "sec": 847.1,
+   "sec_per_step": 0.0652,
+   "collisions": 0
+  },
+  {
+   "step": 14000,
+   "sec": 905.0,
+   "sec_per_step": 0.0646,
+   "collisions": 0
+  },
+  {
+   "step": 15000,
+   "sec": 969.0,
+   "sec_per_step": 0.0646,
+   "collisions": 0
+  },
+  {
+   "step": 16000,
+   "sec": 1032.3,
+   "sec_per_step": 0.0645,
+   "collisions": 0
+  },
+  {
+   "step": 17000,
+   "sec": 1095.8,
+   "sec_per_step": 0.0645,
+   "collisions": 0
+  },
+  {
+   "step": 18000,
+   "sec": 1155.4,
+   "sec_per_step": 0.0642,
+   "collisions": 0
+  },
+  {
+   "step": 19000,
+   "sec": 1218.8,
+   "sec_per_step": 0.0641,
+   "collisions": 0
+  },
+  {
+   "step": 20000,
+   "sec": 1280.9,
+   "sec_per_step": 0.064,
+   "collisions": 0
+  },
+  {
+   "step": 21000,
+   "sec": 1343.1,
+   "sec_per_step": 0.064,
+   "collisions": 0
+  },
+  {
+   "step": 22000,
+   "sec": 1405.8,
+   "sec_per_step": 0.0639,
+   "collisions": 0
+  },
+  {
+   "step": 23000,
+   "sec": 1474.7,
+   "sec_per_step": 0.0641,
+   "collisions": 0
+  },
+  {
+   "step": 24000,
+   "sec": 1538.7,
+   "sec_per_step": 0.0641,
+   "collisions": 0
+  }
+ ],
+ "pass": true,
+ "note": "completes; the per-step loader cost is paid inside the trainer's loop (no prefetch)"
+}
