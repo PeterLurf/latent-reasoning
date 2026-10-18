@@ -19603,6 +19603,11 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - Same-device fp64 reduction-order noise is ~1e-15 relative, so the 1e-9 bar does not depend on the device.
 - (i) / (ii) stand from the 3070 fp32 run (218-7).
 
+**Note 218-12 (2026-10-18 17:50 EDT; Audit's addition to 218-11, before any (iii) result).** "Whichever completes first" sets only the launch time.
+- If the second fp64 run also completes, it **must also pass ≤ 1e-9**.
+- A later failure of either run is a code finding. It stops A1 / DIRECT-SYM under their guards (GUARD_STOP), pending a joint Theory / Audit review.
+- Audit reads the passing JSON before the queues move from .hold to .txt.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
