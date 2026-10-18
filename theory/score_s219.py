@@ -79,6 +79,16 @@ CARDS = ("3070", "2070", "4060", "3090", "4090", "A100", "H100")
 HASH_MODELS = True         # FT cells: meta model_sha256 == sha256(model.pt) when model.pt is present
 BASE_NOTE = None           # G-T19: {"note": "219-x", "branch": "levels" | "gain"} once Theory records it; the scorer asserts its own branch matches
 NOT_ADMITTED, FINAL = set(), set()
+SMOKE = False               # --smoke (Audit G-T12, as score_s218): relax ONLY the dead / step-count / ARGS-DIFF / size / card / sha pre-checks of smoke cells,
+SMOKE_RELAXED = []          # each still computed and listed (smoke_relaxed); every label carries SMOKE_LABEL; refused at --final; never a registered reading
+SMOKE_LABEL = "SMOKE: not a registered reading"
+
+
+def relax(what):
+    """SMOKE: a pre-check that would censor / void is computed, listed and relaxed. -> True if relaxed (SMOKE), False otherwise."""
+    if SMOKE:
+        SMOKE_RELAXED.append(what)
+    return SMOKE
 
 # ---- latent comparators (Addendum 2 item 4): constants, sources, rule. Never re-read for a decision.
 LATENT_N50 = {"r0": 10.306, "r1": 15.460, "r2": 20.539}
@@ -374,12 +384,13 @@ _ITEMS, _SHA = {}, {}
 def _pos(n, idx, lo_n=None):
     """within-n positions for indices idx (global into test_set(1000, 24), into its n >= lo_n slice (latent eval_deep), or within n; detected);
     must be a permutation of 0..999."""
-    if not isinstance(idx, list) or len(idx) != 1000 or not all(isinstance(i, int) and not isinstance(i, bool) for i in idx):
+    full = isinstance(idx, list) and len(idx) == 1000
+    if not isinstance(idx, list) or not (full or (SMOKE and 0 < len(idx) < 1000)) or not all(isinstance(i, int) and not isinstance(i, bool) for i in idx):
         return None
     for base in ((n - 1) * 1000,) + (((n - lo_n) * 1000,) if lo_n else ()) + (0,):
         if all(base <= i < base + 1000 for i in idx):
             q = [i - base for i in idx]
-            return q if len(set(q)) == 1000 else None
+            return q if len(set(q)) == len(idx) else None
     return None
 
 
@@ -466,8 +477,10 @@ def _text_read(d, fname, expect_sha, cards_ok, forbid_sha):
             c = IT[n]; q = _pos(n, c["idx"]); ti = TI["by"][n]
             if q is None or any(v is not None and v != n for v in c["n"]):
                 bad.append((n, "idx / n")); continue
-            if [c["y"][j] for j in sorted(range(1000), key=lambda j: q[j])] != ti["t"]:
+            if [c["y"][j] for j in range(len(q))] != [ti["t"][qq] for qq in q]:
                 bad.append((n, "y != test t")); continue
+            if len(q) != 1000 and relax("eval_text %s/%s n %d: %d items (size)" % (d, fname, n, len(q))) is False:
+                bad.append((n, "items != 1000")); continue
             P_ = [ti["P"][qq] for qq in q]; C_ = [ti["C"][qq] for qq in q]; ov = [ti["ovf"][qq] for qq in q]
             if c["P"] != P_ or c["C_struct"] != C_:
                 bad.append((n, "P / C_struct != the item's")); continue
@@ -476,7 +489,7 @@ def _text_read(d, fname, expect_sha, cards_ok, forbid_sha):
             if any(o and a_ != -1 for o, a_ in zip(ov, c["answer"])):
                 bad.append((n, "an overflow item has an answer")); continue
             corr = [int(a_ == y_) for a_, y_ in zip(c["answer"], c["y"])]
-            if abs(sum(corr) / 1000 - A[str(n)]) > 1e-12:
+            if abs(sum(corr) / len(corr) - A[str(n)]) > 1e-12:
                 bad.append((n, "acc_by_n != mean(answer == y)")); continue
             fv = [bool(v) for v in c["form_valid"]] if all(isinstance(v, bool) for v in c["form_valid"]) else None
             st = [bool(v) for v in c["strict"]] if all(isinstance(v, bool) for v in c["strict"]) else None
@@ -491,6 +504,9 @@ def _text_read(d, fname, expect_sha, cards_ok, forbid_sha):
                     flags.append((n, "%s != items" % key))
     chk["items"] = chk["fields"] and not bad
     chk["one_card"] = len(cards) <= 1
+    for k in [k for k, v in chk.items() if not v and (k in ("items_sha256", "card", "one_card") or k.startswith("model_sha256"))]:
+        if relax("eval_text %s/%s: %s (%s)" % (d, fname, k, "sha" if "sha" in k else "card")):
+            chk[k] = "relaxed (SMOKE)"
     void = sorted(k for k, v in chk.items() if not v)
     if void:
         return {"void": "%s %s" % (fname, void), "checks": chk, "item_problems": bad[:10], "meta": m, "card_class": cc}
@@ -749,7 +765,7 @@ def card_gate(lin):
             dn = {n: abs(e2["a"][n] - e3["a"][n]) for n in range(1, 25)}; i2, i3 = _ITEMS[(R, d, "eval_text_2070.json")], _ITEMS[(R, d, "eval_text.json")]
             flips = {}
             for n in range(1, 25):
-                m2 = dict(zip(i2[n]["q"], i2[n]["corr"])); m3 = dict(zip(i3[n]["q"], i3[n]["corr"])); fl = [q for q in range(1000) if m2[q] != m3[q]]
+                m2 = dict(zip(i2[n]["q"], i2[n]["corr"])); m3 = dict(zip(i3[n]["q"], i3[n]["corr"])); fl = [q for q in sorted(set(m2) & set(m3)) if m2[q] != m3[q]]
                 if fl:
                     flips[n] = fl[:50]
             dn50 = (abs(e2["n50"] - e3["n50"]) if (num(e2["n50"]) and num(e3["n50"])) else (0.0 if e2["n50"] == e3["n50"] else None))
@@ -897,6 +913,8 @@ def ft_cell(lin, role):
         return o
     info = log_info(d); ad = args_diff(lin, role); sd = jl(d, "eval_textself.json"); pm = jl(L[r["pool"]], "pool_meta.json")
     a = ev["a"]; dead = info["last"] < FT_FULL; diverged = any(a[n] < 0.99 - EPS for n in range(1, 9))
+    if dead and relax("%s: dead / step count (log last step %s < %d)" % (d, info["last"], FT_FULL)):
+        dead = False
     if role == "t1":
         g = gate_t1(lin); gwin = {"W1": g}; gate_bad = not g["PASS"]; o["GATE_T1"] = {k: g[k] for k in ("status", "pi_pool", "pi_E_pool", "consistent", "per_n")}
     else:
@@ -904,12 +922,17 @@ def ft_cell(lin, role):
         o["GATE_T2"] = {w: {"status": g[w]["status"], "pi_pool": (g[w]["used"] or g[w]["primary"])["pi_pool"]} for w in WIN}
     la = label_audit_t(sd["label_audit"], gwin, role); noisy = not la["ok"]
     ct = contamination_t(lin, role, sd, info, pm); args_bad = not (ad and ad["ok"])
+    if args_bad and relax("%s: ARGS-DIFF %s" % (d, {k: (ad or {}).get(k) for k in ("shared_diffs", "required_bad", "unexpected_new_keys", "neutral_bad",
+                                                                                     "dropped_base_keys") if (ad or {}).get(k)})):
+        args_bad = False
     if role == "t2":
         pc, _ = provenance_t2(lin, g, pm); ct["provenance"] = pc
-        if not all(pc.values()):
+        if not all(pc.values()) and not relax("%s: provenance sha %s" % (d, sorted(k for k, v in pc.items() if not v))):
             ct["CONTAMINATED"] = True; ct["provenance_bad"] = sorted(k for k, v in pc.items() if not v)
     rc = {"gate": g.get("card_class"), "pool": card_class(pm.get("card"))}
     card_bad = not (rc["gate"] in ok_cards and rc["pool"] in ok_cards and rc["gate"] == rc["pool"])
+    if card_bad and relax("%s: round cards %s (card)" % (d, rc)):
+        card_bad = False
     why = [w for w, f in (("dead", dead), ("FT-DIVERGED-T", diverged), ("LABEL-NOISY-T", noisy),
                           ("CONTAMINATED%s" % (" (provenance: %s)" % ct["provenance_bad"] if ct.get("provenance_bad") else ""), ct["CONTAMINATED"]), ("ARGS-DIFF", args_bad),
                           ("SEAL-BREACH", seal["BREACH"]), ("round not on one allowed card %s" % rc, card_bad),
@@ -1074,6 +1097,8 @@ def token_cost(cell_d, rnd):
     for n in (range(13, 17) if rnd == 1 else range(17, 21)):
         p = per[n]; k = sum(p["corr"]); nt = [int(v) if num(v) else 0 for v in p["ntok"]]
         pos = sum(0 if o else (P_ + t) for P_, t, o in zip(p["P"], nt, p["ovf"])); kl = int(round(1000 * LATENT_CURVES[lr][n])); sT = sum(TI["by"][n]["P"])
+        if len(p["corr"]) != 1000:                                         # SMOKE partial sets: the latent side scaled to the same item share
+            kl = int(round(len(p["corr"]) * LATENT_CURVES[lr][n])); sT = sum(TI["by"][n]["P"][q] for q in p["q"])
         out[n] = {"text_steps_per_correct": (sum(nt) / k) if k else None, "text_positions_per_correct": (pos / k) if k else None,
                   "latent_steps_per_correct": ((n + 2) * 1000 / kl) if kl else None, "latent_positions_per_correct": ((n + 2) * sT / kl) if kl else None,
                   "text_correct": k, "latent_correct": kl}
@@ -1201,7 +1226,7 @@ def depth_paired(cell_d, rnd):
     out = {}
     for n, lc in lat.items():
         t = dict(zip(per[n]["q"], per[n]["corr"])); tab = {"both": 0, "text_only": 0, "latent_only": 0, "neither": 0}
-        for q in range(1000):
+        for q in sorted(t):
             tab["both" if (t[q] and lc[q]) else "text_only" if t[q] else "latent_only" if lc[q] else "neither"] += 1
         out[n] = dict(tab, mcnemar_p=mcnemar_p(tab["text_only"], tab["latent_only"]))
     return out
@@ -1281,7 +1306,7 @@ def _tt_str(tt, rnd):
     g = lambda v: ("%.3g" % v) if num(v) else "n/a"  # noqa: E731
     return ("TRAIN-TOKENS r%d (target tokens / token-positions consumed; not compute-matched): text %s / %s (%s); latent %s / %s%s" % (
         rnd, g(t["target_tokens"]), g(t["positions"]), t["self_method"], g((l_ or {}).get("target_tokens")), g((l_ or {}).get("positions")),
-        "" if l_ else " (%s)" % tt.get("latent_note")))
+        " (latent by the documented formula: K = min(n + U, kmax) from the latent draws_log, T = the test-set per-n mean len(syms) + 2)" if l_ else " (%s)" % tt.get("latent_note")))
 
 
 def comparison(lin, base, g1, t1, g2, t2):
@@ -1399,26 +1424,41 @@ def lineage(lin):
         t2 = dict(t2, status="NOT_RUN" if t2.get("status") == "PENDING" else t2.get("status"),
                   label=("not run (round-2 condition not met)" if t2.get("status") == "PENDING" else t2.get("label")))
     cmp_ = comparison(lin, base, g1, t1, g2, t2)
+    if SMOKE:
+        for c_, tag in ((base, LIN[lin]["base"]), (t1, LIN[lin]["t1"]), (t2, LIN[lin]["t2"])):
+            c_["smoke_relaxed"] = list(dict.fromkeys(x for x in SMOKE_RELAXED if tag in x.split(":")[0]))
+            c_["label"] = "%s | %s" % (SMOKE_LABEL, c_.get("label"))
+        cmp_["smoke_relaxed"] = list(dict.fromkeys(SMOKE_RELAXED)); cmp_["line"] = "%s | %s" % (SMOKE_LABEL, cmp_["line"])
     return {"base": base, "card_gate": card_gate(lin), "gate_t1": g1, "t1": t1, "gate_t2": g2, "t2": t2, "comparison": cmp_}
 
 
 def score(final=(), not_admitted=()):
+    if SMOKE and final:
+        raise SystemExit("score_s219: --smoke is refused at --final (a smoke is never a registered reading)")
+    del SMOKE_RELAXED[:]
     FINAL.clear(); FINAL.update(final); NOT_ADMITTED.clear(); NOT_ADMITTED.update(not_admitted); _ITEMS.clear(); _TR.clear()
     out = {"registered": REGISTERED, "R": R, "CARD_CLASS": CARD_CLASS, "final": sorted(FINAL), "not_admitted": sorted(NOT_ADMITTED),
            "LATENT": {"n50": LATENT_N50, "sources": LATENT_SRC, "rule": LATENT_RULE, "selfcheck": _LSC, "by_card": LATENT_N50_BY_CARD},
-           "META_T": sorted(META_T), "TEXT_NEUTRAL_NEW": TEXT_NEUTRAL_NEW, "layouts_assumed": LAYOUTS}
+           "META_T": sorted(META_T), "TEXT_NEUTRAL_NEW": TEXT_NEUTRAL_NEW, "layouts_assumed": LAYOUTS, "SMOKE": SMOKE}
     out["s1"] = lineage("s1")
+    if SMOKE:
+        out["SMOKE_LABEL"] = SMOKE_LABEL; out["smoke_relaxed"] = list(dict.fromkeys(SMOKE_RELAXED))
     return out
 
 
 def reading(out):
     s = out["s1"]
-    return "READING: base %s || T1 %s || T2 %s || comparison %s" % (s["base"]["label"], s["t1"]["label"], s["t2"]["label"], s["comparison"]["line"])
+    return "%sREADING: base %s || T1 %s || T2 %s || comparison %s" % ("%s | " % SMOKE_LABEL if out.get("SMOKE") else "", s["base"]["label"], s["t1"]["label"],
+                                                                      s["t2"]["label"], s["comparison"]["line"])
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(); ap.add_argument("--final", action="append", default=[], choices=["s1"])
-    ap.add_argument("--not_admitted", default=""); a = ap.parse_args(argv)
+    ap.add_argument("--not_admitted", default=""); ap.add_argument("--smoke", action="store_true", help="relax ONLY the dead / step-count / ARGS-DIFF / size / card / "
+                    "sha pre-checks (listed in smoke_relaxed); never a registered reading; refused at --final"); a = ap.parse_args(argv)
+    global SMOKE
+    if a.smoke:
+        SMOKE = True
     out = score(a.final, [x for x in a.not_admitted.split(",") if x])
     print(reading(out).encode("ascii", "backslashreplace").decode("ascii"))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
