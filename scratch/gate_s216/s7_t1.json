@@ -1,0 +1,52 @@
+{
+ "pa": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_pre": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ],
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "carry": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_pre": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ],
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "slva": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_pre": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ],
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "pass": true,
+ "device": "cpu",
+ "tree": "D:/Latent/scratch/_tmp/sd216_tree",
+ "pre": "D:/Latent",
+ "vbank_file": "D:\\Latent/scratch/_tmp/sd216_tree\\boxes\\vbank.py"
+}

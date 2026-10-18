@@ -1,0 +1,8 @@
+{
+ "E1_deep_smoke_4060_N1": "rc 0, keys per \u00a74.2, n 13..24 x 1000, 29 K per item, items_sha256 match, acc_k == items, peak 4.10 GiB bs 16, 883 s (no accuracy read)",
+ "E2_r2_smoke_4060": "rc 0 on the smoke pool (scale 0.002): memo n 9..16, label_audit pooled + by_window, items_n2 / items_k24 / T / idx n 1..16, contamination 0 / 0",
+ "E3_draw_identity_cpu": "n 9..20 items identical under the extended loop; n 21..24 drawn 1000 each",
+ "E4_hist24_smoke_4060": "items means == per-n means; per-n means == committed s215_ftself_s1/eval_hist24.json (bitwise even on the 4060)",
+ "B1_B2_smoke_4060": "exclusion union 489,607 in 8 s; gates + scoring + pool (scale 0.002) rc 0; the fallback labeller path exercised",
+ "T1_G-S7": "scratch/gate_s216/s7_t1.json: pa / carry / slva bitwise vs HEAD (CPU)"
+}
