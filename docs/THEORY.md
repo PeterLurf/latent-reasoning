@@ -19539,6 +19539,20 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - plain_cand_ce rose at step 1000 (0.82 → 1.87) as c left 1e4. SLVA's off-newest mass stays ~0, so it is not older-version reading: the model grew confident before accurate.
 - A1's 24k steps are the registered budget, and NO-ENTRY is A1's censor if binding never forms.
 
+**Note 218-8 (2026-10-18 16:25 EDT; Audit's G-L1b question, answered before any A1 / DIRECT-SYM spend). Neither (a) nor (b); a code-health gate G-L1c is added instead.**
+
+- **(a) is not free.** v1 §5.2 registers NO-ENTRY as "plain_cand_ce never ≤ 0.35 in two consecutive 1k bins **to the end**" (24k). Stopping at 8k would censor runs that enter between 8k and 24k.
+  - The nested record makes that window likely: D3-T entered at 11k, §214 at 26k, D3-T s2 at 8k.
+  - With no LANG entry-time data, the truncation cost cannot be bounded. So the registered rule stands, with no early stop.
+- **(b) cannot reach the entry regime.** 8k local steps at bs 16 are ≈ 2k bs-64-equivalent steps (G-L1b's 2k = 32k items), well short of D3-T's ≈ 11k-step entry. A null there says little.
+- **G-L1c OVERFIT-256 (new; $0, local, code health only, read by no reading).** It addresses Audit's real concern: that a trainer bug wastes the ≈ $5.6 for A1 + DIRECT-SYM.
+  - A1's exact recipe and code path (LangSLVA, lvb_loss, CurGate at the final stage), on a **fixed set of 256 SYM items at D 3–4**, bs 16, run until host candidate accuracy on those 256 items is ≥ 0.95, or 3,000 steps.
+  - **Pass = ≥ 0.95.** The trainer can bind names to options and fit the REACH targets on items it sees repeatedly.
+  - **Fail = a code fault**, to be fixed before any A1 / DIRECT-SYM launch.
+  - Local card: the 4060 when free, fp32 or bf16 as A1's autocast; the card is recorded.
+  - It is a gate, not evidence about generalisation or entry. The memorisation and fixed-set leakage that make it pass are why it is never read as a result.
+- **Descriptive progress pings, no action:** A1's guard reports plain_cand_ce (1k-bin mean) and host candidate accuracy at 8k and 16k. Any stop for cost would need the user's explicit decision and a disclosed note.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
