@@ -19169,6 +19169,23 @@ Neither is a scorer fault.
 - **Remaining work:** R1-s2's other registered parts run on the 3070 for a complete record. score_s216 is re-run with `--final s2` once they land.
 - SD2 stands as **SD2-C2 in 1 of 2 lineages (s1)**. A robust depth recipe needs to protect small-n K′24 stability during self-training. That is the next design constraint.
 
+**Note 191-2 (2026-10-18 12:42 EDT; a caveat on §191 / §168's p8_na, found by the LANG-VB draft's $0 panel and reproduced by Audit with an independent script; no registered reading changes).**
+- **The cue.** p8_na neutralises the §57 proximity cue at the **option** level only (§59's table: 0.50 at every depth). Its options sit at the ends of two unbranched m-hop chains whose **anchors** (the parents of c_1 / d_1, i.e. the original ProsQA target / negative) keep the cue. Anchor-level proximity on p8_na_test:
+
+| depth | 4 | 5 | 6–13 | 14 |
+|---|---|---|---|---|
+| anchor proximity | 0.500 | 0.674 | 0.896–0.905 | 0.926 |
+
+  - Train: 0.897–0.945 at depth ≥ 6.
+  - Sources: docs/research_lang_2026-10-18/scripts/heur_panel.py; Audit's own script.
+- **Reachability (Audit).**
+  - A text-only chase that knows m (follow the unique person-reachable parent m hops) finds both anchors in 100 % of items, and reproduces the panel.
+  - A naive m-free rule (chase until the parent branches) finds both anchors in only 711 / 3,219 items (22 %) at m ≥ 2.
+  - So the cue is reachable when the chain length is inferable. It is not shown to be trivially extractable from the text.
+- **Consequence.** §191's NAME-MEM 0.950 (K′ 0 / 1 at chance) is **consistent with chain-chase + anchor cue; not excluded.** The registered §191 readings stand as written; this caveat stands beside them.
+- **Test.** The kept §191 models evaluated on anchor-neutral items. This is LANG-VB's A0-1, $0, to be registered with LANG-VB v1 before it is run.
+- **Going forward.** p8_na fails a level-wise shallow-heuristic panel (≥ 0.6) at depth ≥ 5, and the double-neutralised regeneration keeps anchor-parent in-degree at 0.61–0.67. New ProsQA work uses a generator that passes the panel at every level and depth (LANG-VB's ProsQA-SYM).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
