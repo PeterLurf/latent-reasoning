@@ -18741,7 +18741,7 @@ The evals (D4_v1 §6, plus eval_stepbyt via scratch/s214_post_stepbyt.sh, d3cfda
 - D3-T advanced on the criterion, at 6,000 and 9,000 (bin_mean 0.092 / 0.132).
 - So §214 reached its final training range **7k steps later** than D3-T. It had 32k steps at n ≤ 8, against D3-T's 39k.
 - Read with 214-4's entry (26k vs 11k): from stage 2 onward, §214 took ~10k steps to enter and D3-T ~2k.
-- log.jsonl carries no plain-only answer_ce (fields: answer_ce, rec_ce, loss, c, pause_item_frac, …). Plain-item entry therefore cannot be separated post hoc without checkpoints, and none were kept beyond the mirror (Audit's request, 23:4x).
+- log.jsonl carries no plain-only answer_ce (fields: answer_ce, rec_ce, loss, c, pause_item_frac, …). Plain-item entry therefore cannot be separated post hoc without checkpoints, and none were kept beyond the mirror (Audit's request, received before 23:30).
 
 **Consequence (descriptive; no registered reading changes):**
 - Every §214 vs D3-T comparison carries **two confounds**: basin entry (26k vs 11k, CONFOUNDED by rule) and **curriculum timing** (stage 2 at 16k vs 9k).
