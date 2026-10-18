@@ -301,7 +301,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 211 | VERSION-BANK + READY-RECODE (user-approved 23:06 10-15, Stage 0 + 1, cap $9): pass-global attention memory (bounded core, append-only version bank, PURE-ANNEAL) + readiness-window answer + reweighted linear per-slot recode (+ MCT in N3); VB-C1 = DEEP + PROBE-GAIN + SERIAL-ONSET + VALUE-SWAP + STALL; claim = supervised serial latent computation | closed | **N2 (main, PURE-ANNEAL) VB-C1 with HISTORY-USED (pass-global use) and stable K′24; N1 CARRY VB-C1 via carry only (bank unused); N3 MCT COUNT-KEYED (STALL 0.499); C2 not met (DEPTH 0.31–0.41); ~$4.1** |
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
-| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **cap raised to $4.50 by the user 12:34 (214-3; forced G-TIME $4.08 admits; realistic ~$2.6-3.0); relaunch pending** |
+| 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **CLOSED 10-18: not D4-C2 (DEPTH 0.729 vs D3-T 0.480); ladder KEPT (L0, gain after K'10 0.079); START-D GATED-COUNT; KEEPS-SELF-STAB (0.719); entry 26k + CurGate CONFOUNDED (214-4/214-5); ~$2.62 / $4.50** |
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **CLOSED 10-18: FT-SELF SD-SELF (in support; not C2), GROW (M 0.717, STOP 15, K'-BEYOND 0.155); pair SELF-ATTRIBUTED (CTRL gain -0.021, D3-T level), MEM-TRADED by the self items (STAB_self 0.782 -> CTRL 0.696 -> SELF 0.489; weakened, not lost); ~$1.07 / $1.50; round 2 = SD2 (proposed §216) needs the user's explicit OK** |
 | 216 | SELF-DEPTH-CHAIN round 2 (SD2; user-approved 01:31 10-18, "Approve (Recommended)"; family cap $6.50): s216_r2_s1 from FT-SELF on its own chain (2/3 n 13-16, 1/3 n 9-12) + lineage s2 (D3-T seed 2 -> R1 -> R2); SD2-SELF / SD2-C2 (DBS-2 n 17-20 >= 0.80, eval_deep) / LIT-C2-2 / SD2-C2-MEM / x2; SD2_v1.md at e9ade2ec; scorer score_s216 (to write) | registered | **gates + Audit G-S13 diff review; not launched** |
 
@@ -18854,6 +18854,45 @@ Round 2 follows the pre-stated plan (v1 §9):
   - Both pairs overlap (0.99952 ≤ 0.99989; 0.99929 ≤ 0.99989).
   - **So LABEL-AUDIT passes as registered, and FT-SELF's result (215-6, the §215 pair result) is unchanged.**
 - score_s215.py is left as is: §215 is closed, and this note is the record. score_s216 implements the overlap test for R1-s2 and for every R2 window (SD2_v1 §4.4).
+
+**§214 D4 result and close (2026-10-18 03:12 EDT; s214_pausea_s1, b309, RTX 3090, 48,000 steps, c 0, entry 26,000, so CONFOUNDED vs D3-T (214-4) plus the CurGate timing confound (214-5); evals local fp32, eval_bs 32, RTX 3070 (card field in all 8 files); d3hist gate True; eval_stepbyt is descriptive and pending; theory/score_s214.py. Realised ≈ $2.62 of $4.50.)**
+
+**Label: not D4-C2 (DEPTH-GENERAL 0.729 < 0.80) | ladder KEPT (L0) | START-D GATED-COUNT | K′24-STABLE ✓ | KEEPS-SELF-STAB ✓.**
+
+| reading | §214 | D3-T (s213_d3t_s1) | met |
+|---|---|---|---|
+| a(n) at K′ n + 2, n 9 / 10 / 11 / 12 | 0.988 / 0.898 / 0.651 / 0.380 | 0.923 / 0.603 / 0.266 / 0.127 | — |
+| a(n), n 13 / 14 / 15 / 16 | 0.229 / 0.167 / 0.135 / 0.147 | 0.141 / 0.127 / 0.135 / 0.115 | — |
+| DEPTH-GENERAL (mean n 9–12 ≥ 0.80) | **0.729** | 0.480 | ✗ |
+| LENGTH-FREE / VB-C1 | ✓ / ✓ | ✓ / ✓ | ✓ |
+| K′24-STABLE (a_24 ≥ 0.99, n 1–8) | ✓ | ✓ | ✓ |
+| C2-TAIL (n 13–16) | ✗ | — | ✗ |
+| STEP-GENERAL (descriptive) | ✗ (mean m 12–16 0.965) | ✓ | — |
+| **KEEPS-SELF-STAB** | CONTENT-STABILISES; STAB_self **0.719**, bank 0.892, dup_newest 0.895 | 0.782 | ✓ |
+| **STOP-GONE** (ACC-GAIN-AFTER-10 ≥ 0.10) | **0.079** | ≈ 0 | ✗ → **KEPT (L0)** |
+| FIN-K, n 9 / 10 / 11 / 12 / 13 (unreadable n ≥ 14) | 9 / 10 / 11 / 11 / 12 | — | descriptive |
+| MOVED scan t_d | none | — | — |
+| PAUSE-LEARNED (pause_inv n 1–8 at K′ n + Q + 2, Q 6) | ✓ (≥ 0.996) | — | π arm |
+| HIDDEN-WORK (ER > 0.30) | **true**, ER 0.535 → L3 unreadable (moot at L0) | — | π arm |
+| **START-D** (D 4 vs D 0, n 9–12) | **GATED-COUNT**: FIN-K shift +4 / +4 / +3 / +4, acc change ≤ 0.006 | — | descriptive |
+
+**Reading.**
+- **Pause training raised accuracy just past the trained depth by about one operation**: n 10 0.60 → 0.90, n 11 0.27 → 0.65; mean n 9–12 0.48 → 0.73.
+- **The boundary is KEPT.** Passes after K′ 10 add only 0.079, and n ≥ 13 stays near chance. The finish tracks n up to 11, then stalls.
+- **GATED-COUNT.** Four pause passes at the start delay the finish four passes for four, with accuracy unchanged. The pauses are counted as non-working passes, and the limit is the number of working passes the model can use. That rules out a pass-index deadline at the n 9–12 boundary. It is consistent with a work-count or content limit.
+- **The memory channel is kept** (STAB_self 0.719 vs D3-T 0.782), unlike §215's self items (0.489).
+- **Confounds.** Entry was 26k vs 11k, and stage 2 started at 16k vs 9k (32k vs 39k steps at n ≤ 8). The depth gain came despite less time at n ≤ 8. Every comparison with D3-T carries both confounds.
+- Not D4-C2. One seed.
+
+**Descriptive caveats (no rule change).**
+1. **HIDDEN-WORK's 0.30 bar is model-dependent.** The plain one-pass-early analogue, (a_{n−1}(n) − c) / (a_{n+2}(n) − c) at n 3–8, is **0.36 in §214** vs 0.11 in D3-T: this model finishes a reduction early more often even without pauses (a_{n−1} 0.40–0.45 vs 0.18–0.22). The excess over plain is ≈ 0.17. Some work happens during pauses, but less than ER alone suggests.
+2. **ARGS-DIFF** is a §214 launch gate (G-P8), not a censor. The scorer flags two keys:
+   - args_ref: a pointer whose file, scratch/s214_args_ref_d3t.json, is identical to D3-T's args.json;
+   - init_from = '': a trainer key added after §213, off.
+
+   Neither is a recipe change. The only differences from D3-T are the registered pause flags and kmax 20.
+
+**§214 is closed.** D4 option B reads KEPT, with GATED-COUNT and MEM kept. A pause curriculum moves depth up by about +1 at the boundary but does not move the stop. On the same harness, §215's self-training gives more depth (1.000 at n 9–12) at a memory cost. Any D4 follow-up gates the curriculum on plain steps only (214-5); none is planned.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
