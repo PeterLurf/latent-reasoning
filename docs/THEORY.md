@@ -19313,6 +19313,26 @@ Two further corrections:
 
 The docstring of score_s217 now names boxes/vbank_causal.py (cosmetic).
 
+**Note 218-1 (2026-10-18 14:50 EDT; gate correction + implementation choices, before any registered §218 output; Experiments' questions on the build. G-L1b's local smoke is a gate run, not a registered reading).**
+
+1. **G-L7(b) corrected (DISCLOSED; my registration error).** LANG_v1 §7 registered "plain_cand_ce at init = 0.693 ± 0.05". That premise is false.
+   - **Why it is false.** The two-candidate CE per item is softplus(g), where g = Σlog p(o_wrong) − Σlog p(o_right) under the model. The pretrained LM's prior over the two NONCE strings gives per-item |g| of several nats. The fair option coin makes E[g] = 0, so by Jensen **E[softplus(g)] ≥ softplus(0) = ln 2**, with equality only if g ≡ 0 [PROVED]. Measured: about 2.0 at init.
+   - **What the gate was for** (RT F5-2): to rule out a per-token-mean CE, under which a coin-flipping model reads about 0.17, below NO-ENTRY's 0.35 bar.
+   - **Corrected rule G-L7(b′)**, on 2,000 plain items at init:
+     - (i) accuracy 0.50 ± 0.03;
+     - (ii) mean plain_cand_ce ≥ ln 2 − 0.02 (the Jensen floor; a per-token or leaking CE would fall below it);
+     - (iii) a unit check: each item's plain_cand_ce equals softplus(g), with g recomputed independently from the two candidates' summed token log-probs, to 1e-5.
+     - The gap histogram is reported.
+   - G-L7(a) (self / augmented batches never reach GATE.update) is unchanged.
+2. **PROBE(t)** (v1 §2.5: "a fresh copy of the trained coda (2 blocks + decoder path; LM head tied, frozen)"): trainable copies of the coda's 2 blocks and its β / γ. The decoder path (blocks 0–9 over "### name.") and the tied LM head stay frozen. They see no item information, so freezing them adds nothing. PLANT uses the identical probe.
+3. **PERSON-SWAP** (v1 §2.5, descriptive): the donor asks the other person (R → P), and its V_1..V_t are spliced at the same t as (ii′). This is consistent with the ALL-PERSONS signature (PERSON own ≥ 0.80 ∧ (ii′) follow ≥ 0.80).
+4. **A2 / A2-CTRL plain stream:** the registered stream 22100 is kept (v1 §2.2 item 10, §2.3, §2.6). Its plain items therefore repeat A1's first draws. This is disclosed, as SD2's seed replay was. A2 and A2-CTRL stay identical (G-L19), and no reading depends on fresh plain items.
+5. **Unregistered auxiliary seeds** (no reading uses them):
+   - calibration items rng 21110 (64 items, as vbank);
+   - the forced worst-shape stream 21120;
+   - the probe held-out curve set = the first 1,000 draws of the registered probe stream 22500 (D U{3..8});
+   - T_band = the max T of training-law items, logged from A1's stream.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
