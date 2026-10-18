@@ -104,7 +104,7 @@ def g_l2(dev):
     return out
 
 
-def g_l7b(dev, n=2000, bs=8, cal_n=16):
+def g_l7b(dev, n=2000, bs=8, cal_n=16, fp64=False):
     """G-L7(b') (Note 218-1, 8f2a2fcb) at init (pretrained GPT-2, calibrated LangSLVA on cal_n items, c 1e4 = step 1's regime) on n plain items of
     A1's first-stage law (D ~ U{3..4}, K = min(D + U{0..4}, 12); Stream 21140 / rng 21141, test + GATE signatures excluded):
       (i) accuracy at t = D (gold string's summed log-prob > the other's) 0.50 +- 0.03;
@@ -114,6 +114,8 @@ def g_l7b(dev, n=2000, bs=8, cal_n=16):
             max |diff| <= 1e-5. The gap histogram (g at t = D) is reported."""
     import numpy as np_
     torch.manual_seed(0); m = LV.LangSLVA(s5.load_gpt2(dev)).to(dev); m.eval(); m.c_anneal.fill_(1e4); ac = lambda: torch.autocast("cuda", enabled=False)  # noqa: E731
+    if fp64:                                                                # (iii) as a code check without fp32 reduction-order noise (the model's
+        m = m.double()                                                      # dec_logprobs casts logits to fp32; the recompute mirrors that cast)
     EX = LV.PS().exclusion_sigs(); s = LV.PS().Stream(21140, EX); rng = np_.random.default_rng(21141)
     sc = LV.PS().Stream(21110, EX); r_c = np_.random.default_rng(21110); cal_its = [LV.lvb_item(sc.draw(int(r_c.integers(3, 9)))) for _ in range(cal_n)]
     x_, p_, l_, si_, sp_, dR_, _ = LV.lvb_batch(cal_its, dev)
@@ -126,7 +128,7 @@ def g_l7b(dev, n=2000, bs=8, cal_n=16):
         S = sp.shape[1]; out = []
         for b in range(h.shape[0]):
             last = int(sp[b].nonzero().max()); rows = [last] + [S + k for k in range(dec.shape[1] - 1)]
-            lp = torch.log_softmax((h[b, rows].float() @ W.float().T), -1)              # the model's dtype (fp32): a code check, not a precision one
+            lp = torch.log_softmax((h[b, rows] @ W.T).float(), -1)        # the model's path: logits in the model dtype, log_softmax in fp32
             out.append(float(sum(lp[k, int(dec[b, k])] for k in range(dec.shape[1]))))
         return out
     rows_out = []
@@ -199,7 +201,7 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cpu"); ap.add_argument("--n", type=int, default=2000)
     a = ap.parse_args(); os.makedirs(OUT, exist_ok=True)
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
-    r = {"l1a": g_l1a, "l1b": g_l1b, "l2": g_l2, "l7b": lambda d: g_l7b(d, a.n), "l4b_hook": lambda d: g_l4b_hook(d, 64)}[a.gate](a.device); r["device"] = a.device
+    r = {"l1a": g_l1a, "l1b": g_l1b, "l2": g_l2, "l7b": lambda d: g_l7b(d, a.n), "l7b_fp64": lambda d: g_l7b(d, a.n, fp64=True), "l4b_hook": lambda d: g_l4b_hook(d, 64)}[a.gate](a.device); r["device"] = a.device
     json.dump(r, open(os.path.join(OUT, "g_%s.json" % a.gate), "w", newline="\n"), indent=1); print(a.gate, "PASS" if r["pass"] else "FAIL", json.dumps(r)[:600], flush=True)
 
 

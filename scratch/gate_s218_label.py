@@ -171,12 +171,15 @@ def cmd_replay():
     per_D = {D: 0 for D in LL.POOL_D}
     for j in range(w1["cursor"]):                                             # interleaved pool: record j is band 9 + j % 4
         per_D[LL.POOL_D[j % 4]] += 1
-    good = {"counts": {str(D): {"kept": LL.KEPT_PER_D, "drawn": 300000} for D in LL.POOL_D}, "n_records": 4 * LL.KEPT_PER_D, "POOL_SHORT": False}
-    short = {"counts": {**good["counts"], "12": {"kept": 105999, "drawn": 530000}}, "n_records": 4 * LL.KEPT_PER_D - 1, "POOL_SHORT": True}
-    fx = {"good_meta": LL.g_l20_check(good)["pass"], "short_meta": LL.g_l20_check(short)["pass"]}
+    good = {"kept_by_D": {str(D): LL.KEPT_PER_D for D in LL.POOL_D}, "n_records": 4 * LL.KEPT_PER_D, "POOL_SHORT": False, "rng_replay_equal": True,
+            "demand_replay": 383488, "key_set": sorted(LL.REC_KEYS), "sig_hits": {"test": 0, "gate": 0, "probe": 0}, "gold_key_hits": 0, "label_bug": False}
+    bad = {"short": {"kept_by_D": {**good["kept_by_D"], "12": 105999}, "n_records": 4 * LL.KEPT_PER_D - 1, "POOL_SHORT": True},
+           "sig_hit": {"sig_hits": {"test": 0, "gate": 1, "probe": 0}}, "gold_key": {"gold_key_hits": 1}, "tie": {"label_bug": True},
+           "replay": {"rng_replay_equal": False}, "keys": {"key_set": sorted(LL.REC_KEYS | {"dist_R"})}}
+    fx = {"good_meta": LL.g_l20_check(good)["pass"], **{"bad_" + k: LL.g_l20_check({**good, **v})["pass"] for k, v in bad.items()}}
     ok = (r1["self_steps"] == 5992 and r1["records"] == 383488 and w1["n_self_steps"] == 5992 and w1["cursor"] == 383488 and w1["exhausted_at"] is None
           and min(others.values()) == v1["seeds2_21_self_steps"]["min"] and max(others.values()) == v1["seeds2_21_self_steps"]["max"]
-          and fx == {"good_meta": True, "short_meta": False} and all(v == 95872 for v in per_D.values()))
+          and fx["good_meta"] and not any(v for k, v in fx.items() if k.startswith("bad_")) and all(v == 95872 for v in per_D.values()))
     dump("g_l20_replay.json", {"spec": "LANG_v1 §7 G-L20 (replay part): seed 1, 12,000 steps, bs 64, p_self 0.5, self_kextra 4; rng_s = default_rng(seed + 21800)",
                                "replay_self_demand_seed1": r1, "cursor_walk_seed1": w1, "spec_value": {"self_steps": 5992, "records": 383488},
                                "consumed_per_D_interleaved": {str(k): v for k, v in per_D.items()}, "pool_spare_per_D": LL.KEPT_PER_D - 95872,
@@ -229,22 +232,29 @@ def cmd_smoke():
     gate = PS.gate_set(n_per_D=2, D_range=range(9, 13)); n_gate = sum(len(v) for v in gate.values())
     # (1) untrained LangSLVA
     torch.manual_seed(0); m = LV.LangSLVA(s5.load_gpt2("cpu")).to("cpu"); m.eval()
-    g1 = LL.gate1_l(m, "cpu", ac, gate, bs=4)
+    utag = {"model": None, "model_sha256": "state:" + LL.state_sha256(m), "card": "cpu"}
+    try:                                                                    # bf16 required by default: an fp32 ac must be refused
+        LL.gate1_l(m, "cpu", ac, {9: gate[9][:1]}, bs=4, tag=utag); bf16_refused = False
+    except AssertionError:
+        bf16_refused = True
+    g1 = LL.gate1_l(m, "cpu", ac, gate, bs=4, tag=utag, require_bf16=False)
     shp = []
     for c in LL.CHAINS:
-        for r in g1["gate1"]["items"][c]:
-            S = len(r["gold_dist"]); n_t = len(r["marks_hex"])
-            ok = all(int(h, 16) < (1 << S) for h in r["marks_hex"]) and len(r["frontier"]) == n_t
-            ok = ok and ((n_t == 16) if c == "L-ROLL" else (1 <= n_t <= 16)) and (not r["keep"] or (len(r["marks_sound"]) == r["stop_s"] and r["label"] == r["gold_o_R"]))
-            shp.append(ok)
-    wrong = sum(g1["gate1"][c][str(D)]["n_wrong_label"] for c in LL.CHAINS for D in range(9, 13))
-    out["untrained"] = {"n_items": n_gate, "c_anneal": g1["c_anneal"], "dtype": g1["dtype"], "shapes_ok": all(shp), "n_wrong_label": wrong,
-                        "per_chain_D": {c: {D: {k: v for k, v in g1["gate1"][c][D].items() if k in ("n", "kept", "yield", "pi_label", "false_in", "frontier_hist",
-                                                                                                "rollouts_mean", "n_raw_marks")} for D in g1["gate1"][c]}
+        for D, lst in g1["items"][c].items():
+            for r in lst:
+                S = len(r["gold_dist"]); n_t = len(r["marks_hex"])
+                ok = all(int(h, 16) < (1 << S) for h in r["marks_hex"]) and len(r["frontier"]) == n_t and isinstance(r["keep"], bool)
+                ok = ok and ((n_t == 16) if c == "L-ROLL" else (1 <= n_t <= 16)) and (not r["keep"] or (len(r["marks_sound"]) == r["stop"] and r["label"] == r["gold"]))
+                shp.append(ok)
+    wrong = sum(g1["chains"][c][str(D)]["n_wrong_label"] for c in LL.CHAINS for D in range(9, 13))
+    out["untrained"] = {"n_items": n_gate, "meta": g1["meta"], "shapes_ok": all(shp), "n_wrong_label": wrong, "label_bug": g1["label_bug"],
+                        "bf16_refused_by_default": bf16_refused, "json_safe": json.loads(json.dumps(g1)) == g1,
+                        "per_chain_D": {c: {D: {k: v for k, v in g1["chains"][c][D].items() if k in ("n", "kept", "yield", "pi_label", "false_in", "frontier_hist",
+                                                                                              "rollouts_mean", "n_raw_marks", "n_tie", "n_unsound")} for D in g1["chains"][c]}
                                         for c in LL.CHAINS},
-                        "choice": g1["gate1"]["choice"], "pass": g1["pass"], "sec": g1["sec"], "kept_vs_drawn_keys": sorted(g1["kept_vs_drawn"]["9"])}
-    if not all(shp) or wrong:
-        fails.append("untrained shapes / wrong label")
+                        "choice": g1["choice"], "pass": g1["pass"], "sec": g1["sec"], "kept_vs_drawn_keys": sorted(g1["kept_vs_drawn"]["9"])}
+    if not all(shp) or wrong or g1["label_bug"] or not bf16_refused or not out["untrained"]["json_safe"]:
+        fails.append("untrained shapes / wrong label / bf16 / json")
     # (2) oracle: exact chains; rollout counts
     orc = Oracle(); items = [it for D in (9, 10, 11, 12) for it in PS.test_set(6, [D], seed=21894)[D]] + [it for v in gate.values() for it in v]
     inps = [LL.parse_ids(it["ids"]) for it in items]; ores = {}
@@ -286,16 +296,43 @@ def cmd_smoke():
     os.makedirs(TMP); t1 = time.time(); excl = PS.exclusion_sigs(); sec_excl = time.time() - t1
     cached = json.load(open(os.path.join(OUT, "excl_sigs.json")))["sigs"]
     out["exclusion"] = {"n": len(excl), "equals_cached_excl_sigs_json": excl == set(cached), "sec": round(sec_excl, 1)}
-    logs = []
+    logs = []; otag = {"model": "oracle", "model_sha256": "state:" + LL.state_sha256(orc), "card": "cpu"}
+    og1 = LL.gate1_l(orc, "cpu", ac, gate, bs=8, tag=otag, require_bf16=False, log=logs.append); g1p = os.path.join(TMP, "eval_gate1_oracle.json")
+    LL._jdump(og1, g1p); ch = og1["choice"]; other = [c for c in LL.CHAINS if c != ch][0]
+    kw = dict(kept_target=1000, chunk=5, bs=8, excl=excl, require_bf16=False, log=logs.append)
+    neg = {}
+
+    def refused(f, exc=AssertionError):
+        try:
+            f(); return False
+        except exc:
+            return True
+    neg["wrong_chain"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, TMP, 9, other, g1p, otag, max_draws=1, **kw))
+    neg["wrong_model"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, TMP, 9, ch, g1p, {**otag, "model_sha256": "x"}, max_draws=1, **kw))
+    neg["fp32_without_flag"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, TMP, 9, ch, g1p, otag, max_draws=1,
+                                                                 **{k: v for k, v in kw.items() if k != "require_bf16"}))
     for D in LL.POOL_D:
-        LL.build_pool_part(orc, "cpu", ac, TMP, D, "L-RR", kept_target=1000, chunk=5, bs=8, excl=excl, max_draws=13, log=logs.append)
+        LL.build_pool_part(orc, "cpu", ac, TMP, D, ch, g1p, otag, max_draws=13, **kw)
     dA = os.path.join(TMP, "resume"); os.makedirs(dA)                         # resume parity on D 9: 6 then 7 draws vs 13 in one go
-    LL.build_pool_part(orc, "cpu", ac, dA, 9, "L-RR", kept_target=1000, chunk=5, bs=8, excl=excl, max_draws=6, log=logs.append)
+    LL.build_pool_part(orc, "cpu", ac, dA, 9, ch, g1p, otag, max_draws=6, **kw)
     with open(os.path.join(dA, "part_D9.jsonl"), "ab") as f:                  # simulate a crash mid-write: junk past the recorded byte length
         f.write(b'{"partial":')
-    LL.build_pool_part(orc, "cpu", ac, dA, 9, "L-RR", kept_target=1000, chunk=5, bs=8, excl=excl, max_draws=7, log=logs.append)
+    neg["resume_other_bs"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, dA, 9, ch, g1p, otag, max_draws=7, **{**kw, "bs": 4}))
+    neg["resume_other_chunk"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, dA, 9, ch, g1p, otag, max_draws=7, **{**kw, "chunk": 6}))
+    neg["resume_other_card"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, dA, 9, ch, g1p, {**otag, "card": "NVIDIA GeForce RTX 3070"}, max_draws=7, **kw))
+    open(os.path.join(dA, "part_D9.lock"), "w").write("held by test")
+    neg["lock_held"] = refused(lambda: LL.build_pool_part(orc, "cpu", ac, dA, 9, ch, g1p, otag, max_draws=7, **kw), RuntimeError)
+    os.remove(os.path.join(dA, "part_D9.lock"))
+    LL.build_pool_part(orc, "cpu", ac, dA, 9, ch, g1p, otag, max_draws=7, **kw)
     same = open(os.path.join(dA, "part_D9.jsonl"), "rb").read() == open(os.path.join(TMP, "part_D9.jsonl"), "rb").read()
-    meta = LL.assemble_pool(TMP, LL.POOL_D, "L-RR", kept_target=1000, require_done=False)
+    st9 = json.load(open(os.path.join(dA, "part_D9.state.json")))
+    neg["no_lock_left"] = not any(f_.endswith(".lock") for d_ in (TMP, dA) for f_ in os.listdir(d_))
+    out["negative_tests"] = neg
+    if not all(neg.values()):
+        fails.append("negative tests %s" % neg)
+    meta = LL.assemble_pool(TMP, g1p, LL.POOL_D, ch, kept_target=1000, require_done=False, probe_scale=0.002)
+    out["state_D9_resumed"] = {k: st9[k] for k in ("bs", "chunk", "card", "dtype", "kept_target", "draw_cap", "n_tie", "drawn", "kept")}
+    out["state_D9_resumed"]["n_resumes"] = len(st9["resumes"])
     t2 = time.time(); recs, meta2 = LL.load_pool(os.path.join(TMP, "pool.jsonl"), os.path.join(TMP, "pool_meta.json"), verify=True, compact=True); sec_load = time.time() - t2
     raw_lines = open(os.path.join(TMP, "pool.jsonl"), "rb").read().splitlines()
     keys_ok = all(set(json.loads(ln)) == LL.REC_KEYS for ln in raw_lines); crlf = b"\r" in open(os.path.join(TMP, "pool.jsonl"), "rb").read()
@@ -319,7 +356,8 @@ def cmd_smoke():
         if si["marks"] != [li["dist_R"].get(c) for c in li["concepts"]] or si["stop_s"] != it["D"]:
             rt_bad.append((j, "marks / stop vs gold"))
     sigs_pool = open(os.path.join(TMP, "pool_sigs.txt")).read().split()
-    out["pool"] = {"meta": {k: v for k, v in meta.items() if k not in ("collisions",)}, "collisions": meta["collisions"], "n_records": len(recs),
+    out["pool"] = {"meta": {k: v for k, v in meta.items() if k not in ("collisions", "builder_commit")}, "builder_commit_head": meta["builder_commit"]["head"],
+                   "builder_commit_dirty": meta["builder_commit"]["dirty"], "collisions": meta["collisions"], "n_records": len(recs),
                    "keys_exact": keys_ok, "crlf": crlf, "resume_parity_D9": same, "load_sec": round(sec_load, 3),
                    "load_sec_per_record": sec_load / max(1, len(recs)), "roundtrip_bad": rt_bad, "n_order": len(order),
                    "sigs_disjoint_from_exclusion": not (set(sigs_pool) & excl), "g_l20_check_smoke_meta": LL.g_l20_check(meta2), "build_log": logs[:12],
@@ -333,12 +371,7 @@ def cmd_smoke():
         cur_b, _ = tracemalloc.get_traced_memory(); tracemalloc.stop()
         out["pool"]["mem_bytes_per_record_compact_%s" % mode] = cur_b / max(1, len(rr)); out["pool"]["mem_GB_projected_424k_compact_%s" % mode] = round(cur_b / max(1, len(rr)) * 424000 / 1e9, 2)
         del rr
-    # (5) the untrained pool builder on 4 draws (timing per drawn item, the §8 projection's form)
-    tu = os.path.join(TMP, "untrained"); tim = {}
-    for c in LL.CHAINS:
-        stt = LL.build_pool_part(m, "cpu", ac, os.path.join(tu, c), 12, c, kept_target=1000, chunk=4, bs=4, excl=excl, max_draws=4, log=logs.append)
-        tim[c] = {"drawn": stt["drawn"], "kept": stt["kept"], "sec_per_drawn_cpu_fp32": stt["sec"] / max(1, stt["drawn"])}
-    out["untrained_pool_timing_D12"] = tim
+    # (5) the untrained pool builder: see cmd_e2e (scratch/_tmp/label_e2e) for the untrained-model pool, its timing and labeller_part
     # (6) lvb_loss on self items (+ a plain / self mix), backward
     sis = [LL.self_item(recs[j], 16) for j in range(2)]; rng_u = np.random.default_rng(1); Ks = [min(s_["stop_s"] + int(rng_u.integers(0, 5)), 16) for s_ in sis]
     m.train(); m.c_anneal.fill_(0.0); m.zero_grad(set_to_none=True)
@@ -355,9 +388,82 @@ def cmd_smoke():
         fails.append("lvb_loss")
     m.zero_grad(set_to_none=True)
     shutil.rmtree(TMP)
-    out["tmp_deleted"] = not os.path.exists(TMP); out["fails"] = fails; out["pass"] = not fails; out["sec"] = round(time.time() - t0, 1)
+    out["tmp_deleted"] = not os.path.exists(TMP); out["fails"] = fails; out["pass_smoke"] = not fails; out["pass"] = not fails
+    out["sec"] = round(time.time() - t0, 1)
     dump("g_label_smoke.json", out)
 
 
+E2E = "scratch/_tmp/label_e2e"
+
+
+def _scorer():
+    """theory/score_s218.py's pure readers (gate1_read, pool_read, p_labeller), imported read-only from the file; its main() is never run."""
+    import importlib.util
+    sp = importlib.util.spec_from_file_location("score_s218_ro", "theory/score_s218.py"); mod = importlib.util.module_from_spec(sp); sp.loader.exec_module(mod)
+    return mod
+
+
+def cmd_e2e():
+    """end-to-end on CPU with the untrained LangSLVA: gate1 (4 items per D) -> pool (build + assemble, ~40 records) -> labeller_part (n_audit /
+    n_memo shrunk), in runs_fsq-style folders under scratch/_tmp/label_e2e (kept, for pointing the scorer at); readers of score_s218 applied."""
+    import boxes.langvb as LV
+    from boxes import s5
+    t0 = time.time(); ac = LL.make_ac("cpu"); fails = []; res = {}
+    if os.path.isdir(E2E):
+        shutil.rmtree(E2E)
+    dg, dp, da = (os.path.join(E2E, d_) for d_ in ("lvb_gate1_s1", "lvb_pool_s1", "lvb_self_s1"))
+    for d_ in (dg, dp, da):
+        os.makedirs(d_)
+    torch.manual_seed(0); m = LV.LangSLVA(s5.load_gpt2("cpu")).to("cpu"); m.eval()
+    tag = {"model": "untrained LangSLVA (torch seed 0, c 1e4)", "model_sha256": "state:" + LL.state_sha256(m), "card": "cpu"}
+    gate = PS.gate_set(n_per_D=4, D_range=range(9, 13))
+    g1 = LL.gate1_l(m, "cpu", ac, gate, bs=4, chunk=8, tag=tag, require_bf16=False); g1p = os.path.join(dg, "eval_gate1.json"); LL._jdump(g1, g1p)
+    g1r = json.load(open(g1p)); kept_items = [x for c in LL.CHAINS for D in g1r["items"][c] for x in g1r["items"][c][D] if x["keep"]]
+    lab_eq = all(isinstance(x["label"], str) and isinstance(x["gold"], str) and x["label"] == x["gold"] for x in kept_items)
+    res["gate1"] = {"choice": g1r["choice"], "meta": {k: g1r["meta"][k] for k in ("card", "dtype", "bs", "chunk", "model_sha256")}, "label_bug": g1r["label_bug"],
+                    "pass": g1r["pass"], "kept_by_chain_D": {c: {D: v["kept"] for D, v in g1r["chains"][c].items()} for c in LL.CHAINS},
+                    "n_kept_items": len(kept_items), "kept_label_eq_gold_strings": lab_eq, "sec": g1r["sec_total"]}
+    if not (lab_eq and len(kept_items) > 0 and g1r["label_bug"] is False):
+        fails.append("gate1 label / gold")
+    ch = g1r["choice"]; excl = PS.exclusion_sigs(); logs = []
+    for D in LL.POOL_D:
+        LL.build_pool_part(m, "cpu", ac, dp, D, ch, g1p, tag, kept_target=10, draw_cap=40, chunk=8, bs=4, excl=excl, require_bf16=False,
+                           require_gate_pass=False, log=logs.append)
+    meta = LL.assemble_pool(dp, g1p, LL.POOL_D, ch, kept_target=10, draw_cap=40, require_gate_pass=False, probe_scale=0.01)
+    recs, _ = LL.load_pool(os.path.join(dp, "pool.jsonl"), os.path.join(dp, "pool_meta.json"))
+    res["pool"] = {k: meta[k] for k in ("n_records", "kept_by_D", "draws_by_D", "total_kept", "demand_replay", "rng_replay_equal", "key_set", "sig_hits",
+                                        "probe_draws_by_D", "gold_key_hits", "n_dup_sigs", "n_tie", "label_bug", "card_by_band", "bs", "chunk", "POOL_SHORT")}
+    res["pool"]["builder_commit"] = {k: meta["builder_commit"][k] for k in ("head", "dirty", "dirty_files", "consistent")}
+    res["pool"]["sec_per_drawn_cpu_fp32"] = {D: v["sec_per_drawn"] for D, v in meta["counts"].items()}; res["pool"]["build_log_tail"] = logs[-4:]
+    if not (meta["n_records"] == len(recs) > 0 and meta["sig_hits"] == {"test": 0, "gate": 0, "probe": 0} and meta["gold_key_hits"] == 0
+            and meta["rng_replay_equal"] and meta["demand_replay"] == 383488 and meta["key_set"] == sorted(LL.REC_KEYS) and meta["n_tie"] == 0):
+        fails.append("pool meta")
+    cursor = min(32, len(recs)); n_memo = 3
+    lp = LL.labeller_part(m, "cpu", os.path.join(dp, "pool.jsonl"), os.path.join(dp, "pool_meta.json"), g1p, cursor, eval_bs=4, n_audit=20, n_memo=n_memo,
+                          gate_items={D: v[:n_memo] for D, v in gate.items()}, card="cpu", log=logs.append)
+    ev = {**lp, "card": "cpu", "dtype": "fp32"}; LL._jdump(ev, os.path.join(da, "eval_lvb.json"))
+    la = lp["label_audit"]
+    res["labeller_part"] = {"cursor": cursor, "label_audit": {k: la[k] for k in ("n", "n_wrong", "pi_label", "n_unsound", "n_no_gold")},
+                            "memo": {D: {k: v[k] for k in ("acc_pool", "acc_fresh", "n_pool", "n_fresh", "K")} for D, v in lp["memo"].items()},
+                            "gate1_copy_choice": lp["gate1"]["choice"], "meta": lp["meta"], "sec": lp["sec"]}
+    if not (la["n"] == min(20, cursor) and la["n_wrong"] == 0 and la["n_unsound"] == 0 and lp["gate1"]["choice"] == ch):
+        fails.append("labeller_part")
+    try:                                                                    # the scorer's own readers on the three files (read-only)
+        SC = _scorer()
+        gr = SC.gate1_read(g1r); pr = SC.pool_read(json.load(open(os.path.join(dp, "pool_meta.json")))); pl = SC.p_labeller(json.load(open(os.path.join(da, "eval_lvb.json"))))
+        res["scorer"] = {"gate1_read": {k: gr.get(k) for k in ("missing", "problems", "choice", "LABEL_BUG", "n_wrong", "yield_ok", "GATE_1_L", "why")},
+                         "pool_read": {k: pr.get(k) for k in ("missing", "POOL_SHORT", "CONTAMINATED", "sig_hits", "gold_key_hits", "G_L20_fail")},
+                         "p_labeller": {k: pl.get(k) for k in ("missing", "LABEL_BUG", "n_audit_flag", "gate1_copy_choice")}}
+        if gr.get("missing") or pr.get("missing") or pl.get("missing") or gr.get("LABEL_BUG") or pr.get("CONTAMINATED") or pl.get("LABEL_BUG") \
+                or gr.get("choice") != ch:
+            fails.append("scorer readers")
+    except Exception as e:                                                  # noqa: BLE001
+        res["scorer"] = {"error": repr(e)}; fails.append("scorer import / read")
+    res["files"] = sorted(os.path.relpath(os.path.join(r_, f_), E2E).replace(os.sep, "/") for r_, _, fs in os.walk(E2E) for f_ in fs)
+    res["fails"] = fails; res["pass"] = not fails; res["sec"] = round(time.time() - t0, 1)
+    sm = json.load(open(os.path.join(OUT, "g_label_smoke.json"))); sm["e2e"] = res
+    sm["pass"] = bool(sm.get("pass_smoke", sm["pass"]) and res["pass"]); dump("g_label_smoke.json", sm)
+
+
 if __name__ == "__main__":
-    {"sound": cmd_sound, "replay": cmd_replay, "smoke": cmd_smoke}[sys.argv[1]]()
+    {"sound": cmd_sound, "replay": cmd_replay, "smoke": cmd_smoke, "e2e": cmd_e2e}[sys.argv[1]]()

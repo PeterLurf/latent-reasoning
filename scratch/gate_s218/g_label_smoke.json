@@ -2,10 +2,47 @@
  "spec": "LANG_v1 \u00a72.4 / \u00a74.1 labeller smoke (CPU fp32): untrained LangSLVA + oracle models; pool builder; loader; lvb_loss",
  "untrained": {
   "n_items": 8,
-  "c_anneal": 10000.0,
-  "dtype": "fp32",
+  "meta": {
+   "card": "cpu",
+   "dtype": "fp32",
+   "bs": 4,
+   "chunk": 1024,
+   "model_sha256": "state:435bb90c371c4a5f0be34b8ed3097dad1d82ee0bba0dcc47e628a00dba26dcaf",
+   "model": null,
+   "c_anneal": 10000.0,
+   "seed": 22400,
+   "n_per_D": {
+    "9": 2,
+    "10": 2,
+    "11": 2,
+    "12": 2
+   },
+   "chains_run": [
+    "L-ROLL",
+    "L-RR"
+   ],
+   "builder_commit": {
+    "head": "e6073cfd44c5c4edc78378b9f923b44794f45fb5",
+    "dirty": true,
+    "dirty_files": [
+     "boxes/langvb_label.py"
+    ],
+    "files": [
+     "boxes/langvb_label.py",
+     "boxes/prosqa_sym.py",
+     "boxes/langvb.py",
+     "boxes/slva.py",
+     "boxes/vbank.py",
+     "boxes/deltamem.py",
+     "boxes/s5.py"
+    ]
+   }
+  },
   "shapes_ok": true,
   "n_wrong_label": 0,
+  "label_bug": false,
+  "bf16_refused_by_default": true,
+  "json_safe": true,
   "per_chain_D": {
    "L-ROLL": {
     "9": {
@@ -13,6 +50,7 @@
      "kept": 1,
      "yield": 0.5,
      "pi_label": 1.0,
+     "n_tie": 0,
      "false_in": 0.7083678541839271,
      "n_raw_marks": 1207,
      "frontier_hist": {
@@ -25,13 +63,15 @@
       "34": 1,
       "42": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     },
     "10": {
      "n": 2,
      "kept": 2,
      "yield": 1.0,
      "pi_label": 1.0,
+     "n_tie": 0,
      "false_in": 0.764417845484222,
      "n_raw_marks": 1838,
      "frontier_hist": {
@@ -44,13 +84,15 @@
       "42": 1,
       "53": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     },
     "11": {
      "n": 2,
      "kept": 0,
      "yield": 0.0,
      "pi_label": null,
+     "n_tie": 0,
      "false_in": 0.7619603267211202,
      "n_raw_marks": 857,
      "frontier_hist": {
@@ -66,13 +108,15 @@
       "44": 1,
       "48": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     },
     "12": {
      "n": 2,
      "kept": 1,
      "yield": 0.5,
      "pi_label": 1.0,
+     "n_tie": 0,
      "false_in": 0.7386046511627907,
      "n_raw_marks": 1075,
      "frontier_hist": {
@@ -83,7 +127,8 @@
       "15": 2,
       "66": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     }
    },
    "L-RR": {
@@ -92,6 +137,7 @@
      "kept": 0,
      "yield": 0.0,
      "pi_label": null,
+     "n_tie": 0,
      "false_in": 0.7159090909090909,
      "n_raw_marks": 352,
      "frontier_hist": {
@@ -99,13 +145,15 @@
       "3": 1,
       "19": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     },
     "10": {
      "n": 2,
      "kept": 0,
      "yield": 0.0,
      "pi_label": null,
+     "n_tie": 0,
      "false_in": 0.7800925925925926,
      "n_raw_marks": 432,
      "frontier_hist": {
@@ -113,13 +161,15 @@
       "4": 1,
       "23": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     },
     "11": {
      "n": 2,
      "kept": 0,
      "yield": 0.0,
      "pi_label": null,
+     "n_tie": 0,
      "false_in": 0.8864970645792564,
      "n_raw_marks": 511,
      "frontier_hist": {
@@ -130,13 +180,15 @@
       "9": 1,
       "12": 1
      },
-     "rollouts_mean": 4.0
+     "rollouts_mean": 4.0,
+     "n_unsound": 0
     },
     "12": {
      "n": 2,
      "kept": 0,
      "yield": 0.0,
      "pi_label": null,
+     "n_tie": 0,
      "false_in": 0.8541666666666666,
      "n_raw_marks": 144,
      "frontier_hist": {
@@ -144,21 +196,22 @@
       "3": 1,
       "6": 1
      },
-     "rollouts_mean": 1.0
+     "rollouts_mean": 1.0,
+     "n_unsound": 0
     }
    }
   },
   "choice": "L-ROLL",
   "pass": false,
   "sec": {
-   "L-ROLL_D9": 5.6,
-   "L-RR_D9": 2.1,
-   "L-ROLL_D10": 6.6,
-   "L-RR_D10": 2.2,
-   "L-ROLL_D11": 6.8,
-   "L-RR_D11": 9.9,
-   "L-ROLL_D12": 7.4,
-   "L-RR_D12": 2.9
+   "L-ROLL_D9": 4.7,
+   "L-RR_D9": 1.8,
+   "L-ROLL_D10": 5.2,
+   "L-RR_D10": 2.0,
+   "L-ROLL_D11": 5.2,
+   "L-RR_D11": 7.7,
+   "L-ROLL_D12": 5.7,
+   "L-RR_D12": 2.1
   },
   "kept_vs_drawn_keys": [
    "T",
@@ -205,7 +258,29 @@
  "exclusion": {
   "n": 22000,
   "equals_cached_excl_sigs_json": true,
-  "sec": 37.5
+  "sec": 26.2
+ },
+ "negative_tests": {
+  "wrong_chain": true,
+  "wrong_model": true,
+  "fp32_without_flag": true,
+  "resume_other_bs": true,
+  "resume_other_chunk": true,
+  "resume_other_card": true,
+  "lock_held": true,
+  "no_lock_left": true
+ },
+ "state_D9_resumed": {
+  "bs": 8,
+  "chunk": 5,
+  "card": "cpu",
+  "dtype": "fp32",
+  "kept_target": 1000,
+  "draw_cap": 530000,
+  "n_tie": 0,
+  "drawn": 13,
+  "kept": 13,
+  "n_resumes": 1
  },
  "pool": {
   "meta": {
@@ -219,38 +294,115 @@
     "stop_s",
     "text_ids"
    ],
+   "kept_by_D": {
+    "9": 13,
+    "10": 13,
+    "11": 13,
+    "12": 13
+   },
+   "draws_by_D": {
+    "9": 13,
+    "10": 13,
+    "11": 13,
+    "12": 13
+   },
+   "total_kept": 52,
+   "demand_replay": 383488,
+   "demand_self_steps": 5992,
+   "demand_seed": 1,
+   "rng_replay_equal": true,
+   "key_set": [
+    "label",
+    "marks_sound",
+    "slot_idx",
+    "stmts_parsed",
+    "stop_s",
+    "text_ids"
+   ],
+   "sig_hits": {
+    "test": 0,
+    "gate": 0,
+    "probe": 0
+   },
+   "sig_hits_note": "probe hits are vacuous by construction (probe / FD streams are D 3-8, the signature includes D, the pool is D 9-12); computed anyway (A19)",
+   "probe_draws_by_D": {
+    "3": 65,
+    "4": 76,
+    "5": 67,
+    "6": 139,
+    "7": 120,
+    "8": 141
+   },
+   "probe_scale": 0.002,
+   "gold_key_hits": 0,
+   "n_dup_sigs": 0,
+   "n_tie": 0,
+   "n_tie_by_D": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   },
+   "label_bug": false,
+   "card_by_band": {
+    "9": "cpu",
+    "10": "cpu",
+    "11": "cpu",
+    "12": "cpu"
+   },
+   "bs": 8,
+   "chunk": 5,
+   "gate1": {
+    "path": "D:\\Latent\\scratch\\_tmp\\label_smoke\\eval_gate1_oracle.json",
+    "sha256": "af917c2da4a3b2975591711b7d966a4274649c75c8ed664c925260ec0ea6024e",
+    "choice": "L-ROLL",
+    "pass": true,
+    "yield_D11_12": {
+     "L-ROLL": 1.0,
+     "L-RR": 1.0
+    },
+    "meta": {
+     "card": "cpu",
+     "dtype": "fp32",
+     "bs": 8,
+     "chunk": 1024,
+     "model_sha256": "state:afa921ef75c2aa362fff4ff0252a590849b932b920739859f060795833e007f7"
+    }
+   },
+   "model_sha256": "state:afa921ef75c2aa362fff4ff0252a590849b932b920739859f060795833e007f7",
+   "model": "oracle",
    "counts": {
     "9": {
      "drawn": 13,
      "kept": 13,
      "yield": 1.0,
      "collisions": 0,
-     "sec": 0.4,
-     "sec_per_drawn": 0.028990947283231296
+     "sec": 0.1,
+     "sec_per_drawn": 0.0051210293403038615
     },
     "10": {
      "drawn": 13,
      "kept": 13,
      "yield": 1.0,
      "collisions": 0,
-     "sec": 0.4,
-     "sec_per_drawn": 0.031494507422814004
+     "sec": 0.1,
+     "sec_per_drawn": 0.003963488798875075
     },
     "11": {
      "drawn": 13,
      "kept": 13,
      "yield": 1.0,
      "collisions": 0,
-     "sec": 0.5,
-     "sec_per_drawn": 0.03498321313124437
+     "sec": 0.1,
+     "sec_per_drawn": 0.004824785085824819
     },
     "12": {
      "drawn": 13,
      "kept": 13,
      "yield": 1.0,
      "collisions": 0,
-     "sec": 0.5,
-     "sec_per_drawn": 0.03743875943697416
+     "sec": 0.1,
+     "sec_per_drawn": 0.006104395939753606
     }
    },
    "POOL_SHORT": true,
@@ -262,27 +414,43 @@
    ],
    "kept_target_per_D": 1000,
    "draw_cap_per_D": 530000,
-   "chain": "L-RR",
+   "chain": "L-ROLL",
    "seeds": {
     "pool_stream": 22300,
     "rr_seed": 21850,
     "exclusion": "test 22200 (1,000 per D 3-16) + GATE 22400 (2,000 per D 9-12) role-symmetric signatures"
    },
    "order": "interleaved D 9,10,11,12 cycling by record (an exhausted band is skipped); D not stored",
-   "builder_commit": "PLACEHOLDER (fill with the registration commit of boxes/langvb_label.py)",
-   "git_head_at_assemble": "a050178424ad83bf36decfb666e62345627ce34c",
    "dtype": "fp32",
    "c_anneal": 0.0,
    "sigs_file": "pool_sigs.txt",
    "sigs_sha256": "7494cbb00c1516040443a9af4dc77574cf2f8fe8466af3cb35f788cc47494be5",
    "kmax_label": 16,
    "tags": {
-    "9": {},
-    "10": {},
-    "11": {},
-    "12": {}
+    "9": {
+     "model": "oracle",
+     "model_sha256": "state:afa921ef75c2aa362fff4ff0252a590849b932b920739859f060795833e007f7",
+     "card": "cpu"
+    },
+    "10": {
+     "model": "oracle",
+     "model_sha256": "state:afa921ef75c2aa362fff4ff0252a590849b932b920739859f060795833e007f7",
+     "card": "cpu"
+    },
+    "11": {
+     "model": "oracle",
+     "model_sha256": "state:afa921ef75c2aa362fff4ff0252a590849b932b920739859f060795833e007f7",
+     "card": "cpu"
+    },
+    "12": {
+     "model": "oracle",
+     "model_sha256": "state:afa921ef75c2aa362fff4ff0252a590849b932b920739859f060795833e007f7",
+     "card": "cpu"
+    }
    }
   },
+  "builder_commit_head": "e6073cfd44c5c4edc78378b9f923b44794f45fb5",
+  "builder_commit_dirty": true,
   "collisions": {
    "9": [],
    "10": [],
@@ -293,8 +461,8 @@
   "keys_exact": true,
   "crlf": false,
   "resume_parity_D9": true,
-  "load_sec": 0.049,
-  "load_sec_per_record": 0.0009413865896371695,
+  "load_sec": 0.033,
+  "load_sec_per_record": 0.0006354634578411395,
   "roundtrip_bad": [],
   "n_order": 52,
   "sigs_disjoint_from_exclusion": true,
@@ -316,40 +484,33 @@
    "margin_ok": false,
    "not_short": false,
    "n_records_ok": true,
+   "replay_ok": true,
+   "keys_ok": true,
+   "sig_ok": true,
+   "gold_ok": true,
+   "no_label_bug": true,
    "pass": false
   },
   "build_log": [
-   "POOL D 9: drawn 5 kept 5 (yield 1.000), 0.034 s / drawn",
-   "POOL D 9: drawn 10 kept 10 (yield 1.000), 0.025 s / drawn",
-   "POOL D 9: drawn 13 kept 13 (yield 1.000), 0.026 s / drawn",
-   "POOL D 10: drawn 5 kept 5 (yield 1.000), 0.029 s / drawn",
-   "POOL D 10: drawn 10 kept 10 (yield 1.000), 0.034 s / drawn",
-   "POOL D 10: drawn 13 kept 13 (yield 1.000), 0.031 s / drawn",
-   "POOL D 11: drawn 5 kept 5 (yield 1.000), 0.032 s / drawn",
-   "POOL D 11: drawn 10 kept 10 (yield 1.000), 0.033 s / drawn",
-   "POOL D 11: drawn 13 kept 13 (yield 1.000), 0.045 s / drawn",
-   "POOL D 12: drawn 5 kept 5 (yield 1.000), 0.036 s / drawn",
-   "POOL D 12: drawn 10 kept 10 (yield 1.000), 0.032 s / drawn",
-   "POOL D 12: drawn 13 kept 13 (yield 1.000), 0.049 s / drawn"
+   "GATE1 L-ROLL D 9: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-RR D 9: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-ROLL D 10: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-RR D 10: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-ROLL D 11: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-RR D 11: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-ROLL D 12: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "GATE1 L-RR D 12: kept 2 / 2, pi 1.0, ties 0, unsound 0, 0 s",
+   "POOL D 9: drawn 5 kept 5 (yield 1.000), 0.007 s / drawn",
+   "POOL D 9: drawn 10 kept 10 (yield 1.000), 0.004 s / drawn",
+   "POOL D 9: drawn 13 kept 13 (yield 1.000), 0.004 s / drawn",
+   "POOL D 10: drawn 5 kept 5 (yield 1.000), 0.004 s / drawn"
   ],
   "pool_bytes": 279536,
   "bytes_per_record": 5375.692307692308,
-  "mem_bytes_per_record_compact_False": 42163.846153846156,
-  "mem_GB_projected_424k_compact_False": 17.88,
-  "mem_bytes_per_record_compact_True": 9536.211538461539,
-  "mem_GB_projected_424k_compact_True": 4.04
- },
- "untrained_pool_timing_D12": {
-  "L-ROLL": {
-   "drawn": 4,
-   "kept": 0,
-   "sec_per_drawn_cpu_fp32": 3.4438012838363647
-  },
-  "L-RR": {
-   "drawn": 4,
-   "kept": 0,
-   "sec_per_drawn_cpu_fp32": 1.7665124535560608
-  }
+  "mem_bytes_per_record_compact_False": 42355.03846153846,
+  "mem_GB_projected_424k_compact_False": 17.96,
+  "mem_bytes_per_record_compact_True": 9713.788461538461,
+  "mem_GB_projected_424k_compact_True": 4.12
  },
  "lvb_loss": {
   "Ks": [
@@ -385,6 +546,229 @@
  },
  "tmp_deleted": true,
  "fails": [],
+ "pass_smoke": true,
  "pass": true,
- "sec": 135.3
+ "sec": 119.3,
+ "e2e": {
+  "gate1": {
+   "choice": "L-ROLL",
+   "meta": {
+    "card": "cpu",
+    "dtype": "fp32",
+    "bs": 4,
+    "chunk": 8,
+    "model_sha256": "state:435bb90c371c4a5f0be34b8ed3097dad1d82ee0bba0dcc47e628a00dba26dcaf"
+   },
+   "label_bug": false,
+   "pass": false,
+   "kept_by_chain_D": {
+    "L-ROLL": {
+     "9": 3,
+     "10": 2,
+     "11": 0,
+     "12": 1
+    },
+    "L-RR": {
+     "9": 0,
+     "10": 0,
+     "11": 0,
+     "12": 0
+    }
+   },
+   "n_kept_items": 6,
+   "kept_label_eq_gold_strings": true,
+   "sec": 70.3
+  },
+  "pool": {
+   "n_records": 40,
+   "kept_by_D": {
+    "9": 10,
+    "10": 10,
+    "11": 10,
+    "12": 10
+   },
+   "draws_by_D": {
+    "9": 17,
+    "10": 20,
+    "11": 27,
+    "12": 31
+   },
+   "total_kept": 40,
+   "demand_replay": 383488,
+   "rng_replay_equal": true,
+   "key_set": [
+    "label",
+    "marks_sound",
+    "slot_idx",
+    "stmts_parsed",
+    "stop_s",
+    "text_ids"
+   ],
+   "sig_hits": {
+    "test": 0,
+    "gate": 0,
+    "probe": 0
+   },
+   "probe_draws_by_D": {
+    "3": 327,
+    "4": 361,
+    "5": 328,
+    "6": 648,
+    "7": 709,
+    "8": 643
+   },
+   "gold_key_hits": 0,
+   "n_dup_sigs": 0,
+   "n_tie": 0,
+   "label_bug": false,
+   "card_by_band": {
+    "9": "cpu",
+    "10": "cpu",
+    "11": "cpu",
+    "12": "cpu"
+   },
+   "bs": 4,
+   "chunk": 8,
+   "POOL_SHORT": false,
+   "builder_commit": {
+    "head": "e6073cfd44c5c4edc78378b9f923b44794f45fb5",
+    "dirty": true,
+    "dirty_files": [
+     "boxes/langvb_label.py"
+    ],
+    "consistent": false
+   },
+   "sec_per_drawn_cpu_fp32": {
+    "9": 3.5178849697113037,
+    "10": 3.7381773233413695,
+    "11": 3.910296228196886,
+    "12": 3.61295913111779
+   },
+   "build_log_tail": [
+    "POOL D 12: drawn 8 kept 1 (yield 0.125), 3.456 s / drawn",
+    "POOL D 12: drawn 16 kept 3 (yield 0.188), 3.319 s / drawn",
+    "POOL D 12: drawn 24 kept 6 (yield 0.250), 3.559 s / drawn",
+    "POOL D 12: drawn 31 kept 10 (yield 0.323), 4.190 s / drawn"
+   ]
+  },
+  "labeller_part": {
+   "cursor": 32,
+   "label_audit": {
+    "n": 20,
+    "n_wrong": 0,
+    "pi_label": 1.0,
+    "n_unsound": 0,
+    "n_no_gold": 0
+   },
+   "memo": {
+    "9": {
+     "acc_pool": 0.3333333333333333,
+     "acc_fresh": 0.6666666666666666,
+     "n_pool": 3,
+     "n_fresh": 3,
+     "K": 11
+    },
+    "10": {
+     "acc_pool": 0.6666666666666666,
+     "acc_fresh": 0.3333333333333333,
+     "n_pool": 3,
+     "n_fresh": 3,
+     "K": 12
+    },
+    "11": {
+     "acc_pool": 0.3333333333333333,
+     "acc_fresh": 1.0,
+     "n_pool": 3,
+     "n_fresh": 3,
+     "K": 13
+    },
+    "12": {
+     "acc_pool": 0.3333333333333333,
+     "acc_fresh": 0.3333333333333333,
+     "n_pool": 3,
+     "n_fresh": 3,
+     "K": 14
+    }
+   },
+   "gate1_copy_choice": "L-ROLL",
+   "meta": {
+    "card": "cpu",
+    "dtype": "fp32",
+    "eval_bs": {
+     "labeller": 4
+    },
+    "cursor": 32,
+    "pool_sha256": "d4d888b11d26493abd7dbcb9af1a7b60fc58e1f3a1221fd170ac1c1bbfc93233",
+    "n_audit_req": 20,
+    "n_memo_req": 3,
+    "n_consumed_by_D": {
+     "9": 8,
+     "10": 8,
+     "11": 8,
+     "12": 8
+    }
+   },
+   "sec": 75.9
+  },
+  "scorer": {
+   "gate1_read": {
+    "missing": [],
+    "problems": [
+     "card cpu (stage A card 4060)",
+     "dtype fp32 != bf16 (v1 \u00a72.4)"
+    ],
+    "choice": "L-ROLL",
+    "LABEL_BUG": false,
+    "n_wrong": 0,
+    "yield_ok": false,
+    "GATE_1_L": false,
+    "why": [
+     "problems ['card cpu (stage A card 4060)', 'dtype fp32 != bf16 (v1 \u00a72.4)']",
+     "kept yield < 0.2 at some D 9-12"
+    ]
+   },
+   "pool_read": {
+    "missing": [],
+    "POOL_SHORT": true,
+    "CONTAMINATED": false,
+    "sig_hits": {
+     "test": 0,
+     "gate": 0,
+     "probe": 0
+    },
+    "gold_key_hits": 0,
+    "G_L20_fail": [
+     "total kept 40 < 1.1 x demand 383488"
+    ]
+   },
+   "p_labeller": {
+    "missing": [],
+    "LABEL_BUG": false,
+    "n_audit_flag": "label_audit n 20 < 5,000 (v1 \u00a74.1)",
+    "gate1_copy_choice": "L-ROLL"
+   }
+  },
+  "files": [
+   "lvb_gate1_s1/eval_gate1.json",
+   "lvb_pool_s1/part_D10.jsonl",
+   "lvb_pool_s1/part_D10.sigs",
+   "lvb_pool_s1/part_D10.state.json",
+   "lvb_pool_s1/part_D11.jsonl",
+   "lvb_pool_s1/part_D11.sigs",
+   "lvb_pool_s1/part_D11.state.json",
+   "lvb_pool_s1/part_D12.jsonl",
+   "lvb_pool_s1/part_D12.sigs",
+   "lvb_pool_s1/part_D12.state.json",
+   "lvb_pool_s1/part_D9.jsonl",
+   "lvb_pool_s1/part_D9.sigs",
+   "lvb_pool_s1/part_D9.state.json",
+   "lvb_pool_s1/pool.jsonl",
+   "lvb_pool_s1/pool_meta.json",
+   "lvb_pool_s1/pool_sigs.txt",
+   "lvb_self_s1/eval_lvb.json"
+  ],
+  "fails": [],
+  "pass": true,
+  "sec": 577.1
+ }
 }

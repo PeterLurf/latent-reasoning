@@ -59,8 +59,13 @@
  },
  "g_l20_check_fixtures": {
   "good_meta": true,
-  "short_meta": false
+  "bad_short": false,
+  "bad_sig_hit": false,
+  "bad_gold_key": false,
+  "bad_tie": false,
+  "bad_replay": false,
+  "bad_keys": false
  },
  "pass": true,
- "sec": 16.1
+ "sec": 36.5
 }

@@ -42,7 +42,7 @@ Candidate decision everywhere: sum log p("### o_R.") > sum log p("### o_P.") fro
   fd           FD-MIRROR per-slot probes on the single row V_t[c] (features standardised by the PCA sample's mean / std of V_t), linear (logistic) and MLP
                (768-256-ReLU-1), Adam 1e-3, one streaming pass over 200,000 fresh items (Stream 22500, D U{6..8} from np rng 22560), positives dist(R, c) =
                t + k, negatives dist(P, c) = t + k (a slot at that distance from both is excluded); cells t in {1, 2}, k in 1..8 - t; fd_valid (s, 0), s in
-               {3, 4}; fd_plant: V_1 + eps (2b - 1) u per real slot (PLANT(1)'s u / eps; b ~ Bern(1/2), np rng 22561 train / 22562 test). AUROC on the
+               {3, 4}; fd_plant: V_1 + eps (2b - 1) u per real slot (PLANT(1)'s u / eps, recomputed identically from the probe pool; b ~ Bern(1/2), np rng 22561 train / 22562 test). AUROC on the
                test set D 6..8 per cell, pooled and by D; per-slot scores stored.
   direct       DIRECT-SYM: acc_by_D D 3..16, items, c1_band, d_star_fresh (§2.6).
     python -m boxes.langvb_eval --run boxes/runs_fsq/lvb_sym_s1 --parts acc,stall,vswap,cf,hist24,causal_deep,probe,fd --device cuda:0 --eval_bs 16
@@ -206,7 +206,7 @@ def stall_by(m, TE, Ds, dev, bs, ts_override=None):
             sc, _ = score_b(m, b, D); I_[ch] = (sc[D][0] > sc[D][1]).long().cpu().numpy()
             sc, _ = score_b(m, b, D + 1, edit=edit)                         # ts >= 2 (D >= 4), so st[ts - 1] is a pass output
             S_[ch] = (sc[D + 1][0] > sc[D + 1][1]).long().cpu().numpy(); st.clear()
-        by[str(D)] = {"intact_kD": float(I_.mean()), "stalled_kD1": float(S_.mean()), "stall_t": ts, "items": len(its), "n": len(its),
+        by[str(D)] = {"intact_kD": float(I_.mean()), "stalled_kD1": float(S_.mean()), "stall_t": ts, "n_items": len(its), "n": len(its),
                       "recovery": float(S_.sum() / I_.sum()) if I_.sum() else None}
         items[str(D)] = {"i": list(range(len(its))), "intact": [int(v) for v in I_], "stalled": [int(v) for v in S_]}
         si_ += int(I_.sum()); st_ += int(S_.sum()); cnt += len(its)
@@ -300,11 +300,12 @@ def mk_edit(kind, tt, Vsrc, Vrec, Lm=None):
 
 
 def summarise(pairs, by_t_key="t"):
-    ex = [p for p in pairs if p["exposed"]]; cl = [p for p in ex if p["ok_rec"] and p["ok_don"]]
+    ok_ = lambda p: p["ok_rec"] and (p["ok_don"] is None or p["ok_don"])   # noqa: E731  (RESET has no donor: ok_don None, clean = ok_rec)
+    ex = [p for p in pairs if p["exposed"]]; cl = [p for p in ex if ok_(p)]
     fol = lambda ps: (float(np.mean([p["y_hyb"] for p in ps])) if ps else None)  # noqa: E731
     byD = {}
     for D in sorted({p["D"] for p in pairs}):
-        e_ = [p for p in ex if p["D"] == D]; c_ = [p for p in e_ if p["ok_rec"] and p["ok_don"]]
+        e_ = [p for p in ex if p["D"] == D]; c_ = [p for p in e_ if ok_(p)]
         byD[str(D)] = {"n_candidates": sum(1 for p in pairs if p["D"] == D), "n_exposed": len(e_), "n_clean": len(c_), "follow": fol(c_), "own": None if not c_ else 1 - fol(c_)}
     byt = {}
     for t in sorted({p[by_t_key] for p in pairs}):
@@ -356,9 +357,10 @@ def swap_arms(m, TE, Ds, seed, arms, dev, bs):
                     elif arm == "reset":
                         exp_ = True
                     else:
-                        exp_ = any(a_ != b_ for a_, b_ in zip(fR, fD)); fl["frontier_differs"] = int(exp_)
+                        fd_ = any(a_ != b_ for a_, b_ in zip(fR, fD)); fl["frontier_differs"] = int(fd_)
+                        exp_ = True if arm == "person" else fd_                # PERSON (descriptive): exposed = pos_ok, as the scorer recomputes
                     P[arm].append({"rec": i, "don": "person" if arm == "person" else "premise", "D": D, "t": t_, "y_hyb": int(yh[q]),
-                                   "ok_rec": int(okR[q]), "ok_don": int(okS[q]), "exposed": int(exp_), **fl})
+                                   "ok_rec": int(okR[q]), "ok_don": None if arm == "reset" else int(okS[q]), "exposed": int(exp_), **fl})
                 if arm == "person":
                     del VP
             del VR, VD
@@ -368,7 +370,7 @@ def swap_arms(m, TE, Ds, seed, arms, dev, bs):
 
 def part_vswap(m, TE, dev, bs):
     out = swap_arms(m, TE, range(4, 9), 22610, ("ii_prime", "ii_prime_t2", "i_prime", "ii", "person", "reset"), dev, bs)
-    out["ii_prime"]["t2_descriptive"] = {k: v for k, v in out.pop("ii_prime_t2").items() if k != "pairs"}
+    out["ii_prime"]["t2_descriptive"] = {k: v for k, v in out["ii_prime_t2"].items() if k != "pairs"}   # the t = 2 pairs stay in ii_prime_t2.pairs
     out["def"] = __doc__.split("  vswap")[1].split("  cf ")[0].strip()
     return {"vswap": out}
 
@@ -556,7 +558,7 @@ def probe_forward(m, pr, kind, t, its, b, S, dirs, zs, dev):
     return sA, sB, (1 - y).long()
 
 
-def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=200000, pbs=64, chunk=16, hold_n=1000, pool_override=None):
+def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=200000, pbs=64, chunk=16, hold_n=1000, pool_override=None, eval_every=500):
     t0 = time.time()
     if pool_override is not None:                                           # G-EVMEM only: fixed (deepest) items
         held, pool = pool_override[:hold_n], pool_override
@@ -566,7 +568,7 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
     print("PROBE pool", len(pool), "held", len(held), round(time.time() - t0), "s", flush=True)
     dirs = plant_dirs(m, pool, list(pts), dev, chunk) if pts else {}
     keys = [("probe", t) for t in ts] + [(k, t) for t in pts for k in ("lin", "xor")]; prs = {k: Probe(m, 1e-4) for k in keys}
-    rb = np.random.default_rng(22501); rz = {"lin": np.random.default_rng(22551), "xor": np.random.default_rng(22552)}
+    rb = np.random.default_rng(22501); rz = {"lin": np.random.default_rng(22551), "xor": np.random.default_rng(22552)}; seen = set()   # pool indices drawn (Note 218-6)
 
     def zdraw(r_, n):
         return torch.tensor(r_.integers(0, 2, size=n), device=dev), torch.tensor(r_.integers(0, 2, size=n), device=dev)
@@ -586,14 +588,14 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
     def train(sel_keys, n_steps):
         Kmax = max(k[1] for k in sel_keys)
         for _ in range(n_steps):
-            sub = [pool[j] for j in rb.integers(0, len(pool), pbs)]; b, S = stored(m, sub, Kmax, dev, chunk)
+            ix = rb.integers(0, len(pool), pbs); seen.update(int(j) for j in ix); sub = [pool[j] for j in ix]; b, S = stored(m, sub, Kmax, dev, chunk)
             for k in sel_keys:
                 pr = prs[k]; zs = zdraw(rz[k[0]], pbs) if k[0] != "probe" else None
                 sA, sB, y = probe_forward(m, pr, k[0], k[1], sub, b, S, dirs, zs, dev)
                 loss = F.cross_entropy(torch.stack([sA, sB], 1), y); pr.opt.zero_grad(set_to_none=True); loss.backward(); pr.opt.step(); pr.steps += 1
             del S
             st = prs[sel_keys[0]].steps
-            if st % 500 == 0:
+            if st % eval_every == 0:
                 rh = {"lin": np.random.default_rng(22553), "xor": np.random.default_rng(22554)}; ok = evaluate(held, rh, sel_keys, Kmax)
                 for k in sel_keys:
                     prs[k].curve.append((st, float(np.mean(ok[k]))))
@@ -616,7 +618,9 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
         print("PROBE read", k, byD, flush=True)
     valid = {t: bool(out_pl[t].get("lin", {}).get("acc", 0) >= 0.90 and out_pl[t].get("xor", {}).get("acc", 0) >= 0.90) for t in out_pl}
     proto = __doc__.split("  probe ")[1].split("  fd ")[0].strip()
-    return {"probe": out_p, "plant": out_pl, "probe_valid": valid, "probe_protocol": proto, "probe_sec": round(time.time() - t0)}
+    return {"probe": out_p, "plant": out_pl, "probe_valid": valid, "probe_protocol": proto, "probe_sec": round(time.time() - t0),
+            "probe_n_distinct_seen": len(seen), "probe_pool_n": len(pool), "probe_chunk": chunk,
+            "probe_n_distinct_note": "distinct pool items drawn over all lockstep steps (with replacement; Note 218-6); extended probes share the same draws"}
 
 
 # ---------------------------------------------------------------- FD-MIRROR
@@ -645,7 +649,13 @@ def part_fd(m, TE, dev, bs, n_items=200000, pbs=64, chunk=16, items_override=Non
         excl = PS.exclusion_sigs(); s = PS.Stream(22500, excl); hold, _ = draw_items(22500, 6, 8, 2000, 22565, excl)
     else:                                                                   # G-EVMEM only: fixed (deepest) items
         hold = items_override
-    dirs = plant_dirs(m, hold, [1, 2, 3, 4], dev, chunk)
+    dirs = plant_dirs(m, hold, [1, 2, 3, 4], dev, chunk)                   # feature standardisation per t (FD's own D 6..8 sample)
+    if items_override is None:                                              # the planted code = PLANT(1)'s u / eps exactly (Audit G-L13 2b): the probe part's
+        rp = np.random.default_rng(22500); sp_ = PS.Stream(22500, excl); Dq = rp.integers(3, 9, size=3000)   # pool[:2000] (after the 1,000 held-out)
+        ppool = [ev(sp_.draw(int(D))) for D in Dq][1000:3000]; pdir = plant_dirs(m, ppool, list(PLANT_TS), dev, chunk)[1]
+    else:
+        pdir = plant_dirs(m, hold, list(PLANT_TS), dev, chunk)[1]
+    seen = set()
     mk = {"lin": lambda: torch.nn.Linear(768, 1), "mlp": lambda: torch.nn.Sequential(torch.nn.Linear(768, 256), torch.nn.ReLU(), torch.nn.Linear(256, 1))}
     nets = {(mo, c): mk[mo]().to(dev) for mo in mk for c in cells + ["plant"]}; opts = {k: torch.optim.Adam(v.parameters(), lr=1e-3) for k, v in nets.items()}
     std = lambda X, t: (X - dirs[t]["mean"]) / dirs[t]["std"]  # noqa: E731
@@ -654,7 +664,8 @@ def part_fd(m, TE, dev, bs, n_items=200000, pbs=64, chunk=16, items_override=Non
         n = min(pbs, n_items - done); done += n
         its = items_override[:n] if items_override is not None else [ev(s.draw(int(D))) for D in rng.integers(6, 9, size=n)]
         b, S = stored(m, its, 4, dev, chunk); sp = b[4]; R = fd_rows(its, S, cells, sp)
-        Xp = S[1][sp]; bit = torch.tensor(rb.integers(0, 2, size=Xp.shape[0]), device=dev); Xp = Xp + dirs[1]["eps"] * (2 * bit - 1).float()[:, None] * dirs[1]["u"][None]
+        seen.update(PS.set_sha([{"text": str(it["ids"])}]) for it in its)
+        Xp = S[1][sp]; bit = torch.tensor(rb.integers(0, 2, size=Xp.shape[0]), device=dev); Xp = Xp + pdir["eps"] * (2 * bit - 1).float()[:, None] * pdir["u"][None]
         R["plant"] = (Xp, bit.tolist(), None)
         for (mo, c), net in nets.items():
             X, y, _ = R[c]
@@ -670,7 +681,7 @@ def part_fd(m, TE, dev, bs, n_items=200000, pbs=64, chunk=16, items_override=Non
     with torch.no_grad():
         for ch in chunks(range(len(its_all)), bs):
             its = [its_all[j] for j in ch]; b, S = stored(m, its, 4, dev, chunk); sp = b[4]; R = fd_rows(its, S, cells, sp)
-            Xp = S[1][sp]; bit = torch.tensor(rt.integers(0, 2, size=Xp.shape[0]), device=dev); Xp = Xp + dirs[1]["eps"] * (2 * bit - 1).float()[:, None] * dirs[1]["u"][None]
+            Xp = S[1][sp]; bit = torch.tensor(rt.integers(0, 2, size=Xp.shape[0]), device=dev); Xp = Xp + pdir["eps"] * (2 * bit - 1).float()[:, None] * pdir["u"][None]
             R["plant"] = (Xp, bit.tolist(), None)
             for (mo, c), net in nets.items():
                 X, y, ids = R[c]
@@ -699,7 +710,8 @@ def part_fd(m, TE, dev, bs, n_items=200000, pbs=64, chunk=16, items_override=Non
         slots["%s_t%d_k%d" % (mo, t, k)] = d_["slots"]
     fpl = {mo: auroc(sc[(mo, "plant")]["pos"], sc[(mo, "plant")]["neg"]) for mo in mk}
     return {"fd": fd, "fd_valid": valid, "fd_plant": fpl, "fd_slot_scores": slots, "fd_eps": {str(t): dirs[t]["eps"] for t in dirs},
-            "fd_protocol": __doc__.split("  fd ")[1].split("  direct")[0].strip(), "fd_items_trained": done, "fd_sec": round(time.time() - t0)}
+            "fd_protocol": __doc__.split("  fd ")[1].split("  direct")[0].strip(), "fd_items_trained": done, "fd_n_distinct_seen": len(seen), "fd_chunk": chunk, "fd_sec": round(time.time() - t0),
+            "fd_plant_dir": {"source": "PLANT(1) of the probe part (pool[:2000] after the held-out, rng 22550, t_list 0..2)", "eps": pdir["eps"], "eps_rel": pdir["eps_rel"]}}
 
 
 # ---------------------------------------------------------------- G-EVMEM
@@ -725,7 +737,7 @@ def part_evmem(m, TE, dev, budget=7.0, bss=(32, 16, 8, 4), chunks_=(16, 8, 4)):
             "stall": (8, lambda T_, b: stall_by(m, T_, [8], dev, b)),
             "vswap": (8, lambda T_, b: swap_arms(m, T_, [8], 22610, ("ii_prime", "ii_prime_t2", "i_prime", "ii", "person", "reset"), dev, b)),
             "causal_deep": (16, lambda T_, b: swap_arms(m, T_, [16], 22612, ("ii_prime", "i_prime"), dev, b)),
-            "cf": (8, lambda T_, b: part_cf(m, T_, dev, b)),
+            "cf": (8, lambda T_, b: part_cf(m, T_, dev, b)),                  # fed 3 bs recipients (below) so one sweep chunk fills
             "direct": (16, lambda T_, b: part_direct(G2, {16: T_[16]}, dev, b))}       # DIRECT-SYM's plain GPT-2 at the longest D 16 items
     from boxes import s5
     G2 = s5.load_gpt2(dev); G2.eval()
@@ -734,7 +746,7 @@ def part_evmem(m, TE, dev, budget=7.0, bss=(32, 16, 8, 4), chunks_=(16, 8, 4)):
     for part, (D, fn) in plan.items():
         pk = {}
         for b in bss:
-            T_ = sub(D, b); pk[str(b)] = try_(lambda: fn(T_, b))
+            T_ = sub(D, 3 * b if part == "cf" else b); pk[str(b)] = try_(lambda: fn(T_, b))
             if pk[str(b)] != "OOM" and pk[str(b)] <= budget:
                 break
         ok = [int(b) for b, v in pk.items() if v != "OOM" and v <= budget]; res[part] = {"peak_gib_by_bs": pk, "eval_bs": max(ok) if ok else None, "D": D}
@@ -744,7 +756,7 @@ def part_evmem(m, TE, dev, budget=7.0, bss=(32, 16, 8, 4), chunks_=(16, 8, 4)):
         for c in chunks_:
             e8, _ = longest(8, 64)
             if part == "probe":
-                fn = lambda: part_probe(m, {8: e8[:16]}, dev, 16, T_SET, PLANT_TS, steps=1, pool_n=64, pbs=64, chunk=c, hold_n=16, pool_override=e8)  # noqa: E731
+                fn = lambda: part_probe(m, {8: e8[:16]}, dev, 16, T_SET, PLANT_TS, steps=1, pool_n=64, pbs=64, chunk=c, hold_n=16, pool_override=e8, eval_every=1)  # noqa: E731  (runs the held-out read of every probe)
             else:
                 fn = lambda: part_fd(m, {8: e8[:16]}, dev, 16, n_items=64, pbs=64, chunk=c, items_override=e8)  # noqa: E731
             pk[str(c)] = try_(fn)
