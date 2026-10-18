@@ -18976,6 +18976,14 @@ Every n is ≥ 0.70. gs2_compose PASS. Fallback null.
 
 The r1-s2 pool (110k per n, n 9–12) is building on the 3070.
 
+**Note 216-5 (2026-10-18 10:56 EDT; a $0 seal, made before any round-3 design or output and while §216's registered files are still landing; Audit's lead).** **n 25–30 of nested170.test_set(1000, n_max=30) (seed 17100, 6,000 items) is sealed as a possible round 3's extrapolation set.**
+- **Identity.** test_set(1000, 30)'s first 24,000 items equal test_set(1000, 24) bitwise (CPU check), so every §170 / §216 test item is unchanged.
+- **Hash.** The n 25–30 block has sha256 = `3938fdf38fcca0d7873b51566db99980d3eed4d523e4774a8178ee71b6af3506`. It is computed as in SD2_v1 §4.2 (json.dumps of [[syms, int(t)]] in test order, separators (",", ":"), ensure_ascii).
+- **Padded T_max** (len(syms) + 2) for n 25 / 26 / 27 / 28 / 29 / 30: 87 / 93 / 97 / 97 / 101 / 105.
+- **Until a round-3 registration is committed**, these items are used **only as an exclusion list**. No model is evaluated on them and no pool or gate contains them. Any later pool or gate (any lineage) excludes test_set(1000, n_max 30).
+- Nothing has been read on them.
+- This is not a round-3 registration. A round 3 needs its own design, math backing, OC and the user's OK if MEM-TRADED-2 reads again (SELFDEPTH_v1 §9's rule, carried into SD2).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
