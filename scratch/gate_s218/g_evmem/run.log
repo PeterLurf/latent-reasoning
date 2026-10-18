@@ -1,0 +1,77 @@
+[W1018 17:25:09.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 327155712 bytes (free: 0, total: 8585216000).
+[W1018 17:25:10.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:25:10.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:25:10.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:25:12.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 239075328 bytes (free: 0, total: 8585216000).
+[W1018 17:25:12.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 255852544 bytes (free: 0, total: 8585216000).
+[W1018 17:25:12.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 274726912 bytes (free: 0, total: 8585216000).
+[W1018 17:25:12.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 274726912 bytes (free: 0, total: 8585216000).
+ACC D 16 K'=D+2 0.25
+EVMEM acc {'peak_gib_by_bs': {'32': 'OOM', '16': 'OOM', '8': 3.6}, 'eval_bs': 8, 'D': 16}
+[W1018 17:25:16.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 327155712 bytes (free: 0, total: 8585216000).
+[W1018 17:25:16.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:25:16.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:25:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 239075328 bytes (free: 0, total: 8585216000).
+[W1018 17:25:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 255852544 bytes (free: 0, total: 8585216000).
+[W1018 17:25:18.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 264241152 bytes (free: 0, total: 8585216000).
+[W1018 17:25:18.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 274726912 bytes (free: 0, total: 8585216000).
+[W1018 17:25:18.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 274726912 bytes (free: 0, total: 8585216000).
+[W1018 17:25:18.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 274726912 bytes (free: 0, total: 8585216000).
+HIST24 intact {'acc_d2': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}, 'acc_k24': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}}
+HIST24 bank_ablate_slva {'acc_d2': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}, 'acc_k24': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}}
+HIST24 self_ablate {'acc_d2': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}, 'acc_k24': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}}
+HIST24 dup_newest {'acc_d2': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}, 'acc_k24': {'3': 0.25, '4': 0.25, '5': 0.25, '6': 0.25, '7': 0.25, '8': 0.25}}
+EVMEM hist24 {'peak_gib_by_bs': {'32': 'OOM', '16': 'OOM', '8': 3.54}, 'eval_bs': 8, 'D': 16}
+EVMEM stall {'peak_gib_by_bs': {'32': 5.38}, 'eval_bs': 32, 'D': 8}
+[W1018 17:25:56.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 262144000 bytes (free: 0, total: 8585216000).
+[W1018 17:25:56.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 262144000 bytes (free: 0, total: 8585216000).
+SWAP D 8 {'ii_prime': None, 'ii_prime_t2': None, 'i_prime': None, 'ii': None, 'person': None, 'reset': 0.0}
+EVMEM vswap {'peak_gib_by_bs': {'32': 'OOM', '16': 3.49}, 'eval_bs': 16, 'D': 8}
+[W1018 17:26:04.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 327155712 bytes (free: 0, total: 8585216000).
+[W1018 17:26:04.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:26:04.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:26:04.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 346030080 bytes (free: 0, total: 8585216000).
+[W1018 17:26:06.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 239075328 bytes (free: 0, total: 8585216000).
+SWAP D 16 {'ii_prime': None, 'i_prime': None}
+EVMEM causal_deep {'peak_gib_by_bs': {'32': 'OOM', '16': 5.35}, 'eval_bs': 16, 'D': 16}
+CF 8 1 59
+CF 8 2 45
+CF 8 3 38
+CF 8 4 41
+CF 8 5 43
+CF 8 6 46
+CF 8 7 52
+CF 8 8 28
+EVMEM cf {'peak_gib_by_bs': {'32': 6.53}, 'eval_bs': 32, 'D': 8}
+DIRECT D 16 0.40625
+EVMEM direct {'peak_gib_by_bs': {'32': 5.59}, 'eval_bs': 32, 'D': 16}
+PROBE pool 64 held 16 0 s
+PROBE group [('lin', 0), ('probe', 0), ('xor', 0), ('lin', 1), ('probe', 1), ('xor', 1), ('lin', 2), ('probe', 2), ('xor', 2), ('probe', 3), ('probe', 4), ('probe', 5), ('probe', 6), ('probe', 7), ('probe', 8), ('probe', 10), ('probe', 12)]
+[W1018 17:28:59.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+[W1018 17:28:59.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+PROBE pool 64 held 16 0 s
+PROBE group [('lin', 0), ('probe', 0), ('xor', 0), ('lin', 1), ('probe', 1), ('xor', 1), ('lin', 2), ('probe', 2), ('xor', 2), ('probe', 3), ('probe', 4), ('probe', 5), ('probe', 6), ('probe', 7), ('probe', 8), ('probe', 10), ('probe', 12)]
+[W1018 17:29:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+[W1018 17:29:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+[W1018 17:29:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+PROBE pool 64 held 16 0 s
+PROBE group [('lin', 0), ('probe', 0), ('xor', 0), ('lin', 1), ('probe', 1), ('xor', 1), ('lin', 2), ('probe', 2), ('xor', 2), ('probe', 3), ('probe', 4), ('probe', 5), ('probe', 6), ('probe', 7), ('probe', 8), ('probe', 10), ('probe', 12)]
+[W1018 17:29:15.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).
+[W1018 17:29:15.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 94371840 bytes (free: 0, total: 8585216000).
+[W1018 17:29:15.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 94371840 bytes (free: 0, total: 8585216000).
+EVMEM probe {'peak_gib_by_chunk': {'16': 'OOM', '8': 'OOM', '4': 'OOM'}, 'chunk': None, 'eval_bs': None}
+EVMEM fd {'peak_gib_by_chunk': {'16': 2.46}, 'chunk': 16, 'eval_bs': 16}
+PROBE pool 64 held 16 0 s
+PROBE group [('probe', 3), ('probe', 4), ('probe', 5), ('probe', 6), ('probe', 7), ('probe', 8), ('probe', 10), ('probe', 12)]
+PROBE step 1 {'probe3': 0.625, 'probe4': 0.625, 'probe5': 0.688, 'probe6': 0.688, 'probe7': 0.688, 'probe8': 0.625, 'probe10': 0.625, 'probe12': 0.625} 8 s
+PROBE read ('probe', 3) {'8': 0.625}
+PROBE read ('probe', 4) {'8': 0.625}
+PROBE read ('probe', 5) {'8': 0.6875}
+PROBE read ('probe', 6) {'8': 0.6875}
+PROBE read ('probe', 7) {'8': 0.6875}
+PROBE read ('probe', 8) {'8': 0.625}
+PROBE read ('probe', 10) {'8': 0.625}
+PROBE read ('probe', 12) {'8': 0.625}
+EVMEM probe groups {'peak_gib_by_chunk': {'16': 'OOM', '8': 'OOM', '4': 'OOM'}, 'chunk': 16, 'eval_bs': 16, 'peak_gib_by_group_pmicro_chunk16': {'8_pm16': 5.27}, 'group': 8, 'pmicro': 16}
+PART evmem done 268 s
+DONE scratch/gate_s218/g_evmem\eval_lvb.json
