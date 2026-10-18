@@ -1,0 +1,166 @@
+{
+ "rt_reproduced": {
+  "VB-C1-L_fixed": {
+   "P(pass)": 0.086,
+   "P(false positive)": 0.006,
+   "P(pass | no serial use)": 0.036,
+   "P(pass | serial use)": 0.485,
+   "share of positives that are false": 0.07
+  },
+  "VB-C1-GSM_fixed_ungated": {
+   "P(pass)": 0.027,
+   "P(pass | no serial use)": 0.008
+  },
+  "BEATS_null_with_seed_var": 0.119,
+  "SD-C2-L": 0.007,
+  "asserted_equal_to": "rt_lang/oc_shade.json"
+ },
+ "L1_L4_adjustments": {
+  "a_B1_gate": {
+   "P(B1 launched)": 0.086,
+   "P(VB-C1-GSM | launched)": 0.1,
+   "P(VB-C1-GSM) unconditional": 0.0086,
+   "P(VB-C1-GSM | launched, no serial use)": 0.008
+  },
+  "b_P_any": {
+   "P(>=1 decisive C1)": 0.087,
+   "E[number of decisive positives]": 0.102,
+   "RT's 0.095 is": "a + 0.1 a = the expected count when B1 is gated (P(any) counts VB-C1-GSM inside VB-C1-L)"
+  },
+  "c_DIRECT_SYM_band": {
+   "P(C1 band < 2 depths)": 0.05,
+   "P(VB-C1-L)": 0.082
+  },
+  "d_ALL_ANCHORS": {
+   "P(pass)": 0.079,
+   "P(false positive)": 0.006,
+   "P(pass | no serial use)": 0.036,
+   "P(pass | serial use)": 0.442,
+   "share of positives that are false": 0.08
+  },
+  "e_CONSUMPTION_FRONT": {
+   "P(pass)": 0.066,
+   "P(false positive)": 0.001,
+   "P(pass | no serial use)": 0.004,
+   "P(pass | serial use)": 0.398,
+   "share of positives that are false": 0.01,
+   "P(CF-L | class)": {
+    "serial_qcond": 0.9,
+    "serial_allpersons_nametag": 0.9,
+    "serial_allanchors": 0.9,
+    "precompute_carry_or_backchase": 0.02,
+    "recompute_v0": 0.02,
+    "mixed_onepass_D5_6": 0.2
+   }
+  }
+ },
+ "headline_v1": {
+  "P(VB-C1-L)": 0.063,
+  "P(VB-C1-L | no serial use)": 0.004,
+  "P(VB-C1-L | serial use)": 0.398,
+  "share of positives that are false": 0.01,
+  "P(SD-C2-L)": 0.005,
+  "P(SD-C2-L | H_shift)": 0.02,
+  "P(B1 launched)": 0.063,
+  "P(VB-C1-GSM | launched)": 0.1,
+  "P(VB-C1-GSM) unconditional": 0.0063,
+  "P(VB-C1-GSM | launched, no serial use)": 0.008,
+  "P(VB-C1-GSM) if B1 ran ungated (RT fixed)": 0.027,
+  "P(BEATS-CODI20 | launched, equal accuracy) item-only / with seed variance": [
+   0.016,
+   0.119
+  ],
+  "P(>=1 decisive C1)": 0.064
+ },
+ "sensitivity_decoys": {
+  "P(pass)": 0.067,
+  "P(false positive)": 0.001,
+  "P(pass | no serial use)": 0.005,
+  "P(pass | serial use)": 0.403,
+  "share of positives that are false": 0.01,
+  "P(VB-C1-L) incl. band factor": 0.064
+ },
+ "sensitivity_rt_exact": {
+  "P(VB-C1-L)": 0.086,
+  "P(>=1)": 0.087
+ },
+ "sensitivity_without_CF": {
+  "P(VB-C1-L)": 0.075,
+  "P(pass | no serial use)": 0.036
+ },
+ "oc_rows": {
+  "PROBE-GAIN-L >= 0.35 (n ~ 1,000 per C1-band depth)": {
+   "no_effect": "gain 0 +- 0.011 -> 0.0e+00",
+   "effect": "~0.8 (RT; nested gain 0.87 at chance 1/11, here max 0.5)"
+  },
+  "PROBE-VALID (PLANT lin + XOR, planted acc >= 0.90)": {
+   "no_effect": "a probe that cannot decode a planted 1-bit code fails -> PROBE-INVALID (censor)",
+   "effect": "~0.95 [ASSUMED]"
+  },
+  "NO-PRECOMPUTE-L: every (t in 1,2; k >= 3) AUROC <= 0.65 (lin and MLP)": {
+   "AUROC_SE": 0.0044,
+   "P(pass | no precompute, AUROC 1/2 exact)": 1.0,
+   "P(pass | decodable precompute, AUROC >= 0.9)": "0.0e+00"
+  },
+  "PREMISE-SWAP x (ii') follow >= 0.80 pooled, >= 0.60 per D": {
+   "no_effect (random disruption, follow 0.5, >= 1,000 clean pairs)": "0.0e+00",
+   "no_effect (recompute: follow ~0)": "~0",
+   "effect (serial, name-tagged; nested follow_i 0.996-1.000)": "~0.85-0.9 [ASSUMED]"
+  },
+  "SLOT-LOCAL (i') follow >= 0.80 pooled, >= 0.60 per D": {
+   "no_effect (random disruption, follow 0.5, >= 1,000 clean pairs)": "0.0e+00",
+   "no_effect (recompute: follow ~0)": "~0",
+   "effect (serial, name-tagged; nested follow_i 0.996-1.000)": "~0.85-0.9 [ASSUMED]"
+  },
+  "NO-CLOCK-L STALL >= 0.9": {
+   "no_effect (count-keyed, N3 0.499)": "<= 0.05",
+   "effect": "~0.9"
+  },
+  "SERIAL-ONSET-L slope >= 0.6 and ON(8)-ON(4) >= 3": {
+   "no_effect (flat ON)": "<= 0.05",
+   "effect": "~0.7"
+  },
+  "BEATS-CODI20 (delta >= 0.03 and exact McNemar p <= 0.05)": {
+   "P(pass | equal) item-only": 0.016,
+   "P(pass | equal) with sigma_seed 0.015 per model": 0.119,
+   "P(pass | true delta +0.06) item-only / with seed var": [
+    0.984,
+    0.881
+   ],
+   "McNemar adds nothing at SE 0.014": "delta 0.03 -> z = 2.14 -> one-sided p 0.016 < 0.05"
+  },
+  "A0-1 anti-stratum acc <= 0.40 (n 78)": {
+   "P(<= 0.40 | no reliance, true acc 0.95)": "2.4e-110"
+  }
+ },
+ "exposure_projection": {
+  "ProsQA_exposed_per_D_(test 1,000 per D; (i') and (ii'))": {
+   "4": 1000,
+   "5": 1000,
+   "6": 1000,
+   "7": 1000,
+   "8": 1000
+  },
+  "ProsQA_clean_per_D_at_acc": {
+   "0.9": 810,
+   "0.95": 902,
+   "0.99": 980
+  },
+  "GSM_exposed_base_items_m_ge_3": 94,
+  "GSM_candidates_with_20_Rx_variants": 1974,
+  "GSM_clean_pairs": {
+   "acc 0.15 rho 0.0": 44,
+   "acc 0.15 rho 0.3": 120,
+   "acc 0.15 rho 0.5": 170,
+   "acc 0.27 rho 0.0": 144,
+   "acc 0.27 rho 0.3": 261,
+   "acc 0.27 rho 0.5": 338,
+   "acc 0.40 rho 0.0": 316,
+   "acc 0.40 rho 0.3": 458,
+   "acc 0.40 rho 0.5": 553
+  },
+  "GSM_clean_pairs_without_Rx": {
+   "acc 0.27 rho 0.3": 12
+  }
+ }
+}

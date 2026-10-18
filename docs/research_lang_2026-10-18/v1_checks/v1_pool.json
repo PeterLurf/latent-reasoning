@@ -1,0 +1,144 @@
+{
+ "seed1_self_steps": 5992,
+ "seed1_demand": 383488,
+ "seeds2_21_self_steps": {
+  "min": 5899,
+  "max": 6083,
+  "mean": 5996.6
+ },
+ "kept_per_D": 106000,
+ "kept_total": 424000,
+ "margin_vs_seed1": {
+  "records": 40512,
+  "ratio": 1.1056,
+  "per_D_consumed_seed1": 95872,
+  "per_D_spare_seed1": 10128
+ },
+ "exhaustion_z_any_seed": 11.41,
+ "draft_pool_240k_exhausts_at_step": 7500,
+ "draw_cap_per_D": 530000,
+ "per_D": {
+  "9": {
+   "T": 613.7,
+   "S": 67.7,
+   "chunks": 9.47,
+   "LRR_GFLOP_per_drawn": [
+    610.4,
+    793.5
+   ],
+   "LROLL_GFLOP_per_drawn": 132.8
+  },
+  "10": {
+   "T": 649.6,
+   "S": 72.1,
+   "chunks": 10.5,
+   "LRR_GFLOP_per_drawn": [
+    720.0,
+    936.0
+   ],
+   "LROLL_GFLOP_per_drawn": 142.3
+  },
+  "11": {
+   "T": 686.0,
+   "S": 76.3,
+   "chunks": 11.52,
+   "LRR_GFLOP_per_drawn": [
+    838.0,
+    1089.4
+   ],
+   "LROLL_GFLOP_per_drawn": 151.7
+  },
+  "12": {
+   "T": 721.2,
+   "S": 80.5,
+   "chunks": 12.54,
+   "LRR_GFLOP_per_drawn": [
+    963.5,
+    1252.5
+   ],
+   "LROLL_GFLOP_per_drawn": 161.2
+  }
+ },
+ "gate1_GPU_h_local_bf16": 0.18,
+ "labelling_plan": {
+  "0.2": {
+   "drawn_total": 2120000,
+   "LRR_h_local_fp32_8TF": [
+    57.6,
+    74.9
+   ],
+   "LROLL_h_local_fp32_8TF": 10.8,
+   "LRR_h_local_bf16_14TF": [
+    32.9,
+    42.8
+   ],
+   "LROLL_h_local_bf16_14TF": 6.2,
+   "LRR_h_3090_bf16_20TF": [
+    23.1,
+    30.0
+   ],
+   "LROLL_h_3090_bf16_20TF": 4.3,
+   "LRR_3090_usd_at_0.21": [
+    4.85,
+    6.3
+   ],
+   "LRR_two_local_cards_wallclock_h_bf16": [
+    16.4,
+    21.4
+   ]
+  },
+  "0.3": {
+   "drawn_total": 1413333,
+   "LRR_h_local_fp32_8TF": [
+    38.4,
+    50.0
+   ],
+   "LROLL_h_local_fp32_8TF": 7.2,
+   "LRR_h_local_bf16_14TF": [
+    22.0,
+    28.5
+   ],
+   "LROLL_h_local_bf16_14TF": 4.1,
+   "LRR_h_3090_bf16_20TF": [
+    15.4,
+    20.0
+   ],
+   "LROLL_h_3090_bf16_20TF": 2.9,
+   "LRR_3090_usd_at_0.21": [
+    3.23,
+    4.2
+   ],
+   "LRR_two_local_cards_wallclock_h_bf16": [
+    11.0,
+    14.2
+   ]
+  },
+  "0.5": {
+   "drawn_total": 848000,
+   "LRR_h_local_fp32_8TF": [
+    23.1,
+    30.0
+   ],
+   "LROLL_h_local_fp32_8TF": 4.3,
+   "LRR_h_local_bf16_14TF": [
+    13.2,
+    17.1
+   ],
+   "LROLL_h_local_bf16_14TF": 2.5,
+   "LRR_h_3090_bf16_20TF": [
+    9.2,
+    12.0
+   ],
+   "LROLL_h_3090_bf16_20TF": 1.7,
+   "LRR_3090_usd_at_0.21": [
+    1.93,
+    2.52
+   ],
+   "LRR_two_local_cards_wallclock_h_bf16": [
+    6.6,
+    8.6
+   ]
+  }
+ },
+ "assumptions": "FLOP model: GPT-2 small fwd 24d^2 + attention 4*keys*d per token-layer; prelude causal (keys T/2); L-RR steps per drawn item = chunks x {1.0, 1.3} (rejected chains run to their stop rule); sustained rates ASSUMED"
+}

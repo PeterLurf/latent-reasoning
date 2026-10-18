@@ -1,0 +1,744 @@
+{
+ "exposure": {
+  "4": {
+   "single": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 571
+    },
+    "2": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 558
+    },
+    "3": {
+     "n": 1000,
+     "flip": 780,
+     "exposed": 596
+    },
+    "4": {
+     "n": 1000,
+     "flip": 821,
+     "exposed": 484
+    }
+   },
+   "double": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 311
+    },
+    "2": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 359
+    },
+    "3": {
+     "n": 1000,
+     "flip": 780,
+     "exposed": 437
+    },
+    "4": {
+     "n": 1000,
+     "flip": 821,
+     "exposed": 276
+    }
+   }
+  },
+  "5": {
+   "single": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 554
+    },
+    "2": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 539
+    },
+    "3": {
+     "n": 1000,
+     "flip": 736,
+     "exposed": 490
+    },
+    "4": {
+     "n": 1000,
+     "flip": 768,
+     "exposed": 516
+    },
+    "5": {
+     "n": 1000,
+     "flip": 818,
+     "exposed": 336
+    }
+   },
+   "double": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 321
+    },
+    "2": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 366
+    },
+    "3": {
+     "n": 1000,
+     "flip": 736,
+     "exposed": 312
+    },
+    "4": {
+     "n": 1000,
+     "flip": 768,
+     "exposed": 339
+    },
+    "5": {
+     "n": 1000,
+     "flip": 818,
+     "exposed": 148
+    }
+   }
+  },
+  "6": {
+   "single": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 564
+    },
+    "2": {
+     "n": 1000,
+     "flip": 843,
+     "exposed": 487
+    },
+    "3": {
+     "n": 1000,
+     "flip": 743,
+     "exposed": 505
+    },
+    "4": {
+     "n": 1000,
+     "flip": 719,
+     "exposed": 490
+    },
+    "5": {
+     "n": 1000,
+     "flip": 718,
+     "exposed": 487
+    },
+    "6": {
+     "n": 1000,
+     "flip": 802,
+     "exposed": 356
+    }
+   },
+   "double": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 316
+    },
+    "2": {
+     "n": 1000,
+     "flip": 843,
+     "exposed": 279
+    },
+    "3": {
+     "n": 1000,
+     "flip": 743,
+     "exposed": 356
+    },
+    "4": {
+     "n": 1000,
+     "flip": 719,
+     "exposed": 338
+    },
+    "5": {
+     "n": 1000,
+     "flip": 718,
+     "exposed": 335
+    },
+    "6": {
+     "n": 1000,
+     "flip": 802,
+     "exposed": 153
+    }
+   }
+  },
+  "7": {
+   "single": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 578
+    },
+    "2": {
+     "n": 1000,
+     "flip": 823,
+     "exposed": 473
+    },
+    "3": {
+     "n": 1000,
+     "flip": 751,
+     "exposed": 422
+    },
+    "4": {
+     "n": 1000,
+     "flip": 712,
+     "exposed": 486
+    },
+    "5": {
+     "n": 1000,
+     "flip": 688,
+     "exposed": 437
+    },
+    "6": {
+     "n": 1000,
+     "flip": 737,
+     "exposed": 482
+    },
+    "7": {
+     "n": 1000,
+     "flip": 813,
+     "exposed": 327
+    }
+   },
+   "double": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 307
+    },
+    "2": {
+     "n": 1000,
+     "flip": 823,
+     "exposed": 272
+    },
+    "3": {
+     "n": 1000,
+     "flip": 751,
+     "exposed": 249
+    },
+    "4": {
+     "n": 1000,
+     "flip": 712,
+     "exposed": 322
+    },
+    "5": {
+     "n": 1000,
+     "flip": 688,
+     "exposed": 295
+    },
+    "6": {
+     "n": 1000,
+     "flip": 737,
+     "exposed": 327
+    },
+    "7": {
+     "n": 1000,
+     "flip": 813,
+     "exposed": 144
+    }
+   }
+  },
+  "8": {
+   "single": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 592
+    },
+    "2": {
+     "n": 1000,
+     "flip": 834,
+     "exposed": 446
+    },
+    "3": {
+     "n": 1000,
+     "flip": 746,
+     "exposed": 424
+    },
+    "4": {
+     "n": 1000,
+     "flip": 724,
+     "exposed": 386
+    },
+    "5": {
+     "n": 1000,
+     "flip": 711,
+     "exposed": 471
+    },
+    "6": {
+     "n": 1000,
+     "flip": 724,
+     "exposed": 489
+    },
+    "7": {
+     "n": 1000,
+     "flip": 725,
+     "exposed": 486
+    },
+    "8": {
+     "n": 1000,
+     "flip": 812,
+     "exposed": 348
+    }
+   },
+   "double": {
+    "1": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 305
+    },
+    "2": {
+     "n": 1000,
+     "flip": 834,
+     "exposed": 265
+    },
+    "3": {
+     "n": 1000,
+     "flip": 746,
+     "exposed": 244
+    },
+    "4": {
+     "n": 1000,
+     "flip": 724,
+     "exposed": 233
+    },
+    "5": {
+     "n": 1000,
+     "flip": 711,
+     "exposed": 301
+    },
+    "6": {
+     "n": 1000,
+     "flip": 724,
+     "exposed": 334
+    },
+    "7": {
+     "n": 1000,
+     "flip": 725,
+     "exposed": 306
+    },
+    "8": {
+     "n": 1000,
+     "flip": 812,
+     "exposed": 141
+    }
+   }
+  }
+ },
+ "calibration": {
+  "asym {j-1, j}, j in 3..D-1": {
+   "serial q_la 0.0 eps 0.00": {
+    "P(pass)": 1.0,
+    "mean frac in window": 1.0,
+    "mean within-D Spearman": 1.0
+   },
+   "serial q_la 0.0 eps 0.05": {
+    "P(pass)": 1.0,
+    "mean frac in window": 0.898,
+    "mean within-D Spearman": 0.887
+   },
+   "serial q_la 0.0 eps 0.10": {
+    "P(pass)": 0.04,
+    "mean frac in window": 0.799,
+    "mean within-D Spearman": 0.772
+   },
+   "serial q_la 0.5 eps 0.00": {
+    "P(pass)": 1.0,
+    "mean frac in window": 1.0,
+    "mean within-D Spearman": 0.887
+   },
+   "serial q_la 0.5 eps 0.05": {
+    "P(pass)": 0.7,
+    "mean frac in window": 0.899,
+    "mean within-D Spearman": 0.806
+   },
+   "serial q_la 0.5 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.797,
+    "mean within-D Spearman": 0.711
+   },
+   "parc q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 0.0
+   },
+   "parc q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.015,
+    "mean within-D Spearman": -0.0
+   },
+   "parc q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.033,
+    "mean within-D Spearman": -0.001
+   },
+   "recompute q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 0.0
+   },
+   "recompute q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.041,
+    "mean within-D Spearman": 0.001
+   },
+   "recompute q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.078,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_D-2 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.571,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_D-2 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.539,
+    "mean within-D Spearman": -0.001
+   },
+   "clock_D-2 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.503,
+    "mean within-D Spearman": -0.002
+   },
+   "clock_4 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.5,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_4 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.481,
+    "mean within-D Spearman": 0.001
+   },
+   "clock_4 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.455,
+    "mean within-D Spearman": 0.003
+   },
+   "doubling q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.286,
+    "mean within-D Spearman": 0.78
+   },
+   "doubling q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.282,
+    "mean within-D Spearman": 0.627
+   },
+   "doubling q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.276,
+    "mean within-D Spearman": 0.506
+   },
+   "partial_c0_3 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 1.0
+   },
+   "partial_c0_3 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.047,
+    "mean within-D Spearman": 0.891
+   },
+   "partial_c0_3 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.089,
+    "mean within-D Spearman": 0.779
+   }
+  },
+  "+-1, j in 3..D-2 (Audit)": {
+   "serial q_la 0.0 eps 0.00": {
+    "P(pass)": 1.0,
+    "mean frac in window": 1.0,
+    "mean within-D Spearman": 1.0
+   },
+   "serial q_la 0.0 eps 0.05": {
+    "P(pass)": 1.0,
+    "mean frac in window": 0.944,
+    "mean within-D Spearman": 0.862
+   },
+   "serial q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.877,
+    "mean within-D Spearman": 0.732
+   },
+   "serial q_la 0.5 eps 0.00": {
+    "P(pass)": 1.0,
+    "mean frac in window": 1.0,
+    "mean within-D Spearman": 0.854
+   },
+   "serial q_la 0.5 eps 0.05": {
+    "P(pass)": 0.007,
+    "mean frac in window": 0.923,
+    "mean within-D Spearman": 0.756
+   },
+   "serial q_la 0.5 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.841,
+    "mean within-D Spearman": 0.659
+   },
+   "parc q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 0.0
+   },
+   "parc q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.022,
+    "mean within-D Spearman": 0.003
+   },
+   "parc q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.048,
+    "mean within-D Spearman": -0.005
+   },
+   "recompute q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 0.0
+   },
+   "recompute q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.055,
+    "mean within-D Spearman": 0.001
+   },
+   "recompute q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.107,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_D-2 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.7,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_D-2 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.683,
+    "mean within-D Spearman": -0.001
+   },
+   "clock_D-2 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.653,
+    "mean within-D Spearman": -0.0
+   },
+   "clock_4 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.9,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_4 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.846,
+    "mean within-D Spearman": 0.005
+   },
+   "clock_4 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.781,
+    "mean within-D Spearman": 0.001
+   },
+   "doubling q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.4,
+    "mean within-D Spearman": 0.686
+   },
+   "doubling q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.387,
+    "mean within-D Spearman": 0.529
+   },
+   "doubling q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.374,
+    "mean within-D Spearman": 0.413
+   },
+   "partial_c0_3 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 1.0
+   },
+   "partial_c0_3 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.05,
+    "mean within-D Spearman": 0.865
+   },
+   "partial_c0_3 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.097,
+    "mean within-D Spearman": 0.743
+   }
+  }
+ },
+ "calibration_registered": {
+  "REGISTERED asym {j-1, j}, j in 3..D-1; share>=0.75, rho>=0.60": {
+   "serial q_la 0.0 eps 0.00": {
+    "P(pass)": 1.0,
+    "mean frac in window": 1.0,
+    "mean within-D Spearman": 1.0
+   },
+   "serial q_la 0.0 eps 0.05": {
+    "P(pass)": 1.0,
+    "mean frac in window": 0.898,
+    "mean within-D Spearman": 0.887
+   },
+   "serial q_la 0.0 eps 0.10": {
+    "P(pass)": 1.0,
+    "mean frac in window": 0.799,
+    "mean within-D Spearman": 0.772
+   },
+   "serial q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.697,
+    "mean within-D Spearman": 0.652
+   },
+   "serial q_la 0.5 eps 0.00": {
+    "P(pass)": 1.0,
+    "mean frac in window": 1.0,
+    "mean within-D Spearman": 0.888
+   },
+   "serial q_la 0.5 eps 0.05": {
+    "P(pass)": 1.0,
+    "mean frac in window": 0.9,
+    "mean within-D Spearman": 0.805
+   },
+   "serial q_la 0.5 eps 0.10": {
+    "P(pass)": 1.0,
+    "mean frac in window": 0.798,
+    "mean within-D Spearman": 0.714
+   },
+   "serial q_la 0.5 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.696,
+    "mean within-D Spearman": 0.612
+   },
+   "parc q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 0.0
+   },
+   "parc q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.015,
+    "mean within-D Spearman": -0.003
+   },
+   "parc q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.033,
+    "mean within-D Spearman": -0.004
+   },
+   "parc q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.052,
+    "mean within-D Spearman": -0.003
+   },
+   "recompute q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 0.0
+   },
+   "recompute q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.041,
+    "mean within-D Spearman": -0.001
+   },
+   "recompute q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.077,
+    "mean within-D Spearman": 0.004
+   },
+   "recompute q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.109,
+    "mean within-D Spearman": 0.004
+   },
+   "clock_D-2 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.571,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_D-2 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.539,
+    "mean within-D Spearman": -0.003
+   },
+   "clock_D-2 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.502,
+    "mean within-D Spearman": 0.003
+   },
+   "clock_D-2 q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.459,
+    "mean within-D Spearman": -0.001
+   },
+   "clock_4 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.5,
+    "mean within-D Spearman": 0.0
+   },
+   "clock_4 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.482,
+    "mean within-D Spearman": 0.001
+   },
+   "clock_4 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.455,
+    "mean within-D Spearman": -0.001
+   },
+   "clock_4 q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.423,
+    "mean within-D Spearman": -0.0
+   },
+   "doubling q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.286,
+    "mean within-D Spearman": 0.78
+   },
+   "doubling q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.282,
+    "mean within-D Spearman": 0.627
+   },
+   "doubling q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.278,
+    "mean within-D Spearman": 0.504
+   },
+   "doubling q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.269,
+    "mean within-D Spearman": 0.405
+   },
+   "partial_c0_3 q_la 0.0 eps 0.00": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.0,
+    "mean within-D Spearman": 1.0
+   },
+   "partial_c0_3 q_la 0.0 eps 0.05": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.048,
+    "mean within-D Spearman": 0.89
+   },
+   "partial_c0_3 q_la 0.0 eps 0.10": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.088,
+    "mean within-D Spearman": 0.778
+   },
+   "partial_c0_3 q_la 0.0 eps 0.15": {
+    "P(pass)": 0.0,
+    "mean frac in window": 0.123,
+    "mean within-D Spearman": 0.665
+   }
+  }
+ }
+}
