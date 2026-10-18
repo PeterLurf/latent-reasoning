@@ -1,0 +1,19 @@
+{
+ "versions_equal": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "coda_slot_rows_equal": true,
+ "coda_max_abs_diff": 0.0,
+ "K": 8,
+ "items": 8,
+ "pass": true,
+ "device": "cpu"
+}
