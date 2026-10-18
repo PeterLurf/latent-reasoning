@@ -17,7 +17,8 @@ text. New module; vbank / slva / deltamem are imported read-only (bank_kv, block
     an R2 term (IN from their first mark pass), OUT is never a target.
     The per-(item, t) combination is vbank.vb_loss's over the VALID slots (Audit G-L13 (e)): a pass whose valid slots are all changed (or all
     unchanged) takes that half's mean alone (not 1/2 of it); the item's R2 is the mean over its passes t <= K_i with >= 1 valid slot (self items:
-    passes with >= 1 marked slot; plain items: every pass, all real slots valid).
+    passes with >= 1 marked slot; plain items: every pass, all real slots valid). Note 218-2 (a0501784): intended - vb_loss generalised to
+    sparse targets, equal to vb_loss on dense gold REACH.
   cand_ce(item, t) = -log softmax([sum log p("### o_R."), sum log p("### o_P.")])[o_R] from the coda after pass t (chance ln 2).
 Items (boxes/prosqa_sym): ids ([EOT] + " " + text), slot_idx (sorted positions of the concepts' slot tokens) with the concept order `concepts`,
   dist_R {concept: d} (gold REACH; absent = unreachable), D, o_R / o_P (names).
@@ -476,14 +477,15 @@ def main():
         torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
     if a.mem_check or a.time_steps:
         GATE.stage = len(ns) - 1
-    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []; tmax = [0]   # tmax: the max plain T drawn (T_band)
+    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []; tmax = [0]; hits = [0]   # tmax: the max plain T drawn (T_band); hits: test / GATE sigs drawn
     if gate_init:
         log.write(json.dumps({"step": 0, "gate_init": gate_init, "cur_stage": GATE.stage, "D_max_train": GATE.n_max()}) + "\n"); log.flush()
 
     def draw(Dmax):
         if a.mem_check:
             return big, [a.kmax] * len(big)
-        its = [lvb_item(stream.draw(int(D))) for D in rng.integers(D_MIN, Dmax + 1, size=a.bs)]; tmax[0] = max(tmax[0], max(len(it["ids"]) for it in its))
+        raws = [stream.draw(int(D)) for D in rng.integers(D_MIN, Dmax + 1, size=a.bs)]; hits[0] += sum(r_["sig"] in EXCL for r_ in raws)   # CONTAMINATED check
+        its = [lvb_item(r_) for r_ in raws]; tmax[0] = max(tmax[0], max(len(it["ids"]) for it in its))
         return its, [min(it["D"] + int(rng_k.integers(0, a.kextra + 1)), a.kmax) for it in its]
 
     def draw_step(Dmax, step):
@@ -559,7 +561,7 @@ def main():
                     "answer_ce": float(np.mean([v[1] for v in acc])) if acc else None, "rec_ce": float(np.mean([v[2] for v in acc])) if acc else None,
                     "plain_cand_ce": float(np.mean([v[4] for v in pv if v[4] is not None])) if any(v[4] is not None for v in pv) else None,
                     "D_max_train": GATE.n_max(), "cur_stage": GATE.stage, "lr": lr, "c": None if direct else float(m.c_anneal), "gn_preclip": gn_log[-1],
-                    "clip_frac_100": float(np.mean([v > 1.0 for v in gn_log[-100:]])), "slva_gn": slva_gn, "stream_collisions": len(stream.collisions), "t_train_max": tmax[0]}
+                    "clip_frac_100": float(np.mean([v > 1.0 for v in gn_log[-100:]])), "slva_gn": slva_gn, "stream_collisions": len(stream.collisions), "t_train_max": tmax[0], "test_gate_sig_hits": hits[0]}
             if pool is not None:
                 rec_.update({"self_frac": len(sv) / len(acc) if acc else None, "self_answer_ce": float(np.mean([v[1] for v in sv])) if sv else None,
                              "self_rec_ce": float(np.mean([v[2] for v in sv])) if sv else None, "plain_answer_ce": float(np.mean([v[1] for v in pv])) if pv else None,
@@ -614,7 +616,7 @@ def main():
             sR, sP = cand_scores(m, its_[i:i + a.eval_bs], D + 2, dev, ac); ok += (sR > sP).tolist()
         accD[str(D)] = float(np.mean(ok))
     res = {"task": "prosqa_sym_v1", "arm": "langvb", "arch": a.arch, "seed": a.seed, "acc_cand_host": accD, "per_n": a.per_n, "train_sec": train_sec,
-           "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "stream_collisions": len(stream.collisions), "t_train_max_since_resume": tmax[0], "self_state": selfst if pool is not None else None,
+           "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "stream_collisions": len(stream.collisions), "t_train_max_since_resume": tmax[0], "test_gate_sig_hits_since_resume": hits[0], "self_state": selfst if pool is not None else None,
            "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
            "note": "descriptive host eval (cand accuracy at K' = D + 2, D 3..12, first per_n test items); the registered readings come from langvb_eval (fp32)"}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
