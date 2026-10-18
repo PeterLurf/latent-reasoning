@@ -19186,6 +19186,20 @@ Neither is a scorer fault.
 - **Test.** The kept §191 models evaluated on anchor-neutral items. This is LANG-VB's A0-1, $0, to be registered with LANG-VB v1 before it is run.
 - **Going forward.** p8_na fails a level-wise shallow-heuristic panel (≥ 0.6) at depth ≥ 5, and the double-neutralised regeneration keeps anchor-parent in-degree at 0.61–0.67. New ProsQA work uses a generator that passes the panel at every level and depth (LANG-VB's ProsQA-SYM).
 
+**Note 216-9 (2026-10-18 12:43 EDT; descriptive, from committed eval_vb / eval_deep; no registered reading).** The 50 % crossing over the supported range, n50 / support (linear interpolation, the §4.3 n50 rule), across both lineages:
+
+| lineage | base (support 8) | round 1 (support 12) | round 2 (support 16) |
+|---|---|---|---|
+| s1 | 10.31 → **1.29** | 15.46 → **1.29** | 20.54 → **1.28** |
+| s2 | 10.51 → **1.31** | 15.33 → **1.28** (cell censored: FT-DIVERGED, 216-8) | not run |
+
+- Five points over two seeds and three rounds sit at 1.28–1.31: the margin past support grows in proportion to the supported range.
+- This stays descriptive:
+  - WIDTH-2 (1.86) did not single out H_prop.
+  - R1-s2 is censored.
+  - The theorems (Huang 2511.07378, Yang 2610.14456) support the proportional shape only, not the constant (Literature eab37021).
+- **Design lead for any next round (Audit; needs a derivation before use).** The small-n K′24 drop is self-item-specific (216-8; FT-CTRL 1.000). A round 3 or a second-seed redo should either mix a small share of plain n 1–3 K′ 24 rollouts into training, or pre-state K′24-STABLE at n 1 as the binding risk.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
