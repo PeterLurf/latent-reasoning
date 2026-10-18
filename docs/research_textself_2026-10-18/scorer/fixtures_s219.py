@@ -110,7 +110,7 @@ PANELS = {
 _EVCACHE = {}
 
 
-def eval_text_obj(curve, model_sha, card=CARD3070, bs=32, layout="columnar", sha=None, top_card=None, tweak=None, times=None):
+def eval_text_obj(curve, model_sha, card=CARD3070, bs=32, layout="list", sha=None, top_card=None, tweak=None, times=None):
     key = (tuple(sorted(curve.items())), model_sha, card, bs, layout, sha, top_card, tweak, times)
     if key in _EVCACHE:
         return _EVCACHE[key]
@@ -128,7 +128,8 @@ def eval_text_obj(curve, model_sha, card=CARD3070, bs=32, layout="columnar", sha
             if tweak == "overflow_flag" and n == 24 and q == 0:
                 ovf = not ov
             row = dict(idx=(n - 1) * 1000 + q, n=n, y=y, P=P_, C_struct=C_, overflow=ovf, answer=ans, ntok=0 if ov else (C_ if c else min(C_ + 50, 1025 - P_)),
-                       eot=c, form_valid=c, strict=c, first_bad_step=None if c else 1 + q % n, first_bad_pos=None if c else P_ + 5 + (q * 37) % max(1, C_))
+                       eot=c, form_valid=c, strict=c, first_bad_step=None if (c or ov) else 1 + q % n,
+                       first_bad_pos=None if (c or ov) else P_ + ((q * 37) % max(1, C_)) + 1)     # text_eval A2: P + j + 1 (1-based row)
             for f_ in S.ITEM_FIELDS:
                 cols[f_].append(row[f_])
         if layout == "columnar":
@@ -140,8 +141,9 @@ def eval_text_obj(curve, model_sha, card=CARD3070, bs=32, layout="columnar", sha
         for y in b["t"]:
             yc[y] = yc.get(y, 0) + 1
         ch[str(n)] = max(yc.values()) / 1000
-    meta = {"run": None, "model_sha256": model_sha, "card": card, "dtype": "fp32", "tf32": False, "cot_eval_bs": bs, "test_seed": 17100, "test_n_max": 24,
-            "items_sha256": sha or TI["sha"], "budget_rule": "per batch min(max C_struct + 50, 1025 - P)", "commit": "fixture", "sec": 1, "peak_gib": 5.0}
+    meta = {"run": None, "model": "x", "model_sha256": model_sha, "card": card, "dtype": "fp32", "tf32": False, "cot_eval_bs": bs, "test_seed": 17100, "test_n_max": 24,
+            "ns": list(range(1, 25)), "limit_per_n": 0, "n_items": 24000, "items_sha256": sha or TI["sha"], "budget_rule": "per batch min(max C_struct + 50, 1025 - P)",
+            "commit": "fixture", "sec": 1, "t_start": "2026-10-20T09:00:00+00:00", "t_end": "2026-10-20T12:00:00+00:00", "peak_gib": 5.0}
     if times:
         meta.update(times)
     o = {"meta": meta, "items": items["_list"] if layout == "list" else items, "acc_by_n": acc, "acc_feasible_by_n": accf, "form_valid_by_n": fvb,
@@ -243,70 +245,131 @@ class Tree:
         shutil.rmtree(self.root, ignore_errors=True)
 
 
-def write_log(t, d, last=12000, reuse=0, cursor_override=None, drop_cursor=False):
+TOK_SELF, TOK_PLAIN = (64 * 300, 64 * 350, 64 * 420), (64 * 90, 64 * 100, 64 * 140)   # per step: target tokens, token-positions, padded positions
+
+
+def tok_at(cum_self, step):
+    ns = cum_self; npl = step - ns
+    return {"plain": {"target_tokens": npl * TOK_PLAIN[0], "token_positions": npl * TOK_PLAIN[1], "padded_positions": npl * TOK_PLAIN[2]},
+            "self": {"target_tokens": ns * TOK_SELF[0], "token_positions": ns * TOK_SELF[1], "padded_positions": ns * TOK_SELF[2]}}
+
+
+def write_log(t, d, last=12000, reuse=0, cursor_override=None, drop_cursor=False, train_done=True, nonfinite_at=None, td_mod=None, ini_mod=None):
+    """textself_ft's log.jsonl (A8 / A10) + train_done.json (A9) for a run that ended at `last`."""
     coins, _ = S.coin_stream(); cum = [0]
     for c in coins:
         cum.append(cum[-1] + int(c))
     lines = []
-    for s in range(100, last + 1, 100):
-        r = {"step": s, "loss": 0.01, "plain_loss": 0.001, "self_loss": 0.02, "self_value_ce": 0.002, "self_copy_ce": 0.018, "self_frac": 0.5,
-             "pool_cursor": 64 * cum[s], "n_self_steps": cum[s], "self_reuse": reuse if s == last else 0, "lr": 1e-5, "nonfinite": 0}
-        if cursor_override is not None and s == last:
+    for s_ in range(100, last + 1, 100):
+        if nonfinite_at == s_:
+            lines.append(json.dumps({"step": s_, "nonfinite": 1}))
+        r = {"step": s_, "loss": 0.01, "loss_last": 0.012, "sec": s_ // 2, "plain_loss": 0.001, "self_loss": 0.02, "self_value_ce": 0.002, "self_copy_ce": 0.018,
+             "self_frac": 0.5, "pool_cursor": 64 * cum[s_], "n_self_steps": cum[s_], "self_reuse": reuse if s_ == last else 0, "lr": 1e-5, "gn_preclip": 0.3,
+             "clip_frac_100": 0.0, "n_nonfinite": int(nonfinite_at is not None and s_ >= nonfinite_at), "train_tokens": tok_at(cum[s_], s_)}
+        if cursor_override is not None and s_ == last:
             r["pool_cursor"] = cursor_override
         if drop_cursor:
             r.pop("pool_cursor")
         lines.append(json.dumps(r))
     t.w(d, "log.jsonl", "\n".join(lines) + "\n")
+    if train_done and last == 12000:
+        td = {"steps": 12000, "train_sec": 9000, "n_nonfinite": 0, "n_self_steps": cum[last], "pool_cursor": cursor_override if cursor_override is not None else 64 * cum[last],
+              "self_reuse": reuse, "train_tokens": tok_at(cum[last], last), "self_n_counts": {}, "model_sha256": SHA_T1 if d == L["t1"] else SHA_T2}
+        td.update(td_mod or {})
+        t.w(d, "train_done.json", td)
+        ini = {"init_from": "boxes/runs_fsq/%s/model.pt" % ("s170_cot_s1" if d == L["t1"] else L["t1"]), "sha256": S.BASE_SHA if d == L["t1"] else SHA_T1,
+               "missing": [], "unexpected": []}
+        ini.update(ini_mod or {})
+        for f, o in (("init_from.json", ini), ("args_diff.json", {"ref": "x", "diff": {}}),
+                     ("mem_check.json", {"micro": 1}), ("mem_check_self.json", {"peak_gib": 14.0}), ("timing.json", {"sec_per_step": 0.4})):
+            t.w(d, f, o)
 
 
 def write_draws(t, d, rnd):
-    coins, _ = S.coin_stream(); ns = (9, 10, 11, 12) if rnd == 1 else (13, 14, 15, 16, 13, 14, 15, 16, 9, 10, 11, 12)
-    x = [{"step": i + 1, "coin": c, "self_n": [ns[(i + j) % len(ns)] for j in range(64)] if c else None,
-          "plain_hash": hashlib.sha1(str(i + 1).encode()).hexdigest()} for i, c in enumerate(coins)]
+    """textself_ft A6: {step, plain_hash, coin, n (plain) | self_n + U (self)}."""
+    coins, U = S.coin_stream(); ns = (9, 10, 11, 12) if rnd == 1 else (13, 14, 15, 16, 13, 14, 15, 16, 9, 10, 11, 12)
+    x = []
+    for i, c in enumerate(coins):
+        r = {"step": i + 1, "plain_hash": hashlib.sha1(str(i + 1).encode()).hexdigest(), "coin": c}
+        if c:
+            r.update(self_n=[ns[(i + j) % len(ns)] for j in range(64)], U=U[i])
+        else:
+            r["n"] = [1 + (i + j) % 8 for j in range(64)]
+        x.append(r)
     t.w(d, "draws_log.json", json.dumps(x, separators=(",", ":")))
 
 
-def textself(rnd, pi=0.9996, piE=0.9994, ci=(0.9985, 0.9999), ciE=(0.9982, 0.9998), cont=None, drop=None, lk=True):
-    la = {"n_audit": 5000, "pi": pi, "pi_E": piE, "pi_ci95": list(ci), "pi_E_ci95": list(ciE),
-          "kept_wrong": [{"syms": [" 1"], "step": 3, "op": "*", "a": 2, "b": 3, "v": 5, "gold": 6}]}
-    if rnd == 2:
-        la["by_window"] = {w: {"n_audit": 2500, "pi": pi, "pi_E": piE, "pi_ci95": list(ci), "pi_E_ci95": list(ciE)} for w in ("W2", "W1")}
-    o = {"label_audit": la, "contamination": dict({"pool_excl_hits": 0, "pool_test_hits": 0, "gold_key_hits": 0}, **(cont or {})),
-         "memo": {str(n): {"acc_pool": 1.0, "acc_gate": 0.995} for n in ((9, 10, 11, 12) if rnd == 1 else range(9, 17))}}
+def textself(rnd, pi=0.9996, piE=0.9994, ci=(0.9985, 0.9999), ciE=(0.9982, 0.9998), cont=None, drop=None, lk=True, lk_t_start="2026-10-21T10:00:00+00:00"):
+    """text_eval E2 (part_textself_cpu + part_textself_gpu) as written at 3b0bb06f."""
+    blk = lambda na: {"n_audit": na, "pi": pi, "pi_E": piE, "pi_ci95": list(ci), "pi_E_ci95": list(ciE), "kept_wrong_label": 0, "kept_wrong_E": 0}  # noqa: E731
+    la = dict(blk(5000), by_window={w: blk(2500) for w in (("W1",) if rnd == 1 else ("W2", "W1"))},
+              kept_wrong=[{"syms": [" 1"], "n": 9, "step": 3, "op": "*", "a": 2, "b": 3, "value": 5, "gold": 6, "wrong_steps": [3], "label": 5, "gold_label": 6,
+                           "pattern": "both"}], seed=23270 if rnd == 1 else 23370, cursor=383488, n_consumed=383488, pool_sha256="0" * 64)
+    con = {"pool_records": 388000, "hits_by_set": {"test_n30": 0}, "hits_by_set_consumed": {"test_n30": 0}, "pool_excl_hits": 0, "self_reuse": 0, "pool_test_hits": 0,
+           "gold_key_hits": 0, "excl_sizes": {}, "excl_meta": {}}
+    con.update(cont or {}); con["CONTAMINATED"] = bool(con["pool_excl_hits"] or con["self_reuse"] or con["gold_key_hits"])
+    o = {"label_audit": la, "contamination": con, "meta_cpu": {"commit": "fixture", "sec": 1, "pool": "x"},
+         "memo": {str(n): {"window": "W1" if n < 13 else "W2", "acc_pool": 1.0, "acc_gate": 0.995, "items": [2000, 2000], "gap": 0.005, "FLAG_gt_0.02": False}
+                  for n in ((9, 10, 11, 12) if rnd == 1 else range(9, 17))}}
     if lk:
-        o["labeller_kept"] = {str(n): {"keep": max(0.0, 1.0 - 0.04 * (n - 9)), "pi": 0.999} for n in range(9, 25)}
+        o["labeller_kept"] = {str(n): {"items": 500, "n_kept": int(500 * max(0.0, 1.0 - 0.04 * (n - 9))), "keep": max(0.0, 1.0 - 0.04 * (n - 9)), "pi": 0.999, "pi_E": 0.999,
+                                       "fail_step_hist": {}} for n in range(9, 25)}
+        o["labeller_kept_meta"] = {"seed": 23280 if rnd == 1 else 23380, "per_n": 500, "label_bs": 128, "t_start": lk_t_start}
+        o["meta_gpu"] = {"model": "x", "model_sha256": SHA_T1 if rnd == 1 else SHA_T2, "card": CARD3070, "dtype": "fp32", "tf32": False, "cot_eval_bs": 32}
     if drop:
         o.pop(drop)
     return o
 
 
-def pool_meta(rnd, card=CARD3070, n_records=None):
+def pool_meta(rnd, card=CARD3070, n_records=None, t_start=None, base_windows=(), wsha=None):
+    """s219_build_pool's pool_meta.json."""
     if rnd == 1:
-        pn = {str(n): 97000 for n in range(9, 13)}; T = {"9": 200, "10": 240, "11": 280, "12": 313}
+        pn = {str(n): 97000 for n in range(9, 13)}; T = {"9": 200, "10": 240, "11": 280, "12": 313}; W = {"W1": {"seed": 23260, "ns": [9, 10, 11, 12], "gate": "GATE_T1"}}
     else:
-        pn = {**{str(n): 65000 for n in range(13, 17)}, **{str(n): 32500 for n in range(9, 13)}}; T = {"13": 360, "14": 420, "15": 480, "16": 531}
-    return {"seeds": {"pool": 23200 if rnd == 1 else 23300}, "per_n": pn, "n_records": n_records or sum(pn.values()), "sha256": "0" * 64, "card": card,
-            "dtype": "fp32", "label_bs": 128, "labeller": "x", "T_max_by_n": T, "L0_max_by_n": {}}
+        pn = {**{str(n): 32500 for n in range(9, 13)}, **{str(n): 65000 for n in range(13, 17)}}; T = {"13": 360, "14": 420, "15": 480, "16": 531}
+        W = {"W2": {"seed": 23360, "ns": [13, 14, 15, 16], "gate": "GATE_T2"}, "W1": {"seed": 23361, "ns": [9, 10, 11, 12], "gate": "GATE_T1p"}}
+    for w in W:
+        W[w]["labeller_sha256"] = (wsha or {}).get(w) or (S.BASE_SHA if (rnd == 1 or w in base_windows) else SHA_T1)
+    return {"round": rnd, "lineage": "s1", "seeds": {"pool": 23200 if rnd == 1 else 23300, "perm": 23201 if rnd == 1 else 23301}, "per_n": pn,
+            "ns": sorted(int(k) for k in pn), "n_records": n_records or sum(pn.values()), "T_max_by_n": T, "L0_max_by_n": {}, "windows": W,
+            "labeller": {w: "x" for w in W}, "labeller_sha256": {w: "y" for w in W}, "sha256": "0" * 64, "builder_commit": "fixture", "card": card,
+            "dtype": "fp32", "tf32": False, "label_bs": 128,
+            "t_start": t_start or ("2026-10-19T08:00:00+00:00" if rnd == 1 else "2026-10-21T09:00:00+00:00")}
 
 
-def gate1_obj(keep=0.995, pi=0.9995, piE=0.9995, flag="auto", card=CARD3070):
-    B = gate_by_n(range(9, 13), keep, pi, piE, "boxes/runs_fsq/s170_cot_s1/model.pt", "W1")
-    return {"by_n": B, "pooled_by_window": {"W1": pooled(B, range(9, 13))}, "GATE_T1": rule(B, range(9, 13)) if flag == "auto" else flag, "card": card,
-            "labeller_full": {str(n): {"keep": 0.5, "pi": 0.96} for n in range(9, 13)}, "kept_vs_drawn": {}, "equiv": {"items": 1000, "agree_keep": 1.0}}
+def equiv_obj(ns, w, share=1.0):
+    bn = {str(n): {"items": 250, "agree_keep": 250, "agree_values": 250, "agree_fail_step": 250, "agree_all": int(round(250 * share)), "share": round(250 * share) / 250,
+                   "PASS": round(250 * share) / 250 >= 0.995} for n in ns}
+    return {"by_n": bn, "disagreements": [] if share == 1.0 else [{"i": 1, "n": ns[0], "margin": 1e-4}], "min_margin": 0.41,
+            "PASS": all(v["PASS"] for v in bn.values())}
 
 
-def gate2_obj(keep2=0.99, keep1=0.995, fb=None, card=CARD3070, flags="auto"):
-    B = {**gate_by_n(range(9, 13), keep1, 0.9995, 0.9995, "boxes/runs_fsq/s219_t1_s1/model.pt", "W1"),
-         **gate_by_n(range(13, 17), keep2, 0.9995, 0.9995, "boxes/runs_fsq/s219_t1_s1/model.pt", "W2")}
-    o = {"by_n": B, "pooled_by_window": {"W2": pooled(B, range(13, 17)), "W1": pooled(B, range(9, 13))},
-         "GATE_T2": rule(B, range(13, 17)), "GATE_T1p": rule(B, range(9, 13)), "fallback": None, "card": card}
+def gate1_obj(keep=0.995, pi=0.9995, piE=0.9995, flag="auto", card=CARD3070, t_start="2026-10-19T06:00:00+00:00"):
+    """scratch/s219_gate.py --stage score, round 1."""
+    B = gate_by_n(range(9, 13), keep, pi, piE, "boxes/runs_fsq/s170_cot_s1", "W1")
+    return {"round": 1, "by_n": B, "pooled_by_window": {"W1": dict(pooled(B, range(9, 13)), labeller="boxes/runs_fsq/s170_cot_s1")}, "fallback": None,
+            "window_labeller": {"W1": "boxes/runs_fsq/s170_cot_s1"}, "labeller_full": {str(n): {"window": "W1", "keep": 0.5, "pi": 0.96, "pi_E": 0.95, "n_kept": 1000}
+                                                                                    for n in range(9, 13)},
+            "kept_vs_drawn": {}, "equiv": {"W1": equiv_obj([9, 10, 11, 12], "W1")}, "equiv_full": {}, "compose": {"W1": {"PASS": True}}, "labeller": "boxes/runs_fsq/s170_cot_s1",
+            "labeller_sha256": S.BASE_SHA, "card": card, "GATE_T1": rule(B, range(9, 13)) if flag == "auto" else flag, "dtype": "fp32", "label_bs": 128, "t_start": t_start}
+
+
+def gate2_obj(keep2=0.99, keep1=0.995, fb=None, card=CARD3070, flags="auto", t_start="2026-10-21T08:00:00+00:00"):
+    """scratch/s219_gate.py --stage score, round 2 (labeller T1, base fallback per failed window)."""
+    lab = "boxes/runs_fsq/s219_t1_s1"
+    B = {**gate_by_n(range(9, 13), keep1, 0.9995, 0.9995, lab, "W1"), **gate_by_n(range(13, 17), keep2, 0.9995, 0.9995, lab, "W2")}
+    o = {"round": 2, "by_n": B, "pooled_by_window": {"W2": dict(pooled(B, range(13, 17)), labeller=lab), "W1": dict(pooled(B, range(9, 13)), labeller=lab)},
+         "GATE_T2": rule(B, range(13, 17)), "GATE_T1p": rule(B, range(9, 13)), "fallback": None, "card": card, "labeller": lab, "labeller_sha256": SHA_T1,
+         "labeller_full": {str(n): {"window": "W1" if n < 13 else "W2", "keep": 0.3, "pi": 0.9, "pi_E": 0.9, "n_kept": 600} for n in range(9, 17)},
+         "equiv": {"W2": equiv_obj([13, 14, 15, 16], "W2"), "W1": equiv_obj([9, 10, 11, 12], "W1")}, "kept_vs_drawn": {}, "dtype": "fp32", "label_bs": 128,
+         "t_start": t_start}
     if flags != "auto":
         o.update(flags)
     if fb:
         o["fallback"] = {}
         for w, kp in fb.items():
-            ns = S.WIN[w]; FB = gate_by_n(ns, kp, 0.9995, 0.9995, "boxes/runs_fsq/s170_cot_s1/model.pt", w)
-            o["fallback"][w] = {"labeller": "boxes/runs_fsq/s170_cot_s1/model.pt", "by_n": FB, "pooled": pooled(FB, ns), "GATE": rule(FB, ns)}
+            ns = S.WIN[w]; FB = gate_by_n(ns, kp, 0.9995, 0.9995, "boxes/runs_fsq/s170_cot_s1", w)
+            o["fallback"][w] = {"labeller": "boxes/runs_fsq/s170_cot_s1", "labeller_sha256": S.BASE_SHA, "by_n": FB, "pooled": pooled(FB, ns), "GATE": rule(FB, ns)}
     return o
 
 
@@ -629,7 +692,7 @@ def text_label_stall():
 def base_labelled_window():
     """W2 fails under T1 but passes under the base fallback -> BASE-LABELLED, T2 read normally; T-SELF-2 names the labeller per window."""
     g2 = gate2_obj(keep2={16: 0.60}, fb={"W2": 0.80})
-    t = build("baselab", gate2=g2)
+    t = build("baselab", gate2=g2, pm2=pool_meta(2, base_windows=("W2",)))
     try:
         s = run(t)
         chk(s["gate_t2"]["W2"]["status"] == "BASE-LABELLED" and s["gate_t2"]["W1"]["status"] == "SELF-LABELLED", (s["gate_t2"]["W2"]["status"],))
@@ -746,14 +809,14 @@ def seal_breach():
         out.append("watch: pending + SEAL_WATCH; --final FAIL")
     finally:
         t.done()
-    g2 = gate2_obj(); g2["t_start"] = "2026-10-20T11:00:00-04:00"
+    g2 = gate2_obj(t_start="2026-10-20T11:00:00-04:00")
     t = build("seal_order", gate2=g2, t1_times=(("t_start", "2026-10-20T09:00:00-04:00"), ("t_end", "2026-10-20T12:00:00-04:00")))
     try:
         s = run(t); out.append("order: " + assert_censored(s, "t1", "SEAL-BREACH", 1)[:30])
         chk(s["t1"]["SEAL"]["order_violations"], s["t1"]["SEAL"])
     finally:
         t.done()
-    g2 = gate2_obj(); g2["t_start"] = "2026-10-20T13:00:00-04:00"
+    g2 = gate2_obj(t_start="2026-10-20T13:00:00-04:00")
     t = build("seal_order_ok", gate2=g2, t1_times=(("t_start", "2026-10-20T09:00:00-04:00"), ("t_end", "2026-10-20T12:00:00-04:00")))
     try:
         s = run(t); chk(s["t1"]["status"] == "SCORED" and not s["t1"]["SEAL_BREACH"], s["t1"]["label"])
@@ -1075,11 +1138,11 @@ def latent_files_ignored():
 
 @case
 def layout_list_items():
-    """eval_text items as a list of per-item dicts reads identically to the columnar layout."""
-    t = build("layout", layout="list")
+    """eval_text items in the columnar alternative read identically to the writer's list layout."""
+    t = build("layout", layout="columnar")
     try:
         s = run(t); chk(s["t1"]["status"] == "SCORED" and outc(s) == "PARITY", s["t1"]["label"][:200])
-        return "list layout: %s, n50 %s" % (outc(s), S.fmt(s["t1"]["n50"]))
+        return "columnar layout: %s, n50 %s" % (outc(s), S.fmt(s["t1"]["n50"]))
     finally:
         t.done()
 
@@ -1092,7 +1155,7 @@ def base_note_check():
         S.BASE_NOTE = {"note": "219-x", "branch": "gain"}; s = run(t)
         chk(s["base"]["BASE_NOTE_MATCHES"] is False and "MISMATCH" in s["base"]["label"], s["base"]["label"])
         S.BASE_NOTE = {"note": "219-x", "branch": "levels"}; s = run(t); chk(s["base"]["BASE_NOTE_MATCHES"] is True, s["base"]["label"])
-        chk(s["base"]["BF16_VS_FP32"]["max_abs"] == 0.0, s["base"]["BF16_VS_FP32"])
+        chk(s["base"]["BF16_VS_FP32"]["max_abs"] == 0.0 and "batch composition also differs" in s["base"]["BF16_VS_FP32"]["note"], s["base"]["BF16_VS_FP32"])
         return "mismatch flagged; match ok; BF16-VS-FP32 read"
     finally:
         S.BASE_NOTE = None; t.done()
@@ -1142,25 +1205,204 @@ def descriptive_rows():
         t.done()
 
 
+@case
+def writer_seal_labeller_kept_meta():
+    """3b0bb06f: LABELLER-KEPT-T's start time is labeller_kept_meta.t_start; T1's n 9-24 labelling started before T1's eval_text ended -> SEAL-BREACH;
+    the same start after the end -> clean."""
+    t = build("lkm_bad", sd1=textself(1, lk_t_start="2026-10-20T11:30:00+00:00"))
+    try:
+        s = run(t); r = assert_censored(s, "t1", "SEAL-BREACH", 1)
+        chk(any("labeller_kept" in v for v in s["t1"]["SEAL"]["order_violations"]), s["t1"]["SEAL"])
+    finally:
+        t.done()
+    t = build("lkm_ok", sd1=textself(1, lk_t_start="2026-10-20T12:30:00+00:00"))
+    try:
+        s = run(t); chk(s["t1"]["status"] == "SCORED" and not s["t1"]["SEAL"]["order_violations"], s["t1"]["SEAL"])
+    finally:
+        t.done()
+    return r[:40] + "; later start clean"
+
+
+@case
+def writer_done_markers_no_breach():
+    """note 219-3 item 1: train_done.json / mem_check_self.json / timing.json / init_from.json / args_diff.json / mem_check.json and a leftover
+    eval_text.partial.json / *.tmp are not SEAL-BREACH; an eval.json beside them is."""
+    t = build("markers")
+    try:
+        t.w(L["t1"], "eval_text.partial.json", {"partial_through_n": 3}); t.w(L["t1"], "eval_textself.json.tmp", {})
+        s = run(t); chk(s["t1"]["status"] == "SCORED" and not s["t1"]["SEAL_BREACH"] and outc(s) == "PARITY", (s["t1"]["label"][:150], s["t1"]["SEAL"]))
+        chk(s["t1"]["TRAIN_DONE"]["consistent"], s["t1"]["TRAIN_DONE"])
+        t.w(L["t1"], "eval.json", {}); s = run(t); assert_censored(s, "t1", "SEAL-BREACH", 1)
+        return "markers clean; eval.json beside them -> SEAL-BREACH"
+    finally:
+        t.done()
+
+
+@case
+def writer_train_tokens_exact():
+    """note 219-3 item 4 / textself_ft A8-A9: TRAIN-TOKENS' text side is the exact per-type counts of train_done.json, else the last logged train_tokens
+    (equal here); the line carries them; train_done / log mismatches and a train_done model sha differing from eval_text's are caught."""
+    t = build("ttok")
+    try:
+        s = run(t); D = s["comparison"]["descriptive"]; tt = D["TRAIN_TOKENS_r2"]["text"]; cum = s["t2"]["TRAIN_DONE"]
+        exp = 5992 * TOK_SELF[0] + (12000 - 5992) * TOK_PLAIN[0]
+        chk(tt["target_tokens"] == exp and tt["self_method"] == "train_done.json (exact)" and tt["self_padded_positions"] == 5992 * TOK_SELF[2], tt)
+        chk("train_done.json (exact)" in s["comparison"]["line"], s["comparison"]["line"][-400:])
+        t.rm(L["t1"], "train_done.json"); s = run(t); tt1 = s["comparison"]["descriptive"]["TRAIN_TOKENS_r1"]["text"]
+        chk(tt1["target_tokens"] == exp and tt1["self_method"].startswith("log.jsonl step 12000"), tt1)
+        chk(s["t1"]["TRAIN_DONE"]["present"] is False and s["t1"]["status"] == "SCORED", s["t1"]["TRAIN_DONE"])
+    finally:
+        t.done()
+    t = build("ttok_mismatch", log1={"td_mod": {"n_self_steps": 5991}})
+    try:
+        s = run(t); chk(s["t1"]["TRAIN_DONE"]["consistent"] is False and s["t1"]["status"] == "SCORED", s["t1"]["TRAIN_DONE"])
+    finally:
+        t.done()
+    t = build("ttok_sha", log1={"td_mod": {"model_sha256": "e" * 64}})
+    try:
+        s = run(t); r = assert_censored(s, "t1", "model_sha256_train_done", 1)
+    finally:
+        t.done()
+    return "text %.4g targets from train_done (= log); mismatch flagged; foreign train_done sha -> %s" % (exp, r[:30])
+
+
+@case
+def writer_nonfinite_resume_records():
+    """textself_ft's {step, nonfinite: 1} and {step, resumed} records are not dead and do not hide the last cursor."""
+    t = build("nonfin", log1={"nonfinite_at": 6000})
+    try:
+        lp = t.p(L["t1"], "log.jsonl"); lines = open(lp).read().splitlines(); lines.insert(50, json.dumps({"step": 5000, "resumed": "ckpt_last.pt"}))
+        t.w(L["t1"], "log.jsonl", "\n".join(lines) + "\n"); s = run(t)
+        chk(s["t1"]["status"] == "SCORED" and not s["t1"]["dead"] and s["t1"]["nonfinite_records"] == 1 and s["t1"]["CONTAMINATION"]["cursor"] == 383488,
+            (s["t1"]["label"][:120], s["t1"]["nonfinite_records"]))
+        return "nonfinite + resumed records read; cursor 383,488"
+    finally:
+        t.done()
+
+
+@case
+def writer_gate_descriptive():
+    """equiv / labeller_full in the writer's layouts are summarised (descriptive, never gating): an EQUIV window failing does not move any reading."""
+    g1 = gate1_obj(); g1["equiv"]["W1"] = equiv_obj([9, 10, 11, 12], "W1", share=0.98)
+    t = build("gdesc", gate1=g1)
+    try:
+        s = run(t); e = s["gate_t1"]["descriptive"]["EQUIV"]["W1"]; lf = s["gate_t1"]["descriptive"]["LABELLER_FULL"]
+        chk(e["PASS"] is False and abs(e["min_share"] - 0.98) < 1e-12 and e["items"] == 1000 and lf["9"]["window"] == "W1" and lf["12"]["pi_E"] == 0.95, (e, lf))
+        e2 = s["gate_t2"]["descriptive"]["EQUIV"]; chk(e2["W2"]["PASS"] and e2["W1"]["PASS"], e2)
+        chk(outc(s) == "PARITY" and s["t1"]["status"] == "SCORED", outc(s))
+        chk(s["t1"]["GATE_DESCRIPTIVE"]["EQUIV"]["W1"]["PASS"] is False, s["t1"]["GATE_DESCRIPTIVE"])
+        return "EQUIV W1 share 0.98 summarised (PASS False), readings unchanged"
+    finally:
+        t.done()
+
+
+@case
+def writer_g_t4_rule():
+    """note 219-3 item 2: bitwise, or every tensor bitwise except wte with max |Δ wte| <= 1e-6; the real G-T4 output (scratch/gate_s219, read-only)."""
+    chk(S.g_t4_rule({})["PASS"] and S.g_t4_rule({}, single_thread_bitwise=True)["PASS"], "bitwise")
+    chk(S.g_t4_rule({"p.wte_weight": 7.45e-9})["PASS"] and S.g_t4_rule({"p.wte_weight": 1e-6})["PASS"], "wte within 1e-6")
+    chk(not S.g_t4_rule({"p.wte_weight": 1.2e-6})["PASS"] and not S.g_t4_rule({"p.h.0.attn.c_attn.weight": 1e-12})["PASS"], "over / other tensor")
+    chk(S.g_t4_rule({"p.wte_weight": 0.0, "p.ln_f.weight": 0})["PASS"], "zero entries")
+    real = rd_real("scratch/gate_s219/t4_init_resume.json"); r = S.g_t4_rule(real["ckpt3"]["model_diff"])
+    chk(r["PASS"] and r["reading"] == "bitwise" and real["step3"]["bitwise"], (r, real["step3"]))
+    tol = rd_real("scratch/gate_s219/t4_init_resume.tolerance_run.json"); r2 = S.g_t4_rule(tol["ckpt3"]["model_diff"])
+    chk(r2["PASS"] and 0 < r2["max_wte"] <= 1e-6, r2)
+    return "rule cases; real G-T4 (single-threaded) bitwise; tolerance run max |Δ wte| %.3g -> PASS" % r2["max_wte"]
+
+
+@case
+def writer_real_smoke_files():
+    """the real writers' CPU smoke outputs (scratch/_tmp/s219, read-only, copied): GATE-T1 eval_gate (consistent, PASS), pool_meta, eval_textself (label
+    audit by_window W1, contamination, labeller_kept_meta), and the G-T4 / G-T9 / G-T10 smoke args.json through G-T5 (smoke mode + the smoke pool)."""
+    SM = REAL + "/scratch/_tmp/s219"; t = build("realsmoke", t2=False, g2=False)
+    try:
+        sp = "scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl"
+        for src, d, f in (("pipe/s219_gate_t1_s1/eval_gate.json", L["gate_t1"], "eval_gate.json"), ("pipe/s219_pool_t1_s1/pool_meta.json", L["pool_t1"], "pool_meta.json")):
+            with open(os.path.join(SM, src)) as fh:
+                t.w(d, f, json.load(fh))
+        S.set_root(t.R, t.root); g = S.gate_t1("s1")
+        chk(g["status"] == "PASS" and g["consistent"] and g["pooled_matches"] and g["descriptive"]["EQUIV"]["W1"]["PASS"] and g["card_class"] is None, g)
+        sd = json.load(open(os.path.join(SM, "evals/eval_textself.json")))
+        chk(S._sd_missing(sd, "t1") == [] and S._sd_missing(sd, "t2") == ["label_audit.by_window"], (S._sd_missing(sd, "t1"), S._sd_missing(sd, "t2")))
+        la = S.label_audit_t(sd["label_audit"], {"W1": g}, "t1"); chk(la["ok"] and la["windows"]["W1"]["ci_overlap_pi"], la)
+        chk(isinstance(sd["labeller_kept_meta"].get("t_start"), str) and S._time(sd["labeller_kept_meta"]["t_start"]) is not None, sd["labeller_kept_meta"])
+        res = {}
+        for tag in ("t4_a", "t9", "t10"):
+            a = json.load(open(os.path.join(SM, tag, "args.json"))); ad = S.args_diff("s1", "t1", a, smoke=True, smoke_pool=sp)
+            res[tag] = ad["ok"] if tag == "t4_a" else sorted(ad["shared_diffs"])
+            if tag != "t4_a":
+                chk(set(ad["shared_diffs"]) == {"bs"} and not ad["required_bad"] and not ad["unexpected_new_keys"] and not ad["neutral_bad"], (tag, ad))
+            if tag == "t4_a":
+                chk(ad["ok"] and not S.args_diff("s1", "t1", a)["ok"], (ad, "registered mode must fail on the smoke pool / stop_at"))
+        chk(res["t4_a"], res)
+        log = json.load(open(os.path.join(SM, "t10/timing.json"))); chk("sec_per_step" in log, log)
+        return "real gate PASS (consistent; card 'cpu' -> no allowed card, as a smoke should); label audit ok; G-T5 smoke args: G-T4 ok, CPU G-T9 / G-T10 differ only in bs (8, CPU smokes) %s" % res
+    finally:
+        t.done()
+
+
+@case
+def round2_provenance():
+    """Audit G-T13 (Theory): T2's init_from.json sha256, pool_meta windows' labeller_sha256 (self-labelled) and eval_gate.labeller_sha256 == T1's eval_text
+    model_sha256; a BASE-LABELLED window's pool and fallback labeller_sha256 == BASE_SHA. Each mismatch -> CONTAMINATED (provenance), TEXT-CENSORED r2;
+    a missing provenance field -> pending, failure at --final; the consistent self- and base-labelled chains read normally."""
+    bad = "d" * 64; out = []
+    g2fb = gate2_obj(keep2={16: 0.60}, fb={"W2": 0.80})
+    g2fb_bad = gate2_obj(keep2={16: 0.60}, fb={"W2": 0.80}); g2fb_bad["fallback"]["W2"]["labeller_sha256"] = bad
+    g2_badlab = gate2_obj(); g2_badlab["labeller_sha256"] = bad
+    for tag, kw in (("init_from sha", {"log2": {"ini_mod": {"sha256": S.BASE_SHA}}}),
+                    ("pool W2 sha", {"pm2": pool_meta(2, wsha={"W2": bad})}),
+                    ("pool W1 sha = base", {"pm2": pool_meta(2, wsha={"W1": S.BASE_SHA})}),
+                    ("eval_gate labeller sha", {"gate2": g2_badlab}),
+                    ("base-labelled W2 pool sha = T1", {"gate2": g2fb, "pm2": pool_meta(2)}),
+                    ("base-labelled W2 fallback sha", {"gate2": g2fb_bad, "pm2": pool_meta(2, base_windows=("W2",))})):
+        t = build("prov_" + tag.replace(" ", "_"), **kw)
+        try:
+            s = run(t); r = assert_censored(s, "t2", "provenance", 2)
+            chk(s["t2"]["CONTAMINATED"] and s["t2"]["CONTAMINATION"]["provenance_bad"], s["t2"]["CONTAMINATION"])
+            out.append(tag)
+        finally:
+            t.done()
+    t = build("prov_ok_base", gate2=g2fb, pm2=pool_meta(2, base_windows=("W2",)))
+    try:
+        s = run(t); chk(s["t2"]["status"] == "SCORED" and all(s["t2"]["CONTAMINATION"]["provenance"].values()), s["t2"]["CONTAMINATION"].get("provenance"))
+    finally:
+        t.done()
+    t = build("prov_missing")
+    try:
+        t.rm(L["t2"], "init_from.json"); s = run(t); chk(s["t2"]["status"] == "PENDING" and "init_from.json" in s["t2"]["label"], s["t2"]["label"][:300])
+        s = run(t, final=True); chk(s["t2"]["status"] == "FAIL" and outc(s) == "TEXT-CENSORED", s["t2"]["label"][:200])
+    finally:
+        t.done()
+    return "%d mismatches -> CONTAMINATED (provenance); consistent base-labelled chain reads; missing init_from.json pending / --final failure" % len(out)
+
+
 def num(x):
     return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x)
 
 
 @case
 def real_tree_readonly():
-    """the real tree (read-only; OUT redirected): every §219 cell absent -> pending (UNREAD with --not_admitted); --final -> failures; nothing written under
-    D:/Latent (no s219_* dir, no theory/results/score_s219.json)."""
-    S.set_root(REAL_R, REAL); before = sorted(x for x in os.listdir(REAL_R) if x.startswith("s219_"))
-    outs = []
+    """the real tree (read-only; OUT redirected): absent (or in-progress: eval_text.partial.json only) cells -> pending (UNREAD with --not_admitted);
+    --final -> failures; this run writes nothing under D:/Latent (the s219_* listings change only by the concurrent real writers' own eval files;
+    theory/results/score_s219.json untouched)."""
+    S.set_root(REAL_R, REAL)
+    snap = lambda: {x: set(os.listdir(os.path.join(REAL_R, x))) for x in os.listdir(REAL_R) if x.startswith("s219_")}  # noqa: E731
+    res_p = REAL + "/theory/results/score_s219.json"; res_m = os.path.getmtime(res_p) if os.path.exists(res_p) else None
+    before = snap(); base_done = os.path.exists(os.path.join(REAL_R, L["base"], "eval_text.json")); outs = []
     for argv, tag in (([], "plain"), (["--final", "s1"], "final"), (["--not_admitted", "s219_t1_s1,s219_t2_s1"], "na")):
         S.OUT = os.path.join(HERE, "_real_out_%s.json" % tag); o = S.main(argv)["s1"]; outs.append(o); LINES.append(("REAL " + tag, o["comparison"]["line"]))
     p, f, na = outs
-    chk(not before and p["base"]["status"] == "PENDING" and p["t1"]["status"] == "PENDING" and p["t2"]["status"] == "PENDING" and p["comparison"]["status"] == "PENDING",
-        (before, p["base"]["status"], p["comparison"]["status"]))
-    chk(f["base"]["status"] == "FAIL" and f["comparison"]["outcome"] == "TEXT-CENSORED", f["comparison"]["outcome"])
-    chk(na["t1"]["status"] == "UNREAD" and na["t2"]["status"] == "UNREAD" and na["comparison"]["status"] == "PENDING", (na["t1"]["status"], na["comparison"]["status"]))
-    chk(not os.path.exists(REAL + "/theory/results/score_s219.json") and not [x for x in os.listdir(REAL_R) if x.startswith("s219_")], "wrote under D:/Latent")
-    return "pending / --final TEXT-CENSORED / UNREAD; nothing written under D:/Latent"
+    chk(p["base"]["status"] == ("PENDING" if not base_done else p["base"]["status"]) and p["base"]["status"] in ("PENDING", "SCORED", "FAIL"), p["base"]["status"])
+    chk(p["t1"]["status"] == "PENDING" and p["t2"]["status"] == "PENDING" and p["comparison"]["status"] in ("PENDING", "CENSORED"), (p["t1"]["status"], p["comparison"]["status"]))
+    chk(f["t1"]["status"] == "FAIL" and f["comparison"]["outcome"] in ("TEXT-CENSORED", "NOT RUN"), f["comparison"]["outcome"])
+    chk(na["t1"]["status"] == "UNREAD" and na["t2"]["status"] == "UNREAD", (na["t1"]["status"], na["t2"]["status"]))
+    after = snap(); allowed = {"eval_text.json", "eval_text.partial.json", "eval_text.json.tmp", "eval_text.partial.json.tmp"}
+    new = {d: sorted(after[d] - before.get(d, set())) for d in after if after[d] - before.get(d, set())}
+    chk(set(after) <= set(before) | {L["base"]} and all(set(v) <= allowed for v in new.values()), ("wrote under D:/Latent?", new))
+    chk((os.path.getmtime(res_p) if os.path.exists(res_p) else None) == res_m, "theory/results/score_s219.json changed")
+    return "base %s (real eval %s); T1 / T2 pending; --final failures; UNREAD; nothing written under D:/Latent" % (
+        p["base"]["status"], "done" if base_done else "in progress (partial only)")
 
 
 @case

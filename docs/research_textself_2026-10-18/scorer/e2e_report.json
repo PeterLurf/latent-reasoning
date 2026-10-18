@@ -1,0 +1,175 @@
+{
+ "steps": {
+  "trainer": {
+   "rc": 0,
+   "sec": 20,
+   "tail": "in_loss': None, 'self_loss': 0.3190472573041916, 'self_value_ce': 1.1134258400310169, 'self_copy_ce': 0.2705376545290747, 'self_frac': 1.0, 'pool_cursor': 4, 'n_self_steps': 1, 'self_reuse': 0, 'lr': 0.0, 'gn_preclip': 6.638089656829834, 'clip_frac_100': 0.5, 'n_nonfinite': 0, 'train_tokens': {'plain': {'target_tokens': 166, 'token_positions': 236, 'padded_positions': 372}, 'self': {'target_tokens': 712, 'token_positions': 850, 'padded_positions': 984}}}\nDONE C:\\Users\\peter\\AppData\\Local\\Temp\\claude\\D--\\2f0034d5-4d85-51eb-880b-bab41adb0dff\\scratchpad\\s219_scorer\\_e2e\\boxes\\runs_fsq\\s219_t1_s1\n"
+  },
+  "eval_text_s219_base_s1": {
+   "sec": 29,
+   "acc_10": 0.707,
+   "overflow_24": 29
+  },
+  "eval_text_s219_t1_s1": {
+   "sec": 29,
+   "acc_10": 1.0,
+   "overflow_24": 29
+  },
+  "textself_cpu": {
+   "sec": 20
+  }
+ },
+ "trainer_files": [
+  "args.json",
+  "draws_log.json",
+  "init_from.json",
+  "log.jsonl",
+  "model.pt",
+  "train_done.json"
+ ],
+ "checks": {
+  "base_scored": true,
+  "base_n50": 10.437632135306554,
+  "base_delta0": 0.13163213530655504,
+  "t1_not_pending": true,
+  "t1_status": "FAIL",
+  "t1_censor_reasons": [
+   "dead",
+   "ARGS-DIFF"
+  ],
+  "t1_eval_text_void": null,
+  "t1_n50": 15.5,
+  "t1_T_ABSORB_raw": true,
+  "seal_first_scoring": {
+   "trainer_eval_files": [],
+   "order_violations": [
+    "s219_t1_s1/eval_textself.json:labeller_kept started before s219_t1_s1/eval_text.json ended"
+   ],
+   "watch": [],
+   "BREACH": true,
+   "order_check": "time fields"
+  },
+  "seal_second_scoring": {
+   "trainer_eval_files": [],
+   "order_violations": [],
+   "watch": [],
+   "BREACH": false,
+   "order_check": "time fields"
+  },
+  "gate_t1": {
+   "status": "PASS",
+   "consistent": true,
+   "pooled_matches": true
+  },
+  "gate_equiv": {
+   "W1": {
+    "PASS": true,
+    "min_share": 1.0,
+    "items": 80,
+    "min_margin": 3.303607940673828,
+    "n_disagreements": 0
+   }
+  },
+  "label_audit_ok": true,
+  "contamination": {
+   "pool_excl_hits": 0,
+   "CONTAMINATED": false,
+   "recheck": {
+    "consumed_read": 4,
+    "test30_hits": 0,
+    "key_set_bad": 0,
+    "duplicates": 0,
+    "file_sha256_matches_meta": true
+   },
+   "cursor": 4
+  },
+  "train_done": {
+   "present": true,
+   "steps": 2,
+   "steps_ok": false,
+   "matches_log": {
+    "n_self_steps": true,
+    "pool_cursor": true,
+    "self_reuse": true
+   },
+   "consistent": false,
+   "n_nonfinite": 0,
+   "model_sha256": "5627728fff6561a45cdc6df904bcdac3c781640ca095e4541343599fdd17cf50"
+  },
+  "train_tokens_text": {
+   "self_items": 64,
+   "self_target_tokens": 712,
+   "self_positions": 850,
+   "self_padded_positions": 984,
+   "plain_target_tokens": 166,
+   "plain_positions": 236,
+   "plain_padded_positions": 372,
+   "target_tokens": 878,
+   "positions": 1086,
+   "self_method": "train_done.json (exact)"
+  },
+  "train_done_tokens": {
+   "plain": {
+    "target_tokens": 166,
+    "token_positions": 236,
+    "padded_positions": 372
+   },
+   "self": {
+    "target_tokens": 712,
+    "token_positions": 850,
+    "padded_positions": 984
+   }
+  },
+  "args_diff_registered": {
+   "shared_diffs": {
+    "bs": [
+     64,
+     4
+    ],
+    "log_every": [
+     100,
+     1
+    ]
+   },
+   "required_bad": {
+    "steps": [
+     12000,
+     2
+    ],
+    "self_pool": [
+     "boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl",
+     "scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl"
+    ]
+   },
+   "unexpected_new_keys": [],
+   "neutral_bad": {},
+   "dropped_base_keys": []
+  },
+  "args_diff_smoke_mode": {
+   "shared_diffs": {
+    "bs": [
+     64,
+     4
+    ],
+    "log_every": [
+     100,
+     1
+    ]
+   },
+   "required_bad": {
+    "steps": [
+     12000,
+     2
+    ]
+   },
+   "unexpected_new_keys": [],
+   "neutral_bad": {},
+   "dropped_base_keys": [],
+   "ok": false
+  },
+  "comparison": "TEXT-CENSORED",
+  "line_has_train_tokens": true
+ },
+ "reading": "READING: base base fp32 | n50 10.438 | n90 9.330 | \u03940 0.132 -> BASE-PARITY levels | MG_T 0.665 SB_T 0.435 || T1 FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.750 (T-DBS not met) | n50 15.500 | n50/12 1.292 | round-2 condition False || T2 pending (missing ['s219_gate_t2_s1/eval_gate.json', 's219_pool_t2_s1/pool_meta.json', 's219_t2_s1/args.json', 's219_t2_s1/draws_log.json', 's219_t2_s1/eval_text.json', 's219_t2_s1/eval_textself.json', 's219_t2_s1/log.jsonl']) || comparison TEXT-CENSORED (r1, FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.750 (T-DBS not met) | n50 15.500 | n50/12 1.292 | round-2 condition False): every comparison row fails (rule b) | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \u2192 0.489 \u2192 0.437) | TOKEN-COST n 13\u201316: n/a | TRAIN-TOKENS r1: n/a; TRAIN-TOKENS r2: n/a | exposure matched in items and step indices, not in training tokens or FLOPs | \u03940 0.132, statistic levels | CTX-BOUND (GPT-2's 1,024 learned position rows; n 24: 0.971 feasible)",
+ "sec": 115
+}
