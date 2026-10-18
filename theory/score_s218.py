@@ -86,6 +86,10 @@ POOL_KEPT, POOL_CAP, POOL_DEMAND = 106000, 530000, 383488
 BOOT_SEED, BOOT_REPS = 218, 2000
 GSM_MIN_BASE, CF_GSM_MIN_STEPS = 50, 30     # Addendum 1 item 6: (ii') / (i) >= 50 base items; CF-GSM >= 30 distinct exposed base STEPS (base, j) (note 218-5)
 NOT_ADMITTED, FINAL, USER_OK = set(), set(), set()
+REPO_ROOT = "D:/Latent"     # read-only fallback for FROZEN_ARGS files when ROOT is a scratch tree
+SMOKE = False               # --smoke: relax ONLY the pre-checks (per_D sizes, eval_bs pins, items_sha, probe steps_run, card / dtype, ARGS-DIFF), each
+SMOKE_RELAXED = []          # still computed and listed; never a registered reading; refused at --final
+SMOKE_LABEL = "SMOKE: not a registered reading"
 # ARGS-DIFF (v1 §4.3): reference cell / file and the keys allowed to differ; None = not pre-listed in v1 -> the cell reads pending until Theory sets it
 # note 218-4 (R1): DIRECT-SYM / A1 / B1 are compared with their queued args frozen by sha256 in a Theory note before launch: FROZEN_ARGS[cell] =
 # (path, sha256) (path absolute or relative to ROOT), else <cell>/args_frozen.json (sha reported, unanchored); missing -> pending. Exact match except META
@@ -219,6 +223,9 @@ RESOLVED = [   # ambiguities in the registered text and how this scorer reads th
     "item's pairs are reported pair-level only.",
     "R24 G-L0 band failures also gate A2's own readings by D range (ABSORB 9-12, LENGTH / K'24 3-8, D 13-16, the MARGIN bar's A1 9-12).",
     "R25 A CF (D, j) cell with > 400 exposed pairs (v1 §2.5 'up to 400') is flagged, not voided (more pairs do not bias the reading).",
+    "R34 SMOKE (Audit; --smoke): relaxes ONLY the pre-checks (per_D sizes, eval_bs pins / G-EVMEM, items_sha / the G-L0 anchor, probe steps_run / curve, card / "
+    "dtype, ARGS-DIFF); each is still computed and listed in smoke_relaxed; reading exceptions and keys read but absent are reported per cell; every label "
+    "carries 'SMOKE: not a registered reading'; refused at --final. FROZEN_ARGS paths resolve against ROOT, then the repo (read-only, sha-checked).",
     "R33 arch / arch_class (Note 218-9): the langvb architecture choice is required equal to the reference args (frozen for DIRECT-SYM / A1 / B1; A1's for "
     "A2; A2's for A2-CTRL) although arch is in META (score_s213's META list); the environment keys stay META.",
     "R26 ARGS_MUST holds the recipe values v1 states (A1 / DIRECT seed 1, 24,000 steps; A2 init_from A1, p_self 0.5, lr 3e-5, 12,000, self_kmax 16, seed 1; "
@@ -391,6 +398,7 @@ ALIAS = {k_: tuple(v_[1]) for k_, v_ in LAYOUTS.items() if len(v_) > 1 and v_[1]
 
 
 # ---------------------------------------------------------------- field table: every key the scorer reads from an input file is ONE entry of LAYOUTS
+ABSENT = {}             # keys read through JD but absent (no alias either): reported per cell in SMOKE as field-path evidence
 ACCESSED = set()        # keys read through JD (recorded; the fixtures assert ACCESSED <= LAYOUTS, digit keys excepted)
 
 
@@ -405,6 +413,7 @@ class JD(dict):
                 for a in ALIAS.get(k, ()):
                     if dict.__contains__(self, a):
                         return a
+                ABSENT[k] = ABSENT.get(k, 0) + 1
         return k
 
     def __getitem__(self, k):
@@ -687,11 +696,15 @@ def frozen_ref(k):
     """(reference args, info) for a FROZEN-referenced cell (note 218-4); info.status UNLISTED (no frozen entry yet) / SHA (frozen file changed)."""
     ent = FROZEN_ARGS.get(k)
     if ent:
-        path, want = (ent[0] if os.path.isabs(ent[0]) else os.path.join(ROOT, ent[0])), ent[1]
+        cands = [ent[0]] if os.path.isabs(ent[0]) else [os.path.join(ROOT, ent[0]), os.path.join(REPO_ROOT, ent[0])]   # scratch ROOT -> the repo copy (read-only)
+        path, want = next((c_ for c_ in cands if os.path.exists(c_)), None), ent[1]
+        if path is None:
+            return None, {"status": "UNLISTED", "why": "no frozen args for %s: FROZEN_ARGS['%s'] is set but the frozen file was not found at %s (note 218-4)"
+                          % (NAME[k], k, cands)}
     else:
         path, want = os.path.join(R, CELL[k], "args_frozen.json"), None
-    if not os.path.exists(path):
-        return None, {"status": "UNLISTED", "why": "no frozen args for %s (FROZEN_ARGS['%s'] unset and no %s/args_frozen.json; note 218-4)" % (NAME[k], k, CELL[k])}
+        if not os.path.exists(path):
+            return None, {"status": "UNLISTED", "why": "no frozen args for %s: FROZEN_ARGS['%s'] unset and no %s/args_frozen.json (note 218-4)" % (NAME[k], k, CELL[k])}
     with open(path, "rb") as fh:
         raw = fh.read()
     sha = hashlib.sha256(raw).hexdigest()
@@ -812,6 +825,9 @@ def meta_check(f, stage, parts, evm, ref_sha, dtype=DTYPE, dtype_parts=None):
             miss.append(msg)
         elif st == "mismatch":
             bad.append(msg)
+    if SMOKE and (miss or bad):
+        _relax("meta (card / dtype / eval_bs / items_sha / per_D): missing %s; mismatch %s" % (miss, bad))
+        return [], []
     return miss, bad
 
 
@@ -844,6 +860,11 @@ def canon_sha(x):
     return json.dumps({str(k): v for k, v in sorted(x.items(), key=lambda kv: int(kv[0]))}, separators=(",", ":")) if is_dsha(x) else x
 
 
+def _relax(what):
+    """SMOKE: a pre-check that would read pending / VOID is computed, listed and relaxed (never in a registered reading)."""
+    SMOKE_RELAXED.append(what)
+
+
 def parts_missing(f, spec, parts):
     return [p for p in parts if not all(x in (f or {}) for x in spec[p])]
 
@@ -864,12 +885,16 @@ def p_acc(ev):
             lst, v = it[sD].get(str(K)), (ak.get(str(K)) or {}).get(sD)
             if not isinstance(lst, list) or not num(v):
                 miss.append("acc D%d K'%d" % (D, K)); continue
-            if len(lst) != PER_D:
+            if len(lst) != PER_D and not SMOKE:
                 bad.append("items D%d K'%d n %d != %d" % (D, K, len(lst), PER_D))
             elif abs(mean(lst) - v) > 1e-12:
                 bad.append("acc_k[%d][%d] %s != mean(items) %s" % (K, D, v, mean(lst)))
         if not same(a2[sD], (ak.get(str(D + 2)) or {}).get(sD), 1e-12):
             bad.append("acc_d2[%d] != acc_k[%d][%d]" % (D, D + 2, D))
+    if SMOKE:
+        sz = sorted({len(it[str(D)][str(K)]) for D in D_TEST if isinstance(it.get(str(D)), dict) for K in K_GRID if isinstance(it[str(D)].get(str(K)), list)})
+        if sz and sz != [PER_D]:
+            _relax("acc items per D %s != %d (per_D size)" % (sz, PER_D))
     a = {D: a2.get(str(D)) for D in D_TEST}
     return {"missing": miss[:20], "void": bad[:20] or None, "a": a, "ak": ak, "items": it}
 
@@ -899,7 +924,9 @@ def p_probe(ev):
             if abs(mean(lst) - v) > 1e-12:
                 b.append("acc_by_D[%d] %s != mean(items) %s" % (D, v, mean(lst)))
         sr = e.get("steps_run"); cv = {int(s): a for s, a in (e.get("curve") or [])}
-        if sr is None or not cv:
+        if SMOKE and (sr not in (10000, 20000) or not cv or (sr == 10000 and cv.get(10000, 0) - cv.get(8000, 0) > 0.02 + EPS)):
+            _relax("probe t%d steps_run %s / curve %d points (protocol)" % (t, sr, len(cv)))
+        elif sr is None or not cv:
             miss.append("probe t%d steps_run / curve" % t)
         elif sr not in (10000, 20000):
             b.append("steps_run %s not in {10000, 20000}" % sr)
@@ -1239,18 +1266,22 @@ def p_causal_deep(ev, a):
         miss.append("causal_deep.stall.by_D")
     if miss:
         return {"missing": miss}
-    B = [D for D in range(9, 17) if ge(a.get(D), 0.95)]; excl, ok_rows = [], {}
+    B = [D for D in range(9, 17) if ge(a.get(D), 0.95)]; excl, ok_rows, excl_why = [], {}, {}
     for D in B:
         rows = {arm: (Cd[arm]["by_D"].get(str(D)) or {}) for arm in ("ii_prime", "i_prime")}; s0 = Cd["stall"]["by_D"].get(str(D)) or {}
         n_ = s0.get("n", s0.get("n_items", s0.get("items"))); rc = s0.get("recovery")   # langvb_eval stall_by rows: n / n_items, intact_kD, stalled_kD1
         if rc is None and num(s0.get("intact_kD")) and num(s0.get("stalled_kD1")) and s0["intact_kD"] > 0:
             rc = s0["stalled_kD1"] / s0["intact_kD"]
         s = {"n": n_ if num(n_) else 0, "recovery": rc}
-        if any((r.get("n_clean") or 0) < 100 for r in rows.values()) or s["n"] < 500 or not num(rc):
-            excl.append(D); continue
+        why_ = [w for w, f_ in (("< 100 clean pairs", any(not num(r.get("n_clean")) or r["n_clean"] < 100 for r in rows.values())),
+                                ("follow / own None", any(not (num(r.get("follow")) and num(r.get("own"))) for r in rows.values())),
+                                ("< 500 STALL items", s["n"] < 500), ("STALL None", not num(rc))) if f_]
+        if why_:                                                            # §217: excluded and listed, never raising (Audit, fail-safe pooling)
+            excl.append(D); excl_why[D] = why_; continue
         ok_rows[D] = (rows, s)
     if not ok_rows:
-        return {"missing": [], "label": "NOT-APPLICABLE (empty competent band)", "B": B, "excluded": excl, "CAUSAL_DEEP_L": None}
+        return {"missing": [], "label": "NOT-APPLICABLE (empty competent band after exclusions)", "B": B, "excluded": excl, "excluded_why": excl_why,
+                "CAUSAL_DEEP_L": None}
     pooled = {}
     for arm in ("ii_prime", "i_prime"):
         n = sum(ok_rows[D][0][arm]["n_clean"] for D in ok_rows)
@@ -1259,7 +1290,7 @@ def p_causal_deep(ev, a):
                        "min_D_follow": min(ok_rows[D][0][arm]["follow"] for D in ok_rows)}
     ns = sum(ok_rows[D][1]["n"] for D in ok_rows); stall = sum(ok_rows[D][1]["n"] * ok_rows[D][1]["recovery"] for D in ok_rows) / ns
     met = all(ge(v["follow"], 0.95) and le(v["own"], 0.02) and ge(v["min_D_follow"], 0.90) for v in pooled.values()) and ge(stall, 0.95)
-    return {"missing": [], "B": B, "B_used": sorted(ok_rows), "excluded": excl, "pooled": pooled, "stall": stall, "CAUSAL_DEEP_L": met,
+    return {"missing": [], "B": B, "B_used": sorted(ok_rows), "excluded": excl, "excluded_why": excl_why, "pooled": pooled, "stall": stall, "CAUSAL_DEEP_L": met,
             "label": "CAUSAL-DEEP-L" if met else "not CAUSAL-DEEP-L"}
 
 
@@ -1487,15 +1518,28 @@ def _gate_pend(miss, ctx, stage):
         elif l0["missing"]:
             miss["gate_l0"] = "%s (entries %s)" % (pname("gate_l0"), l0["missing"][:5])
         elif not l0.get("test_items_sha"):
-            miss["gate_l0"] = "%s (no test_items_sha: the Stage A items_sha anchor; Audit item 5)" % pname("gate_l0")
+            if SMOKE:
+                _relax("G-L0 test_items_sha absent (items_sha anchor)")
+            else:
+                miss["gate_l0"] = "%s (no test_items_sha: the Stage A items_sha anchor; Audit item 5)" % pname("gate_l0")
     evm, key = ctx["evm" + stage], "evmem_" + stage
     if evm is None:
-        miss[key] = pname(key)
+        if SMOKE:
+            _relax("G-EVMEM %s absent (eval_bs pins)" % pname(key))
+        else:
+            miss[key] = pname(key)
     elif not card_ok(evm.get("card"), stage):
-        miss.setdefault("mismatch", []).append("G-EVMEM card %s (stage %s card %s)" % (evm.get("card"), stage, CARD[stage]))
+        if SMOKE:
+            _relax("G-EVMEM card %s" % evm.get("card"))
+        else:
+            miss.setdefault("mismatch", []).append("G-EVMEM card %s (stage %s card %s)" % (evm.get("card"), stage, CARD[stage]))
 
 
 def _args_pend(miss, ad):
+    if SMOKE and ad["status"] != "OK":
+        _relax("ARGS-DIFF %s: %s" % (ad["status"], ad.get("why") or {x: ad.get(x) for x in ("shared_diffs", "unexpected_new_keys", "missing_keys", "required_bad")
+                                                                       if ad.get(x)}))
+        return
     if ad["status"] == "UNLISTED":
         miss["args_unlisted"] = ad["why"]
     elif ad["status"] == "MISSING":
@@ -1556,7 +1600,7 @@ def censors_A(k, info, ev, ad, extra=()):
     ent = entry_prosqa(info["ce"]); noent = not ent["entered"]
     c = (ev or {}).get("contamination") or {}
     contam = ((info["self_reuse"] or 0) > 0 or (info.get("test_gate_sig_hits") or 0) > 0 or any(num(v) and v > 0 for v in c.values()))
-    args_bad = ad["ok"] is not True
+    args_bad = ad["ok"] is not True and not SMOKE                         # SMOKE: ARGS-DIFF relaxed (listed by _args_pend)
     why = [w for w, f in (("dead (last step %s < %d%s)" % (info["last"], FULL[k], ", guard stop" if info["guard_stop"] else ""), dead),
                           ("NO-ENTRY (plain_cand_ce never <= 0.35 in two consecutive 1k bins)", noent), ("CONTAMINATED", contam),
                           ("ARGS-DIFF %s" % ({x: ad.get(x) for x in ("shared_diffs", "unexpected_new_keys", "missing_keys", "required_bad") if ad.get(x)}
@@ -1616,7 +1660,9 @@ def direct_cell(ctx):
         return r
     acc, it = body["acc_by_D"], body["items"]
     bad = ["acc_by_D[%d] %s != mean(items) (n %d)" % (D, acc[str(D)], len(it[str(D)])) for D in D_TEST
-           if len(it[str(D)]) != PER_D or abs(mean(it[str(D)]) - acc[str(D)]) > 1e-12]
+           if (len(it[str(D)]) != PER_D and not SMOKE) or abs(mean(it[str(D)]) - acc[str(D)]) > 1e-12]
+    if SMOKE and any(len(it[str(D)]) != PER_D for D in D_TEST):
+        _relax("eval_direct items per D != %d (per_D size)" % PER_D)
     cen = censors_A(k, info, ev, ad); a = {D: acc[str(D)] for D in D_TEST}
     band = [D for D in range(5, 9) if all(le(a[x], 0.65) for x in range(D, 9))]
     dstar = max((D for D in range(3, 13) if a[D] > 0.65 + EPS), default=None)
@@ -1677,10 +1723,12 @@ def gate1_read(g):
     if g is None:
         return None
     m = g.get("meta") or {}; miss, bad, out = [], [], {}
-    if not card_ok(m.get("card"), "A"):
-        bad.append("card %s (stage A card %s)" % (m.get("card"), CARD["A"]))
-    if m.get("dtype") != LABEL_DTYPE:
-        bad.append("dtype %s != %s (v1 §2.4)" % (m.get("dtype"), LABEL_DTYPE))
+    cd = (["card %s (stage A card %s)" % (m.get("card"), CARD["A"])] if not card_ok(m.get("card"), "A") else []) + \
+        (["dtype %s != %s (v1 §2.4)" % (m.get("dtype"), LABEL_DTYPE)] if m.get("dtype") != LABEL_DTYPE else [])
+    if cd and SMOKE:
+        _relax("GATE-1-L %s" % cd)
+    else:
+        bad += cd
     for ch in ("L-ROLL", "L-RR"):
         out[ch] = {}
         for D in range(9, 13):
@@ -2190,7 +2238,10 @@ def b1_cell(ctx, bgo):
         elif x.get("missing"):
             miss[key] = "%s fields %s" % (name, x["missing"])
         elif x.get("mismatch"):
-            miss.setdefault("mismatch", []).extend(x["mismatch"])
+            if SMOKE:
+                _relax("%s card / dtype %s" % (name, x["mismatch"]))
+            else:
+                miss.setdefault("mismatch", []).extend(x["mismatch"])
     ev = jl(d, "eval_lvb_gsm.json"); P = {}
     if ev is not None:
         parts = DECISIVE_B + DESCRIPTIVE_B; pm = parts_missing(ev, PARTS_B, parts)
@@ -2210,7 +2261,7 @@ def b1_cell(ctx, bgo):
     if r:
         return r
     go24 = ir["GO"]; full = FULL[k] if go24 else B1_INTERIM_STEP
-    dead = info["last"] is None or info["last"] < full or info["guard_stop"]; ent = entry_gsm(info["valid_acc"]); args_bad = ad["ok"] is not True
+    dead = info["last"] is None or info["last"] < full or info["guard_stop"]; ent = entry_gsm(info["valid_acc"]); args_bad = ad["ok"] is not True and not SMOKE
     why = [w for w, f in (("dead (last step %s < %d%s)" % (info["last"], full, ", guard stop" if info["guard_stop"] else ""), dead),
                           ("NO-ENTRY (Aug-valid accuracy <= 0.15 at every check)", not ent["entered"]), ("CONTAMINATED", (info["self_reuse"] or 0) > 0),
                           ("ARGS-DIFF %s" % {x: ad.get(x) for x in ("shared_diffs", "unexpected_new_keys", "missing_keys", "required_bad") if ad.get(x)}, args_bad)) if f]
@@ -2264,12 +2315,33 @@ def _strip(o):
     return {k_: v_ for k_, v_ in o.items() if not k_.startswith("_")}
 
 
+def _cell(fn, *a):
+    """SMOKE: run a cell, catching reading-stage exceptions; attach the relaxed pre-checks and the keys read but absent (field-path evidence)."""
+    if not SMOKE:
+        return fn(*a)
+    n0, ab0 = len(SMOKE_RELAXED), dict(ABSENT)
+    try:
+        o = fn(*a)
+    except Exception:                                                      # noqa: BLE001
+        import traceback
+        o = {"status": "SMOKE ERROR", "label": "reading raised: %s" % traceback.format_exc().strip().split(chr(10))[-1], "traceback": traceback.format_exc()[-3000:]}
+    o["smoke_relaxed"] = SMOKE_RELAXED[n0:]
+    o["smoke_absent_keys"] = {k_: v_ - ab0.get(k_, 0) for k_, v_ in ABSENT.items() if v_ > ab0.get(k_, 0)}
+    o["label"] = "%s | %s" % (SMOKE_LABEL, o.get("label"))
+    return o
+
+
 def score(final=(), not_admitted=(), user_ok=()):
+    if SMOKE and final:
+        raise ValueError("--smoke is refused at --final (%s): a smoke run is never a registered reading" % sorted(final))
     FINAL.clear(); FINAL.update(final); NOT_ADMITTED.clear(); NOT_ADMITTED.update(not_admitted); USER_OK.clear(); USER_OK.update(user_ok)
+    del SMOKE_RELAXED[:]; ABSENT.clear()
     ctx = {"l0": gate_l0(), "evmA": evmem("A"), "evmB": evmem("B")}
     ctx["shaA"] = (ctx["l0"] or {}).get("test_items_sha")                 # item 5: G-L0's test-items sha is the only Stage A anchor (RESOLVED R30)
-    direct = direct_cell(ctx); a1 = a1_cell(ctx, direct); g1r = gate1_read(jp("gate1")); pr = pool_read(jp("pool")); a2go = a2_go(a1, g1r, pr)
-    ctrl = ctrl_cell(ctx, a2go); a2 = a2_cell(ctx, a1, a2go, ctrl, g1r, direct, pr); bgo = b_go(a1, a2, ctrl); b1 = b1_cell(ctx, bgo)
+    direct = _cell(direct_cell, ctx); a1 = _cell(a1_cell, ctx, direct); g1r = gate1_read(jp("gate1")); pr = pool_read(jp("pool"))
+    a2go = a2_go(a1, g1r, pr) if a1.get("status") != "SMOKE ERROR" else {"go": False, "why": ["A1 SMOKE ERROR"], "components": {}}
+    ctrl = _cell(ctrl_cell, ctx, a2go); a2 = _cell(a2_cell, ctx, a1, a2go, ctrl, g1r, direct, pr)
+    bgo = b_go(a1, a2, ctrl) if a1.get("status") != "SMOKE ERROR" else {"go": False, "why": ["A1 SMOKE ERROR"], "components": {}}; b1 = _cell(b1_cell, ctx, bgo)
     cells = {"direct": direct, "a1": a1, "a2": a2, "ctrl": ctrl, "b1": b1}
     mem = {NAME[c]: (x.get("MEM") or {}).get("MEM_TRADED_L") for c, x in cells.items() if x.get("MEM") is not None}
     flow = {"A2_GO": a2go, "B_GO": bgo, "B1_INTERIM_GO": b1.get("INTERIM"),
@@ -2281,7 +2353,8 @@ def score(final=(), not_admitted=(), user_ok=()):
                "SD_SELF_L (A2)": a2.get("SD_SELF_L") if a2["status"] in ("SCORED", "FAIL") else a2["status"],
                "VB_C1_GSM (B1)": b1.get("VB_C1_GSM") if b1["status"] in ("SCORED", "FAIL") else b1["status"],
                "BEATS_CODI20 (B1)": (b1.get("ACCURACY") or {}).get("met") if b1["status"] in ("SCORED", "FAIL") else b1["status"]}
-    return {"registered": REGISTERED, "R": R, "CARD": CARD, "final": sorted(FINAL), "not_admitted": sorted(NOT_ADMITTED), "user_ok": sorted(USER_OK),
+    return {"SMOKE": SMOKE_LABEL if SMOKE else None, "smoke_relaxed": list(SMOKE_RELAXED) if SMOKE else None,
+            "registered": REGISTERED, "R": R, "CARD": CARD, "final": sorted(FINAL), "not_admitted": sorted(NOT_ADMITTED), "user_ok": sorted(USER_OK),
             "PRIMARY": primary, "FLOW": flow, "G_L0": ctx["l0"], "cells": {c: _strip(x) for c, x in cells.items()},
             "layouts_assumed": {k_: v_[0] for k_, v_ in LAYOUTS.items()}, "aliases": ALIAS, "layout_files": LAYOUT_FILES, "paths_assumed": {k_: "/".join(v_) for k_, v_ in PATHS.items()}, "resolved": RESOLVED,
             "not_scored_here": ["A0-1 (THEORY note 191-4; v1 §2.8)", "A-TXT (optional; no registered reading here)"]}
@@ -2289,7 +2362,7 @@ def score(final=(), not_admitted=(), user_ok=()):
 
 def reading(out):
     c = out["cells"]
-    return "READING: " + " || ".join("%s %s" % (NAME[k_], c[k_]["label"]) for k_ in ("direct", "a1", "a2", "ctrl", "b1")) + \
+    return ("%s || " % SMOKE_LABEL if out.get("SMOKE") else "") + "READING: " + " || ".join("%s %s" % (NAME[k_], c[k_]["label"]) for k_ in ("direct", "a1", "a2", "ctrl", "b1")) + \
         " || A2 GO %s || B GO %s" % (out["FLOW"]["A2_GO"]["go"], out["FLOW"]["B_GO"]["go"])
 
 
@@ -2298,7 +2371,10 @@ def main(argv=None):
     ap.add_argument("--final", action="append", default=[], choices=sorted(CELL))
     ap.add_argument("--not_admitted", default="")
     ap.add_argument("--user_ok", default="", help="stages the user explicitly OK'd after a MEM-TRADED-L (A2, B1); only from a recorded note")
+    ap.add_argument("--smoke", action="store_true", help="relax ONLY the pre-checks so every reading runs on writer smoke output (never a registered reading)")
     a = ap.parse_args(argv)
+    global SMOKE
+    SMOKE = bool(a.smoke)
     out = score(a.final, [x for x in a.not_admitted.split(",") if x], [x for x in a.user_ok.split(",") if x])
     print(reading(out).encode("ascii", "backslashreplace").decode("ascii"))
     with open(OUT, "w", encoding="utf-8", newline="\n") as fh:

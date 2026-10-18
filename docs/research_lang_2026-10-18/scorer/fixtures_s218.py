@@ -754,6 +754,30 @@ def mod_layout(files):
     return F
 
 
+def tiny_eval(ev, n=2):
+    """a LAYOUTS-format eval cut to n items per D (acc / probe / hist24 / stall, summaries recomputed so every consistency assert still holds) and stamped
+    like a writer smoke: per_D n, card 'cpu', items_sha off-anchor, an eval_bs off G-EVMEM, probe steps_run 2 with no curve."""
+    e = json.loads(json.dumps(ev))
+    for D, row in e["items"].items():
+        for K in row:
+            row[K] = row[K][:n]; e["acc_k"][K][D] = mean(row[K])
+        e["acc_d2"][D] = e["acc_k"][str(int(D) + 2)][D]
+    for t, x in e["probe"].items():
+        for D in x["items"]:
+            x["items"][D] = x["items"][D][:n]; x["acc_by_D"][D] = mean(x["items"][D])
+        x["steps_run"] = 2; x["curve"] = []
+    H = e["hist24"]
+    for arm, rows in H["items"].items():
+        for D, r in rows.items():
+            r["ok_d2"], r["ok_k24"] = r["ok_d2"][:n], r["ok_k24"][:n]; H[arm]["acc_d2"][D] = mean(r["ok_d2"]); H[arm]["acc_k24"][D] = mean(r["ok_k24"])
+    st = e["stall"]
+    for D, r in st["items"].items():
+        r["stalled"], r["intact"] = r["stalled"][:n], r["intact"][:n]
+    st["recovery"] = sum(sum(r["stalled"]) for r in st["items"].values()) / sum(sum(r["intact"]) for r in st["items"].values())
+    e["meta"].update(per_D=n, card="cpu", items_sha="tiny_sha", eval_bs=dict(e["meta"]["eval_bs"], probe=99))
+    return e
+
+
 def configure():
     """the fixture tree: R, OUT and the G-L0 path point under _fx; FROZEN_ARGS are filled by freeze() after the base tree is written."""
     S.R = TREE; S.OUT = os.path.join(FX, "out.json"); S.PATHS["gate_l0"] = ("lvb_gates", "gate_l0.json")
@@ -1496,6 +1520,83 @@ def define_cases():
         e5 = json.loads(json.dumps(M["lvb_self_s1/eval_lvb.json"])); e5["meta"] = {"card": CARD, "dtype": "fp32", "eval_bs": {"labeller": 8}, "cursor": 383488}
         materialize(dict(M, **{"lvb_self_s1/eval_lvb.json": e5})); o = S.score()
         c.ok(o["cells"]["a2"]["SD_C2_L"] is True, "labeller_part's own meta block (merged at the top level) does not shadow the file's eval_bs / items_sha")
+
+    @case("FROZEN_ARGS from a scratch tree: the file is missing under ROOT -> read from the repo, sha-checked; distinct messages",
+          "repo copy resolves (anchored); a wrong sha -> SHA; set-but-absent says 'not found at'; unset says 'unset'")
+    def _(c):
+        keep_root, keep_f = S.ROOT, dict(S.FROZEN_ARGS); fake = os.path.join(FX, "fake_root"); os.makedirs(fake, exist_ok=True)
+        try:
+            S.ROOT = fake; S.FROZEN_ARGS.update(SHIPPED_FROZEN)
+            b_, fz = S.frozen_ref("a1"); c.obs = {"resolved": (fz or {}).get("path")}
+            c.ok(b_ is not None and fz["anchored"] and fz["path"].replace("\\", "/").startswith("D:/Latent/"), "repo copy read (ROOT is a scratch tree)")
+            S.FROZEN_ARGS["a1"] = (SHIPPED_FROZEN["a1"][0], "0" * 64); b_, fz = S.frozen_ref("a1"); c.ok(b_ is None and fz["status"] == "SHA", "repo copy still sha-checked")
+            S.FROZEN_ARGS["a1"] = ("scratch/no_such_args.json", "0" * 64); b_, fz = S.frozen_ref("a1"); c.obs["absent"] = fz["why"][:160]
+            c.ok(b_ is None and "not found at" in fz["why"] and "unset" not in fz["why"], "set but absent -> 'not found at <paths>'")
+            S.FROZEN_ARGS["a1"] = None; b_, fz = S.frozen_ref("a1"); c.ok(b_ is None and "unset" in fz["why"], "unset -> 'unset'")
+        finally:
+            S.ROOT = keep_root; S.FROZEN_ARGS.clear(); S.FROZEN_ARGS.update(keep_f)
+
+    @case("SMOKE on a tiny-size tree (per_D 2, card cpu, off-anchor items_sha, eval_bs off G-EVMEM, probe steps_run 2, args differ)",
+          "normal: A1 pending; smoke: every reading runs, each relaxed check listed, labels carry 'SMOKE: not a registered reading'")
+    def _(c):
+        m = {"lvb_sym_s1/eval_lvb.json": tiny_eval(BASE["lvb_sym_s1/eval_lvb.json"]), "lvb_sym_s1/args.json": dict(A1_ARGS, lr=2e-4)}
+        o = run(m); c.obs = {"normal": o["cells"]["a1"]["label"][:160]}; c.ok(o["cells"]["a1"]["status"] == "PENDING", "normal mode: pending (readings never run)")
+        S.SMOKE = True
+        try:
+            o = run(m); a = o["cells"]["a1"]; rel = " ".join(a.get("smoke_relaxed") or [])
+            c.obs.update(smoke=a["label"][:200], relaxed=a.get("smoke_relaxed"), components=a.get("VB_C1_L_components"))
+            c.ok(a["status"] in ("SCORED", "FAIL") and a.get("READINGS") and a.get("VB_C1_L_components"), "every reading ran")
+            for w in ("per_D", "card", "eval_bs", "items_sha", "steps_run", "ARGS-DIFF"):
+                c.ok(w in rel, "relaxed check listed: %s" % w)
+            c.ok(all(x["label"].startswith(S.SMOKE_LABEL) for x in o["cells"].values()) and o["SMOKE"] == S.SMOKE_LABEL, "every label carries the SMOKE marker")
+            c.ok(a["censors"]["ARGS_DIFF"]["ok"] is False and not a["censors"]["censored"], "ARGS-DIFF computed, reported, relaxed")
+        finally:
+            S.SMOKE = False
+
+    @case("SMOKE refused at --final", "ValueError")
+    def _(c):
+        S.SMOKE = True
+        try:
+            try:
+                run(final=("a1",)); c.ok(False, "no exception")
+            except ValueError as e:
+                c.obs = {"error": str(e)[:120]}; c.ok("refused" in str(e), "raised")
+        finally:
+            S.SMOKE = False
+
+    @case("SMOKE surfaces reading-stage field-path errors that normal mode hides behind pending",
+          "a renamed reading-only field (probe_n_distinct_seen -> probe_n_seen) is listed absent; an exception inside a reading is caught (SMOKE ERROR)")
+    def _(c):
+        M = mod_layout(BASE); e = json.loads(json.dumps(M["lvb_sym_s1/eval_lvb.json"]))
+        e["probe_n_seen"] = e.pop("probe_n_distinct_seen"); e["per_D"] = 2; e["card"] = "cpu"
+        o = run(dict(M, **{"lvb_sym_s1/eval_lvb.json": e})); a = o["cells"]["a1"]
+        c.obs = {"normal": a["label"][:140]}; c.ok(a["status"] == "PENDING" and "probe_n_distinct_seen" not in json.dumps(a), "normal: pending, the field-path error invisible")
+        S.SMOKE = True; keep = S.mem_read
+        try:
+            o = run(dict(M, **{"lvb_sym_s1/eval_lvb.json": e})); a = o["cells"]["a1"]; c.obs["absent"] = sorted(a.get("smoke_absent_keys") or {})[:40]
+            c.ok("probe_n_distinct_seen" in (a.get("smoke_absent_keys") or {}), "smoke: the reading's absent field is listed")
+
+            def boom(P):
+                raise KeyError("hist24 field renamed by the writer")
+            S.mem_read = boom
+            o = run(dict(M, **{"lvb_sym_s1/eval_lvb.json": e})); a = o["cells"]["a1"]; c.obs["error"] = a["label"][:160]
+            c.ok(a["status"] == "SMOKE ERROR" and "KeyError" in a["label"] and a["label"].startswith(S.SMOKE_LABEL), "smoke: a reading exception is caught and reported")
+        finally:
+            S.SMOKE = False; S.mem_read = keep
+
+    @case("CAUSAL-DEEP-L fail-safe: a band depth with 0 clean pairs and follow None; another with follow None at 200 pairs",
+          "both excluded and listed, never raising; all depths bad -> NOT-APPLICABLE")
+    def _(c):
+        cd = cdeep_part(); cd["ii_prime"]["by_D"]["9"] = {"n_clean": 0, "follow": None, "own": None}
+        cd["i_prime"]["by_D"] = dict(cd["i_prime"]["by_D"]); cd["i_prime"]["by_D"]["10"] = {"n_clean": 200, "follow": None, "own": 0.0}
+        e = dict(BASE["lvb_self_s1/eval_lvb.json"], causal_deep=cd); o = run({"lvb_self_s1/eval_lvb.json": e}); x = o["cells"]["a2"]["BESIDE"]
+        c.obs = {"a2": o["cells"]["a2"]["label"][:100], "cd": o["cells"]["a2"].get("CAUSAL_DEEP_L")}
+        c.ok(o["cells"]["a2"]["status"] == "SCORED" and x["CAUSAL_DEEP_L"] == "CAUSAL-DEEP-L", "read on D 11-12")
+        cd2 = cdeep_part(); cd2["ii_prime"]["by_D"] = {D: {"n_clean": 0, "follow": None, "own": None} for D in cd2["ii_prime"]["by_D"]}
+        o = run({"lvb_self_s1/eval_lvb.json": dict(BASE["lvb_self_s1/eval_lvb.json"], causal_deep=cd2)})
+        c.ok(o["cells"]["a2"]["status"] == "SCORED" and str(o["cells"]["a2"]["BESIDE"]["CAUSAL_DEEP_L"]).startswith("NOT-APPLICABLE"), "empty band -> NOT-APPLICABLE")
+        r = S.p_causal_deep(e, {D: 0.97 for D in range(9, 13)}); c.obs["excluded"] = r.get("excluded_why")
+        c.ok(r["excluded"] == [9, 10] and r["B_used"] == [11, 12], "D 9 and D 10 excluded and listed")
 
     @case("informational: Experiments' e2e CPU smoke (scratch/_tmp/e2e lvb_sym_s1, trained mini-run; small files copied read-only)",
           "every part it has written parses with no missing field; its log carries test_gate_sig_hits and its args carry arch / arch_class")
