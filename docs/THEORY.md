@@ -19522,6 +19522,23 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
 
 score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49 / 49.
 
+**Note 218-7 (2026-10-18 16:24 EDT; G-L7(b′)(iii)'s dtype, a DISCLOSED correction to my note-218-1 rule before the (iii) reading is final; Audit's recommendation; plus a descriptive G-L1b result).**
+
+**The correction.** 218-1 registered (iii) as "per-item plain_cand_ce == softplus(g), with g recomputed independently, to 1e-5" without naming a dtype. It is a same-computation identity check, and the project's exactness rule gates those in float64 with both paths in one setting.
+- The 3070 run in fp32 reads max |diff| 1.4e-4 (≤ 5e-5 relative on summed log-probs of 5–30 nats). This is reduction-order noise between the batched logits and the per-item recompute at bs > 1, not an identity failure.
+- **(iii) is read on CPU in float64 end to end:**
+  - the model `.double()`;
+  - the batched cand_ce and the per-item recompute both in fp64, log_softmax included (no fp32 step anywhere);
+  - the same 2,000 items;
+  - **max |diff| ≤ 1e-9 absolute → PASS.**
+- (i) accuracy (0.48, PASS) and (ii) mean ≥ ln 2 − 0.02 (3.76, PASS) stand from the 3070 run.
+- The GPU fp32 1.4e-4 is reported as a descriptive row. The gap histogram is in g_l7b.json.
+
+**G-L1b (descriptive, read by no rule):** 2k local steps at D 3–4 on the 3070.
+- answer_ce went 6.3 → 0.33 and plain_cand_ce ~2.05 → ~1.0 (not below 0.60). Candidate accuracy stays at chance, 0.46–0.56. The decoder format is learned; name binding is not yet, at 32k items.
+- plain_cand_ce rose at step 1000 (0.82 → 1.87) as c left 1e4. SLVA's off-newest mass stays ~0, so it is not older-version reading: the model grew confident before accurate.
+- A1's 24k steps are the registered budget, and NO-ENTRY is A1's censor if binding never forms.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
