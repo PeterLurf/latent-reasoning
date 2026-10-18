@@ -19594,6 +19594,15 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - **DIRECT contamination.** eval_direct.json carries contamination {test_gate_sig_hits, self_reuse} from DIRECT's own log.jsonl (`--parts panel,direct,contamination`).
 - **G-L10's restore-exact half** uses the trainer's ckpt_fingerprint.json at every checkpoint: sha256 of every model / optimiser tensor and the param groups, rng / rng_k / rng_s, the torch rng, stream band rngs, CurGate and the self counters. On resume it writes resume_check.json. A tampered np_rng was caught as diff ["rng/rng"].
 
+**Note 218-11 (2026-10-18 17:49 EDT; G-L7(b′)(iii)'s device, extending 218-7 before any (iii) result is read; Audit concurs).**
+- The (iii) reading is **either** of two runs:
+  - the CPU float64 run of 218-7;
+  - **a run on the local RTX 4060 entirely in float64**: the model `.double()` on the GPU, the batched cand_ce and the per-item recompute both fp64 on the same device, log_softmax included, no TF32 or fp32 step anywhere.
+- Both use the same 2,000 items (Stream 21140 / rng 21141), with the same rule: max |diff| ≤ 1e-9 absolute → PASS.
+- **Whichever completes first, with its JSON, is the reading.** The other is either not run or reported as descriptive.
+- Same-device fp64 reduction-order noise is ~1e-15 relative, so the 1e-9 bar does not depend on the device.
+- (i) / (ii) stand from the 3070 fp32 run (218-7).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
