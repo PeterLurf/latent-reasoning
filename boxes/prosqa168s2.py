@@ -271,6 +271,8 @@ def main():
     ap.add_argument("--relabel", action="store_true", help="§191 PROSQA-RELABEL: each training item drawn is relabelled afresh (relabel(); own rng seed + 19100); test never; eval adds train_fit_relabel")
     ap.add_argument("--test500_every", type=int, default=0, help="§191: test500_acc (fixed rng 19101 500-item subset of the test set, the arm's eval path) every N steps and at the last step")
     ap.add_argument("--eval_train_n", type=int, default=0, help="note 168-16: with --eval_only, evaluate (acc / acc_by_depth / aux_exact_by_hop) on this many TRAINING items (rng 16816) -> eval_trainitems.json")
+    ap.add_argument("--a01", action="store_true", help="note 191-4 A0-1 (eval-only, with --eval_only): write eval_a01.json = the base block + per-item records "
+                    "{i (p8_na_test index), depth, ext, pred (option chosen), correct} + meta, then stop (no other block; eval.json untouched)")
     ap.add_argument("--eval_only", action="store_true", help="evaluate <out>/model.pt (no training; args_eval.json; model.pt / args.json / log.jsonl untouched)")
     ap.add_argument("--resume", default=None, help="a ckpt_last.pt / kept ckpt of this run (model, opt, np_rng, step, elapsed)")
     ap.add_argument("--no_normcap", action="store_true", help="stepaux: skip note 185-1's inference-only NORM-CAP eval (smokes)")
@@ -283,7 +285,8 @@ def main():
     Dtr = Dtr[:a.train_n] if a.train_n else Dtr; Dte = Dte[:a.test_n] if a.test_n else Dte
     if a.eval_train_n:                                                      # note 168-16: the eval path on the run's own training items (eval-path sanity check)
         assert a.eval_only, "--eval_train_n needs --eval_only"; Dte = [Dtr[i] for i in np.random.default_rng(16816).permutation(len(Dtr))[:a.eval_train_n]]
-    EVAL_FN = "eval_trainitems.json" if a.eval_train_n else "eval.json"; Dctl = Dctl[:a.test_n] if a.test_n else Dctl
+    assert not a.a01 or (a.eval_only and not a.eval_train_n), "--a01 needs --eval_only (and no --eval_train_n)"
+    EVAL_FN = "eval_a01.json" if a.a01 else ("eval_trainitems.json" if a.eval_train_n else "eval.json"); Dctl = Dctl[:a.test_n] if a.test_n else Dctl
     if a.relabel:                                                           # §191: the raw training items (relabelled per draw); test / ctl stay as loaded
         Rtr = load_train_raw(os.path.join(pr, "p8_na_train.json")); Rtr = Rtr[:a.train_n] if a.train_n else Rtr; assert len(Rtr) == len(Dtr)
         rl_rng = np.random.default_rng(a.seed + 19100); rl_n = [0, 0]      # [items relabelled, options swapped]
@@ -527,6 +530,15 @@ def main():
             res["s168s2"] = s_
         res["eval_partial_through"] = tag; res["eval_partial"] = True; json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1)
     _partial("base")
+    if a.a01:                                                               # note 191-4 A0-1: per-item records in test-file order, then stop
+        raw = json.load(open(os.path.join(pr, "p8_na_test.json")))
+        res["items"] = [{"i": int(j), "depth": int(it["depth"]), "ext": raw[j].get("ext"), "pred": it["opt_true"] if M[j] > 0 else it["opt_false"], "correct": int(M[j] > 0),
+                         "margin": float(M[j])}
+                        for j, it in enumerate(Dte)]
+        res["meta"] = {"card": res["eval_gpu"], "dtype": "fp32" if amp is None else str(amp), "eval_bs": a.eval_bs, "think_k": K, "data": "na", "n": int(len(M)), "test_file": "prosqa/p8data/p8_na_test.json"}
+        res["eval_partial"] = False; res.pop("eval_partial_through", None); res["eval_sec"] = round(time.time() - t1)
+        json.dump(res, open(os.path.join(a.out, EVAL_FN), "w", newline="\n"), indent=1); print("A01", json.dumps({"acc": res["acc"], "acc_by_depth": res["acc_by_depth"]}), flush=True)
+        print("DONE", a.out, flush=True); return
     if a.relabel and not a.eval_train_n:                                    # §191: train fit on 1,000 relabelled TRAIN items (rng 16816 picks, rng 19102 relabels)
         fr_ = np.random.default_rng(19102); Dfit = [encode(relabel(Rtr[i], fr_)[0]) for i in np.random.default_rng(16816).permutation(len(Rtr))[:1000]]
         if SA:
