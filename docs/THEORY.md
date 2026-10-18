@@ -18984,6 +18984,77 @@ The r1-s2 pool (110k per n, n 9–12) is building on the 3070.
 - Nothing has been read on them.
 - This is not a round-3 registration. A round 3 needs its own design, math backing, OC and the user's OK if MEM-TRADED-2 reads again (SELFDEPTH_v1 §9's rule, carried into SD2).
 
+**§216 s1 round-2 result (2026-10-18 11:18 EDT)**
+- **Run:** s216_r2_s1, b313, RTX 3090, 12,000 steps, c 0, 0 nonfinite. Seed-1 replay exact: 5,992 self steps, cursor 383,488, self_reuse 0, G-S3 identity at every step. New-window share 0.667.
+- **Evals:** local fp32, RTX 3070: eval_vb at bs 32, eval_deep at bs 16. All 11 parts rc 0; d3hist gate True (84961a48).
+- **Scored with** theory/score_s216.py, all registered files present.
+- **Realised** ≈ $1.02 (guard $1.70).
+
+**Label: SD2-C2 (MEM-TRADED-2) | consistent with GROW | LIT-C2-2 not met.** One lineage: an instance, not a rate.
+
+| reading (SD2_v1 §4) | value | bar | met |
+|---|---|---|---|
+| censoring (dead / FT-DIVERGED / LABEL-NOISY-2 / CONTAMINATED / ARGS-DIFF) | none | — | — |
+| **ABSORB-2**: min a(n), n 13–16 (eval_vb) | **0.997**; a(13..16) 1.000 / 1.000 / 0.997 / 1.000 | ≥ 0.95 | ✓ |
+| **RETAIN**: min a(n), n 9–12 | 1.000 | ≥ 0.99 | ✓ |
+| LENGTH-FREE / VB-C1 / **K′24-STABLE** (a_24, n 1–8: min 0.995) | ✓ / ✓ / ✓ | — | ✓ |
+| THINK-NECESSARY-DEEP-2 | ✓ | — | — |
+| **SD2-SELF** | ✓ | — | ✓ |
+| **DBS-2**: M2 = mean a(n), n 17–20 (eval_deep) | **0.8745**; a(17..20) 0.998 / 0.979 / 0.862 / 0.659 | ≥ 0.80 | ✓ |
+| **MARGIN-GROWS-2** | 0.8745 | ≥ 0.785 | ✓ |
+| M_far: mean n 21–24 | 0.208; a(21..24) 0.364 / 0.206 / 0.142 / 0.121 | FULL needs ≥ 0.60 | ✗ → GROW |
+| **LIT-C2-2**: mean n 22–24 of [a − a_20] | **0.018** | ≥ 0.10 | ✗ |
+| STOP-LOC-2 | **21** (G(20) 0.020); round 1: 15 | — | descriptive |
+| n50 / n90 / WIDTH-2 | 20.54 / 18.68 / **1.86** | panels 1.57 (constant growth) / 2.22 (H_prop) | descriptive |
+| KB2 / RISE-PAST-K-2 / C2-TAIL-2 | 0.464 / −0.0015 / ✓ | — | descriptive |
+| NOT-SIZE-KEYED-2 (T_train 61) | no H_T flag. n 21: T ≤ 61 0.352 vs T > 61 0.367; M2 on T ≤ 61 items 0.886 | — | descriptive |
+| BS-CHECK (bs 16 vs 32, n 13–16) | max \|Δ\| 0.000; 0 / 8,000 item flips | — | — |
+| **KEEPS-SELF-STAB-2** | CONTENT-STABILISES, STAB_self **0.437** < 0.5 | ≥ 0.5 | ✗ → **MEM-TRADED-2** |
+| MEM history | D3-T 0.782 → R1 0.489 → R2 0.437: **MEM-ERODING** (< 0.439) | — | descriptive |
+| MEM sub-label (POST HOC) | "STAB_self low with dup_newest destabilising" (bank 0.614, dup_newest 0.836) | — | descriptive |
+| LABEL-AUDIT-2 (5,000) | π = π^E 0.9998. W2 0.9997, W1 1.000; CIs overlap the gates'. 1 kept-wrong (n 14) | — | ✓ |
+| MEMO-GAP-2 | \|gap\| ≤ 0.0005 at n 9–16 | ≤ 0.02 | ✓ |
+| LABELLER-KEPT-2 (fresh chain, descriptive) | keep n 17–20 0.993 / 0.977 / 0.973 / 0.956, n 21–24 0.944 / 0.909 / 0.894 / 0.890; prec_kept ≥ 0.9956 | — | — |
+
+**Pre-stated wording (score_s216 WORDING, v1 §5.1).**
+- *SD2-SELF:* "latent depth extended from 12 to 16 by distilling the round-1 model's own re-rooted single-step chain into the loop. The labeller was itself self-trained; labels are gold-equivalent at π = 0.99974 (rule ≥ 0.995; LABEL-AUDIT-2 π = 0.9998); no gold labels beyond n 8; in support; not C2, not C4."
+- *SD2-C2:* "depth extrapolation past the self-labelled range (n 17–20, untouched §170-extension items; C2 proxy; one lineage: an instance)".
+- *Same line:* LIT-C2-2 not met (passes past the trained budget K 20 do not raise accuracy at n 22–24); mechanism consistent with GROW; MEM-TRADED-2, eroding.
+
+**Reading.**
+- **The margin grew again** (renewed growth vs H_shift). M2 0.8745 against H_shift's 0.717 (~27 sampling SE; lineage noise, σ 0.06–0.12 per v1 §6, is the larger error) and the 0.80 bar. The registered growth family is met.
+- **Descriptive (not claimed as H_prop).** The 50 % crossing sits at n50 / support = 1.29 / 1.29 / 1.28 across base / R1 / R2 (margin / B 0.288 / 0.288 / 0.284).
+  - WIDTH-2 = 1.86 lies between constant growth's 1.57 and H_prop's 2.22, so "consistent with H_prop" is **not** claimed (§5.1).
+  - The proportional shape matches Huang 2511.07378 / Yang 2610.14456 qualitatively. The constant ≈ 1.28 is empirical (Literature eab37021).
+- **The boundary still binds.** LIT-C2-2 is 0.018, STOP is 21, and n ≥ 22 sits near chance. Literal C2 (more passes help beyond the trained budget) is not met.
+- **The memory cost compounds**: STAB_self 0.782 → 0.489 → 0.437 (MEM-ERODING). The content channel still stabilises (dup_newest 0.836).
+- **The labeller's reach recovered** at n 17–24 (round 1's FT had narrowed it to 0.361 at n 20). That is the GATE-3 preview for a possible round 3; see 216-5 for the sealed n 25–30.
+- One lineage. The ×2 row depends on the s2 lineage; see the next note for its ARGS-DIFF question.
+
+**Note 216-6 (2026-10-18 11:18 EDT; a registration question raised by score_s216's first run, after the s2 base's readings (216-3) and s1's round-2 result are known; FOR AUDIT'S RULING, not applied).**
+
+**What the scorer reads.** s216_d3t_s2 is censored "FAILURE (s2 base ARGS-DIFF; rule b)". As a consequence the ×2 row reads FAIL ("SD2-C2 in 1 of 2 lineages") before any s2 fine-tune exists.
+
+**The only offending key is `args_ref`**, the path of the reference-args file the queue built the command from:
+- D3-T s1: scratch/s213_args_ref_n2.json.
+- s2 base: scratch/s214_args_ref_d3t.json, the same pointer §214 used.
+
+**Content check.** Compared on every non-META key:
+- scratch/s214_args_ref_d3t.json equals s213_d3t_s1/args.json exactly (no difference).
+- s216_d3t_s2/args.json differs from s213_d3t_s1/args.json only in `seed` (allowed) and `args_ref`.
+- Its post-§213 keys (pause, self_*, init_from, draws_log_steps, mem_check_*) all sit at the trainer's off defaults (score_s216 BASE_NEUTRAL_NEW).
+- **The recipe is D3-T's with only the seed changed**, which is what D1 / §2.4 register.
+
+**Why it fires.** SD2_v1 §4.6 allows `args_ref` for the R1 and R2 cells but lists only {seed} for the s2 base. The draft subagent's choice 1 kept that literally ("launch with the reference's value"), and the launch used another pointer.
+
+**Proposed correction (not applied).** For every SD2 cell, `args_ref` may differ **iff** the file it names equals the cell's ARGS-DIFF reference args.json on every non-META key, with seed handled as already registered. The check is content-based and stricter than the R1 / R2 rule (which allows any args_ref). Under it the s2 base reads COMPETENT (216-3) and the ×2 row reads pending.
+
+**Options for Audit:**
+- (a) Keep the literal rule. The s2 lineage still runs for its K′24-free readings (GROW replication, DBS-2), and ×2 reads FAIL on a filename.
+- (b) Apply the content-based correction with this disclosure, re-run score_s216, and record its output.
+
+Theory recommends (b). The censor is on provenance metadata, not on a recipe or model difference. The corrected rule is stricter in content. And it is decided before any s2 fine-tune output exists. s1's result does not depend on the choice. theory/results/score_s216.json is committed as the literal-rule output until Audit rules.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
