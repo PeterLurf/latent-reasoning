@@ -1,0 +1,43 @@
+{
+ "items_seed": "Stream 21160 / D rng 21161 (U{3..4})",
+ "n_items": 256,
+ "items_sha": "7973da5bc4e23ad1fb8df8259dcfcc24eccfda29e286ba2098da4088d05d8e29",
+ "bs": 16,
+ "micro": 2,
+ "peak_gib_by_micro": {
+  "1": "OOM",
+  "2": 6.36
+ },
+ "amp": "torch.bfloat16",
+ "card": "NVIDIA GeForce RTX 4060",
+ "cal_n": 16,
+ "cal_max_m99": 0.019807221367955208,
+ "curve": [
+  {
+   "step": 100,
+   "plain_cand_ce": 1.0663059618469561,
+   "host_acc_256": 0.8515625,
+   "c": 10000.0,
+   "sec": 236
+  },
+  {
+   "step": 200,
+   "plain_cand_ce": 0.17228210488341034,
+   "host_acc_256": 0.984375,
+   "c": 10000.0,
+   "sec": 409
+  }
+ ],
+ "first_step_pcc_below_ln2": 200,
+ "step1_term_grads": {
+  "R1": 156.2838897705078,
+  "R2_chg": 16.606746673583984,
+  "R2_unc": 8.160204887390137,
+  "cand_ce": "no gradient by design (a torch.no_grad statistic in lvb_loss, read by CurGate; not a loss term)"
+ },
+ "final_host_acc_256": 0.984375,
+ "steps_run": 200,
+ "grads_ok": true,
+ "pass": true,
+ "sec": 409
+}

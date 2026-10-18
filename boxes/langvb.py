@@ -347,6 +347,28 @@ def lvb_item(it):
             "o_R": it["names"][it["o_R"]], "o_P": it["names"][it["o_P"]]}
 
 
+def fingerprint(m, opt, rngs, stream, gate, selfst):
+    """G-L10 restore-exact (Note 218-9 / Theory): sha256 of every model and optimiser tensor (raw bytes), the param groups, every np rng state, torch's
+    rng, the stream's band rngs, CurGate and the self-pool counters. Written beside each ckpt_last.pt; recomputed after a resume and compared."""
+    import hashlib
+    import json
+    sh = lambda b: hashlib.sha256(b).hexdigest()  # noqa: E731
+    tb = lambda v: v.detach().cpu().contiguous().reshape(-1).view(torch.uint8).numpy().tobytes()  # noqa: E731
+    h = {"model/" + k: sh(tb(v)) for k, v in m.state_dict().items()}
+    osd = opt.state_dict()
+    for pid, st in osd["state"].items():
+        for k, v in st.items():
+            h["opt/%s/%s" % (pid, k)] = sh(tb(v)) if torch.is_tensor(v) else sh(repr(v).encode())
+    h["opt/param_groups"] = sh(json.dumps(osd["param_groups"], sort_keys=True, default=str).encode())
+    for k, r_ in rngs.items():
+        if r_ is not None:
+            h["rng/" + k] = sh(json.dumps(r_.bit_generator.state, sort_keys=True, default=str).encode())
+    h["torch_rng"] = sh(tb(torch.get_rng_state()))
+    h["stream"] = sh(json.dumps(stream_state(stream), sort_keys=True, default=str).encode())
+    h["gate"] = sh(json.dumps(gate.state(), sort_keys=True, default=str).encode()); h["selfst"] = sh(json.dumps(selfst, sort_keys=True).encode())
+    return h
+
+
 def stream_state(s):
     return {"rngs": {D: r.getstate() for D, r in s.rngs.items()}, "n": dict(s.n), "n_collisions": len(s.collisions)}
 
@@ -432,6 +454,12 @@ def main():
             rng_s.bit_generator.state = ck["rng_s"]; selfst.update(ck["self_state"])
         GATE.load(ck["gate"]); step0 = ck["step"] + 1; t_prev = ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; cal = ck["calibration"]
         print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
+        fpp = os.path.join(os.path.dirname(a.resume), "ckpt_fingerprint.json")   # G-L10 restore-exact: the restored state == the state saved at the ckpt
+        if os.path.exists(fpp):
+            sv = json.load(open(fpp)); now = fingerprint(m, opt, {"rng": rng, "rng_k": rng_k, "rng_s": rng_s}, stream, GATE, selfst)
+            dif = sorted(k for k in set(sv["fp"]) | set(now) if sv["fp"].get(k) != now.get(k))
+            rc_ = {"ckpt_step": sv["step"], "resume_step0": step0, "n_keys": len(now), "equal": not dif, "diff_keys": dif[:50]}
+            json.dump(rc_, open(os.path.join(a.out, "resume_check.json"), "w", newline="\n"), indent=1); print("RESUME_CHECK", json.dumps(rc_)[:300], flush=True)
     else:
         if a.init_from:
             sd = torch.load(a.init_from, map_location=dev, weights_only=True); m.load_state_dict(sd, strict=True); del sd
@@ -600,6 +628,8 @@ def main():
                         "torch_rng": torch.get_rng_state(), "stream": stream_state(stream), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0,
                         "n_nonfinite": n_nonfinite, "calibration": cal,
                         **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {})}, cp)
+            json.dump({"step": step, "ckpt": cp, "fp": fingerprint(m, opt, {"rng": rng, "rng_k": rng_k, "rng_s": rng_s}, stream, GATE, selfst)},
+                      open(os.path.join(a.out, "ckpt_fingerprint.json"), "w", newline="\n"))
             if draws_log:
                 json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
     assert selfst["self_reuse"] == 0

@@ -1,0 +1,6 @@
+[W1018 16:48:31.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 23068672 bytes (free: 0, total: 8585216000).
+[W1018 16:48:31.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 23068672 bytes (free: 0, total: 8585216000).
+STEP1 {'R1': 156.2838897705078, 'R2_chg': 16.606746673583984, 'R2_unc': 8.160204887390137, 'cand_ce': 'no gradient by design (a torch.no_grad statistic in lvb_loss, read by CurGate; not a loss term)'}
+{'step': 100, 'plain_cand_ce': 1.0663059618469561, 'host_acc_256': 0.8515625, 'c': 10000.0, 'sec': 236}
+{'step': 200, 'plain_cand_ce': 0.17228210488341034, 'host_acc_256': 0.984375, 'c': 10000.0, 'sec': 409}
+G-L1c PASS 0.984375 200
