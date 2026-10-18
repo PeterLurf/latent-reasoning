@@ -1,0 +1,6 @@
+# THEORY §216 SD2, s2 lineage base s216_d3t_s2 (registered 25016c72; SD2_v1.md at e9ade2ec §2.4; scorer theory/score_s216.py; user-approved 01:31 10-18 via Audit, family cap $6.50). s213_d3t_s1's recipe with ONLY --seed 2 changed (48k, from pretrained, calibrate() at step 0). RTX 3090 via scratch/s216_fill.sh: HOSTPROBE, line 1 = mem_check, line 2 = G-TIME (forced final-stage n <= 8, K 12) -> admission <= $1.75; line 3 = the cell (ckpt every 1k, ARGS-DIFF vs s213_d3t_s1/args.json in the launch log; off-host mirror every ~2k; guard $2.00 GUARD_STOP). Evals local fp32 3070 post-landing: eval_vb + chainlabel_fresh (COMPETENT-BASE), hist24.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s216_d3t_s2_mem boxes.vbank --mode slva --table train --seed 2 --steps 48000 --mem_check --auto_micro
+boxes/runs_fsq/s216_d3t_s2_gtime boxes.vbank --mode slva --table train --seed 2 --steps 48000 --time_steps 60 --auto_micro
+boxes/runs_fsq/s216_d3t_s2 boxes.vbank --mode slva --table train --seed 2 --steps 48000 --auto_micro --ckpt_every 1000 --args_ref scratch/s214_args_ref_d3t.json
