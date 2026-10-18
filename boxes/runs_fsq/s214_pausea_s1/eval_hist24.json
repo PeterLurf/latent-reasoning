@@ -1,0 +1,120 @@
+{
+ "omitted": [],
+ "intact": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 0.998,
+   "7": 0.996,
+   "8": 0.997
+  },
+  "acc_k24": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.999,
+   "6": 0.997,
+   "7": 0.995,
+   "8": 0.997
+  }
+ },
+ "bank_ablate_slva": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.998,
+   "6": 0.995,
+   "7": 0.994,
+   "8": 0.982
+  },
+  "acc_k24": {
+   "3": 0.101,
+   "4": 0.12,
+   "5": 0.098,
+   "6": 0.105,
+   "7": 0.108,
+   "8": 0.128
+  }
+ },
+ "self_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.998,
+   "6": 0.995,
+   "7": 0.993,
+   "8": 0.981
+  },
+  "acc_k24": {
+   "3": 0.361,
+   "4": 0.343,
+   "5": 0.242,
+   "6": 0.17,
+   "7": 0.133,
+   "8": 0.153
+  }
+ },
+ "other_ablate": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 1.0,
+   "6": 0.998,
+   "7": 0.996,
+   "8": 0.997
+  },
+  "acc_k24": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.999,
+   "6": 0.997,
+   "7": 0.996,
+   "8": 0.997
+  }
+ },
+ "dup_newest": {
+  "acc_n2": {
+   "3": 1.0,
+   "4": 1.0,
+   "5": 0.998,
+   "6": 0.992,
+   "7": 0.978,
+   "8": 0.943
+  },
+  "acc_k24": {
+   "3": 0.099,
+   "4": 0.097,
+   "5": 0.109,
+   "6": 0.103,
+   "7": 0.105,
+   "8": 0.117
+  }
+ },
+ "dup_foreign": {
+  "acc_n2": {
+   "3": 0.119,
+   "4": 0.094,
+   "5": 0.082,
+   "6": 0.11,
+   "7": 0.081,
+   "8": 0.092
+  },
+  "acc_k24": {
+   "3": 0.095,
+   "4": 0.095,
+   "5": 0.086,
+   "6": 0.1,
+   "7": 0.082,
+   "8": 0.106
+  }
+ },
+ "def": "note 213-20 HIST-AT-K24 ($0): eval_d3hist's arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode mapping as part_d3hist;\nCARRY omits self_ablate and its other_ablate = ablate_keep) read at K' = n + 2 AND K' = 24 from one K' 24 rollout per chunk (STAB-HIST's method;\nvbank_eval.part_acc's chunks), n 3..8 -> {arm: {acc_n2 {n}, acc_k24 {n}}} + \"omitted\". The intact arm must equal eval_vb.json acc_n2 / acc_k['24'].\nNote 213-21 DUP: dup_newest = vbank dup_newest (at pass t, every reader's versions 1..t-2 read as the newest stored V_{t-1}; entry count / positions kept).\nNote 213-22: dup_foreign = versions 1..t-2 read as a DONOR's stored S_{t-1} (donor = the next item of the same n in test order, wrapping; its own intact\nK' 24 rollout; recipients and donors padded together so slots align by position - a shorter donor contributes its padding rows at the recipient's\nextra slots; the recipient batch is then padded to the joint length, so this arm's batches differ from eval_vb's).",
+ "run": "boxes/runs_fsq/s214_pausea_s1",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 472
+}
