@@ -18962,6 +18962,20 @@ Descriptive comparison with D3-T s1:
   - ×2 headline: ≈ 0.005 → **≈ 0.002** [DERIVED: × 0.25 / 0.70 × 0.7].
 - **The s2 lineage stays informative** for the readings that do not use K′24: R1-s2's ABSORB / M / mechanism (does GROW replicate?) and R2-s2's DBS-2 / MARGIN-GROWS-2 / mechanism. These are reported as registered even when SD-SELF / SD2-SELF fail on K′24.
 
+**Note 216-4 (2026-10-18 08:14 EDT; GATE-1-s2, before the r1-s2 pool is used).** File: s216_gate1_s2/eval_gate.json (6243e434). RTX 3070, fp32, bs 32. Labeller: the s2 base s216_d3t_s2. Read with score_s216.gate1('s2') in-process; no results file was written.
+
+**PASS.** The recomputed decision equals the file's GATE_1, and the pooled values match.
+- Kept: 7,802, with 0 wrong.
+- π = π^E = 1.000 (95 % CI 0.99951–1).
+
+| n | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|
+| keep_kv | 0.9975 | 0.9955 | 0.9735 | 0.9345 |
+
+Every n is ≥ 0.70. gs2_compose PASS. Fallback null.
+
+The r1-s2 pool (110k per n, n 9–12) is building on the 3070.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
