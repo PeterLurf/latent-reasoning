@@ -1,0 +1,26 @@
+{
+ "resume_equal_301_400": true,
+ "control_equal_1_400": true,
+ "first_diff_AB": [],
+ "n_A": 400,
+ "n_B": 400,
+ "n_C": 400,
+ "pass": true,
+ "note": "B = stop at 300 (ckpt_last.pt incl. model / opt / np rngs / torch rng / stream band rngs / CurGate) + resume; C = an uninterrupted re-run",
+ "half1_deterministic_bitwise": {
+  "resume_equal_301_400": true,
+  "control_equal_1_400": true,
+  "first_diff_AB": [],
+  "n_A": 400,
+  "n_B": 400,
+  "n_C": 400
+ },
+ "half2_restore_exact": {
+  "ckpt_step": 300,
+  "resume_step0": 301,
+  "n_keys": 672,
+  "equal": true,
+  "diff_keys": []
+ },
+ "rule": "half 1: --deterministic, B 301..400 == A bitwise and C == A; half 2: registered setting, the restored state's fingerprint == the saved one"
+}
