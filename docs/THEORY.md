@@ -19200,6 +19200,25 @@ Neither is a scorer fault.
   - The theorems (Huang 2511.07378, Yang 2610.14456) support the proportional shape only, not the constant (Literature eab37021).
 - **Design lead for any next round (Audit; needs a derivation before use).** The small-n K′24 drop is self-item-specific (216-8; FT-CTRL 1.000). A round 3 or a second-seed redo should either mix a small share of plain n 1–3 K′ 24 rollouts into training, or pre-state K′24-STABLE at n 1 as the binding risk.
 
+**Note 191-3 (2026-10-18 13:12 EDT; narrows 191-2, from LANG-VB's proof check, PROOFS_LANG §1b–1c; no registered reading changes).**
+
+**Cue ceiling.** A Bayes-optimal lookup over the sign vector of all 12 option- and anchor-level §59 cues, plus the visible chain length m, was fitted on p8_na_train and scored on p8_na_test (research7/proofs_lang/cue_ceiling.py → cue_ceiling.json):
+
+| depth | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|
+| cue ceiling | 0.628 | 0.584 | 0.761 | 0.901 | 0.895 | 0.889 | 0.900 | 0.720 |
+| §191 A acc_by_depth | 0.955 | 0.978 | 0.988 | 0.998 | 0.990 | 0.993 | 0.979 | 0.969 |
+
+**§191 A's accuracy exceeds the person-agnostic cue ceiling at every depth 3–10.**
+- At depth 3–4 there is no anchor cue at all.
+- At depth ≥ 6 the anchor-proximity ceiling is ≤ 0.905, against A's 0.97–0.998.
+
+**Correction to 191-2.** The anchor cue **cannot be NAME-MEM's whole mechanism**. It may still contribute at depth ≥ 6. A0-1 (the kept §191 models on anchor-neutral items, with a pro / tie / anti split) measures that contribution; it does not decide whether the cue explains §191.
+
+Two further corrections:
+- p8_na also fails the panel at depth 3 (option-level parents' in-degree 0.63–0.65).
+- The double-neutralised regeneration's anchor residual is ≈ 0.63 on 3-step bases and ≈ 0.58 on 4-step bases (n ≈ 7k per band), not "0.61–0.67 in every band".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
