@@ -15,6 +15,7 @@ import sys
 ROOT = "D:/Latent"; os.chdir(ROOT); V = "C:/Users/peter/.local/vastai/vast.sh"; KEY = os.path.expanduser("~/.ssh/runpod_ed25519")
 TAG, CAP, STEPS = sys.argv[1], float(sys.argv[2]), int(sys.argv[3]); CELLS = {int(c.split(":")[0]): c.split(":")[1] for c in sys.argv[4:]}
 HIGH = {int(c.split(":")[0]): float(c.split(":")[2]) for c in sys.argv[4:]}; EVAL_SETUP_H = 0.35
+CSTEPS = {int(c.split(":")[0]): (int(c.split(":")[3]) if len(c.split(":")) > 3 else STEPS) for c in sys.argv[4:]}   # §216: optional per-cell steps (n:cell:high:steps); default STEPS
 MARKS = tuple(int(x) for x in os.environ.get("GUARD_MARKS", "1000,4000").split(","))             # §206 (Audit): GUARD_MARKS=200,1000,4000 (G8 at J1's step 200)
 MIRROR = {int(k): int(v) for k, v in (x.split("=") for x in os.environ.get("GUARD_MIRROR", "").split(",") if x)}   # n=m: n without data projects at m's figure
 STOP = os.environ.get("GUARD_STOP", "") == "1"                                                   # §206 (Audit): on ALERT destroy every started cell (vdestroy)
@@ -64,7 +65,7 @@ def main():
             iid, h, p = H[n]; rec = last_rec(h, p, cell); dph = P.get(iid)
             if rec is None or dph is None or rec[0] < 200:
                 continue
-            sps = rec[1] / rec[0]; hours = STEPS * sps / 3600 + EVAL_SETUP_H; proj[n] = hours * dph; info[n] = {"step": rec[0], "s_per_step": round(sps, 3), "dph": dph, "proj_usd": round(proj[n], 2)}
+            sps = rec[1] / rec[0]; hours = CSTEPS[n] * sps / 3600 + EVAL_SETUP_H; proj[n] = hours * dph; info[n] = {"step": rec[0], "s_per_step": round(sps, 3), "dph": dph, "proj_usd": round(proj[n], 2)}
         pair = sum(proj.get(n, proj.get(MIRROR.get(n), HIGH[n])) for n in CELLS) + 0.04 * bad
         for n in CELLS:
             if n in info:

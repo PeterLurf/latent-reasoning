@@ -1,0 +1,19 @@
+{
+ "A_calibrated_at_0": true,
+ "resume_no_calibrate": true,
+ "cal_unchanged_after_resume": true,
+ "ckpt_steps": [
+  1,
+  2,
+  3,
+  3
+ ],
+ "rngs_equal": true,
+ "gate_equal": true,
+ "adam_steps": [
+  3.0,
+  3.0
+ ],
+ "cal_A_eq_B": true,
+ "pass": true
+}
