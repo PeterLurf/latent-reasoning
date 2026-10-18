@@ -18939,6 +18939,29 @@ Chance is 0.10–0.12.
 - The registered bars come from eval_vb at n ≤ 16 and are unaffected: M2_shift 0.717, MARGIN-GROWS-2 0.785.
 - BS-CHECK on FT-SELF: eval_deep (bs 16) vs eval_vb (bs 32) at n 13–16 over the 72 shared (K′, n) cells gives max |Δ| = 0.0000, so the bs-16 eval_deep reproduces eval_vb exactly.
 
+**Note 216-3 (2026-10-18 08:13 EDT; the s2 base s216_d3t_s2, recorded before any s2 fine-tune output; descriptive except the registered COMPETENT-BASE).** b312, RTX 3090, 48,000 steps, 0 nonfinite, ≈ $1.11. Evals: RTX 3070, fp32, bs 32.
+
+**COMPETENT-BASE True** (scratch/gate_s216/competent_base_s2.json): acc_n2 1.000 at n 1–8; min a_24 0.972 ≥ 0.97.
+
+Descriptive comparison with D3-T s1:
+
+| reading | s216_d3t_s2 | s213_d3t_s1 |
+|---|---|---|
+| entry (answer_ce < 0.5) | 8,000 | 11,000 (gap 3k ≤ 5k: not CONFOUNDED) |
+| a(n), n 9 / 10 / 11 / 12 | 0.991 / 0.718 / 0.288 / 0.165 | 0.923 / 0.603 / 0.266 / 0.127 |
+| VB-C1 parts (DEEP, PROBE-GAIN, SERIAL-ONSET, SERIAL-STEP, NO-CLOCK) | all ✓ | all ✓ |
+| ACC-GAIN-AFTER-10 | 0.003 (the stop at ~10 replicates) | −0.003 |
+| hist24 | CONTENT-STABILISES, STAB_self 0.684, bank 0.724, dup_newest 0.867 | 0.782 / 0.796 / 0.899 |
+| a_24, n 1–8 | 0.994 / 0.987 / **0.972** / 0.990 / 0.999 / 0.999 / 1.000 / 1.000 | 1.000 at every n |
+
+- **C6 data point.** D3-T's recipe replicates in a second seed on depth, serial computation, the stop and the memory channel. It does **not** replicate long-run K′24 stability at small n: n 2 and n 3 are below 0.99.
+- **Pre-stated consequence for the s2 lineage** (no rule change). K′24-STABLE (a_24 ≥ 0.99 at n 1–8, unchanged, D8) is part of SD-SELF for R1-s2 and SD2-SELF for R2-s2. FT-DIVERGED fires at a_24 < 0.97.
+  - The s2 base already fails the first at n 2–3 and sits 0.002 above the second at n 3.
+  - In s1 the self-item FT lowered a_24 at n 1 (1.000 → 0.990).
+  - So P(K′24-STABLE in an s2 FT cell) ≈ 0.25 and P(FT-DIVERGED in s2) ≈ 0.3 [ASSUMED, replacing v1 §6's lineage-wide 0.70].
+  - ×2 headline: ≈ 0.005 → **≈ 0.002** [DERIVED: × 0.25 / 0.70 × 0.7].
+- **The s2 lineage stays informative** for the readings that do not use K′24: R1-s2's ABSORB / M / mechanism (does GROW replicate?) and R2-s2's DBS-2 / MARGIN-GROWS-2 / mechanism. These are reported as registered even when SD-SELF / SD2-SELF fail on K′24.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
