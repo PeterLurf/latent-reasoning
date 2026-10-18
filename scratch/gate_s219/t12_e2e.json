@@ -1,0 +1,196 @@
+{
+ "steps": {
+  "gate_score": [
+   0,
+   3
+  ],
+  "train": [
+   0,
+   216
+  ],
+  "eval_text_s219_base_s1": [
+   0,
+   121
+  ],
+  "eval_text_s219_t1_s1": [
+   0,
+   182
+  ],
+  "textself_cpu": [
+   0,
+   20
+  ],
+  "textself_gpu_smoke": [
+   0,
+   121
+  ]
+ },
+ "reading": "READING: base base fp32 | n50 10.500 | n90 10.100 | \\u03940 0.194 -> BASE-PARITY levels | MG_T 0.650 SB_T 0.420 || T1 FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.000 (T-DBS not met) | n50 12.500 | n50/12 1.042 | round-2 condition False || T2 pending (missing ['s219_gate_t2_s1/eval_gate.json', 's219_pool_t2_s1/pool_meta.json', 's219_t2_s1/args.json', 's219_t2_s1/draws_log.json', 's219_t2_s1/eval_text.json', 's219_t2_s1/eval_textself.json', 's219_t2_s1/log.jsonl']) || comparison TEXT-CENSORED (r1, FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.000 (T-DBS not met) | n50 12.500 | n50/12 1.042 | round-2 condition False): every comparison row fails (rule b) | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \\u2192 0.489 \\u2192 0.437) | TOKEN-COST n 13\\u201316: n/a | TRAIN-TOKENS r1: n/a; TRAIN-TOKENS r2: n/a | exposure matched in items and step indices, not in training tokens or FLOPs | \\u03940 0.194, statistic levels | CTX-BOUND (GPT-2's 1,024 learned position rows; n 24: 0.971 feasible)",
+ "base": {
+  "status": "SCORED",
+  "label": "base fp32 | n50 10.500 | n90 10.100 | \u03940 0.194 -> BASE-PARITY levels | MG_T 0.650 SB_T 0.420",
+  "n50": 10.5,
+  "DELTA_0": 0.19400000000000084,
+  "BASE_PARITY": "levels",
+  "missing": null
+ },
+ "base_eval_checks": {
+  "items_sha256": true,
+  "card": true,
+  "dtype": true,
+  "tf32": true,
+  "cot_eval_bs": true,
+  "test_seed": true,
+  "test_n_max": true,
+  "model_sha256": true,
+  "fields": true,
+  "items": true,
+  "one_card": true
+ },
+ "gate_t1": {
+  "status": "PASS",
+  "consistent": true,
+  "pooled_matches": true,
+  "PASS": true,
+  "problem": null,
+  "card_class": "cpu"
+ },
+ "t1": {
+  "status": "FAIL",
+  "label": "FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.000 (T-DBS not met) | n50 12.500 | n50/12 1.042 | round-2 condition False",
+  "missing": null,
+  "censor_reasons": [
+   "dead",
+   "ARGS-DIFF"
+  ],
+  "VOID": null,
+  "dead": true,
+  "CONTAMINATED": false,
+  "LABEL_NOISY_T": false,
+  "SEAL_BREACH": false,
+  "ARGS_BAD": true,
+  "n50": 12.5,
+  "T_train": 295,
+  "self_value_ce": 0.5332091299272669,
+  "self_copy_ce": 0.21372030862088903,
+  "G_T3": {
+   "records": 3,
+   "coins_match": false,
+   "n_self_steps": 1,
+   "plain_hash_1_200": false
+  },
+  "MEMO_GAP_T": {
+   "gap": {
+    "9": 0.0,
+    "10": 0.0,
+    "11": 0.0,
+    "12": 0.0
+   },
+   "flag": []
+  }
+ },
+ "t1_eval_checks": {
+  "items_sha256": true,
+  "card": true,
+  "dtype": true,
+  "tf32": true,
+  "cot_eval_bs": true,
+  "test_seed": true,
+  "test_n_max": true,
+  "model_sha256": true,
+  "model_sha256_file": true,
+  "fields": true,
+  "items": true,
+  "one_card": true
+ },
+ "t1_args_diff": {
+  "ref": "s170_cot_s1/args.json",
+  "smoke": false,
+  "shared_diffs": {},
+  "dropped_base_keys": [],
+  "neutral_bad": {},
+  "unexpected_new_keys": [],
+  "required_bad": {
+   "steps": [
+    12000,
+    3
+   ]
+  },
+  "args_ref": {
+   "ok": true,
+   "why": "content equals the reference args",
+   "file": "boxes/runs_fsq/s170_cot_s1/args.json"
+  },
+  "ok": false
+ },
+ "t1_contamination": {
+  "pool_excl_hits": 0,
+  "pool_test_hits": 0,
+  "gold_key_hits": 0,
+  "self_reuse": 0,
+  "log_self_reuse": 0,
+  "cursor": 64,
+  "pool_size": 232,
+  "exhausted": false,
+  "recheck": {
+   "consumed_read": 64,
+   "test30_hits": 0,
+   "key_set_bad": 0,
+   "duplicates": 0,
+   "file_sha256_matches_meta": true
+  },
+  "CONTAMINATED": false
+ },
+ "t1_label_audit": {
+  "pi": 1.0,
+  "pi_E": 1.0,
+  "pooled_ok": true,
+  "windows": {
+   "W1": {
+    "pi": 1.0,
+    "pi_E": 1.0,
+    "ci_overlap_pi": true,
+    "ci_overlap_pi_E": true,
+    "ok": true
+   }
+  },
+  "kept_wrong_handles": {},
+  "ok": true
+ },
+ "t1_seal": {
+  "trainer_eval_files": [],
+  "order_violations": [],
+  "watch": [],
+  "BREACH": false,
+  "order_check": "time fields"
+ },
+ "t2": {
+  "status": "PENDING",
+  "label": "pending (missing ['s219_gate_t2_s1/eval_gate.json', 's219_pool_t2_s1/pool_meta.json', 's219_t2_s1/args.json', 's219_t2_s1/draws_log.json', 's219_t2_s1/eval_text.json', 's219_t2_s1/eval_textself.json', 's219_t2_s1/log.jsonl'])",
+  "missing": [
+   "s219_gate_t2_s1/eval_gate.json",
+   "s219_pool_t2_s1/pool_meta.json",
+   "s219_t2_s1/args.json",
+   "s219_t2_s1/draws_log.json",
+   "s219_t2_s1/eval_text.json",
+   "s219_t2_s1/eval_textself.json",
+   "s219_t2_s1/log.jsonl"
+  ]
+ },
+ "comparison": {
+  "status": "CENSORED",
+  "outcome": "TEXT-CENSORED"
+ },
+ "unexpected": {
+  "t1_pending": false,
+  "t1_void": null,
+  "base_not_scored": false,
+  "gate_not_consistent": false,
+  "args_extra_bad": [],
+  "t1_other_censors": []
+ },
+ "PASS": true,
+ "sec": 676,
+ "gate": "t12_e2e",
+ "clock": "2026-10-18 17:52:02"
+}

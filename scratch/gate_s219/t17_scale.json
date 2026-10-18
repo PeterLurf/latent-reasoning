@@ -1,0 +1,73 @@
+{
+ "exclusion": {
+  "sizes": {
+   "test_n30": 29407,
+   "serial": 2200,
+   "s213_37_n9_24": 16000,
+   "precond_23180": 2400,
+   "precond_23187": 2400,
+   "gt18_23195": 1000,
+   "gates:boxes/runs_fsq/s215_gate1/gate_items.json": 8000,
+   "gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json": 8000,
+   "gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json": 8000,
+   "gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json": 16000,
+   "pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl": 440000
+  },
+  "union": 525407,
+  "sec": 30,
+  "precondition_counts": {
+   "23180": {
+    "9": 200,
+    "10": 200,
+    "11": 200,
+    "12": 200,
+    "13": 200,
+    "14": 200,
+    "15": 200,
+    "16": 200,
+    "17": 200,
+    "18": 200,
+    "19": 200,
+    "20": 200
+   },
+   "23187": {
+    "9": 200,
+    "10": 200,
+    "11": 200,
+    "12": 200,
+    "13": 200,
+    "14": 200,
+    "15": 200,
+    "16": 200,
+    "17": 200,
+    "18": 200,
+    "19": 200,
+    "20": 200
+   }
+  }
+ },
+ "T1_388k": {
+  "records": 388000,
+  "bytes": 87442607,
+  "write_sec": 53,
+  "load_sec": 8.4,
+  "deep_select_sec": 0.09,
+  "slice_200_steps_sec": 0.004,
+  "compose_64_deepest_sec": 0.014,
+  "deep_T_max": 311
+ },
+ "T2_390k": {
+  "records": 390000,
+  "bytes": 105837344,
+  "write_sec": 67,
+  "load_sec": 7.8,
+  "deep_select_sec": 0.1,
+  "slice_200_steps_sec": 0.004,
+  "compose_64_deepest_sec": 0.026,
+  "deep_T_max": 535
+ },
+ "PASS": true,
+ "sec": 169,
+ "gate": "t17_scale",
+ "clock": "2026-10-18 17:14:12"
+}

@@ -1,0 +1,61 @@
+{
+ "compose_eq_cot_ids": {
+  "items": 20000,
+  "mismatch": 0,
+  "changed_value_still_equal": 0
+ },
+ "c_struct_test": {
+  "items": 24000,
+  "mismatch": 0
+ },
+ "cv_vs_candidate": {
+  "steps": 100000,
+  "agree": 100000,
+  "value_mismatch": 0,
+  "by_kind_items_kept": {
+   "swap": [
+    11296,
+    2251
+   ],
+   "wrong_span": [
+    11114,
+    303
+   ],
+   "none": [
+    11191,
+    11191
+   ],
+   "wrong_term": [
+    10990,
+    0
+   ],
+   "drop": [
+    11049,
+    1704
+   ],
+   "dup": [
+    10999,
+    0
+   ],
+   "nonvalue": [
+    11233,
+    0
+   ],
+   "random_tok": [
+    11034,
+    2018
+   ],
+   "wrong_bracket": [
+    11094,
+    1195
+   ]
+  }
+ },
+ "parse_tree_vs_vbank_diag": {
+  "mismatch": 0
+ },
+ "PASS": true,
+ "sec": 53,
+ "gate": "t2_compose",
+ "clock": "2026-10-18 17:54:05"
+}

@@ -1,0 +1,326 @@
+{
+ "rc_text": [
+  0,
+  19
+ ],
+ "text": {
+  "meta": {
+   "run": "boxes/runs_fsq/s219_base_s1",
+   "model": "boxes/runs_fsq/s170_cot_s1/model.pt",
+   "model_sha256": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392",
+   "card": "cpu",
+   "dtype": "fp32",
+   "tf32": false,
+   "cot_eval_bs": 32,
+   "test_seed": 17100,
+   "test_n_max": 24,
+   "ns": [
+    1,
+    2,
+    9
+   ],
+   "limit_per_n": 3,
+   "n_items": 9,
+   "items_sha256": "dfd13f6736b4af341ff79d85a8c73c04d2bfab6bb2b25d6621ad2a4f8c10ce8a",
+   "items_sha256_def": "json.dumps([[syms, int(t)]] over test_set(1000, 24), separators (',', ':'), ensure_ascii) -> sha256",
+   "budget_rule": "per batch min(max C_struct + 50, 1025 - P); C_struct shape-only (textself.c_struct); break before feeding row 1,024; overflow (P + C_struct > 1025) not generated",
+   "commit": "023c770a",
+   "sec": 14,
+   "t_start": "2026-10-18T21:26:24+00:00",
+   "t_end": "2026-10-18T21:26:39+00:00",
+   "peak_gib": null
+  },
+  "acc_by_n": {
+   "1": 1.0,
+   "2": 1.0,
+   "9": 1.0
+  },
+  "form_valid_by_n": {
+   "1": 1.0,
+   "2": 1.0,
+   "9": 1.0
+  },
+  "items": [
+   {
+    "idx": 0,
+    "n": 1,
+    "y": 1,
+    "P": 5,
+    "C_struct": 2,
+    "overflow": false,
+    "answer": 1,
+    "ntok": 2,
+    "eot": true,
+    "form_valid": true,
+    "strict": true,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   },
+   {
+    "idx": 1,
+    "n": 1,
+    "y": 7,
+    "P": 5,
+    "C_struct": 2,
+    "overflow": false,
+    "answer": 7,
+    "ntok": 2,
+    "eot": true,
+    "form_valid": true,
+    "strict": true,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   },
+   {
+    "idx": 2,
+    "n": 1,
+    "y": 10,
+    "P": 5,
+    "C_struct": 2,
+    "overflow": false,
+    "answer": 10,
+    "ntok": 2,
+    "eot": true,
+    "form_valid": true,
+    "strict": true,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   },
+   {
+    "idx": 8000,
+    "n": 9,
+    "y": 9,
+    "P": 29,
+    "C_struct": 130,
+    "overflow": false,
+    "answer": 9,
+    "ntok": 130,
+    "eot": true,
+    "form_valid": true,
+    "strict": true,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   },
+   {
+    "idx": 8001,
+    "n": 9,
+    "y": 4,
+    "P": 31,
+    "C_struct": 128,
+    "overflow": false,
+    "answer": 4,
+    "ntok": 128,
+    "eot": true,
+    "form_valid": true,
+    "strict": true,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   },
+   {
+    "idx": 8002,
+    "n": 9,
+    "y": 5,
+    "P": 27,
+    "C_struct": 110,
+    "overflow": false,
+    "answer": 5,
+    "ntok": 110,
+    "eot": true,
+    "form_valid": true,
+    "strict": true,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   }
+  ],
+  "items_sha256_ok": true,
+  "answers_eq_lenient_rule": true
+ },
+ "rc_smoke": [
+  0,
+  116
+ ],
+ "smoke": {
+  "items": 1000,
+  "feasible": 965,
+  "cap_bound": {
+   "idx": 29,
+   "P": 77,
+   "C_struct": 948,
+   "budget": 948,
+   "cap_bound": true,
+   "rows": 2,
+   "fed_max_row": 1023,
+   "ntok_max": 948,
+   "sec": 49.62557673454285,
+   "sec_per_decode_step": 0.052347654783273044,
+   "peak_gib": null
+  },
+  "projection": {
+   "decode_steps_upper": 331880,
+   "decode_steps_cstruct": 289788,
+   "hours_upper": 4.8258721304090715,
+   "hours_cstruct": 4.213811717870869,
+   "def": "sequential decode steps of the registered eval (per batch: the budget = upper, max C_struct = expected for a terminating batch) x the cap-bound batch's mean sec per decode step (context up to ~1,024: an upper per-step cost)"
+  },
+  "PASS_peak_le_6": null
+ },
+ "rc_textself": [
+  0,
+  152
+ ],
+ "textself": {
+  "label_audit": {
+   "n_audit": 64,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "pi_ci95": [
+    0.9433759393644894,
+    1.0
+   ],
+   "pi_E_ci95": [
+    0.9433759393644894,
+    1.0
+   ],
+   "kept_wrong_label": 0,
+   "kept_wrong_E": 0,
+   "by_window": {
+    "W1": {
+     "n_audit": 64,
+     "pi": 1.0,
+     "pi_E": 1.0,
+     "pi_ci95": [
+      0.9433759393644894,
+      1.0
+     ],
+     "pi_E_ci95": [
+      0.9433759393644894,
+      1.0
+     ],
+     "kept_wrong_label": 0,
+     "kept_wrong_E": 0
+    }
+   },
+   "seed": 123270,
+   "cursor": 64,
+   "n_consumed": 64,
+   "pool_sha256": "05d52200169d075f431c93a575a7c293fd6c6387577eda2ff7d5e827250c2655"
+  },
+  "contamination": {
+   "pool_records": 232,
+   "hits_by_set": {
+    "test_n30": 0,
+    "serial": 0,
+    "s213_37_n9_24": 0,
+    "precond_23180": 0,
+    "precond_23187": 0,
+    "gt18_23195": 0,
+    "gates:boxes/runs_fsq/s215_gate1/gate_items.json": 0,
+    "gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json": 0,
+    "gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json": 0,
+    "gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json": 0,
+    "pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl": 0
+   },
+   "hits_by_set_consumed": {
+    "test_n30": 0,
+    "serial": 0,
+    "s213_37_n9_24": 0,
+    "precond_23180": 0,
+    "precond_23187": 0,
+    "gt18_23195": 0,
+    "gates:boxes/runs_fsq/s215_gate1/gate_items.json": 0,
+    "gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json": 0,
+    "gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json": 0,
+    "gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json": 0,
+    "pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl": 0
+   },
+   "pool_excl_hits": 0,
+   "self_reuse": 0,
+   "pool_test_hits": 0,
+   "gold_key_hits": 0,
+   "excl_sizes": {
+    "test_n30": 29407,
+    "serial": 2200,
+    "s213_37_n9_24": 16000,
+    "precond_23180": 2400,
+    "precond_23187": 2400,
+    "gt18_23195": 1000,
+    "gates:boxes/runs_fsq/s215_gate1/gate_items.json": 8000,
+    "gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json": 8000,
+    "gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json": 8000,
+    "gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json": 16000,
+    "pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl": 440000
+   },
+   "CONTAMINATED": false
+  },
+  "memo": {
+   "9": {
+    "window": "W1",
+    "acc_pool": 1.0,
+    "acc_gate": 1.0,
+    "items": [
+     3,
+     3
+    ],
+    "gap": 0.0,
+    "FLAG_gt_0.02": false
+   },
+   "10": {
+    "window": "W1",
+    "acc_pool": 1.0,
+    "acc_gate": 1.0,
+    "items": [
+     3,
+     3
+    ],
+    "gap": 0.0,
+    "FLAG_gt_0.02": false
+   },
+   "11": {
+    "window": "W1",
+    "acc_pool": 0.0,
+    "acc_gate": 0.0,
+    "items": [
+     3,
+     3
+    ],
+    "gap": 0.0,
+    "FLAG_gt_0.02": false
+   },
+   "12": {
+    "window": "W1",
+    "acc_pool": 0.0,
+    "acc_gate": 0.0,
+    "items": [
+     3,
+     3
+    ],
+    "gap": 0.0,
+    "FLAG_gt_0.02": false
+   }
+  },
+  "labeller_kept": {
+   "9": {
+    "items": 3,
+    "n_kept": 3,
+    "keep": 1.0,
+    "pi": 1.0,
+    "pi_E": 1.0,
+    "fail_step_hist": {}
+   },
+   "24": {
+    "items": 3,
+    "n_kept": 0,
+    "keep": 0.0,
+    "pi": null,
+    "pi_E": null,
+    "fail_step_hist": {
+     "1": 3
+    }
+   }
+  }
+ },
+ "PASS": true,
+ "sec": 290,
+ "gate": "evals_paths",
+ "clock": "2026-10-18 17:31:10"
+}

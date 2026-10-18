@@ -1,0 +1,84 @@
+{
+ "by_n": {
+  "9": {
+   "items": 25,
+   "keep_tf": 1.0,
+   "tf_eq_draft_code": 25,
+   "tf_eq_gen": 25,
+   "tf_eq_draft_json": 25,
+   "gen_tokens_eq_compose": 25,
+   "gen_kept": 25,
+   "gen_min_margin": 8.80999755859375,
+   "tf_min_margin": 8.809982299804688
+  },
+  "10": {
+   "items": 25,
+   "keep_tf": 1.0,
+   "tf_eq_draft_code": 25,
+   "tf_eq_gen": 25,
+   "tf_eq_draft_json": 25,
+   "gen_tokens_eq_compose": 25,
+   "gen_kept": 25,
+   "gen_min_margin": 7.3377227783203125,
+   "tf_min_margin": 7.3377838134765625,
+   "full": {
+    "items": 10,
+    "keep": 0.4,
+    "tf_eq_gen": 10,
+    "tf_eq_draft_code": 10
+   }
+  },
+  "11": {
+   "items": 25,
+   "keep_tf": 0.96,
+   "tf_eq_draft_code": 25,
+   "tf_eq_gen": 25,
+   "tf_eq_draft_json": 25,
+   "gen_tokens_eq_compose": 24,
+   "gen_kept": 24,
+   "gen_min_margin": 0.6652374267578125,
+   "tf_min_margin": 0.6652679443359375,
+   "full": {
+    "items": 10,
+    "keep": 0.0,
+    "tf_eq_gen": 10,
+    "tf_eq_draft_code": 10
+   }
+  },
+  "12": {
+   "items": 25,
+   "keep_tf": 0.88,
+   "tf_eq_draft_code": 25,
+   "tf_eq_gen": 25,
+   "tf_eq_draft_json": 25,
+   "gen_tokens_eq_compose": 22,
+   "gen_kept": 22,
+   "gen_min_margin": 0.9030914306640625,
+   "tf_min_margin": 0.9031524658203125
+  },
+  "13": {
+   "items": 10,
+   "keep_tf": 1.0,
+   "tf_eq_draft_code": 10,
+   "tf_eq_gen": 10,
+   "tf_eq_draft_json": 10,
+   "gen_tokens_eq_compose": 10,
+   "gen_kept": 10,
+   "gen_min_margin": 3.7255859375,
+   "tf_min_margin": 3.72552490234375
+  },
+  "16": {
+   "items": 10,
+   "keep_tf": 0.5,
+   "tf_eq_draft_code": 10,
+   "tf_eq_gen": 10,
+   "tf_eq_draft_json": 10,
+   "gen_tokens_eq_compose": 5,
+   "gen_kept": 5,
+   "gen_min_margin": 0.9785232543945312,
+   "tf_min_margin": 0.9785537719726562
+  }
+ },
+ "gate": "t16_equiv_partial",
+ "clock": "2026-10-18 17:11:22"
+}

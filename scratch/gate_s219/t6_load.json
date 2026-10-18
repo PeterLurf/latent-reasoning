@@ -1,0 +1,17 @@
+{
+ "model": "boxes/runs_fsq/s170_cot_s1/model.pt",
+ "sha256": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392",
+ "sha_ok": true,
+ "strict": true,
+ "forward_shape": [
+  2,
+  40,
+  50257
+ ],
+ "finite": true,
+ "input": "random token ids (rng 21903), never a test item",
+ "PASS": true,
+ "sec": 1,
+ "gate": "t6_load",
+ "clock": "2026-10-18 17:54:17"
+}
