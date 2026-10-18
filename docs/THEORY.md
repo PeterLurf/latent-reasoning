@@ -19553,6 +19553,20 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
   - It is a gate, not evidence about generalisation or entry. The memorisation and fixed-set leakage that make it pass are why it is never read as a result.
 - **Descriptive progress pings, no action:** A1's guard reports plain_cand_ce (1k-bin mean) and host candidate accuracy at 8k and 16k. Any stop for cost would need the user's explicit decision and a disclosed note.
 
+**Note 218-9 (2026-10-18 16:39 EDT; R1 freeze of A1's and DIRECT-SYM's args references, after Audit's diff against LANG_v1 §2.3 / §2.6; before either launch).**
+
+**Frozen** (committed in f2fc0cba; each is the exact `--args_only` output of its final launch line):
+- **A1** `lvb_sym_s1`: scratch/s218_args_ref_a1.json, **sha256 33af702ff631d798e83847443b9643cef4991d117285051a51d5ca5561e34e1d**.
+- **DIRECT-SYM** `lvb_direct_s1`: scratch/s218_args_ref_direct.json, **sha256 f494703812966edf4ae08cf2e0b12bd20b5bb4d68dc26bc8ad09ddf4367905d0**.
+
+**Recipe** (both): steps 24000, bs 64, lr 1e-4 cosine, c_sched 1000,8000, seed 1, stream_seed 22100, cur 4,6,8, cur_gate 0.35:2:6000, kmax 12, kextra 4, rec_w 1.0, table train, init_from '', p_self 0, bf16, mem_budget 21.0, host_eval_at 8000,16000 (descriptive, 218-8).
+- The two differ only in {arch (lslva / direct), arch_class (LangSLVA / GPT2KV), out, args_ref}.
+
+**G-L11's comparison** (score_s218 FROZEN_ARGS; exact match except META):
+- The environment fields captured on the local `--args_only` machine are **META** and will differ on the 3090 host: train_gpu "RTX 4060", train_driver, torch / cuda / cudnn / python versions, image_tag. All are in score_s218's META (= score_s213.META). So are micro / auto_micro / mem_budget / ckpt_every; the host's chosen micro goes to auto_micro.json and the launch log.
+- **`arch` is in score_s213.META** (a derived class name in vbank), but in langvb it is the architecture choice. FROZEN_ARGS therefore **requires arch == the frozen value** (lslva / direct) and arch_class == LangSLVA / GPT2KV as required values, so an architecture swap cannot pass as META.
+- **The off-host mirror every 2k is in the runner, not an args key.** It is checked by G-L10 (full-state mirror sha-checked after the first copy, plus a tested resume) and confirmed in each launch log.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
