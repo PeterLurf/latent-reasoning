@@ -345,6 +345,17 @@ def four_way(d1, d2):
     return lab, bool(lab in ("TEXT-AHEAD", "LATENT-AHEAD") and abs(d2) <= 1.0 + EPS)
 
 
+def crossed_subcase(d1, d2):
+    """Audit's G-T12 wording item (note 219-2): CROSSED's sub-case, label unchanged. Under four_way, CROSSED is reached only with
+    (a) opposite-sign leads outside the band at both rounds ("order changed"), or (b) |D2| <= 0.5 with |D1| > 0.5 ("converged at round 2").
+    "Diverged at round 2" (D1 in band, D2 out) never reaches CROSSED: TEXT-/LATENT-AHEAD absorb it (four_way's d1 >= -0.5 / <= 0.5 clauses)."""
+    if abs(d2) <= 0.5 + EPS and abs(d1) > 0.5 + EPS:
+        return "converged at round 2"
+    if abs(d1) > 0.5 + EPS and abs(d2) > 0.5 + EPS and (d1 > 0) != (d2 > 0):
+        return "order changed"
+    return "unexpected (four_way should not give CROSSED here)"
+
+
 def round1_only(d1):
     return "PARITY-1" if abs(d1) <= 0.5 + EPS else "TEXT-AHEAD-1" if d1 > 0 else "LATENT-AHEAD-1"
 
@@ -1258,7 +1269,7 @@ def comparison(lin, base, g1, t1, g2, t2):
                              % (d1, d2, mg, fmt(fp2), t2.get("T_train")),
              "TEXT-AHEAD": "TEXT-AHEAD: round-matched text-CoT self-training moved the 50 %% depth further than latent self-training (Δn50 = %s / %s)%s"
                            % (d1, d2, mg),
-             "CROSSED": "CROSSED: the arms' order changed between rounds (Δ = %s / %s)." % (d1, d2)}[lab]
+             "CROSSED": "CROSSED (%s): %s (Δ = %s / %s)." % (crossed_subcase(stat_d(1), stat_d(2)), {"order changed": "the arms' order changed between rounds", "converged at round 2": "a round-1 lead closed into the parity band at round 2"}.get(crossed_subcase(stat_d(1), stat_d(2)), "see crossed_subcase"), d1, d2)}[lab]
     return fin("SCORED", lab + (" (marginal)" if marg else ""), words + (" | T-RETAIN failed (min a_T(9..12) = %s)" % fmt(t2["min_9_12"])
                                                                          if not t2["T_RETAIN_raw"] else ""))
 
