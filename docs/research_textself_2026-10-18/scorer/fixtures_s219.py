@@ -385,6 +385,16 @@ def latent_constants_recompute():
 
 
 @case
+def crossed_subcase_wording():
+    """Note 219-2 (Audit's G-T12 wording item): CROSSED's sub-case is named; the label is unchanged."""
+    chk(S.four_way(1.0, 0.0)[0] == "CROSSED" and S.crossed_subcase(1.0, 0.0) == "converged at round 2", "converged")
+    chk(S.four_way(1.0, -1.0)[0] == "CROSSED" and S.crossed_subcase(1.0, -1.0) == "order changed", "order changed (+ / -)")
+    chk(S.four_way(-1.0, 1.0)[0] == "CROSSED" and S.crossed_subcase(-1.0, 1.0) == "order changed", "order changed (- / +)")
+    chk(S.four_way(0.0, 1.0)[0] == "TEXT-AHEAD" and S.four_way(0.0, -1.0)[0] == "LATENT-AHEAD", "D1 in band never reaches CROSSED")
+    return "converged / order changed named; D1-in-band cases absorbed by TEXT-/LATENT-AHEAD"
+
+
+@case
 def latent_bars_reproduced():
     """v1 §4.3: fed the latent files, the bar formulas reproduce 0.63 / 0.40 / 0.785 / 0.60."""
     a = {}

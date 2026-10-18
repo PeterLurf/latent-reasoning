@@ -19515,6 +19515,13 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
 - The assumed field names are listed in the scorer's LAYOUTS: P, meta time fields / budget_rule, first_bad_pos_q_by_n, contamination fields, pool_meta, eval_gate GATE_T1 / T2 / T1p / pooled_by_window / fallback, memo, labeller_kept.
 - The module is the writer of record. Where names differ, the scorer adapts; a field is added only where the registered text requires it.
 
+**Note 219-2 (2026-10-18 16:23 EDT; Audit's G-T12 wording item; label unchanged, words precise; before any §219 output).** CROSSED stays the registered "otherwise" label of four_way. Its line now names the sub-case:
+- **"order changed"**: opposite-sign leads outside the band at both rounds;
+- **"converged at round 2"**: a round-1 lead (|Δ1| > 0.5) closed into the band (|Δ2| ≤ 0.5).
+- "Diverged at round 2" (Δ1 in band, Δ2 out) cannot reach CROSSED: four_way's d1 ≥ −0.5 / ≤ 0.5 clauses send it to TEXT-AHEAD / LATENT-AHEAD.
+
+score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49 / 49.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -1,12 +1,12 @@
 {
- "written": "2026-10-18T16:18:48-04:00",
+ "written": "2026-10-18T16:23:34-04:00",
  "scorer": "score_s219.py",
- "scorer_sha256": "9ad6616afb53f4766562de5adbe23b80e93ddc6a34e31f9e8b8d18708ecc1796",
+ "scorer_sha256": "14bd7556a90551051b2a3b1cf54872cebd040fc645a45cbdf87733f3a26b4207",
  "registered": "docs/research_textself_2026-10-18/TS_v1.md @ 146a25d0 (v1 + Addendum 1 + Addendum 2); THEORY.md \u00a7219",
- "n_cases": 48,
- "n_pass": 48,
+ "n_cases": 49,
+ "n_pass": 49,
  "n_fail": 0,
- "sec": 169.6,
+ "sec": 160.2,
  "panel_deltas": {
   "N-SHIFT": {
    "D1": -1.0223678646934466,
@@ -67,6 +67,12 @@
    "sec": 0.2
   },
   {
+   "case": "crossed_subcase_wording",
+   "ok": true,
+   "detail": "converged / order changed named; D1-in-band cases absorbed by TEXT-/LATENT-AHEAD",
+   "sec": 0.0
+  },
+  {
    "case": "latent_bars_reproduced",
    "ok": true,
    "detail": "bars (0.63, 0.4, 0.785, 0.6)",
@@ -76,7 +82,7 @@
    "case": "coin_stream_matches_latent",
    "ok": true,
    "detail": "12,000 coins and every self U equal; self steps {'s215_ftself_s1': 5992, 's216_r2_s1': 5992}",
-   "sec": 1.7
+   "sec": 1.8
   },
   {
    "case": "neutral_map_vs_parser",
@@ -88,7 +94,7 @@
    "case": "ctx_facts",
    "ok": true,
    "detail": "overflow 29 at n 24; max P+C 1085; at 1025: 7",
-   "sec": 14.4
+   "sec": 13.9
   },
   {
    "case": "four_way_unit",
@@ -100,13 +106,13 @@
    "case": "panel_N_SHIFT",
    "ok": true,
    "detail": "\u03941 -1.022 \u03942 -2.101 -> LATENT-AHEAD",
-   "sec": 2.2
+   "sec": 2.1
   },
   {
    "case": "panel_N_PROP",
    "ok": true,
    "detail": "\u03941 0.197 \u03942 0.334 -> PARITY",
-   "sec": 1.8
+   "sec": 1.7
   },
   {
    "case": "panel_POS_PROP",
@@ -118,25 +124,25 @@
    "case": "panel_POS_ADD",
    "ok": true,
    "detail": "\u03941 -0.940 \u03942 -1.944 -> LATENT-AHEAD",
-   "sec": 1.8
+   "sec": 1.7
   },
   {
    "case": "panel_BETTER",
    "ok": true,
    "detail": "\u03941 1.500 \u03942 3.001 -> TEXT-AHEAD",
-   "sec": 1.8
+   "sec": 1.7
   },
   {
    "case": "crossed",
    "ok": true,
    "detail": "\u03941 1.000 \u03942 -0.999 -> CROSSED",
-   "sec": 2.0
+   "sec": 1.7
   },
   {
    "case": "delta_exactly_half_inside",
    "ok": true,
    "detail": "\u03941 0.500 \u03942 0.061 -> PARITY; \u03941 -0.500 \u03942 0.061 -> PARITY",
-   "sec": 3.4
+   "sec": 3.3
   },
   {
    "case": "marginal_latent",
@@ -148,13 +154,13 @@
    "case": "marginal_text",
    "ok": true,
    "detail": "\u03941 0.040 \u03942 0.799 -> TEXT-AHEAD (marginal)",
-   "sec": 1.7
+   "sec": 1.6
   },
   {
    "case": "sentinel_gt24",
    "ok": true,
    "detail": "n50 > 24 -> \u03942 3.471 -> TEXT-AHEAD",
-   "sec": 1.6
+   "sec": 1.7
   },
   {
    "case": "base_parity_gain",
@@ -166,7 +172,7 @@
    "case": "text_not_absorbed_r1",
    "ok": true,
    "detail": "TEXT-NOT-ABSORBED: text-CoT self-training did not absorb the round-1 window under the matched recipe (min a_T(9..12) = 0.900 < 0.95); no comparison is read (\u0394_1",
-   "sec": 1.7
+   "sec": 1.5
   },
   {
    "case": "text_not_absorbed_r2",
@@ -178,79 +184,79 @@
    "case": "text_label_stall",
    "ok": true,
    "detail": "TEXT-LABEL-STALL: ROUND-1-ONLY: PARITY-1 (\u0394_1 = 0.040, levels). The text format's single-step labeller did not reach the ; LATENT-AHEAD-1 stall carries FAIL-POS",
-   "sec": 2.0
+   "sec": 1.9
   },
   {
    "case": "base_labelled_window",
    "ok": true,
    "detail": "W2 BASE-LABELLED; PARITY",
-   "sec": 1.6
+   "sec": 1.5
   },
   {
    "case": "t1_dead",
    "ok": true,
    "detail": "FAILURE (dead; rule b) | UNLABELLED (censored) | M_T 0.750 (T-DBS not met) | n50 15.500 | n50/12 1.292 | round-2 condition False",
-   "sec": 1.5
+   "sec": 1.3
   },
   {
    "case": "t1_ft_diverged",
    "ok": true,
    "detail": "FAILURE (FT-DIVERGED-T; rule b) | UNLABELLED (censored) | M_T 0.750 (T-DBS not met) | n50 15.500 | n50/12 1.292 | round-2 condition False",
-   "sec": 1.8
+   "sec": 1.7
   },
   {
    "case": "label_noisy",
    "ok": true,
    "detail": "pi: FAILURE (LABEL-NOISY-T; rule b) | UNLABE; piE: FAILURE (LABEL-NOISY-T; rule b) | UNLABE; ci: FAILURE (LABEL-NOISY-T; rule b) | UNLABE; T2 window: FAILURE (LABEL-NOISY-T; rule b) | UNLABE",
-   "sec": 5.4
+   "sec": 5.3
   },
   {
    "case": "contaminated",
    "ok": true,
    "detail": "excl_hits: FAILURE (CONTAMINATED; rule b); gold_key_hits: FAILURE (CONTAMINATED; rule b); self_reuse: FAILURE (CONTAMINATED; rule b); exhausted: FAILURE (CONTAMINATED; rule b); recheck_test: FAILURE (CONTAMINATED; rule b); recheck_goldkey: FAILURE (CONTAMINATED; rule b); recheck_dup: FAILURE (CONTAMINATED; rule b); clean pool re-check passes (TRAIN-TOKENS self exact)",
-   "sec": 19.4
+   "sec": 18.2
   },
   {
    "case": "seal_breach",
    "ok": true,
    "detail": "eval: FAILURE (SEAL-BREACH; rule b) ; eval12k: FAILURE (SEAL-BREACH; rule b) ; void: FAILURE (SEAL-BREACH; rule b) ; watch: pending + SEAL_WATCH; --final FAIL; order: FAILURE (SEAL-BREACH; rule b) ; order ok passes",
-   "sec": 8.2
+   "sec": 7.1
   },
   {
    "case": "args_diff_rules",
    "ok": true,
    "detail": "19 mutations ARGS_BAD; realistic / equal args_ref / smoke ok; e2e: FAILURE (ARGS-DIFF; rule b) | UNLABELLED",
-   "sec": 1.7
+   "sec": 1.4
   },
   {
    "case": "eval_bs_not_32",
    "ok": true,
    "detail": "VOID (eval_text: eval_text.json ['cot_eval_bs']; every readi; base bs 64 -> base VOID, TEXT-CENSORED (r0), T1 bars void",
-   "sec": 2.9
+   "sec": 2.5
   },
   {
    "case": "items_sha_mismatch",
    "ok": true,
    "detail": "VOID (eval_text: eval_text.json ['items_sha256']; every reading of the model fai",
-   "sec": 1.4
+   "sec": 1.2
   },
   {
    "case": "model_sha_rules",
    "ok": true,
    "detail": "VOID (eval_text: eval_text.json ['model_sha256']; every read; base with a foreign sha -> VOID",
-   "sec": 2.3
+   "sec": 2.1
   },
   {
    "case": "ctx_overflow",
    "ok": true,
    "detail": "a(24) 0.971, feasible 1.000, M_far 0.9928 (feasible 1.000); overflow answer / flag -> VOID",
-   "sec": 4.3
+   "sec": 3.9
   },
   {
    "case": "registered_files_missing",
    "ok": true,
    "detail": "24 registered files / parts: pending, then --final failure + TEXT-CENSORED",
-   "sec": 38.1
+   "sec": 35.1
   },
   {
    "case": "degenerate_bars",
@@ -262,13 +268,13 @@
    "case": "t_full_needs_m_far",
    "ok": true,
    "detail": "M_far 0.5500 -> T-GROW; M_far 0.6375 -> T-FULL",
-   "sec": 3.5
+   "sec": 3.4
   },
   {
    "case": "mechanism_r1_labels",
    "ok": true,
    "detail": "0.9->T-FULL; 0.7->T-GROW; 0.5->T-SHIFT/MIXED; 0.3->T-SHRINK",
-   "sec": 4.0
+   "sec": 3.9
   },
   {
    "case": "t_retain_and_wording",
@@ -280,7 +286,7 @@
    "case": "gate_t1_fail_not_run",
    "ok": true,
    "detail": "not run (GATE-T1: keep / \u03c0 per failing n {12: {'keep': 0.6, 'pi': 0.9995, 'pi_E': 0.9995, 'n_kept': 1200}}; pooled \u03c0 0.9",
-   "sec": 0.3
+   "sec": 0.4
   },
   {
    "case": "gate_flag_inconsistent",
@@ -298,19 +304,19 @@
    "case": "card_gate_path",
    "ok": true,
    "detail": "no gate: VOID (eval_text: eva; pass: T1 on the 2070 read (PARITY); gate 3070 / pool 2070: FAILURE (round not o; fail: VOID (eval_text: eva; two cards: VOID (eval_text: eva",
-   "sec": 7.1
+   "sec": 6.5
   },
   {
    "case": "card_fallback_4060",
    "ok": true,
    "detail": "4060 pending until its comparators are recorded; then PARITY",
-   "sec": 2.6
+   "sec": 2.7
   },
   {
    "case": "latent_files_ignored",
    "ok": true,
    "detail": "outcome PARITY and \u0394 unchanged; only descriptive LATENT-FIXED-K' moved",
-   "sec": 2.7
+   "sec": 3.0
   },
   {
    "case": "layout_list_items",
@@ -328,13 +334,13 @@
    "case": "final_undecided_gates",
    "ok": true,
    "detail": "pending, then failure at --final",
-   "sec": 2.0
+   "sec": 1.9
   },
   {
    "case": "descriptive_rows",
    "ok": true,
    "detail": "LATENT-FIXED-K' n50 {'r0': '10.265', 'r1': '15.433', 'r2': '20.518'}; TRAIN-TOKENS r2 text 1.21e+08 / latent 2.99e+08 targets",
-   "sec": 3.3
+   "sec": 3.0
   },
   {
    "case": "real_tree_readonly",
