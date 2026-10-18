@@ -306,6 +306,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 216 | SELF-DEPTH-CHAIN round 2 (SD2; user-approved 01:31 10-18, "Approve (Recommended)"; family cap $6.50): s216_r2_s1 from FT-SELF on its own chain (2/3 n 13-16, 1/3 n 9-12) + lineage s2 (D3-T seed 2 -> R1 -> R2); SD2-SELF / SD2-C2 (DBS-2 n 17-20 >= 0.80, eval_deep) / LIT-C2-2 / SD2-C2-MEM / x2; SD2_v1.md at e9ade2ec; scorer score_s216 (to write) | registered | **gates + Audit G-S13 diff review; not launched** |
 | 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **part causal_deep to build (Experiments) + Audit review; not run** |
 | 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **code + gates + Audit diff review; not launched** |
+| 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **code + gates + Audit diff review; not launched** |
 
 ## Live sections
 
@@ -18772,6 +18773,49 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Cost.**
 - Required cells projected $10.4–17.1 (central $13.3). Expected realised ≈ $7, since B1 launches only on VB-C1-L.
 - **Family cap $25**; guards sum $24.2. Cut order B1 → A-TXT → host labelling. Required A cells are never cut or shortened.
+- Realised at registration: $0.
+
+## 219. TEXT-SELF: a matched text-CoT self-improvement baseline for the latent self-depth line (§215 / §216)
+
+**Header.**
+- This is Audit's research-pass lead L1 (10-18).
+- **Auto-approved by Audit under the user's $30 standing rule** (family cap **$3.00**) on review of 7fabd852, with conditions = Addendum 2.
+- Pre-registered 2026-10-18 15:37 EDT, before any TEXT-SELF code, pool, training or eval output.
+
+**Registered text.**
+- docs/research_textself_2026-10-18/TS_v1.md **at 146a25d0** (v1 + Addendum 1 (Theory's §9 decisions) + Addendum 2 (Audit's conditions)) is the registered text. That file is now frozen.
+- Reviews: TS_draft.md, REDTEAM_TS.md (1 blocker, 6 majors), PROOFS_TS.md (37 PASS / 17 CORRECTED / 0 FAIL). All are resolved in v1 §1.
+- Derivation: v1 §3.
+- **Scorer:** theory/score_s219.py, to write and fixture-check before any output. It includes the latent n50 constants 10.306 / 15.460 / 20.539 (Addendum 2 item 4) and the 215-7 pending rule.
+
+**Design (one lineage per arm; the latent comparator is s1 only, since s2 was censored at R1, 216-8):**
+- **Cells:** s219_base_s1 (fp32 re-eval of s170_cot_s1) → **T1** s219_t1_s1 (n 9–12 self items) → **T2** s219_t2_s1 (⅔ n 13–16 / ⅓ n 9–12).
+- **Matched to the latent rounds:** steps, lr, the mixture, the seed-1 coin replay (5,992 self steps = 383,488 items), the windows, a form-only filter equal to the latent's, and the gate rule.
+- **Labeller:** REROOT computed by TF-GREEDY (exact vs per-step KV generation). FULL is descriptive. T2 has a base fallback per window and no bridge.
+- **Trainer:** a new module, boxes/textself_ft.py, with `--no_final_eval` (the seal).
+- **ARGS-DIFF:** TEXT_NEUTRAL_NEW plus the 216-7 args_ref rule.
+- **Evals:** local fp32 on the RTX 3070 at cot_eval_bs 32, the base re-eval first. The 2070 is used only after CARD-GATE. Rounds run uninterrupted on the 3070.
+
+**Readings** (v1 §4–§5):
+- Per round, n50 / support. The comparison against the latent s1 constants reads **PARITY** (|Δ n50| ≤ 0.5 at both rounds) / **TEXT-AHEAD** / **LATENT-AHEAD**, "marginal" when |Δ₂| ≤ 1.
+- BASE-PARITY: if |Δ0| > 0.25, Δ is read as gain over each arm's own base.
+- **TEXT-NOT-ABSORBED** (either round) and **TEXT-LABEL-STALL** (worded as an output-format labeller limit) are never worded as LATENT-AHEAD.
+- **CTX-BOUND:** only n 24 overflows (29 / 1,000). Overflows count as failures, with CTX-FEASIBLE beside.
+- TOKEN-COST and **TRAIN-TOKENS** sit on every comparison line. Nothing is worded as compute-matched.
+- Never worded as latent C1 / C2.
+
+**OC** (v1 §6; ŝ 0.17 central from the measured lineage spread, 0.35 sensitivity):
+- P(PARITY | no difference) 0.964 (0.608 at s 0.35).
+- P(PARITY | 1-n difference) 0.0004.
+- Given both rounds readable (0.74): LATENT-AHEAD 0.61 / PARITY 0.26 / TEXT-AHEAD 0.12 / CROSSED 0.02.
+- TEXT-NOT-ABSORBED 0.09, stall 0.06, censored 0.11.
+
+**Censoring:** v1 §5.2 (rule b; SEAL-BREACH voids a cell).
+
+**Cost.**
+- Plan B′: training on cloud RTX 3090s, with pools, gates and evals local.
+- Projected $0.70–2.15. Admission bounds $1.00 / $1.45, guards $1.20 / $1.70, **family cap $3.00** (GUARD_STOP).
+- About 9.7–15.3 h of 3070 time.
 - Realised at registration: $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
