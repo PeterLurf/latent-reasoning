@@ -19372,6 +19372,25 @@ The docstring of score_s217 now names boxes/vbank_causal.py (cosmetic).
    - On dense gold REACH targets every pass has both kinds, so it equals vbank.vb_loss exactly.
    - Applied literally to SOUND-ONLY targets (IN on marked slots only, no OUT), vb_loss would halve a first-mark pass (0.5·tc with tu = 0) and dilute the mean with target-free passes. That is an artefact of sparsity, not a design choice. Intended as built; documented in the docstring.
 
+**Note 191-5 (2026-10-18 15:17 EDT; A0-1 result, per 191-4; eval_a01.json on the RTX 2070 at fp32, eval_bs 16, full p8_na_test n 4,053; scored with theory/score_a01.py; Audit's independent recompute agrees. $0.)**
+
+**Reading: neither §191 model is CUE-RELIANT.**
+
+| model | gate (max \|Δ acc_by_depth\|, ≥ 100 items) | acc(pro), n 2,630 | acc(tie), n 511 | acc(anti), n 78 | CONTRIBUTION = pro − tie (95 % CI) |
+|---|---|---|---|---|---|
+| A (stepaux, NAME-MEM 0.950) | 0.012 ✓ | 0.944 (0.935–0.953) | 0.937 (0.913–0.955) | 0.885 (0.795–0.938) | **+0.007** (−0.016 to +0.030) |
+| B (textcot, 0.938) | 0.007 ✓ | 0.941 (0.931–0.949) | 0.906 (0.878–0.928) | 1.000 (0.953–1) | **+0.035** (+0.008 to +0.062) |
+
+Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would need tie ≤ pro − 0.15 ∧ tie ≤ 0.75.
+
+**Interpretation (descriptive, with 191-3):**
+- The anchor cue contributes at most a few points.
+  - B: +0.035 on ties. It never follows the cue against the truth (anti 78 / 78).
+  - A: +0.007 on ties. Its anti 0.885 sits below pro by 0.06, on 78 items with barely overlapping CIs. That is a possible small anti-signature and is not claimed.
+- Together with 191-3 (A exceeds the person-agnostic cue ceiling at every depth), **§191's NAME-MEM result is not a shortcut artefact of p8_na's anchor cue.**
+- The 191-2 caveat is closed at "small contribution at most; not the mechanism". No registered §191 reading changes.
+- New ProsQA work still uses ProsQA-SYM (§218), which removes the cue by construction.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
