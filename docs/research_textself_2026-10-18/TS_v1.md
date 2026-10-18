@@ -690,3 +690,15 @@ plus, unconditional: TEXT-LABEL-STALL 0.059 (PARITY-1 0.020, TEXT-AHEAD-1 0.006,
 5. **The structural priors stay [ASSUMED]** as §6 states. The sensitivity rows (s 0.17 / 0.35) are the registered reporting.
 6. **3070 time.** Experiments schedules text pools and evals on the 3070 around §218. The card class is fixed (3070, fp32), and the 2070 is used only after CARD-GATE.
 
+## Addendum 2 (2026-10-18 15:36 EDT; Audit's review of 7fabd852, auto-approved under the user's $30 rule, family cap $3.00, with these conditions; before registration)
+
+1. **cot_eval_bs.** The trainer's `cot_eval_bs` key is 64 in TEXT_NEUTRAL_NEW. It is unused under `--no_final_eval`. **The registered eval_text runs at cot_eval_bs 32** (§2.7 / T5; the 2070 CARD-GATE and the bf16 batch-size rule depend on it), and text_eval asserts 32. The two values are distinct on purpose; neither is "fixed" to match the other.
+2. **Exposure is matched in items and step indices, not in training tokens or FLOPs.** A text self item at n 12–16 carries ≈ 218–386 target tokens, against the latent's n + 2 passes. Every comparison line reports **TRAIN-TOKENS** beside TOKEN-COST: target tokens and token-positions consumed per round, for both arms. LATENT-AHEAD / PARITY / TEXT-AHEAD are never worded as compute-matched.
+3. **Shared 3070.** Once a §219 round's gates, pool and eval start on the 3070, they run uninterrupted, with no §218 co-tenant (the no-co-tenants rule). If §218 needs the card mid-round, the §219 stage waits. It never moves cards mid-round.
+4. **Latent comparator constants.** score_s219 records them as constants, with their source files and §4.2's n50 rule (first downward crossing, linear interpolation) and a fixture:
+   - D3-T s1 **10.306**;
+   - FT-SELF **15.460**;
+   - R2-s1 **20.539**.
+
+   They come from eval_vb acc_n2 (n ≤ 16) plus eval_deep (n ≥ 17) and are identical whichever file covers n 13–16. A later re-eval of the latent models cannot move them.
+
