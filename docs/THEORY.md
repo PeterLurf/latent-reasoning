@@ -19608,6 +19608,19 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - A later failure of either run is a code finding. It stops A1 / DIRECT-SYM under their guards (GUARD_STOP), pending a joint Theory / Audit review.
 - Audit reads the passing JSON before the queues move from .hold to .txt.
 
+**Note 219-3 (2026-10-18 18:01 EDT; §219 build rulings, before any registered §219 output beyond the base re-eval in progress; modules at 3b0bb06f, nested170.py sha unchanged).**
+1. **Done markers.** The trainer writes no eval*.json (that would be a SEAL-BREACH). Cells end in train_done.json, G-T9 in mem_check_self.json and G-T10 in timing.json. A §219 drain / done-marker variant is written before any T1 launch.
+2. **G-T4 (resume).** The tied-wte embedding backward is nondeterministic under multithreaded CPU index_add: wte differs by 1.2e-7 and the other 147 tensors are bitwise.
+   - First re-run G-T4 single-threaded with `torch.use_deterministic_algorithms(True)`. If it is bitwise there, that is the reading.
+   - Otherwise G-T4 passes on the registered bitwise step-3 loss plus every tensor bitwise except wte, with **max |Δ wte| ≤ 1e-6** (7.5e-9 measured), reported.
+3. **G-T5.** The smoke's args.json carries the smoke pool path as the required self_pool value. The real launch's ARGS-DIFF in score_s219 requires the round's registered pool path.
+4. **TRAIN-TOKENS.** Exact per-type counts are in log.jsonl / train_done.json, and score_s219 computes both arms from them. Descriptive.
+5. **Unspecified choices accepted:**
+   - G-T18 items: 1,000 rng-23195 draws at n 24.
+   - G-T16's "250 per n": the first 250 per n in gate order.
+   - LABELLER-KEPT fresh items are not added to later exclusion sets. They come from their own rng streams, so overlap with pools is bounded by the collision bound, and they touch no test or gate.
+6. **Items the frozen base read during CPU smokes** (test n 1 / 2 / 9, 3 each and never n ≥ 17; 2 rng-23195 G-T18 items; rng-23180 precondition items; synthetic rng 21903 / 21904 shapes) were never trained on. They contaminate nothing. Recorded.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
