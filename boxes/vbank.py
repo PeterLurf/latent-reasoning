@@ -605,7 +605,7 @@ def main():
     ap.add_argument("--self_pool", default="", help="§215 SELF-DEPTH: the round's pool jsonl (pool_meta.json beside it); empty = no self steps (FT-CTRL)")
     ap.add_argument("--p_self", type=float, default=0.0); ap.add_argument("--self_kmax", type=int, default=16); ap.add_argument("--self_kextra", type=int, default=4)
     ap.add_argument("--self_micro", type=int, default=2, help="§215: micro on self steps (auto-picked at the deepest self shape when --auto_micro)")
-    ap.add_argument("--mem_check_self", action="store_true", help="§215 G-S9: --mem_check at the 64 longest n 12 pool records, K self_kmax, micro self_micro")
+    ap.add_argument("--mem_check_self", action="store_true", help="§215 G-S9: --mem_check at the 64 longest n_top pool records, K self_kmax, micro self_micro")
     ap.add_argument("--draws_log_steps", type=int, default=0, help="§215 G-S3: steps 1..N logged to draws_log.json (both FT cells: 20000); 0 = off")
     ap.add_argument("--init_from", default="", help="FT (SELF-DEPTH / D4): a base model.pt; strict load (only pause_vec may be missing), calibrate() NOT called, "
                     "the base dir's calibration.json copied; a fresh optimizer")
@@ -703,7 +703,7 @@ def main():
         deep_its = [SD.self_item(r, a.self_kmax) for r in deep]
         if a.auto_micro and dev.startswith("cuda"):
             amS = {}
-            for mic in (1, 2, 4):
+            for mic in (1, 2, 4, 8):                                         # §216 T1: {1, 2, 4, 8} (round 2 K 20)
                 torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); ok = True
                 try:
                     for k_ in range(mic):
@@ -716,7 +716,7 @@ def main():
                 if ok and pk <= a.mem_budget:
                     a.self_micro = mic; break
             else:
-                raise RuntimeError("G-S9: no self micro in {1, 2, 4} fits the deepest self shape within mem_budget %.1f GiB: %s" % (a.mem_budget, amS))
+                raise RuntimeError("G-S9: no self micro in {1, 2, 4, 8} fits the deepest self shape within mem_budget %.1f GiB: %s" % (a.mem_budget, amS))
             torch.cuda.empty_cache(); log_amS = {"self_micro": a.self_micro, "peak_gib_by_micro": amS, "mem_budget": a.mem_budget}; print("AUTO_MICRO_SELF", log_amS, flush=True)
             json.dump(log_amS, open(os.path.join(a.out, "auto_micro_self.json"), "w", newline="\n"), indent=1)
     KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
