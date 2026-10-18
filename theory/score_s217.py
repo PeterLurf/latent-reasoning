@@ -1,5 +1,5 @@
 """THEORY §217 scoring (CAUSAL-ACROSS-ROUNDS; registered text: THEORY.md '## 217.' + note 217-1; Theory is the only scorer). Eval-only, $0, local RTX 4060.
-Per model, eval_causal_deep.json (vbank_diag part causal_deep: vbank_eval's VALUE-SWAP class A + STALL, unchanged except the n-range):
+Per model, eval_causal_deep.json (boxes/vbank_causal.py, note 217-2: vbank_eval's VALUE-SWAP class A + STALL, unchanged except the n-range):
   gate (n 4-8 on the 4060 vs the committed 3070 eval_vb): |follow_ii - ref|, |own_ii - ref|, |STALL recovery - ref| <= 0.005, else UNREADABLE (fails CAUSAL-DEEP).
   competent band B = {n in 9..20 : a(n) >= 0.95}, a(n) = eval_vb acc_n2 (n <= 16) / eval_deep acc_n2 (n 17-20; no eval_deep -> those n unknown, excluded,
     listed); an n with < 100 clean pairs or < 500 STALL items is excluded and listed.
