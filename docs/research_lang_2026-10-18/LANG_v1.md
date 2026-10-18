@@ -891,3 +891,41 @@ backward chase 0.30 / recompute 0.10 / one-pass at D 5–6 0.10, with P(VB-C1-L 
   are model extrapolations; G-L8 / G-L12 / G-EVMEM decide.
 
 *v1 written 2026-10-18 13:25–14:11 EDT (Opus design-revision subagent for Theory; $0; nothing committed, registered or launched).*
+
+---
+
+## Addendum 1 (2026-10-18 14:15 EDT; Audit's review of 664fc3dd, auto-approved under the user's $30 rule with these conditions, before registration)
+
+1. **B1 is the STRICT DECOMP variant.**
+   - The calculator-only sub-step value terms (~13.5 % of step targets: values computed on sub-expressions that appear nowhere in the CoT) are **masked** from B1's loss.
+   - Value-matched operand pointers are a deterministic parse of the CoT's own equations. They stay, disclosed as "CoT-derived annotations".
+   - Stage B wording: **"C4 via distillation from CoT, with CoT-parsed pointer annotations"**, never "C4 qualified".
+2. **CONSUMPTION-FRONT thresholds accepted as v1 states them:** window {j−1, j}, share ≥ 0.75, ρ ≥ 0.60.
+   - **Mixture calibration (Audit's Monte Carlo cf_mix_audit.py**, 150 reps, 100 pairs per cell; serial items with 50 % look-ahead, the remaining items precompute (t* 1) or recompute (t* D)):
+
+     | serial share | P(pass), flips 0.05 | P(pass), flips 0.10 |
+     |---|---|---|
+     | 1.0 | 1.00 | 1.00 |
+     | 0.9 | 0.99–1.00 | 0.00–0.007 |
+     | ≤ 0.8 | 0.00 | 0.00 |
+
+   - A 20 % one-pass lag gives P 1.00; a 40 % lag gives 0.13.
+   - So CF-L is conservative. Its pass wording is fixed: **"hop-indexed consumption on ≥ 0.75 of clean exposed pairs (calibrated: requires ≈ 0.9 item-level serial share)"**, never "the model is serial".
+   - In §6, P(pass | serial) is stated as **"pure (item-level) serial"**. P(VB-C1-L) gets a sensitivity row under item-level mixtures. The bars are not retuned.
+3. **CF precondition** (verified by Audit in code): vbank.rollout puts V0 into St[0] and into every pass's bank (kv / gk / NV include entry 0).
+   - The existing `v0=` argument swaps V0 for the whole rollout. CF needs a **new mid-rollout input switch** plus the rms0 reference.
+   - That hook is a named G-L13 diff-review item.
+4. **CF readout.** Clean share per (D, j) is reported at K′ = D beside K′ = D + 2 (descriptive), so the cost of the tight readout is visible.
+5. **PLANT** (PC 50 / 40–60) also reports the plant's ε relative to ‖V_t‖ (descriptive).
+6. **GSM8K exposure is base-item clustered:**
+   - (ii′) / (i) follow and own require **≥ 50 distinct base items, each with ≥ 1 clean pair per arm**.
+   - The rates are base-item-clustered means: variants are averaged within each base item first.
+   - **Cluster-bootstrap 95 % CIs** are reported. The ≥ 0.6 / ≤ 0.3 bars are read on the clustered means.
+   - The same cluster rule applies to CF-GSM (37 steps × 41 recipients).
+   - Fewer than 50 distinct items fails the reading (exposure rule).
+7. Confirmed defaults:
+   - the labeller tie rule (cost-only);
+   - **MEM-TRADED-L in any cell → the user's explicit OK for every later stage**;
+   - DIRECT-SYM ∥ A1 (P(empty band) ≈ 0.05 risks ≈ $3 of A1);
+   - DIRECT-SYM costs the same as A1.
+8. **Scorer and modules:** score_s218.py fixtures (incl. the two counter-models, precompute-and-carry and person-tracking serial, and the clustered GSM rule) and every module are diff-reviewed by Audit before any spend. Off-host mirrors for every cell over 8 h.
