@@ -18905,6 +18905,27 @@ score_s213.step_by_t reads **GRADUAL-DRIFT**, the same label as D3-T:
 
 Pause training did not change how in-trajectory step exactness decays with pass index. This is descriptive and changes no §214 reading.
 
+**Note 216-1 (2026-10-18 03:20 EDT; GATE-2 / GATE-1′ for s1, before the round-2 pool is used; s216_gate2_s1/eval_gate.json (3d768fb4), RTX 3070, fp32, bs 32, labeller s215_ftself_s1 on both windows; read with theory/score_s216.gate2 in-process, no results file written).**
+
+**G-S15 PASS: both windows are SELF-LABELLED (no fallback).** The scorer's recomputed decisions equal the file's GATE_2 / GATE_1p flags, and the pooled values match.
+
+| window | kept | π_pool (95 % CI) | π^E_pool (95 % CI) |
+|---|---|---|---|
+| W2, n 13–16 | 7,836 | **0.99974** (0.99907–0.99993) | **0.99962** (0.99887–0.99987) |
+| W1, n 9–12 | 7,991 | 0.99987 (0.99929–0.99998) | 0.99987 (0.99929–0.99998) |
+
+keep_kv by n:
+
+| n | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
+|---|---|---|---|---|---|---|---|---|
+| keep_kv | 1.000 | 1.000 | 0.999 | 0.9965 | 0.9965 | 0.991 | 0.9765 | 0.954 |
+
+- Every n is above the 0.70 bar. Every π_n ≥ 0.9995 (rule ≥ 0.99).
+- Kept-wrong records: n 9 (1, label and state), n 14 (1, both), n 15 (1, both), n 16 (1, state only).
+- Per-item records are stored (2,000 per n: i, n, keep, cv, label, gold, state_ok, first_bad_t). gs2_compose PASS for both windows.
+- For SD2-SELF's wording (v1 §5.1), the labels are gold-equivalent at π = 0.9997 (W2) / 0.9999 (W1).
+- The pool (444k, FT-SELF on both windows) is being built on the 3070. G-S17 and LABEL-AUDIT-2 follow.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
