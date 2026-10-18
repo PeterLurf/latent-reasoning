@@ -18730,6 +18730,26 @@ answer_ce at 1k blocks (§214 / D3-T):
 
 The evals (D4_v1 §6, plus eval_stepbyt via scratch/s214_post_stepbyt.sh, d3cfda24) wait for the 3070, which was lost at ~22:56 and needs a reboot (same-card rule). Nothing is scored before they land.
 
+**Note 214-5 (2026-10-17 23:30 EDT; a design oversight in §214, DISCLOSED before any eval output; it adds a second descriptive confound and changes no rule).**
+
+**What happened.** The curriculum gate (vbank.py CurGate, `cur_gate` unchanged from D3-T) advances a stage when the batch answer_ce stays < 0.30 for 2 bins, or at a cap of 8,000 steps per stage.
+- In §214 the gate also scored PAUSE-A steps. PAUSE-A uses one coin per step (vbank.py 737): about 0.49 of steps are full pause batches with a later answer window.
+- §215 excludes its self items from the gate (vbank.py 812, `is_self`). D4_v1 §2 lists `cur_gate` as "unchanged" and never asks what the gate reads. That is my omission.
+
+**Effect** (log.jsonl advance records):
+- §214 advanced to stage 1 (n ≤ 5) at 8,000 and to stage 2 (n ≤ 8) at 16,000. **Both advances were "cap 8000 steps"**, with bin_mean 0.317 / 0.303, so the 0.30 criterion was never met.
+- D3-T advanced on the criterion, at 6,000 and 9,000 (bin_mean 0.092 / 0.132).
+- So §214 reached its final training range **7k steps later** than D3-T. It had 32k steps at n ≤ 8, against D3-T's 39k.
+- Read with 214-4's entry (26k vs 11k): from stage 2 onward, §214 took ~10k steps to enter and D3-T ~2k.
+- log.jsonl carries no plain-only answer_ce (fields: answer_ce, rec_ce, loss, c, pause_item_frac, …). Plain-item entry therefore cannot be separated post hoc without checkpoints, and none were kept beyond the mirror (Audit's request, 23:4x).
+
+**Consequence (descriptive; no registered reading changes):**
+- Every §214 vs D3-T comparison carries **two confounds**: basin entry (26k vs 11k, CONFOUNDED by rule) and **curriculum timing** (stage 2 at 16k vs 9k).
+- The registered readings are per cell and comparator-free, and stand as written: D4-C2, LENGTH-FREE, VB-C1, K′24-STABLE, KEEPS-SELF-STAB, the FIN-K ladder.
+- The MOVED / ladder rungs are read against D3-T's stop, and will state both confounds beside them.
+- A §214 negative can't separate "pausing doesn't move the stop" from "less time at n ≤ 8 / later entry".
+- **Any D4 follow-up gates the curriculum on plain steps only**, as §215 does for self items, and logs plain-only answer_ce.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
