@@ -97,7 +97,7 @@ def g_l2(dev):
             for f_ in n_.body:
                 if isinstance(f_, ast.FunctionDef) and f_.decorator_list:
                     deco[n_.name + "." + f_.name] = [ast.unparse(d) for d in f_.decorator_list]
-    out["decorators"] = deco; out["decorators_ok"] = deco == {"cand_scores": ["torch.no_grad()"]}
+    out["decorators"] = deco; out["decorators_ok"] = deco == {"cand_scores": ["torch.no_grad()"], "LangSLVA.calibrate": ["torch.no_grad()"]}
     keys = ["R1", "R2_chg", "R2_unc", "dL_dbank_core_v0", "dL_dbank_core_v1plus", "dL_dbank_coda_v1plus", "dLans_dV1_sg"]
     out["pass"] = all(out[k_] is not None and out[k_] > 0 for k_ in keys) and out["decorators_ok"]; out["items"] = [(it["D"], len(it["ids"])) for it in items]
     out["pending"] = "A2 self batches (SOUND-ONLY R2) once boxes/langvb_label.self_item exists"
@@ -105,10 +105,13 @@ def g_l2(dev):
 
 
 def g_l7b(dev, n=2000, bs=8, cal_n=16):
-    """G-L7(b): plain_cand_ce at init (pretrained GPT-2, calibrated LangSLVA on cal_n items, c 1e4 = step 1's regime) on n plain items of A1's
-    first-stage law (D ~ U{3..4}, K = min(D + U{0..4}, 12); Stream 21140 / rng 21141, test + GATE signatures excluded): the registered statistic
-    (lvb_loss's batch plain_cand_ce, item-weighted) -> rule 0.693 +- 0.05. Diagnostics per item at t = D (the window start): cand_ce and
-    gap = sum log p("### o_R.") - sum log p("### o_P.")."""
+    """G-L7(b') (Note 218-1, 8f2a2fcb) at init (pretrained GPT-2, calibrated LangSLVA on cal_n items, c 1e4 = step 1's regime) on n plain items of
+    A1's first-stage law (D ~ U{3..4}, K = min(D + U{0..4}, 12); Stream 21140 / rng 21141, test + GATE signatures excluded):
+      (i) accuracy at t = D (gold string's summed log-prob > the other's) 0.50 +- 0.03;
+      (ii) mean plain_cand_ce (lvb_loss's window-mean per item, the CurGate statistic) >= ln 2 - 0.02;
+      (iii) per item, lvb_loss's cand_ce == mean over its window t in [D, K] of softplus(-g_t), g_t = sum log p("### o_R.") - sum log p("### o_P."),
+            recomputed independently (its own rollout; logits = h @ wte^T and the row alignment re-derived here, not dec_logprobs / cand_scores),
+            max |diff| <= 1e-5. The gap histogram (g at t = D) is reported."""
     import numpy as np_
     torch.manual_seed(0); m = LV.LangSLVA(s5.load_gpt2(dev)).to(dev); m.eval(); m.c_anneal.fill_(1e4); ac = lambda: torch.autocast("cuda", enabled=False)  # noqa: E731
     EX = LV.PS().exclusion_sigs(); s = LV.PS().Stream(21140, EX); rng = np_.random.default_rng(21141)
@@ -117,28 +120,86 @@ def g_l7b(dev, n=2000, bs=8, cal_n=16):
     with torch.no_grad():
         cal = m.calibrate(x_, p_, si_, sp_, dR_, l_)
     del x_, p_, l_, si_, sp_, dR_
-    bm, items = [], []
+    W = m.g.w("wte.weight")
+
+    def lp_sum(h, sp, dec):                                                 # independent: row before each decoder token; the last real slot for token 0
+        S = sp.shape[1]; out = []
+        for b in range(h.shape[0]):
+            last = int(sp[b].nonzero().max()); rows = [last] + [S + k for k in range(dec.shape[1] - 1)]
+            lp = torch.log_softmax((h[b, rows].float() @ W.float().T), -1)              # the model's dtype (fp32): a code check, not a precision one
+            out.append(float(sum(lp[k, int(dec[b, k])] for k in range(dec.shape[1]))))
+        return out
+    rows_out = []
     for i in range(0, n, bs):
         its = [LV.lvb_item(s.draw(int(D))) for D in rng.integers(3, 5, size=bs)]; Ks = [min(it["D"] + int(rng.integers(0, 5)), 12) for it in its]
         with torch.no_grad():
-            _, st, _ = LV.lvb_loss(m, its, Ks, dev, ac)
-        bm.append(st["plain_cand_ce"])
-        for D in (3, 4):
-            sub = [it for it in its if it["D"] == D]
-            if sub:
-                sR, sP = LV.cand_scores(m, sub, D, dev, ac); cc = -torch.log_softmax(torch.stack([sR, sP], 1), 1)[:, 0]
-                items += [{"D": D, "cand_ce_tD": float(c_), "gap": float(g_)} for c_, g_ in zip(cc, sR - sP)]
-    mean = float(np_.mean(bm)); gaps = np_.array([x["gap"] for x in items])
-    return {"plain_cand_ce_init": mean, "rule": "0.693 +- 0.05", "pass": abs(mean - 0.693) <= 0.05, "batch_means": bm, "n": n, "bs": bs, "cal_n": cal_n,
-            "cal_max_m99": cal["max_m99"], "gap_abs_mean": float(np_.abs(gaps).mean()), "gap_abs_median": float(np_.median(np_.abs(gaps))),
-            "share_gap_abs_gt_1": float((np_.abs(gaps) > 1).mean()), "acc_tD": float((gaps > 0).mean()), "items": items}
+            _, st, _ = LV.lvb_loss(m, its, Ks, dev, ac, keep=True)
+            x, pad, lens, si, sp, dR, dP = LV.lvb_batch(its, dev); Kb = max(Ks)
+            win = {t: torch.tensor([b for b, it in enumerate(its) if it["D"] <= t <= Ks[b]], device=dev) for t in range(1, Kb + 1)}
+            win = {t: r_ for t, r_ in win.items() if len(r_)}
+            r = m.rollout_ls(x, pad, si, sp, Kb, coda_rows=win, dec=dR, lens=lens); g_by = {b: {} for b in range(len(its))}
+            for t, (rw, hR) in r["coda"].items():
+                hP = m.coda_ls(t, r["V"][t][rw], {i_: [(k[rw], v[rw]) for k, v in r["kv"][i_]] for i_ in LV.CODA}, sp[rw], dP[rw], lens[rw])
+                for q, (a_, b_) in enumerate(zip(lp_sum(hR, sp[rw], dR[rw]), lp_sum(hP, sp[rw], dP[rw]))):
+                    g_by[int(rw[q])][t] = a_ - b_
+            del r
+        for b, it in enumerate(its):
+            gs = g_by[b]; ref = float(np_.mean([np_.logaddexp(0.0, -g_) for g_ in gs.values()]))
+            rows_out.append({"D": it["D"], "K": Ks[b], "cand_ce": st["cand_ce_items"][b], "cand_ce_indep": ref, "g_tD": gs[it["D"]]})
+    cc = np_.array([r_["cand_ce"] for r_ in rows_out]); ci = np_.array([r_["cand_ce_indep"] for r_ in rows_out]); g = np_.array([r_["g_tD"] for r_ in rows_out])
+    acc = float((g > 0).mean()); mean = float(cc.mean()); mx = float(np_.abs(cc - ci).max())
+    hist = np_.histogram(g, bins=[-1e9, -8, -4, -2, -1, -0.5, 0, 0.5, 1, 2, 4, 8, 1e9])[0].tolist()
+    res = {"i_acc_tD": acc, "i_pass": abs(acc - 0.5) <= 0.03, "ii_mean_plain_cand_ce": mean, "ii_pass": bool(mean >= np_.log(2) - 0.02),
+           "iii_max_abs_diff": mx, "iii_pass": mx <= 1e-5, "gap_hist_edges": [-8, -4, -2, -1, -0.5, 0, 0.5, 1, 2, 4, 8], "gap_hist": hist,
+           "gap_abs_mean": float(np_.abs(g).mean()), "gap_abs_median": float(np_.median(np_.abs(g))), "n": len(rows_out), "bs": bs, "cal_n": cal_n,
+           "cal_max_m99": cal["max_m99"], "items": rows_out, "rule": "Note 218-1 G-L7(b'): (i) 0.50 +- 0.03, (ii) >= ln 2 - 0.02, (iii) <= 1e-5"}
+    res["pass"] = res["i_pass"] and res["ii_pass"] and res["iii_pass"]
+    return res
+
+
+def g_l4b_hook(dev, n=64):
+    """G-L4b (hook half): LangSLVA.v0_switch on the first n CF pairs of prosqa_sym.cf_select over the test items D 4..8 (cells in sorted order), K' = D:
+    switch at t = 0 == x''s own run and switch at t = D == x's own run, bitwise (fp32): every stored version V_1..V_D and the coda after pass D.
+    Untrained LangSLVA (pretrained GPT-2, step-0 heads) with c = 0, so SLVA's s = 0 key / value (switched) is read with weight."""
+    import boxes.langvb_eval as LE
+    torch.manual_seed(0); m = LV.LangSLVA(s5.load_gpt2(dev)).to(dev); m.eval(); m.c_anneal.fill_(0.0)
+    TE = LV.PS().test_set(1000, range(4, 9)); raw = [it for D in range(4, 9) for it in TE[D]]; sel = LV.PS().cf_select(raw)
+    take = [list(sel[key]) for key in sorted(sel)]; picked = []            # n pairs spread over the cells: round-robin by cell
+    while len(picked) < n and any(take):
+        for lst in take:
+            if lst and len(picked) < n:
+                picked.append(lst.pop(0))
+    res = {"n": len(picked), "t0_equal": 0, "tD_equal": 0, "fail": []}
+    with torch.no_grad():
+        for i, r_ in picked:
+            it = raw[i]; D = it["D"]; R = [LE.ev(it)]; Dn = [LE.ev(r_["donor"])]
+            bR = LV.lvb_batch(R, dev); bD = LV.lvb_batch(Dn, dev); rows = torch.arange(1, device=dev)
+            full = {}
+            for nm, b in (("x", bR), ("xp", bD)):
+                x, pad, lens, si, sp, dR, dP = b; rr = m.rollout_ls(x, pad, si, sp, D, coda_rows={D: rows}, dec=dR, lens=lens); full[nm] = (rr["S"], rr["coda"][D][1])
+            H6sw = m.prelude(bD[0]); x, pad, lens, si, sp, dR, dP = bR
+            for t, ref, key in ((0, "xp", "t0_equal"), (D, "x", "tD_equal")):
+                m.v0_switch = (t, H6sw, None)
+                try:
+                    rs = m.rollout_ls(x, pad, si, sp, D, coda_rows={D: rows}, dec=dR, lens=lens)
+                finally:
+                    m.v0_switch = None
+                Sref, cref = full[ref]
+                eq = all(torch.equal(a_, b_) for a_, b_ in zip(rs["S"][1:], Sref[1:])) and torch.equal(rs["coda"][D][1], cref)
+                if eq:
+                    res[key] += 1
+                else:
+                    res["fail"].append({"i": i, "D": D, "j": r_["j"], "t": t})
+    res["pass"] = res["t0_equal"] == res["n"] and res["tD_equal"] == res["n"]
+    res["note"] = "the coda is question-free; at t = 0 every version-0 read is x''s (core bank entry 0, SLVA s = 0 key / value, the RMS reference)"
+    return res
 
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("--device", default="cpu"); ap.add_argument("--n", type=int, default=2000)
     a = ap.parse_args(); os.makedirs(OUT, exist_ok=True)
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
-    r = {"l1a": g_l1a, "l1b": g_l1b, "l2": g_l2, "l7b": lambda d: g_l7b(d, a.n)}[a.gate](a.device); r["device"] = a.device
+    r = {"l1a": g_l1a, "l1b": g_l1b, "l2": g_l2, "l7b": lambda d: g_l7b(d, a.n), "l4b_hook": lambda d: g_l4b_hook(d, 64)}[a.gate](a.device); r["device"] = a.device
     json.dump(r, open(os.path.join(OUT, "g_%s.json" % a.gate), "w", newline="\n"), indent=1); print(a.gate, "PASS" if r["pass"] else "FAIL", json.dumps(r)[:600], flush=True)
 
 
