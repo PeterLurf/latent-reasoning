@@ -1,0 +1,555 @@
+{
+ "spec": "LANG_v1 \u00a77 G-L4b (pair-maker part): CF donor maker on the 1,000 test items per D 4..8 (seed 22200); flip re-derived by layer expansion on x' parsed from text; T and first-mention slots from token byte offsets; exposure vs v1_cf.json (seed 24300) within +-5 points",
+ "checks": {
+  "flip_mismatch": 0,
+  "position_mismatch": 0,
+  "not_one_fact": 0,
+  "question_changed": 0,
+  "exposed_identity_fail": 0
+ },
+ "checks_pass": true,
+ "within_5_all_cells": true,
+ "within_5_decisive_cells": true,
+ "max_abs_diff_points": 4.6,
+ "cf_select_up_to_400_decisive": {
+  "4_3": 400,
+  "5_3": 400,
+  "5_4": 400,
+  "6_3": 400,
+  "6_4": 400,
+  "6_5": 400,
+  "7_3": 400,
+  "7_4": 400,
+  "7_5": 400,
+  "7_6": 400,
+  "8_3": 400,
+  "8_4": 393,
+  "8_5": 400,
+  "8_6": 400,
+  "8_7": 400
+ },
+ "by_D": {
+  "4": {
+   "1": {
+    "mine": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 566,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 571
+    },
+    "exposed_diff_points": -0.5,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "2": {
+    "mine": {
+     "n": 1000,
+     "flip": 810,
+     "exposed": 529,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 558
+    },
+    "exposed_diff_points": -2.9,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "3": {
+    "mine": {
+     "n": 1000,
+     "flip": 764,
+     "exposed": 568,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 780,
+     "exposed": 596
+    },
+    "exposed_diff_points": -2.8,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "4": {
+    "mine": {
+     "n": 1000,
+     "flip": 802,
+     "exposed": 472,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 821,
+     "exposed": 484
+    },
+    "exposed_diff_points": -1.2,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   }
+  },
+  "5": {
+   "1": {
+    "mine": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 559,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 554
+    },
+    "exposed_diff_points": 0.5,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "2": {
+    "mine": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 538,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 822,
+     "exposed": 539
+    },
+    "exposed_diff_points": -0.1,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "3": {
+    "mine": {
+     "n": 1000,
+     "flip": 734,
+     "exposed": 494,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 736,
+     "exposed": 490
+    },
+    "exposed_diff_points": 0.4,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "4": {
+    "mine": {
+     "n": 1000,
+     "flip": 762,
+     "exposed": 509,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 768,
+     "exposed": 516
+    },
+    "exposed_diff_points": -0.7,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "5": {
+    "mine": {
+     "n": 1000,
+     "flip": 824,
+     "exposed": 352,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 818,
+     "exposed": 336
+    },
+    "exposed_diff_points": 1.6,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   }
+  },
+  "6": {
+   "1": {
+    "mine": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 560,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 564
+    },
+    "exposed_diff_points": -0.4,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "2": {
+    "mine": {
+     "n": 1000,
+     "flip": 865,
+     "exposed": 486,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 843,
+     "exposed": 487
+    },
+    "exposed_diff_points": -0.1,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "3": {
+    "mine": {
+     "n": 1000,
+     "flip": 770,
+     "exposed": 522,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 743,
+     "exposed": 505
+    },
+    "exposed_diff_points": 1.7,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "4": {
+    "mine": {
+     "n": 1000,
+     "flip": 738,
+     "exposed": 483,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 719,
+     "exposed": 490
+    },
+    "exposed_diff_points": -0.7,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "5": {
+    "mine": {
+     "n": 1000,
+     "flip": 761,
+     "exposed": 509,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 718,
+     "exposed": 487
+    },
+    "exposed_diff_points": 2.2,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "6": {
+    "mine": {
+     "n": 1000,
+     "flip": 772,
+     "exposed": 310,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 802,
+     "exposed": 356
+    },
+    "exposed_diff_points": -4.6,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   }
+  },
+  "7": {
+   "1": {
+    "mine": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 548,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 578
+    },
+    "exposed_diff_points": -3.0,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "2": {
+    "mine": {
+     "n": 1000,
+     "flip": 837,
+     "exposed": 452,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 823,
+     "exposed": 473
+    },
+    "exposed_diff_points": -2.1,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "3": {
+    "mine": {
+     "n": 1000,
+     "flip": 740,
+     "exposed": 427,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 751,
+     "exposed": 422
+    },
+    "exposed_diff_points": 0.5,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "4": {
+    "mine": {
+     "n": 1000,
+     "flip": 731,
+     "exposed": 488,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 712,
+     "exposed": 486
+    },
+    "exposed_diff_points": 0.2,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "5": {
+    "mine": {
+     "n": 1000,
+     "flip": 716,
+     "exposed": 481,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 688,
+     "exposed": 437
+    },
+    "exposed_diff_points": 4.4,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "6": {
+    "mine": {
+     "n": 1000,
+     "flip": 739,
+     "exposed": 466,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 737,
+     "exposed": 482
+    },
+    "exposed_diff_points": -1.6,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "7": {
+    "mine": {
+     "n": 1000,
+     "flip": 799,
+     "exposed": 321,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 813,
+     "exposed": 327
+    },
+    "exposed_diff_points": -0.6,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   }
+  },
+  "8": {
+   "1": {
+    "mine": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 557,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 1000,
+     "exposed": 592
+    },
+    "exposed_diff_points": -3.5,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "2": {
+    "mine": {
+     "n": 1000,
+     "flip": 813,
+     "exposed": 465,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 834,
+     "exposed": 446
+    },
+    "exposed_diff_points": 1.9,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   },
+   "3": {
+    "mine": {
+     "n": 1000,
+     "flip": 711,
+     "exposed": 412,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 746,
+     "exposed": 424
+    },
+    "exposed_diff_points": -1.2,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "4": {
+    "mine": {
+     "n": 1000,
+     "flip": 694,
+     "exposed": 393,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 724,
+     "exposed": 386
+    },
+    "exposed_diff_points": 0.7,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "5": {
+    "mine": {
+     "n": 1000,
+     "flip": 707,
+     "exposed": 460,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 711,
+     "exposed": 471
+    },
+    "exposed_diff_points": -1.1,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "6": {
+    "mine": {
+     "n": 1000,
+     "flip": 726,
+     "exposed": 484,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 724,
+     "exposed": 489
+    },
+    "exposed_diff_points": -0.5,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "7": {
+    "mine": {
+     "n": 1000,
+     "flip": 750,
+     "exposed": 493,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 725,
+     "exposed": 486
+    },
+    "exposed_diff_points": 0.7,
+    "within_5": true,
+    "decisive": true,
+    "se_diff_points": 2.2
+   },
+   "8": {
+    "mine": {
+     "n": 1000,
+     "flip": 820,
+     "exposed": 351,
+     "none": 0
+    },
+    "v1_cf": {
+     "n": 1000,
+     "flip": 812,
+     "exposed": 348
+    },
+    "exposed_diff_points": 0.3,
+    "within_5": true,
+    "decisive": false,
+    "se_diff_points": 2.2
+   }
+  }
+ },
+ "pass": true,
+ "note": "the version-0 switch hook part of G-L4b is model-side and not run here; exact replication of v1_cf.json at its own seed is in parity.json"
+}

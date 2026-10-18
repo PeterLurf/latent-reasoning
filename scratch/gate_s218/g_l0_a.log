@@ -1,0 +1,30 @@
+train D 3 inv 0 0 gated 0.5539 first PA 0.5100 L0 0.5076 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 432.33, 'p95': 510, 'max': 588, 'min': 268} 10s
+train D 4 inv 0 0 gated 0.5422 la1 PA 0.5112 L0 0.5048 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 482.99, 'p95': 570, 'max': 692, 'min': 314} 20s
+train D 5 inv 0 0 gated 0.5485 la1 PA 0.5105 L0 0.5120 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 480.87, 'p95': 576, 'max': 672, 'min': 318} 31s
+train D 6 inv 0 0 gated 0.5509 first PA 0.5136 L0 0.5036 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 532.03, 'p95': 634, 'max': 778, 'min': 346} 43s
+train D 7 inv 0 0 gated 0.5503 la1 PA 0.5118 L0 0.5024 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 583.03, 'p95': 696, 'max': 854, 'min': 382} 55s
+train D 8 inv 0 0 gated 0.5554 la1 PA 0.5170 L0 0.5054 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 632.58, 'p95': 748, 'max': 900, 'min': 434} 68s
+train D 9 inv 0 0 gated 0.5453 random PA 0.5144 L0 0.5062 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 613.2, 'p95': 678, 'max': 744, 'min': 436} 81s
+train D 10 inv 0 0 gated 0.5476 random PA 0.5176 L0 0.5066 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 650.41, 'p95': 712, 'max': 774, 'min': 468} 96s
+train D 11 inv 0 0 gated 0.5474 random PA 0.5160 L0 0.5072 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 685.67, 'p95': 746, 'max': 806, 'min': 520} 111s
+train D 12 inv 0 0 gated 0.5463 la1 PA 0.5128 L0 0.5088 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 721.83, 'p95': 782, 'max': 862, 'min': 560} 127s
+train D 13 inv 0 0 gated 0.5476 first PA 0.5164 L0 0.5054 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 758.06, 'p95': 816, 'max': 892, 'min': 608} 142s
+train D 14 inv 0 0 gated 0.5474 first PA 0.5156 L0 0.5056 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 791.49, 'p95': 848, 'max': 908, 'min': 644} 158s
+train D 15 inv 0 0 gated 0.5479 first PA 0.5154 L0 0.5098 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 825.78, 'p95': 884, 'max': 946, 'min': 660} 175s
+train D 16 inv 0 0 gated 0.5454 random PA 0.5190 L0 0.5046 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 861.13, 'p95': 920, 'max': 966, 'min': 724} 199s
+wrote g_l0_train.json
+pool D 3 inv 0 0 gated 0.5533 first PA 0.5098 L0 0.5072 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 434.55, 'p95': 516, 'max': 610, 'min': 290} 15s
+pool D 4 inv 0 0 gated 0.5429 la1 PA 0.5076 L0 0.5054 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 483.78, 'p95': 570, 'max': 722, 'min': 334} 29s
+pool D 5 inv 0 0 gated 0.5492 la1 PA 0.5110 L0 0.5078 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 481.14, 'p95': 576, 'max': 702, 'min': 300} 39s
+pool D 6 inv 0 0 gated 0.5536 random PA 0.5114 L0 0.5070 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 531.13, 'p95': 632, 'max': 816, 'min': 342} 51s
+pool D 7 inv 0 0 gated 0.5549 la1 PA 0.5145 L0 0.5062 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 582.67, 'p95': 694, 'max': 812, 'min': 380} 66s
+pool D 8 inv 0 0 gated 0.5541 random PA 0.5186 L0 0.5070 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 632.59, 'p95': 748, 'max': 868, 'min': 404} 83s
+pool D 9 inv 0 0 gated 0.5490 first PA 0.5140 L0 0.5128 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 613.5, 'p95': 676, 'max': 754, 'min': 466} 96s
+pool D 10 inv 0 0 gated 0.5454 la1 PA 0.5138 L0 0.5106 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 650.5, 'p95': 712, 'max': 774, 'min': 496} 108s
+pool D 11 inv 0 0 gated 0.5445 la1 PA 0.5166 L0 0.5080 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 685.1, 'p95': 746, 'max': 804, 'min': 522} 122s
+pool D 12 inv 0 0 gated 0.5441 first PA 0.5142 L0 0.5138 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 722.23, 'p95': 782, 'max': 842, 'min': 568} 136s
+pool D 13 inv 0 0 gated 0.5442 first PA 0.5140 L0 0.5096 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 756.5, 'p95': 816, 'max': 882, 'min': 590} 151s
+pool D 14 inv 0 0 gated 0.5455 la1 PA 0.5246 L0 0.5052 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 791.19, 'p95': 850, 'max': 916, 'min': 630} 165s
+pool D 15 inv 0 0 gated 0.5464 first PA 0.5144 L0 0.5042 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 825.77, 'p95': 886, 'max': 946, 'min': 666} 180s
+pool D 16 inv 0 0 gated 0.5471 random PA 0.5156 L0 0.5051 ub!=.5 0 ud!=1 0 beyond 0 T {'mean': 860.15, 'p95': 920, 'max': 984, 'min': 716} 196s
+wrote g_l0_pool.json
