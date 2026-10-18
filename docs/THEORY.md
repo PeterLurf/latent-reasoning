@@ -19219,6 +19219,33 @@ Two further corrections:
 - p8_na also fails the panel at depth 3 (option-level parents' in-degree 0.63–0.65).
 - The double-neutralised regeneration's anchor residual is ≈ 0.63 on 3-step bases and ≈ 0.58 on 4-step bases (n ≈ 7k per band), not "0.61–0.67 in every band".
 
+**Note 191-4 (2026-10-18 13:19 EDT; A0-1 pre-registered, $0, eval-only, descriptive; before any output; Audit's / Experiments' suggestion to use the idle RTX 2070).** ANCHOR-CUE-CONTRIBUTION of the kept §191 models.
+
+**Models:**
+- s191_stepaux_relabel_s1 (A; acc 0.9499 on n 4,053);
+- s191_textcot_relabel_s1 (B; acc 0.9381).
+
+**Items:** §191's own test set (data `na`, p8_na_test, 4,053 items, file order). Per-item outputs (file index, depth, ext m, predicted option, correct) are stored in <run>/eval_a01.json.
+
+**Card.** The local RTX 2070, fp32 (it has no bf16), at §191's eval_bs 16 and think_k.
+- The originals are bf16 on a 3090, so the run cannot be bitwise.
+- **Gate:** |acc_by_depth(fp32, 2070) − committed eval.json acc_by_depth| ≤ 0.02 at every depth with ≥ 100 items. Otherwise UNREADABLE (reported).
+- All A0-1 contrasts are **within** the 2070 run.
+
+**Strata** (docs/research_lang_2026-10-18/scripts/anticue.py, unchanged): items with m = ext ≥ 2. The anchor-level §57 proximity cue (heur_panel.anchors / panel_for) reads 1.0 → **pro**, 0.0 → **anti**, 0.5 → **tie**. At depth ≥ 5: pro 2,630 / tie 511 / anti 78.
+
+**Readings per model** (pooled over depth ≥ 5; also per depth band):
+- acc(pro), acc(tie), acc(anti), with Wilson CIs. anti has only 78 items (SE ≈ 0.05), so it is descriptive.
+- **CUE-RELIANT** iff acc(tie) ≤ acc(pro) − 0.15 ∧ acc(tie) ≤ 0.75 (LANG_draft §8's pre-statement).
+- **CONTRIBUTION** = acc(pro) − acc(tie), reported with its CI.
+- Per 191-3, the cue cannot be §191's whole mechanism. A0-1 measures how much it contributes. **No registered §191 reading changes.**
+
+**OC.**
+- If the model ignores the cue, acc(pro) ≈ acc(tie). Then P(CUE-RELIANT) ≈ 0, since at A's 0.95 accuracy a 0.15 gap is about 9 SE on 511 tie items.
+- If the model uses the cue at depth ≥ 6 to break uncertain cases, acc(tie) drops toward its non-cue accuracy.
+
+**Cost $0.** About 10–20 min per model on the 2070. Scored by Theory with a short script that reads eval_a01.json + anticue's strata; Audit reproduces.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
