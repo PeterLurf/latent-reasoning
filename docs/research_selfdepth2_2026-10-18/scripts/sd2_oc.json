@@ -1,0 +1,101 @@
+{
+ "pre_stated_shift": {
+  "priors": {
+   "H_grow": 0.375,
+   "H_shift": 0.5416666666666667,
+   "H_full": 0.025,
+   "SHRINK": 0.058333333333333334
+  },
+  "kept": 0.53865,
+  "P_SD2_SELF": 0.40398749999999994,
+  "P_DBS_given_ABSORB": 0.2758333333333333,
+  "P_MG": 0.2703125,
+  "P_KB": 0.16375,
+  "P_DBS": 0.20687499999999998,
+  "P_SD2_C2": 0.11143321874999998,
+  "P_SD2_C2_MEM": 0.027858304687499995,
+  "P_SD2_C2_given": {
+   "H_grow": 0.24239249999999996,
+   "H_shift": 0.020199375,
+   "H_full": 0.3837881249999999,
+   "SHRINK": 0.0
+  },
+  "P_C2_both_lineages_indep": 0.025936137633164057,
+  "P_C2_both_lineages_corr": 0.05457029484374999
+ },
+ "sens_no_shift": {
+  "priors": {
+   "H_grow": 0.25,
+   "H_shift": 0.65,
+   "H_full": 0.03,
+   "SHRINK": 0.07
+  },
+  "kept": 0.53865,
+  "P_SD2_SELF": 0.40398749999999994,
+  "P_DBS_given_ABSORB": 0.211,
+  "P_MG": 0.21187499999999998,
+  "P_KB": 0.129,
+  "P_DBS": 0.15825,
+  "P_SD2_C2": 0.08524136249999999,
+  "P_SD2_C2_MEM": 0.021310340624999997,
+  "P_SD2_C2_given": {
+   "H_grow": 0.24239249999999996,
+   "H_shift": 0.020199375,
+   "H_full": 0.3837881249999999,
+   "SHRINK": 0.0
+  },
+  "P_C2_both_lineages_indep": 0.01937254034854687,
+  "P_C2_both_lineages_corr": 0.040760318812499995
+ },
+ "sens_Hgrow_0.5": {
+  "priors": {
+   "H_grow": 0.5,
+   "H_shift": 0.43333333333333335,
+   "H_full": 0.02,
+   "SHRINK": 0.04666666666666667
+  },
+  "kept": 0.53865,
+  "P_SD2_SELF": 0.40398749999999994,
+  "P_DBS_given_ABSORB": 0.3406666666666667,
+  "P_MG": 0.32875,
+  "P_KB": 0.1985,
+  "P_DBS": 0.2555,
+  "P_SD2_C2": 0.13762507499999999,
+  "P_SD2_C2_MEM": 0.034406268749999996,
+  "P_SD2_C2_given": {
+   "H_grow": 0.24239249999999996,
+   "H_shift": 0.020199375,
+   "H_full": 0.3837881249999999,
+   "SHRINK": 0.0
+  },
+  "P_C2_both_lineages_indep": 0.03249973491778124,
+  "P_C2_both_lineages_corr": 0.06838027087499998
+ },
+ "assumed": {
+  "P_DBS": {
+   "H_shift": 0.05,
+   "H_grow": 0.6,
+   "H_full": 0.95,
+   "SHRINK": 0.0
+  },
+  "P_MG": {
+   "H_shift": 0.1,
+   "H_grow": 0.75,
+   "H_full": 1.0,
+   "SHRINK": 0.0
+  },
+  "P_KB": {
+   "H_shift": 0.05,
+   "H_grow": 0.45,
+   "H_full": 0.9,
+   "SHRINK": 0.0
+  },
+  "P_ABSORB2": 0.75,
+  "LENGTH_FREE": 0.9,
+  "VB_C1": 0.9,
+  "K24": 0.7,
+  "RETAIN": 0.95,
+  "KEEPS_SELF_STAB2": 0.25,
+  "second_lineage_correlation_factor": 0.85
+ }
+}
