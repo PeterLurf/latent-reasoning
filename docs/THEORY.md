@@ -304,7 +304,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **CLOSED 10-18: not D4-C2 (DEPTH 0.729 vs D3-T 0.480); ladder KEPT (L0, gain after K'10 0.079); START-D GATED-COUNT; KEEPS-SELF-STAB (0.719); entry 26k + CurGate CONFOUNDED (214-4/214-5); ~$2.62 / $4.50** |
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **CLOSED 10-18: FT-SELF SD-SELF (in support; not C2), GROW (M 0.717, STOP 15, K'-BEYOND 0.155); pair SELF-ATTRIBUTED (CTRL gain -0.021, D3-T level), MEM-TRADED by the self items (STAB_self 0.782 -> CTRL 0.696 -> SELF 0.489; weakened, not lost); ~$1.07 / $1.50; round 2 = SD2 (proposed §216) needs the user's explicit OK** |
 | 216 | SELF-DEPTH-CHAIN round 2 (SD2; user-approved 01:31 10-18, "Approve (Recommended)"; family cap $6.50): s216_r2_s1 from FT-SELF on its own chain (2/3 n 13-16, 1/3 n 9-12) + lineage s2 (D3-T seed 2 -> R1 -> R2); SD2-SELF / SD2-C2 (DBS-2 n 17-20 >= 0.80, eval_deep) / LIT-C2-2 / SD2-C2-MEM / x2; SD2_v1.md at e9ade2ec; scorer score_s216 (to write) | registered | **gates + Audit G-S13 diff review; not launched** |
-| 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **part causal_deep to build (Experiments) + Audit review; not run** |
+| 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **CLOSED 10-18: CAUSAL-PRESERVED in both lineages (s1 FT-SELF 9-13 / R2 9-18; s2 base {9} / R1 9-13; follow_ii 1.000, STALL >= 0.99, gates 0.000); depth bought without eroding causal slot use; $0** |
 | 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **code + gates + Audit diff review; not launched** |
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **code + gates + Audit diff review; not launched** |
 
@@ -19566,6 +19566,23 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - The environment fields captured on the local `--args_only` machine are **META** and will differ on the 3090 host: train_gpu "RTX 4060", train_driver, torch / cuda / cudnn / python versions, image_tag. All are in score_s218's META (= score_s213.META). So are micro / auto_micro / mem_budget / ckpt_every; the host's chosen micro goes to auto_micro.json and the launch log.
 - **`arch` is in score_s213.META** (a derived class name in vbank), but in langvb it is the architecture choice. FROZEN_ARGS therefore **requires arch == the frozen value** (lslva / direct) and arch_class == LangSLVA / GPT2KV as required values, so an architecture swap cannot pass as META.
 - **The off-host mirror every 2k is in the runner, not an args key.** It is checked by G-L10 (full-state mirror sha-checked after the first copy, plus a tested resume) and confirmed in each launch log.
+
+**§217 result and close (2026-10-18 16:54 EDT; all five eval_causal_deep.json files: D3-T s1, FT-SELF, R2-s1, FT-CTRL, D3-T s2, R1-s2 (24a6aaa1); local RTX 4060, fp32, bs 16; every 4060 n 4–8 gate at |Δ| 0.000 vs the 3070; theory/score_s217.py. $0.)**
+
+**Labels:**
+- **s1: CAUSAL-PRESERVED** over FT-SELF (band n 9–13) and R2-s1 (band n 9–18), as in the §217 s1 result.
+- **s2: CAUSAL-PRESERVED over D3-T s2 (band {9}) and R1-s2 (band n 9–13).**
+  - Both read follow_ii 1.000 / own 0.000; STALL 0.991 / 1.000.
+  - The s2 lineage stopped at round 1 (216-8), so R2-s2 does not exist. The s2 reading covers base → round 1 only.
+  - R1-s2's §216 censor (FT-DIVERGED, on a_24 at n 1) is a §216 reading. §217's eval-only reading stands on its own gate (217-3).
+- FT-CTRL and D3-T s1 are NOT-APPLICABLE: their competent bands are empty.
+
+**Wording (217-3):** *"causal use of the slot at the new depths is preserved through self-training (s1: round 1 → round 2, overlap n 9–13, R2 also at n 14–18; s2: base → round 1 at n 9), and at the old depths n 4–8 from the base through every round"*. This is a C1 statement at the new depths, never C2 or C4.
+
+**L2's answer:**
+- Self-training extended depth **without eroding causal slot use**: VALUE-SWAP follow 1.000, STALL ≥ 0.99, in every competent band of every round of both lineages.
+- What it traded was the memory channel's self-stabilisation (MEM-TRADED, §216) and, in s2, small-n K′24 stability (216-8). It was not the latents' causal role.
+- **§217 is closed.**
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
