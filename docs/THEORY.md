@@ -303,6 +303,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
 | 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **cap raised to $4.50 by the user 12:34 (214-3; forced G-TIME $4.08 admits; realistic ~$2.6-3.0); relaunch pending** |
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **CLOSED 10-18: FT-SELF SD-SELF (in support; not C2), GROW (M 0.717, STOP 15, K'-BEYOND 0.155); pair SELF-ATTRIBUTED (CTRL gain -0.021, D3-T level), MEM-TRADED by the self items (STAB_self 0.782 -> CTRL 0.696 -> SELF 0.489; weakened, not lost); ~$1.07 / $1.50; round 2 = SD2 (proposed §216) needs the user's explicit OK** |
+| 216 | SELF-DEPTH-CHAIN round 2 (SD2; user-approved 01:31 10-18, "Approve (Recommended)"; family cap $6.50): s216_r2_s1 from FT-SELF on its own chain (2/3 n 13-16, 1/3 n 9-12) + lineage s2 (D3-T seed 2 -> R1 -> R2); SD2-SELF / SD2-C2 (DBS-2 n 17-20 >= 0.80, eval_deep) / LIT-C2-2 / SD2-C2-MEM / x2; SD2_v1.md at e9ade2ec; scorer score_s216 (to write) | registered | **gates + Audit G-S13 diff review; not launched** |
 
 ## Live sections
 
@@ -18618,6 +18619,57 @@ Entry is at 11k (answer_ce), the same as N1.
 - **Admission:** a cell launches only if its G-TIME projection is ≤ $0.95 (FT-SELF) / $0.40 (FT-CTRL). Otherwise there is no launch on that host, with at most 2 more hosts per cell; **steps are never reduced**.
 - **In-flight guards:** $1.05 / $0.45.
 - Labelling and evals are local ($0). Round 2 is not registered and not funded.
+
+## 216. SELF-DEPTH-CHAIN round 2 (SD2): the round-1 model's own chain at n 13–16, plus a second lineage from a fresh D3-T seed-2 base (USER APPROVED 2026-10-18 01:31 EDT: the user selected "Approve (Recommended)" in Audit's session, relayed by Audit = round 2 + the second lineage, family cap $6.50, projected $2.90–5.00. The user saw the memory cost (STAB_self 0.782 → 0.489 from the self items, FT-CTRL 0.696; P(keeps ≥ 0.5) ≈ 0.20) and the odds (in-support 16 ≈ 0.26; n 17–20 ≥ 0.80 ≈ 0.07, 0.03 under no growth; both lineages ≈ 0.005). Required by SELFDEPTH_v1 §9's MEM-TRADED rule, whatever the cap. Pre-registered 2026-10-18 01:32 EDT, before any SD2 pool, gate, trainer, scorer or eval output)
+
+**Registered text.**
+- docs/research_selfdepth2_2026-10-18/SD2_v1.md **at e9ade2ec** (v1 + Addendum 1, the eval-card fallback) is the registered text for every definition, rule, bar, formula and label. That file is now frozen.
+- Reviews: SD2_draft.md, REDTEAM_SD2.md (2 blockers, 7 majors), PROOFS_SD2.md (25 PASS / 19 CORRECTED / 2 FAIL). Every finding is resolved in v1 §1.
+- **Derivation** (math-backing rule): v1 §3 (S0 support identity at B 16; S1 under the D10 law, P(R | t ≥ 13) = 1/2 exact; S2 noise in the first compounding round; S4 hypothesis panels; memory / time / eval memory).
+- **Scorer:** theory/score_s216.py, to write and fixture-check before any output (G-S12, v1 §4.6). It returns pending when any registered file is missing (the 215-7 rule).
+- **Pair dependence:** the §215 pair read SELF-ATTRIBUTED with MEM "traded by the self items" (a51f4cff). v1 §2.5's row for that result applies; no number moves.
+
+**Cells** (RTX 3090 only, one class; off-host mirrors, drain waiters and guards at launch):
+- **s216_r2_s1:** FT from s215_ftself_s1/model.pt.
+  - Recipe: FT-SELF's args.json with only init_from, self_pool, `--self_kmax 20`, self_micro (G-S9; projected 4) and out changed. 12k steps, lr 3e-5, seed 1.
+  - The plain stream repeats round 1's exactly (disclosed, G-S3 identity).
+  - Self items: **⅔ n 13–16 / ⅓ n 9–12**, by pool composition (74,000 / 37,000 records per n). They are fresh, labelled by FT-SELF's re-rooted chain (KEEP ∧ CV), and gated by GATE-2 / GATE-1′ (GATE-1's rule). Pre-stated fallback per window: D3-T.
+- **Second lineage:** s216_d3t_s2 (D3-T args, seed 2, 48k) → GATE-1-s2 + pool → s216_r1_s2 (round 1 as §215 FT-SELF) → GATE-2-s2 + pool → s216_r2_s2.
+  - Bars come by the §4.3 formulas from that lineage's own curves.
+  - COMPETENT-BASE = the 48k run completed ∧ acc_n2 ≥ 0.99 ∧ a_24 ≥ 0.97 at n 1–8. Any later s2 failure fails the ×2 row.
+- No R2-CTRL.
+
+**Claims** (v1 §5.1):
+- **SD2-SELF** = ABSORB-2 (min n 13–16 ≥ 0.95) ∧ RETAIN (min n 9–12 ≥ 0.99) ∧ LENGTH-FREE ∧ VB-C1 ∧ K′24-STABLE. In support; never C2 or C4.
+- **SD2-C2** = SD2-SELF ∧ **DBS-2** (mean n 17–20 ≥ 0.80, from eval_deep). Worded as a test of **renewed margin growth vs H_shift**, not of H_prop.
+- **LIT-C2-2** (mean n 22–24 [a − a_20] ≥ 0.10) is the literal-C2 row, on the same line.
+- **SD2-C2-MEM** = SD2-C2 ∧ KEEPS-SELF-STAB-2. MEM-TRADED-2 and the MEM history are stated beside any positive.
+- **×2** = SD2-C2 in both lineages.
+- Mechanism: FULL / GROW / SHIFT / MIXED / SHRINK. Descriptive: WIDTH-2, n50, STOP-LOC-2, K′-BEYOND-2, BS-CHECK, NOT-SIZE-KEYED-2.
+
+**Eval contract** (local fp32, the 3070; v1 §4):
+- §215's files, with eval_selfdepth round-parameterised and **eval_hist24 storing per-item outputs (E4)**.
+- **eval_deep.json:** n 13–24 of test_set(1000, n_max 24), K′ 0..28, eval_bs 16 (G-S16), per-item answers at every K′, items_sha256.
+- **Every reading touching n ≥ 17 takes all its values from eval_deep.**
+- Baselines (eval_deep on FT-SELF, required; D3-T s1 / FT-CTRL optional) are read only after s216_r2_s1 has launched.
+- **Card fallback (Addendum 1):** if the 3070 is lost and recovers, the parts re-run on it. If not, all registered evals of both lineages move together to the local RTX 4060, with reference re-evals first and the bars recomputed there.
+
+**OC** (v1 §6; one lineage per cell; priors [ASSUMED], red-team shaded):
+- **P(SD2-C2) ≈ 0.067** (0.046–0.099); **P(SD2-C2 | no effect = H_shift) ≈ 0.031** (lineage noise σ 0.06–0.12); | H_grow 0.14; | H_full 0.24.
+- P(SD2-SELF) ≈ 0.26; LIT-C2-2 with SD2-SELF ≈ 0.010; **×2 ≈ 0.005**.
+- A positive is moderate evidence for growth; a null is weak against it. The main product is SD2-SELF plus one mechanism instance.
+
+**Censoring (rule b, v1 §5.2):**
+- dead, FT-DIVERGED, LABEL-NOISY-2, CONTAMINATED and ARGS-DIFF each fail every reading of the cell.
+- eval_deep missing or items_sha256 mismatch fails every n ≥ 17 reading.
+- Never-crossed n50 reads "> 24", never missing.
+- Both labellers failing GATE-2 means no round 2.
+
+**Gates before spend** (v1 §7): G-S0 … G-S18, including G-S16 EVMEM and G-S17 SMOKE-AT-SCALE, plus **Audit's G-S13 diff review** of the builder, gate script, part_deep, the part_selfdepth / chainlabel_fresh / hist24 edits and T1 (micro 8).
+
+**Cost.**
+- Projected $0.69–1.27 per R2 cell (admission ≤ $1.45, guard $1.70). Family projected $2.9–5.0; **family cap $6.50** (GUARD_STOP; the per-cell guards sum to $6.45).
+- Realised at registration: $0. Round 1 realised ≈ $1.07.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
