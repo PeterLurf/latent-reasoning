@@ -305,7 +305,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **CLOSED 10-18: FT-SELF SD-SELF (in support; not C2), GROW (M 0.717, STOP 15, K'-BEYOND 0.155); pair SELF-ATTRIBUTED (CTRL gain -0.021, D3-T level), MEM-TRADED by the self items (STAB_self 0.782 -> CTRL 0.696 -> SELF 0.489; weakened, not lost); ~$1.07 / $1.50; round 2 = SD2 (proposed §216) needs the user's explicit OK** |
 | 216 | SELF-DEPTH-CHAIN round 2 (SD2; user-approved 01:31 10-18, "Approve (Recommended)"; family cap $6.50): s216_r2_s1 from FT-SELF on its own chain (2/3 n 13-16, 1/3 n 9-12) + lineage s2 (D3-T seed 2 -> R1 -> R2); SD2-SELF / SD2-C2 (DBS-2 n 17-20 >= 0.80, eval_deep) / LIT-C2-2 / SD2-C2-MEM / x2; SD2_v1.md at e9ade2ec; scorer score_s216 (to write) | registered | **gates + Audit G-S13 diff review; not launched** |
 | 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **CLOSED 10-18: CAUSAL-PRESERVED in both lineages (s1 FT-SELF 9-13 / R2 9-18; s2 base {9} / R1 9-13; follow_ii 1.000, STALL >= 0.99, gates 0.000); depth bought without eroding causal slot use; $0** |
-| 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **code + gates + Audit diff review; not launched** |
+| 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **Stage A LAUNCHED 10-18 (A1 + DIRECT-SYM, 3090; all gates green; 218-13)** |
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **code + gates + Audit diff review; not launched** |
 
 ## Live sections
@@ -19626,6 +19626,16 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - **(2) New T2 provenance check.** T2's init_from.json sha, pool_meta.windows[*].labeller_sha256 for self-labelled windows, and eval_gate.labeller_sha256 must all equal T1's eval_text meta.model_sha256. BASE-LABELLED windows must equal BASE_SHA (s170_cot_s1). Any mismatch → CONTAMINATED / VOID for T2.
 - **(3) G-T10 uses the deepest-n self items, as §7 registers ("deep self").** The forced self shape is the 64 longest records of the round's deepest n (T1 n 12, T2 n 16), at the round's self K, interleaved with plain. Pool-order items could under-project, and an admitted host could then hit its guard (a dead run).
 - **(4) The BF16-VS-FP32 row (descriptive) states that batch composition also differs:** nested170.cot_answers batches across n, while text_eval batches equal prompt lengths within n. Its Δ is not a pure dtype effect.
+
+**Note 218-13 (2026-10-18 18:23 EDT; §218 Stage A launch GO).**
+- **G-L7(b′)(iii) PASS:** on the RTX 4060 in pure float64, max |diff| = **2.842e-14** over 2,000 items (7ee60aca), against the 1e-9 bar. Audit checked that dec_logprobs keeps float64 through log_softmax.
+  - Per 218-12, the CPU fp64 run must also pass when it completes. A failure would stop the cells under their guards.
+- All other pre-launch gates are green and Audit-reviewed: G-L0–L21, G-L1c OVERFIT-256, G-L17 end-to-end in smoke mode, G-EVMEM.
+- **Audit gave the GO for A1 (`lvb_sym_s1`) + DIRECT-SYM (`lvb_direct_s1`)**:
+  - auto-approved under the user's $30 rule, family cap $25;
+  - RTX 3090 at the frozen args refs (218-9), G-L12 admission per host, off-host mirrors, drain waiters, GUARD_STOP;
+  - progress pings at 8k / 16k (218-8).
+- Projected ≈ $5.6 for the pair. Scorer of record: score_s218 at 9bb92050.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
