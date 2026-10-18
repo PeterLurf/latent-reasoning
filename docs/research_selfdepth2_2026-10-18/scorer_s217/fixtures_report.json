@@ -1,0 +1,38 @@
+{
+ "bands_and_preserved": {
+  "pass": true,
+  "detail": "CAUSAL-PRESERVED over ['s215_ftself_s1', 's216_r2_s1']"
+ },
+ "eroded_swap_own_stall_and_min_n": {
+  "pass": true,
+  "detail": [
+   "swap",
+   "own",
+   "stall",
+   "one n 0.89"
+  ]
+ },
+ "gate_fail_unreadable": {
+  "pass": true,
+  "detail": "ok"
+ },
+ "thin_excluded_and_no_deep": {
+  "pass": true,
+  "detail": "ok"
+ },
+ "pending_and_card": {
+  "pass": true,
+  "detail": "ok"
+ },
+ "absent_models_so_far": {
+  "pass": true,
+  "detail": "ok"
+ },
+ "real_tree_no_crash": {
+  "pass": true,
+  "detail": {
+   "s1": "pending (['s213_d3t_s1', 's215_ftself_s1', 's216_r2_s1'])",
+   "s2": "pending (['s216_d3t_s2', 's216_r1_s2'])"
+  }
+ }
+}
