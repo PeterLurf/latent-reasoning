@@ -1,0 +1,16 @@
+{
+ "resume_equal_301_400": false,
+ "control_equal_1_400": false,
+ "first_diff_AB": [
+  301,
+  302,
+  303,
+  304,
+  305
+ ],
+ "n_A": 400,
+ "n_B": 400,
+ "n_C": 400,
+ "pass": false,
+ "note": "B = stop at 300 (ckpt_last.pt incl. model / opt / np rngs / torch rng / stream band rngs / CurGate) + resume; C = an uninterrupted re-run"
+}

@@ -1,0 +1,6 @@
+# THEORY §218 LANG-VB DIRECT-SYM lvb_direct_s1 (registered f10546be; LANG_v1.md at 83f2dea4 §2.6; Notes 218-1..8; family cap $25). Plain GPT-2 small on [ids | "### o_R."], A1's stream law and CurGate; 24,000 x bs 64; frozen args scratch/s218_args_ref_direct.json (sha f4947038). RTX 3090 via scratch/s218_fill.sh: HOSTPROBE, line 1 = G-L8 mem_check, line 2 = G-L12 G-TIME -> admission <= $3.60; line 3 = the cell (ckpt every 1k; mirror every ~2k; guard $3.90 GUARD_STOP). Eval local fp32 4060 (langvb_eval --parts panel,direct,contamination).
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/lvb_direct_s1_mem boxes.langvb --arch direct --steps 24000 --mem_check --auto_micro
+boxes/runs_fsq/lvb_direct_s1_gtime boxes.langvb --arch direct --steps 24000 --time_steps 300 --time_warmup 20 --auto_micro
+boxes/runs_fsq/lvb_direct_s1 boxes.langvb --arch direct --steps 24000 --auto_micro --ckpt_every 1000 --args_ref scratch/s218_args_ref_direct.json

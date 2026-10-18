@@ -1,0 +1,6 @@
+# THEORY §218 LANG-VB A1 lvb_sym_s1 (registered f10546be; LANG_v1.md at 83f2dea4 §2.3 + Addendum 1; Notes 218-1..8; family cap $25, Audit auto-approved under the user's $30 rule). LangSLVA on SYM v1, gold REACH, D 3-8 CurGate 4 -> 6 -> 8 on plain_cand_ce; 24,000 x bs 64; frozen args scratch/s218_args_ref_a1.json (sha 33af702f). RTX 3090 via scratch/s218_fill.sh: HOSTPROBE, line 1 = G-L8 mem_check (forced worst shape, auto_micro <= 21 GiB), line 2 = G-L12 G-TIME (20 warm-up + 300 law-matched final-stage steps) -> admission <= $4.30; line 3 = the cell (ckpt every 1k, ARGS-DIFF vs the frozen args in the launch log; off-host mirror every ~2k; guard $4.70 GUARD_STOP). Evals local fp32 4060 post-landing (boxes/langvb_eval.py).
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/lvb_sym_s1_mem boxes.langvb --arch lslva --steps 24000 --mem_check --auto_micro
+boxes/runs_fsq/lvb_sym_s1_gtime boxes.langvb --arch lslva --steps 24000 --time_steps 300 --time_warmup 20 --auto_micro
+boxes/runs_fsq/lvb_sym_s1 boxes.langvb --arch lslva --steps 24000 --auto_micro --ckpt_every 1000 --args_ref scratch/s218_args_ref_a1.json
