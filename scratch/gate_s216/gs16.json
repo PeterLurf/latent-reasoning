@@ -1,0 +1,12 @@
+{
+ "peak_gib_by_bs": {
+  "16": 4.213,
+  "8": 2.356,
+  "32": "OOM"
+ },
+ "T_max": 83,
+ "card": "NVIDIA GeForce RTX 3070",
+ "rule": "bs 16 peak <= 7.0 GiB else bs 8",
+ "pass_bs16": true,
+ "note": "no answer read (G-S18); output scratch only"
+}

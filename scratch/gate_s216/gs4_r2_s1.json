@@ -1,0 +1,32 @@
+{
+ "ckpt0_bitwise": true,
+ "init_line_ok": true,
+ "calibration_equal": true,
+ "ckpt_steps": [
+  1,
+  2,
+  3,
+  3
+ ],
+ "resume_line": true,
+ "self_state": [
+  {
+   "cursor": 64,
+   "n_self_steps": 1,
+   "self_reuse": 0
+  },
+  {
+   "cursor": 64,
+   "n_self_steps": 1,
+   "self_reuse": 0
+  }
+ ],
+ "rng_s_equal": true,
+ "np_rngs_equal": true,
+ "adam_steps": [
+  3.0,
+  3.0
+ ],
+ "draws_log_equal": true,
+ "pass": true
+}

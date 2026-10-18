@@ -1,0 +1,16 @@
+{
+ "per_n_means_bitwise_vs_committed": true,
+ "items_means_equal_per_n": true,
+ "layout_items_arms_y_idx": true,
+ "arms": [
+  "intact",
+  "bank_ablate_slva",
+  "self_ablate",
+  "other_ablate",
+  "dup_newest",
+  "dup_foreign"
+ ],
+ "card": "NVIDIA GeForce RTX 3070",
+ "pass": true,
+ "note": "checker re-run 04:5x on the chain output (its first pass read the pre-rename key items_y)"
+}

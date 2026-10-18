@@ -49,7 +49,7 @@ class Counter:
         VB.recode_targets = self.f
 
 
-def n16_items(recs, k=8):
+def n16_items(recs, k=4):                                                # 4 records: an 8-record n-16 Kb-20 backward OOMs the 8 GB 4060 (04:42 10-18)
     rs = [r for r in recs if r["n"] == 16][:k]; rng = np.random.default_rng(3); its = [SD.self_item(r, 20) for r in rs]
     return its, [min(it["n"] + int(rng.integers(0, 5)), 20) for it in its]
 
@@ -76,7 +76,7 @@ def g_s0(dev):
 
 
 def g_s8(dev):
-    o = {}; recs, _ = pool(); its, Ks = n16_items(recs); m = ft_model(dev); m.train(); P = dict(m.named_parameters())
+    o = {}; recs, _ = pool(); its, Ks = n16_items(recs, 2); m = ft_model(dev); m.train(); P = dict(m.named_parameters())   # 2: R2 = L(1) - L(0) holds two graphs (4 OOM the 4060)
     names = ("slva_wq", "slva_wk", "rec.weight", "g.p.h_7_attn_c_attn_weight", "g.p.h_10_attn_c_attn_weight", "beta")
 
     def grads(f):

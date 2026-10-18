@@ -1,0 +1,23 @@
+{
+ "pool_first_1000": {
+  "n_equal": 1000,
+  "n_diff": 0,
+  "n_diff_label_correct": 0
+ },
+ "gate_gs2": {
+  "W2": {
+   "n_cmp": 7836,
+   "n_equal": 7833,
+   "diff_not_wrong_state": 0,
+   "PASS": true
+  },
+  "W1": {
+   "n_cmp": 7991,
+   "n_equal": 7990,
+   "diff_not_wrong_state": 0,
+   "PASS": true
+  }
+ },
+ "pass": true,
+ "device": "cpu"
+}

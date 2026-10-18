@@ -1,0 +1,16 @@
+{
+ "rc": 0,
+ "sec": 44,
+ "self_pool_line": [
+  "SELF_POOL boxes/runs_fsq/s216_pool_s1/pool_r2.jsonl 444000 records, sha 318d42031a1d6302"
+ ],
+ "memcheck": [
+  "MEMCHECK 4.826966762542725 2.7306771278381348"
+ ],
+ "log_tail": [
+  "CALIBRATION max_m99 0.0198 ratio/e5 0.8470542769691403",
+  "{'step': 2, 'loss': 3.1265612840652466, 'sec': 26, 'answer_ce': 2.4028532952070236, 'rec_ce': 0.7237080112099648, 'n_max_train': 8, 'cur_stage': 0, 'lr': 5.999999588766494e-07, 'c': 0.0, 'gn_preclip': 23.121543884277344, 'clip_frac_100': 1.0, 'self_frac': 1.0, 'self_answer_ce': 2.4028532952070236, 'self_rec_ce': 0.7237080112099648, 'plain_answer_ce': None, 'pool_cursor': 0, 'n_self_steps': 0, 'self_reuse': 0}",
+  "MEMCHECK 4.826966762542725 2.7306771278381348"
+ ],
+ "note": "4060, micro / self_micro 16 (8 GB card; host G-S9 sizes the real micro); full 444k pool load + deep-shape selection"
+}

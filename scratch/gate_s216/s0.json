@@ -1,0 +1,29 @@
+{
+ "vbank_chain_label": 0,
+ "vbank_s216_gate": 0,
+ "sd_label_map_lines": [
+  "it[\"t\"] = rec[\"chain_label\"]  # SD-LABEL-MAP"
+ ],
+ "self_item_keys": [
+  "E_self",
+  "n",
+  "syms",
+  "t"
+ ],
+ "Kb": 20,
+ "recode_calls_self_vb_loss": 0,
+ "recode_calls_self_mass_stats": 0,
+ "recode_calls_plain": 4,
+ "mass_stats_self": {
+  "chg": [
+   17.814948618412018,
+   248
+  ],
+  "copy": [
+   727.1705212593079,
+   1593
+  ]
+ },
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 4060"
+}
