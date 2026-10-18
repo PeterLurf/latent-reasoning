@@ -15,6 +15,9 @@ text. New module; vbank / slva / deltamem are imported read-only (bank_kv, block
     the stop s). R2 per (item, t), t in 1..K_i: 1/2 weighted-mean CE over changed slots (E_t != E_{t-1}) + 1/2 over unchanged real slots, IN weighted 2;
     HOLD after tau (E_t = E_tau); no changed slot -> the unchanged mean alone (vbank.vb_loss's rule). Self items (SOUND-ONLY R2): only marked slots carry
     an R2 term (IN from their first mark pass), OUT is never a target.
+    The per-(item, t) combination is vbank.vb_loss's over the VALID slots (Audit G-L13 (e)): a pass whose valid slots are all changed (or all
+    unchanged) takes that half's mean alone (not 1/2 of it); the item's R2 is the mean over its passes t <= K_i with >= 1 valid slot (self items:
+    passes with >= 1 marked slot; plain items: every pass, all real slots valid).
   cand_ce(item, t) = -log softmax([sum log p("### o_R."), sum log p("### o_P.")])[o_R] from the coda after pass t (chance ln 2).
 Items (boxes/prosqa_sym): ids ([EOT] + " " + text), slot_idx (sorted positions of the concepts' slot tokens) with the concept order `concepts`,
   dist_R {concept: d} (gold REACH; absent = unreachable), D, o_R / o_P (names).
@@ -49,7 +52,6 @@ class LangSLVA(SL.SLVA):
         self.mode = "lslva"; D = self.D; dev = g.w("wte.weight").device
         self.rec = torch.nn.Linear(D, 2).to(dev)                            # R_P: {OUT, IN}
         self.v0_switch = None                                               # eval-only (CF): (t_from, V0full', V0slots') -> from pass t_from + 1 every version-0 read is x''s
-        self.slot_keep = None                                               # eval-only: f(t, s) -> (B, S) bool slots of version s taken from a donor (slot-local splice), set by evals
 
     # ------------------------------------------------------------------ the rollout
     def prelude(self, x):
@@ -111,6 +113,8 @@ class LangSLVA(SL.SLVA):
         """x (B, T) ids right-padded, pad (B, T) bool; slot_idx (B, S) long (padded rows point at 0), spad (B, S) bool; K passes.
         coda_rows {t: rows} with dec {t: (b, L) decoder ids for those rows} (or one (B, L) tensor for every t): the coda after pass t -> out["coda"][t] =
         (rows, h (b, S + L, D)). edit(t, V_t) -> the stored entry (None = V_t). -> {"V": V_0..V_K (slot rows), "S": stored, "coda": {...}, "kv": bank, "H6": H_6}."""
+        assert self.slot_mask is None and self.dup_foreign is None and self.ver_sub_from is None and self.age_floor is None, \
+            "rollout_ls does not implement slot_mask / dup_foreign / ver_sub_from / age_floor (Audit G-L13 (c))"
         g = self.g; B, T = x.shape; S = slot_idx.shape[1]; H6 = self.prelude(x)
         if self.v0_switch is not None:                                      # CF: version-0 reads after t_from come from x''s prelude
             t_from, H6sw, _ = self.v0_switch
@@ -161,6 +165,7 @@ class LangSLVA(SL.SLVA):
         lp = torch.log_softmax(self.g.logits(rows).float(), -1)
         return lp.gather(-1, dec[..., None]).squeeze(-1)
 
+    @torch.no_grad()
     def calibrate(self, x, pad, slot_idx, spad, decR, lens, K=VB.KMAX, mu=0.02, q=0.99):
         """vbank.VBankN.calibrate's rule on LANG-SLVA's shapes: a bank-masked rollout to V_0..V_K with every layer input captured; per layer and head
         beta0 (core layers: version 0 = the T token rows) is set first, then beta (versions 1..t-1, slot rows), each to logit(mu) - 0.01 - the q-quantile
@@ -275,6 +280,8 @@ def lvb_loss(m, items, Ks, dev, ac, rec_w=1.0, sg_input=False, keep=False):
     plain = torch.tensor([("marks" not in it) for it in items], device=dev) & has_a
     pcc = float((cc_sum[plain] / ans_cnt[plain]).mean()) if bool(plain.any()) else None
     st = {"answer_ce": float(L_ans.detach()), "rec_ce": float(L_rec.detach()), "plain_cand_ce": pcc, "n_plain": int(plain.sum())}
+    if keep:                                                                # G-L7(b'): per-item window-mean cand_ce (None: no window row)
+        st["cand_ce_items"] = [float(c_ / n_) if n_ > 0 else None for c_, n_ in zip(cc_sum.tolist(), ans_cnt.tolist())]
     return L_ans + rec_w * L_rec, st, (r if keep else None)
 
 
@@ -404,7 +411,7 @@ def main():
         assert not direct; m.g.p["wpe_weight"].requires_grad_(False)
     opt = torch.optim.AdamW([p_ for p_ in m.parameters() if p_.requires_grad], lr=a.lr, weight_decay=0.01)
     info = {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()}
-    step0, t_prev, n_nonfinite, cal = 1, 0.0, 0, None
+    step0, t_prev, n_nonfinite, cal, gate_init = 1, 0.0, 0, None, None
     if a.resume and os.path.exists(a.resume):
         ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
         rng.bit_generator.state = ck["np_rng"]; rng_k.bit_generator.state = ck["rng_k"]; torch.set_rng_state(ck["torch_rng"].cpu()); stream_load(stream, ck["stream"])
@@ -418,6 +425,8 @@ def main():
             if not direct:
                 cal = json.load(open(os.path.join(os.path.dirname(a.init_from), "calibration.json")))
             print("INIT_FROM %s (strict); calibrate() NOT called" % a.init_from, flush=True)
+            GATE.stage = len(ns) - 1; gate_init = "final"                   # §2.4: A2 / A2-CTRL plain batches from A1's FINAL-stage law (Audit G-L13 D1);
+            print("GATE_INIT final: D_max %d from step 1 (CurGate never advances)" % GATE.n_max(), flush=True)   # resume restores it from the ckpt
         elif not direct:
             r_c = np.random.default_rng(21110); s_c = PS().Stream(21110, EXCL)
             cal_its = [lvb_item(s_c.draw(int(r_c.integers(D_MIN, 9)))) for _ in range(a.cal_n)]
@@ -467,12 +476,14 @@ def main():
         torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
     if a.mem_check or a.time_steps:
         GATE.stage = len(ns) - 1
-    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []
+    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []; tmax = [0]   # tmax: the max plain T drawn (T_band)
+    if gate_init:
+        log.write(json.dumps({"step": 0, "gate_init": gate_init, "cur_stage": GATE.stage, "D_max_train": GATE.n_max()}) + "\n"); log.flush()
 
     def draw(Dmax):
         if a.mem_check:
             return big, [a.kmax] * len(big)
-        its = [lvb_item(stream.draw(int(D))) for D in rng.integers(D_MIN, Dmax + 1, size=a.bs)]
+        its = [lvb_item(stream.draw(int(D))) for D in rng.integers(D_MIN, Dmax + 1, size=a.bs)]; tmax[0] = max(tmax[0], max(len(it["ids"]) for it in its))
         return its, [min(it["D"] + int(rng_k.integers(0, a.kextra + 1)), a.kmax) for it in its]
 
     def draw_step(Dmax, step):
@@ -548,7 +559,7 @@ def main():
                     "answer_ce": float(np.mean([v[1] for v in acc])) if acc else None, "rec_ce": float(np.mean([v[2] for v in acc])) if acc else None,
                     "plain_cand_ce": float(np.mean([v[4] for v in pv if v[4] is not None])) if any(v[4] is not None for v in pv) else None,
                     "D_max_train": GATE.n_max(), "cur_stage": GATE.stage, "lr": lr, "c": None if direct else float(m.c_anneal), "gn_preclip": gn_log[-1],
-                    "clip_frac_100": float(np.mean([v > 1.0 for v in gn_log[-100:]])), "slva_gn": slva_gn, "stream_collisions": len(stream.collisions)}
+                    "clip_frac_100": float(np.mean([v > 1.0 for v in gn_log[-100:]])), "slva_gn": slva_gn, "stream_collisions": len(stream.collisions), "t_train_max": tmax[0]}
             if pool is not None:
                 rec_.update({"self_frac": len(sv) / len(acc) if acc else None, "self_answer_ce": float(np.mean([v[1] for v in sv])) if sv else None,
                              "self_rec_ce": float(np.mean([v[2] for v in sv])) if sv else None, "plain_answer_ce": float(np.mean([v[1] for v in pv])) if pv else None,
@@ -603,7 +614,7 @@ def main():
             sR, sP = cand_scores(m, its_[i:i + a.eval_bs], D + 2, dev, ac); ok += (sR > sP).tolist()
         accD[str(D)] = float(np.mean(ok))
     res = {"task": "prosqa_sym_v1", "arm": "langvb", "arch": a.arch, "seed": a.seed, "acc_cand_host": accD, "per_n": a.per_n, "train_sec": train_sec,
-           "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "stream_collisions": len(stream.collisions), "self_state": selfst if pool is not None else None,
+           "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "stream_collisions": len(stream.collisions), "t_train_max_since_resume": tmax[0], "self_state": selfst if pool is not None else None,
            "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
            "note": "descriptive host eval (cand accuracy at K' = D + 2, D 3..12, first per_n test items); the registered readings come from langvb_eval (fp32)"}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)

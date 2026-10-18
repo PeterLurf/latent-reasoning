@@ -12,6 +12,9 @@
  "R2_unc_terms": 6,
  "dLans_dV1_sg": 0.006322762463241816,
  "decorators": {
+  "LangSLVA.calibrate": [
+   "torch.no_grad()"
+  ],
   "cand_scores": [
    "torch.no_grad()"
   ]
