@@ -18894,6 +18894,17 @@ Round 2 follows the pre-stated plan (v1 §9):
 
 **§214 is closed.** D4 option B reads KEPT, with GATED-COUNT and MEM kept. A pause curriculum moves depth up by about +1 at the boundary but does not move the stop. On the same harness, §215's self-training gives more depth (1.000 at n 9–12) at a memory cost. Any D4 follow-up gates the curriculum on plain steps only (214-5); none is planned.
 
+**Note 214-6 (2026-10-18 03:15 EDT; §214's last descriptive file).** eval_stepbyt.json landed (3070, fp32, bs 32). Its gate passed: the per-n sums equal eval_lfk's step block.
+
+score_s213.step_by_t reads **GRADUAL-DRIFT**, the same label as D3-T:
+
+| | pooled t ≤ 8 | t 2–4 | t 5–8 |
+|---|---|---|---|
+| §214 | 0.806 | 0.932 | 0.646 |
+| D3-T | 0.831 | 0.975 | 0.662 |
+
+Pause training did not change how in-trajectory step exactness decays with pass index. This is descriptive and changes no §214 reading.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
