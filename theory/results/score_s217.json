@@ -1039,14 +1039,18 @@
   "s1": {
    "status": "CAUSAL-PRESERVED",
    "label": "CAUSAL-PRESERVED over ['s215_ftself_s1', 's216_r2_s1']",
-   "absent": []
+   "absent": [],
+   "never_run": {}
   },
   "s2": {
-   "status": "CAUSAL-PRESERVED (so far)",
-   "label": "CAUSAL-PRESERVED over ['s216_d3t_s2', 's216_r1_s2'] (not yet run: ['s216_r2_s2'])",
+   "status": "CAUSAL-PRESERVED",
+   "label": "CAUSAL-PRESERVED over ['s216_d3t_s2', 's216_r1_s2'] (not run: s216_r2_s2, s2 stopped at R1 (FT-DIVERGED, note 216-8))",
    "absent": [
     "s216_r2_s2"
-   ]
+   ],
+   "never_run": {
+    "s216_r2_s2": "s2 stopped at R1 (FT-DIVERGED, note 216-8)"
+   }
   }
  },
  "overlap": {
