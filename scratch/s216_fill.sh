@@ -16,7 +16,7 @@ cell_extra() {   # per-cell shipped files beside the queue's modules (auto_ship)
     312) echo "scratch/s214_args_ref_d3t.json" ;;
     313) echo "scratch/s216_args_ref_ftself.json boxes/runs_fsq/s215_ftself_s1/model.pt boxes/runs_fsq/s215_ftself_s1/calibration.json boxes/runs_fsq/s216_pool_s1/pool_r2.jsonl boxes/runs_fsq/s216_pool_s1/pool_meta.json" ;;
     314) echo "scratch/s216_args_ref_ftself.json boxes/runs_fsq/s216_d3t_s2/model.pt boxes/runs_fsq/s216_d3t_s2/calibration.json boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl boxes/runs_fsq/s216_pool_r1_s2/pool_meta.json" ;;
-    315) echo "scratch/s216_args_ref_ftself.json boxes/runs_fsq/s216_r1_s2/model.pt boxes/runs_fsq/s216_r1_s2/calibration.json boxes/runs_fsq/s216_pool_s2/pool_r2.jsonl boxes/runs_fsq/s216_pool_s2/pool_meta.json" ;;
+    315) echo "scratch/s216_args_ref_ftself.json boxes/runs_fsq/s216_r1_s2/model.pt boxes/runs_fsq/s216_r1_s2/calibration.json boxes/runs_fsq/s216_pool_r2_s2/pool_r2.jsonl boxes/runs_fsq/s216_pool_r2_s2/pool_meta.json" ;;
   esac
 }
 log() { echo "$(date +%T) fill_s216 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
