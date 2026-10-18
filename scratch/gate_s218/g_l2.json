@@ -1,0 +1,41 @@
+{
+ "R1": 195.34078979492188,
+ "dL_dbank_core_v0": 1.3000787496566772,
+ "dL_dbank_core_v0_unused": 0,
+ "dL_dbank_core_v1plus": 0.2223578542470932,
+ "dL_dbank_core_v1plus_unused": 0,
+ "dL_dbank_coda_v1plus": 0.005937956739217043,
+ "dL_dbank_coda_v1plus_unused": 0,
+ "R2_chg": 26.695863723754883,
+ "R2_chg_terms": 4,
+ "R2_unc": 4.934360980987549,
+ "R2_unc_terms": 6,
+ "dLans_dV1_sg": 0.006322762463241816,
+ "decorators": {
+  "cand_scores": [
+   "torch.no_grad()"
+  ]
+ },
+ "decorators_ok": true,
+ "pass": true,
+ "items": [
+  [
+   3,
+   404
+  ],
+  [
+   4,
+   528
+  ],
+  [
+   3,
+   432
+  ],
+  [
+   4,
+   430
+  ]
+ ],
+ "pending": "A2 self batches (SOUND-ONLY R2) once boxes/langvb_label.self_item exists",
+ "device": "cpu"
+}

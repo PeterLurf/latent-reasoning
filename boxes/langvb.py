@@ -74,27 +74,38 @@ class LangSLVA(SL.SLVA):
             if t <= 1:
                 h = VB.block_bank(src, i, h, None, None, None, km)
             else:
-                bk = torch.cat([k for k, _ in kvs[i][1:t]], 2); bv = torch.cat([v for _, v in kvs[i][1:t]], 2)
-                bb = self.bias_ls(bp[0][r], bp[1][r], bp[2][r], t, None, spad, t - 1, v0=False).expand(-1, -1, S + L, -1)
+                ents = self._dup(kvs[i], t)[1:t]; kp = self.ver_keep(t, t) if self.ver_keep is not None else None
+                bk = torch.cat([k for k, _ in ents], 2); bv = torch.cat([v for _, v in ents], 2)
+                bb = self.bias_ls(bp[0][r], bp[1][r], bp[2][r], t, None, spad, t - 1, v0=False, keep=kp).expand(-1, -1, S + L, -1)
                 if self.cap is not None:
                     self.cap[("coda", i, t)] = (h.detach(), km)
                 h = VB.block_bank(src, i, h, bk, bv, bb, km)
         return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
 
-    def bias_ls(self, b, b0, gm, t, tpad, spad, nslotver, v0=True):
+    def bias_ls(self, b, b0, gm, t, tpad, spad, nslotver, v0=True, keep=None):
         """the bank bias row read at pass (or coda) index t: [version 0: beta0 on the T token rows (tpad), when v0] + [versions 1..nslotver: beta + gamma
-        (t - 1 - s) on the S slot rows (spad)]; -inf where masked; bank_off -> all -inf. -> (B, H, 1, (T if v0) + nslotver * S)."""
+        (t - 1 - s) on the S slot rows (spad)]; -inf where masked; bank_off -> all -inf; keep (eval-only ver_keep(t, t), bool over versions 0..t-1)
+        masks the versions it drops. -> (B, H, 1, (T if v0) + nslotver * S)."""
         B, S = spad.shape; H = len(b); parts, valid = [], []
         if v0:
-            T = tpad.shape[1]; parts.append(b0[:, None].expand(H, T)); valid.append(tpad)
+            T = tpad.shape[1]; parts.append(b0[:, None].expand(H, T)); valid.append(tpad if keep is None or bool(keep[0]) else torch.zeros_like(tpad))
         if nslotver:
             s = torch.arange(1, nslotver + 1, device=spad.device); age = (t - 1 - s).to(b.dtype)
             row = (b[:, None] + gm[:, None] * age[None, :])[:, :, None].expand(H, nslotver, S).reshape(H, nslotver * S); parts.append(row)
-            valid.append(spad[:, None, :].expand(B, nslotver, S).reshape(B, nslotver * S))
+            vs = spad[:, None, :].expand(B, nslotver, S)
+            if keep is not None:
+                vs = vs & keep.to(spad.device)[1:nslotver + 1][None, :, None]
+            valid.append(vs.reshape(B, nslotver * S))
         row = torch.cat(parts, 1); vl = torch.cat(valid, 1)
         if self.bank_off:
             vl = torch.zeros_like(vl)
         return torch.where(vl[:, None, None, :], row[None, :, None, :], torch.full((), NEG, dtype=row.dtype, device=row.device))
+
+    def _dup(self, lst, t):
+        """eval-only (vbank's 213-21 DUP): with dup_newest at a reader of pass / coda t >= 3, entries 1..t-2 read as the newest stored entry t-1."""
+        if not self.dup_newest or t < 3:
+            return lst
+        return [lst[0]] + [lst[t - 1]] * (t - 2) + list(lst[t - 1:])
 
     def rollout_ls(self, x, pad, slot_idx, spad, K, coda_rows=None, dec=None, lens=None, edit=None, sg_input=False):
         """x (B, T) ids right-padded, pad (B, T) bool; slot_idx (B, S) long (padded rows point at 0), spad (B, S) bool; K passes.
@@ -118,14 +129,15 @@ class LangSLVA(SL.SLVA):
         for t in range(1, K + 1):
             sw = self.v0_switch is not None and t > t_from
             gk_t = ([gk_sw] + gk[1:]) if sw else gk; NV_t = ([NV_sw] + NV[1:]) if sw else NV
-            h = self.gather(t, gk_t, NV_t, spad)
+            gk_t, NV_t = self._dup(gk_t, t), self._dup(NV_t, t); kp = self.ver_keep(t, t) if self.ver_keep is not None else None
+            h = self.gather(t, gk_t, NV_t, spad, keep=kp)
             h = h.detach() if sg_input else h
             if self.input_edit is not None:
                 h = self.input_edit(t, h)
             for li, i in enumerate(CORE):
-                kv0 = kv_sw[i] if sw else kv[i][0]
-                bk = torch.cat([kv0[0]] + [k for k, _ in kv[i][1:t]], 2); bv = torch.cat([kv0[1]] + [v for _, v in kv[i][1:t]], 2)
-                bb = self.bias_ls(self.beta[li], self.beta0[li], self.gam[li], t, pad, spad, t - 1).expand(-1, -1, S, -1)
+                kv0 = kv_sw[i] if sw else kv[i][0]; ents = self._dup(kv[i], t)
+                bk = torch.cat([kv0[0]] + [k for k, _ in ents[1:t]], 2); bv = torch.cat([kv0[1]] + [v for _, v in ents[1:t]], 2)
+                bb = self.bias_ls(self.beta[li], self.beta0[li], self.gam[li], t, pad, spad, t - 1, keep=kp).expand(-1, -1, S, -1)
                 if self.cap is not None:
                     self.cap[("core", i, t)] = (h.detach(), None)
                 h = VB.block_bank(g, i, h, bk, bv, bb)
@@ -268,3 +280,335 @@ def lvb_loss(m, items, Ks, dev, ac, rec_w=1.0, sg_input=False, keep=False):
 
 def make_model(g, table="train"):
     return LangSLVA(g, table)
+
+
+# ---------------------------------------------------------------------- DIRECT-SYM (§2.6): plain GPT-2 on [ids | decoder string]
+def direct_batch(items, key, dev):
+    """x (B, T_max + L) = [ids | "### <it[key]>."] right-padded (causal, so the padding is never read), rows (B, L) = the position predicting each
+    decoder token, d (B, L) the decoder ids."""
+    L = len(dec_ids(items[0][key])); W = max(len(it["ids"]) for it in items) + L; B = len(items)
+    x = torch.full((B, W), EOT, dtype=torch.long); rows = torch.zeros(B, L, dtype=torch.long); d = torch.zeros(B, L, dtype=torch.long)
+    for b, it in enumerate(items):
+        n = len(it["ids"]); dd = dec_ids(it[key]); assert len(dd) == L and n + L <= 1024, (len(dd), L, n)
+        x[b, :n] = torch.tensor(it["ids"]); x[b, n:n + L] = torch.tensor(dd); rows[b] = torch.arange(n - 1, n - 1 + L); d[b] = torch.tensor(dd)
+    return x.to(dev), rows.to(dev), d.to(dev)
+
+
+def direct_logprobs(g, items, key, dev, ac):
+    x, rows, d = direct_batch(items, key, dev)
+    with ac():
+        h, _ = g(g.embed(x))
+    hr = h.gather(1, rows[..., None].expand(-1, -1, h.shape[-1])); lp = torch.log_softmax(g.logits(hr).float(), -1)
+    return lp.gather(-1, d[..., None]).squeeze(-1)
+
+
+def direct_loss(g, items, dev, ac):
+    """DIRECT-SYM: the gold decoder string's token CE; cand_ce from a no-grad forward on the other option's string (chance ln 2)."""
+    lpR = direct_logprobs(g, items, "o_R", dev, ac); L = -lpR.mean(1).mean()
+    with torch.no_grad():
+        lpP = direct_logprobs(g, items, "o_P", dev, ac); cc = -torch.log_softmax(torch.stack([lpR.detach().sum(1), lpP.sum(1)], 1), 1)[:, 0]
+    return L, {"answer_ce": float(L.detach()), "rec_ce": 0.0, "plain_cand_ce": float(cc.mean()), "n_plain": len(items)}
+
+
+@torch.no_grad()
+def cand_scores(m, items, K, dev, ac):
+    """(sum log p(gold string), sum log p(other string)) per item: LangSLVA's coda after pass K, or DIRECT's plain forward (K unused)."""
+    if not isinstance(m, LangSLVA):
+        return direct_logprobs(m, items, "o_R", dev, ac).sum(1), direct_logprobs(m, items, "o_P", dev, ac).sum(1)
+    x, pad, lens, si, sp, dR, dP = lvb_batch(items, dev); rows = torch.arange(len(items), device=dev)
+    with ac():
+        r = m.rollout_ls(x, pad, si, sp, K, coda_rows={K: rows}, dec=dR, lens=lens)
+        hP = m.coda_ls(K, r["V"][K], {i: r["kv"][i] for i in CODA}, sp, dP, lens)
+    return m.dec_logprobs(r["coda"][K][1], sp, dR).sum(1), m.dec_logprobs(hP, sp, dP).sum(1)
+
+
+# ---------------------------------------------------------------------- the trainer (§2.3 A1, §2.4 A2 / A2-CTRL, §2.6 DIRECT-SYM)
+D_MIN = 3
+
+
+def PS():
+    import boxes.prosqa_sym as PS_
+    return PS_
+
+
+def lvb_item(it):
+    """a boxes.prosqa_sym item -> lvb_loss's item: concepts in slot-position order (slot_idx sorted, D-4), o_R / o_P as names."""
+    cs = sorted(it["concepts"], key=lambda c: it["slot_idx"][c])
+    return {"ids": it["ids"], "slot_idx": [it["slot_idx"][c] for c in cs], "concepts": cs, "dist_R": it["dist_R"], "D": it["D"],
+            "o_R": it["names"][it["o_R"]], "o_P": it["names"][it["o_P"]]}
+
+
+def stream_state(s):
+    return {"rngs": {D: r.getstate() for D, r in s.rngs.items()}, "n": dict(s.n), "n_collisions": len(s.collisions)}
+
+
+def stream_load(s, st):
+    import random
+    for D, g_ in st["rngs"].items():
+        s.rngs[D] = random.Random(); s.rngs[D].setstate(g_)
+    s.n.update(st["n"])
+
+
+def main():
+    """vbank.main's loop on SYM v1 (§2.3 / §2.4 / §2.6). Draw law per plain step: D_i ~ U{3..D_max} (rng = seed; one integers(size=bs) call), the item = the
+    next accepted draw of band D_i of prosqa_sym.Stream(--stream_seed) with the test / GATE signatures excluded, K_i = min(D_i + U{0..kextra}, kmax)
+    (rng_k = seed + 21100). CurGate D_max 4 -> 6 -> 8 reads plain_cand_ce only (micro-chunks weighted by n_plain); self steps never call it (G-L7).
+    §215's self order kept exactly: the plain batch is drawn every step, then rng_s = seed + 21800 draws one coin (p_self) and, on a self step, one U per
+    record (K = min(stop_s + U, self_kmax)). Calibration (lslva, not init_from): 64 items, D ~ U{3..8} from rng 21110, Stream(21110) (unregistered
+    seeds, no reading uses them). --time_steps is LAW-MATCHED (G-L12): the final stage, the registered draw / coin law, --time_warmup untimed steps first."""
+    import argparse
+    import hashlib
+    import json
+    import os
+    import time
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--arch", default="lslva", choices=["lslva", "direct"], help="lslva = A1 / A2 / A2-CTRL; direct = DIRECT-SYM (plain GPT-2 small)")
+    ap.add_argument("--table", default="train", choices=["train", "frozen"]); ap.add_argument("--args_ref", default="")
+    ap.add_argument("--steps", type=int, default=24000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--micro", type=int, default=1)
+    ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1); ap.add_argument("--stream_seed", type=int, default=22100)
+    ap.add_argument("--cur", default="4,6,8"); ap.add_argument("--cur_gate", default="0.35:2:6000", help="thr:need:cap on plain_cand_ce")
+    ap.add_argument("--c_sched", default="1000,8000", help="vbank.c_at hold,end (A2: 0,1 = c 0 from step 1)"); ap.add_argument("--rec_w", type=float, default=1.0)
+    ap.add_argument("--kmax", type=int, default=12); ap.add_argument("--kextra", type=int, default=4)
+    ap.add_argument("--self_pool", default="", help="§2.4: the pool jsonl (pool_meta.json beside it); empty = no self steps (A1 / A2-CTRL)")
+    ap.add_argument("--p_self", type=float, default=0.0); ap.add_argument("--self_kmax", type=int, default=16); ap.add_argument("--self_kextra", type=int, default=4)
+    ap.add_argument("--self_micro", type=int, default=1); ap.add_argument("--mem_check_self", action="store_true")
+    ap.add_argument("--draws_log_steps", type=int, default=0, help="G-L19 / G-L21: steps 1..N -> draws_log.json")
+    ap.add_argument("--init_from", default="", help="A2 / A2-CTRL: A1's model.pt (strict); calibrate() not called, its calibration.json copied; fresh optimizer")
+    ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", default=None); ap.add_argument("--log_every", type=int, default=100)
+    ap.add_argument("--time_steps", type=int, default=0, help="G-L12: timed steps (law-matched, final stage) -> timing.json + eval.json, exit")
+    ap.add_argument("--time_warmup", type=int, default=20)
+    ap.add_argument("--mem_check", action="store_true", help="G-L8: the forced worst shape (64 longest final-stage items, K kmax) -> mem_check.json + eval.json")
+    ap.add_argument("--mem_check_steps", type=int, default=1); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
+    ap.add_argument("--stop_at", type=int, default=0); ap.add_argument("--keep_ckpt_steps", default=""); ap.add_argument("--cal_n", type=int, default=64)
+    ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=200, help="host eval: the first per_n test items per D 3..12")
+    ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device; direct = a.arch == "direct"
+    from boxes import s5
+    from boxes.fsq120 import lr_at, driver_version, env_info
+    torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); rng_k = np.random.default_rng(a.seed + 21100)
+    amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
+    ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
+    t_ex = time.time(); EXCL = PS().exclusion_sigs(); stream = PS().Stream(a.stream_seed, EXCL)
+    print("EXCLUSION %d signatures (%.0f s)" % (len(EXCL), time.time() - t_ex), flush=True)
+    ns = [int(v) for v in a.cur.split(",")]; thr, need, cap = a.cur_gate.split(":"); GATE = VB.CurGate(ns, float(thr), int(need), int(cap))
+    ch0, ch1 = (int(v) for v in a.c_sched.split(","))
+    assert DM().POS_OFFSET == 0 and not DM().POS_KEEP0, "training needs the plain position table"
+    m = s5.load_gpt2(dev) if direct else make_model(s5.load_gpt2(dev), a.table).to(dev); a.arch_class = type(m).__name__
+    pool, rng_s, selfst = None, None, {"cursor": 0, "n_self_steps": 0, "self_reuse": 0}
+    if a.self_pool:                                                         # §2.4: the pool (key set + sha checked by the loader); rng_s = seed + 21800
+        assert not direct
+        import boxes.langvb_label as LL
+        pool, pool_meta = LL.load_pool(a.self_pool, os.path.join(os.path.dirname(a.self_pool), "pool_meta.json")); rng_s = np.random.default_rng(a.seed + 21800)
+        print("SELF_POOL", a.self_pool, len(pool), "records, sha", pool_meta["sha256"][:16], flush=True)
+    if a.table == "frozen":
+        assert not direct; m.g.p["wpe_weight"].requires_grad_(False)
+    opt = torch.optim.AdamW([p_ for p_ in m.parameters() if p_.requires_grad], lr=a.lr, weight_decay=0.01)
+    info = {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()}
+    step0, t_prev, n_nonfinite, cal = 1, 0.0, 0, None
+    if a.resume and os.path.exists(a.resume):
+        ck = torch.load(a.resume, map_location=dev, weights_only=False); m.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
+        rng.bit_generator.state = ck["np_rng"]; rng_k.bit_generator.state = ck["rng_k"]; torch.set_rng_state(ck["torch_rng"].cpu()); stream_load(stream, ck["stream"])
+        if rng_s is not None:
+            rng_s.bit_generator.state = ck["rng_s"]; selfst.update(ck["self_state"])
+        GATE.load(ck["gate"]); step0 = ck["step"] + 1; t_prev = ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; cal = ck["calibration"]
+        print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
+    else:
+        if a.init_from:
+            sd = torch.load(a.init_from, map_location=dev, weights_only=True); m.load_state_dict(sd, strict=True); del sd
+            if not direct:
+                cal = json.load(open(os.path.join(os.path.dirname(a.init_from), "calibration.json")))
+            print("INIT_FROM %s (strict); calibrate() NOT called" % a.init_from, flush=True)
+        elif not direct:
+            r_c = np.random.default_rng(21110); s_c = PS().Stream(21110, EXCL)
+            cal_its = [lvb_item(s_c.draw(int(r_c.integers(D_MIN, 9)))) for _ in range(a.cal_n)]
+            x_, p_, l_, si_, sp_, dR_, _ = lvb_batch(cal_its, dev); m.c_anneal.fill_(1e4)
+            with torch.no_grad():
+                cal = m.calibrate(x_, p_, si_, sp_, dR_, l_)
+            del x_, p_, l_, si_, sp_, dR_
+        if cal is not None:
+            json.dump(cal, open(os.path.join(a.out, "calibration.json"), "w", newline="\n"), indent=1); print("CALIBRATION max_m99 %.4f" % cal["max_m99"], flush=True)
+        json.dump({**vars(a), **info}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+        if a.args_ref:                                                      # G-L11 ARGS-DIFF (launch log)
+            ref = json.load(open(a.args_ref)); cur = {**vars(a), **info}
+            dif = {k: [ref.get(k), cur.get(k)] for k in sorted(set(ref) | set(cur)) if k != "args_ref" and ref.get(k) != cur.get(k)}
+            json.dump({"ref": a.args_ref, "diff": dif}, open(os.path.join(a.out, "args_diff.json"), "w", newline="\n"), indent=1); print("ARGS-DIFF", json.dumps(dif), flush=True)
+
+    def loss_of(its, Ks):
+        if direct:
+            L_, st_ = direct_loss(m, its, dev, ac); return L_, st_
+        L_, st_, _ = lvb_loss(m, its, Ks, dev, ac, a.rec_w); return L_, st_
+
+    def pick_micro(its, K, tag):
+        """G-L8: the smallest micro in {1, 2, 4, 8} whose forward + backward on `its` at K peaks <= mem_budget (no optimizer step; no rng consumed)."""
+        pk_ = {}
+        for mic in (1, 2, 4, 8):
+            torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); ok = True; ch_ = len(its) // mic
+            try:
+                for k_ in range(mic):
+                    L_, _ = loss_of(its[k_ * ch_:(k_ + 1) * ch_], [K] * ch_); (L_ / mic).backward(); del L_
+            except torch.OutOfMemoryError:
+                ok = False
+            m.zero_grad(set_to_none=True); pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30; pk_[str(mic)] = round(pk, 2) if ok else "OOM"
+            if ok and pk <= a.mem_budget:
+                torch.cuda.empty_cache(); lg_ = {tag: mic, "peak_gib_by_micro": pk_, "mem_budget": a.mem_budget, "K": K}; print("AUTO_MICRO", lg_, flush=True)
+                json.dump(lg_, open(os.path.join(a.out, "auto_%s.json" % tag), "w", newline="\n"), indent=1); return mic
+        raise RuntimeError("G-L8: no %s in {1, 2, 4, 8} fits within %.1f GiB: %s" % (tag, a.mem_budget, pk_))
+    s_big = PS().Stream(21120, EXCL)                                        # the forced worst plain shape: the 64 longest of 8 bs final-stage draws
+    big = sorted([lvb_item(s_big.draw(ns[-1])) for _ in range(8 * a.bs)], key=lambda it: (-len(it["ids"]), -len(it["slot_idx"])))[:a.bs] if (a.mem_check or a.auto_micro) else None
+    if a.auto_micro and dev.startswith("cuda"):
+        a.micro = pick_micro(big, a.kmax, "micro")
+    deep_its = None
+    if pool is not None:                                                    # the deepest self shape: the 64 longest records (D is not stored), K self_kmax
+        deep = sorted(range(len(pool)), key=lambda j: -len(pool[j]["text_ids"]))[:a.bs]; deep_its = [LL.self_item(pool[j], a.self_kmax) for j in deep]
+        if a.auto_micro and dev.startswith("cuda"):
+            a.self_micro = pick_micro(deep_its, a.self_kmax, "self_micro")
+    KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
+    if 0 in KEEP and step0 == 1:
+        torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
+    if a.mem_check or a.time_steps:
+        GATE.stage = len(ns) - 1
+    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []
+
+    def draw(Dmax):
+        if a.mem_check:
+            return big, [a.kmax] * len(big)
+        its = [lvb_item(stream.draw(int(D))) for D in rng.integers(D_MIN, Dmax + 1, size=a.bs)]
+        return its, [min(it["D"] + int(rng_k.integers(0, a.kextra + 1)), a.kmax) for it in its]
+
+    def draw_step(Dmax, step):
+        """vbank.draw_step's order: the plain batch every step (rng, rng_k), then rng_s's coin; a self step takes the next bs pool records (one U each)."""
+        its, Ks = draw(Dmax)
+        if pool is not None and a.mem_check and a.mem_check_self:
+            return deep_its, [a.self_kmax] * len(deep_its), True, None
+        lg = (not a.mem_check) and step <= a.draws_log_steps
+        if pool is None and not lg:
+            return its, Ks, False, None
+        dl = {"step": step, "plain_hash": hashlib.sha1(json.dumps([[it["ids"], k_] for it, k_ in zip(its, Ks)]).encode()).hexdigest()} if lg else None
+        coin = False if pool is None else bool(rng_s.random() < a.p_self)
+        if not coin:
+            if lg:
+                dl.update({"coin": False, "D": [it["D"] for it in its], "U": [k_ - it["D"] for it, k_ in zip(its, Ks)]})
+            return its, Ks, False, dl
+        c0 = selfst["cursor"]
+        if c0 + a.bs > len(pool):
+            raise RuntimeError("§2.4: the self pool is exhausted (no reuse allowed)")
+        recs = pool[c0:c0 + a.bs]; selfst["cursor"] = c0 + a.bs; selfst["n_self_steps"] += 1
+        U = [int(rng_s.integers(0, a.self_kextra + 1)) for _ in recs]
+        its = [LL.self_item(r_, a.self_kmax) for r_ in recs]; Ks = [min(r_["stop_s"] + u, a.self_kmax) for r_, u in zip(recs, U)]
+        if lg:
+            dl.update({"coin": True, "stop_s": [r_["stop_s"] for r_ in recs], "U": U})
+        return its, Ks, True, dl
+
+    def gate_update(step, v, is_self):
+        assert not is_self, "G-L7: a self batch reached GATE.update"
+        return GATE.update(step, v)
+    n_time = a.time_warmup + a.time_steps if a.time_steps else 0
+    last = step0 + n_time - 1 if a.time_steps else (a.mem_check_steps if a.mem_check else (min(a.steps, a.stop_at) if a.stop_at else a.steps))
+    draws_log = []; tself = [0.0, 0, 0.0, 0]; tt0 = None
+    if a.resume and os.path.exists(os.path.join(a.out, "draws_log.json")):
+        draws_log = [d for d in json.load(open(os.path.join(a.out, "draws_log.json"))) if d["step"] < step0]
+    if dev.startswith("cuda"):
+        torch.cuda.reset_peak_memory_stats(dev)
+    for step in range(step0, last + 1):
+        if a.time_steps and step == step0 + a.time_warmup:
+            if dev.startswith("cuda"):
+                torch.cuda.synchronize(dev)
+            tt0 = time.time(); tself = [0.0, 0, 0.0, 0]
+        lr = lr_at(a.lr, {}, step, a.steps)
+        for gr in opt.param_groups:
+            gr["lr"] = lr
+        if not direct:
+            m.c_anneal.fill_(VB.c_at(step, ch0, ch1) if m.anneals else 1e4)
+        ts0 = time.time(); m.train(); its, Ks, is_self, dl = draw_step(GATE.n_max(), step); opt.zero_grad(set_to_none=True); tot = 0.0
+        mic = a.self_micro if is_self else a.micro; ch = len(its) // mic; sts = []
+        if dl is not None:
+            draws_log.append(dl)
+        for k_ in range(mic):
+            L, st_ = loss_of(its[k_ * ch:(k_ + 1) * ch], Ks[k_ * ch:(k_ + 1) * ch]); (L / mic).backward(); tot += float(L.item()) / mic; st_["is_self"] = is_self; sts.append(st_)
+        slva_gn = None
+        if not direct and step % a.log_every == 0:
+            sg_ = [p_.grad for p_ in m.slva_params() if p_.grad is not None]; slva_gn = float(torch.stack([g_.float().pow(2).sum() for g_ in sg_]).sum().sqrt()) if sg_ else 0.0
+        gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); gn_log.append(float(gn))
+        ans = float(np.mean([s_["answer_ce"] for s_ in sts])); rec = float(np.mean([s_["rec_ce"] for s_ in sts]))
+        pc_ = [(s_["plain_cand_ce"], s_["n_plain"]) for s_ in sts if s_["plain_cand_ce"] is not None]
+        pcc = sum(v_ * n_ for v_, n_ in pc_) / sum(n_ for _, n_ in pc_) if pc_ else None
+        if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
+            n_nonfinite += 1; opt.zero_grad(set_to_none=True); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush(); pcc_g = None
+        else:
+            opt.step(); acc.append((tot, ans, rec, sts, pcc)); pcc_g = pcc
+        if dev.startswith("cuda"):
+            torch.cuda.synchronize(dev)
+        tself[0 if is_self else 2] += time.time() - ts0; tself[1 if is_self else 3] += 1
+        adv = None if (a.mem_check or a.time_steps or is_self) else gate_update(step, pcc_g, is_self)
+        if adv is not None:
+            log.write(json.dumps({"step": step, "cur_stage": adv[0], "D_max_train": GATE.n_max(), "reason": adv[1], "bin_mean": adv[2]}) + "\n"); log.flush()
+        if step % a.log_every == 0 or step == last:
+            pv = [v for v in acc if not v[3][0]["is_self"]]; sv = [v for v in acc if v[3][0]["is_self"]]
+            rec_ = {"step": step, "loss": float(np.mean([v[0] for v in acc])) if acc else None, "sec": round(time.time() - t0),
+                    "answer_ce": float(np.mean([v[1] for v in acc])) if acc else None, "rec_ce": float(np.mean([v[2] for v in acc])) if acc else None,
+                    "plain_cand_ce": float(np.mean([v[4] for v in pv if v[4] is not None])) if any(v[4] is not None for v in pv) else None,
+                    "D_max_train": GATE.n_max(), "cur_stage": GATE.stage, "lr": lr, "c": None if direct else float(m.c_anneal), "gn_preclip": gn_log[-1],
+                    "clip_frac_100": float(np.mean([v > 1.0 for v in gn_log[-100:]])), "slva_gn": slva_gn, "stream_collisions": len(stream.collisions)}
+            if pool is not None:
+                rec_.update({"self_frac": len(sv) / len(acc) if acc else None, "self_answer_ce": float(np.mean([v[1] for v in sv])) if sv else None,
+                             "self_rec_ce": float(np.mean([v[2] for v in sv])) if sv else None, "plain_answer_ce": float(np.mean([v[1] for v in pv])) if pv else None,
+                             "pool_cursor": selfst["cursor"], "n_self_steps": selfst["n_self_steps"], "self_reuse": selfst["self_reuse"]})
+            log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []
+        if step in KEEP:
+            torch.save({"model": m.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
+        if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps and not (a.mem_check or a.time_steps):
+            cp = os.path.join(a.out, "ckpt_last.pt")
+            if os.path.exists(cp):
+                os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
+            torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "rng_k": rng_k.bit_generator.state,
+                        "torch_rng": torch.get_rng_state(), "stream": stream_state(stream), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0,
+                        "n_nonfinite": n_nonfinite, "calibration": cal,
+                        **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {})}, cp)
+            if draws_log:
+                json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
+    assert selfst["self_reuse"] == 0
+    if draws_log:
+        json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
+    if a.mem_check:
+        pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30
+        mj = {"peak_gib_train_step": pk, "shape": "self (64 longest records, K %d)" % a.self_kmax if (pool is not None and a.mem_check_self) else
+              "plain (64 longest of %d D %d draws, K %d)" % (8 * a.bs, ns[-1], a.kmax), "bs": a.bs, "micro": a.self_micro if a.mem_check_self else a.micro,
+              "arch": a.arch, "gpu": info["train_gpu"], "amp": str(amp)}
+        for f_ in ("mem_check.json", "eval.json"):
+            json.dump(mj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
+        print("MEMCHECK", pk, flush=True); return
+    if a.time_steps:
+        el = time.time() - tt0; sps_self = tself[0] / max(1, tself[1]); sps_plain = tself[2] / max(1, tself[3])
+        sps = a.p_self * sps_self + (1 - a.p_self) * sps_plain if pool is not None else el / a.time_steps
+        tj = {"arch": a.arch, "steps_timed": a.time_steps, "warmup": a.time_warmup, "sec_per_step": sps, "sec_per_step_wall": el / a.time_steps,
+              "est_hours": sps * a.steps / 3600, "gpu": info["train_gpu"], "micro": a.micro, "self_micro": a.self_micro, "p_self": a.p_self,
+              "sec_per_step_self": sps_self if tself[1] else None, "sec_per_step_plain": sps_plain if tself[3] else None, "n_self_timed": tself[1],
+              "law": "final stage D U{%d..%d}, K min(D + U{0..%d}, %d); self / plain by the registered rng_s coin" % (D_MIN, ns[-1], a.kextra, a.kmax)}
+        for f_ in ("timing.json", "eval.json"):
+            json.dump(tj, open(os.path.join(a.out, f_), "w", newline="\n"), indent=1)
+        print("TIMING", sps, flush=True); return
+    if a.stop_at and last < a.steps:
+        print("STOPPED_AT", last, flush=True); return
+    train_sec = round(time.time() - t0); torch.save(m.state_dict(), os.path.join(a.out, "model.pt"))
+    for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):                            # right after model.pt, before the descriptive eval
+        if os.path.exists(os.path.join(a.out, ck_)):
+            os.remove(os.path.join(a.out, ck_))
+    opt.zero_grad(set_to_none=True); opt.state.clear(); m.eval(); t1 = time.time()
+    if dev.startswith("cuda"):
+        torch.cuda.empty_cache()
+    TE = PS().test_set(a.per_n, range(3, 13)); accD = {}                   # host-side, descriptive: cand accuracy at K' = D + 2 (D 13-16 untouched)
+    for D, its_ in TE.items():
+        its_ = [lvb_item(it) for it in its_]; ok = []
+        for i in range(0, len(its_), a.eval_bs):
+            sR, sP = cand_scores(m, its_[i:i + a.eval_bs], D + 2, dev, ac); ok += (sR > sP).tolist()
+        accD[str(D)] = float(np.mean(ok))
+    res = {"task": "prosqa_sym_v1", "arm": "langvb", "arch": a.arch, "seed": a.seed, "acc_cand_host": accD, "per_n": a.per_n, "train_sec": train_sec,
+           "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "stream_collisions": len(stream.collisions), "self_state": selfst if pool is not None else None,
+           "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
+           "note": "descriptive host eval (cand accuracy at K' = D + 2, D 3..12, first per_n test items); the registered readings come from langvb_eval (fp32)"}
+    json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
+    print("EVAL", json.dumps(accD), flush=True); print("DONE", a.out, flush=True)
+
+
+if __name__ == "__main__":
+    main()
