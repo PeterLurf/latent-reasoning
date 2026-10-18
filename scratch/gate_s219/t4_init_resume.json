@@ -1,11 +1,11 @@
 {
  "rc_a": [
   0,
-  214
+  242
  ],
  "rc_b": [
   0,
-  166
+  181
  ],
  "b_ckpt_steps": [
   1,
@@ -13,7 +13,7 @@
  ],
  "rc_b_resume": [
   0,
-  60
+  67
  ],
  "step0_eq_init": true,
  "init_from_line": [
@@ -39,13 +39,8 @@
    3,
    3
   ],
-  "model_diff": {
-   "p.wte_weight": 7.450580596923828e-09
-  },
-  "opt_diff": {
-   "p.wte_weight.exp_avg": 9.313225746154785e-10,
-   "p.wte_weight.exp_avg_sq": 3.637978807091713e-12
-  },
+  "model_diff": {},
+  "opt_diff": {},
   "np_rng_eq": true,
   "rng_s_eq": true,
   "self_state_eq": true,
@@ -90,7 +85,7 @@
   "stdout.txt"
  ],
  "PASS": true,
- "sec": 445,
+ "sec": 496,
  "gate": "t4_init_resume",
- "clock": "2026-10-18 17:40:46"
+ "clock": "2026-10-18 18:10:43"
 }
