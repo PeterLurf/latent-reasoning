@@ -19621,6 +19621,12 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
    - LABELLER-KEPT fresh items are not added to later exclusion sets. They come from their own rng streams, so overlap with pools is bounded by the collision bound, and they touch no test or gate.
 6. **Items the frozen base read during CPU smokes** (test n 1 / 2 / 9, 3 each and never n ≥ 17; 2 rng-23195 G-T18 items; rng-23180 precondition items; synthetic rng 21903 / 21904 shapes) were never trained on. They contaminate nothing. Recorded.
 
+**Note 219-4 (2026-10-18 18:11 EDT; Audit's G-T13 items, before any T1 output).**
+- **(1) seal_check reads `labeller_kept_meta.t_start`** (text_eval.py:265). It had read labeller_kept.t_start, which is always None, so the check was inert. Fixed in score_s219 with a real-shaped fixture.
+- **(2) New T2 provenance check.** T2's init_from.json sha, pool_meta.windows[*].labeller_sha256 for self-labelled windows, and eval_gate.labeller_sha256 must all equal T1's eval_text meta.model_sha256. BASE-LABELLED windows must equal BASE_SHA (s170_cot_s1). Any mismatch → CONTAMINATED / VOID for T2.
+- **(3) G-T10 uses the deepest-n self items, as §7 registers ("deep self").** The forced self shape is the 64 longest records of the round's deepest n (T1 n 12, T2 n 16), at the round's self K, interleaved with plain. Pool-order items could under-project, and an admitted host could then hit its guard (a dead run).
+- **(4) The BF16-VS-FP32 row (descriptive) states that batch composition also differs:** nested170.cot_answers batches across n, while text_eval batches equal prompt lengths within n. Its Δ is not a pure dtype effect.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
