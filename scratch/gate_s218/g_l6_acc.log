@@ -1,0 +1,4 @@
+[W1018 16:49:40.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 121634816 bytes (free: 0, total: 8589410304).
+[W1018 16:53:17.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 146800640 bytes (free: 0, total: 8589410304).
+PART acc done 617 s
+DONE scratch/_tmp/g_l6_d3t\eval_vb.json

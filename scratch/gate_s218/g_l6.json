@@ -1,0 +1,12 @@
+{
+ "acc_equal": {
+  "acc_n2": true,
+  "acc_k": true
+ },
+ "card": "NVIDIA GeForce RTX 3070",
+ "ref_card": "NVIDIA GeForce RTX 3070",
+ "eval_bs": 32,
+ "step_ok": true,
+ "pass": true,
+ "note": "vbank / slva untouched by \u00a7218 (git diff empty); D3-T acc re-run on eval_vb's card and bs"
+}
