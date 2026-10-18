@@ -1,0 +1,123 @@
+{
+ "spec": "LANG_v1 \u00a77 G-L3, S-L' fuzz half (random marks incl. injected unsound ones; M' subset of R_t, label o_R, s >= D) + parse / BFS checks",
+ "n_items": {
+  "main_D9_12": 100000,
+  "coverage_D3_16": 14000
+ },
+ "items_by_D": {
+  "coverage_3": 1000,
+  "coverage_4": 1000,
+  "coverage_5": 1000,
+  "coverage_6": 1000,
+  "coverage_7": 1000,
+  "coverage_8": 1000,
+  "coverage_9": 1000,
+  "coverage_10": 1000,
+  "coverage_11": 1000,
+  "coverage_12": 1000,
+  "coverage_13": 1000,
+  "coverage_14": 1000,
+  "coverage_15": 1000,
+  "coverage_16": 1000,
+  "main_9": 24879,
+  "main_10": 25159,
+  "main_11": 25089,
+  "main_12": 24873
+ },
+ "seeds": {
+  "items_main": 21890,
+  "D_main": 21891,
+  "items_coverage": 21892,
+  "marks": 21893,
+  "note": "unregistered fuzz seeds, plain make_item draws"
+ },
+ "regimes": [
+  "gold",
+  "all",
+  "random",
+  "gold_inject",
+  "lag_omit",
+  "foil_world"
+ ],
+ "trials": {
+  "gold": 114000,
+  "all": 114000,
+  "random": 114000,
+  "gold_inject": 114000,
+  "lag_omit": 114000,
+  "foil_world": 114000
+ },
+ "violations": 0,
+ "violations_by": {},
+ "examples": [],
+ "ties": 0,
+ "kept_by_regime": {
+  "gold": 114000,
+  "all": 114000,
+  "gold_inject": 114000,
+  "random": 11878,
+  "lag_omit": 12002,
+  "foil_world": 62
+ },
+ "stop_minus_D_hist": {
+  "gold": {
+   "0": 114000
+  },
+  "all": {
+   "0": 114000
+  },
+  "gold_inject": {
+   "0": 114000
+  },
+  "random": {
+   "0": 190,
+   "1": 526,
+   "2": 1011,
+   "3": 1555,
+   "4": 2298,
+   "5": 2353,
+   "6": 1957,
+   "7": 1265,
+   "8": 258,
+   "9": 196,
+   "10": 120,
+   "11": 79,
+   "12": 43,
+   "13": 27
+  },
+  "lag_omit": {
+   "0": 7,
+   "1": 62,
+   "2": 285,
+   "3": 1888,
+   "4": 2949,
+   "5": 3036,
+   "6": 2227,
+   "7": 1109,
+   "8": 159,
+   "9": 98,
+   "10": 76,
+   "11": 46,
+   "12": 43,
+   "13": 17
+  },
+  "foil_world": {
+   "2": 2,
+   "3": 1,
+   "5": 7,
+   "6": 5,
+   "7": 1,
+   "8": 3,
+   "9": 7,
+   "10": 7,
+   "11": 14,
+   "12": 9,
+   "13": 6
+  }
+ },
+ "maximality_fail_gold_or_all": 0,
+ "parse_diff_items": 0,
+ "reach_bfs_diff_items": 0,
+ "pass": true,
+ "sec": 625.2
+}

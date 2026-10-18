@@ -1,0 +1,66 @@
+{
+ "spec": "LANG_v1 \u00a77 G-L20 (replay part): seed 1, 12,000 steps, bs 64, p_self 0.5, self_kextra 4; rng_s = default_rng(seed + 21800)",
+ "replay_self_demand_seed1": {
+  "seed": 1,
+  "self_steps": 5992,
+  "records": 383488,
+  "per_D": 95872.0
+ },
+ "cursor_walk_seed1": {
+  "n_self_steps": 5992,
+  "cursor": 383488,
+  "exhausted_at": null,
+  "U_hist": {
+   "0": 76573,
+   "1": 76526,
+   "2": 76907,
+   "3": 77017,
+   "4": 76465
+  }
+ },
+ "spec_value": {
+  "self_steps": 5992,
+  "records": 383488
+ },
+ "consumed_per_D_interleaved": {
+  "9": 95872,
+  "10": 95872,
+  "11": 95872,
+  "12": 95872
+ },
+ "pool_spare_per_D": 10128,
+ "pool_total_over_demand": 1.1056,
+ "seeds2_21_self_steps": {
+  "2": 6076,
+  "3": 5965,
+  "4": 6016,
+  "5": 5943,
+  "6": 5974,
+  "7": 5910,
+  "8": 5899,
+  "9": 5928,
+  "10": 6022,
+  "11": 6045,
+  "12": 5924,
+  "13": 6010,
+  "14": 6021,
+  "15": 6018,
+  "16": 6083,
+  "17": 6029,
+  "18": 5988,
+  "19": 6007,
+  "20": 6022,
+  "21": 6051
+ },
+ "v1_pool_json_seeds2_21": {
+  "min": 5899,
+  "max": 6083,
+  "mean": 5996.6
+ },
+ "g_l20_check_fixtures": {
+  "good_meta": true,
+  "short_meta": false
+ },
+ "pass": true,
+ "sec": 16.1
+}
