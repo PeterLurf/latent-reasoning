@@ -1,0 +1,302 @@
+{
+ "by_n": {
+  "9": {
+   "items": 1000,
+   "precision_strict": 0.995,
+   "fail": 0.005,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 995,
+    "fail": 5
+   },
+   "keep": 0.995,
+   "prec_kept": 1.0,
+   "n_kept": 995,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.005517620086669922,
+   "cap": 13
+  },
+  "10": {
+   "items": 1000,
+   "precision_strict": 0.993,
+   "fail": 0.006,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 994,
+    "fail": 6
+   },
+   "keep": 0.994,
+   "prec_kept": 0.9989939637826962,
+   "n_kept": 994,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.00629474663734436,
+   "cap": 14
+  },
+  "11": {
+   "items": 1000,
+   "precision_strict": 0.981,
+   "fail": 0.012,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 6,
+    "0": 982,
+    "fail": 12
+   },
+   "keep": 0.982,
+   "prec_kept": 0.9989816700610998,
+   "n_kept": 982,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.007417729377746582,
+   "cap": 15
+  },
+  "12": {
+   "items": 1000,
+   "precision_strict": 0.951,
+   "fail": 0.044,
+   "right_value_wrong_steps": 0.001,
+   "steps_minus_n": {
+    "-1": 4,
+    "0": 952,
+    "fail": 44
+   },
+   "keep": 0.952,
+   "prec_kept": 0.9989495798319328,
+   "n_kept": 952,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.008323174238204957,
+   "cap": 16
+  },
+  "13": {
+   "items": 1000,
+   "precision_strict": 0.889,
+   "fail": 0.102,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 9,
+    "0": 889,
+    "fail": 102
+   },
+   "keep": 0.889,
+   "prec_kept": 1.0,
+   "n_kept": 889,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.010395601034164429,
+   "cap": 17
+  },
+  "14": {
+   "items": 1000,
+   "precision_strict": 0.859,
+   "fail": 0.13,
+   "right_value_wrong_steps": 0.002,
+   "steps_minus_n": {
+    "-1": 10,
+    "0": 860,
+    "fail": 130
+   },
+   "keep": 0.86,
+   "prec_kept": 0.9988372093023256,
+   "n_kept": 860,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.009414628028869628,
+   "cap": 18
+  },
+  "15": {
+   "items": 1000,
+   "precision_strict": 0.797,
+   "fail": 0.188,
+   "right_value_wrong_steps": 0.002,
+   "steps_minus_n": {
+    "-1": 15,
+    "0": 797,
+    "fail": 188
+   },
+   "keep": 0.797,
+   "prec_kept": 1.0,
+   "n_kept": 797,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.010026637315750122,
+   "cap": 19
+  },
+  "16": {
+   "items": 1000,
+   "precision_strict": 0.777,
+   "fail": 0.2,
+   "right_value_wrong_steps": 0.003,
+   "steps_minus_n": {
+    "-1": 21,
+    "0": 779,
+    "fail": 200
+   },
+   "keep": 0.779,
+   "prec_kept": 0.9974326059050064,
+   "n_kept": 779,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.011342953443527221,
+   "cap": 20
+  },
+  "17": {
+   "items": 1000,
+   "precision_strict": 0.741,
+   "fail": 0.238,
+   "right_value_wrong_steps": 0.001,
+   "steps_minus_n": {
+    "-1": 21,
+    "0": 741,
+    "fail": 238
+   },
+   "keep": 0.741,
+   "prec_kept": 1.0,
+   "n_kept": 741,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.011979208707809448,
+   "cap": 21
+  },
+  "18": {
+   "items": 1000,
+   "precision_strict": 0.683,
+   "fail": 0.293,
+   "right_value_wrong_steps": 0.005,
+   "steps_minus_n": {
+    "-1": 24,
+    "0": 683,
+    "fail": 293
+   },
+   "keep": 0.683,
+   "prec_kept": 1.0,
+   "n_kept": 683,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.0128555748462677,
+   "cap": 22
+  },
+  "19": {
+   "items": 1000,
+   "precision_strict": 0.629,
+   "fail": 0.347,
+   "right_value_wrong_steps": 0.005,
+   "steps_minus_n": {
+    "-1": 23,
+    "0": 630,
+    "fail": 347
+   },
+   "keep": 0.63,
+   "prec_kept": 0.9984126984126984,
+   "n_kept": 630,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.01430769681930542,
+   "cap": 23
+  },
+  "20": {
+   "items": 1000,
+   "precision_strict": 0.612,
+   "fail": 0.365,
+   "right_value_wrong_steps": 0.006,
+   "steps_minus_n": {
+    "-1": 23,
+    "0": 612,
+    "fail": 365
+   },
+   "keep": 0.612,
+   "prec_kept": 1.0,
+   "n_kept": 612,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.014635253429412841,
+   "cap": 24
+  },
+  "21": {
+   "items": 1000,
+   "precision_strict": 0.566,
+   "fail": 0.406,
+   "right_value_wrong_steps": 0.004,
+   "steps_minus_n": {
+    "-1": 25,
+    "0": 569,
+    "fail": 406
+   },
+   "keep": 0.569,
+   "prec_kept": 0.9947275922671354,
+   "n_kept": 569,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.015903082609176635,
+   "cap": 25
+  },
+  "22": {
+   "items": 1000,
+   "precision_strict": 0.49,
+   "fail": 0.466,
+   "right_value_wrong_steps": 0.006,
+   "steps_minus_n": {
+    "-1": 43,
+    "0": 491,
+    "fail": 466
+   },
+   "keep": 0.491,
+   "prec_kept": 0.9979633401221996,
+   "n_kept": 491,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.016451617479324342,
+   "cap": 26
+  },
+  "23": {
+   "items": 1000,
+   "precision_strict": 0.49,
+   "fail": 0.483,
+   "right_value_wrong_steps": 0.005,
+   "steps_minus_n": {
+    "-1": 25,
+    "0": 492,
+    "fail": 483
+   },
+   "keep": 0.492,
+   "prec_kept": 0.9959349593495935,
+   "n_kept": 492,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.017393144369125365,
+   "cap": 27
+  },
+  "24": {
+   "items": 1000,
+   "precision_strict": 0.425,
+   "fail": 0.529,
+   "right_value_wrong_steps": 0.006,
+   "steps_minus_n": {
+    "-2": 1,
+    "-1": 42,
+    "0": 428,
+    "fail": 529
+   },
+   "keep": 0.428,
+   "prec_kept": 0.9929906542056075,
+   "n_kept": 428,
+   "collide_rate": 0.0,
+   "draws": 1000,
+   "sec_per_item": 0.018268029689788818,
+   "cap": 28
+  }
+ },
+ "excl_size": 17607,
+ "te_items": 16000,
+ "def": "note 213-37 CHAIN-LABEL-FRESH ($0): part_chainlabel's chain (the model's own 1-pass decode re-rooted fresh at every hop, _parse_tree, length-grouped\nbatches) on FRESH items: nested170.generate(rng, n), np rng 21337, 1,000 per n, n 9..20 (\u00a7216 E3: 9..24, the same rng continued), excluding the \u00a7170 test set and the SERIAL pool by exact\nrendered syms (the trainer's EXCL) - a collision is redrawn and counted (collide_rate = collisions / draws). Step cap n + 4 (FAIL beyond). Gold\n(the generator's value) is for evaluation only. by_n {items, precision_strict (label == gold AND exactly n steps), fail, right_value_wrong_steps,\nsteps_minus_n {k | \"fail\": count}, keep (every step parsed AND exactly n steps, whatever the label), prec_kept (precision among kept), collide_rate,\nsec_per_item}.",
+ "run": "boxes/runs_fsq/s216_d3t_s2",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 191
+}
