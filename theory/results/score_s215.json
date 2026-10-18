@@ -187,10 +187,183 @@
    "pause_on": false,
    "ok": true
   },
-  "label": "pending (eval_vb.json)"
+  "last_step": 12000,
+  "dead": false,
+  "FT_DIVERGED": false,
+  "LABEL_NOISY": false,
+  "CONTAMINATED": false,
+  "ARGS_BAD": false,
+  "censored": false,
+  "ABSORB": false,
+  "DEPTH_GENERAL": false,
+  "M": 0.095,
+  "DBS": false,
+  "MARGIN_GROWS": false,
+  "STOP_G": {
+   "9": 0.03249999999999999,
+   "10": -0.021249999999999998,
+   "11": -0.017250000000000005,
+   "12": -0.008000000000000004,
+   "13": -0.005666666666666671,
+   "14": -0.0015000000000000013,
+   "15": 0.0
+  },
+  "STOP": 10,
+  "STOP_TO_SUPPORT": false,
+  "K_BEYOND": -0.0015000000000000013,
+  "K_BEYOND_MET": false,
+  "RISE_PAST_K": -0.0010000000000000009,
+  "STOP_MOVED": false,
+  "gain_after10": -0.021249999999999998,
+  "THINK_GAIN_BEYOND": -0.008000000000000004,
+  "C2_TAIL": true,
+  "THINK_NECESSARY_DEEP": true,
+  "MECHANISM": "UNLABELLED (not ABSORB)",
+  "LENGTH_FREE": true,
+  "VB_C1": true,
+  "K24_STABLE": true,
+  "KEEPS_SELF_STAB": true,
+  "MEM_TRADED": false,
+  "SD_SELF": false,
+  "SD_C2": false,
+  "SD_C2_MEM": false,
+  "MEMO": {
+   "9": {
+    "acc_pool": 0.9225,
+    "acc_fresh": 0.9185,
+    "items": [
+     2000,
+     2000
+    ]
+   },
+   "10": {
+    "acc_pool": 0.557,
+    "acc_fresh": 0.5515,
+    "items": [
+     2000,
+     2000
+    ]
+   },
+   "11": {
+    "acc_pool": 0.257,
+    "acc_fresh": 0.239,
+    "items": [
+     2000,
+     2000
+    ]
+   },
+   "12": {
+    "acc_pool": 0.146,
+    "acc_fresh": 0.1465,
+    "items": [
+     2000,
+     2000
+    ]
+   }
+  },
+  "label_audit": {
+   "n_audit": 5000,
+   "pi_label": 0.9996,
+   "pi_state": 0.9996,
+   "pi_label_ci95": [
+    0.9985426134854988,
+    0.9998902987189081
+   ],
+   "pi_state_ci95": [
+    0.9985426134854988,
+    0.9998902987189081
+   ],
+   "kept_wrong": [
+    {
+     "syms": [
+      " 0",
+      " /",
+      " 1",
+      " *",
+      " 5",
+      " -",
+      " (",
+      " 9",
+      " +",
+      " 4",
+      " *",
+      " 1",
+      " *",
+      " (",
+      " 10",
+      " -",
+      " (",
+      " 3",
+      " -",
+      " 7",
+      " /",
+      " (",
+      " 3",
+      " +",
+      " 0",
+      " -",
+      " 7",
+      " )",
+      " )",
+      " )",
+      " )"
+     ],
+     "n": 11,
+     "step": 4,
+     "pattern": "both",
+     "label": 0,
+     "gold": 3
+    },
+    {
+     "syms": [
+      " 3",
+      " +",
+      " 7",
+      " *",
+      " (",
+      " 2",
+      " -",
+      " 6",
+      " +",
+      " 1",
+      " /",
+      " (",
+      " 1",
+      " +",
+      " 1",
+      " +",
+      " 6",
+      " )",
+      " )",
+      " /",
+      " (",
+      " 4",
+      " /",
+      " (",
+      " 9",
+      " /",
+      " 5",
+      " )",
+      " /",
+      " 9",
+      " )"
+     ],
+     "n": 11,
+     "step": 2,
+     "pattern": "both",
+     "label": 2,
+     "gold": 5
+    }
+   ],
+   "seed": 21970
+  },
+  "label": "not SD-SELF | UNLABELLED (not ABSORB) | M 0.095 | STOP 10 | K'-BEYOND -0.002"
  },
  "PAIR": {
-  "label": "UNREAD (CTRL missing or pending)"
+  "SELF_ATTRIBUTED": true,
+  "FT_EFFECT": false,
+  "MEM": "traded by the self items",
+  "EROSION_FT": false
  },
  "GATE_1": {
   "GATE_1": true,
