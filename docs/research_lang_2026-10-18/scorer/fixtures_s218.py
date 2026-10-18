@@ -4,6 +4,7 @@ case gives the label v1 §4.3 states. The CODI-20 per-item file is read (never w
 Counts, crossovers, AUROCs and McNemar values written into the synthetic files are computed here by independent code, so the scorer's recomputation is tested.
     python -B fixtures_s218.py            -> fixtures_report.json beside this file
 """
+import hashlib
 import json
 import math
 import os
@@ -140,7 +141,7 @@ def vs_arm(arm, follow=None, own=None, clean=1.0, per_D=120, perD=None, t2=12, d
                 p.update(don="d%d_%d" % (D, i), y_don="oP", ok_don=cl)
             else:
                 p["ok_rec"] = cl
-            if arm in ("ii_prime", "ii"):
+            if arm in ("ii_prime", "ii", "person"):
                 p["frontier_differs"] = True
             if arm == "i_prime":
                 p.update(lt_differs=True, opts_outside=True)
@@ -212,7 +213,7 @@ def spec_A(kind="a1", **over):
              vswap=dict(ii_prime=dict(follow=1.0), i_prime=dict(follow=1.0), ii=dict(follow=0.9), person=dict(follow=1.0), reset=dict(own=0.2)),
              stall=1.0, cf=dict(tf=t_serial), hist=dict(bank=0.2, dup=0.15, self=0.7), cdeep={}, steps_run=10000, curve=None, labeller=(kind == "a2"),
              parts=("panel", "acc", "probe", "plant", "fd", "vswap", "stall", "cf", "hist24", "causal_deep") if kind != "ctrl" else ("acc", "hist24"),
-             card=CARD, dtype="fp32", evbs=EVBS_A, sha=SHA_A, n_wrong=0, card_by_part=None, acc_corrupt=False)
+             card=CARD, dtype="fp32", evbs=EVBS_A, sha=SHA_A, n_wrong=0, card_by_part=None, acc_corrupt=False, stall_n=None, contamination=None)
     s.update(over)
     return s
 
@@ -256,7 +257,7 @@ def ev_lvb(s):
     if "stall" in parts:
         items, st, inn = {}, 0, 0
         for D in range(4, 9):
-            intact = bern(accf(D, D)); k = sum(intact); ks = int(round(s["stall"] * k))
+            intact = bern(accf(D, D))[:s["stall_n"]] if s["stall_n"] else bern(accf(D, D)); k = sum(intact); ks = int(round(s["stall"] * k))
             stalled = tuple([1] * ks + [0] * (len(intact) - ks)); items[str(D)] = {"stalled": stalled, "intact": intact}; st += ks; inn += k
         f["stall"] = {"recovery": st / inn, "by_D": {}, "items": items}
     if "cf" in parts:
@@ -269,6 +270,8 @@ def ev_lvb(s):
         f.update(gate1={"choice": "L-ROLL"}, kept_vs_drawn={str(D): {"T": [600, 610], "concepts": [70, 71]} for D in range(9, 13)},
                  label_audit={"n": 5000, "n_wrong": s["n_wrong"], "pi_label": 1 - s["n_wrong"] / 5000},
                  memo={str(D): {"acc_pool": 0.975, "acc_fresh": 0.97} for D in range(9, 13)})
+    if s["contamination"] is not None:
+        f["contamination"] = s["contamination"]
     pl_ = [p for p in parts if p not in ("panel",)] + (["labeller"] if s["labeller"] else [])
     f["meta"] = {"card": s["card"], "dtype": s["dtype"], "tf32": False, "eval_bs": {p: s["evbs"][p] for p in pl_ if p in s["evbs"]}, "items_sha": s["sha"]}
     if s["labeller"]:
@@ -304,16 +307,21 @@ def gate_l0(over=None):
     return {"streams": st, "test_items_sha": SHA_A, "meta": {"card": CARD}}
 
 
-def log_text(steps, ce=None, va=None, guard=False, reuse=0):
-    ln = []
+def log_text(steps, ce=None, va=None, guard=False, reuse=None, coll="auto", hits="auto"):
+    """'auto': a ProsQA log (ce given) carries the trainer's stream_collisions and test_gate_sig_hits (0); None = never logged (Audit item 4 cases)."""
+    ln = []; coll = (0 if ce else None) if coll == "auto" else coll; hits = (0 if ce else None) if hits == "auto" else hits
     for s_ in range(100, steps + 1, 100):
         r = {"step": s_, "loss": 1.0}
         if ce:
             r["plain_cand_ce"] = ce(s_)
         if va and s_ % 2000 == 0:
             r["valid_acc"] = va(s_)
-        if reuse:
+        if reuse is not None:
             r["self_reuse"] = reuse
+        if coll is not None:
+            r["stream_collisions"] = coll
+        if hits is not None:
+            r["test_gate_sig_hits"] = hits
         ln.append(json.dumps(r))
     if guard:
         ln.append(json.dumps({"guard_stop": True}))
@@ -328,11 +336,12 @@ VA_OK = lambda s_: min(0.45, 0.05 + s_ / 100000)  # noqa: E731
 D3T_ARGS = {"mode": "slva", "mct": False, "steps": 48000, "bs": 64, "micro": 1, "lr": 0.0001, "seed": 1, "cur": "3,5,8", "cur_gate": "0.3:2:8000",
             "c_sched": "1000,8000", "mu": 1.0, "rec_w": 1.0, "kmax": 12, "kextra": 4, "out": "boxes/runs_fsq/s213_d3t_s1", "train_gpu": "NVIDIA GeForce RTX 3090"}
 A1_ARGS = dict(D3T_ARGS, steps=24000, cur="4,6,8", cur_gate="0.35:2:6000", task="prosqa_sym", slots="concept", cand_gate="plain_cand_ce", data_seed=22100,
-               self_micro=4, out="boxes/runs_fsq/lvb_sym_s1")
+               self_micro=4, out="boxes/runs_fsq/lvb_sym_s1", arch="lslva", arch_class="LangSLVA")
 A2_ARGS = dict(A1_ARGS, init_from="boxes/runs_fsq/lvb_sym_s1/model.pt", self_pool="boxes/runs_fsq/lvb_pool_s1/pool.jsonl", p_self=0.5, self_kmax=16, lr=3e-5,
                steps=12000, c_sched="0,0", out="boxes/runs_fsq/lvb_self_s1")
 CTRL_ARGS = dict(A2_ARGS, p_self=0.0, self_pool="none", out="boxes/runs_fsq/lvb_ctrl_s1")
-DIRECT_ARGS = {"mode": "direct", "steps": 24000, "bs": 64, "lr": 0.0001, "seed": 1, "task": "prosqa_sym", "out": "boxes/runs_fsq/lvb_direct_s1"}
+DIRECT_ARGS = {"mode": "direct", "steps": 24000, "bs": 64, "lr": 0.0001, "seed": 1, "task": "prosqa_sym", "out": "boxes/runs_fsq/lvb_direct_s1", "arch": "direct",
+               "arch_class": "GPT2KV"}
 B1_ARGS = {"mode": "langvb_gsm", "steps": 120000, "bs": 64, "lr": 0.0001, "seed": 1, "decomp": "strict", "out": "boxes/runs_fsq/lvb_gsm_s1"}
 
 
@@ -396,11 +405,11 @@ def gsm_arm(pair_fn=None, bases=range(60), variants=3):
             "by_m": {}, "pairs": pairs}
 
 
-def cf_gsm_part(tf, bases=range(60), variants=3):
+def cf_gsm_part(tf, bases=range(60), variants=3, js=(3, 4)):
     pairs = []
     for b in bases:
         mb = GSM_MBIN[b]
-        for j in [x for x in (3, 4) if x <= mb - 1] + [mb]:
+        for j in [x for x in js if x <= mb - 1] + [mb]:
             for v in range(variants):
                 t0 = tf(j, mb); ans = [1 if t >= t0 else 0 for t in range(15)]
                 pairs.append({"rec": "c%d_%d_%d" % (b, j, v), "don": "cd%d_%d_%d" % (b, j, v), "base": b, "variant": v, "j": j, "m_bin": mb, "answers_by_t": ans,
@@ -454,8 +463,8 @@ def b02(card=CARD):
 def base_files():
     F = {}
     F["s213_d3t_s1/args.json"] = D3T_ARGS
-    F["lvb_ref/direct_ref_args.json"] = dict(DIRECT_ARGS)
-    F["lvb_ref/b1_ref_args.json"] = dict(B1_ARGS)
+    for cell, a_ in (("direct", DIRECT_ARGS), ("a1", A1_ARGS), ("b1", B1_ARGS)):     # note 218-4: queued args frozen by sha256 (FROZEN_ARGS set in main)
+        F["lvb_frozen/%s_args.json" % cell] = dict(a_)
     F["lvb_gates/gate_l0.json"] = gate_l0()
     F["lvb_gates/gate_evmem.json"] = {"card": CARD, "eval_bs": dict(EVBS_A)}
     F["lvb_gates/gate_evmem_gsm.json"] = {"card": CARD, "eval_bs": dict(EVBS_B)}
@@ -467,7 +476,7 @@ def base_files():
     F["lvb_sym_s1/eval_lvb.json"] = ev_lvb(spec_A("a1"))
     F["lvb_gate1_s1/eval_gate1.json"] = gate1()
     F["lvb_pool_s1/pool_meta.json"] = pool_meta()
-    F["lvb_self_s1/log.jsonl"] = log_text(12000, CE_FT)
+    F["lvb_self_s1/log.jsonl"] = log_text(12000, CE_FT, reuse=0)
     F["lvb_self_s1/args.json"] = A2_ARGS
     F["lvb_self_s1/eval_lvb.json"] = ev_lvb(spec_A("a2"))
     F["lvb_ctrl_s1/log.jsonl"] = log_text(12000, CE_FT)
@@ -480,6 +489,52 @@ def base_files():
     F["lvb_gsm_s1/interim_go.json"] = interim()
     F["lvb_gsm_s1/eval_lvb_gsm.json"] = ev_gsm(b1_ok(120, 0))
     return F
+
+
+def cf_gsm_custom(spec):
+    """CF-GSM store from (base, j, n_variants, t0) rows (every candidate exposed, clean iff the endpoints are y / y')."""
+    pairs = []
+    for b, j, nv, t0 in spec:
+        mb = GSM_MBIN[b]
+        for v in range(nv):
+            ans = [1 if t >= t0 else 0 for t in range(15)]
+            pairs.append({"rec": "c%d_%d_%d" % (b, j, v), "don": "cd%d_%d_%d" % (b, j, v), "base": b, "variant": v, "j": j, "m_bin": mb, "answers_by_t": ans,
+                          "ok_rec": ans[14] == 1, "ok_don": ans[0] == 0, "pos_ok": True, "flip_ok": True})
+    C = {"share_window": None, "spearman": None, "last_step": {}, "late_fusion_median_tstar": None, "pairs": pairs}
+    for j in sorted(set(p["j"] for p in pairs)):
+        pp = [p for p in pairs if p["j"] == j]; cl = [p for p in pp if p["ok_rec"] and p["ok_don"]]
+        C[str(j)] = {"n_candidates": len(pp), "n_exposed": len(pp), "n_clean": len(cl), "curve": {}, "tstar": sorted(xover(p["answers_by_t"], 14) for p in cl)}
+    return C
+
+
+def t_mix(share, other, la=0.5):
+    """Addendum 1 item 2 mixtures: an item is serial (look-ahead la) with probability share, else precompute (t* 1) or recompute (t* D)."""
+    def f(D, j, rng):
+        if rng.random() < share:
+            return j - (1 if rng.random() < la else 0)
+        return 1 if other == "pre" else D
+    return f
+
+
+def cf_flags(C, extra=20):
+    """a full CF store with the eval's per-candidate 'exposed' flags instead of pos_ok / flip_ok, plus `extra` NON-exposed candidates per cell whose answers
+    read precompute (t* 1): they must never count."""
+    pairs = []
+    for p in C["pairs"]:
+        q = {k: v for k, v in p.items() if k not in ("pos_ok", "flip_ok")}; q["exposed"] = 1; q["selected"] = 1; pairs.append(q)
+    out = {k: v for k, v in C.items() if not str(k).isdigit() and k != "pairs"}
+    for D, row in C.items():
+        if not str(D).isdigit():
+            continue
+        out[D] = {}
+        for j, x in row.items():
+            for i in range(extra):
+                ans = [0] + [1] * int(D)
+                pairs.append({"rec": "nx%s_%s_%d" % (D, j, i), "D": int(D), "j": int(j), "answers_by_t": ans, "ok_rec": True, "ok_don": True,
+                              "ok_rec_d2": True, "ok_don_d2": True, "exposed": 0, "selected": 0})
+            out[D][j] = dict(x, n_candidates=x["n_candidates"] + extra)
+    out["pairs"] = pairs
+    return out
 
 
 TEST_SHA_D = {str(D): "sha_D%d" % D for D in range(3, 17)}
@@ -498,12 +553,15 @@ def to_exp_eval(ev):
         for arm, A in f["vswap"].items():
             need = {"ii_prime": ("pos_ok", "frontier_differs"), "ii": ("pos_ok", "frontier_differs"), "i_prime": ("pos_ok", "lt_differs", "opts_outside"),
                     "person": ("pos_ok",), "reset": ()}[arm]
-            ps = []
+            ps, t2 = [], []
             for p in A["pairs"]:
                 q = {"rec": p["rec"], "don": "person" if arm == "person" else "premise", "D": p["D"], "t": p["t"], "y_hyb": int(p["y_hyb"] == "oP"),
                      "ok_rec": int(p["ok_rec"]), "ok_don": int(p.get("ok_don", 1)), "exposed": int(all(p.get(x) for x in need))}
-                ps.append(q)
-            A2_ = dict(A, pairs=ps)
+                q.update({x: p[x] for x in need})                            # Audit item 9: the stored exposure facts stay; 'exposed' is the cross-check
+                (t2 if (arm == "ii_prime" and p["t"] == 2) else ps).append(q)
+            A2_ = dict(A, pairs=ps, n_candidates=len(ps))
+            if arm == "ii_prime":                                            # the module pops its t = 2 arm into a summary without pairs
+                A2_["t2_descriptive"] = {"n_candidates": len(t2), "n_clean": sum(1 for q in t2 if q["ok_rec"] and q["ok_don"]), "follow": 1.0, "own": 0.0}
             if arm == "reset":
                 A2_["follow"] = None if A["own"] is None else 1 - A["own"]
                 A2_["by_D"] = {D: dict(x, follow=None if x["own"] is None else 1 - x["own"]) for D, x in A["by_D"].items()}
@@ -553,7 +611,7 @@ def to_exp_l0(g):
             p["ubidir_by_stream"][st] = {str(r): e["ubidir_max"] for r in range(1, (int(D) + 1) // 2)}; p["udist_by_stream"][st] = e["udist"]
             p["beyond_D_by_stream"][st] = float(e["beyond_D"])
             FR.setdefault(st, {})[D] = {"n": e["n_gate"], "module_invariant_fail": e["invariant_failures"], "indep_invariant_fail": 0}
-    return {"spec": "fixture", "panel": P, "full_rows": FR, "usable_bands": list(range(3, 17)), "pass": True}
+    return {"spec": "fixture", "panel": P, "full_rows": FR, "usable_bands": list(range(3, 17)), "pass": True, "test_items_sha": dict(TEST_SHA_D)}
 
 
 def exp_layout(files):
@@ -566,16 +624,156 @@ def exp_layout(files):
     return F
 
 
+MOD_PART_DS = ("acc", "stall", "vswap", "cf", "hist24", "causal_deep", "probe", "fd")
+
+
+def to_mod_eval(ev, extra_candidates=True):
+    """a LAYOUTS-format eval_lvb.json reshaped EXACTLY as boxes/langvb_eval.py @ ec1aec8d writes it (Theory's field list, 2026-10-18): meta at the top level
+    (card, dtype, tf32, per_D, c, test_sha {D}, test_items_sha, items_sha {part: full sha}, items_sha_range, card_by_part, eval_bs incl. plant); stall by_D
+    rows; swap pairs {rec, don, D, t, y_hyb int, ok_rec, ok_don, exposed, pos_ok, frontier_differs | lt_differs + opts_outside}, t = 2 popped into
+    ii_prime.t2_descriptive; cf cells at cf.<D>.<j> with n_selected, every candidate stored (+ non-exposed and exposed-not-selected candidates), selected
+    pairs with answers_by_t / tstar / endpoints_clean; plant {lin|xor: {acc, acc_by_D, items {D}, items_flat, curve, steps_run}, eps, eps_rel, pcs}; fd cells
+    with by_D and pos / neg, fd_valid {s: {model: {auroc, ...}}}, fd_plant {model: auroc}, fd_slot_scores; causal_deep stall in the stall layout; band_B."""
+    f = {k: v for k, v in ev.items() if k != "meta"}; m = ev["meta"]
+    parts = [q for q in MOD_PART_DS if (q in f) or (q == "acc" and "acc_d2" in f)]
+    f.update(card=m["card"], dtype=m["dtype"], tf32=False, per_D=1000, c=0.0, test_sha=dict(TEST_SHA_D), test_items_sha=m["items_sha"],
+             items_sha={q: m["items_sha"] for q in parts}, items_sha_range={q: "range_" + q for q in parts}, card_by_part={q: m["card"] for q in parts},
+             eval_bs=dict(m["eval_bs"]), t_train_max=860)
+    if "dtype_by_part" in m:
+        f["dtype_by_part"] = m["dtype_by_part"]
+    if "stall" in f:
+        st = f["stall"]
+        f["stall"] = {"recovery": st["recovery"], "items": {D: {"i": list(range(len(x["intact"]))), "intact": list(x["intact"]), "stalled": list(x["stalled"])}
+                                                            for D, x in st["items"].items()},
+                      "by_D": {D: {"intact_kD": mean(x["intact"]), "stalled_kD1": mean(x["stalled"]), "stall_t": (int(D) + 1) // 2, "items": len(x["intact"]),
+                                   "n": len(x["intact"]), "recovery": (sum(x["stalled"]) / sum(x["intact"])) if sum(x["intact"]) else None}
+                               for D, x in st["items"].items()}}
+    if "vswap" in f:
+        V = {}
+        for arm, A in f["vswap"].items():
+            need = {"ii_prime": ("frontier_differs",), "ii": ("frontier_differs",), "person": (), "i_prime": ("lt_differs", "opts_outside"),
+                    "reset": ()}[arm]
+            ps, t2 = [], []
+            for p_ in A["pairs"]:
+                q = {"rec": p_["rec"], "don": "person" if arm == "person" else "premise", "D": p_["D"], "t": p_["t"], "y_hyb": int(p_["y_hyb"] == "oP"),
+                     "ok_rec": int(p_["ok_rec"]), "ok_don": None if arm == "reset" else int(p_.get("ok_don", 1)), "exposed": int(all(p_.get(x) for x in need)),
+                     "pos_ok": 1}
+                q.update({x: int(bool(p_[x])) for x in need})
+                if arm == "person":
+                    q["frontier_differs"] = int(bool(p_.get("frontier_differs")))         # kept by the writer, not its exposure
+                (t2 if (arm == "ii_prime" and p_["t"] == 2) else ps).append(q)
+            okd = lambda q: q["ok_don"] if q["ok_don"] is not None else 1  # noqa: E731   (RESET: ok_don null -> clean = ok_rec)
+            ex = [q for q in ps if q["exposed"]]; cl = [q for q in ex if q["ok_rec"] and okd(q)]
+            fol = lambda qq: (mean(q["y_hyb"] for q in qq) if qq else None)  # noqa: E731
+            byD = {}
+            for D in sorted({q["D"] for q in ps}):
+                e_ = [q for q in ex if q["D"] == D]; c_ = [q for q in e_ if q["ok_rec"] and okd(q)]
+                byD[str(D)] = {"n_candidates": sum(1 for q in ps if q["D"] == D), "n_exposed": len(e_), "n_clean": len(c_), "follow": fol(c_), "own": None if not c_ else 1 - fol(c_)}
+            # the writer's exposure ignores the (D, t) window (t is drawn inside it); the scorer applies the window, so non-admissible pairs (i_prime at D 4)
+            # are not written by the module: drop them here
+            adm = {"i_prime": lambda q: q["D"] >= 5 and q["t"] <= q["D"] - 2}.get(arm, lambda q: True)
+            ps = [q for q in ps if adm(q)]; ex = [q for q in ps if q["exposed"]]; cl = [q for q in ex if q["ok_rec"] and okd(q)]
+            byD = {D: x for D, x in byD.items() if any(q["D"] == int(D) for q in ps)}
+            V[arm] = {"n_candidates": len(ps), "n_exposed": len(ex), "n_clean": len(cl), "follow": fol(cl), "own": None if not cl else 1 - fol(cl), "by_D": byD,
+                      "by_t": {}, "pairs": ps}
+            if arm == "ii_prime":                                            # the writer: t = 2 pairs in vswap.ii_prime_t2, its summary in ii_prime.t2_descriptive
+                c2 = [q for q in t2 if q["ok_rec"] and q["ok_don"]]
+                V[arm]["t2_descriptive"] = {"n_candidates": len(t2), "n_exposed": len(t2), "n_clean": len(c2), "follow": fol(c2), "own": None if not c2 else 1 - fol(c2),
+                                            "by_D": {}, "by_t": {}}
+                V["ii_prime_t2"] = dict(V[arm]["t2_descriptive"], pairs=t2)
+        f["vswap"] = V
+    if "cf" in f:
+        C = f["cf"]; pairs = []
+        for p_ in C["pairs"]:
+            D, j, ab = p_["D"], p_["j"], p_["answers_by_t"]; cl_ = bool(p_["ok_rec"] and p_["ok_don"])
+            pairs.append({"rec": p_["rec"], "don": "cf_j%d" % j, "D": D, "j": j, "pos_ok": 1, "flip_ok": 1, "exposed": 1, "ok_rec": int(p_["ok_rec"]),
+                          "ok_rec_d2": int(p_["ok_rec_d2"]), "ok_don": int(p_["ok_don"]), "ok_don_d2": int(p_["ok_don_d2"]), "selected": 1, "clean": int(cl_),
+                          "clean_k2": int(p_["ok_rec_d2"] and p_["ok_don_d2"]), "answers_by_t": ab, "tstar": xover(ab, D),
+                          "endpoints_clean": int(ab[D] == 1 and ab[0] == 0)})
+        cells = {}
+        for D in sorted({p_["D"] for p_ in pairs}):
+            for j in sorted({p_["j"] for p_ in pairs if p_["D"] == D}):
+                if extra_candidates:                                         # 3 non-exposed (flip fails; ok_don null) + 2 exposed-not-selected per cell
+                    for i in range(3):
+                        pairs.append({"rec": 900 + i, "don": "cf_j%d" % j, "D": D, "j": j, "pos_ok": 1, "flip_ok": 0, "exposed": 0, "ok_rec": 1, "ok_rec_d2": 1,
+                                      "ok_don": None, "ok_don_d2": None, "selected": 0, "clean": 0, "clean_k2": 0})
+                    for i in range(2):
+                        pairs.append({"rec": 950 + i, "don": "cf_j%d" % j, "D": D, "j": j, "pos_ok": 1, "flip_ok": 1, "exposed": 1, "ok_rec": 1, "ok_rec_d2": 1,
+                                      "ok_don": 1, "ok_don_d2": 1, "selected": 0, "clean": 1, "clean_k2": 1})
+                ps = [q for q in pairs if q["D"] == D and q["j"] == j]; ex = [q for q in ps if q["exposed"]]; sl = [q for q in ex if q["selected"]]
+                cl = [q for q in sl if q["clean"]]
+                cells.setdefault(str(D), {})[str(j)] = {"n_candidates": len(ps), "n_exposed": len(ex), "n_selected": len(sl), "n_clean": len(cl),
+                                                        "curve": {str(t): (mean(1 - q["answers_by_t"][t] for q in cl) if cl else None) for t in range(D + 1)},
+                                                        "tstar": [q["tstar"] for q in cl], "share_window": mean(int(q["tstar"] in (j - 1, j)) for q in cl) if cl else None,
+                                                        "share_clean_kd": (len(cl) / len(sl)) if sl else None,
+                                                        "share_clean_kd2": (sum(q["clean_k2"] for q in sl) / len(sl)) if sl else None}
+        f["cf"] = dict(cells, spearman_within_D={}, n_decisive_clean_by_D={}, share_window_pooled=None, n_decisive_clean=None, last_hop={}, pairs=pairs,
+                       endpoint_mismatch=sum(1 for q in pairs if "endpoints_clean" in q and q["endpoints_clean"] != q["clean"]))
+    if "plant" in f:
+        f["plant"] = {t: {"eps": e["eps"], "eps_rel": e["eps_rel"], "pcs": e["pcs"],
+                          **{x: {"acc": e[x]["acc"], "acc_by_D": {}, "items": {"3": list(e[x]["items"][:100]), "4": list(e[x]["items"][100:])},
+                                 "items_flat": list(e[x]["items"]), "curve": [], "steps_run": 10000} for x in ("lin", "xor")}} for t, e in f["plant"].items()}
+    if "fd" in f:
+        sl = {}
+        for mo, T in f["fd"].items():
+            for t, Ks in T.items():
+                for k, e in Ks.items():
+                    e["by_D"] = {}
+                    sl["%s_t%s_k%s" % (mo, t, k)] = [[i, 0, 1, v] for i, v in enumerate(e["pos"])] + [[i, 1, 0, v] for i, v in enumerate(e["neg"])]
+        f["fd_valid"] = {s_: {mo: {"auroc": ev["fd_valid"][s_], "n_pos": 100, "n_neg": 100, "by_D": {}, "pos": [], "neg": []} for mo in ("lin", "mlp")} for s_ in ("3", "4")}
+        f["fd_plant"] = {mo: ev["fd_plant"]["auroc"] for mo in ("lin", "mlp")}; f["fd_slot_scores"] = sl; f["fd_eps"] = {"1": 0.11, "2": 0.11}
+    if "causal_deep" in f:
+        cd = dict(f["causal_deep"])
+        cd["stall"] = {"recovery": 1.0, "items": {}, "by_D": {D: {"intact_kD": 1.0, "stalled_kD1": v["recovery"], "stall_t": (int(D) + 1) // 2, "items": v["n"],
+                                                                   "n": v["n"], "recovery": v["recovery"]} for D, v in cd["stall"]["by_D"].items()}}
+        cd["band_B"] = [D for D in range(9, 17) if f["acc_d2"][str(D)] >= 0.95]
+        f["causal_deep"] = cd
+    f["contamination"] = {"test_gate_sig_hits": 0, "self_reuse": 0}
+    f.update(probe_n_distinct_seen=192000, fd_n_distinct_seen=200000, fd_plant_dir={"eps": 0.11}, fd_eps={"1": 0.11, "2": 0.11})
+    f["eval_bs"]["plant"] = f["eval_bs"].get("probe", 32)
+    return f
+
+
+def mod_layout(files):
+    """the base tree with every Stage A eval in the writer of record's shape, the G-L0 in its built panel layout + test_items_sha (str) + _by_D, eval_direct
+    top-level with top-level meta, G-EVMEM {card, eval_bs}; logs without stream_collisions / test_gate_sig_hits (evidence = the contamination block)."""
+    F = dict(files)
+    for rel in ("lvb_sym_s1/eval_lvb.json", "lvb_self_s1/eval_lvb.json", "lvb_ctrl_s1/eval_lvb.json"):
+        F[rel] = to_mod_eval(F[rel])
+    ed = F["lvb_direct_s1/eval_direct.json"]; m = ed["meta"]
+    F["lvb_direct_s1/eval_direct.json"] = {k: ed[k] for k in ("acc_by_D", "items", "c1_band", "d_star_fresh")}
+    F["lvb_direct_s1/eval_direct.json"].update(card=m["card"], dtype="fp32", tf32=False, per_D=1000, test_sha=dict(TEST_SHA_D), test_items_sha=SHA_A,
+                                               items_sha={"direct": SHA_A}, card_by_part={"direct": m["card"]}, eval_bs={"direct": EVBS_A["direct"]},
+                                               contamination={"test_gate_sig_hits": 0, "self_reuse": None})
+    g = to_exp_l0(F["lvb_gates/gate_l0.json"]); g["test_items_sha"] = SHA_A; g["test_items_sha_by_D"] = dict(TEST_SHA_D)
+    F["lvb_gates/gate_l0.json"] = g
+    F["lvb_gates/gate_evmem.json"] = {"card": CARD, "eval_bs": dict(EVBS_A, plant=EVBS_A["probe"]), "peaks": {}}
+    for rel, steps, ce, reuse in (("lvb_direct_s1/log.jsonl", 24000, CE_OK, None), ("lvb_sym_s1/log.jsonl", 24000, CE_OK, None),
+                                  ("lvb_self_s1/log.jsonl", 12000, CE_FT, 0), ("lvb_ctrl_s1/log.jsonl", 12000, CE_FT, None)):
+        F[rel] = log_text(steps, ce, reuse=reuse, coll=None, hits=None)
+    return F
+
+
 def configure():
-    """fixture-only stand-ins for the pre-listed ARGS-DIFF keys v1 does not give (RESOLVED R1); the shipped scorer keeps None (pending)."""
+    """the fixture tree: R, OUT and the G-L0 path point under _fx; FROZEN_ARGS are filled by freeze() after the base tree is written."""
     S.R = TREE; S.OUT = os.path.join(FX, "out.json"); S.PATHS["gate_l0"] = ("lvb_gates", "gate_l0.json")
-    S.ARGS_REF["direct"] = ("lvb_ref", "direct_ref_args.json"); S.ARGS_ALLOW["direct"] = set()
-    S.ARGS_ALLOW["a1"] = {"steps", "cur", "cur_gate", "task", "slots", "cand_gate", "data_seed", "self_micro"}
-    S.ARGS_REF["b1"] = ("lvb_ref", "b1_ref_args.json"); S.ARGS_ALLOW["b1"] = set()
+
+
+def sha_file(rel):
+    with open(os.path.join(TREE, rel), "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
+
+
+def freeze():
+    """note 218-4: Theory records (path, sha256) of each queued args file before launch; here from the materialized fixture files."""
+    for cell in ("direct", "a1", "b1"):
+        rel = "lvb_frozen/%s_args.json" % cell
+        S.FROZEN_ARGS[cell] = (os.path.join(TREE, rel), sha_file(rel))
 
 
 # ---------------------------------------------------------------- cases
 BASE = None
+SHIPPED_FROZEN = {}
 REPORT = []
 
 
@@ -732,7 +930,7 @@ def define_cases():
     @case("CF cell with 420 exposed pairs (> the registered 400)", "flagged, not voided; CF-L still read (met)")
     def _(c):
         o = run(A1(cf=dict(tf=t_serial, ncell=lambda D, j: 420 if (D, j) == (6, 4) else 60))); r = rdg(o["cells"]["a1"], "CF_L")
-        c.obs = {"flags": r.get("flags"), "status": r["status"]}; c.ok(r["met"] and r.get("flags") and "420 exposed" in r["flags"][0], "flag")
+        c.obs = {"flags": r.get("flags"), "status": r["status"]}; c.ok(r["met"] and r.get("flags") and "420 selected" in r["flags"][0], "flag")
 
     @case("A2-CTRL at --final with A2 GO undecided and never launched", "UNREAD (never a pass)")
     def _(c):
@@ -868,6 +1066,15 @@ def define_cases():
         o = run({"lvb_gate1_s1/eval_gate1.json": gate1(wrong=1)}); a = o["cells"]["a2"]; c.obs["gate"] = a["label"]
         c.ok(a["status"] == "FAIL" and "LABEL-BUG at GATE-1-L" in a["label"], "gate")
 
+    @case("Audit 2a LABEL-BUG: a GATE-1-L tie (A2 launched), an unsound audited record, a tie in the pool", "VOID (LABEL-BUG) x 3")
+    def _(c):
+        g = gate1(); g["chains"]["L-RR"]["10"]["n_tie"] = 1; g["label_bug"] = True
+        o = run({"lvb_gate1_s1/eval_gate1.json": g}); c.obs = {"tie": o["cells"]["a2"]["label"][:120]}; c.ok("LABEL-BUG" in o["cells"]["a2"]["label"], "GATE-1-L tie")
+        e = dict(BASE["lvb_self_s1/eval_lvb.json"]); e["label_audit"] = dict(e["label_audit"], n_unsound=1)
+        o = run({"lvb_self_s1/eval_lvb.json": e}); c.ok(o["cells"]["a2"]["status"] == "FAIL" and "LABEL-BUG" in o["cells"]["a2"]["label"], "label_audit n_unsound")
+        pm = dict(pool_meta(), n_tie=2, label_bug=True); o = run({"lvb_pool_s1/pool_meta.json": pm}); c.ok("LABEL-BUG" in o["cells"]["a2"]["label"], "pool ties")
+        g2 = gate1(); g2["label_bug"] = True; o = run({"lvb_gate1_s1/eval_gate1.json": g2}); c.ok(o["cells"]["a2"]["status"] in ("FAIL", "UNREAD"), "file label_bug alone")
+
     @case("GATE-1-L fails (kept yield 0.15 < 0.2) / choice not the N9 rule's", "A2 GO false -> A2, A2-CTRL UNREAD")
     def _(c):
         o = run({"lvb_gate1_s1/eval_gate1.json": gate1(y_roll=0.15, y_rr=0.16)}); c.obs = {"go": o["FLOW"]["A2_GO"]["why"]}
@@ -972,10 +1179,15 @@ def define_cases():
 
     @case("CF-GSM minimum (note 218-5): 35 base steps readable, 25 UNREADABLE", "CF-GSM MET at 35; UNREADABLE at 25 (< 30)")
     def _(c):
-        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_part(lambda j, mb: j, bases=range(35)))}); s35 = o["cells"]["b1"]["READINGS"]["CF_GSM"]["status"]
-        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_part(lambda j, mb: j, bases=range(25)))}); s25 = o["cells"]["b1"]["READINGS"]["CF_GSM"]["status"]
-        c.obs = {"35": s35, "25": s25}
-        c.ok(s35 == "MET", "35 distinct base steps -> readable and MET"); c.ok(s25.startswith("UNREADABLE") and "25 < 30" in s25, "25 < 30 -> UNREADABLE")
+        B = [b for b in range(60) if b % 6 != 0]                            # base items with m_bin >= 5 (steps j 3 and 4 both decisive)
+        s35 = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_custom([(b, j, 3, j) for b in B[:17] for j in (3, 4)] + [(B[17], 3, 3, 3)]))})
+        s35 = s35["cells"]["b1"]["READINGS"]["CF_GSM"]
+        s25 = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_custom([(b, j, 5, j) for b in B[:12] for j in (3, 4)] + [(B[12], 3, 5, 3)]))})
+        s25 = s25["cells"]["b1"]["READINGS"]["CF_GSM"]
+        c.obs = {"35": (s35["status"], s35.get("n_steps"), s35.get("n_clean")), "25": (s25["status"], s25.get("n_steps"), s25.get("n_clean"))}
+        c.ok(s35["status"] == "MET" and s35["n_steps"] == 35, "35 distinct base steps -> readable and MET")
+        c.ok(s25["status"].startswith("UNREADABLE") and "25 < 30" in s25["status"] and s25["n_clean"] >= 100, "25 < 30 steps (125 clean pairs) -> UNREADABLE")
+
 
     @case("GSM clustering: 21 variants of 5 base items (105 clean pairs) cannot pass", "SERIAL-STEP-GSM UNREADABLE (5 < 50 distinct base items); CF-GSM likewise")
     def _(c):
@@ -984,7 +1196,7 @@ def define_cases():
         b = o["cells"]["b1"]; s = b["READINGS"]["SERIAL_STEP_GSM"]["ii_prime"]; cfs = b["READINGS"]["CF_GSM"]
         c.obs = {"ii_prime": s["status"], "n_clean": s.get("n_clean_band"), "cf": cfs["status"]}
         c.ok(s.get("n_clean_band") == 105 and "5 < 50 distinct base items" in s["status"] and s.get("follow") == 1.0, "vswap >= 50 rule")
-        c.ok(cfs["status"].startswith("UNREADABLE") and "5 < 30" in cfs["status"], "CF-GSM >= 30 rule (note 218-5)"); c.ok(not b["VB_C1_GSM"], "not VB-C1-GSM")
+        c.ok(cfs["status"].startswith("UNREADABLE") and "< 30 distinct exposed base steps" in cfs["status"], "CF-GSM >= 30 steps rule (note 218-5)"); c.ok(not b["VB_C1_GSM"], "not VB-C1-GSM")
 
     @case("GSM clustering: a clustered mean differs from the pooled mean (designed)", "clustered follow 0.833 / own 0.167 (met); pair-level 0.20 / 0.80")
     def _(c):
@@ -1047,22 +1259,22 @@ def define_cases():
         c.ok(o["cells"]["ctrl"]["status"] == "FAIL" and "ARGS-DIFF" in o["cells"]["ctrl"]["label"] and o["cells"]["a2"]["SD_C2_L"] is False, "CTRL ARGS-DIFF")
         o = run({"lvb_sym_s1/args.json": dict(A1_ARGS, foo=1)}); c.ok(o["cells"]["a1"]["status"] == "FAIL" and not o["cells"]["a1"]["VB_C1_L"], "A1 unexpected key")
         o = run({"lvb_ctrl_s1/args.json": dict(CTRL_ARGS, p_self=0.5)}); c.ok(o["cells"]["ctrl"]["status"] == "FAIL", "CTRL p_self must be 0")
-        keep = S.ARGS_ALLOW["a1"]; S.ARGS_ALLOW["a1"] = None
+        keep = S.FROZEN_ARGS["a1"]; S.FROZEN_ARGS["a1"] = None
         try:
-            o = run(); c.ok(o["cells"]["a1"]["status"] == "PENDING" and "not pre-listed" in o["cells"]["a1"]["label"], "unlisted -> pending")
-            o = run(final=("a1",)); c.ok(o["cells"]["a1"]["status"] == "FAIL", "unlisted at --final -> FAILURE")
+            o = run(); c.ok(o["cells"]["a1"]["status"] == "PENDING" and "no frozen args" in o["cells"]["a1"]["label"], "no frozen entry -> pending")
+            o = run(final=("a1",)); c.ok(o["cells"]["a1"]["status"] == "FAIL", "no frozen entry at --final -> FAILURE")
         finally:
-            S.ARGS_ALLOW["a1"] = keep
+            S.FROZEN_ARGS["a1"] = keep
 
     REG = [("direct", "lvb_direct_s1/log.jsonl"), ("direct", "lvb_direct_s1/args.json"), ("direct", "lvb_direct_s1/eval_direct.json"),
-           ("direct", "lvb_gates/gate_l0.json"), ("direct", "lvb_gates/gate_evmem.json"), ("direct", "lvb_ref/direct_ref_args.json"),
+           ("direct", "lvb_gates/gate_l0.json"), ("direct", "lvb_gates/gate_evmem.json"), ("direct", "lvb_frozen/direct_args.json"),
            ("a1", "lvb_sym_s1/log.jsonl"), ("a1", "lvb_sym_s1/args.json"), ("a1", "lvb_sym_s1/eval_lvb.json"), ("a1", "lvb_direct_s1/eval_direct.json"),
-           ("a1", "lvb_gates/gate_l0.json"), ("a1", "lvb_gates/gate_evmem.json"), ("a1", "s213_d3t_s1/args.json"),
+           ("a1", "lvb_gates/gate_l0.json"), ("a1", "lvb_gates/gate_evmem.json"), ("a1", "lvb_frozen/a1_args.json"),
            ("a2", "lvb_self_s1/log.jsonl"), ("a2", "lvb_self_s1/args.json"), ("a2", "lvb_self_s1/eval_lvb.json"), ("a2", "lvb_pool_s1/pool_meta.json"),
            ("a2", "lvb_gate1_s1/eval_gate1.json"),
            ("ctrl", "lvb_ctrl_s1/log.jsonl"), ("ctrl", "lvb_ctrl_s1/args.json"), ("ctrl", "lvb_ctrl_s1/eval_lvb.json"),
            ("b1", "lvb_gsm_s1/log.jsonl"), ("b1", "lvb_gsm_s1/args.json"), ("b1", "lvb_gsm_s1/eval_lvb_gsm.json"), ("b1", "lvb_gsm_s1/interim_go.json"),
-           ("b1", "lvb_b02/codi20_rescore.json"), ("b1", "gsm_codi_20ep_s1/eval_items.json"), ("b1", "lvb_gates/gate_evmem_gsm.json"), ("b1", "lvb_ref/b1_ref_args.json")]
+           ("b1", "lvb_b02/codi20_rescore.json"), ("b1", "gsm_codi_20ep_s1/eval_items.json"), ("b1", "lvb_gates/gate_evmem_gsm.json"), ("b1", "lvb_frozen/b1_args.json")]
 
     @case("each registered file missing -> pending; with --final <cell> -> failure (rule b)", "%d (cell, file) pairs" % len(REG))
     def _(c):
@@ -1097,7 +1309,243 @@ def define_cases():
         m = {"lvb_sym_s1/eval_lvb.json": dict(BASE["lvb_sym_s1/eval_lvb.json"], cf=dict(BASE["lvb_sym_s1/eval_lvb.json"]["cf"], pairs=None))}
         o = run(m); c.ok(o["cells"]["a1"]["status"] == "PENDING" and "cf" in o["cells"]["a1"]["label"], "cf.pairs missing -> pending (field level)")
 
-    @case("Experiments' langvb_eval layout (exposed flags, int y_hyb, cf.cells + selected pairs, fd_slot_scores, top-level card / test_sha, G-L0 panel layout)",
+    @case("item 1: CF-GSM counts and clusters exposed base STEPS (base, j)", "20 base items x 2 steps = 40 steps MET; step share 0.5 vs pair / item share 0.75 -> NOT MET")
+    def _(c):
+        B = [b for b in range(60) if b % 6 != 0]
+        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_custom([(b, j, 3, j) for b in B[:20] for j in (3, 4)]))})
+        r = o["cells"]["b1"]["READINGS"]["CF_GSM"]; c.obs = {"steps40": {k: r.get(k) for k in ("status", "n_steps", "n_base_items", "rho_ci95")}}
+        c.ok(r["status"] == "MET" and r["n_steps"] == 40 and r["n_base_items"] == 20, "40 steps from 20 items: readable, MET")
+        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_custom([x for b in B[:40] for x in ((b, 3, 3, 3), (b, 4, 1, 6))]))})
+        r = o["cells"]["b1"]["READINGS"]["CF_GSM"]; c.obs["step_vs_item"] = {k: r.get(k) for k in ("status", "share_window_clustered", "spearman_step_clusters", "pair_level")}
+        c.ok(r["status"] == "NOT MET" and abs(r["share_window_clustered"] - 0.5) < 1e-12 and abs(r["pair_level"]["share_window"] - 0.75) < 1e-12
+             and r["spearman_step_clusters"] > 0.99, "step-clustered share 0.5 decides (pair-level 0.75)")
+
+    @case("item 2: frozen queued args (note 218-4)", "exact match except META; args_ref content rule; changed frozen file -> mismatch; args_frozen.json accepted (unanchored)")
+    def _(c):
+        o = run({"lvb_sym_s1/args.json": dict(A1_ARGS, lr=2e-4)}); a = o["cells"]["a1"]; c.obs = {"lr": a["label"][:120]}
+        c.ok(a["status"] == "FAIL" and "ARGS-DIFF" in a["label"], "non-META key differs -> ARGS-DIFF")
+        o = run({"lvb_sym_s1/args.json": dict(A1_ARGS, train_gpu="NVIDIA GeForce RTX 3090 (host 2)", out="boxes/runs_fsq/x", torch_version="2.5.2")})
+        c.ok(o["cells"]["a1"]["VB_C1_L"] is True, "environment / META keys differ -> ok")
+        for kw in (dict(arch="direct"), dict(arch_class="GPT2KV"), dict(arch="direct", arch_class="GPT2KV")):
+            o = run({"lvb_sym_s1/args.json": dict(A1_ARGS, **kw)}); a = o["cells"]["a1"]
+            c.ok(a["status"] == "FAIL" and "required_bad" in str(a["censors"]["ARGS_DIFF"]) and a["censors"]["ARGS_DIFF"]["required_bad"], "a1 %s -> ARGS-DIFF (arch is not META)" % kw)
+        o = run({"lvb_ctrl_s1/args.json": dict(CTRL_ARGS, arch="direct")}); c.ok(o["cells"]["ctrl"]["status"] == "FAIL", "A2-CTRL with a swapped arch -> ARGS-DIFF")
+        o = run({"lvb_frozen/a1_args.json": dict(A1_ARGS, lr=5e-5)}); a = o["cells"]["a1"]; c.obs["sha"] = a["label"][:160]
+        c.ok(a["status"] == "PENDING" and "sha256" in a["label"], "frozen file changed -> pending (mismatch)")
+        o = run({"lvb_frozen/a1_args.json": dict(A1_ARGS, lr=5e-5)}, final=("a1",)); c.ok(o["cells"]["a1"]["label"].startswith("VOID (mismatch"), "--final -> VOID")
+        keep = S.FROZEN_ARGS["a1"]; S.FROZEN_ARGS["a1"] = None
+        try:
+            o = run({"lvb_sym_s1/args_frozen.json": dict(A1_ARGS)}); a = o["cells"]["a1"]
+            c.ok(a["VB_C1_L"] is True and a["censors"]["ARGS_DIFF"]["frozen"]["anchored"] is False, "<cell>/args_frozen.json accepted, flagged unanchored")
+        finally:
+            S.FROZEN_ARGS["a1"] = keep
+        ref = os.path.join(TREE, "lvb_frozen/a1_ref_copy.json")
+        o = run({"lvb_frozen/a1_ref_copy.json": dict(A1_ARGS), "lvb_sym_s1/args.json": dict(A1_ARGS, args_ref=ref)})
+        c.ok(o["cells"]["a1"]["VB_C1_L"] is True, "args_ref pointer, equal content -> ok")
+        o = run({"lvb_frozen/a1_ref_copy.json": dict(A1_ARGS, lr=9e-5), "lvb_sym_s1/args.json": dict(A1_ARGS, args_ref=ref)})
+        c.ok(o["cells"]["a1"]["status"] == "FAIL", "args_ref pointer, different content -> ARGS-DIFF")
+
+    @case("item 3: CF full store with per-candidate 'exposed' flags (20 non-exposed precompute-like candidates per cell)",
+          "non-exposed never counted: CF-L MET, counts recomputed; mixed store pending; flag != components VOID")
+    def _(c):
+        base = BASE["lvb_sym_s1/eval_lvb.json"]
+        o = run({"lvb_sym_s1/eval_lvb.json": dict(base, cf=cf_flags(base["cf"]))}); a = o["cells"]["a1"]; r = rdg(a, "CF_L")
+        c.obs = {"status": r["status"], "flags": r.get("flags")}
+        c.ok(r["met"] and not r.get("flags") and a["VB_C1_L"], "MET with the full flag store (no selected-only flag)")
+        C2 = cf_flags(base["cf"]); C2["pairs"] = [dict(C2["pairs"][0])] + [{k: v for k, v in q.items() if k != "exposed"} for q in C2["pairs"][1:]]
+        o = run({"lvb_sym_s1/eval_lvb.json": dict(base, cf=C2)})
+        c.ok(o["cells"]["a1"]["status"] == "PENDING" and "exposure stored for some" in o["cells"]["a1"]["label"], "mixed -> pending")
+        C3 = dict(base["cf"]); C3["pairs"] = [dict(C3["pairs"][0], exposed=0)] + C3["pairs"][1:]
+        o = run({"lvb_sym_s1/eval_lvb.json": dict(base, cf=C3)}); r = rdg(o["cells"]["a1"], "CF_L")
+        c.ok("exposed' != pos_ok" in r["status"], "flag disagrees with components -> VOID")
+
+    @case("item 4: CONTAMINATED needs evidence (A1, DIRECT-SYM, A2-CTRL; A2 self_reuse)", "absent -> pending, --final FAILURE; contamination block alone ok; a hit -> FAILURE")
+    def _(c):
+        for cell, rel, steps, ce in (("a1", "lvb_sym_s1/log.jsonl", 24000, CE_OK), ("direct", "lvb_direct_s1/log.jsonl", 24000, CE_OK),
+                                     ("ctrl", "lvb_ctrl_s1/log.jsonl", 12000, CE_FT)):
+            o = run({rel: log_text(steps, ce, coll=None, hits=None)}); x = o["cells"][cell]
+            c.ok(x["status"] == "PENDING" and "contamination evidence" in x["label"], "%s no evidence -> pending" % cell)
+            o = run({rel: log_text(steps, ce, coll=None, hits=None)}, final=(cell,)); c.ok(o["cells"][cell]["status"] == "FAIL", "%s --final -> FAILURE" % cell)
+        m = A1(contamination={"test_gate_sig_hits": 0}); m["lvb_sym_s1/log.jsonl"] = log_text(24000, CE_OK, coll=None, hits=None)
+        o = run(m); c.ok(o["cells"]["a1"]["VB_C1_L"] is True, "contamination block alone ok")
+        o = run(A1(contamination={"test_gate_sig_hits": 2})); c.ok(o["cells"]["a1"]["status"] == "FAIL" and "CONTAMINATED" in o["cells"]["a1"]["label"], "hit -> FAILURE")
+        o = run({"lvb_self_s1/log.jsonl": log_text(12000, CE_FT)}); c.obs = {"a2": o["cells"]["a2"]["label"][:160]}
+        c.ok(o["cells"]["a2"]["status"] == "PENDING" and "self_reuse" in o["cells"]["a2"]["label"], "A2 without self_reuse -> pending")
+
+    @case("item 5: items_sha anchored to G-L0's test_items_sha only", "absent -> every Stage A cell pending; per-part anchor compared per part; different forms pending")
+    def _(c):
+        g = dict(BASE["lvb_gates/gate_l0.json"]); g.pop("test_items_sha")
+        o = run({"lvb_gates/gate_l0.json": g}); c.obs = {k: o["cells"][k]["status"] for k in ("direct", "a1", "a2", "ctrl")}
+        c.ok(all(o["cells"][k]["status"] == "PENDING" for k in ("direct", "a1")) and "test_items_sha" in o["cells"]["a1"]["label"], "no anchor -> pending")
+        o = run({"lvb_gates/gate_l0.json": dict(g, test_items_sha={p_: SHA_A for p_ in EVBS_A})}); c.ok(o["cells"]["a1"]["VB_C1_L"] is True, "per-part anchor ok")
+        o = run({"lvb_gates/gate_l0.json": dict(g, test_items_sha={p_: SHA_A for p_ in EVBS_A if p_ != "direct"})})
+        c.ok(o["cells"]["direct"]["status"] == "PENDING" and "lacks part direct" in o["cells"]["direct"]["label"], "anchor lacking a part -> pending")
+        o = run({"lvb_gates/gate_l0.json": dict(g, test_items_sha=dict(TEST_SHA_D))})
+        c.ok(o["cells"]["a1"]["status"] == "PENDING" and "different forms" in o["cells"]["a1"]["label"], "per-D anchor vs single sha -> pending")
+
+    @case("item 6: every registered FD-GSM cell (t 0..12, k >= t) is required", "a missing (1, 7) or (0, 5) cell -> pending; --final -> FAILURE")
+    def _(c):
+        for t, k in ((1, 7), (0, 5)):
+            ev = ev_gsm(b1_ok(120, 0)); fu = json.loads(json.dumps(ev["future"])); del fu["lin"][str(t)][str(k)]
+            o = run({"lvb_gsm_s1/eval_lvb_gsm.json": dict(ev, future=fu)}); x = o["cells"]["b1"]
+            c.ok(x["status"] == "PENDING" and "future cells" in x["label"], "(%d, %d) -> pending" % (t, k))
+            o = run({"lvb_gsm_s1/eval_lvb_gsm.json": dict(ev, future=fu)}, final=("b1",)); c.ok(o["cells"]["b1"]["status"] == "FAIL", "(%d, %d) --final -> FAILURE" % (t, k))
+
+    @case("Addendum 1 CF mixtures: serial 0.9 + precompute (flips 0.05); 0.8 + recompute (0.05); 0.9 + recompute (0.10); 0.8 + precompute (0.05)",
+          "MET; NOT MET; NOT MET; NOT MET (the Addendum's Monte Carlo)")
+    def _(c):
+        res = {}
+        for tag, sh, oth, eps, want in (("0.9 pre 0.05", 0.9, "pre", 0.05, True), ("0.8 rec 0.05", 0.8, "rec", 0.05, False),
+                                        ("0.9 rec 0.10", 0.9, "rec", 0.10, False), ("0.8 pre 0.05", 0.8, "pre", 0.05, False)):
+            o = run(A1(cf=dict(tf=t_mix(sh, oth), eps=eps, n=100, seed=31))); r = rdg(o["cells"]["a1"], "CF_L")
+            res[tag] = (r["status"], round(r.get("share_window") or 0, 3), round(r.get("spearman_within_D") or 0, 3))
+            c.ok(r["met"] is want, "%s -> %s" % (tag, "MET" if want else "NOT MET"))
+        c.obs = res
+
+    @case("SERIAL-ONSET-L failing: flat ON, slope 0.5 (span 3), never reached at D 8", "NOT MET x 3 (readable)")
+    def _(c):
+        res = {}
+        for tag, ON in (("flat", {3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2}), ("slope", {3: 3, 4: 5, 5: 5, 6: 5, 7: 4, 8: 8})):
+            o = run(A1(probe=lambda t, D, ON=ON: 0.95 if t >= ON[D] else 0.5)); r = rdg(o["cells"]["a1"], "SERIAL_ONSET_L")
+            res[tag] = (r["status"], r.get("slope"), r.get("span_8_4")); c.ok(r["status"] == "NOT MET" and not o["cells"]["a1"]["VB_C1_L"], "%s -> NOT MET" % tag)
+        c.ok(abs(res["slope"][1] - 0.5) < 1e-12 and res["slope"][2] == 3, "slope 0.5 with span 3: the slope clause alone fails")
+        o = run(A1(probe=probe_serial(over={(12, 8): 0.85}))); r = rdg(o["cells"]["a1"], "SERIAL_ONSET_L"); res["never"] = (r["status"], r.get("never_reached"))
+        c.ok(r["status"] == "NOT MET" and r["never_reached"] == [8], "never reached at D 8 -> NOT MET"); c.obs = res
+
+    @case("SERIAL-STEP-L per-D bar: (ii') pooled 0.90 with D 5 at 0.50", "NOT MET")
+    def _(c):
+        vs = dict(spec_A("a1")["vswap"], ii_prime=dict(follow=1.0, perD={5: {"follow": 0.5}})); o = run(A1(vswap=vs))
+        s_ = rdg(o["cells"]["a1"], "SERIAL_STEP_L")["ii_prime"]; c.obs = {"follow": s_.get("follow"), "status": s_["status"]}
+        c.ok(s_["status"] == "NOT MET" and s_["follow"] >= 0.8, "per-D bar fails")
+
+    @case("PROBE(12) invalid (0.85 at every D)", "PROBE-GAIN-L and SERIAL-ONSET-L UNREADABLE (final state)")
+    def _(c):
+        o = run(A1(probe=probe_serial(over={(12, D): 0.85 for D in range(3, 9)}))); a = o["cells"]["a1"]
+        c.obs = {k: rdg(a, k)["status"][:90] for k in ("PROBE_GAIN_L", "SERIAL_ONSET_L")}
+        c.ok("final state" in rdg(a, "PROBE_GAIN_L")["status"] and "final state" in rdg(a, "SERIAL_ONSET_L")["status"], "both UNREADABLE")
+
+    @case("A2 readings failing singly: ABSORB (D 11 0.94), LENGTH (D 5 0.985), K'24 (D 6 0.96), DEPTH-BEYOND (D 13-16 0.78)", "each NOT MET alone; SD-SELF / SD-C2 follow")
+    def _(c):
+        res = {}
+        for tag, accf, key in (("ABSORB", acc_profile(0.995, 0.97, 0.85, over={11: 0.94}), "ABSORB_L"),
+                               ("LENGTH", acc_profile(0.995, 0.97, 0.85, over={5: 0.985}), "LENGTH_L"),
+                               ("K24", acc_profile(0.995, 0.97, 0.85, over={(6, 24): 0.96}), "K24_STABLE"),
+                               ("DBS", acc_profile(0.995, 0.97, 0.78), "DEPTH_BEYOND_SELF_L")):
+            o = run(A2(acc=accf)); a = o["cells"]["a2"]; m = a["A2_READINGS"]; res[tag] = {k: m[k]["status"] for k in m}
+            others = [k for k in m if k != key and m[k]["status"] != "MET"]
+            c.ok(m[key]["status"] == "NOT MET" and not others and a["SD_C2_L"] is False, "%s fails alone" % tag)
+            c.ok(a["SD_SELF_L"] is (tag == "DBS"), "%s: SD-SELF %s" % (tag, tag == "DBS"))
+        c.obs = res
+
+    @case("BEATS-CTRL-L failing numerically (A2 0.85 vs readable A2-CTRL 0.80)", "NOT MET (readable); not SD-C2-L")
+    def _(c):
+        o = run({"lvb_ctrl_s1/eval_lvb.json": ev_lvb(spec_A("ctrl", acc=acc_profile(0.97, 0.62, 0.80)))}); a = o["cells"]["a2"]; b_ = a["A2_READINGS"]["BEATS_CTRL_L"]
+        c.obs = {k: b_.get(k) for k in ("status", "delta")}
+        c.ok(b_["status"] == "NOT MET" and abs(b_["delta"] - 0.05) < 1e-9 and a["SD_C2_L"] is False, "NOT MET")
+
+    @case("SERIAL-STEP-GSM failing on own 0.35 > 0.3 (follow 0.65); NO-CLOCK-GSM failing (recovery 0.5)", "NOT MET; NOT MET")
+    def _(c):
+        arms = {"ii_prime": gsm_arm(pair_fn=lambda b, v: ("follow", True) if b < 39 else ("own", True)), "i": gsm_arm(), "ii": gsm_arm(), "iv": gsm_arm()}
+        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), arms=arms)}); s_ = o["cells"]["b1"]["READINGS"]["SERIAL_STEP_GSM"]["ii_prime"]
+        c.obs = {"own": s_.get("own"), "follow": s_.get("follow"), "status": s_["status"]}
+        c.ok(s_["status"] == "NOT MET" and abs(s_["own"] - 21 / 60) < 1e-12 and not o["cells"]["b1"]["VB_C1_GSM"], "own > 0.3")
+        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), stall_rec=0.5)}); r = o["cells"]["b1"]["READINGS"]["NO_CLOCK_GSM"]
+        c.obs["stall"] = r["status"]; c.ok(r["status"] == "NOT MET" and not o["cells"]["b1"]["VB_C1_GSM"], "NO-CLOCK-GSM NOT MET")
+
+    @case("STALL with 1,500 items (< 2,000)", "NO-CLOCK-L UNREADABLE")
+    def _(c):
+        o = run(A1(stall_n=300)); r = rdg(o["cells"]["a1"], "NO_CLOCK_L"); c.obs = {"status": r["status"]}
+        c.ok(r["status"].startswith("UNREADABLE") and "1500 < 2,000" in r["status"], "UNREADABLE")
+
+    @case("item 9: swap exposure recomputed from the stored components; the eval's flag cross-checks", "components absent -> pending; flag disagreeing -> arm VOID")
+    def _(c):
+        base = BASE["lvb_sym_s1/eval_lvb.json"]; V = dict(base["vswap"])
+        A_ = dict(V["ii_prime"]); A_["pairs"] = [dict({k: v for k, v in q.items() if k != "frontier_differs"}, exposed=1) for q in A_["pairs"]]
+        o = run({"lvb_sym_s1/eval_lvb.json": dict(base, vswap=dict(V, ii_prime=A_))}); c.obs = {"no_comp": o["cells"]["a1"]["label"][:140]}
+        c.ok(o["cells"]["a1"]["status"] == "PENDING" and "exposure field frontier_differs" in o["cells"]["a1"]["label"], "components absent -> pending")
+        A_ = dict(V["i_prime"]); A_["pairs"] = [dict(A_["pairs"][0], exposed=0)] + [dict(q, exposed=1) for q in A_["pairs"][1:]]
+        o = run({"lvb_sym_s1/eval_lvb.json": dict(base, vswap=dict(V, i_prime=A_))}); s_ = rdg(o["cells"]["a1"], "SERIAL_STEP_L")["i_prime"]
+        c.ok("'exposed' flag != the exposure recomputed" in s_["status"] and not o["cells"]["a1"]["VB_C1_L"], "disagreement -> VOID")
+
+    @case("writer of record (boxes/langvb_eval.py @ ec1aec8d): every Stage A file shaped exactly as written (Theory's field list)",
+          "identical readings: VB-C1-L, SD-C2-L; CF counts recomputed from every candidate; PaR-C still fails; a module count / flag disagreement VOIDs")
+    def _(c):
+        M = mod_layout(BASE); materialize(M); o = S.score(); a = o["cells"]["a1"]
+        c.obs = {"a1": a["label"][:160], "a2": o["cells"]["a2"]["label"][:120], "direct": o["cells"]["direct"]["label"][:80], "cf_flags": rdg(a, "CF_L").get("flags"),
+                 "t2": lab(a).get("ii_prime_t2_descriptive")}
+        c.ok(a["VB_C1_L"] is True and all(v == "MET" for v in comps(a).values()), "VB-C1-L"); c.ok(o["cells"]["a2"]["SD_C2_L"] is True, "SD-C2-L")
+        c.ok(o["cells"]["direct"]["C1"]["band"] == [5, 6, 7, 8], "DIRECT top-level fields")
+        c.ok(not rdg(a, "CF_L").get("flags") and rdg(a, "CF_L")["n_clean"] == 900, "CF from the full candidate store (non-exposed / unselected excluded)")
+        t2 = lab(a).get("ii_prime_t2_descriptive") or {}
+        c.ok(t2.get("source") == "vswap.ii_prime_t2.pairs" and t2.get("n_clean", 0) > 0 and not t2.get("flag_file_summary_differs"), "t = 2 summary recomputed from ii_prime_t2.pairs")
+        rs_ = rdg(a, "SERIAL_STEP_L"); c.ok(a["DESCRIPTIVE"]["arms_descriptive"]["reset"]["readable"] and abs(lab(a)["RESET_recovery"] - 0.2) < 1e-9,
+                                           "RESET with ok_don null: clean = ok_rec, recovery read")
+        c.ok(a["DESCRIPTIVE"]["flag_train_items_lt_200k"] == ["probe_n_distinct_seen"], "probe distinct items < 200,000 flagged (reported)")
+        vs = dict(spec_A("a1")["vswap"], ii_prime=dict(follow=1.0), i_prime=dict(follow=0.0))
+        pc = to_mod_eval(ev_lvb(spec_A("a1", vswap=vs, fd=lambda m, t, k: 0.95 if k >= 3 else 0.7, cf=dict(tf=lambda D, j, r: 1))))
+        materialize(dict(M, **{"lvb_sym_s1/eval_lvb.json": pc})); o = S.score(); a = o["cells"]["a1"]
+        c.ok(not a["VB_C1_L"] and lab(a)["PRECOMPUTE_L"] is True and lab(a)["CF_CARRY"] is True, "PaR-C in the module's shape")
+        e2 = json.loads(json.dumps(M["lvb_sym_s1/eval_lvb.json"])); e2["cf"]["5"]["3"]["n_exposed"] += 1
+        materialize(dict(M, **{"lvb_sym_s1/eval_lvb.json": e2})); o = S.score(); c.ok("n_exposed" in rdg(o["cells"]["a1"], "CF_L")["status"], "module CF count off by one -> VOID")
+        e3 = json.loads(json.dumps(M["lvb_sym_s1/eval_lvb.json"])); q = next(x for x in e3["cf"]["pairs"] if x["selected"]); q["clean"] = 1 - q["clean"]
+        materialize(dict(M, **{"lvb_sym_s1/eval_lvb.json": e3})); o = S.score(); c.ok("'clean' != exposed" in rdg(o["cells"]["a1"], "CF_L")["status"], "clean flag off -> VOID")
+        e4 = json.loads(json.dumps(M["lvb_sym_s1/eval_lvb.json"])); e4["contamination"]["test_gate_sig_hits"] = None
+        materialize(dict(M, **{"lvb_sym_s1/eval_lvb.json": e4})); o = S.score(); c.ok(o["cells"]["a1"]["status"] == "PENDING", "null test_gate_sig_hits -> pending")
+        g = dict(M["lvb_gates/gate_l0.json"]); g.pop("test_items_sha"); materialize(dict(M, **{"lvb_gates/gate_l0.json": g})); o = S.score()
+        c.ok(o["cells"]["a1"]["status"] == "PENDING", "G-L0 without test_items_sha -> pending")
+        e5 = json.loads(json.dumps(M["lvb_self_s1/eval_lvb.json"])); e5["meta"] = {"card": CARD, "dtype": "fp32", "eval_bs": {"labeller": 8}, "cursor": 383488}
+        materialize(dict(M, **{"lvb_self_s1/eval_lvb.json": e5})); o = S.score()
+        c.ok(o["cells"]["a2"]["SD_C2_L"] is True, "labeller_part's own meta block (merged at the top level) does not shadow the file's eval_bs / items_sha")
+
+    @case("informational: Experiments' e2e CPU smoke (scratch/_tmp/e2e lvb_sym_s1, trained mini-run; small files copied read-only)",
+          "every part it has written parses with no missing field; its log carries test_gate_sig_hits and its args carry arch / arch_class")
+    def _(c):
+        src = "D:/Latent/scratch/_tmp/e2e/boxes/runs_fsq/lvb_sym_s1"; dst = os.path.join(HERE, "_fx_e2e", "lvb_sym_s1")
+        if not os.path.exists(os.path.join(src, "eval_lvb.json")):
+            c.obs = {"absent": src}; c.ok(True, "e2e output absent (informational)"); return
+        os.makedirs(dst, exist_ok=True)
+        for fn in ("args.json", "log.jsonl", "eval_lvb.json"):
+            with open(os.path.join(src, fn), "rb") as a_, open(os.path.join(dst, fn), "wb") as b_:
+                b_.write(a_.read())
+        ev = S._load(os.path.join(dst, "eval_lvb.json")); keep_pd, keep_r = S.PER_D, S.R; S.PER_D = ev.get("per_D"); S.R = os.path.dirname(dst)
+        try:
+            parts = [q for q in S.REQ_PARTS["a1"] if all(x in ev for x in S.PARTS_A[q])]; P = S.parse_A(ev, parts); info = S.log_info("lvb_sym_s1")
+            args = S.jl("lvb_sym_s1", "args.json", plain=True) or {}
+            c.obs = {"parts": parts, "not_yet": [q for q in S.REQ_PARTS["a1"] if q not in parts], "missing": {q: x.get("missing") for q, x in P.items() if x.get("missing")},
+                     "void": {q: str(x.get("void"))[:160] for q, x in P.items() if x.get("void")}, "log_test_gate_sig_hits": info.get("test_gate_sig_hits"),
+                     "arch": (args.get("arch"), args.get("arch_class"))}
+            sm = {q: [m_ for m_ in (x.get("missing") or []) if not (q == "probe" and "curve" in m_ and all(not (v_.get("curve")) and (v_.get("steps_run") or 0) < 500
+                                                                                    for v_ in (ev.get("probe") or {}).values()))] for q, x in P.items()}
+            c.obs["missing_beyond_smoke_curve"] = {q: v_ for q, v_ in sm.items() if v_}
+            c.ok(not any(sm.values()), "no missing fields in the written parts (empty probe curves at steps_run < 500 = smoke artefact)")
+            c.ok(info.get("test_gate_sig_hits") is not None and args.get("arch") and args.get("arch_class"), "log / args carry the scorer's keys")
+        finally:
+            S.PER_D, S.R = keep_pd, keep_r
+            for fn in ("args.json", "log.jsonl", "eval_lvb.json"):
+                if os.path.exists(os.path.join(dst, fn)):
+                    os.remove(os.path.join(dst, fn))
+
+    @case("the module's own CPU smoke output (untrained LangSLVA, per_D 2; smoke_eval/eval_lvb.json)", "every part present parses with no missing field; no crash")
+    def _(c):
+        fp = os.path.join(HERE, "smoke_eval", "eval_lvb.json")
+        if not os.path.exists(fp):
+            c.ok(False, "smoke output absent"); return
+        ev = S._load(fp); keep = S.PER_D; S.PER_D = ev.get("per_D")
+        try:
+            parts = [q for q in S.REQ_PARTS["a1"] if all(x in ev for x in S.PARTS_A[q])]
+            P = S.parse_A(ev, parts); c.obs = {"parts": parts, "missing": {q: x.get("missing") for q, x in P.items() if x.get("missing")},
+                                               "void": {q: (str(x.get("void"))[:200] if x.get("void") else None) for q, x in P.items()}}
+            c.ok(set(parts) >= {"panel", "acc", "stall", "vswap", "cf", "hist24", "causal_deep"}, "the smoke wrote every part before probe (it segfaulted, rc 139, in the CPU probe part)")
+            lg = open(os.path.join(HERE, "smoke_eval", "smoke.log"), encoding="utf-8", errors="replace").read() if os.path.exists(os.path.join(HERE, "smoke_eval", "smoke.log")) else ""
+            c.obs["smoke_rc"] = lg.strip().split(chr(10))[-1] if lg else None
+            c.ok(not any(x.get("missing") for q, x in P.items()), "no missing fields in any written part")
+            mm, bad = S.meta_check(ev, "A", parts, {"eval_bs": ev.get("eval_bs") or {}, "card": ev.get("card")}, ev.get("test_items_sha"))
+            c.obs["meta_missing"] = mm; c.obs["meta_mismatch"] = bad; c.ok(not mm, "meta fields present")
+            l0 = S._load(os.path.join("D:/Latent", "scratch", "gate_s218", "g_l0.json")); c.obs["g_l0_has_test_items_sha"] = bool(l0.get("test_items_sha"))
+        finally:
+            S.PER_D = keep
+
+    @case("Experiments' 15:10 draft layout (exposed flags, int y_hyb, cf.cells + selected pairs, fd_slot_scores, top-level card / test_sha, G-L0 panel layout)",
           "identical readings to the LAYOUTS form: VB-C1-L, SD-C2-L; PaR-C still not VB-C1-L / PRECOMPUTE-L / CF-CARRY")
     def _(c):
         E = exp_layout(BASE); files = dict(E); materialize(files); o = S.score(); a = o["cells"]["a1"]
@@ -1115,9 +1563,12 @@ def define_cases():
 
     @case("real tree (D:/Latent/boxes/runs_fsq), read only, OUT redirected", "no crash; every cell pending or UNREAD; nothing passes; the built G-L0 file parses")
     def _(c):
-        keep_r = S.R; keep = {k: S.ARGS_ALLOW[k] for k in S.ARGS_ALLOW}; keep_ref = dict(S.ARGS_REF); keep_p = dict(S.PATHS)
+        keep_r = S.R; keep = dict(S.FROZEN_ARGS); keep_p = dict(S.PATHS)
         try:
-            S.R = "D:/Latent/boxes/runs_fsq"; S.ARGS_ALLOW.update(direct=None, a1=None, b1=None); S.ARGS_REF.update(direct=None, b1=None)
+            S.R = "D:/Latent/boxes/runs_fsq"; S.FROZEN_ARGS.update(SHIPPED_FROZEN)
+            for cell in ("a1", "direct"):                                      # Note 218-9's frozen files verify (sha256) and carry the architecture keys
+                b_, fz = S.frozen_ref(cell); c.ok(b_ is not None and fz["anchored"] and b_.get("arch") and b_.get("arch_class"), "%s frozen args verify" % cell)
+            c.ok(S.FROZEN_ARGS["b1"] is None, "b1 not frozen yet (pending)")
             S.PATHS["gate_l0"] = ("@ROOT", "scratch/gate_s218/g_l0.json")
             o = S.score(); c.obs = {k: o["cells"][k]["status"] for k in o["cells"]}
             c.ok(all(o["cells"][k]["status"] in ("PENDING", "UNREAD") for k in o["cells"]), "pending / UNREAD only")
@@ -1125,17 +1576,24 @@ def define_cases():
             g = o["G_L0"]; c.obs["G_L0"] = None if g is None else {k: g[k] for k in ("failed", "missing", "code_bug", "flag_inconsistent", "file_pass")}
             c.ok(g is None or (not g["missing"] and g["failed"] == [] and not g["code_bug"]), "real G-L0 (if present): every band 3-16 usable")
         finally:
-            S.R = keep_r; S.ARGS_ALLOW.update(keep); S.ARGS_REF.update(keep_ref); S.PATHS.clear(); S.PATHS.update(keep_p)
+            S.R = keep_r; S.FROZEN_ARGS.update(keep); S.PATHS.clear(); S.PATHS.update(keep_p)
+
+
+def layouts_case():
+    @case("LAYOUTS completeness: every key the scorer read during the suite is one LAYOUTS entry", "no unlisted key")
+    def _(c):
+        miss = sorted(k for k in S.ACCESSED if not str(k).isdigit() and k not in S.LAYOUTS and not S.LAYOUT_PATTERN.match(str(k)))
+        c.obs = {"n_accessed": len(S.ACCESSED), "unlisted": miss}; c.ok(not miss, "%d unlisted keys" % len(miss))
 
 
 def main():
     global BASE
-    t0 = time.time(); os.makedirs(TREE, exist_ok=True); configure(); BASE = base_files()
-    define_cases()
+    t0 = time.time(); os.makedirs(TREE, exist_ok=True); SHIPPED_FROZEN.update(S.FROZEN_ARGS); configure(); BASE = base_files(); materialize(BASE); freeze()
+    define_cases(); layouts_case()
     rep = {"generated": time.strftime("%Y-%m-%d %H:%M:%S"), "scorer": os.path.join(HERE, "score_s218.py"), "registered": S.REGISTERED,
            "n_cases": len(REPORT), "n_pass": sum(r["result"] == "PASS" for r in REPORT), "n_fail": sum(r["result"] == "FAIL" for r in REPORT),
            "sec": round(time.time() - t0, 1), "cases": REPORT, "resolved_ambiguities": S.RESOLVED,
-           "fixture_only_config": "ARGS_REF / ARGS_ALLOW for direct / a1 / b1 set by configure() (v1 pre-lists none; the shipped scorer keeps None -> pending)"}
+           "fixture_only_config": "FROZEN_ARGS for direct / a1 / b1 point at fixture files (sha256 of the written bytes); the shipped scorer keeps None -> pending"}
     with open(os.path.join(HERE, "fixtures_report.json"), "w", encoding="utf-8", newline="\n") as fh:
         json.dump(rep, fh, indent=1, default=str, ensure_ascii=False)
     print("fixtures: %d / %d PASS (%.1f s)" % (rep["n_pass"], rep["n_cases"], rep["sec"]))
