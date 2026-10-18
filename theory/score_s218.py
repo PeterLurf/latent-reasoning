@@ -39,10 +39,12 @@ Stage flow (v1 §2.9): A2 GO = A1 uncensored and DEEP-L and NO-CLOCK-L and GATE-
     python -B theory/score_s218.py [--final a1] [--final a2] ... [--not_admitted a2,ctrl] [--user_ok A2,B1]
 """
 import argparse
+import hashlib
 import json
 import math
 import os
 import random
+import re
 import statistics
 import sys
 from fractions import Fraction
@@ -82,11 +84,18 @@ L0_GATED = ("first", "random", "maxdeg", "la1")
 POOL_KEYS = {"text_ids", "slot_idx", "stmts_parsed", "marks_sound", "stop_s", "label"}
 POOL_KEPT, POOL_CAP, POOL_DEMAND = 106000, 530000, 383488
 BOOT_SEED, BOOT_REPS = 218, 2000
-GSM_MIN_BASE, CF_GSM_MIN_BASE = 50, 30      # Addendum 1 item 6; CF-GSM >= 30 distinct exposed base steps per Audit's R13 ruling (note 218-5)
+GSM_MIN_BASE, CF_GSM_MIN_STEPS = 50, 30     # Addendum 1 item 6: (ii') / (i) >= 50 base items; CF-GSM >= 30 distinct exposed base STEPS (base, j) (note 218-5)
 NOT_ADMITTED, FINAL, USER_OK = set(), set(), set()
 # ARGS-DIFF (v1 §4.3): reference cell / file and the keys allowed to differ; None = not pre-listed in v1 -> the cell reads pending until Theory sets it
-ARGS_REF = {"direct": None, "a1": ("s213_d3t_s1", "args.json"), "a2": (CELL["a1"], "args.json"), "ctrl": (CELL["a2"], "args.json"), "b1": None}
-ARGS_ALLOW = {"direct": None, "a1": None, "b1": None,
+# note 218-4 (R1): DIRECT-SYM / A1 / B1 are compared with their queued args frozen by sha256 in a Theory note before launch: FROZEN_ARGS[cell] =
+# (path, sha256) (path absolute or relative to ROOT), else <cell>/args_frozen.json (sha reported, unanchored); missing -> pending. Exact match except META
+# (and the args_ref content rule). A2 / A2-CTRL keep v1's references (A2 vs A1's args, A2-CTRL vs A2's).
+FROZEN_ARGS = {"direct": ("scratch/s218_args_ref_direct.json", "f494703812966edf4ae08cf2e0b12bd20b5bb4d68dc26bc8ad09ddf4367905d0"),   # Note 218-9 (cee76ef6)
+               "a1": ("scratch/s218_args_ref_a1.json", "33af702ff631d798e83847443b9643cef4991d117285051a51d5ca5561e34e1d"),
+               "b1": None}                                                  # B1: pending until frozen
+ARCH_KEYS = ("arch", "arch_class")   # Note 218-9: arch is the langvb architecture CHOICE (META in score_s213 only as a derived name): required == the reference
+ARGS_REF = {"direct": "FROZEN", "a1": "FROZEN", "a2": (CELL["a1"], "args.json"), "ctrl": (CELL["a2"], "args.json"), "b1": "FROZEN"}
+ARGS_ALLOW = {"direct": set(), "a1": set(), "b1": set(),
               "a2": {"init_from", "self_pool", "p_self", "self_kmax", "self_micro", "lr", "steps", "c_sched"},
               "ctrl": {"p_self", "self_pool"}}
 ARGS_MUST = {"a2": {"init_from": "boxes/runs_fsq/%s/model.pt" % CELL["a1"], "p_self": 0.5, "lr": 3e-5, "steps": 12000, "self_kmax": 16, "seed": 1},
@@ -100,6 +109,7 @@ PARTS_A = {"panel": ("panel",), "acc": ("acc_d2", "acc_k", "items"), "probe": ("
 DECISIVE_A = ("panel", "acc", "probe", "plant", "fd", "vswap", "stall", "cf")
 DESCRIPTIVE_A = ("hist24", "causal_deep")   # hist24 feeds MEM (routes the user's OK, not a censor); causal_deep is beside A2 positives
 REQ_PARTS = {"a1": DECISIVE_A + DESCRIPTIVE_A, "a2": DECISIVE_A + DESCRIPTIVE_A + ("labeller",), "ctrl": ("acc", "hist24")}
+SHA_PART_OF = {"plant": "probe"}           # langvb_eval runs PLANT inside the probe part: plant's items_sha is probe's
 NO_BS_PARTS = {"panel", "labeller", "codi_pair"}   # copies of gate outputs / a paired comparison: no eval_bs / items_sha of their own
 PARTS_B = {"acc": ("acc_fixed14", "items", "by_m", "by_mbin", "acc_k", "acc_oracle", "acc_halt"), "codi_pair": ("codi_pair",),
            "probe": ("probe", "probe_valid_gsm", "plant_gsm"), "future": ("future",), "vswap": ("vswap",), "stall": ("stall",),
@@ -111,10 +121,10 @@ VSWAP_RULE = {   # v1 §2.5 / §4.1 exposure table: admissible (D, t) and the ex
     "ii_prime": {"D": range(4, 9), "t": lambda D: range(3, D), "need": ("pos_ok", "frontier_differs"), "donor": True},
     "i_prime": {"D": range(5, 9), "t": lambda D: range(3, D - 1), "need": ("pos_ok", "lt_differs", "opts_outside"), "donor": True},
     "ii": {"D": range(4, 9), "t": lambda D: range(3, D), "need": ("pos_ok", "frontier_differs"), "donor": True},
-    "person": {"D": range(4, 9), "t": lambda D: range(3, D), "need": ("pos_ok",), "donor": True},
+    "person": {"D": range(4, 9), "t": lambda D: range(3, D), "need": ("pos_ok",), "donor": True},   # langvb_eval @ fdef787c: PERSON exposed = pos_ok
     "reset": {"D": range(4, 9), "t": lambda D: range(3, D), "need": (), "donor": False}}
 
-LAYOUTS = {   # field layouts the scorer reads from files not yet built (v1 §4.1 / §4.2 names kept; [ASSUMED] where v1 is silent). Experiments: match these names.
+LAYOUT_FILES = {   # per-file descriptions of the layouts read (v1 §4.1 / §4.2 names kept; [ASSUMED] where v1 is silent); field names: LAYOUTS below
     "every eval file": "top-level meta {card (str containing the card class, e.g. 'NVIDIA GeForce RTX 4060'), dtype 'fp32' ('bf16' for GATE-1-L / labeller), "
                        "eval_bs {part: int} (the G-EVMEM value per part), items_sha (str, or {part: str}) = the SYM test set's sha (G-L0 test_items_sha) / the "
                        "GSM8K test list's sha (B0-2 items_sha), card_by_part {part: card} optional}; the same fields at the file's top level (+ test_sha {D: sha}) are also read "
@@ -166,12 +176,15 @@ LAYOUTS = {   # field layouts the scorer reads from files not yet built (v1 §4.
     "lvb_gsm_s1/interim_go.json (B0-6)": "meta {card, dtype}, step (24000), acc_fixed14_valid, probe1_valid, fd_mlp_1k_ge3, fd_mlp_kk_ge3, GO (bool)"}
 
 RESOLVED = [   # ambiguities in the registered text and how this scorer reads them (each for Theory to confirm before any output)
-    "R1 ARGS-DIFF: v1 names no pre-listed new keys for A1 vs D3-T, no reference for DIRECT-SYM ('its own reference for the plain path') and none for B1: "
-    "ARGS_ALLOW / ARGS_REF are None there and the cell reads pending until Theory sets them (FAILURE at --final).",
+    "R1 ARGS-DIFF (RULED, note 218-4): DIRECT-SYM / A1 / B1 are compared with their queued args frozen by sha256 before launch (FROZEN_ARGS[cell] = "
+    "(path, sha256), else <cell>/args_frozen.json, sha reported unanchored); exact match except META and the args_ref content rule; no frozen entry -> pending "
+    "(FAILURE at --final); a changed frozen file (sha) -> mismatch (VOID at --final). A2 / A2-CTRL keep v1's references",
     "R2 G-L0 band rule: a band D is usable iff in every stream covering D: n_gate >= 5000, 0 invariant failures, chase first / random / maxdeg / la1 < 0.6, "
     "max_person_agnostic < 0.6, ubidir_max == 0.5 and beyond_D == 0 (the last two failing = CODE-BUG, band unusable). A decisive reading whose D range holds a "
     "failed band is UNREADABLE; DIRECT's C1 band is UNREADABLE if any of D 5-8 failed; descriptive readings exclude and list the band.",
     "R3 PROBE(12) final-state validity is read on each reading's own pooling: the C1 band for PROBE-GAIN-L, D 4-8 for SERIAL-ONSET-L.",
+    "R32 CONTAMINATED (Audit G-L17 item 4) needs evidence for every ProsQA cell: an eval 'contamination' block {hit counts} or the trainer's logged "
+    "stream_collisions (redraws by the exclusion = evidence it ran, not hits); absent -> pending, FAILURE at --final; A2 also needs self_reuse logged.",
     "R4 SERIAL-STEP-L pooled bars include the pairs of D values excluded from the per-D bar (< 50 clean pairs); CF-L's excluded (D, j) cells (< 30) leave both the "
     "share and the Spearman.",
     "R5 CF exposure = pos_ok and flip_ok; clean = ok_rec and ok_don at K' = D (fields, else derived from answers_by_t endpoints; endpoint mismatches are reported, "
@@ -183,14 +196,13 @@ RESOLVED = [   # ambiguities in the registered text and how this scorer reads th
     "STAB_self >= 0.5; mean over D 3..6), on A1 / A2 / A2-CTRL (DIRECT-SYM has no bank); unreadable or missing at --final = MEM-TRADED-L.",
     "R9 A2-CTRL registered parts = acc + hist24 (its only readings: BEATS-CTRL input, ABSORB vs CTRL, MEM). At --final a2 a missing / censored / pending A2-CTRL "
     "fails BEATS-CTRL-L and SD-C2-L only (v1 §4.1 'A2-CTRL missing or censored -> SD-C2-L not met'), not every A2 reading.",
-    "R10 LABEL-BUG counts a wrong label under either GATE-1-L chain (S-L' holds for any labeller) or in LABEL-AUDIT-L; A2 launched -> VOID (rule b); not launched -> "
-    "A2 GO false (UNREAD).",
+    "R10 LABEL-BUG counts a wrong label under either GATE-1-L chain (S-L' holds for any labeller) or in LABEL-AUDIT-L, and (Audit G-L13 2a, as the labeller "
+    "implements it) a tie or unsound kept item in GATE-1-L / LABEL-AUDIT-L or a tie in the pool; A2 launched -> VOID (rule b); not launched -> A2 GO false (UNREAD).",
     "R11 No 'diverged' censor exists in v1 §5.2 for LANG cells (THEORY §218's header lists one); none is applied.",
     "R12 NO-ENTRY is applied to DIRECT-SYM too (it logs plain_cand_ce); a censored DIRECT-SYM makes the C1 band UNREADABLE (VB-C1-L not met).",
-    "R13 CF-GSM (RULED, note 218-5, Audit): Addendum 1 item 6's cluster RULE applies to CF-GSM (base-step-clustered share and rho, cluster bootstrap); "
-    "its minimum is >= 30 distinct exposed base steps with >= 1 clean pair (37 exist), fewer = UNREADABLE; (ii') / (i) keep >= 50 base items.",
-    "R14 CF-GSM clustering: share = mean over base items of the per-item in-window share; Spearman on (base, j) cluster means of t* (pooled over j, not within "
-    "m_bin); pair-level values reported beside.",
+    "R13 CF-GSM (RULED, note 218-5, Audit; Audit G-L17 item 1): >= 30 distinct exposed base STEPS (base, j) with >= 1 clean pair (37 exist); share and rho "
+    "on step clusters (variants averaged within each step first), cluster-bootstrap CIs over steps; fewer = UNREADABLE. (ii') / (i) keep >= 50 base items",
+    "R14 CF-GSM rho is a Spearman over the step-cluster points (j, mean t*), pooled over j (not within m_bin); pair-level share / rho reported beside",
     "R15 The ProsQA '>= 2,000 STALL items' minimum is not applied to GSM8K (879 items at m >= 3 could never reach it).",
     "R16 ONE-PASS-CHAIN-L = some readable FD probe (lin or MLP) with FD(1, k>=3) >= 0.8 FD(k, k) pooled; LAST-STEP-LATE (GSM, descriptive) = median t* >= 12 over "
     "clean j = m_bin pairs (the LATE-FUSION-GSM threshold).",
@@ -207,27 +219,214 @@ RESOLVED = [   # ambiguities in the registered text and how this scorer reads th
     "item's pairs are reported pair-level only.",
     "R24 G-L0 band failures also gate A2's own readings by D range (ABSORB 9-12, LENGTH / K'24 3-8, D 13-16, the MARGIN bar's A1 9-12).",
     "R25 A CF (D, j) cell with > 400 exposed pairs (v1 §2.5 'up to 400') is flagged, not voided (more pairs do not bias the reading).",
+    "R33 arch / arch_class (Note 218-9): the langvb architecture choice is required equal to the reference args (frozen for DIRECT-SYM / A1 / B1; A1's for "
+    "A2; A2's for A2-CTRL) although arch is in META (score_s213's META list); the environment keys stay META.",
     "R26 ARGS_MUST holds the recipe values v1 states (A1 / DIRECT seed 1, 24,000 steps; A2 init_from A1, p_self 0.5, lr 3e-5, 12,000, self_kmax 16, seed 1; "
     "A2-CTRL p_self 0, self_pool none; B1 seed 1, 120,000); A2's 'c 0' has no stated c_sched string and is not asserted.",
     "R27 PATHS (G-L0, G-EVMEM, GATE-1-L, pool, B0-2, interim GO) are not named in v1; the names here are assumptions for Experiments to match or edit.",
     "R28 A1 is pending until DIRECT-SYM's cell is decided (not only until eval_direct.json exists), since a censored DIRECT-SYM voids the band.",
     "R29 PROBE / FD / swap / CF per-item stores are required (v1 §4 'every share or threshold has its per-item / per-pair outputs stored'); GSM future items are "
     "not listed in §4.2 and are not required.",
-    "R30 Stage A items_sha reference = G-L0's test_items_sha if it records one (the built g_l0.json does not), else A1's file-level test sha; DIRECT-SYM / A2 / "
-    "A2-CTRL must match it. Experiments' eval records one per-D test_sha per file (not per part, as v1 §4.3 asks): accepted as file-level, reported.",
-    "R31 Both field layouts are read (aliases only, no reading changes): LAYOUTS' names and Experiments' langvb_eval names as of 15:10 (per-pair 'exposed', int "
-    "y_hyb, cf.cells + selected pairs with clean / tstar / clean_k2, fd_slot_scores, fd_valid {s: {model}}, plant items {D: [...]}, causal_deep stall rows, "
-    "top-level card / dtype / eval_bs / test_sha, eval_direct nested under 'direct', the G-L0 panel layout at scratch/gate_s218/g_l0.json). With a "
-    "selected-only CF store, n_candidates / n_exposed per (D, j) come from the file (flagged), n_clean / shares / t* are recomputed."]
+    "R30 Stage A items_sha anchor (Audit G-L17 item 5) = G-L0's test_items_sha only (str, {D: sha} or {part: sha}); absent -> every Stage A cell pending; a "
+    "different form (per-D map vs single sha) or an anchor lacking the part -> pending (layout second pass); never self-referential",
+    "R31 Field names (Audit G-L17 items 7 / 9): every key read is ONE LAYOUTS entry (doc + accepted aliases; loaded JSON resolves aliases; reads recorded "
+    "and fixture-checked). Writer of record: boxes/langvb_eval.py @ ec1aec8d (+ langvb_label.labeller_part, langvb.py logs). Swap exposure is recomputed from "
+    "the stored components (pos_ok, frontier_differs for ii_prime / ii / person, lt_differs + opts_outside for i_prime), the eval's exposed flag a cross-check; "
+    "CF from every stored candidate (pos_ok / flip_ok, cross-checked with exposed / clean), readings on the clean SELECTED pairs; plant shares probe's "
+    "items_sha; a part's own meta block (labeller_part) is merged with, never shadows, the file's top-level meta. Older-draft shapes are still read "
+    "(cells nesting, fd_slot_scores, eval_direct under direct, G-L0 streams layout)."]
 
 
-# ---------------------------------------------------------------- utilities
-def jl(d, f):
-    p = os.path.join(R, d, f)
-    if not os.path.exists(p):
-        return None
+LAYOUTS = {   # EVERY key the scorer reads from an input file: one entry (doc, accepted aliases). Renames = edit here only (JD resolves aliases). Writer of record:
+    # boxes/langvb_eval.py @ ec1aec8d (eval_lvb.json / eval_direct.json), langvb_label.py (labeller part, eval_gate1.json, pool_meta.json), langvb.py (log.jsonl).
+    # Per-file descriptions: LAYOUT_FILES. Digit keys (D, K', t, j, k, s) and the generated fd_slot_scores names (LAYOUT_PATTERN) are not listed.
+    # ---- every eval file: meta (a 'meta' block or the file's top level)
+    "meta": ("optional block holding the meta fields below (else they sit at the file's top level, as langvb_eval writes them)", ()),
+    "card": ("eval card name (must contain CARD[stage]); also G-EVMEM / G-L0 / B0-2 / interim card", ()),
+    "card_by_part": ("{part: card} recorded per part (each must contain CARD[stage])", ()),
+    "dtype": ("'fp32' (evals); 'bf16' (GATE-1-L meta; the labeller part via dtype_by_part)", ()),
+    "dtype_by_part": ("{part: dtype} (e.g. labeller 'bf16')", ()),
+    "eval_bs": ("{part: int} == G-EVMEM's eval_bs[part] (probe writes plant too); G-EVMEM: {part: int}", ()),
+    "items_sha": ("{part: sha} (each = the full SYM test set's sha == G-L0 test_items_sha) or one str; GSM: == B0-2 items_sha", ()),
+    "test_sha": ("{D: sha} per-D test-set shas (file level; read when items_sha is absent)", ()),
+    "per_D": ("items per D the eval used (must be 1000; smokes write less)", ()),
+    "contamination": ("{test_gate_sig_hits, self_reuse} maxima over log.jsonl (CONTAMINATED evidence, Audit item 4)", ()),
+    "test_gate_sig_hits": ("plain draws whose role-symmetric sig is in test + GATE (contamination block or log.jsonl records); > 0 = CONTAMINATED", ()),
+    "self_reuse": ("self records reused (contamination block or log.jsonl; A2 must log it); > 0 = CONTAMINATED", ()),
+    "slva_diag": ("optional {rnn_in_function, history_used} (RESOLVED R21; not in the §4.1 contract)", ()),
+    "probe_n_distinct_seen": ("distinct pool items the probes trained on (v1 §2.5 'on >= 200,000 fresh items'; reported, flagged < 200,000)", ()),
+    "fd_n_distinct_seen": ("distinct items the FD probes trained on (reported, flagged < 200,000)", ()),
+    "ii_prime_t2": ("vswap arm holding the ii' t = 2 pairs (descriptive; summary recomputed, ii_prime.t2_descriptive cross-checked)", ()),
+    # ---- log.jsonl (langvb.py)
+    "step": ("log record step (last occurrence wins)", ()),
+    "plain_cand_ce": ("per-step plain-gold two-candidate CE (NO-ENTRY, 1k bins)", ()),
+    "valid_acc": ("GSM8K Aug-valid accuracy checks (NO-ENTRY)", ()),
+    "guard_stop": ("true on a guard stop (counts as dead)", ("GUARD_STOP",)),
+    "stream_collisions": ("the trainer's exclusion redraws (reported; evidence the exclusion ran, not hits)", ()),
+    # ---- G-L0 (scratch/gate_s218/g_l0.json)
+    "test_items_sha": ("G-L0: sha of test_set() concatenated in D order = the Stage A items_sha anchor (Audit item 5)", ()),
+    "panel": ("G-L0 per-band panel {D: {...}}; eval_lvb.json part 'panel' (a copy)", ()),
+    "full_rows": ("G-L0 {stream: {D: {n, module_invariant_fail, indep_invariant_fail, ...}}}", ()),
+    "streams": ("alternative G-L0 layout {stream: {D: {n_gate, invariant_failures, chase, max_person_agnostic, ubidir_max, beyond_D, gate_pass}}}", ()),
+    "usable_bands": ("G-L0's own usable band list (checked against the recomputation)", ()),
+    "pass": ("G-L0's own pass flag (reported)", ()),
+    "names_ok": ("G-L0 name checks flag (reported)", ()),
+    "n_gate": ("draws per band (>= 5000)", ()),
+    "n": ("count: G-L0 full_rows draws; label_audit records; causal_deep / stall rows items; GSM future cell items", ()),
+    "invariant_failures": ("G-L0 invariant failures per band (must be 0)", ()),
+    "module_invariant_fail": ("G-L0 full_rows: module invariant failures", ()),
+    "indep_invariant_fail": ("G-L0 full_rows: independent re-check failures", ()),
+    "chase_by_stream": ("G-L0 panel: {stream: {first, random, maxdeg, la1, la2, la3, la4, soft}}", ()),
+    "chase": ("streams layout: chase cells", ()),
+    "first": ("gated chase (< 0.6)", ()), "random": ("gated chase (< 0.6)", ()), "maxdeg": ("gated chase (< 0.6)", ()), "la1": ("gated chase LA(1) (< 0.6)", ()),
+    "max_person_agnostic_by_stream": ("G-L0 panel {stream: max person-agnostic cell} (< 0.6)", ()),
+    "max_person_agnostic": ("streams layout: max person-agnostic cell (< 0.6)", ()),
+    "ubidir_by_stream": ("G-L0 panel {stream: {r: uBIDIR(r)}} (== 0.5 exactly, else CODE-BUG)", ()),
+    "ubidir_max": ("streams layout: uBIDIR (== 0.5)", ()),
+    "udist_by_stream": ("G-L0 panel {stream: UDIST} (reported)", ()),
+    "beyond_D_by_stream": ("G-L0 panel {stream: beyond-D share} (== 0, else CODE-BUG)", ()),
+    "beyond_D": ("streams layout: beyond-D share (== 0)", ()),
+    "gate_pass": ("streams layout / panel copy: the gate's own verdict (cross-checked)", ()),
+    "train": ("G-L0 stream (seed 22100)", ()), "pool": ("G-L0 stream (seed 22300)", ()), "gate": ("G-L0 stream (seed 22400)", ()),
+    "test": ("G-L0 stream (seed 22200); sig_hits.test", ()),
+    # ---- eval_lvb.json / eval_direct.json parts (boxes/langvb_eval.py)
+    "acc_d2": ("acc part {D: acc at K' = D + 2}; hist24 arm {D}", ()),
+    "acc_k": ("acc part {K': {D: acc}}, K' 0..24", ()),
+    "items": ("per-item stores: acc {D: {K': [0/1]}}; probe / plant {D: [0/1]}; stall {D: {i, intact, stalled}}; hist24 {arm: {D: {...}}}; GSM acc "
+              "[{i, ok, m, m_bin}] / probe [0/1] / stall [{i, stalled, intact}]; GATE-1-L {chain: {D: [{keep, label, gold, stop}]}}; B0-2 [{i, ok}]; "
+              "DIRECT {D: [0/1]}", ()),
+    "acc_by_D": ("probe / plant {D: acc}; eval_direct.json {D: acc}", ()),
+    "c1_band": ("eval_direct.json: the writer's C1 band (checked against the scorer's)", ()),
+    "d_star_fresh": ("eval_direct.json: the writer's D*_fresh (checked)", ()),
+    "direct": ("eval_direct.json: optional nesting of the direct fields (an older draft); also an eval_bs / items_sha part name", ()),
+    "probe": ("probe part {t: {acc_by_D, items, curve, steps_run}}; GSM probe {t: {acc_by_m, items, curve}}; also a part name", ()),
+    "curve": ("probe [[step, heldout_acc]] every 500 steps; CF cell {t: P(answer = y')}", ()),
+    "steps_run": ("probe steps run (10000, or 20000 when extended)", ()),
+    "plant": ("plant part {t: {lin, xor, eps, eps_rel, pcs}}", ()),
+    "probe_valid": ("{t: bool} = PLANT lin and xor >= 0.90 (cross-checked)", ()),
+    "lin": ("linear probe (plant / fd / GSM future / plant_gsm)", ()), "xor": ("XOR plant", ()), "mlp": ("MLP probe (fd / GSM future)", ()),
+    "acc": ("plant / plant_gsm probe accuracy; B0-2 file acc", ()),
+    "items_flat": ("plant per-item [0/1] pooled over D (preferred over items {D: [...]})", ()),
+    "eps": ("PLANT epsilon (the 50th-PC std)", ()), "eps_rel": ("PLANT epsilon / ||V_t|| (Addendum 1 item 5)", ()), "pcs": ("PLANT PC spectrum (reported)", ()),
+    "fd": ("fd part {lin|mlp: {t: {k: {auroc, n_pos, n_neg, by_D, pos, neg}}}}", ()),
+    "auroc": ("FD / FD-VALID AUROC (recomputed from pos / neg)", ()),
+    "n_pos": ("FD positives", ()), "n_neg": ("FD negatives", ()), "pos": ("FD positive-class per-slot scores", ()), "neg": ("FD negative-class per-slot scores", ()),
+    "fd_valid": ("{s 3|4: {lin|mlp: {auroc, ...}}} (FD-VALID-L >= 0.90)", ()),
+    "fd_plant": ("{lin|mlp: auroc} planted per-slot code (>= 0.90)", ()),
+    "fd_slot_scores": ("{<model>_t<t>_k<k>: [[item, slot, label, score]]} (read when a cell lacks pos / neg)", ()),
+    "vswap": ("vswap part {ii_prime|i_prime|ii|person|reset: arm summary}", ()),
+    "ii_prime": ("arm: PREMISE-SWAP x bank (ii') splice", ()), "i_prime": ("arm: slot-local (i') splice", ()), "ii": ("arm: newest only (ii); GSM arm ii", ()),
+    "person": ("arm: PERSON-SWAP", ()), "reset": ("arm: RESET-t", ()), "i": ("GSM arm (i) slot t only; GSM / stall item index", ()), "iv": ("GSM arm (iv) pure chain", ()),
+    "n_candidates": ("candidates (= stored pairs) per arm / per CF cell / per CF-GSM j", ()),
+    "n_exposed": ("exposed pairs (recomputed from the stored facts)", ()),
+    "n_clean": ("exposed clean pairs (CF: clean SELECTED pairs)", ()),
+    "n_selected": ("CF: exposed pairs swept (<= 400 per (D, j))", ()),
+    "follow": ("share following the donor (arm summary / by_D / pair)", ()), "own": ("share keeping the recipient's answer (RESET: recovery)", ()),
+    "by_D": ("per-D summaries (vswap arms, stall, causal_deep)", ()),
+    "t2_descriptive": ("ii_prime's t = 2 summary without pairs (descriptive)", ()),
+    "pairs": ("per-pair stores (vswap arms, cf, GSM vswap / cf_gsm)", ()),
+    "D": ("pair depth", ()), "t": ("swap pass t", ()), "j": ("CF hop j", ()),
+    "y_hyb": ("hybrid answer: ProsQA int 1 = prefers the donor's (o_P), 0 = o_R; or 'follow' / 'own' / 'neither'; GSM a number", ()),
+    "y_rec": ("GSM recipient answer (number); optional ProsQA option label", ()), "y_don": ("GSM donor answer (number); optional ProsQA option label", ()),
+    "ok_rec": ("recipient correct (swap: K' = D + 2; CF: x's full run at K' = D)", ()), "ok_don": ("donor correct (CF: x''s full run at K' = D; null if flip_ok 0)", ()),
+    "exposed": ("the eval's exposure flag (cross-check of the recomputation from the stored facts)", ()),
+    "pos_ok": ("position / slot identity (swap and CF pairs)", ()),
+    "frontier_differs": ("ii_prime / ii / person: the donor's REACH frontier at t differs from the recipient's", ()),
+    "lt_differs": ("i_prime: the frontier differs inside L_t", ()), "opts_outside": ("i_prime: both options outside L_t", ()),
+    "stall": ("stall part {recovery, by_D, items}; causal_deep stall; GSM stall", ()),
+    "recovery": ("STALL recovery (pooled; per D)", ()), "stalled": ("per-item stalled [0/1]", ()), "intact": ("per-item intact [0/1]; hist24 arm", ()),
+    "intact_kD": ("stall by_D intact accuracy at K' = D", ()), "stalled_kD1": ("stall by_D stalled accuracy at K' = D + 1", ()), "n_items": ("stall by_D items per D (causal_deep STALL n)", ()),
+    "cf": ("cf part {<D>: {<j>: cell}, spearman_within_D, share_window_pooled, endpoint_mismatch, last_hop, pairs}", ()),
+    "cells": ("optional nesting of the CF cells (an older draft)", ()),
+    "answers_by_t": ("CF selected pair [1 iff the answer is y, t 0..D] (GSM t 0..14)", ()),
+    "selected": ("CF candidate swept (the <= 400 exposed per (D, j))", ()),
+    "flip_ok": ("CF donor flips the answer (x' reaches o_P at D, not o_R)", ()),
+    "clean": ("CF: exposed and ok_rec and ok_don at K' = D (cross-checked)", ()),
+    "clean_k2": ("CF: the clean rule at K' = D + 2 (Addendum 1 item 4, descriptive)", ()),
+    "ok_rec_d2": ("CF: x correct at K' = D + 2", ()), "ok_don_d2": ("CF: x' correct at K' = D + 2", ()),
+    "tstar": ("CF t* per pair / per cell list (clean selected) (recomputed)", ()),
+    "share_window": ("CF cell share with t* in {j-1, j} (recomputed)", ()),
+    "share_window_pooled": ("CF pooled share (reported)", ()), "spearman_within_D": ("CF within-D Spearman (reported)", ()),
+    "endpoint_mismatch": ("CF: selected pairs whose sweep endpoints disagree with clean (reported)", ()),
+    "hist24": ("hist24 part {intact|bank_ablate_slva|self_ablate|dup_newest: {acc_d2, acc_k24}, items}", ()),
+    "bank_ablate_slva": ("hist24 arm", ()), "self_ablate": ("hist24 arm (STAB_self)", ()), "dup_newest": ("hist24 arm", ()),
+    "acc_k24": ("hist24 arm {D: acc at K' 24}", ()), "ok_d2": ("hist24 per-item at K' = D + 2", ()), "ok_k24": ("hist24 per-item at K' 24", ()),
+    "causal_deep": ("causal_deep part {ii_prime|i_prime: arm summary (by_D, pairs), stall: stall layout D 9..16, band_B}", ()),
+    # ---- labeller part (A2; langvb_label.labeller_part) and GATE-1-L / pool
+    "gate1": ("labeller part: a copy of eval_gate1.json (its choice is cross-checked)", ()),
+    "kept_vs_drawn": ("labeller part {D: {T, concepts, cross, decoys, frontier}} (descriptive)", ()),
+    "label_audit": ("labeller part {n, n_wrong, pi_label, items}: LABEL-AUDIT-L (any wrong = LABEL-BUG)", ()),
+    "n_wrong": ("wrong labels (must be 0)", ()), "pi_label": ("label precision (must be 1)", ()),
+    "n_unsound": ("label_audit / GATE-1-L chain: unsound kept items (> 0 = LABEL-BUG, Audit G-L13 2a)", ()),
+    "n_tie": ("GATE-1-L chain / pool_meta: tie items (> 0 = LABEL-BUG, Audit G-L13 2a)", ()),
+    "label_bug": ("eval_gate1.json / pool_meta.json: the writer's LABEL-BUG flag (cross-checked; true = LABEL-BUG)", ()),
+    "memo": ("labeller part {D: {acc_pool, acc_fresh}} (MEMO-GAP-L, descriptive)", ()),
+    "acc_pool": ("MEMO-GAP-L pool accuracy", ()), "acc_fresh": ("MEMO-GAP-L fresh accuracy", ()),
+    "choice": ("GATE-1-L chosen chain (recomputed by the N9 rule)", ()), "chains": ("GATE-1-L {chain: {D: {n, kept, yield, omit_rate, false_in, stop_lag}}}", ()),
+    "L-ROLL": ("labeller chain", ()), "L-RR": ("labeller chain", ()),
+    "keep": ("GATE-1-L item kept (SOUND-CLOSURE)", ()), "label": ("GATE-1-L item label", ()), "gold": ("GATE-1-L item gold", ()),
+    "kept": ("GATE-1-L chain kept count (cross-checked)", ()), "yield": ("GATE-1-L chain kept yield (cross-checked)", ()),
+    "omit_rate": ("GATE-1-L (descriptive)", ()), "false_in": ("GATE-1-L FALSE-IN (descriptive)", ()), "stop_lag": ("GATE-1-L STOP-LAG (descriptive)", ()),
+    "kept_by_D": ("pool_meta {D: kept} (>= 106,000)", ()), "draws_by_D": ("pool_meta {D: draws} (cap 530,000)", ()),
+    "key_set": ("pool_meta record keys (== the registered set)", ()), "sig_hits": ("pool_meta {test, gate, probe: hits} (> 0 = CONTAMINATED)", ()),
+    "gold_key_hits": ("pool_meta gold keys in records (> 0 = CONTAMINATED)", ()), "rng_replay_equal": ("pool_meta rng_s replay == v1_pool (G-L20)", ()),
+    "demand_replay": ("pool_meta replayed self demand (383,488 at seed 1)", ()),
+    # ---- G-EVMEM
+    "evmem": ("alternative G-EVMEM layout {part: {eval_bs, ...}} (langvb_eval part_evmem output)", ()),
+    # ---- Stage B (eval_lvb_gsm.json; not yet built: LAYOUTS names)
+    "acc_fixed14": ("GSM headline accuracy at K' 14 (== mean of items.ok)", ()), "ok": ("GSM / B0-2 item correct", ()), "m": ("GSM item CoT steps (band m >= 3)", ()),
+    "m_bin": ("GSM binary steps (item / pair)", ()), "by_m": ("GSM {m: acc}", ()), "by_mbin": ("GSM {m_bin: acc} (descriptive)", ()),
+    "acc_oracle": ("GSM (descriptive)", ()), "acc_halt": ("GSM (descriptive)", ()), "acc_by_m": ("GSM probe {m: acc} (cross-checked)", ()),
+    "probe_valid_gsm": ("GSM PROBE(14) >= acc - 0.03 (recomputed)", ()), "plant_gsm": ("GSM {lin, xor: acc}", ()),
+    "future": ("GSM {lin|mlp: {t 0..12: {k >= t: {acc, n}}}} (every registered cell required)", ()),
+    "base": ("GSM pair base test item (cluster)", ()), "codi_pair": ("GSM {delta, mcnemar {b, c, p_one_sided}, n} vs B0-2 (recomputed)", ()),
+    "delta": ("codi_pair delta (cross-checked)", ()), "mcnemar": ("codi_pair {b, c, p_one_sided}", ()), "b": ("McNemar b (B1 right, CODI wrong)", ()),
+    "c": ("McNemar c (CODI right, B1 wrong)", ()), "p_one_sided": ("exact one-sided McNemar p", ()),
+    "stepcap": ("GSM stepcap {pooled, by_t}", ()), "pooled": ("stepcap pooled", ()), "gsmswap": ("GSM §207 arms (descriptive)", ()),
+    "cf_gsm": ("GSM CF {j: cell, pairs}", ()),
+    "GO": ("interim GO file flag (cross-checked)", ()), "acc_fixed14_valid": ("interim Aug-valid accuracy", ()), "probe1_valid": ("interim PROBE(1) (valid)", ()),
+    "fd_mlp_1k_ge3": ("interim FD-MLP(1, k >= 3) pooled", ()), "fd_mlp_kk_ge3": ("interim FD-MLP(k, k) pooled", ())}
+LAYOUT_PATTERN = re.compile(r"^(lin|mlp)_t\d+_k\d+$")                       # fd_slot_scores keys (one LAYOUTS entry: fd_slot_scores)
+ALIAS = {k_: tuple(v_[1]) for k_, v_ in LAYOUTS.items() if len(v_) > 1 and v_[1]}
+
+
+# ---------------------------------------------------------------- field table: every key the scorer reads from an input file is ONE entry of LAYOUTS
+ACCESSED = set()        # keys read through JD (recorded; the fixtures assert ACCESSED <= LAYOUTS, digit keys excepted)
+
+
+class JD(dict):
+    """a loaded JSON object: key reads resolve the canonical name, then its LAYOUTS aliases (renames are one LAYOUTS edit); every read key is recorded."""
+    __slots__ = ()
+
+    def _key(self, k):
+        if isinstance(k, str):
+            ACCESSED.add(k)
+            if not dict.__contains__(self, k):
+                for a in ALIAS.get(k, ()):
+                    if dict.__contains__(self, a):
+                        return a
+        return k
+
+    def __getitem__(self, k):
+        return dict.__getitem__(self, self._key(k))
+
+    def get(self, k, default=None):
+        k = self._key(k)
+        return dict.get(self, k, default)
+
+    def __contains__(self, k):
+        return dict.__contains__(self, self._key(k))
+
+
+def _load(p, plain=False):
     with open(p, encoding="utf-8") as fh:
-        return json.load(fh)
+        return json.load(fh) if plain else json.load(fh, object_hook=JD)
+
+
+def jl(d, f, plain=False):
+    """an input file under R; args files load plain (compared key by key, generically; their named keys are LAYOUTS entries for reference)."""
+    p = os.path.join(R, d, f)
+    return _load(p, plain) if os.path.exists(p) else None
 
 
 def jp(key):
@@ -235,10 +434,7 @@ def jp(key):
     if d != "@ROOT":
         return jl(d, f)
     p = os.path.join(ROOT, f)
-    if not os.path.exists(p):
-        return None
-    with open(p, encoding="utf-8") as fh:
-        return json.load(fh)
+    return _load(p) if os.path.exists(p) else None
 
 
 def pname(key):
@@ -354,6 +550,17 @@ def cluster_boot(groups, reps=None, seed=None):
     return [bs[int(0.025 * (len(bs) - 1))], bs[int(math.ceil(0.975 * (len(bs) - 1)))]]
 
 
+def cluster_boot_stat(points, fn, reps=None, seed=None):
+    """cluster-bootstrap 95 % CI of a statistic over cluster-level points (resampled with replacement; fixed rng seed)."""
+    if len(points) < 3:
+        return None
+    rng = random.Random(BOOT_SEED if seed is None else seed); n = len(points); bs = []
+    for _ in range(reps or BOOT_REPS):
+        bs.append(fn([points[rng.randrange(n)] for _ in range(n)]))
+    bs.sort()
+    return [bs[int(0.025 * (len(bs) - 1))], bs[int(math.ceil(0.975 * (len(bs) - 1)))]]
+
+
 def same(a, b, tol=1e-9):
     if a is None or b is None:
         return a is None and b is None
@@ -362,21 +569,26 @@ def same(a, b, tol=1e-9):
 
 # ---------------------------------------------------------------- logs, gates, args
 def log_info(d):
-    """log.jsonl: last step (last occurrence per step wins), guard stop, plain_cand_ce by step, valid_acc checks, max self_reuse."""
+    """log.jsonl: last step (last occurrence per step wins), guard stop, plain_cand_ce by step, valid_acc checks, max self_reuse (None if never logged),
+    the trainer's stream_collisions (signature redraws by the exclusion: evidence the exclusion ran; None if never logged)."""
     p = os.path.join(R, d, "log.jsonl")
     if not os.path.exists(p):
         return None
-    steps, ce, va, guard, reuse = set(), {}, {}, False, 0
+    steps, ce, va, guard, reuse, coll, hits = set(), {}, {}, False, None, None, None
     with open(p, encoding="utf-8") as fh:
         for ln in fh:
             ln = ln.strip()
             if not ln:
                 continue
-            r = json.loads(ln)
-            if r.get("guard_stop") or r.get("GUARD_STOP"):
+            r = json.loads(ln, object_hook=JD)
+            if r.get("guard_stop"):
                 guard = True
             if num(r.get("self_reuse")):
-                reuse = max(reuse, r["self_reuse"])
+                reuse = max(reuse or 0, r["self_reuse"])
+            if num(r.get("stream_collisions")):
+                coll = max(coll or 0, r["stream_collisions"])
+            if num(r.get("test_gate_sig_hits")):
+                hits = max(hits or 0, r["test_gate_sig_hits"])
             if "step" not in r:
                 continue
             s = int(r["step"]); steps.add(s)
@@ -384,7 +596,8 @@ def log_info(d):
                 ce[s] = r["plain_cand_ce"]
             if num(r.get("valid_acc")):
                 va[s] = r["valid_acc"]
-    return {"last": max(steps) if steps else None, "n_steps": len(steps), "guard_stop": guard, "ce": ce, "valid_acc": va, "self_reuse": reuse}
+    return {"last": max(steps) if steps else None, "n_steps": len(steps), "guard_stop": guard, "ce": ce, "valid_acc": va, "self_reuse": reuse,
+            "stream_collisions": coll, "test_gate_sig_hits": hits}
 
 
 def entry_prosqa(ce):
@@ -470,20 +683,61 @@ def evmem(stage):
     return {"eval_bs": eb or {}, "card": g.get("card", (g.get("meta") or {}).get("card"))}
 
 
+def frozen_ref(k):
+    """(reference args, info) for a FROZEN-referenced cell (note 218-4); info.status UNLISTED (no frozen entry yet) / SHA (frozen file changed)."""
+    ent = FROZEN_ARGS.get(k)
+    if ent:
+        path, want = (ent[0] if os.path.isabs(ent[0]) else os.path.join(ROOT, ent[0])), ent[1]
+    else:
+        path, want = os.path.join(R, CELL[k], "args_frozen.json"), None
+    if not os.path.exists(path):
+        return None, {"status": "UNLISTED", "why": "no frozen args for %s (FROZEN_ARGS['%s'] unset and no %s/args_frozen.json; note 218-4)" % (NAME[k], k, CELL[k])}
+    with open(path, "rb") as fh:
+        raw = fh.read()
+    sha = hashlib.sha256(raw).hexdigest()
+    if want and sha != want:
+        return None, {"status": "SHA", "why": "frozen args %s sha256 %s != recorded %s" % (path, sha[:16], str(want)[:16])}
+    return json.loads(raw.decode("utf-8")), {"path": path, "sha256": sha, "anchored": bool(want),
+                                                             "flag": None if want else "frozen args sha not anchored in FROZEN_ARGS (Theory note)"}
+
+
+def args_ref_check(a, b):
+    """the args_ref content rule (score_s216.args_ref_check, notes 216-6 / 218-4): args_ref may differ from the reference's iff the file it names (absolute or
+    ROOT-relative) equals the reference args on every non-META key; equal pointers pass; a missing / unreadable file fails."""
+    va, vb = a.get("args_ref"), b.get("args_ref")
+    if va == vb:
+        return {"ok": True, "why": "same pointer"}
+    pth = va if (va and os.path.isabs(str(va))) else os.path.join(ROOT, str(va or ""))
+    if not va or not os.path.isfile(pth):
+        return {"ok": False, "why": "args_ref file missing: %s" % va}
+    try:
+        f = _load(pth, plain=True)
+    except Exception as e:                                                  # noqa: BLE001
+        return {"ok": False, "why": "args_ref unreadable: %s" % e}
+    diff = sorted(x for x in set(f) | set(b) if x not in META and x != "args_ref" and f.get(x) != b.get(x))
+    return {"ok": not diff, "why": "content equals the reference args" if not diff else "content differs: %s" % diff[:10], "file": va}
+
+
 def args_diff(k):
-    """ARGS-DIFF (v1 §4.3): keys differing from the reference (META excluded) must be in ARGS_ALLOW[k]; required values ARGS_MUST[k]."""
-    d = CELL[k]; a = jl(d, "args.json")
-    if ARGS_REF.get(k) is None or ARGS_ALLOW.get(k) is None:
-        return {"status": "UNLISTED", "ok": None, "why": "ARGS-DIFF %s not pre-listed in v1 (ARGS_REF / ARGS_ALLOW['%s'] unset; RESOLVED R1)" % (
-            "reference" if ARGS_REF.get(k) is None else "allowed-key list", k)}
-    b = jl(*ARGS_REF[k])
+    """ARGS-DIFF (v1 §4.3, note 218-4): keys differing from the reference (META excluded) must be in ARGS_ALLOW[k] (empty for frozen references = exact
+    match); args_ref by its content rule; required values ARGS_MUST[k]."""
+    d = CELL[k]; a = jl(d, "args.json", plain=True); fz = None
+    if ARGS_REF.get(k) == "FROZEN":
+        b, fz = frozen_ref(k)
+        if b is None:
+            return {"status": fz["status"], "ok": None, "why": fz["why"]}
+        refname = fz["path"]
+    elif ARGS_REF.get(k) is None or ARGS_ALLOW.get(k) is None:
+        return {"status": "UNLISTED", "ok": None, "why": "ARGS-DIFF reference / allowed keys unset for %s" % k}
+    else:
+        b = jl(*ARGS_REF[k], plain=True); refname = "/".join(ARGS_REF[k])
     if a is None or b is None:
-        return {"status": "MISSING", "ok": None, "why": "args.json missing (%s)" % ("cell" if a is None else "/".join(ARGS_REF[k]))}
-    allow = ARGS_ALLOW[k]
+        return {"status": "MISSING", "ok": None, "why": "args.json missing (%s)" % ("cell" if a is None else refname)}
+    ar = args_ref_check(a, b); allow = set(ARGS_ALLOW[k]) | ({"args_ref"} if ar["ok"] else set())
     shared = {x: (b[x], a[x]) for x in a if x in b and x not in META and x not in allow and a[x] != b[x]}
     new = sorted(x for x in a if x not in b and x not in META and x not in allow)
     gone = sorted(x for x in b if x not in a and x not in META and x not in allow)
-    req = {}
+    req = {x: (b.get(x), a.get(x)) for x in ARCH_KEYS if a.get(x) != b.get(x)}   # a swapped architecture never passes as META (Note 218-9)
     for x, v in (ARGS_MUST.get(k) or {}).items():
         got = a.get(x)
         if v is None:
@@ -497,7 +751,7 @@ def args_diff(k):
         if not ok:
             req[x] = (v, got)
     ok = not shared and not new and not gone and not req
-    return {"status": "OK" if ok else "BAD", "ok": ok, "ref": "/".join(ARGS_REF[k]), "shared_diffs": shared, "unexpected_new_keys": new,
+    return {"status": "OK" if ok else "BAD", "ok": ok, "ref": refname, "frozen": fz, "args_ref": ar, "shared_diffs": shared, "unexpected_new_keys": new,
             "missing_keys": gone, "required_bad": req}
 
 
@@ -505,25 +759,35 @@ def meta_check(f, stage, parts, evm, ref_sha, dtype=DTYPE, dtype_parts=None):
     """v1 §4.3 asserts: card / dtype per file (and per part when card_by_part / dtype_by_part present), eval_bs per part == G-EVMEM, items_sha per part ==
     the stage's reference. Returns (missing fields, mismatches). The fields may sit in a 'meta' block or at the file's top level (Experiments' langvb_eval
     layout: card, dtype, eval_bs, test_sha {D: sha}); a per-D sha map is one file-level sha (compared canonically)."""
-    m = dict((f or {}).get("meta") or {}); miss, bad = [], []
-    for key in ("card", "dtype", "eval_bs", "card_by_part", "dtype_by_part"):
-        if key not in m and key in (f or {}):
-            m[key] = f[key]
-    if "items_sha" not in m:
-        m["items_sha"] = (f or {}).get("items_sha", (f or {}).get("test_sha"))
-    if is_dsha(m["items_sha"]):
-        m["items_sha"] = canon_sha(m["items_sha"])
+    f = f or {}; mb = (f.get("meta") or {}) if isinstance(f.get("meta"), dict) else {}; m = JD(); miss, bad = [], []
+    for key in ("card", "dtype"):                                           # a 'meta' block (LAYOUTS; labeller_part's) and / or the top level (langvb_eval)
+        m[key] = f.get(key, mb.get(key))
+    for key in ("eval_bs", "card_by_part", "dtype_by_part"):                # per-part maps: the union (a part's meta block never shadows the file's)
+        u = {}
+        for src in (mb.get(key), f.get(key)):
+            if isinstance(src, dict):
+                u.update(src)
+        if u:
+            m[key] = u
+    m["items_sha"] = f.get("items_sha", mb.get("items_sha", f.get("test_sha")))
+    if is_psha(m["items_sha"]) and is_psha(mb.get("items_sha")):
+        m["items_sha"] = dict(mb["items_sha"], **m["items_sha"])
+    m["per_D"] = f.get("per_D", mb.get("per_D"))
     if m.get("card") is None:
         miss.append("meta.card")
-    elif not card_ok(m["card"], stage):
-        bad.append("card %s (stage %s card %s)" % (m["card"], stage, CARD[stage]))
+    for c_ in {str(x) for x in (f.get("card"), mb.get("card")) if x is not None}:
+        if not card_ok(c_, stage):
+            bad.append("card %s (stage %s card %s)" % (c_, stage, CARD[stage]))
+    if num(m.get("per_D")) and m["per_D"] != PER_D:
+        bad.append("per_D %s != %d (a smoke-size eval)" % (m["per_D"], PER_D))
     for p, c in (m.get("card_by_part") or {}).items():
         if p in parts and not card_ok(c, stage):
             bad.append("part %s card %s" % (p, c))
     if m.get("dtype") is None:
         miss.append("meta.dtype")
-    elif m["dtype"] != dtype:
-        bad.append("dtype %s != %s" % (m["dtype"], dtype))
+    for d_ in {x for x in (f.get("dtype"), mb.get("dtype")) if x is not None}:
+        if d_ != dtype:
+            bad.append("dtype %s != %s" % (d_, dtype))
     for p, dt in (m.get("dtype_by_part") or {}).items():                   # e.g. the labeller part's bf16 copy inside an fp32 eval file
         want = (dtype_parts or {}).get(p, dtype)
         if p in parts and dt != want:
@@ -539,13 +803,36 @@ def meta_check(f, stage, parts, evm, ref_sha, dtype=DTYPE, dtype_parts=None):
             bad.append("part %s eval_bs %s != G-EVMEM %s" % (p, v, evm["eval_bs"][p]))
         elif evm is not None and p not in evm["eval_bs"]:
             miss.append("G-EVMEM eval_bs.%s" % p)
-        s = sh.get(p) if isinstance(sh, dict) else sh
-        s = canon_sha(s) if is_dsha(s) else s
-        if not s:
-            miss.append("meta.items_sha%s" % ("." + p if isinstance(sh, dict) else ""))
-        elif ref_sha and s != canon_sha(ref_sha):
-            bad.append("part %s items_sha %s != reference %s" % (p, str(s)[:24], str(canon_sha(ref_sha))[:24]))
+        v = (sh.get(p, sh.get(SHA_PART_OF.get(p, p))) if is_psha(sh) else sh)
+        if not v:
+            miss.append("meta.items_sha%s" % ("." + p if is_psha(sh) else ""))
+            continue
+        st, msg = sha_cmp(ref_sha, v, p)
+        if st == "pending":
+            miss.append(msg)
+        elif st == "mismatch":
+            bad.append(msg)
     return miss, bad
+
+
+def is_psha(x):
+    """a per-part sha map {part: sha} (non-digit keys)."""
+    return isinstance(x, dict) and bool(x) and not is_dsha(x)
+
+
+def sha_cmp(ref, v, p):
+    """item 5 (Audit G-L17): the anchor is G-L0's test-items sha (str = whole set, {D: sha}, or {part: sha}); the value is the part's sha. Same form ->
+    compared; anchor absent / lacking the part / a different form -> pending (never a self-reference)."""
+    if ref is None:
+        return "pending", "G-L0 test_items_sha (the items_sha anchor) absent"
+    r = ref.get(p) if is_psha(ref) else ref
+    if r is None:
+        return "pending", "G-L0 test_items_sha lacks part %s" % p
+    if is_dsha(r) != is_dsha(v):
+        return "pending", "items_sha of part %s and the G-L0 anchor have different forms (per-D map vs single sha; second-pass layout item)" % p
+    if canon_sha(r) != canon_sha(v):
+        return "mismatch", "part %s items_sha %s != G-L0 anchor %s" % (p, str(canon_sha(v))[:24], str(canon_sha(r))[:24])
+    return "ok", None
 
 
 def is_dsha(x):
@@ -555,14 +842,6 @@ def is_dsha(x):
 def canon_sha(x):
     """a per-D sha map {D: sha} -> one canonical string; strings pass through."""
     return json.dumps({str(k): v for k, v in sorted(x.items(), key=lambda kv: int(kv[0]))}, separators=(",", ":")) if is_dsha(x) else x
-
-
-def file_sha(f):
-    """the file-level test-set sha of an eval file (meta.items_sha / items_sha / test_sha), canonical; None if absent or per-part only."""
-    if not isinstance(f, dict):
-        return None
-    s = (f.get("meta") or {}).get("items_sha", f.get("items_sha", f.get("test_sha")))
-    return canon_sha(s) if (isinstance(s, str) or is_dsha(s)) else None
 
 
 def parts_missing(f, spec, parts):
@@ -661,7 +940,7 @@ def p_plant(ev):
         if not isinstance(e, dict) or not all(isinstance(e.get(x), dict) and num(e[x].get("acc")) for x in ("lin", "xor")):
             miss.append("plant t%d lin / xor acc" % t); continue
         for x in ("lin", "xor"):
-            it = e[x].get("items")
+            it = e[x].get("items_flat", e[x].get("items"))
             if isinstance(it, dict):                                         # langvb_eval: items {D: [0/1]} -> pooled in D order
                 it = [v for D in sorted(it, key=int) for v in it[D]]
             if isinstance(it, list) and it and abs(mean(it) - e[x]["acc"]) > 1e-12:
@@ -729,23 +1008,25 @@ def p_vswap_arm(arm, A):
     rule = VSWAP_RULE[arm]; pairs = (A or {}).get("pairs")
     if not isinstance(pairs, list):
         return {"missing": ["vswap.%s.pairs" % arm]}
-    need = ("ok_rec",) + (("ok_don",) if rule["donor"] else ()) + ("D", "t"); miss, rows, t2 = set(), [], []
+    need = ("ok_rec",) + (("ok_don",) if rule["donor"] else ()) + ("D", "t"); miss, rows, t2, xmis = set(), [], [], []
     for p in pairs:
         for f in need:
             if f not in p:
                 miss.add("vswap.%s pair field %s" % (arm, f))
-        comp = bool(rule["need"]) and all(f in p for f in rule["need"])     # exposure from its components (LAYOUTS) or the eval's per-pair 'exposed' flag
-        if rule["need"] and not comp and "exposed" not in p:
-            miss.add("vswap.%s pair exposure fields (%s, or exposed)" % (arm, "/".join(rule["need"])))
+        for f in rule["need"]:                                              # §4.3 / G15: exposure recomputed from the stored facts; 'exposed' cross-checks
+            if f not in p:
+                miss.add("vswap.%s pair exposure field %s" % (arm, f))
         x = fo(p)
         if x is None:
             miss.add("vswap.%s pair y_hyb / y_rec / y_don" % arm); continue
         D, t = p.get("D"), p.get("t")
         if not (num(D) and num(t)):
             continue
-        cond = all(bool(p.get(f)) for f in rule["need"]) if comp else bool(p.get("exposed", True))
-        clean_ = bool(p.get("ok_rec")) and (bool(p.get("ok_don")) if (rule["donor"] or "ok_don" in p) else True)   # v1 §2.5: recipient and its arm's donor
+        cond = all(bool(p.get(f)) for f in rule["need"])
+        clean_ = bool(p.get("ok_rec")) and (bool(p.get("ok_don")) if (rule["donor"] or p.get("ok_don") is not None) else True)   # v1 §2.5; RESET: ok_don null
         exp = D in rule["D"] and t in rule["t"](D) and cond
+        if "exposed" in p and bool(p["exposed"]) != (cond if rule["need"] else True):
+            xmis.append((D, t))
         rows.append((D, t, exp, exp and clean_, x[0], x[1]))
         if arm == "ii_prime" and t == 2 and 4 <= D <= 8 and cond:
             t2.append((D, clean_, x[0], x[1]))
@@ -758,9 +1039,13 @@ def p_vswap_arm(arm, A):
         o["by_D"][D] = {"n_exposed": len(e_), "n_clean": len(c_), "follow": mean(r[4] for r in c_), "own": mean(r[5] for r in c_)}
     o["by_t"] = {t: {"n_clean": len([r for r in cl if r[1] == t]), "follow": mean(r[4] for r in cl if r[1] == t)} for t in sorted(set(r[1] for r in cl))}
     t2c = [r for r in t2 if r[1]]
-    o["t2_descriptive"] = {"n_clean": len(t2c), "follow": mean(r[2] for r in t2c), "own": mean(r[3] for r in t2c)} if arm == "ii_prime" else None
+    if arm == "ii_prime":                                                   # descriptive: the module's own t = 2 summary when it keeps no t = 2 pairs
+        o["t2_descriptive"] = ({"n_clean": len(t2c), "follow": mean(r[2] for r in t2c), "own": mean(r[3] for r in t2c), "source": "pairs"} if t2 else
+                               dict(A["t2_descriptive"], source="file") if isinstance(A.get("t2_descriptive"), dict) else None)
+    else:
+        o["t2_descriptive"] = None
     o["n_pos_fail"] = sum(1 for p in pairs if "pos_ok" in p and not p.get("pos_ok"))    # G-L4 expects 0 (position identity; langvb_eval asserts it per batch)
-    bad = []
+    bad = (["%d pairs: the eval's 'exposed' flag != the exposure recomputed from the stored components (first %s)" % (len(xmis), xmis[:3])] if xmis else [])
     for f in ("n_candidates", "n_exposed", "n_clean"):
         if A.get(f) != o[f]:
             bad.append("%s %s != recomputed %s" % (f, A.get(f), o[f]))
@@ -786,6 +1071,15 @@ def p_vswap(ev):
         x = p_vswap_arm(arm, V[arm]); out[arm] = x; miss += x.get("missing") or []
         if x.get("void"):
             void[arm] = x["void"]
+    T2 = V.get("ii_prime_t2")
+    if isinstance(T2, dict) and isinstance(T2.get("pairs"), list) and isinstance(out.get("ii_prime"), dict) and not out["ii_prime"].get("missing"):
+        ex = [q for q in T2["pairs"] if q.get("t") == 2 and num(q.get("D")) and 4 <= q["D"] <= 8 and bool(q.get("pos_ok")) and bool(q.get("frontier_differs"))]
+        cl = [q for q in ex if bool(q.get("ok_rec")) and bool(q.get("ok_don"))]; fo_ = [fo(q) for q in cl]
+        sm = {"n_candidates": len(T2["pairs"]), "n_exposed": len(ex), "n_clean": len(cl), "follow": mean(x_[0] for x_ in fo_ if x_), "own": mean(x_[1] for x_ in fo_ if x_),
+              "source": "vswap.ii_prime_t2.pairs"}
+        ft = (V.get("ii_prime") or {}).get("t2_descriptive") or {}
+        sm["flag_file_summary_differs"] = bool(ft) and (ft.get("n_clean") != sm["n_clean"] or not same(ft.get("follow"), sm["follow"]))
+        out["ii_prime"]["t2_descriptive"] = sm
     return {"missing": miss[:20], "void": void or None, "arms": out}
 
 
@@ -809,76 +1103,99 @@ def p_stall(ev, acc):
 
 
 def p_cf(ev):
-    """CONSUMPTION-FRONT (v1 §2.5 / §3.6 PS-6): t* per pair recomputed from answers_by_t; per-(D, j) counts, shares and t* lists must agree (else VOID).
-    Two stores are accepted: every candidate with pos_ok / flip_ok (LAYOUTS; exposure recomputed), or only the selected exposed recipients with per-pair
-    clean / tstar / clean_k2 and the cells under cf.cells (langvb_eval; n_candidates / n_exposed then come from the file and are flagged)."""
+    """CONSUMPTION-FRONT (v1 §2.5 / §3.6 PS-6; writer of record boxes/langvb_eval.py part_cf @ ec1aec8d): EVERY candidate pair is stored with pos_ok / flip_ok
+    (exposure recomputed = pos_ok and flip_ok; the eval's 'exposed' cross-checks), ok_rec / ok_don at K' = D (clean recomputed = exposed and ok_rec and
+    ok_don; the eval's 'clean' cross-checks) and 'selected' (the <= 400 exposed pairs per (D, j) that were swept); selected pairs carry answers_by_t and
+    tstar (t* recomputed by the least-violations change point). Readings use the clean selected pairs. Per-(D, j) n_candidates / n_exposed / n_selected /
+    n_clean / share_window / tstar / curve must equal the recomputation (else VOID); share_clean_kd / kd2 (Addendum 1 item 4) recomputed, descriptive."""
     C = ev.get("cf") or {}; pairs = C.get("pairs"); CC = C.get("cells") if isinstance(C.get("cells"), dict) else C
     if not isinstance(pairs, list):
         return {"missing": ["cf.pairs"]}
-    full = bool(pairs) and all("pos_ok" in p and "flip_ok" in p for p in pairs)
-    miss, rows, endmis, tsbad = set(), [], 0, 0
+    comp_ = [("pos_ok" in p and "flip_ok" in p) for p in pairs]; flag_ = [("exposed" in p) for p in pairs]
+    full = bool(pairs) and all(c or f for c, f in zip(comp_, flag_))    # every candidate stored with its exposure (components, else the eval's flag)
+    miss, rows, endmis, tsbad, xmis, cmis, selbad = set(), [], 0, 0, 0, 0, 0
+    if pairs and not full and any(comp_ + flag_):
+        miss.add("cf pairs: exposure stored for some candidates only (pos_ok / flip_ok or exposed on every pair, or on none)")
     for p in pairs:
-        for f in ("D", "j", "answers_by_t"):
+        for f in ("D", "j"):
             if f not in p:
                 miss.add("cf pair field %s" % f)
-        D, j, ans = p.get("D"), p.get("j"), p.get("answers_by_t")
-        if not (num(D) and num(j)) or not isinstance(ans, list) or len(ans) != D + 1:
-            miss.add("cf pair answers_by_t (length D + 1)"); continue
-        ans = [int(bool(a)) for a in ans]; ends = ans[D] == 1 and ans[0] == 0       # t = 0 / D are x' / x's own runs (G-L4b)
-        if "clean" in p:
-            cl_ = bool(p["clean"])
+        D, j = p.get("D"), p.get("j")
+        if not (num(D) and num(j)):
+            continue
+        ans = p.get("answers_by_t"); sel = bool(p["selected"]) if "selected" in p else isinstance(ans, list)
+        if sel and (not isinstance(ans, list) or len(ans) != D + 1):
+            miss.add("cf selected pair answers_by_t (length D + 1)"); continue
+        if "pos_ok" in p and "flip_ok" in p:
+            e0 = bool(p["pos_ok"]) and bool(p["flip_ok"])
+            xmis += int("exposed" in p and bool(p["exposed"]) != e0)
+        elif "exposed" in p:
+            e0 = bool(p["exposed"])                                          # a non-exposed candidate never counts
         else:
-            okr = bool(p["ok_rec"]) if "ok_rec" in p else ans[D] == 1; okd = bool(p["ok_don"]) if "ok_don" in p else ans[0] == 0; cl_ = okr and okd
-        endmis += int(cl_ != ends)
-        ts = crossover(ans, D)
-        if "tstar" in p and p["tstar"] != ts:
-            tsbad += 1
-        exp = (bool(p.get("pos_ok")) and bool(p.get("flip_ok")) if full else True) and 4 <= D <= 8 and 1 <= j <= D
-        d2 = (p.get("ok_rec_d2"), p.get("ok_don_d2"))
-        c2 = bool(p["clean_k2"]) if "clean_k2" in p else ((bool(d2[0]) and bool(d2[1])) if None not in d2 else None)
-        rows.append({"D": D, "j": j, "exp": exp, "clean": exp and cl_, "ts": ts, "ans": ans, "clean_d2": c2})
+            e0 = True                                                        # selected-only store (no exposure fields): every stored pair was selected exposed
+        exp = e0 and 4 <= D <= 8 and 1 <= j <= D
+        selbad += int(sel and not e0)
+        if "ok_rec" in p and "ok_don" in p:
+            cl_ = exp and bool(p["ok_rec"]) and bool(p["ok_don"])
+            cmis += int("clean" in p and bool(p["clean"]) != cl_)
+        elif "clean" in p:
+            cl_ = exp and bool(p["clean"])
+        elif sel:
+            cl_ = exp and ans[D] in (1, True) and ans[0] in (0, False)       # a store without fields: the sweep's endpoints (x, x' own runs; G-L4b)
+        else:
+            miss.add("cf pair ok_rec / ok_don (or clean)"); continue
+        ts = None
+        if sel:
+            ans = [int(bool(a)) for a in ans]; ts = crossover(ans, D)
+            endmis += int(exp and cl_ != (ans[D] == 1 and ans[0] == 0))
+            if "tstar" in p and p["tstar"] != ts:
+                tsbad += 1
+        c2 = (bool(p["clean_k2"]) if "clean_k2" in p else
+              (exp and bool(p["ok_rec_d2"]) and bool(p["ok_don_d2"])) if ("ok_rec_d2" in p and "ok_don_d2" in p) else None)
+        rows.append({"D": D, "j": j, "exp": exp, "sel": sel and exp, "clean": sel and cl_, "ts": ts, "ans": ans if sel else None, "clean_d2": c2})
     if miss:
         return {"missing": sorted(miss)}
-    cells, bad = {}, (["%d pairs' stored tstar != the least-violations change point" % tsbad] if tsbad else [])
+    bad = [w for w, n_ in (("%d pairs' stored tstar != the least-violations change point" % tsbad, tsbad), ("%d pairs: 'exposed' != pos_ok and flip_ok" % xmis, xmis),
+                           ("%d pairs: 'clean' != exposed and ok_rec and ok_don" % cmis, cmis), ("%d selected pairs not exposed" % selbad, selbad)) if n_]
+    cells = {}
     for r in rows:
-        c = cells.setdefault((r["D"], r["j"]), {"cand": 0, "exp": [], "clean": []}); c["cand"] += 1
-        if r["exp"]:
-            c["exp"].append(r)
+        c = cells.setdefault((r["D"], r["j"]), {"cand": 0, "exp": 0, "sel": [], "clean": []}); c["cand"] += 1; c["exp"] += int(r["exp"])
+        if r["sel"]:
+            c["sel"].append(r)
         if r["clean"]:
             c["clean"].append(r)
-    out, flags = {}, ([] if full else ["exposure counts n_candidates / n_exposed read from the file: only selected exposed pairs are stored (v1 §4.3 asks "
-                                       "recomputation from the pairs; n_clean, shares and t* are recomputed)"])
+    out = {}
+    flags = [] if full else ["exposure counts n_candidates / n_exposed read from the file: only selected exposed pairs are stored (v1 §4.3 asks recomputation)"]
     for (D, j), c in sorted(cells.items()):
-        cl, ex = c["clean"], c["exp"]; f = (CC.get(str(D)) or {}).get(str(j))
-        o = {"n_candidates": c["cand"] if full else (f or {}).get("n_candidates"), "n_exposed": len(ex) if full else (f or {}).get("n_exposed"),
-             "n_stored": len(ex), "n_clean": len(cl), "share_window": mean(int(j - 1 <= r["ts"] <= j) for r in cl),
-             "tstar": sorted(r["ts"] for r in cl), "curve": {t: mean(1 - r["ans"][t] for r in cl) for t in range(D + 1)} if cl else {},
-             "share_clean_kd": (len(cl) / len(ex)) if ex else None,
-             "share_clean_kd2": mean(int(bool(r["clean_d2"])) for r in ex) if ex and all(r["clean_d2"] is not None for r in ex) else None}
+        cl, sl = c["clean"], c["sel"]; f = (CC.get(str(D)) or {}).get(str(j))
+        o = {"n_candidates": c["cand"] if full else (f or {}).get("n_candidates"), "n_exposed": c["exp"] if full else (f or {}).get("n_exposed"),
+             "n_selected": len(sl), "n_clean": len(cl), "share_window": mean(int(j - 1 <= r["ts"] <= j) for r in cl), "tstar": sorted(r["ts"] for r in cl),
+             "curve": {t: mean(1 - r["ans"][t] for r in cl) for t in range(D + 1)} if cl else {},
+             "share_clean_kd": (len(cl) / len(sl)) if sl else None,
+             "share_clean_kd2": mean(int(bool(r["clean_d2"])) for r in sl) if sl and all(r["clean_d2"] is not None for r in sl) else None}
         out[(D, j)] = o
         if not isinstance(f, dict):
             bad.append("cf[%d][%d] absent from the file" % (D, j)); continue
-        for k in (("n_candidates", "n_exposed", "n_clean") if full else ("n_clean",)):
+        for k in (("n_candidates", "n_exposed") if full else ()) + (("n_selected",) if "n_selected" in f else ()) + ("n_clean",):
             if f.get(k) != o[k]:
                 bad.append("cf[%d][%d] %s %s != recomputed %s" % (D, j, k, f.get(k), o[k]))
         if not same(f.get("share_window"), o["share_window"]):
             bad.append("cf[%d][%d] share_window %s != recomputed %s" % (D, j, f.get("share_window"), o["share_window"]))
-        if sorted(f.get("tstar") or []) not in (o["tstar"], sorted(r["ts"] for r in ex)):
-            bad.append("cf[%d][%d] tstar list != recomputed" % (D, j))
+        if sorted(f.get("tstar") or []) != o["tstar"]:
+            bad.append("cf[%d][%d] tstar list != recomputed (clean selected pairs)" % (D, j))
         if cl:
             fc = {int(t): v for t, v in (f.get("curve") or {}).items()}
-            ce = {t: mean(1 - r["ans"][t] for r in ex) for t in range(D + 1)}
-            if not (all(same(fc.get(t), v) for t, v in o["curve"].items()) and len(fc) == len(o["curve"])) and not (
-                    all(same(fc.get(t), v) for t, v in ce.items()) and len(fc) == len(ce)):
-                bad.append("cf[%d][%d] curve != recomputed (clean or exposed pairs)" % (D, j))
-    flags += ["cf[%d][%d] %d exposed pairs used > 400 (v1 §2.5 'up to 400'; flagged, not voiding)" % (D, j, x["n_stored"]) for (D, j), x in out.items()
-              if x["n_stored"] > 400]
+            if not (all(same(fc.get(t), v) for t, v in o["curve"].items()) and len(fc) == len(o["curve"])):
+                bad.append("cf[%d][%d] curve != recomputed (clean selected pairs)" % (D, j))
+    flags += ["cf[%d][%d] %d selected pairs > 400 (v1 §2.5 'up to 400'; flagged, not voiding)" % (D, j, x["n_selected"]) for (D, j), x in out.items()
+              if x["n_selected"] > 400]
     for D, v in CC.items():
         if str(D).isdigit() and isinstance(v, dict):
             for j in v:
                 if str(j).isdigit() and (int(D), int(j)) not in out:
                     bad.append("cf[%s][%s] in the file but no pairs" % (D, j))
-    return {"missing": [], "void": bad[:20] or None, "cells": out, "rows": rows, "endpoint_mismatch": endmis, "flags": flags, "full_candidate_store": full,
+    return {"missing": [], "void": bad[:20] or None, "cells": out, "rows": [r for r in rows if r["sel"]], "endpoint_mismatch": endmis,
+            "file_endpoint_mismatch": C.get("endpoint_mismatch"), "flags": flags, "full_candidate_store": full,
             "n_pos_fail": sum(1 for p in pairs if "pos_ok" in p and not p["pos_ok"]), "n_flip_fail": sum(1 for p in pairs if "flip_ok" in p and not p["flip_ok"]),
             "file_pooled": {"share_window_pooled": C.get("share_window_pooled"), "spearman_within_D": C.get("spearman_within_D")}}
 
@@ -925,7 +1242,7 @@ def p_causal_deep(ev, a):
     B = [D for D in range(9, 17) if ge(a.get(D), 0.95)]; excl, ok_rows = [], {}
     for D in B:
         rows = {arm: (Cd[arm]["by_D"].get(str(D)) or {}) for arm in ("ii_prime", "i_prime")}; s0 = Cd["stall"]["by_D"].get(str(D)) or {}
-        n_ = s0.get("n", s0.get("items")); rc = s0.get("recovery")                # langvb_eval stall_by rows: items (count), intact_kD, stalled_kD1
+        n_ = s0.get("n", s0.get("n_items", s0.get("items"))); rc = s0.get("recovery")   # langvb_eval stall_by rows: n / n_items, intact_kD, stalled_kD1
         if rc is None and num(s0.get("intact_kD")) and num(s0.get("stalled_kD1")) and s0["intact_kD"] > 0:
             rc = s0["stalled_kD1"] / s0["intact_kD"]
         s = {"n": n_ if num(n_) else 0, "recovery": rc}
@@ -970,7 +1287,8 @@ def p_labeller(ev):
         miss.append("kept_vs_drawn")
     if miss:
         return {"missing": miss}
-    return {"missing": [], "void": None, "label_audit": la, "LABEL_BUG": la["n_wrong"] > 0 or (num(la.get("pi_label")) and la["pi_label"] < 1 - 1e-12),
+    return {"missing": [], "void": None, "label_audit": la, "LABEL_BUG": la["n_wrong"] > 0 or (num(la.get("pi_label")) and la["pi_label"] < 1 - 1e-12)
+            or (num(la.get("n_unsound")) and la["n_unsound"] > 0),
             "n_audit_flag": None if la["n"] >= 5000 else "label_audit n %s < 5,000 (v1 §4.1)" % la["n"], "kept_vs_drawn": ev.get("kept_vs_drawn"),
             "memo": ev.get("memo"), "gate1_copy_choice": (ev.get("gate1") or {}).get("choice")}
 
@@ -1130,6 +1448,8 @@ def readings_A(P, l0, c1, ev):
     desc = {"arms_descriptive": {"ii": iiD, "person": per, "reset": rs}, "cf": {"labels": cflab, **cfdesc},
             "DEPTH_L_mean_acc_d2_9_12": mean(A.get(D) for D in range(9, 13)) if all(num(A.get(D)) for D in range(9, 13)) else None,
             "PLANT": (pl or {}).get("plant"), "PROBE_by_t_D": {t: {D: v_ for D, v_ in x.items()} for t, x in ((pr or {}).get("acc") or {}).items()},
+            "PROBE_FD_TRAIN_ITEMS": {k_: (ev or {}).get(k_) for k_ in ("probe_n_distinct_seen", "fd_n_distinct_seen")},
+            "flag_train_items_lt_200k": [k_ for k_ in ("probe_n_distinct_seen", "fd_n_distinct_seen") if num((ev or {}).get(k_)) and ev[k_] < 200000],
             "LIT_C2_L": "UNINFORMATIVE on SYM (v1 §3.7c; D <= 16 fits K' 16)"}
     return o, comps, lab, desc
 
@@ -1166,6 +1486,8 @@ def _gate_pend(miss, ctx, stage):
             miss["gate_l0"] = pname("gate_l0")
         elif l0["missing"]:
             miss["gate_l0"] = "%s (entries %s)" % (pname("gate_l0"), l0["missing"][:5])
+        elif not l0.get("test_items_sha"):
+            miss["gate_l0"] = "%s (no test_items_sha: the Stage A items_sha anchor; Audit item 5)" % pname("gate_l0")
     evm, key = ctx["evm" + stage], "evmem_" + stage
     if evm is None:
         miss[key] = pname(key)
@@ -1178,6 +1500,8 @@ def _args_pend(miss, ad):
         miss["args_unlisted"] = ad["why"]
     elif ad["status"] == "MISSING":
         miss["args_ref"] = ad["why"]
+    elif ad["status"] == "SHA":
+        miss.setdefault("mismatch", []).append(ad["why"])
 
 
 def _gate_final(o, miss, k):
@@ -1222,7 +1546,7 @@ def _a_missing(k, ctx):
             miss["meta"] = "%s/eval_lvb.json meta %s" % (d, mm[:6])
         if bad:
             miss.setdefault("mismatch", []).extend(bad)
-    _gate_pend(miss, ctx, "A")
+    _gate_pend(miss, ctx, "A"); _contam_pend(miss, d, info, ev, need_reuse=(k == "a2"))
     ad = args_diff(k); _args_pend(miss, ad)
     return miss, ev, P, info, ad
 
@@ -1231,14 +1555,27 @@ def censors_A(k, info, ev, ad, extra=()):
     dead = info["last"] is None or info["last"] < FULL[k] or info["guard_stop"]
     ent = entry_prosqa(info["ce"]); noent = not ent["entered"]
     c = (ev or {}).get("contamination") or {}
-    contam = info["self_reuse"] > 0 or any(num(v) and v > 0 for v in c.values())
+    contam = ((info["self_reuse"] or 0) > 0 or (info.get("test_gate_sig_hits") or 0) > 0 or any(num(v) and v > 0 for v in c.values()))
     args_bad = ad["ok"] is not True
     why = [w for w, f in (("dead (last step %s < %d%s)" % (info["last"], FULL[k], ", guard stop" if info["guard_stop"] else ""), dead),
                           ("NO-ENTRY (plain_cand_ce never <= 0.35 in two consecutive 1k bins)", noent), ("CONTAMINATED", contam),
                           ("ARGS-DIFF %s" % ({x: ad.get(x) for x in ("shared_diffs", "unexpected_new_keys", "missing_keys", "required_bad") if ad.get(x)}
                                             or ad.get("why")), args_bad)) + tuple(extra) if f]
     return {"dead": dead, "last_step": info["last"], "guard_stop": info["guard_stop"], "NO_ENTRY": noent, "entry": ent, "CONTAMINATED": contam,
+            "contamination": dict(c), "stream_collisions_redrawn": info.get("stream_collisions"), "self_reuse": info.get("self_reuse"),
             "ARGS_DIFF": ad, "why": why, "censored": bool(why)}
+
+
+def _contam_pend(miss, d, info, ev, need_reuse=False):
+    """item 4 (Audit G-L17): CONTAMINATED needs evidence, never a silent clean: the eval file's contamination block {hit counts} or the trainer's logged
+    stream_collisions (the exclusion's redraws); absent -> pending (FAILURE at --final). A2 also needs self_reuse logged (v1 §2.4 fresh-once)."""
+    if info is None:
+        return
+    c = (ev or {}).get("contamination")
+    if not num((c or {}).get("test_gate_sig_hits")) and not num(info.get("test_gate_sig_hits")):
+        miss["contamination"] = "%s: no contamination evidence (test_gate_sig_hits in the eval's contamination block or the log; v1 §5.2)" % d
+    if need_reuse and not num((c or {}).get("self_reuse")) and info.get("self_reuse") is None:
+        miss["self_reuse"] = "%s: no self_reuse (contamination block or log; v1 §2.4)" % d
 
 
 def _direct_body(ev):
@@ -1272,7 +1609,7 @@ def direct_cell(ctx):
             miss["meta"] = "%s/eval_direct.json meta %s" % (d, mm)
         if bad:
             miss.setdefault("mismatch", []).extend(bad)
-    _gate_pend(miss, ctx, "A"); ad = args_diff(k); _args_pend(miss, ad)
+    _gate_pend(miss, ctx, "A"); _contam_pend(miss, d, info, ev); ad = args_diff(k); _args_pend(miss, ad)
     r = _gate_final(o, miss, k)
     if r:
         r["C1"] = {"readable": False, "why": "DIRECT-SYM %s" % r["label"]}
@@ -1366,11 +1703,16 @@ def gate1_read(g):
     if g["choice"] != choice:
         bad.append("choice %s != recomputed %s (v1 §2.4 / N9: L-RR only if its D 11-12 yield beats L-ROLL's by >= 0.05)" % (g["choice"], choice))
     wrong = sum(out[ch][D]["n_wrong"] for ch in out for D in out[ch])
+    tie_uns = {k_: sum((((g.get("chains") or {}).get(ch) or {}).get(str(D)) or {}).get(k_) or 0 for ch in out for D in out[ch]) for k_ in ("n_tie", "n_unsound")}
+    file_bug = g.get("label_bug") is True
     yok = all(out[choice][D]["yield"] >= 0.2 - EPS for D in range(9, 13))
     pi = {ch: 1 - sum(out[ch][D]["n_wrong"] for D in out[ch]) / max(1, sum(out[ch][D]["kept"] for D in out[ch])) for ch in out}
-    return {"missing": [], "problems": bad, "by_chain": out, "yield_11_12": y, "choice": choice, "LABEL_BUG": wrong > 0, "n_wrong": wrong, "pi_label": pi,
-            "yield_ok": yok, "GATE_1_L": not bad and wrong == 0 and yok,
-            "why": [w for w, f in (("problems %s" % bad, bad), ("LABEL-BUG: %d wrong labels" % wrong, wrong), ("kept yield < 0.2 at some D 9-12", not yok)) if f]}
+    lbug = wrong > 0 or tie_uns["n_tie"] > 0 or tie_uns["n_unsound"] > 0 or file_bug          # Audit G-L13 2a: ties / unsound kept items are LABEL-BUG too
+    if isinstance(g.get("label_bug"), bool) and g["label_bug"] != lbug:
+        bad.append("label_bug %s != recomputed %s" % (g["label_bug"], lbug))
+    return {"missing": [], "problems": bad, "by_chain": out, "yield_11_12": y, "choice": choice, "LABEL_BUG": lbug, "n_wrong": wrong, "n_tie_unsound": tie_uns,
+            "pi_label": pi, "yield_ok": yok, "GATE_1_L": not bad and not lbug and yok,
+            "why": [w for w, f in (("problems %s" % bad, bad), ("LABEL-BUG: %d wrong labels, %s" % (wrong, tie_uns), lbug), ("kept yield < 0.2 at some D 9-12", not yok)) if f]}
 
 
 def pool_read(pm):
@@ -1387,7 +1729,9 @@ def pool_read(pm):
     contam = sig_n > 0 or (pm["gold_key_hits"] or 0) > 0 or bool(ks - POOL_KEYS)
     gl20 = [w for w, f in (("total kept %s < 1.1 x demand %s" % (total, demand), total < 1.1 * demand - EPS), ("key set %s != registered" % sorted(ks), ks != POOL_KEYS),
                            ("rng_s replay != v1_pool count", pm["rng_replay_equal"] is not True), ("demand_replay %s != 383,488 (seed 1)" % demand, demand != POOL_DEMAND)) if f]
+    pbug = bool(pm.get("label_bug") is True or (num(pm.get("n_tie")) and pm["n_tie"] > 0))
     return {"missing": [], "kept_by_D": kept, "draws_by_D": draws, "POOL_SHORT": bool(short), "short": short, "short_at_cap": at_cap, "CONTAMINATED": contam,
+            "LABEL_BUG": pbug, "n_tie": pm.get("n_tie"),
             "sig_hits": sig, "gold_key_hits": pm["gold_key_hits"], "G_L20_fail": gl20}
 
 
@@ -1489,10 +1833,11 @@ def a2_cell(ctx, a1, a2go, ctrl, g1r, direct, pr):
     r = _gate_final(o, miss, k)
     if r:
         return r
-    lb = P.get("labeller") or {}; bug = bool(lb.get("LABEL_BUG") or g1r.get("LABEL_BUG"))
+    lb = P.get("labeller") or {}; bug = bool(lb.get("LABEL_BUG") or g1r.get("LABEL_BUG") or pr.get("LABEL_BUG"))
     if bug:
-        o.update(status="FAIL", censored=True, label="VOID (LABEL-BUG: label_audit n_wrong %s, GATE-1-L wrong %s; A2 voided and re-gated; rule b)" % (
-            (lb.get("label_audit") or {}).get("n_wrong"), g1r.get("n_wrong")))
+        o.update(status="FAIL", censored=True, label="VOID (LABEL-BUG: label_audit n_wrong %s / n_unsound %s, GATE-1-L wrong %s %s, pool n_tie %s; A2 voided and "
+                 "re-gated; rule b)" % ((lb.get("label_audit") or {}).get("n_wrong"), (lb.get("label_audit") or {}).get("n_unsound"), g1r.get("n_wrong"),
+                                         g1r.get("n_tie_unsound"), pr.get("n_tie")))
         return o
     extra = (("CONTAMINATED (pool: sig_hits %s, gold_key_hits %s)" % (pr["sig_hits"], pr["gold_key_hits"]), pr["CONTAMINATED"]),
              ("G-L20 failed: %s" % pr["G_L20_fail"], bool(pr["G_L20_fail"])))
@@ -1641,16 +1986,18 @@ def p_gsm_future(ev):
     F = ev.get("future") or {}; out, miss = {}, []
     for model in ("lin", "mlp"):
         G = F.get(model) or {}
-        t1 = [((G.get("1") or {}).get(str(k)) or {}) for k in range(3, 13)]; kk = [((G.get(str(k)) or {}).get(str(k)) or {}) for k in range(3, 13)]
-        if not (t1[0] and kk[0]):
-            miss.append("future %s (1, 3) / (3, 3)" % model); continue
+        absent = ["%s (%d, %d)" % (model, t, k) for t in range(0, 13) for k in range(t, 13)      # v1 §4.2: t 0..12, every k >= t (incl. t = k)
+                  if not isinstance((G.get(str(t)) or {}).get(str(k)), dict) or "acc" not in G[str(t)][str(k)] or "n" not in G[str(t)][str(k)]]
+        if absent:
+            miss.append("future cells %s%s" % (absent[:4], " (+%d)" % (len(absent) - 4) if len(absent) > 4 else "")); continue
+        t1 = [G["1"][str(k)] for k in range(3, 13)]; kk = [G[str(k)][str(k)] for k in range(3, 13)]
 
         def pool(es):
             es = [e for e in es if num(e.get("acc")) and num(e.get("n")) and e["n"] > 0]
             n = sum(e["n"] for e in es)
             return (sum(e["acc"] * e["n"] for e in es) / n) if n else None, n
         f1, n1 = pool(t1); fk, nk = pool(kk)
-        out[model] = {"FD_1_k_ge3": f1, "n_1": n1, "FD_kk_ge3": fk, "n_kk": nk, "k_absent": [k for k, e in zip(range(3, 13), t1) if not e]}
+        out[model] = {"FD_1_k_ge3": f1, "n_1": n1, "FD_kk_ge3": fk, "n_kk": nk}
     return {"missing": miss, "void": None, "by_model": out}
 
 
@@ -1758,17 +2105,18 @@ def cf_gsm_reading(x):
     if w:
         return rd(False, w), {"LATE_FUSION_GSM": None, "LAST_STEP_LATE": None}
     rows = x["rows"]; dec = [r for r in rows if r["clean"] and r["band"] and 3 <= r["j"] <= r["m_bin"] - 1]
-    g = {}; pts = {}
+    g, pts = {}, {}                                                         # note 218-5: clusters = exposed base steps (base, j); variants averaged per step
     for r in dec:
-        g.setdefault(r["base"], []).append(int(r["j"] - 1 <= r["ts"] <= r["j"])); pts.setdefault((r["base"], r["j"]), []).append(r["ts"])
+        g.setdefault((r["base"], r["j"]), []).append(int(r["j"] - 1 <= r["ts"] <= r["j"])); pts.setdefault((r["base"], r["j"]), []).append(r["ts"])
     share = cluster_mean(g); keys = sorted(pts)
     rho = spearman([mean(pts[q]) for q in keys], [q[1] for q in keys]) if len(keys) >= 2 else None
-    v = dict(n_clean=len(dec), n_base=len(g), share_window_clustered=share, share_ci95=cluster_boot(g), spearman_cluster_points=rho, n_points=len(keys),
+    v = dict(n_clean=len(dec), n_steps=len(keys), n_base_items=len(set(q[0] for q in keys)), share_window_clustered=share, share_ci95=cluster_boot(g),
+             spearman_step_clusters=rho, rho_ci95=cluster_boot_stat([(q[1], mean(pts[q])) for q in keys], lambda pp: spearman([y for _, y in pp], [x for x, _ in pp])),
              pair_level={"share_window": mean(int(r["j"] - 1 <= r["ts"] <= r["j"]) for r in dec),
                          "spearman": spearman([r["ts"] for r in dec], [r["j"] for r in dec]) if len(dec) >= 2 else None})
     w = ("%d < 100 exposed clean pairs" % len(dec) if len(dec) < 100 else
-         "%d < %d distinct exposed base steps (Addendum 1 item 6 as ruled in note 218-5: CF-GSM minimum 30)"
-         % (len(g), CF_GSM_MIN_BASE) if len(g) < CF_GSM_MIN_BASE else "Spearman undefined" if rho is None else None)
+         "%d < %d distinct exposed base steps with >= 1 clean pair (note 218-5)" % (len(keys), CF_GSM_MIN_STEPS) if len(keys) < CF_GSM_MIN_STEPS else
+         "Spearman undefined" if rho is None else None)
     allc = [r["ts"] for r in rows if r["clean"]]; last = [r["ts"] for r in rows if r["clean"] and r["j"] == r["m_bin"]]
     lab = {"LATE_FUSION_GSM": ge(median(allc), 12) if allc else None, "late_fusion_median_tstar": median(allc),
            "LAST_STEP_LATE": ge(median(last), 12) if last else None, "last_step_median_tstar": median(last), "n_last_step": len(last)}
@@ -1864,7 +2212,7 @@ def b1_cell(ctx, bgo):
     go24 = ir["GO"]; full = FULL[k] if go24 else B1_INTERIM_STEP
     dead = info["last"] is None or info["last"] < full or info["guard_stop"]; ent = entry_gsm(info["valid_acc"]); args_bad = ad["ok"] is not True
     why = [w for w, f in (("dead (last step %s < %d%s)" % (info["last"], full, ", guard stop" if info["guard_stop"] else ""), dead),
-                          ("NO-ENTRY (Aug-valid accuracy <= 0.15 at every check)", not ent["entered"]), ("CONTAMINATED", info["self_reuse"] > 0),
+                          ("NO-ENTRY (Aug-valid accuracy <= 0.15 at every check)", not ent["entered"]), ("CONTAMINATED", (info["self_reuse"] or 0) > 0),
                           ("ARGS-DIFF %s" % {x: ad.get(x) for x in ("shared_diffs", "unexpected_new_keys", "missing_keys", "required_bad") if ad.get(x)}, args_bad)) if f]
     cen = bool(why); acc = P["acc"]; wa = bad_part(acc, "acc"); pr = P.get("probe")
     # PROBE-GAIN-GSM
@@ -1919,8 +2267,7 @@ def _strip(o):
 def score(final=(), not_admitted=(), user_ok=()):
     FINAL.clear(); FINAL.update(final); NOT_ADMITTED.clear(); NOT_ADMITTED.update(not_admitted); USER_OK.clear(); USER_OK.update(user_ok)
     ctx = {"l0": gate_l0(), "evmA": evmem("A"), "evmB": evmem("B")}
-    ctx["shaA"] = (canon_sha((ctx["l0"] or {}).get("test_items_sha")) or file_sha(jl(CELL["a1"], "eval_lvb.json"))   # Stage A test-set reference (RESOLVED R30)
-                   or file_sha(_direct_body(jl(CELL["direct"], "eval_direct.json"))[1]))
+    ctx["shaA"] = (ctx["l0"] or {}).get("test_items_sha")                 # item 5: G-L0's test-items sha is the only Stage A anchor (RESOLVED R30)
     direct = direct_cell(ctx); a1 = a1_cell(ctx, direct); g1r = gate1_read(jp("gate1")); pr = pool_read(jp("pool")); a2go = a2_go(a1, g1r, pr)
     ctrl = ctrl_cell(ctx, a2go); a2 = a2_cell(ctx, a1, a2go, ctrl, g1r, direct, pr); bgo = b_go(a1, a2, ctrl); b1 = b1_cell(ctx, bgo)
     cells = {"direct": direct, "a1": a1, "a2": a2, "ctrl": ctrl, "b1": b1}
@@ -1936,7 +2283,7 @@ def score(final=(), not_admitted=(), user_ok=()):
                "BEATS_CODI20 (B1)": (b1.get("ACCURACY") or {}).get("met") if b1["status"] in ("SCORED", "FAIL") else b1["status"]}
     return {"registered": REGISTERED, "R": R, "CARD": CARD, "final": sorted(FINAL), "not_admitted": sorted(NOT_ADMITTED), "user_ok": sorted(USER_OK),
             "PRIMARY": primary, "FLOW": flow, "G_L0": ctx["l0"], "cells": {c: _strip(x) for c, x in cells.items()},
-            "layouts_assumed": LAYOUTS, "paths_assumed": {k_: "/".join(v_) for k_, v_ in PATHS.items()}, "resolved": RESOLVED,
+            "layouts_assumed": {k_: v_[0] for k_, v_ in LAYOUTS.items()}, "aliases": ALIAS, "layout_files": LAYOUT_FILES, "paths_assumed": {k_: "/".join(v_) for k_, v_ in PATHS.items()}, "resolved": RESOLVED,
             "not_scored_here": ["A0-1 (THEORY note 191-4; v1 §2.8)", "A-TXT (optional; no registered reading here)"]}
 
 
