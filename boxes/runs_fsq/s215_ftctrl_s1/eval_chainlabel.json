@@ -1,0 +1,156 @@
+{
+ "by_n": {
+  "9": {
+   "items": 1000,
+   "precision": 0.999,
+   "precision_strict": 0.999,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 999,
+    "fail": 1
+   },
+   "fail": 0.001,
+   "chain_exact": 0.999,
+   "agree": 0.937,
+   "prec_agree": 1.0,
+   "n_agree": 937,
+   "latent_acc": 0.938,
+   "steps_mean": 8.992
+  },
+  "10": {
+   "items": 1000,
+   "precision": 0.998,
+   "precision_strict": 0.998,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 999,
+    "fail": 1
+   },
+   "fail": 0.001,
+   "chain_exact": 0.998,
+   "agree": 0.581,
+   "prec_agree": 1.0,
+   "n_agree": 581,
+   "latent_acc": 0.582,
+   "steps_mean": 9.995
+  },
+  "11": {
+   "items": 1000,
+   "precision": 0.982,
+   "precision_strict": 0.982,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 1,
+    "0": 983,
+    "fail": 16
+   },
+   "fail": 0.016,
+   "chain_exact": 0.982,
+   "agree": 0.255,
+   "prec_agree": 1.0,
+   "n_agree": 255,
+   "latent_acc": 0.258,
+   "steps_mean": 10.851
+  },
+  "12": {
+   "items": 1000,
+   "precision": 0.983,
+   "precision_strict": 0.983,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 1,
+    "0": 983,
+    "fail": 16
+   },
+   "fail": 0.016,
+   "chain_exact": 0.983,
+   "agree": 0.156,
+   "prec_agree": 1.0,
+   "n_agree": 156,
+   "latent_acc": 0.157,
+   "steps_mean": 11.84
+  },
+  "13": {
+   "items": 1000,
+   "precision": 0.969,
+   "precision_strict": 0.969,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "0": 970,
+    "fail": 30
+   },
+   "fail": 0.03,
+   "chain_exact": 0.969,
+   "agree": 0.1,
+   "prec_agree": 1.0,
+   "n_agree": 100,
+   "latent_acc": 0.107,
+   "steps_mean": 12.704
+  },
+  "14": {
+   "items": 1000,
+   "precision": 0.958,
+   "precision_strict": 0.958,
+   "right_value_wrong_steps": 0.0,
+   "steps_minus_n": {
+    "-1": 1,
+    "0": 958,
+    "fail": 41
+   },
+   "fail": 0.041,
+   "chain_exact": 0.958,
+   "agree": 0.104,
+   "prec_agree": 1.0,
+   "n_agree": 104,
+   "latent_acc": 0.108,
+   "steps_mean": 13.534
+  },
+  "15": {
+   "items": 1000,
+   "precision": 0.936,
+   "precision_strict": 0.935,
+   "right_value_wrong_steps": 0.001,
+   "steps_minus_n": {
+    "-1": 1,
+    "0": 936,
+    "fail": 63
+   },
+   "fail": 0.063,
+   "chain_exact": 0.935,
+   "agree": 0.075,
+   "prec_agree": 1.0,
+   "n_agree": 75,
+   "latent_acc": 0.076,
+   "steps_mean": 14.27
+  },
+  "16": {
+   "items": 1000,
+   "precision": 0.896,
+   "precision_strict": 0.894,
+   "right_value_wrong_steps": 0.002,
+   "steps_minus_n": {
+    "-2": 1,
+    "-1": 6,
+    "0": 896,
+    "1": 1,
+    "fail": 96
+   },
+   "fail": 0.096,
+   "chain_exact": 0.893,
+   "agree": 0.08,
+   "prec_agree": 0.9875,
+   "n_agree": 80,
+   "latent_acc": 0.089,
+   "steps_mean": 14.873
+  }
+ },
+ "def": "note 213-33 CHAIN-LABEL ($0): \u00a7170 test items n 9..16. Per item cur = its expression; loop: a 1-pass rollout on batch_x(render(cur)) (batched by\nrendered length - no padding effects, as long_step), dec = argmax R(V_1), s = VB.rerender(dec) (VOIDs dropped); s must parse into one valid expression\n(_parse_tree) else FAIL; cur = the parsed tree; stop when cur has no operator (label = its value) or after 24 steps (FAIL). Always the model's own decode.\nchain_exact: every step's s equalled render(reduce_k(true current state, 1)) (so the chain followed the true trajectory to the end). agree: label ==\nthe latent answer at K' n + 2 (recomputed here, vbank_eval.part_acc's chunks). by_n {items, precision (label == y; FAIL wrong), fail, chain_exact,\nagree, prec_agree (precision among items whose label agrees with the latent answer), n_agree, steps_mean}. Note 213-34: precision_strict (label == y AND\nexactly n steps), right_value_wrong_steps (label == y, steps != n), steps_minus_n {k: count} (k = steps - n; FAIL chains under \"fail\").",
+ "run": "boxes/runs_fsq/s215_ftctrl_s1",
+ "mode": "slva",
+ "mct": false,
+ "eval_bs": 32,
+ "dtype": "fp32",
+ "per_n": 1000,
+ "card": "NVIDIA GeForce RTX 3070",
+ "sec": 169
+}
