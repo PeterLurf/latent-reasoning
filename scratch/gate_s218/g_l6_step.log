@@ -1,0 +1,3 @@
+CALIBRATION max_m99 0.0198 ratio/e5 0.8455419208398128
+{'step': 1, 'loss': 8.99826431274414, 'sec': 4, 'answer_ce': 6.1397857666015625, 'rec_ce': 2.858478546142578, 'n_max_train': 3, 'cur_stage': 0, 'lr': 5.000000000000001e-07, 'c': 10000.0, 'gn_preclip': 249.5902862548828, 'clip_frac_100': 1.0, 'slva_offnewest_chg': 0.0, 'slva_offnewest_copy': 0.0, 'slva_gn': 0.0}
+STOPPED_AT 1
