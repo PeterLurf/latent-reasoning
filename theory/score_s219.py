@@ -127,27 +127,34 @@ LA = {"pi": ("pi_label", "pi"), "pi_E": ("pi_state", "pi_E"), "pi_ci": ("pi_labe
 POOL_KEYS = {"syms", "n", "chain_label", "values"}
 ITEM_FIELDS = ("idx", "n", "y", "P", "C_struct", "overflow", "answer", "ntok", "eot", "form_valid", "strict", "first_bad_step", "first_bad_pos")
 TRAINER_EVAL = re.compile(r"^eval(_\d+k)?\.json$")
-LAYOUTS = {   # field layouts of files not yet built (v1 §2.6 / §2.7 / §4.1) [ASSUMED where v1 names no field]; only these names need editing if the built ones differ
-    "E1 eval_text.json": "meta {run, model_sha256, card, dtype 'fp32', tf32 false, cot_eval_bs 32, test_seed 17100, test_n_max 24, items_sha256, budget_rule, "
-                         "commit, sec, peak_gib, [t_start, t_end ASSUMED: ISO time or epoch, for the seal order]}; items = a list of per-item dicts, or {n: list "
-                         "of dicts}, or {n: {field: list}} (columnar), fields idx (index into test_set(1000, 24), its within-n position also accepted), n, y, "
-                         "P (= len(syms) + 2 [ASSUMED]), C_struct, overflow, answer (-1 = failure), ntok, eot, form_valid, strict, first_bad_step, "
-                         "first_bad_pos (1-based row of the first deviation, comparable to T_train = max(P + C) [ASSUMED]); acc_by_n, acc_feasible_by_n, "
-                         "form_valid_by_n, strict_by_n, ntok_mean_by_n, first_bad_pos_q_by_n [name ASSUMED], chance_by_n; optional top-level card (must equal meta's)",
-    "E2 eval_textself.json": "label_audit {n_audit, pi, pi_E, pi_ci95, pi_E_ci95 (pi_label / pi_state aliases), by_window {W1, W2: {same}} (T2 required; T1 "
-                             "optional, else the pooled values are W1), kept_wrong [{syms, step, op, a, b, v, gold}]}; contamination {pool_excl_hits (required), "
-                             "pool_test_hits, gold_key_hits [ASSUMED], self_reuse [ASSUMED]}; memo {n: {acc_pool, acc_gate}} (desc.); labeller_kept {n: {keep, "
-                             "pi}} (desc.) with optional t_start (seal order)",
-    "B1 pool_meta.json": "seeds, per_n (int or {n: int}), n_records [ASSUMED; else sum of per_n], draws_n, collide_n, dup_n, keep_n, sha256 (of the pool file "
-                         "bytes [ASSUMED], descriptive), builder_commit, labeller, labeller_sha256, card, dtype, label_bs, excl, precondition_stream_sha, "
-                         "T_max_by_n {n: int} (T_train,r = its max), L0_max_by_n, [t_start ASSUMED]",
-    "B2 eval_gate.json": "by_n {n: {window, labeller, items, n_kept, keep, pi, pi_E, pi_ci95, pi_E_ci95, records}}; GATE-T1 file: pooled or pooled_by_window "
-                         "{W1}, GATE_T1 (bool); GATE-T2 file: pooled_by_window {W2, W1}, GATE_T2 / GATE_T1p (bool), fallback null or {W2|W1: {labeller, "
-                         "by_n, pooled, GATE}}; labeller_full {n: {keep, pi}}, kept_vs_drawn, equiv {items, agree_keep, agree_values, agree_fail_step, "
-                         "disagreements, min_margin}, card, [t_start ASSUMED]",
-    "T1 log.jsonl": "per line {step, loss, plain_loss, self_loss, self_value_ce, self_copy_ce, self_frac, pool_cursor, n_self_steps, self_reuse, lr, nonfinite}",
-    "T1 draws_log.json": "list of {step, coin, self_n (self steps), plain_hash}, steps 1..12,000",
-    "T1 args.json": "vars(a) of boxes/textself_ft.py: nested170's 57 keys + the FT keys + info keys (META_T)"}
+LAYOUTS = {   # writer layouts of record (boxes/textself_ft.py, boxes/textself.py, boxes/text_eval.py, scratch/s219_gate.py, scratch/s219_build_pool.py at
+    # 3b0bb06f; reconciled 2026-10-18 for Theory). Every field below is one the scorer reads; [desc.] = descriptive only.
+    "E1 eval_text.json (text_eval --part text)": "meta {run, model, model_sha256, card, dtype 'fp32', tf32 false, cot_eval_bs 32 (asserted by the writer), "
+                         "test_seed 17100, test_n_max 24, ns, n_items, items_sha256, budget_rule, commit, sec, t_start, t_end (ISO, UTC offset; seal order), "
+                         "peak_gib}; items = a list of 24,000 dicts {idx (index into test_set(1000, 24)), n, y, P (= len(syms) + 2), C_struct, overflow, answer "
+                         "(-1 = failure), ntok, eot, form_valid, strict, first_bad_step (1-based), first_bad_pos (1-based row = P + j + 1, comparable to "
+                         "T_train = max(P + C))}; acc_by_n, acc_feasible_by_n, form_valid_by_n, strict_by_n, ntok_mean_by_n, first_bad_pos_q_by_n, chance_by_n "
+                         "[desc.]. The scorer also accepts {n: list} and columnar {n: {field: list}} items. eval_text.partial.json (written while running) "
+                         "is never read",
+    "E2 eval_textself.json (text_eval --part textself)": "label_audit {n_audit, pi, pi_E, pi_ci95, pi_E_ci95, by_window {W1 (T1), W2 + W1 (T2): {same}}, "
+                         "kept_wrong [{syms, n, step, op, a, b, value, gold, wrong_steps, label, gold_label, pattern}]}; contamination {pool_excl_hits, "
+                         "pool_test_hits, gold_key_hits, self_reuse, CONTAMINATED} (CPU, registered); memo {n: {window, acc_pool, acc_gate, gap}} [desc.]; "
+                         "labeller_kept {n: {keep, pi, pi_E, n_kept}} [desc.]; labeller_kept_meta {t_start} (the seal order of the n >= 13 labelling)",
+    "B1 pool_meta.json (s219_build_pool)": "per_n {n: int}, ns, n_records, sha256 (of the pool file) [desc.], card, T_max_by_n {n: int} (T_train,r = its "
+                         "max), windows, t_start (seal order for pool_t2 vs T1's eval_text)",
+    "B2 eval_gate.json (s219_gate --stage score)": "by_n {n: {window, labeller, items, n_kept, keep, pi, pi_E, pi_ci95, pi_E_ci95}}; pooled_by_window {W: "
+                         "{items, n_kept, pi, pi_E, pi_ci95, pi_E_ci95}}; GATE_T1 / GATE_T2 / GATE_T1p (bool); fallback null or {W: {labeller, by_n, pooled, "
+                         "GATE}}; labeller_full flat {n: {window, keep, pi, pi_E, n_kept}} [desc.]; equiv {W: {by_n {n: {items, agree_keep, agree_values, "
+                         "agree_fail_step, agree_all, share, PASS}}, disagreements, min_margin, PASS}} [desc.]; kept_vs_drawn [desc.]; card; t_start",
+    "T1 log.jsonl (textself_ft)": "per record {step, loss, loss_last, plain_loss, self_loss, self_value_ce, self_copy_ce, self_frac, pool_cursor, n_self_steps, "
+                         "self_reuse, lr, n_nonfinite, train_tokens {plain, self: {target_tokens, token_positions, padded_positions}}}; skipped steps "
+                         "{step, nonfinite: 1}; a resume {step, resumed}",
+    "T1 train_done.json (textself_ft, the cell's done marker)": "{steps, train_sec, n_nonfinite, n_self_steps, pool_cursor, self_reuse, train_tokens, "
+                         "self_n_counts, model_sha256}: TRAIN-TOKENS' text side (else the last logged train_tokens) and a cross-check of the log [desc.]",
+    "T1 draws_log.json": "list of {step, plain_hash, coin, n (plain) | self_n + U (self)}, steps 1..12,000",
+    "T1 args.json": "vars(a) of boxes/textself_ft.py (nested170's 57 keys + the FT keys) + train_gpu, train_driver, env_info keys, hostprobe_sps, format",
+    "other trainer files (never eval*.json)": "init_from.json, args_diff.json, mem_check.json, mem_check_self.json (G-T9), timing.json (G-T10), "
+                         "ckpt_*.pt: none is read for a reading and none is a SEAL-BREACH; any eval.json / eval_<k>k.json / *.void_unsealed is"}
 
 
 def set_root(r, root=None):
@@ -447,6 +454,9 @@ def _text_read(d, fname, expect_sha, cards_ok, forbid_sha):
         mp = os.path.join(R, d, "model.pt")
         if chk["model_sha256"] and HASH_MODELS and os.path.exists(mp):
             chk["model_sha256_file"] = file_sha256(mp) == ms
+        td = jl(d, "train_done.json")
+        if chk["model_sha256"] and isinstance(td, dict) and isinstance(td.get("model_sha256"), str):
+            chk["model_sha256_train_done"] = td["model_sha256"] == ms               # the trainer's own record of the model it saved
     A = f.get("acc_by_n") or {}; IT = _norm_items(f.get("items"))
     chk["fields"] = bool(isinstance(A, dict) and sorted(A, key=lambda k: int(k)) == [str(n) for n in range(1, 25)] and all(num(A[k]) for k in A)
                          and IT is not None and sorted(IT) == list(range(1, 25)))
@@ -523,7 +533,9 @@ def log_info(d):
     return {"recs": recs, "last": max(recs), "nonfinite_records": len(nf), "nonfinite_steps": nf[:20], "bad_lines": badl,
             "reuse": max((r.get("self_reuse") or 0) for r in recs.values() if num(r.get("self_reuse") or 0)), "cursor": cur, "n_self_steps": nss,
             "nan_loss_records": sorted(s for s, r in recs.items() if isinstance(r.get("loss"), float) and not math.isfinite(r["loss"]))[:10],
-            "self_value_ce_last": lastr.get("self_value_ce"), "self_copy_ce_last": lastr.get("self_copy_ce")}
+            "self_value_ce_last": lastr.get("self_value_ce"), "self_copy_ce_last": lastr.get("self_copy_ce"),
+            "train_tokens_last": next((recs[s_]["train_tokens"] for s_ in sorted(recs, reverse=True) if isinstance(recs[s_].get("train_tokens"), dict)), None),
+            "train_tokens_step": next((s_ for s_ in sorted(recs, reverse=True) if isinstance(recs[s_].get("train_tokens"), dict)), None)}
 
 
 def args_ref_check(a, b):
@@ -544,12 +556,15 @@ def args_ref_check(a, b):
     return {"ok": not diff, "why": "content equals the reference args" if not diff else "content differs: %s" % diff[:10], "file": va}
 
 
-def args_diff(lin, role, a=None, smoke=False):
-    """v1 §4.6 ARGS-DIFF (T1, V2): the cell's args.json (or a given dict, G-T5) vs s170_cot_s1/args.json."""
+def args_diff(lin, role, a=None, smoke=False, smoke_pool=None):
+    """v1 §4.6 ARGS-DIFF (T1, V2): the cell's args.json (or a given dict, G-T5) vs s170_cot_s1/args.json. smoke=True (G-T5 only) frees stop_at /
+    mem_check_self and, with smoke_pool, takes the smoke pool path as self_pool's required value (note 219-3 item 3); the scored cell never uses either."""
     L = LIN[lin]; a = jl(L[role], "args.json") if a is None else a; b = jl(L["base_model"], "args.json")
     if not ok_json(a) or not ok_json(b):
         return None
     req_t = {k: v for k, v in FT_REQ(lin, role).items() if not (smoke and k in SMOKE_FREE)}
+    if smoke and smoke_pool:
+        req_t["self_pool"] = smoke_pool
     req = {k: (v, a.get(k)) for k, v in req_t.items() if not (same_path(a.get(k), v) if k in ("init_from", "self_pool") else (k in a and _eq(a.get(k), v)))}
     shared = {k: (b[k], a[k]) for k in a if k in b and k not in META_T and k not in FT_KEYS and not _eq(a[k], b[k])}
     dropped = sorted(k for k in b if k not in a and k not in META_T)                      # V2
@@ -585,6 +600,35 @@ def _gate_entry(B, P, flag, ns):
             "labeller": sorted({str(((B or {}).get(str(n)) or {}).get("labeller")) for n in ns})}
 
 
+def gate_descriptive(g):
+    """LABELLER-FULL / KEPT-VS-DRAWN / EQUIV (descriptive; never gate). Writer layouts (scratch/s219_gate.py at 3b0bb06f): labeller_full flat {n: {window,
+    keep, pi, pi_E, n_kept}}; equiv {W: {by_n {n: {items, agree_keep, agree_values, agree_fail_step, agree_all, share, PASS}}, disagreements, min_margin,
+    PASS}}."""
+    eq = g.get("equiv") if isinstance(g.get("equiv"), dict) else {}; es = {}
+    for w, v in eq.items():
+        if isinstance(v, dict):
+            bn = v.get("by_n") if isinstance(v.get("by_n"), dict) else {}
+            sh = [x.get("share") for x in bn.values() if isinstance(x, dict) and num(x.get("share"))]
+            es[w] = {"PASS": v.get("PASS"), "min_share": min(sh) if sh else None,
+                     "items": sum(((x or {}).get("items") or 0) for x in bn.values() if isinstance(x, dict)), "min_margin": v.get("min_margin"),
+                     "n_disagreements": len(v.get("disagreements") or [])}
+    lf = g.get("labeller_full") if isinstance(g.get("labeller_full"), dict) else {}
+    return {"EQUIV": es, "LABELLER_FULL": {k: {f: (x or {}).get(f) for f in ("window", "keep", "pi", "pi_E", "n_kept")} for k, x in lf.items() if isinstance(x, dict)},
+            "kept_vs_drawn": g.get("kept_vs_drawn")}
+
+
+def g_t4_rule(model_diff, single_thread_bitwise=None):
+    """G-T4 (note 219-3 item 2): PASS iff a single-threaded deterministic re-run is bitwise, or every tensor is bitwise except the tied wte with
+    max |delta wte| <= 1e-6. model_diff {tensor name: max |delta|} (nonzero entries; zero entries allowed). The bitwise step-3 loss is checked by the gate."""
+    if single_thread_bitwise is True:
+        return {"PASS": True, "reading": "bitwise (single-threaded, deterministic)"}
+    nz = {k: v for k, v in (model_diff or {}).items() if not (num(v) and v == 0)}
+    bad = {k: v for k, v in nz.items() if "wte" not in k or not num(v) or v > 1e-6}
+    mw = max((v for k, v in nz.items() if "wte" in k and num(v)), default=0.0)
+    return {"PASS": not bad, "max_wte": mw, "non_wte_or_over_1e-6": bad,
+            "reading": "bitwise" if not nz else ("bitwise except wte (max |Δ wte| %.3g ≤ 1e-6)" % mw) if not bad else "FAIL %s" % bad}
+
+
 def gate_t1(lin):
     g = jl(LIN[lin]["gate_t1"], "eval_gate.json")
     if not ok_json(g):
@@ -593,7 +637,7 @@ def gate_t1(lin):
     e = _gate_entry(g.get("by_n"), P, g.get("GATE_T1"), range(9, 13))
     e["status"] = ("UNDECIDED" if not isinstance(g.get("GATE_T1"), bool) else "PASS" if e["PASS"] else "FAIL")   # undecided at --final: rule-b failure
     e["card"] = g.get("card"); e["card_class"] = card_class(g.get("card"))
-    e["descriptive"] = {k: g.get(k) for k in ("labeller_full", "kept_vs_drawn", "equiv")}
+    e["descriptive"] = gate_descriptive(g)
     return e
 
 
@@ -602,7 +646,7 @@ def gate_t2(lin):
     g = jl(LIN[lin]["gate_t2"], "eval_gate.json")
     if not ok_json(g):
         return None
-    o = {"card": g.get("card"), "card_class": card_class(g.get("card")), "descriptive": {k: g.get(k) for k in ("labeller_full", "kept_vs_drawn", "equiv")}}
+    o = {"card": g.get("card"), "card_class": card_class(g.get("card")), "descriptive": gate_descriptive(g)}
     for w, ns in WIN.items():
         pr = _gate_entry(g.get("by_n"), _win(g.get("pooled_by_window"), w), g.get(GATE_FLAG[w]), ns); fb = _win(g.get("fallback"), w); fr = None
         if not pr["PASS"] and isinstance(fb, dict):
@@ -627,7 +671,7 @@ def label_audit_t(la, gwin, role):
     kw = {}
     for r in la.get("kept_wrong") or []:
         if isinstance(r, dict):
-            k = "%s %s %s -> %s (gold %s)" % (r.get("op"), r.get("a"), r.get("b"), r.get("v"), r.get("gold")); kw[k] = kw.get(k, 0) + 1
+            k = "%s %s %s -> %s (gold %s)" % (r.get("op"), r.get("a"), r.get("b"), r.get("value", r.get("v")), r.get("gold")); kw[k] = kw.get(k, 0) + 1
     return {"pi": _la(la, "pi"), "pi_E": _la(la, "pi_E"), "pooled_ok": bool(po), "windows": ws, "kept_wrong_handles": kw,
             "ok": bool(po and all(v["ok"] for v in ws.values()))}
 
@@ -678,7 +722,7 @@ def seal_check(lin, role):
         te = _time(((ev or {}).get("meta") or {}).get("t_end"))
         for dd, ff, part in later:
             x = jl(dd, ff) if ff.endswith(".json") else None
-            ts = _time(((x or {}).get(part) or {}).get("t_start") if part else (x or {}).get("t_start")) if isinstance(x, dict) else None
+            ts = _time(((x.get(part + "_meta") or {}).get("t_start") or (x.get(part) or {}).get("t_start")) if part else x.get("t_start")) if isinstance(x, dict) else None
             if te is not None and ts is not None and ts < te:
                 order.append("%s/%s%s started before %s/eval_text.json ended" % (dd, ff, (":" + part) if part else "", d))
     return {"trainer_eval_files": tr, "order_violations": order, "watch": watch, "BREACH": bool(tr or order),
@@ -739,7 +783,9 @@ def base_cell(lin):
     if all(n in bfa for n in range(1, 17)):
         ext = dict(bfa); ext.update({n: 0.0 for n in range(17, 25)})
         bf16 = {"diff_by_n": {n: a[n] - bfa[n] for n in range(1, 17)}, "max_abs": max(abs(a[n] - bfa[n]) for n in range(1, 17)),
-                "n50_bf16": cross(ext, 0.5, 1, 16), "n50_fp32": ev["n50"], "dtype_committed": (bf or {}).get("eval_dtype")}
+                "n50_bf16": cross(ext, 0.5, 1, 16), "n50_fp32": ev["n50"], "dtype_committed": (bf or {}).get("eval_dtype"),
+                "note": ("not a pure dtype contrast: batch composition also differs (the committed eval is nested170.cot_answers, batches of equal prompt length "
+                         "across every n in one pass; text_eval batches equal prompt lengths within each n), so Δ mixes dtype and batch effects")}
     branch = None if d0 is None else ("levels" if abs(d0) <= 0.25 + EPS else "gain")
     note_ok = None if BASE_NOTE is None else (BASE_NOTE.get("branch") == branch)
     o.update(status="SCORED", censored=False, a=a, n50=ev["n50"], n90=ev["n90"], WIDTH_T=ev["WIDTH"],
@@ -802,6 +848,10 @@ def ft_missing(lin, role):
         miss["base_eval_text"] = "%s/eval_text.json" % L["base"]
     if role == "t2" and not ok_json(jl(L["t1"], "eval_text.json")):
         miss["t1_eval_text"] = "%s/eval_text.json (round-2 bar input)" % L["t1"]
+    if role == "t2" and g is not None and not any(g[w]["status"] == "UNDECIDED" for w in WIN) and ok_json(pm):
+        _, pmiss = provenance_t2(lin, g, pm)
+        if pmiss:
+            miss["provenance"] = "provenance fields %s" % pmiss
     return miss
 
 
@@ -854,9 +904,14 @@ def ft_cell(lin, role):
         o["GATE_T2"] = {w: {"status": g[w]["status"], "pi_pool": (g[w]["used"] or g[w]["primary"])["pi_pool"]} for w in WIN}
     la = label_audit_t(sd["label_audit"], gwin, role); noisy = not la["ok"]
     ct = contamination_t(lin, role, sd, info, pm); args_bad = not (ad and ad["ok"])
+    if role == "t2":
+        pc, _ = provenance_t2(lin, g, pm); ct["provenance"] = pc
+        if not all(pc.values()):
+            ct["CONTAMINATED"] = True; ct["provenance_bad"] = sorted(k for k, v in pc.items() if not v)
     rc = {"gate": g.get("card_class"), "pool": card_class(pm.get("card"))}
     card_bad = not (rc["gate"] in ok_cards and rc["pool"] in ok_cards and rc["gate"] == rc["pool"])
-    why = [w for w, f in (("dead", dead), ("FT-DIVERGED-T", diverged), ("LABEL-NOISY-T", noisy), ("CONTAMINATED", ct["CONTAMINATED"]), ("ARGS-DIFF", args_bad),
+    why = [w for w, f in (("dead", dead), ("FT-DIVERGED-T", diverged), ("LABEL-NOISY-T", noisy),
+                          ("CONTAMINATED%s" % (" (provenance: %s)" % ct["provenance_bad"] if ct.get("provenance_bad") else ""), ct["CONTAMINATED"]), ("ARGS-DIFF", args_bad),
                           ("SEAL-BREACH", seal["BREACH"]), ("round not on one allowed card %s" % rc, card_bad),
                           ("GATE-T1 failed" if role == "t1" else "both labellers failed a window", gate_bad)) if f]
     censored = bool(why)
@@ -867,7 +922,8 @@ def ft_cell(lin, role):
              CARD_BAD=card_bad, GATE_BAD=gate_bad, censored=censored, censor_reasons=why, a=a, n50=ev["n50"], n90=ev["n90"], WIDTH_T=ev["WIDTH"],
              n50_per_support=(ev["n50"] / SUPPORT[rnd]) if num(ev["n50"]) else None, T_train=T_train,
              self_value_ce=info["self_value_ce_last"], self_copy_ce=info["self_copy_ce_last"], FORM_VALID=ev["form_valid"], STRICT=ev["strict"],
-             MEMO_GAP_T=memo_gap(sd), LABELLER_KEPT_T=(sd or {}).get("labeller_kept"), G_T3=g_t3(lin, role))
+             MEMO_GAP_T=memo_gap(sd), LABELLER_KEPT_T=(sd or {}).get("labeller_kept"), G_T3=g_t3(lin, role), TRAIN_DONE=train_done_check(d, info),
+             GATE_DESCRIPTIVE=g.get("descriptive"))
     if rnd == 1:
         absorb = min(a[n] for n in range(9, 13)) >= 0.95 - EPS; M = mean(a[n] for n in range(13, 17))
         b = r1_bars(e0["a"]) if not e0.get("void") else {"void": "base eval_text %s" % e0.get("void")}
@@ -896,6 +952,48 @@ def ft_cell(lin, role):
     o["status"] = "FAIL" if censored else "SCORED"
     o["WORDING"] = ft_wording(o, g, la, role)
     return o
+
+
+def provenance_t2(lin, g2, pm):
+    """Round-2 provenance (Audit's G-T13 item, relayed by Theory 2026-10-18): T2's init_from.json sha256, pool_meta.windows[W].labeller_sha256 of every
+    SELF-LABELLED window and eval_gate.labeller_sha256 (the primary labeller) must equal T1's eval_text meta.model_sha256; a BASE-LABELLED window's
+    pool_meta labeller_sha256 and its eval_gate fallback labeller_sha256 must equal BASE_SHA. Any mismatch -> CONTAMINATED (T2 void, rule b).
+    -> (checks, missing fields)."""
+    L = LIN[lin]; t1sha = ((jl(L["t1"], "eval_text.json") or {}).get("meta") or {}).get("model_sha256"); ini = jl(L["t2"], "init_from.json")
+    g = jl(L["gate_t2"], "eval_gate.json") or {}; W = (pm or {}).get("windows") if isinstance((pm or {}).get("windows"), dict) else {}; chk, miss = {}, []
+    if not (isinstance(ini, dict) and isinstance(ini.get("sha256"), str)):
+        miss.append("%s/init_from.json (sha256)" % L["t2"])
+    else:
+        chk["init_from_sha256 == T1 model_sha256"] = ini["sha256"] == t1sha
+    if not isinstance(g.get("labeller_sha256"), str):
+        miss.append("%s/eval_gate.json (labeller_sha256)" % L["gate_t2"])
+    else:
+        chk["eval_gate labeller_sha256 == T1 model_sha256"] = g["labeller_sha256"] == t1sha
+    for w in WIN:
+        st = ((g2 or {}).get(w) or {}).get("status"); x = _win(W, w)
+        if st not in ("SELF-LABELLED", "BASE-LABELLED"):
+            continue
+        want = t1sha if st == "SELF-LABELLED" else BASE_SHA
+        if not (isinstance(x, dict) and isinstance(x.get("labeller_sha256"), str)):
+            miss.append("%s/pool_meta.json (windows.%s.labeller_sha256)" % (L["pool_t2"], w))
+        else:
+            chk["pool %s labeller_sha256 == %s" % (w, "T1" if st == "SELF-LABELLED" else "BASE_SHA")] = x["labeller_sha256"] == want
+        if st == "BASE-LABELLED":
+            fb = _win(g.get("fallback"), w) or {}
+            chk["eval_gate fallback %s labeller_sha256 == BASE_SHA" % w] = fb.get("labeller_sha256") == BASE_SHA
+    return chk, miss
+
+
+def train_done_check(d, info):
+    """train_done.json (the trainer's done marker, note 219-3 item 1; descriptive): present, steps == 12,000 and equal to the log's last n_self_steps /
+    pool_cursor / self_reuse. dead stays the registered rule (log last step < 12,000)."""
+    td = jl(d, "train_done.json")
+    if not isinstance(td, dict) or "__unreadable__" in td:
+        return {"present": False, "flag": "train_done.json missing (TRAIN-TOKENS from the last logged train_tokens)"}
+    eq = {k: td.get(k) == (info or {}).get(v) for k, v in (("n_self_steps", "n_self_steps"), ("pool_cursor", "cursor"))}
+    eq["self_reuse"] = td.get("self_reuse") == (info or {}).get("reuse")
+    return {"present": True, "steps": td.get("steps"), "steps_ok": td.get("steps") == FT_FULL, "matches_log": eq, "consistent": all(eq.values()) and td.get("steps") == FT_FULL,
+            "n_nonfinite": td.get("n_nonfinite"), "model_sha256": td.get("model_sha256")}
 
 
 def ft_wording(o, g, la, role):
@@ -991,6 +1089,18 @@ def train_tokens(lin, role):
       test-set per-n mean len(syms) + 2: positions = sum K T; targets = answer targets sum (K - n + 1) + state-slot targets sum K T [expected]."""
     L = LIN[lin]; d = L[role]; rnd = ROLE[role]["round"]; TI = test_info(); MT = TI["mean"]; out = {"definition": train_tokens.__doc__.split("\n", 1)[1].strip()}
     info = log_info(d) or {}; nss = info.get("n_self_steps"); cur = info.get("cursor"); a = jl(d, "args.json") or {}
+    td = jl(d, "train_done.json"); tk = src = None
+    if isinstance(td, dict) and isinstance(td.get("train_tokens"), dict):
+        tk, src = td["train_tokens"], "train_done.json (exact)"
+    elif isinstance(info.get("train_tokens_last"), dict):
+        tk, src = info["train_tokens_last"], "log.jsonl step %s (exact)" % info.get("train_tokens_step")
+    if tk is not None and all(isinstance(tk.get(k), dict) and all(num(tk[k].get(f)) for f in ("target_tokens", "token_positions")) for k in ("plain", "self")):
+        out["text"] = {"self_items": (nss * 64) if num(nss) else None, "self_target_tokens": tk["self"]["target_tokens"], "self_positions": tk["self"]["token_positions"],
+                       "self_padded_positions": tk["self"].get("padded_positions"), "plain_target_tokens": tk["plain"]["target_tokens"],
+                       "plain_positions": tk["plain"]["token_positions"], "plain_padded_positions": tk["plain"].get("padded_positions"),
+                       "target_tokens": tk["self"]["target_tokens"] + tk["plain"]["target_tokens"],
+                       "positions": tk["self"]["token_positions"] + tk["plain"]["token_positions"], "self_method": src}
+        return _latent_tokens(out, rnd, MT)
     if not num(nss):
         return dict(out, text=None, latent=None, note="n_self_steps unavailable")
     pk = ROLE[role]["pool"]; p = os.path.join(R, L[pk], POOL_FILE[pk]); st = sp = 0; how = None
@@ -1012,8 +1122,13 @@ def train_tokens(lin, role):
     w = a.get("excl_survive_by_n") if isinstance(a.get("excl_survive_by_n"), dict) else {str(n): 1.0 for n in range(1, 9)}
     W = sum(float(v) for v in w.values()) or 1.0; npl = (FT_FULL - nss) * 64
     pt = npl * sum(float(w[k]) / W * MT[int(k)]["C"] for k in w); pp = npl * sum(float(w[k]) / W * (MT[int(k)]["C"] + MT[int(k)]["P"]) for k in w)
-    out["text"] = {"self_items": nss * 64, "self_target_tokens": st, "self_positions": sp, "self_method": how, "plain_items": npl,
-                   "plain_target_tokens": pt, "plain_positions": pp, "target_tokens": st + pt, "positions": sp + pp}
+    out["text"] = {"self_items": nss * 64, "self_target_tokens": st, "self_positions": sp, "self_method": "%s; plain expected (fallback: no logged counts)" % how,
+                   "plain_items": npl, "plain_target_tokens": pt, "plain_positions": pp, "target_tokens": st + pt, "positions": sp + pp}
+    return _latent_tokens(out, rnd, MT)
+
+
+def _latent_tokens(out, rnd, MT):
+    """the latent arm (its logs carry no token counts): draws_log n / U exact, T_item the test-set per-n mean [ASSUMED definition]."""
     lr = "r%d" % rnd; dl, la = _latent_file(lr, "draws_log.json"), _latent_file(lr, "args.json")
     if not isinstance(dl, list) or not isinstance(la, dict):
         out["latent"] = None; out["latent_note"] = "latent draws_log / args not under R (descriptive only)"; return out
@@ -1164,7 +1279,7 @@ def _tt_str(tt, rnd):
         return "TRAIN-TOKENS r%d: n/a%s" % (rnd, (" (%s)" % tt.get("note")) if tt and tt.get("note") else "")
     t, l_ = tt["text"], tt.get("latent")
     g = lambda v: ("%.3g" % v) if num(v) else "n/a"  # noqa: E731
-    return ("TRAIN-TOKENS r%d (target tokens / token-positions consumed; not compute-matched): text %s / %s (%s; plain expected); latent %s / %s%s" % (
+    return ("TRAIN-TOKENS r%d (target tokens / token-positions consumed; not compute-matched): text %s / %s (%s); latent %s / %s%s" % (
         rnd, g(t["target_tokens"]), g(t["positions"]), t["self_method"], g((l_ or {}).get("target_tokens")), g((l_ or {}).get("positions")),
         "" if l_ else " (%s)" % tt.get("latent_note")))
 
