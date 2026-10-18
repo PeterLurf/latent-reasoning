@@ -391,10 +391,14 @@ def main():
     ap.add_argument("--stop_at", type=int, default=0); ap.add_argument("--keep_ckpt_steps", default=""); ap.add_argument("--cal_n", type=int, default=64)
     ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=200, help="host eval: the first per_n test items per D 3..12")
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--deterministic", action="store_true", help="G-L10 only: torch deterministic algorithms (CUDA atomics in the embedding / index_add "
+                    "backward make two uninterrupted runs differ from step 2); never in a registered cell")
     ap.add_argument("--args_only", action="store_true", help="write the args.json this command would write (args_only recorded False) and exit (Theory freezes it)")
     ap.add_argument("--host_eval_at", default="8000,16000", help="Note 218-8 (descriptive): candidate accuracy at K' = D + 2 on a fixed non-test set "
                     "(Stream 21170 / rng 21171, 100 per D 3..8) logged at these steps")
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device; direct = a.arch == "direct"
+    if a.deterministic:                                                     # before any CUDA work
+        os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8"); torch.use_deterministic_algorithms(True); torch.backends.cudnn.benchmark = False
     from boxes import s5
     from boxes.fsq120 import lr_at, driver_version, env_info
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed); rng_k = np.random.default_rng(a.seed + 21100)

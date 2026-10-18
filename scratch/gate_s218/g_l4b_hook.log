@@ -1,0 +1,1 @@
+l4b_hook PASS {"n": 64, "t0_equal": 64, "tD_equal": 64, "fail": [], "pass": true, "note": "the coda is question-free; at t = 0 every version-0 read is x''s (core bank entry 0, SLVA s = 0 key / value, the RMS reference)", "device": "cpu"}

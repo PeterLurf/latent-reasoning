@@ -177,8 +177,8 @@ def g_l4b_hook(dev, n=64):
             it = raw[i]; D = it["D"]; R = [LE.ev(it)]; Dn = [LE.ev(r_["donor"])]
             bR = LV.lvb_batch(R, dev); bD = LV.lvb_batch(Dn, dev); rows = torch.arange(1, device=dev)
             full = {}
-            for nm, b in (("x", bR), ("xp", bD)):
-                x, pad, lens, si, sp, dR, dP = b; rr = m.rollout_ls(x, pad, si, sp, D, coda_rows={D: rows}, dec=dR, lens=lens); full[nm] = (rr["S"], rr["coda"][D][1])
+            for nm, b in (("x", bR), ("xp", bD)):                         # the coda reads the RECIPIENT's decoder string in every run (the switched run's)
+                x, pad, lens, si, sp, dR, dP = b; rr = m.rollout_ls(x, pad, si, sp, D, coda_rows={D: rows}, dec=bR[5], lens=lens); full[nm] = (rr["S"], rr["coda"][D][1])
             H6sw = m.prelude(bD[0]); x, pad, lens, si, sp, dR, dP = bR
             for t, ref, key in ((0, "xp", "t0_equal"), (D, "x", "tD_equal")):
                 m.v0_switch = (t, H6sw, None)
