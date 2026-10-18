@@ -947,7 +947,9 @@ def part_hist24(m, TE, dev, bs):
             m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None; m.dup_newest = False; m.dup_foreign = None
         by_n = lambda a_: {str(n): float((a_ == Y)[Nn == n].mean()) for n in range(3, 9)}  # noqa: E731
         res[arm] = {"acc_n2": by_n(A2), "acc_k24": by_n(A24)}; print("HIST24", arm, res[arm], flush=True)
-    res["def"] = part_hist24.__doc__
+        res.setdefault("items", {})[arm] = {str(n): {"ans_n2": [int(v) for v in A2[Nn == n]], "ans_k24": [int(v) for v in A24[Nn == n]]} for n in range(3, 9)}   # §216 E4
+    res["items"]["y"] = {str(n): [int(v) for v in Y[Nn == n]] for n in range(3, 9)}; res["items"]["idx"] = {str(n): [int(j) for j in np.nonzero(Nn == n)[0]] for n in range(3, 9)}
+    res["def"] = part_hist24.__doc__ + " §216 E4: items {arm: {n: {ans_n2, ans_k24}}, y {n}, idx {n}} (argmax answers per item, test order within n; idx = the test-order index); the per-n means above are unchanged."
     return res
 
 
@@ -1243,7 +1245,7 @@ def part_chainlabel(m, TE, dev, bs):
 @torch.no_grad()
 def part_chainlabel_fresh(m, TE, dev, bs, n_items=1000):
     """note 213-37 CHAIN-LABEL-FRESH ($0): part_chainlabel's chain (the model's own 1-pass decode re-rooted fresh at every hop, _parse_tree, length-grouped
-    batches) on FRESH items: nested170.generate(rng, n), np rng 21337, 1,000 per n, n 9..20, excluding the §170 test set and the SERIAL pool by exact
+    batches) on FRESH items: nested170.generate(rng, n), np rng 21337, 1,000 per n, n 9..20 (§216 E3: 9..24, the same rng continued), excluding the §170 test set and the SERIAL pool by exact
     rendered syms (the trainer's EXCL) - a collision is redrawn and counted (collide_rate = collisions / draws). Step cap n + 4 (FAIL beyond). Gold
     (the generator's value) is for evaluation only. by_n {items, precision_strict (label == gold AND exactly n steps), fail, right_value_wrong_steps,
     steps_minus_n {k | "fail": count}, keep (every step parsed AND exactly n steps, whatever the label), prec_kept (precision among kept), collide_rate,
@@ -1252,7 +1254,7 @@ def part_chainlabel_fresh(m, TE, dev, bs, n_items=1000):
     for _ in range(2200):
         excl.add(tuple(N.render(N.generate(r_sp, 8)[0])))
     rng = np.random.default_rng(21337); out = {}
-    for n in range(9, 21):
+    for n in range(9, 25):                                                  # §216 E3: n 9..24 (n 9..20 bitwise as before: the rng is consumed in n order)
         t0 = time.time(); roots, gold, draws = [], [], 0
         while len(roots) < n_items:                                           # 1,000 as registered (n_items: smokes only)
             r_, y_ = N.generate(rng, n); draws += 1
@@ -1360,8 +1362,9 @@ def _acc_n2_items(m, items, dev, bs):
     return out
 
 
-def part_selfdepth(m, TE, dev, bs, run):
-    """§215 eval_selfdepth.json (SELFDEPTH_v1 §4.1 / §4.3 at 5ded8703). Gold only here (from syms: _parse_tree -> N.value / VB.recode_targets).
+def part_selfdepth(m, TE, dev, bs, run, lineage="s1", rnd=1):
+    """§216 E2: (lineage, round) != (s1, 1) -> _part_selfdepth_r2 (paths SD_PATHS); (s1, 1) runs the §215 code below unchanged.
+    §215 eval_selfdepth.json (SELFDEPTH_v1 §4.1 / §4.3 at 5ded8703). Gold only here (from syms: _parse_tree -> N.value / VB.recode_targets).
     consumed = pool_r1.jsonl[:cursor], cursor = the last pool_cursor in this run's log.jsonl (FT-CTRL, no pool steps: FT-SELF's, recorded as cursor_src).
       memo: n 9..12, acc at K' n + 2 on the first 2,000 consumed records of n (pool order) vs the 2,000 GATE-1 items of n (MEMO-GAP = |difference|).
       label_audit: 5,000 consumed records (default_rng(21970).choice, no replacement): pi_label = #{chain_label == gold value} / N, pi_state =
@@ -1369,6 +1372,8 @@ def part_selfdepth(m, TE, dev, bs, run):
         (label / state / both), label, gold}].
       items_n2: §170 test items n 9..16, per item 0/1 at K' n + 2 with T = len(syms) + 2 (T-split).
       contamination: pool_test_hits = #{consumed records with syms in test_set(1000, n_max 20)}."""
+    if (lineage, rnd) != ("s1", 1):
+        return _part_selfdepth_r2(m, TE, dev, bs, run, lineage, rnd)
     import boxes.selfdepth as SD
 
     def wilson(k, n, z=1.959964):                                           # as scratch/s215_gate1.py (GATE-1's CIs)
@@ -1413,16 +1418,154 @@ def part_selfdepth(m, TE, dev, bs, run):
     return res
 
 
+SD_PATHS = {   # §216 E2: (lineage, round) -> the pool, the gate items, the audit seed, memo / item ns, test n_max for contamination (s1 round 1 = §215 as run)
+    ("s1", 1): {"pdir": "boxes/runs_fsq/s215_pool", "pool": "pool_r1.jsonl", "gate": "boxes/runs_fsq/s215_gate1/gate_items.json", "audit": 21970, "memo": (9, 10, 11, 12), "test_nmax": 20},
+    ("s1", 2): {"pdir": "boxes/runs_fsq/s216_pool_s1", "pool": "pool_r2.jsonl", "gate": "boxes/runs_fsq/s216_gate2_s1/gate_items.json", "audit": 22670, "memo": tuple(range(9, 17)), "test_nmax": 24},
+    ("s2", 1): {"pdir": "boxes/runs_fsq/s216_pool_r1_s2", "pool": "pool_r1.jsonl", "gate": "boxes/runs_fsq/s216_gate1_s2/gate_items.json", "audit": 22770, "memo": (9, 10, 11, 12), "test_nmax": 24},
+    ("s2", 2): {"pdir": "boxes/runs_fsq/s216_pool_r2_s2", "pool": "pool_r2.jsonl", "gate": "boxes/runs_fsq/s216_gate2_s2/gate_items.json", "audit": 22870, "memo": tuple(range(9, 17)), "test_nmax": 24},
+}
+
+
+@torch.no_grad()
+def _ans_items_k(m, items, dev, bs, ks_of):
+    """per item the argmax answer at each K' in ks_of(n) (length-grouped chunks per n, one rollout per chunk to max K') -> {K': np array} over items."""
+    num = torch.tensor(N.NUM_IDS, device=dev); by_n = {}; out = {}
+    for j, it in enumerate(items):
+        by_n.setdefault(it["n"], []).append(j)
+    for n, idx in by_n.items():
+        idx = sorted(idx, key=lambda j: len(items[j]["syms"])); ks = sorted(set(ks_of(n)))
+        for k in ks:
+            out.setdefault(k, np.full(len(items), -1))
+        for c0 in range(0, len(idx), bs):
+            ch = idx[c0:c0 + bs]; its = [items[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+            r_ = m.rollout(x, pad, max(ks), coda_rows={k: rows for k in ks})
+            for k in ks:
+                pr = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
+                for k_, j in enumerate(ch):
+                    out[k][j] = int(pr[k_])
+            del r_
+    return out
+
+
+def _part_selfdepth_r2(m, TE, dev, bs, run, lineage, rnd):
+    """§216 E2 (SD2_v1 §4.1): part_selfdepth for (lineage, round) != (s1, 1). consumed = <pool>[:cursor] (the run's last pool_cursor; no fallback);
+    memo {n: {acc_pool, acc_fresh, items}} at the memo ns (first 2,000 consumed records of n vs the gate items of n); label_audit (5,000 consumed, the
+    lineage / round's audit seed): pooled + by window (pool_meta windows), kept_wrong records; items_n2 / items_k24 {n: [0/1]} + T + idx (test-order
+    index) at n 1..16; contamination {pool_test_hits (test_set(1000, n_max 24)), pool_excl_hits (round-1 pool + every gate_items + SERIAL + 213-37 n 9..24)}."""
+    import glob
+    import boxes.selfdepth as SD
+    P = SD_PATHS[(lineage, rnd)]; pool, meta = SD.load_pool(os.path.join(P["pdir"], P["pool"]), os.path.join(P["pdir"], "pool_meta.json"))
+    cursor = None
+    for ln in open(os.path.join(run, "log.jsonl")):
+        cursor = json.loads(ln).get("pool_cursor", cursor)
+    assert cursor is not None and cursor > 0, ("no pool_cursor in", run)
+    used = pool[:cursor]; g = json.load(open(P["gate"])); gitems = [it for w in g["windows"].values() for it in w["items"]] if "windows" in g else g["items"]
+    win_of = {n: w for w, v in meta.get("windows", {}).items() for n in v["ns"]}
+    res = {"lineage": lineage, "round": rnd, "cursor": cursor, "pool_sha256": meta["sha256"], "memo": {}, "label_audit": {}, "items_n2": {}, "items_k24": {}, "T": {}, "idx": {}}
+    for n in P["memo"]:
+        pr = [dict(r, y=int(N.value(_parse_tree(r["syms"])))) for r in used if r["n"] == n][:2000]; gf = [dict(x, y=int(N.value(_parse_tree(x["syms"])))) for x in gitems if x["n"] == n]
+        ap_, af_ = _acc_n2_items(m, pr, dev, bs), _acc_n2_items(m, gf, dev, bs)
+        res["memo"][str(n)] = {"acc_pool": float(ap_.mean()) if len(pr) else None, "acc_fresh": float(af_.mean()) if len(gf) else None, "items": [len(pr), len(gf)]}
+        print("MEMO n", n, res["memo"][str(n)], flush=True)
+
+    def wilson(k, n, z=1.959964):
+        p_ = k / n; d = 1 + z * z / n; c = (p_ + z * z / (2 * n)) / d; h = z * np.sqrt(p_ * (1 - p_) / n + z * z / (4 * n * n)) / d
+        return [float(c - h), float(c + h)]
+    sel = np.random.default_rng(P["audit"]).choice(len(used), min(5000, len(used)), replace=False); acc = {}; kw = []
+    for i in sel:
+        r = used[int(i)]; tree = _parse_tree(r["syms"]); gold = int(N.value(tree)); Eg = VB.recode_targets(tree); Es = SD.compose_E(r["syms"], r["steps"], r["n"])
+        bad = [t for t in range(r["n"] + 1) if Es[t] != Eg[t]]; bl = r["chain_label"] != gold
+        for key in ("pooled", win_of.get(r["n"], "n%d" % r["n"])):
+            a_ = acc.setdefault(key, [0, 0, 0]); a_[0] += 1; a_[1] += int(bl); a_[2] += int(bool(bad))
+        if bl or bad:
+            kw.append({"syms": r["syms"], "n": r["n"], "step": bad[0] if bad else None, "pattern": "both" if (bl and bad) else ("label" if bl else "state"), "label": r["chain_label"], "gold": gold})
+    for key, (na, wl, ws) in acc.items():
+        blk = {"n_audit": na, "pi_label": 1 - wl / na, "pi_state": 1 - ws / na, "pi_label_ci95": wilson(na - wl, na), "pi_state_ci95": wilson(na - ws, na)}
+        if key == "pooled":
+            res["label_audit"].update(blk)
+        else:
+            res["label_audit"].setdefault("by_window", {})[key] = blk
+    res["label_audit"].update({"kept_wrong": kw, "seed": P["audit"]})
+    print("LABEL_AUDIT", {k: v for k, v in res["label_audit"].items() if k not in ("kept_wrong", "by_window")}, res["label_audit"].get("by_window"), flush=True)
+    for n in range(1, 17):
+        js = [j for j, it in enumerate(TE) if it["n"] == n]; its = [dict(TE[j], y=int(TE[j]["t"])) for j in js]
+        A = _ans_items_k(m, its, dev, bs, lambda n_: (n_ + 2, 24)); Y = np.array([it["y"] for it in its])
+        res["items_n2"][str(n)] = [int(v) for v in (A[n + 2] == Y)]; res["items_k24"][str(n)] = [int(v) for v in (A[24] == Y)]
+        res["T"][str(n)] = [len(it["syms"]) + 2 for it in its]; res["idx"][str(n)] = js
+    test = {tuple(it["syms"]) for it in N.test_set(1000, n_max=P["test_nmax"])}
+    ex = set()
+    with open("boxes/runs_fsq/s215_pool/pool_r1.jsonl", encoding="utf-8") as f:
+        for ln in f:
+            ex.add(tuple(json.loads(ln)["syms"]))
+    for gp in [x for x in glob.glob("boxes/runs_fsq/s21[56]_gate*/gate_items.json") if "_smoke" not in x]:
+        gg = json.load(open(gp)); ex |= {tuple(it["syms"]) for it in ([it for w in gg["windows"].values() for it in w["items"]] if "windows" in gg else gg["items"])}
+    r_sp = np.random.default_rng(17300); serial = {tuple(N.render(N.generate(r_sp, 8)[0])) for _ in range(2200)}; ex |= serial
+    r37 = np.random.default_rng(21337); ex0 = {tuple(it["syms"]) for it in N.test_set(1000)} | serial   # 213-37: part_chainlabel_fresh's draw, n 9..24
+    for n in range(9, 25):
+        got = 0
+        while got < 1000:
+            s_ = tuple(N.render(N.generate(r37, n)[0]))
+            if s_ in ex0:
+                continue
+            ex.add(s_); got += 1
+    res["contamination"] = {"pool_test_hits": sum(tuple(r["syms"]) in test for r in used), "pool_excl_hits": sum(tuple(r["syms"]) in ex for r in used), "test_n_max": P["test_nmax"]}
+    print("CONTAMINATION", res["contamination"], flush=True)
+    res["def"] = _part_selfdepth_r2.__doc__
+    return res
+
+
+@torch.no_grad()
+def part_deep(m, TE_unused, dev, bs, run):
+    """§216 E1 eval_deep.json (SD2_v1 §4.2 at e9ade2ec): N.test_set(1000, n_max=24) at n 13..24 (12,000 items, test seed 17100) in test order, chunks of
+    eval_bs within each n (vbank_eval.chunks, as part_acc), one K' 28 rollout per chunk with codas at every K' 0..28, fp32, tf32 off. Fields: meta {run,
+    mode, card, dtype, tf32, eval_bs, per_n, n_lo, n_hi, K_grid, test_seed, test_n_max, items_sha256, model_sha256, commit, sec, peak_gib}; acc_n2 {n};
+    acc_k {K': {n}} K' 0..28; items {n: {idx, y, T, height, ans: [[argmax answer at K' 0..28] per item]}}; chance {n: majority-class share}.
+    items_sha256 = sha256 of json.dumps([[syms, int(t)] ...], separators=(",", ":"), ensure_ascii=True) over the 12,000 items in test order."""
+    import hashlib
+    import subprocess
+    assert not torch.backends.cuda.matmul.allow_tf32 and not torch.backends.cudnn.allow_tf32, "eval_deep: tf32 must be off"
+    t0 = time.time(); KG = list(range(29)); num = torch.tensor(N.NUM_IDS, device=dev)
+    TD = [it for it in N.test_set(1000, n_max=24)]; idx_all = [j for j, it in enumerate(TD) if 13 <= it["n"] <= 24]; items = [TD[j] for j in idx_all]
+    ish = hashlib.sha256(json.dumps([[it["syms"], int(it["t"])] for it in items], separators=(",", ":"), ensure_ascii=True).encode("utf-8")).hexdigest()
+    if dev.startswith("cuda"):
+        torch.cuda.reset_peak_memory_stats(dev)
+    res = {"acc_n2": {}, "acc_k": {str(k): {} for k in KG}, "items": {}, "chance": {}}
+    for n in range(13, 25):
+        js = [j for j, it in enumerate(TD) if it["n"] == n]; ans = np.full((len(js), len(KG)), -1, dtype=np.int64); Y = np.array([int(TD[j]["t"]) for j in js])
+        for ch in VE.chunks(list(range(len(js))), bs):
+            its = [TD[js[q]] for q in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+            r_ = m.rollout(x, pad, 28, coda_rows={k: rows for k in KG})
+            for k in KG:
+                ans[ch, k] = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
+            del r_
+        for k in KG:
+            res["acc_k"][str(k)][str(n)] = float((ans[:, k] == Y).mean())
+        res["acc_n2"][str(n)] = res["acc_k"][str(n + 2)][str(n)]
+        res["items"][str(n)] = {"idx": js, "y": [int(v) for v in Y], "T": [len(TD[j]["syms"]) + 2 for j in js], "height": [VE.height(TD[j]["root"]) for j in js],
+                                "ans": [[int(v) for v in row] for row in ans]}
+        vals, cnts = np.unique(Y, return_counts=True); res["chance"][str(n)] = float(cnts.max() / cnts.sum())
+        print("DEEP n", n, "acc_n2 %.3f" % res["acc_n2"][str(n)], "acc_k24 %.3f" % res["acc_k"]["24"][str(n)], "%.0f s" % (time.time() - t0), flush=True)
+    res["meta"] = {"run": run, "mode": m.mode, "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "dtype": "fp32", "tf32": False, "eval_bs": bs,
+                   "per_n": 1000, "n_lo": 13, "n_hi": 24, "K_grid": KG, "test_seed": 17100, "test_n_max": 24, "items_sha256": ish,
+                   "model_sha256": hashlib.sha256(open(os.path.join(run, "model.pt"), "rb").read()).hexdigest(),
+                   "commit": subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT).decode().strip(), "sec": round(time.time() - t0),
+                   "peak_gib": (torch.cuda.max_memory_allocated(dev) / 2 ** 30) if dev.startswith("cuda") else None}
+    res["def"] = part_deep.__doc__
+    return res
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth", "deep"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
+    ap.add_argument("--lineage", default="s1", choices=["s1", "s2"]); ap.add_argument("--round", type=int, default=1, choices=[1, 2], help="§216 E2: part selfdepth's pool / gate paths")
+    ap.add_argument("--out_dir", default="", help="§216 G-S16 / G-S19: write eval_<part>.json here instead of the run dir (smokes)")
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run) if a.part == "selfdepth" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run, a.lineage, a.round) if a.part == "selfdepth" else part_deep(m, TE, dev, a.eval_bs, a.run) if a.part == "deep" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
-    fo = os.path.join(a.run, "eval_%s.json" % a.part); json.dump(res, open(fo + ".tmp", "w", newline="\n"), indent=1); os.replace(fo + ".tmp", fo)
+    fo = os.path.join(a.out_dir or a.run, "eval_%s.json" % a.part); json.dump(res, open(fo + ".tmp", "w", newline="\n"), indent=1); os.replace(fo + ".tmp", fo)
     print("DONE", fo, res["sec"], flush=True)
 
 
