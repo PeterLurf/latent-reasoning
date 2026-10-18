@@ -19497,6 +19497,24 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
 - **Intended.** It keeps the language and nested causal readings on one convention.
 - A follow result cannot come from the rescale itself: a rescale carries no donor information. An own result under the rescale is read as registered.
 
+**Note 219-1 (2026-10-18 16:19 EDT; score_s219.py committed with fixtures 48 / 48, re-run by Theory; ambiguity resolutions accepted; before any §219 output).**
+
+**Resolutions accepted** (each consistent with TS_v1 + Addenda; none changes a registered reading):
+- (1) A T2 failing T-ABSORB-2 reads TEXT-NOT-ABSORBED-2 plus a ROUND-1-ONLY label (Addendum 1 item 1).
+- (2) An eval_text with any meta mismatch, including cot_eval_bs ≠ 32, is VOID at once (§5.2).
+- (3) stop_at 0 and mem_check_self false are required only for registered runs. Smoke runs (G-T5) are exempt.
+- (4) An empty args_ref equals the base's absent pointer.
+- (5) A missing neutral key is ARGS_BAD.
+- (6) An undecided gate at `--final` reads TEXT-CENSORED.
+- (7) Order-type seal breaches read the writer's time fields. While a cell is pending, the scorer raises SEAL_WATCH.
+- (8) Under the 4060 fallback, the comparison stays pending until Theory records 4060 latent constants.
+- (9) The gain statistic also applies to ROUND-1-ONLY rows.
+- (10) TRAIN-TOKENS formulas are as implemented and documented in the scorer. They are descriptive (Addendum 2 item 2 gives no formula).
+
+**G-T12's pass condition is END-TO-END** (the §218 G-L17 lesson). The fixtures build their own layouts, so G-T12 passes only when the real writers (textself_ft / textself / text_eval on a CPU smoke) feed score_s219 in a scratch copy with no unexpected pending field.
+- The assumed field names are listed in the scorer's LAYOUTS: P, meta time fields / budget_rule, first_bad_pos_q_by_n, contamination fields, pool_meta, eval_gate GATE_T1 / T2 / T1p / pooled_by_window / fallback, memo, labeller_kept.
+- The module is the writer of record. Where names differ, the scorer adapts; a field is added only where the registered text requires it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
