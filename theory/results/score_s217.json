@@ -1,0 +1,647 @@
+{
+ "registered": "THEORY \u00a7217 + note 217-1",
+ "card_class": "4060",
+ "models": {
+  "s213_d3t_s1": {
+   "cell": "s213_d3t_s1",
+   "GATE": {
+    "abs_delta": {
+     "follow_ii": 0.0,
+     "own_ii": 0.0,
+     "stall": 0.0
+    },
+    "ok": true
+   },
+   "BAND": [],
+   "BAND_EXCLUDED": {},
+   "PER_N": {
+    "9": {
+     "a": 0.923,
+     "clean_pairs": 810,
+     "candidates": 926,
+     "clean_share": 0.8747300215982722,
+     "follow_ii": 0.9950617283950617,
+     "own_ii": 0.0012345679012345679,
+     "follow_iv": 0.4666666666666667,
+     "stall_intact": 0.928,
+     "stall_stalled": 0.898,
+     "stall_items": 1000
+    },
+    "10": {
+     "a": 0.603,
+     "clean_pairs": 452,
+     "candidates": 933,
+     "clean_share": 0.4844587352625938,
+     "follow_ii": 0.9911504424778761,
+     "own_ii": 0.0,
+     "follow_iv": 0.5154867256637168,
+     "stall_intact": 0.609,
+     "stall_stalled": 0.618,
+     "stall_items": 1000
+    },
+    "11": {
+     "a": 0.266,
+     "clean_pairs": 121,
+     "candidates": 927,
+     "clean_share": 0.13052858683926646,
+     "follow_ii": 0.9834710743801653,
+     "own_ii": 0.0,
+     "follow_iv": 0.38016528925619836,
+     "stall_intact": 0.266,
+     "stall_stalled": 0.267,
+     "stall_items": 1000
+    },
+    "12": {
+     "a": 0.127,
+     "clean_pairs": 20,
+     "candidates": 930,
+     "clean_share": 0.021505376344086023,
+     "follow_ii": 0.95,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.125,
+     "stall_stalled": 0.125,
+     "stall_items": 1000
+    },
+    "13": {
+     "a": 0.141,
+     "clean_pairs": 10,
+     "candidates": 922,
+     "clean_share": 0.010845986984815618,
+     "follow_ii": 0.9,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.14,
+     "stall_stalled": 0.141,
+     "stall_items": 1000
+    },
+    "14": {
+     "a": 0.127,
+     "clean_pairs": 7,
+     "candidates": 932,
+     "clean_share": 0.0075107296137339056,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.14285714285714285,
+     "stall_intact": 0.136,
+     "stall_stalled": 0.135,
+     "stall_items": 1000
+    },
+    "15": {
+     "a": 0.135,
+     "clean_pairs": 12,
+     "candidates": 935,
+     "clean_share": 0.012834224598930482,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.25,
+     "stall_intact": 0.128,
+     "stall_stalled": 0.126,
+     "stall_items": 1000
+    },
+    "16": {
+     "a": 0.115,
+     "clean_pairs": 6,
+     "candidates": 901,
+     "clean_share": 0.006659267480577136,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.128,
+     "stall_stalled": 0.124,
+     "stall_items": 1000
+    },
+    "17": {
+     "a": 0.119,
+     "clean_pairs": 7,
+     "candidates": 924,
+     "clean_share": 0.007575757575757576,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5714285714285714,
+     "stall_intact": 0.116,
+     "stall_stalled": 0.114,
+     "stall_items": 1000
+    },
+    "18": {
+     "a": 0.103,
+     "clean_pairs": 2,
+     "candidates": 916,
+     "clean_share": 0.002183406113537118,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.105,
+     "stall_stalled": 0.105,
+     "stall_items": 1000
+    },
+    "19": {
+     "a": 0.099,
+     "clean_pairs": 1,
+     "candidates": 920,
+     "clean_share": 0.0010869565217391304,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.0,
+     "stall_intact": 0.103,
+     "stall_stalled": 0.105,
+     "stall_items": 1000
+    },
+    "20": {
+     "a": 0.093,
+     "clean_pairs": 2,
+     "candidates": 911,
+     "clean_share": 0.0021953896816684962,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.099,
+     "stall_stalled": 0.094,
+     "stall_items": 1000
+    }
+   },
+   "status": "NOT-APPLICABLE",
+   "CAUSAL_DEEP": null,
+   "label": "NOT-APPLICABLE (empty competent band; excluded {})"
+  },
+  "s215_ftself_s1": {
+   "cell": "s215_ftself_s1",
+   "GATE": {
+    "abs_delta": {
+     "follow_ii": 0.0,
+     "own_ii": 0.0,
+     "stall": 0.0
+    },
+    "ok": true
+   },
+   "BAND": [
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "BAND_EXCLUDED": {},
+   "PER_N": {
+    "9": {
+     "a": 1.0,
+     "clean_pairs": 926,
+     "candidates": 926,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5367170626349892,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "10": {
+     "a": 1.0,
+     "clean_pairs": 933,
+     "candidates": 933,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.4490889603429796,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "11": {
+     "a": 1.0,
+     "clean_pairs": 927,
+     "candidates": 927,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.4099244875943905,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "12": {
+     "a": 1.0,
+     "clean_pairs": 930,
+     "candidates": 930,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.3763440860215054,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "13": {
+     "a": 0.999,
+     "clean_pairs": 919,
+     "candidates": 922,
+     "clean_share": 0.9967462039045553,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.2992383025027203,
+     "stall_intact": 0.999,
+     "stall_stalled": 0.996,
+     "stall_items": 1000
+    },
+    "14": {
+     "a": 0.893,
+     "clean_pairs": 796,
+     "candidates": 932,
+     "clean_share": 0.8540772532188842,
+     "follow_ii": 0.9949748743718593,
+     "own_ii": 0.0,
+     "follow_iv": 0.28266331658291455,
+     "stall_intact": 0.906,
+     "stall_stalled": 0.88,
+     "stall_items": 1000
+    },
+    "15": {
+     "a": 0.633,
+     "clean_pairs": 467,
+     "candidates": 935,
+     "clean_share": 0.4994652406417112,
+     "follow_ii": 0.9957173447537473,
+     "own_ii": 0.0,
+     "follow_iv": 0.3019271948608137,
+     "stall_intact": 0.642,
+     "stall_stalled": 0.656,
+     "stall_items": 1000
+    },
+    "16": {
+     "a": 0.344,
+     "clean_pairs": 176,
+     "candidates": 901,
+     "clean_share": 0.195338512763596,
+     "follow_ii": 0.9772727272727273,
+     "own_ii": 0.005681818181818182,
+     "follow_iv": 0.29545454545454547,
+     "stall_intact": 0.355,
+     "stall_stalled": 0.34,
+     "stall_items": 1000
+    },
+    "17": {
+     "a": 0.172,
+     "clean_pairs": 28,
+     "candidates": 924,
+     "clean_share": 0.030303030303030304,
+     "follow_ii": 0.9285714285714286,
+     "own_ii": 0.03571428571428571,
+     "follow_iv": 0.14285714285714285,
+     "stall_intact": 0.174,
+     "stall_stalled": 0.171,
+     "stall_items": 1000
+    },
+    "18": {
+     "a": 0.133,
+     "clean_pairs": 8,
+     "candidates": 916,
+     "clean_share": 0.008733624454148471,
+     "follow_ii": 0.875,
+     "own_ii": 0.125,
+     "follow_iv": 0.25,
+     "stall_intact": 0.131,
+     "stall_stalled": 0.129,
+     "stall_items": 1000
+    },
+    "19": {
+     "a": 0.121,
+     "clean_pairs": 8,
+     "candidates": 920,
+     "clean_share": 0.008695652173913044,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.122,
+     "stall_stalled": 0.123,
+     "stall_items": 1000
+    },
+    "20": {
+     "a": 0.124,
+     "clean_pairs": 6,
+     "candidates": 911,
+     "clean_share": 0.006586169045005488,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5,
+     "stall_intact": 0.124,
+     "stall_stalled": 0.125,
+     "stall_items": 1000
+    }
+   },
+   "status": "SCORED",
+   "follow_ii_pooled": 1.0,
+   "own_ii_pooled": 0.0,
+   "stall_recovery_pooled": 0.9993998799759953,
+   "follow_ii_min_n": 1.0,
+   "CAUSAL_DEEP": true,
+   "component": null,
+   "label": "CAUSAL-DEEP | band n 9-13 | follow 1.000 (min 1.000) own 0.000 STALL 0.999"
+  },
+  "s216_r2_s1": {
+   "cell": "s216_r2_s1",
+   "GATE": {
+    "abs_delta": {
+     "follow_ii": 0.0,
+     "own_ii": 0.0,
+     "stall": 0.0
+    },
+    "ok": true
+   },
+   "BAND": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "BAND_EXCLUDED": {},
+   "PER_N": {
+    "9": {
+     "a": 1.0,
+     "clean_pairs": 926,
+     "candidates": 926,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.5151187904967602,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "10": {
+     "a": 1.0,
+     "clean_pairs": 933,
+     "candidates": 933,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.43193997856377275,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "11": {
+     "a": 1.0,
+     "clean_pairs": 927,
+     "candidates": 927,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.39913700107874867,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "12": {
+     "a": 1.0,
+     "clean_pairs": 930,
+     "candidates": 930,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.3870967741935484,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "13": {
+     "a": 1.0,
+     "clean_pairs": 922,
+     "candidates": 922,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.36550976138828634,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "14": {
+     "a": 1.0,
+     "clean_pairs": 932,
+     "candidates": 932,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.31223175965665234,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "15": {
+     "a": 0.997,
+     "clean_pairs": 932,
+     "candidates": 935,
+     "clean_share": 0.9967914438502674,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.2811158798283262,
+     "stall_intact": 0.997,
+     "stall_stalled": 0.997,
+     "stall_items": 1000
+    },
+    "16": {
+     "a": 1.0,
+     "clean_pairs": 901,
+     "candidates": 901,
+     "clean_share": 1.0,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.2741398446170921,
+     "stall_intact": 1.0,
+     "stall_stalled": 1.0,
+     "stall_items": 1000
+    },
+    "17": {
+     "a": 0.998,
+     "clean_pairs": 921,
+     "candidates": 924,
+     "clean_share": 0.9967532467532467,
+     "follow_ii": 1.0,
+     "own_ii": 0.0,
+     "follow_iv": 0.2692725298588491,
+     "stall_intact": 0.998,
+     "stall_stalled": 0.995,
+     "stall_items": 1000
+    },
+    "18": {
+     "a": 0.979,
+     "clean_pairs": 887,
+     "candidates": 916,
+     "clean_share": 0.9683406113537117,
+     "follow_ii": 0.9988726042841037,
+     "own_ii": 0.0,
+     "follow_iv": 0.2322435174746336,
+     "stall_intact": 0.979,
+     "stall_stalled": 0.968,
+     "stall_items": 1000
+    },
+    "19": {
+     "a": 0.862,
+     "clean_pairs": 740,
+     "candidates": 920,
+     "clean_share": 0.8043478260869565,
+     "follow_ii": 0.995945945945946,
+     "own_ii": 0.0,
+     "follow_iv": 0.2418918918918919,
+     "stall_intact": 0.862,
+     "stall_stalled": 0.841,
+     "stall_items": 1000
+    },
+    "20": {
+     "a": 0.659,
+     "clean_pairs": 495,
+     "candidates": 911,
+     "clean_share": 0.5433589462129528,
+     "follow_ii": 0.9858585858585859,
+     "own_ii": 0.0,
+     "follow_iv": 0.2383838383838384,
+     "stall_intact": 0.661,
+     "stall_stalled": 0.641,
+     "stall_items": 1000
+    }
+   },
+   "status": "SCORED",
+   "follow_ii_pooled": 0.9998914341548149,
+   "own_ii_pooled": 0.0,
+   "stall_recovery_pooled": 0.9985963505113294,
+   "follow_ii_min_n": 0.9988726042841037,
+   "CAUSAL_DEEP": true,
+   "component": null,
+   "label": "CAUSAL-DEEP | band n 9-18 | follow 1.000 (min 0.999) own 0.000 STALL 0.999"
+  },
+  "s216_d3t_s2": {
+   "cell": "s216_d3t_s2",
+   "status": "PENDING",
+   "label": "pending (missing eval_causal_deep.json)"
+  },
+  "s216_r1_s2": {
+   "cell": "s216_r1_s2",
+   "status": "PENDING",
+   "label": "pending (missing eval_causal_deep.json)"
+  },
+  "s216_r2_s2": {
+   "cell": "s216_r2_s2",
+   "status": "ABSENT",
+   "label": "absent (no eval_vb.json)"
+  },
+  "s215_ftctrl_s1": {
+   "cell": "s215_ftctrl_s1",
+   "status": "PENDING",
+   "label": "pending (missing eval_causal_deep.json)"
+  }
+ },
+ "lineages": {
+  "s1": {
+   "status": "CAUSAL-PRESERVED",
+   "label": "CAUSAL-PRESERVED over ['s215_ftself_s1', 's216_r2_s1']",
+   "absent": []
+  },
+  "s2": {
+   "status": "PENDING",
+   "label": "pending (['s216_d3t_s2', 's216_r1_s2'])"
+  }
+ },
+ "overlap": {
+  "s1": {
+   "s215_ftself_s1 vs s216_r2_s1": {
+    "9": {
+     "follow_ii": [
+      1.0,
+      1.0
+     ],
+     "own_ii": [
+      0.0,
+      0.0
+     ],
+     "stall_stalled": [
+      1.0,
+      1.0
+     ],
+     "stall_intact": [
+      1.0,
+      1.0
+     ]
+    },
+    "10": {
+     "follow_ii": [
+      1.0,
+      1.0
+     ],
+     "own_ii": [
+      0.0,
+      0.0
+     ],
+     "stall_stalled": [
+      1.0,
+      1.0
+     ],
+     "stall_intact": [
+      1.0,
+      1.0
+     ]
+    },
+    "11": {
+     "follow_ii": [
+      1.0,
+      1.0
+     ],
+     "own_ii": [
+      0.0,
+      0.0
+     ],
+     "stall_stalled": [
+      1.0,
+      1.0
+     ],
+     "stall_intact": [
+      1.0,
+      1.0
+     ]
+    },
+    "12": {
+     "follow_ii": [
+      1.0,
+      1.0
+     ],
+     "own_ii": [
+      0.0,
+      0.0
+     ],
+     "stall_stalled": [
+      1.0,
+      1.0
+     ],
+     "stall_intact": [
+      1.0,
+      1.0
+     ]
+    },
+    "13": {
+     "follow_ii": [
+      1.0,
+      1.0
+     ],
+     "own_ii": [
+      0.0,
+      0.0
+     ],
+     "stall_stalled": [
+      0.996,
+      1.0
+     ],
+     "stall_intact": [
+      0.999,
+      1.0
+     ]
+    }
+   }
+  },
+  "s2": {}
+ }
+}

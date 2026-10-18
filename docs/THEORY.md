@@ -19333,6 +19333,31 @@ The docstring of score_s217 now names boxes/vbank_causal.py (cosmetic).
    - the probe held-out curve set = the first 1,000 draws of the registered probe stream 22500 (D U{3..8});
    - T_band = the max T of training-law items, logged from A1's stream.
 
+**§217 s1 result (2026-10-18 15:04 EDT; eval_causal_deep.json for s213_d3t_s1 (e9608d1c), s215_ftself_s1 (2870b3f6) and s216_r2_s1 (50eb0bc0); boxes/vbank_causal.py; local RTX 4060, fp32, bs 16; theory/score_s217.py. $0. The s2 lineage and FT-CTRL are pending.)**
+
+**Label (s1): CAUSAL-PRESERVED** over FT-SELF and R2-s1 (217-3's scope).
+
+| model | 4060 n 4–8 gate (\|Δ\| follow / own / STALL vs 3070) | competent band | pooled follow_ii / own_ii / STALL (min-n follow) | reading |
+|---|---|---|---|---|
+| D3-T s1 | 0.000 / 0.000 / 0.000 | empty (a(9) 0.923) | — | NOT-APPLICABLE |
+| FT-SELF | 0.000 / 0.000 / 0.000 | n 9–13 | 1.000 / 0.000 / 0.999 (1.000) | **CAUSAL-DEEP** |
+| R2-s1 | 0.000 / 0.000 / 0.000 | n 9–18 | 1.000 / 0.000 / 0.999 (0.999) | **CAUSAL-DEEP** |
+
+- **Clean pairs.** 919–933 per n in FT-SELF's band, 887–933 in R2's. No n excluded.
+- **Overlap (217-1).** At n 9–13, FT-SELF and R2-s1 both read follow_ii 1.000 at every n.
+
+**Wording (217-3):** *"causal use at the new depths is preserved from round 1 to round 2 (s1, overlap n 9–13; R2 also at n 14–18), and at the old depths n 4–8 from the base through both rounds"*. This is a C1 statement at the new depths, never C2 or C4.
+
+**Descriptive.**
+- (a) **follow_iv** (swap + V_0 masked after t) falls with depth in both models:
+  - FT-SELF 0.54 (n 9) → 0.30 (n 13);
+  - R2-s1 0.52 (n 9) → 0.23 (n 18);
+  - against 0.77–0.79 at n 4–8.
+
+  So the deeper the item, the more the answer also needs the original input version V_0 alongside the swapped state. The swapped slot carries the value (follow_ii 1.000), and V_0 supplies the rest of the expression's context.
+- (b) **Outside R2's band, STALL weakens:** 0.841 at n 19 and 0.641 at n 20 (follow_ii 0.996 / 0.986).
+- (c) **This answers L2's question for s1:** self-training bought depth 8 → 12 → 16 **without** eroding causal slot use at the new depths. What did erode was the memory channel's self-stabilisation (MEM-TRADED, §216).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
