@@ -18846,6 +18846,15 @@ Round 2 follows the pre-stated plan (v1 §9):
 - MEM-TRADED → **only with the user's explicit OK**.
 - SD2 (proposed §216) is drafted, red-teamed and proof-checked. Its v1 is being written; it is not registered. It goes to the user with this result.
 
+**Note 215-8 (2026-10-18 02:12 EDT; a score_s215 omission, DISCLOSED after FT-SELF's result; found while writing score_s216; no reading changes).**
+- **The omission.** SELFDEPTH_v1 §4.3 registers LABEL-AUDIT as π^E ≥ 0.99 ∧ π ≥ 0.99, each **inside GATE-1's 95 % CI (overlap)**. score_s215.cell() tested only the two ≥ 0.99 thresholds. It never tested the CI overlap.
+- **Applied now, by hand, on the committed files:**
+  - FT-SELF eval_selfdepth label_audit: π_label 0.9996, CI [0.99854, 0.99989]; π_state 0.9996, CI [0.99854, 0.99989].
+  - s215_gate1 eval_gate.json pooled: π 1.000, CI [0.99952, 1.000]; π^E 0.99987, CI [0.99929, 0.99998].
+  - Both pairs overlap (0.99952 ≤ 0.99989; 0.99929 ≤ 0.99989).
+  - **So LABEL-AUDIT passes as registered, and FT-SELF's result (215-6, the §215 pair result) is unchanged.**
+- score_s215.py is left as is: §215 is closed, and this note is the record. score_s216 implements the overlap test for R1-s2 and for every R2 window (SD2_v1 §4.4).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
