@@ -2,21 +2,101 @@
  "steps": {
   "trainer": {
    "rc": 0,
-   "sec": 20,
-   "tail": "in_loss': None, 'self_loss': 0.3190472573041916, 'self_value_ce': 1.1134258400310169, 'self_copy_ce': 0.2705376545290747, 'self_frac': 1.0, 'pool_cursor': 4, 'n_self_steps': 1, 'self_reuse': 0, 'lr': 0.0, 'gn_preclip': 6.638089656829834, 'clip_frac_100': 0.5, 'n_nonfinite': 0, 'train_tokens': {'plain': {'target_tokens': 166, 'token_positions': 236, 'padded_positions': 372}, 'self': {'target_tokens': 712, 'token_positions': 850, 'padded_positions': 984}}}\nDONE C:\\Users\\peter\\AppData\\Local\\Temp\\claude\\D--\\2f0034d5-4d85-51eb-880b-bab41adb0dff\\scratchpad\\s219_scorer\\_e2e\\boxes\\runs_fsq\\s219_t1_s1\n"
+   "sec": 23,
+   "stderr_tail": ""
   },
   "eval_text_s219_base_s1": {
-   "sec": 29,
-   "acc_10": 0.707,
+   "sec": 27,
+   "acc_by_n": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 0.995,
+    "10": 0.707,
+    "11": 0.234,
+    "12": 0.123,
+    "13": 0.1,
+    "14": 0.088,
+    "15": 0.082,
+    "16": 0.04,
+    "17": 0.04,
+    "18": 0.04,
+    "19": 0.04,
+    "20": 0.04,
+    "21": 0.04,
+    "22": 0.04,
+    "23": 0.04,
+    "24": 0.04
+   },
    "overflow_24": 29
   },
   "eval_text_s219_t1_s1": {
    "sec": 29,
-   "acc_10": 1.0,
+   "acc_by_n": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 0.9,
+    "14": 0.7,
+    "15": 0.45,
+    "16": 0.3,
+    "17": 0.05,
+    "18": 0.05,
+    "19": 0.05,
+    "20": 0.05,
+    "21": 0.05,
+    "22": 0.05,
+    "23": 0.05,
+    "24": 0.05
+   },
    "overflow_24": 29
   },
   "textself_cpu": {
-   "sec": 20
+   "sec": 21
+  },
+  "eval_text_s219_t2_s1": {
+   "sec": 34,
+   "acc_by_n": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 0.9,
+    "17": 0.9,
+    "18": 0.8,
+    "19": 0.6,
+    "20": 0.4,
+    "21": 0.05,
+    "22": 0.05,
+    "23": 0.05,
+    "24": 0.05
+   },
+   "overflow_24": 29
   }
  },
  "trainer_files": [
@@ -27,149 +107,84 @@
   "model.pt",
   "train_done.json"
  ],
- "checks": {
-  "base_scored": true,
-  "base_n50": 10.437632135306554,
-  "base_delta0": 0.13163213530655504,
-  "t1_not_pending": true,
-  "t1_status": "FAIL",
-  "t1_censor_reasons": [
-   "dead",
-   "ARGS-DIFF"
-  ],
-  "t1_eval_text_void": null,
-  "t1_n50": 15.5,
-  "t1_T_ABSORB_raw": true,
-  "seal_first_scoring": {
-   "trainer_eval_files": [],
-   "order_violations": [
-    "s219_t1_s1/eval_textself.json:labeller_kept started before s219_t1_s1/eval_text.json ended"
-   ],
-   "watch": [],
-   "BREACH": true,
-   "order_check": "time fields"
-  },
-  "seal_second_scoring": {
-   "trainer_eval_files": [],
-   "order_violations": [],
-   "watch": [],
-   "BREACH": false,
-   "order_check": "time fields"
-  },
-  "gate_t1": {
-   "status": "PASS",
-   "consistent": true,
-   "pooled_matches": true
-  },
-  "gate_equiv": {
-   "W1": {
-    "PASS": true,
-    "min_share": 1.0,
-    "items": 80,
-    "min_margin": 3.303607940673828,
-    "n_disagreements": 0
-   }
-  },
-  "label_audit_ok": true,
-  "contamination": {
-   "pool_excl_hits": 0,
-   "CONTAMINATED": false,
-   "recheck": {
-    "consumed_read": 4,
-    "test30_hits": 0,
-    "key_set_bad": 0,
-    "duplicates": 0,
-    "file_sha256_matches_meta": true
-   },
-   "cursor": 4
-  },
-  "train_done": {
-   "present": true,
-   "steps": 2,
-   "steps_ok": false,
-   "matches_log": {
-    "n_self_steps": true,
-    "pool_cursor": true,
-    "self_reuse": true
-   },
-   "consistent": false,
-   "n_nonfinite": 0,
-   "model_sha256": "5627728fff6561a45cdc6df904bcdac3c781640ca095e4541343599fdd17cf50"
-  },
-  "train_tokens_text": {
-   "self_items": 64,
-   "self_target_tokens": 712,
-   "self_positions": 850,
-   "self_padded_positions": 984,
-   "plain_target_tokens": 166,
-   "plain_positions": 236,
-   "plain_padded_positions": 372,
-   "target_tokens": 878,
-   "positions": 1086,
-   "self_method": "train_done.json (exact)"
-  },
-  "train_done_tokens": {
-   "plain": {
-    "target_tokens": 166,
-    "token_positions": 236,
-    "padded_positions": 372
-   },
-   "self": {
-    "target_tokens": 712,
-    "token_positions": 850,
-    "padded_positions": 984
-   }
-  },
-  "args_diff_registered": {
-   "shared_diffs": {
-    "bs": [
-     64,
-     4
-    ],
-    "log_every": [
-     100,
-     1
-    ]
-   },
-   "required_bad": {
-    "steps": [
-     12000,
-     2
-    ],
-    "self_pool": [
-     "boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl",
-     "scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl"
-    ]
-   },
-   "unexpected_new_keys": [],
-   "neutral_bad": {},
-   "dropped_base_keys": []
-  },
-  "args_diff_smoke_mode": {
-   "shared_diffs": {
-    "bs": [
-     64,
-     4
-    ],
-    "log_every": [
-     100,
-     1
-    ]
-   },
-   "required_bad": {
-    "steps": [
-     12000,
-     2
-    ]
-   },
-   "unexpected_new_keys": [],
-   "neutral_bad": {},
-   "dropped_base_keys": [],
-   "ok": false
-  },
-  "comparison": "TEXT-CENSORED",
-  "line_has_train_tokens": true
+ "registered_mode_round1": {
+  "t1": "VOID (eval_text: eval_text.json ['card']; every reading of the model fails; \u00a75.2)",
+  "censor_reasons": null,
+  "comparison": "TEXT-CENSORED"
  },
- "reading": "READING: base base fp32 | n50 10.438 | n90 9.330 | \u03940 0.132 -> BASE-PARITY levels | MG_T 0.665 SB_T 0.435 || T1 FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.750 (T-DBS not met) | n50 15.500 | n50/12 1.292 | round-2 condition False || T2 pending (missing ['s219_gate_t2_s1/eval_gate.json', 's219_pool_t2_s1/pool_meta.json', 's219_t2_s1/args.json', 's219_t2_s1/draws_log.json', 's219_t2_s1/eval_text.json', 's219_t2_s1/eval_textself.json', 's219_t2_s1/log.jsonl']) || comparison TEXT-CENSORED (r1, FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.750 (T-DBS not met) | n50 15.500 | n50/12 1.292 | round-2 condition False): every comparison row fails (rule b) | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \u2192 0.489 \u2192 0.437) | TOKEN-COST n 13\u201316: n/a | TRAIN-TOKENS r1: n/a; TRAIN-TOKENS r2: n/a | exposure matched in items and step indices, not in training tokens or FLOPs | \u03940 0.132, statistic levels | CTX-BOUND (GPT-2's 1,024 learned position rows; n 24: 0.971 feasible)",
- "sec": 115
+ "smoke_round1_only": {
+  "t1_status": "SCORED",
+  "t1_smoke_relaxed": [
+   "eval_text s219_t1_s1/eval_text.json: card (card)",
+   "s219_t1_s1: dead / step count (log last step 2 < 12000)",
+   "s219_t1_s1: ARGS-DIFF {'shared_diffs': {'bs': (64, 4), 'log_every': (100, 1)}, 'required_bad': {'steps': (12000, 2), 'self_pool': ('boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl', 'scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl')}}",
+   "s219_t1_s1: round cards {'gate': None, 'pool': None} (card)"
+  ],
+  "outcome": "PENDING",
+  "line": "SMOKE: not a registered reading | pending (GATE-T2 / GATE-T1\u2032 eval_gate.json missing / undecided; round 1: \u0394_1 = -0.660) | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \u2192 0.489 \u2192 0.437) | TOKEN-COST n 13\u201316 (seq. steps | token-positions per correct answer, text vs latent): 13: 254.3 vs 15.0 | 299.9 vs 616.2; 14: 295.5 vs 17.9 | 358.3 vs 787.4; 15: 339.2 vs 26.9 | 443.6 vs 1261.2; 16: 387.8 vs 52.3 | 554.4 vs 2614.3 | TRAIN-TOKENS r1 (target tokens / token-positions consumed; not comp",
+  "missing_blocks": [],
+  "t2_status": "PENDING"
+ },
+ "round2_variants": {
+  "absorbing": {
+   "t2_status": "SCORED",
+   "t2_label": "SMOKE: not a registered reading | T-SELF-2 (in support) | T-GROW | M2_T 0.675 (T-DBS-2 not met) | M_far 0.050 (feasible 0.050) | n50 19.500 | n50/16 1.219",
+   "t2_smoke_relaxed": [
+    "eval_text s219_t2_s1/eval_text.json: card (card)",
+    "eval_text s219_t2_s1/eval_text.json: model_sha256 (sha)",
+    "s219_t2_s1: dead / step count (log last step 2 < 12000)",
+    "s219_t2_s1: ARGS-DIFF {'shared_diffs': {'bs': (64, 4), 'log_every': (100, 1)}, 'required_bad': {'steps': (12000, 2), 'init_from': ('boxes/runs_fsq/s219_t1_s1/model.pt', 'boxes/runs_fsq/s170_cot_s1/model.pt'), 'self_pool': ('boxes/runs_fsq/s219_pool_t2_s1/pool_t2.jsonl', 'scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl'), 'self_micro': (4, 2)}}",
+    "s219_t2_s1: provenance sha ['eval_gate labeller_sha256 == T1 model_sha256', 'init_from_sha256 == T1 model_sha256', 'pool W1 labeller_sha256 == T1', 'pool W2 labeller_sha256 == T1']",
+    "s219_t2_s1: round cards {'gate': None, 'pool': None} (card)"
+   ],
+   "outcome": "LATENT-AHEAD",
+   "rows": {
+    "PARITY": false,
+    "TEXT_AHEAD": false,
+    "LATENT_AHEAD": true,
+    "CROSSED": false
+   },
+   "ROUND_1_ONLY": null,
+   "DELTA": {
+    "0": 0.13163213530655504,
+    "1": -0.6600000000000001,
+    "2": -1.0390000000000015
+   },
+   "line": "SMOKE: not a registered reading | LATENT-AHEAD: latent self-training moved the 50 % depth further than round-matched text-CoT self-training (\u0394n50 = -0.660 / -1.039) | FAIL-POS: 0.000 of the text arm's first deviations at n 17\u201320 sit at rows past its trained 295 (GPT-2's learned absolute positions) | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \u2192 0.489 \u2192 0.437) | TOKEN-COST n 17\u201320 (seq. steps | token-positions per correct answer, text vs latent): 17: 437.9 vs 19.0 | 497.0 vs 1012.4; 18: 489.0 vs 20.4 | 559.1 vs 1145.6; 19: 547.2 vs 24.4 | 645.7 vs 1439.8; 20: 607.6 vs 33.4 | 762.8 vs 2072.1 | TRAIN-TOKENS r1 (target tokens / token-positions consumed; not compute-matched): text 8",
+   "missing_blocks": [],
+   "line_has_latent_formula": true,
+   "fail_pos_r2_on_line": true
+  },
+  "not_absorbed_2": {
+   "t2_status": "SCORED",
+   "t2_label": "SMOKE: not a registered reading | not T-SELF-2 (T-ABSORB-2 failed) | UNLABELLED (not T-ABSORB-2) | M2_T 0.675 (T-DBS-2 not met) | M_far 0.050 (feasible 0.050) | n50 19.500 | n50/16 1.219",
+   "t2_smoke_relaxed": [
+    "eval_text s219_t2_s1/eval_text.json: card (card)",
+    "eval_text s219_t2_s1/eval_text.json: model_sha256 (sha)",
+    "s219_t2_s1: dead / step count (log last step 2 < 12000)",
+    "s219_t2_s1: ARGS-DIFF {'shared_diffs': {'bs': (64, 4), 'log_every': (100, 1)}, 'required_bad': {'steps': (12000, 2), 'init_from': ('boxes/runs_fsq/s219_t1_s1/model.pt', 'boxes/runs_fsq/s170_cot_s1/model.pt'), 'self_pool': ('boxes/runs_fsq/s219_pool_t2_s1/pool_t2.jsonl', 'scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl'), 'self_micro': (4, 2)}}",
+    "s219_t2_s1: provenance sha ['eval_gate labeller_sha256 == T1 model_sha256', 'init_from_sha256 == T1 model_sha256', 'pool W1 labeller_sha256 == T1', 'pool W2 labeller_sha256 == T1']",
+    "s219_t2_s1: round cards {'gate': None, 'pool': None} (card)"
+   ],
+   "outcome": "TEXT-NOT-ABSORBED-2",
+   "rows": {
+    "PARITY": false,
+    "TEXT_AHEAD": false,
+    "LATENT_AHEAD": false,
+    "CROSSED": false
+   },
+   "ROUND_1_ONLY": "LATENT-AHEAD-1",
+   "DELTA": {
+    "0": 0.13163213530655504,
+    "1": -0.6600000000000001,
+    "2": -1.0390000000000015
+   },
+   "line": "SMOKE: not a registered reading | TEXT-NOT-ABSORBED-2: text-CoT self-training did not absorb the round-2 window under the matched recipe (min a_T(13..16) = 0.900 < 0.95); no round-2 comparison is read (\u0394_2 = -1.039, descriptive); ROUND-1-ONLY: LATENT-AHEAD-1 (\u0394_1 = -0.660, levels) | FAIL-POS: 0.000 of the text arm's first deviations at n 13\u201316 sit at rows past its trained 295 (GPT-2's learned absolute positions). This cannot be separated from a fault in the new trainer path. | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \u2192 0.489 \u2192 0.437) | TOKEN-COST n 17\u201320 (seq. steps | token-positions per correct answer, text vs latent): 17: 437.9 vs 19.0 | 497.0 vs 1012.4; 18: 489.0 vs 20.4 ",
+   "missing_blocks": [],
+   "line_has_latent_formula": true,
+   "fail_pos_r2_on_line": true
+  }
+ },
+ "PASS": true,
+ "sec": 191
 }

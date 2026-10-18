@@ -1377,6 +1377,46 @@ def round2_provenance():
     return "%d mismatches -> CONTAMINATED (provenance); consistent base-labelled chain reads; missing init_from.json pending / --final failure" % len(out)
 
 
+@case
+def smoke_flag():
+    """Audit G-T12 (Theory): SMOKE relaxes ONLY dead / step-count / ARGS-DIFF / size / card / sha (each listed in smoke_relaxed); every label carries
+    'SMOKE: not a registered reading'; --final is refused; a non-relaxed censor (LABEL-NOISY-T) still fails; without SMOKE the same tree is censored."""
+    t = build("smoke", log1={"last": 11900}, args1=realistic_args("t1", lr=1e-4, bs=4), t1_card=CARD2070, sd2=textself(2, pi=0.985))
+    try:
+        s = run(t); chk(s["t1"]["status"] == "FAIL" and "dead" in s["t1"]["label"] and "ARGS-DIFF" in s["t1"]["label"] or s["t1"]["label"].startswith("VOID"),
+                        s["t1"]["label"][:200])
+        S.SMOKE = True
+        s = run(t); c = s["comparison"]; rl = c["smoke_relaxed"]
+        chk(s["t1"]["status"] == "SCORED" and not s["t1"]["censored"], (s["t1"]["label"][:300], rl))
+        for frag in ("dead / step count", "ARGS-DIFF", "card"):
+            chk(any(frag in x for x in rl) and any(frag in x for x in s["t1"]["smoke_relaxed"]), (frag, rl))
+        chk(all(x["label"].startswith(S.SMOKE_LABEL) for x in (s["base"], s["t1"], s["t2"])) and c["line"].startswith(S.SMOKE_LABEL), "labels")
+        chk(s["t2"]["status"] == "FAIL" and "LABEL-NOISY-T" in s["t2"]["label"], s["t2"]["label"][:200])
+        chk(c["outcome"] == "TEXT-CENSORED" and "(r2" in c["line"], c["line"][:200])
+        try:
+            S.score(("s1",)); raised = False
+        except SystemExit:
+            raised = True
+        chk(raised, "--final not refused")
+        try:
+            S.OUT = os.path.join(HERE, "_smoke_out.json"); S.main(["--smoke", "--final", "s1"]); raised = False
+        except SystemExit:
+            raised = True
+        chk(raised and not os.path.exists(os.path.join(HERE, "_smoke_out.json")), "main --smoke --final not refused")
+        S.SMOKE = False
+        t.w(L["t1"], "eval_text.json", eval_text_obj(make_curve(15.5), SHA_T1)); s = run(t)
+        it = t.get(L["t1"], "eval_text.json"); it["items"] = [r for r in it["items"] if r["idx"] % 1000 < 100]
+        for n in range(1, 25):                                              # the writer aggregates over the items it has (text_eval.aggregate)
+            rs = [r for r in it["items"] if r["n"] == n]; it["acc_by_n"][str(n)] = sum(r["answer"] == r["y"] for r in rs) / len(rs)
+        t.w(L["t1"], "eval_text.json", it)
+        s = run(t); chk(s["t1"]["status"] == "FAIL" and s["t1"]["label"].startswith("VOID"), s["t1"]["label"][:200])
+        S.SMOKE = True; s = run(t)
+        chk(s["t1"]["EVAL"]["void"] is None and any("(size)" in x for x in s["t1"]["smoke_relaxed"]), (s["t1"]["EVAL"].get("void"), s["t1"].get("smoke_relaxed", [])[:3]))
+        return "relaxed %d checks (dead, ARGS-DIFF, card, size); LABEL-NOISY-T still censors; --final refused; labels carry the SMOKE line" % len(rl)
+    finally:
+        S.SMOKE = False; t.done()
+
+
 def num(x):
     return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x)
 
