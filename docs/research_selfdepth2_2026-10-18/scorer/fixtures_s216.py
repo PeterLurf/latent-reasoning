@@ -375,13 +375,32 @@ def _():
 
 @fixture("panels_reproduce_v1_panels_per_n")
 def _():
-    S.set_root(REAL); p = S.panels("s1"); bad = []
+    # note 216-7 (Audit): synthetic tree (the real FT-SELF eval_deep now exists, read after r2_s1's launch per D2), so this no longer depends on landed data
+    root = materialise("PANELS", good(s1=None, s2=None)); S.set_root(root)
+    try:
+        p = S.panels("s1")
+    finally:
+        S.set_root(REAL)
+    bad = []
     for h in ("H_shift", "H_prop", "H_add_constant_growth", "SHRINK"):
         for k in ("M2", "M_far", "n50", "n90", "WIDTH_2"):
             if abs(p[h][k] - V1OUT["panels"][h][k]) > 1e-12:
                 bad.append((h, k, p[h][k], V1OUT["panels"][h][k]))
-    chk(not bad, bad); chk(p["source_past_16"].startswith("assumed"), "R1 eval_deep must not be read before s216_r2_s1 launches")
-    return "per-n panels equal v1_panels.json to 1e-12 (H_shift n50 %.3f, H_prop %.3f)" % (p["H_shift"]["n50"], p["H_prop"]["n50"])
+    chk(not bad, bad); chk(p["source_past_16"].startswith("assumed"), "without an R1 eval_deep the panel uses the assumed extension")
+    deep_ft = open(os.path.join(REAL, "s215_ftself_s1", "eval_deep.json")).read()
+    srcs = {}
+    for tag, s1 in (("R1 eval_deep present, R2 not launched", None), ("R1 eval_deep present, R2 launched", "H_prop")):
+        F = good(s1=s1, s2=None); F[("s215_ftself_s1", "eval_deep.json")] = deep_ft
+        root = materialise("PANELS2", F); S.set_root(root)
+        try:
+            srcs[tag] = S.panels("s1")["source_past_16"]
+        finally:
+            S.set_root(REAL)
+    shutil.rmtree(os.path.join(FX, "PANELS2"), ignore_errors=True); shutil.rmtree(os.path.join(FX, "PANELS"), ignore_errors=True)
+    chk(srcs["R1 eval_deep present, R2 not launched"].startswith("assumed"), ("D2: R1 eval_deep must not be read before R2 launches", srcs))
+    chk(not srcs["R1 eval_deep present, R2 launched"].startswith("assumed"), ("after launch the R1 eval_deep replaces the extension", srcs))
+    return "per-n panels equal v1_panels.json to 1e-12 without an R1 eval_deep (H_shift n50 %.3f, H_prop %.3f); D2 gating: %s" % (
+        p["H_shift"]["n50"], p["H_prop"]["n50"], srcs)
 
 
 @fixture("stop_loc_generalises_score_s215")
@@ -551,6 +570,25 @@ def _():
     F = good(); F[("s216_d3t_s2", "args.json")] = J(args_base(seed=1)); chk(run("ARGS", F)["s2"]["base"]["status"] == "FAIL", "base seed 1")
     F = good(); F[("s216_r1_s2", "args.json")] = J(args_r1(self_pool="boxes/runs_fsq/s215_pool/pool_r1.jsonl")); chk(R1S(run("ARGS", F))["ARGS_BAD"], "r1 pool")
     return "ARGS_BAD: %s; base p_self 0.5 / seed 1 and R1-s2 s215 pool -> fail; clean trees ok (base neutral new keys accepted)" % out
+
+
+@fixture("args_ref_content_rule_216-7")
+def _():
+    """note 216-7 (Audit's ruling (b)): args_ref may differ iff the named file equals the reference args on every non-META key (absolute paths here, so
+    nothing is written under D:/Latent)."""
+    d = os.path.join(FX, "ARGSREF_files"); os.makedirs(d, exist_ok=True); out = []
+    ok_f, bad_f, miss_f = os.path.join(d, "ok.json"), os.path.join(d, "bad.json"), os.path.join(d, "missing.json")
+    json.dump(ARGS_D3T, open(ok_f, "w", newline="\n")); b = dict(ARGS_D3T); b["lr"] = 9.9; json.dump(b, open(bad_f, "w", newline="\n"))
+    for tag, f, want_bad in (("ok-content", ok_f, False), ("one-key-diff", bad_f, True), ("missing file", miss_f, True)):
+        F = good(); F[("s216_d3t_s2", "args.json")] = J(args_base(args_ref=f.replace("\\", "/"))); o = run("ARGSREF", F); bc = o["s2"]["base"]
+        chk((bc["status"] == "FAIL") == want_bad and bc["ARGS_DIFF"]["args_ref"]["ok"] == (not want_bad), (tag, bc["ARGS_DIFF"]["args_ref"], bc["status"]))
+        if want_bad:
+            chk(o["X2"]["outcome"] == "FAIL", (tag, o["X2"]))
+        out.append("%s -> %s" % (tag, bc["ARGS_DIFF"]["args_ref"]["why"]))
+    ftf = os.path.join(d, "ft_bad.json"); x = dict(ARGS_FT); x["lr"] = 9.9; json.dump(x, open(ftf, "w", newline="\n"))
+    F = good(); F[("s216_r2_s1", "args.json")] = J(args_r2("s1", args_ref=ftf.replace("\\", "/"))); chk(R2S(run("ARGSREF", F))["ARGS_BAD"], "r2 one-key-diff args_ref")
+    shutil.rmtree(d, ignore_errors=True)
+    return "; ".join(out) + "; R2 with a one-key-diff args_ref file -> ARGS_BAD (the old unconditional R1 / R2 allowance is gone)"
 
 
 @fixture("s2_bars_by_formula")
@@ -831,11 +869,12 @@ def _():
     return "flag != recomputed -> pending, --final VOID; fallback -> BASE-LABELLED wording; both fail -> VOID / row FAIL at gate2"
 
 
-@fixture("real_tree_read_only_all_UNREAD")
+@fixture("real_tree_read_only_no_write")
 def _():
+    # note 216-7 (Audit): was "all UNREAD", a pre-landing snapshot; now state-independent: the real tree scores without a crash or a repo write
     S.set_root(REAL); stamp = time.time() - 1
-    o = S.main([]); chk(o["X2"]["outcome"] == "UNREAD" and o["s1"]["row"]["status"] == "PENDING" and o["s2"]["row"]["status"] == "PENDING", o["X2"])
-    chk(o["s1"]["r2"]["status"] == "PENDING" and o["s2"]["base"]["status"] == "PENDING" and o["BASELINES"]["s1"].startswith("not read"), "pending")
+    o = S.main([]); chk(o["X2"]["outcome"] in ("UNREAD", "PASS", "FAIL", "NOT COMPETENT"), o["X2"])
+    chk(all(o[lin]["row"]["status"] in ("PENDING", "PASS", "FAIL", "NOT COMPETENT", "UNREAD", "SCORED") for lin in ("s1", "s2")), [o[l]["row"] for l in ("s1", "s2")])
     mine = ["D:/Latent/theory/results/score_s216.json", "D:/Latent/theory/score_s216.py", V1J] + [os.path.join(dp, f) for top in (
         "D:/Latent/boxes/runs_fsq/s215_ftself_s1", "D:/Latent/boxes/runs_fsq/s213_d3t_s1", "D:/Latent/theory/__pycache__", "D:/Latent/boxes/__pycache__")
         for dp, _, fs in os.walk(top) for f in fs if ("score_s216" in f or "nested170" in f or not top.endswith("__pycache__"))]
