@@ -1,0 +1,108 @@
+{
+ "card": "NVIDIA GeForce RTX 4060",
+ "eval_bs": {
+  "acc": 8,
+  "hist24": 8,
+  "stall": 32,
+  "vswap": 16,
+  "causal_deep": 16,
+  "cf": 32,
+  "direct": 32,
+  "probe": 16,
+  "fd": 16,
+  "plant": 16
+ },
+ "acc": {
+  "peak_gib_by_bs": {
+   "32": "OOM",
+   "16": "OOM",
+   "8": 3.6
+  },
+  "eval_bs": 8,
+  "D": 16
+ },
+ "hist24": {
+  "peak_gib_by_bs": {
+   "32": "OOM",
+   "16": "OOM",
+   "8": 3.54
+  },
+  "eval_bs": 8,
+  "D": 16
+ },
+ "stall": {
+  "peak_gib_by_bs": {
+   "32": 5.38
+  },
+  "eval_bs": 32,
+  "D": 8
+ },
+ "vswap": {
+  "peak_gib_by_bs": {
+   "32": "OOM",
+   "16": 3.49
+  },
+  "eval_bs": 16,
+  "D": 8
+ },
+ "causal_deep": {
+  "peak_gib_by_bs": {
+   "32": "OOM",
+   "16": 5.35
+  },
+  "eval_bs": 16,
+  "D": 16
+ },
+ "cf": {
+  "peak_gib_by_bs": {
+   "32": 6.53
+  },
+  "eval_bs": 32,
+  "D": 8
+ },
+ "direct": {
+  "peak_gib_by_bs": {
+   "32": 5.59
+  },
+  "eval_bs": 32,
+  "D": 16
+ },
+ "probe": {
+  "peak_gib_by_chunk": {
+   "16": "OOM",
+   "8": "OOM",
+   "4": "OOM"
+  },
+  "chunk": 16,
+  "eval_bs": 16,
+  "peak_gib_by_group_pmicro_chunk16": {
+   "8_pm16": 5.27
+  },
+  "group": 8,
+  "pmicro": 16
+ },
+ "fd": {
+  "peak_gib_by_chunk": {
+   "16": 2.46
+  },
+  "chunk": 16,
+  "eval_bs": 16
+ },
+ "plant": {
+  "peak_gib_by_chunk": {
+   "16": "OOM",
+   "8": "OOM",
+   "4": "OOM"
+  },
+  "chunk": 16,
+  "eval_bs": 16,
+  "peak_gib_by_group_pmicro_chunk16": {
+   "8_pm16": 5.27
+  },
+  "group": 8,
+  "pmicro": 16,
+  "note": "PLANT is trained and read inside the probe part (same eval_bs / chunk / group)"
+ },
+ "budget_gib": 7.0,
+ "pass": true
+}

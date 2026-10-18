@@ -558,7 +558,7 @@ def probe_forward(m, pr, kind, t, its, b, S, dirs, zs, dev):
     return sA, sB, (1 - y).long()
 
 
-def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=200000, pbs=64, chunk=16, hold_n=1000, pool_override=None, eval_every=500, group=0):
+def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=200000, pbs=64, chunk=16, hold_n=1000, pool_override=None, eval_every=500, group=0, pmicro=64):
     """group > 0 (G-EVMEM: 17 lockstep probes do not fit 8 GB): probes / plants ordered by t then kind are trained in groups of `group`, each group
     replaying the SAME batch sequence (np rng 22501 restarted) - so every probe still sees the same items in the same order; only the rollout is shared
     within a group. Plant z: np rng 22551 / 22552 restarted per group (train), 22553 / 22554 restarted per probe (held-out and test)."""
@@ -593,9 +593,12 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
         for _ in range(n_steps):
             ix = rb.integers(0, len(pool), pbs); seen.update(int(j) for j in ix); sub = [pool[j] for j in ix]; b, S = stored(m, sub, Kmax, dev, chunk)
             for k in sel_keys:
-                pr = prs[k]; zs = zdraw(rz[k[0]], pbs) if k[0] != "probe" else None
-                sA, sB, y = probe_forward(m, pr, k[0], k[1], sub, b, S, dirs, zs, dev)
-                loss = F.cross_entropy(torch.stack([sA, sB], 1), y); pr.opt.zero_grad(set_to_none=True); loss.backward(); pr.opt.step(); pr.steps += 1
+                pr = prs[k]; zs = zdraw(rz[k[0]], pbs) if k[0] != "probe" else None; pr.opt.zero_grad(set_to_none=True)
+                for q0 in range(0, pbs, pmicro):                            # micro-chunks of the 64 (G-EVMEM): sum of chunk-mean x share = the batch mean CE
+                    q1 = min(pbs, q0 + pmicro); bq = tuple(t_[q0:q1] for t_ in b); Sq = [s_[q0:q1] for s_ in S]; zq = (zs[0][q0:q1], zs[1][q0:q1]) if zs else None
+                    sA, sB, y = probe_forward(m, pr, k[0], k[1], sub[q0:q1], bq, Sq, dirs, zq, dev)
+                    (F.cross_entropy(torch.stack([sA, sB], 1), y) * ((q1 - q0) / pbs)).backward()
+                pr.opt.step(); pr.steps += 1
             del S
             st = prs[sel_keys[0]].steps
             if st % eval_every == 0:
@@ -630,7 +633,7 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
     valid = {t: bool(out_pl[t].get("lin", {}).get("acc", 0) >= 0.90 and out_pl[t].get("xor", {}).get("acc", 0) >= 0.90) for t in out_pl}
     proto = __doc__.split("  probe ")[1].split("  fd ")[0].strip()
     return {"probe": out_p, "plant": out_pl, "probe_valid": valid, "probe_protocol": proto, "probe_sec": round(time.time() - t0),
-            "probe_n_distinct_seen": len(seen), "probe_pool_n": len(pool), "probe_chunk": chunk, "probe_groups": [["%s%d" % k for k in g_] for g_ in groups],
+            "probe_n_distinct_seen": len(seen), "probe_pool_n": len(pool), "probe_chunk": chunk, "probe_pmicro": pmicro, "probe_groups": [["%s%d" % k for k in g_] for g_ in groups],
             "probe_n_distinct_note": "distinct pool items drawn over all steps (with replacement; Note 218-6); every group replays the same batch sequence"}
 
 
@@ -778,13 +781,13 @@ def part_evmem(m, TE, dev, budget=7.0, bss=(32, 16, 8, 4), chunks_=(16, 8, 4)):
         print("EVMEM", part, res[part], flush=True)
     if res["probe"]["chunk"] is None:                                       # all 17 in lockstep do not fit: the largest group of the HEAVIEST probes (top t)
         e8, _ = longest(8, 64); gp = {}                                     # that fits at chunk 16 (part_probe --probe_group; plants at t <= 2 are lighter)
-        for G in (8, 6, 4, 3, 2, 1):
-            gp[str(G)] = try_(lambda: part_probe(m, {8: e8[:16]}, dev, 16, T_SET[-G:], (), steps=1, pool_n=64, pbs=64, chunk=16, hold_n=16, pool_override=e8,
-                                                  eval_every=1))
-            if gp[str(G)] != "OOM" and gp[str(G)] <= budget:
+        for G, pm in ((8, 16), (6, 16), (4, 16), (6, 8), (4, 8), (3, 8), (2, 8), (1, 8), (1, 4)):
+            gp["%d_pm%d" % (G, pm)] = try_(lambda: part_probe(m, {8: e8[:16]}, dev, 16, T_SET[-G:], (), steps=1, pool_n=64, pbs=64, chunk=16, hold_n=16, pool_override=e8,
+                                                  eval_every=1, pmicro=pm))
+            if gp["%d_pm%d" % (G, pm)] != "OOM" and gp["%d_pm%d" % (G, pm)] <= budget:
                 break
-        okg = [int(g) for g, v in gp.items() if v != "OOM" and v <= budget]
-        res["probe"].update({"peak_gib_by_group_chunk16": gp, "group": max(okg) if okg else None, "chunk": 16 if okg else None, "eval_bs": 16 if okg else None})
+        okg = [k for k, v in gp.items() if v != "OOM" and v <= budget]; G_, pm_ = (int(okg[0].split("_pm")[0]), int(okg[0].split("_pm")[1])) if okg else (None, None)
+        res["probe"].update({"peak_gib_by_group_pmicro_chunk16": gp, "group": G_, "pmicro": pm_, "chunk": 16 if okg else None, "eval_bs": 16 if okg else None})
         print("EVMEM probe groups", res["probe"], flush=True)
     res["plant"] = dict(res["probe"], note="PLANT is trained and read inside the probe part (same eval_bs / chunk / group)")
     res["budget_gib"] = budget; res["pass"] = all(v.get("eval_bs", v.get("chunk")) is not None for k, v in res.items() if isinstance(v, dict))
@@ -801,6 +804,7 @@ def main():
     ap.add_argument("--probe_steps", type=int, default=10000, help="smokes only"); ap.add_argument("--pool_n", type=int, default=200000, help="smokes only")
     ap.add_argument("--fd_items", type=int, default=200000, help="smokes only"); ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--cal_n", type=int, default=64)
     ap.add_argument("--probe_group", type=int, default=0, help="probes trained per group (G-EVMEM's value; 0 = all in lockstep)")
+    ap.add_argument("--probe_pmicro", type=int, default=64, help="micro-chunk of the probe batch of 64 (G-EVMEM's value; gradient-equivalent)")
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = untrained(dev, a.cal_n) if a.untrained else load(a.run, dev); direct = not is_lslva(m)
     bsd = {}
@@ -838,7 +842,7 @@ def main():
             r = part_causal_deep(m, TE, dev, bs, out)
         elif part == "probe":
             r = part_probe(m, TEv, dev, bs, tuple(int(v) for v in a.probe_ts.split(",") if v != ""), tuple(int(v) for v in a.plant_ts.split(",") if v != ""),
-                           a.probe_steps, a.pool_n, chunk=a.chunk, group=a.probe_group)
+                           a.probe_steps, a.pool_n, chunk=a.chunk, group=a.probe_group, pmicro=a.probe_pmicro)
             for k_ in ("probe", "plant"):                                   # parts run in pieces merge per t
                 if k_ in out:
                     out[k_].update(r.pop(k_))

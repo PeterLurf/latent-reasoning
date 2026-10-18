@@ -1,0 +1,70 @@
+{
+ "gate": "G-L17 / G-L18 end-to-end (Audit G-L13 part 2 + Theory 218-x)",
+ "scorer": "theory/score_s218.py at a091e98b",
+ "scorer_sha256": "b49f67eb9bea2c7d9fe42f950d529e4a75db3613b8bcb791c00473a8c21eadce",
+ "tree": "scratch/_tmp/e2e",
+ "writers": {
+  "lvb_sym_s1": "boxes.langvb (CPU, 3 steps, bs 2) + boxes.langvb_eval (4060; every part; per_D 2; probe group 8 / pmicro 16 from G-EVMEM)",
+  "lvb_direct_s1": "boxes.langvb --arch direct (CPU, 3 steps) + langvb_eval panel,direct,contamination",
+  "lvb_gate1_s1 / lvb_pool_s1 / lvb_self_s1": "boxes.langvb_label e2e (label subagent; CPU, untrained)",
+  "lvb_gates/gate_evmem.json": "the real G-EVMEM (4060)"
+ },
+ "pending": {
+  "direct": [
+   "['per_D 2 != 1000 (a smoke-size eval)', 'part direct eval_bs 4 != G-EVMEM 32', 'part direct items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3']",
+   "no frozen args for DIRECT-SYM (FROZEN_ARGS['direct'] unset and no lvb_direct_s1/args_frozen.json; note 218-4)"
+  ],
+  "a1": [
+   "DIRECT-SYM cell pending (C1 band; v1 \u00c2\u00a72.6)",
+   "['per_D 2 != 1000 (a smoke-size eval)', 'part acc eval_bs 4 != G-EVMEM 8', 'part acc items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part probe eval_bs 4 != G-EVMEM 16', 'part probe items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part plant eval_bs 4 != G-EVMEM 16', 'part plant items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part fd eval_bs 4 != G-EVMEM 16', 'part fd items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part vswap eval_bs 4 != G-EVMEM 16', 'part vswap items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part stall eval_bs 4 != G-EVMEM 32', 'part stall items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part cf eval_bs 4 != G-EVMEM 32', 'part cf items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part hist24 eval_bs 4 != G-EVMEM 8', 'part hist24 items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3', 'part causal_deep eval_bs 4 != G-EVMEM 16', 'part causal_deep items_sha 4c80f1ddef63fb6bf20c3355 != G-L0 anchor b00be797017884ef00671cd3']",
+   "lvb_sym_s1/eval_lvb.json probe fields ['probe t0 steps_run / curve', 'probe t1 steps_run / curve', 'probe t2 steps_run / curve', 'probe t3 steps_run / curve']",
+   "no frozen args for A1 (FROZEN_ARGS['a1'] unset and no lvb_sym_s1/args_frozen.json; note 218-4)"
+  ],
+  "a2": [
+   "A1 pending (MARGIN-GROWS-L bar)",
+   "A2 GO undecided (['A1 pending'])",
+   "['card cpu (stage A card 4060)']",
+   "args.json missing (cell)",
+   "lvb_ctrl_s1/eval_lvb.json (A2-CTRL, for SD-C2-L)",
+   "lvb_self_s1/args.json",
+   "lvb_self_s1/eval_lvb.json meta ['meta.eval_bs.acc', 'meta.items_sha', 'meta.eval_bs.probe', 'meta.items_sha', 'meta.eval_bs.plant', 'meta.items_sha']",
+   "lvb_self_s1/eval_lvb.json part acc",
+   "lvb_self_s1/eval_lvb.json part causal_deep",
+   "lvb_self_s1/eval_lvb.json part cf",
+   "lvb_self_s1/eval_lvb.json part fd",
+   "lvb_self_s1/eval_lvb.json part hist24",
+   "lvb_self_s1/eval_lvb.json part panel",
+   "lvb_self_s1/eval_lvb.json part plant",
+   "lvb_self_s1/eval_lvb.json part probe",
+   "lvb_self_s1/eval_lvb.json part stall",
+   "lvb_self_s1/eval_lvb.json part vswap",
+   "lvb_self_s1/log.jsonl",
+   "pool incomplete (kept < 106000, draws < 530000 at D [9, 10, 11, 12])"
+  ],
+  "ctrl": [
+   "A2 GO undecided (['A1 pending'])",
+   "args.json missing (cell)",
+   "lvb_ctrl_s1/args.json",
+   "lvb_ctrl_s1/eval_lvb.json",
+   "lvb_ctrl_s1/log.jsonl"
+  ],
+  "b1": [
+   "B GO undecided (['A1 pending'])",
+   "lvb_b02/codi20_rescore.json (+ gsm_codi_20ep_s1/eval_items.json)",
+   "lvb_gates/gate_evmem_gsm.json",
+   "lvb_gsm_s1/args.json",
+   "lvb_gsm_s1/eval_lvb_gsm.json",
+   "lvb_gsm_s1/interim_go.json",
+   "lvb_gsm_s1/log.jsonl",
+   "no frozen args for B1 (FROZEN_ARGS['b1'] unset and no lvb_gsm_s1/args_frozen.json; note 218-4)"
+  ]
+ },
+ "classification": {
+  "smoke_size": "per_D 2 != 1000, eval_bs 4 != G-EVMEM, smoke items_sha != the G-L0 anchor, probe steps_run 2 / empty curve (R22)",
+  "theory": "FROZEN_ARGS unset at a091e98b (Note 218-9 froze a1 / direct by sha)",
+  "legitimately_absent": "A2 / A2-CTRL trained cells and parts (only the labeller part exists), the full pool, every B1 file",
+  "unexpected": []
+ },
+ "pass": true,
+ "note": "no field pending beyond the smoke size, the frozen-args hook and stages that do not exist yet; probe_groups tolerated by the scorer"
+}
