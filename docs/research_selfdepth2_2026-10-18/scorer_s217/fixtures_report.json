@@ -31,8 +31,8 @@
  "real_tree_no_crash": {
   "pass": true,
   "detail": {
-   "s1": "pending (['s213_d3t_s1', 's215_ftself_s1', 's216_r2_s1'])",
-   "s2": "pending (['s216_d3t_s2', 's216_r1_s2'])"
+   "s1": "CAUSAL-PRESERVED over ['s215_ftself_s1', 's216_r2_s1']",
+   "s2": "CAUSAL-PRESERVED over ['s216_d3t_s2', 's216_r1_s2'] (not run: s216_r2_s2, s2 stopped at R1 (FT-DIVERGED, note 216-8))"
   }
  }
 }

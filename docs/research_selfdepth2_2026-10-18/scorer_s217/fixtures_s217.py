@@ -111,8 +111,15 @@ def _():
 def _():
     F = good(); F.update({("s216_d3t_s2", "eval_vb.json"): BASE, ("s216_d3t_s2", "eval_causal_deep.json"): cdeep()}); o = tree("a", F); L = o["lineages"]["s2"]
     chk(L["status"] == "NOT-APPLICABLE", L)
-    F[("s216_r1_s2", "eval_vb.json")] = R1; F[("s216_r1_s2", "eval_causal_deep.json")] = cdeep(); o = tree("a2", F); L = o["lineages"]["s2"]
-    chk(L["status"] == "CAUSAL-PRESERVED (so far)" and "s216_r2_s2" in L["label"], L)
+    F[("s216_r1_s2", "eval_vb.json")] = R1; F[("s216_r1_s2", "eval_causal_deep.json")] = cdeep()
+    keep = dict(S.NEVER_RUN); S.NEVER_RUN.clear()
+    try:
+        o = tree("a2", F); L = o["lineages"]["s2"]
+        chk(L["status"] == "CAUSAL-PRESERVED (so far)" and "s216_r2_s2" in L["label"], L)            # absent but still expected
+    finally:
+        S.NEVER_RUN.update(keep)
+    o = tree("a3", F); L = o["lineages"]["s2"]
+    chk(L["status"] == "CAUSAL-PRESERVED" and "216-8" in L["label"] and "s216_r2_s2" in L["never_run"], L)   # never-run model: final label
 
 
 @fx("real_tree_no_crash")

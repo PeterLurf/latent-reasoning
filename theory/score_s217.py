@@ -23,7 +23,8 @@ R = os.path.join(ROOT, "boxes", "runs_fsq")
 OUT = os.path.join(ROOT, "theory", "results", "score_s217.json")
 EPS = 1e-9
 LINEAGES = {"s1": ["s213_d3t_s1", "s215_ftself_s1", "s216_r2_s1"], "s2": ["s216_d3t_s2", "s216_r1_s2", "s216_r2_s2"]}
-EXTRA = ["s215_ftctrl_s1"]                                                  # descriptive (no lineage row)
+EXTRA = ["s215_ftctrl_s1"]
+NEVER_RUN = {"s216_r2_s2": "s2 stopped at R1 (FT-DIVERGED, note 216-8)"}   # final: these models will never exist                                                  # descriptive (no lineage row)
 CARD_CLASS, GATE_TOL, BAND_ACC = "4060", 0.005, 0.95
 MIN_PAIRS, MIN_STALL = 100, 500
 
@@ -106,8 +107,9 @@ def lineage(name, M):
         r = bad[0]; return {"status": "ERODED-AT", "label": "ERODED-AT %s (%s)" % (r["cell"], r.get("component")), "absent": absent}
     if not scored:
         return {"status": "NOT-APPLICABLE", "label": "no model of the lineage has a competent band", "absent": absent}
-    lab = "CAUSAL-PRESERVED over %s" % [r["cell"] for r in scored] + (" (not yet run: %s)" % absent if absent else "")
-    return {"status": "CAUSAL-PRESERVED" if not absent else "CAUSAL-PRESERVED (so far)", "label": lab, "absent": absent}
+    never = {c: NEVER_RUN[c] for c in absent if c in NEVER_RUN}; open_ = [c for c in absent if c not in NEVER_RUN]
+    lab = "CAUSAL-PRESERVED over %s" % [r["cell"] for r in scored] + ("".join(" (not run: %s, %s)" % (c, w) for c, w in never.items())) + (" (not yet run: %s)" % open_ if open_ else "")
+    return {"status": "CAUSAL-PRESERVED" if not open_ else "CAUSAL-PRESERVED (so far)", "label": lab, "absent": absent, "never_run": never}
 
 
 def overlap(name, M):
