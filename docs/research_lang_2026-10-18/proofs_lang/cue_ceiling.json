@@ -1,0 +1,78 @@
+{
+ "def": "PROOFS_LANG item 1c: how much of \u00a7191 A's p8_na_test accuracy can person-agnostic \u00a759 cues (option + chain-anchor level,\nplus the observable chain length m) explain? Bayes-optimal lookup over the cue sign vector, fitted on p8_na_train,\nscored on p8_na_test per depth (plus an in-sample test lookup = optimistic ceiling). Compared with \u00a7191 A's acc_by_depth.\n    python -B cue_ceiling.py <out.json>\n",
+ "by_depth": {
+  "3": {
+   "n": 199,
+   "cue_lookup_train_fit": 0.6281,
+   "cue_lookup_test_insample": 0.6307,
+   "s191A_acc": 0.9548
+  },
+  "4": {
+   "n": 418,
+   "cue_lookup_train_fit": 0.5837,
+   "cue_lookup_test_insample": 0.6423,
+   "s191A_acc": 0.9785
+  },
+  "5": {
+   "n": 419,
+   "cue_lookup_train_fit": 0.7613,
+   "cue_lookup_test_insample": 0.8329,
+   "s191A_acc": 0.9881
+  },
+  "6": {
+   "n": 419,
+   "cue_lookup_train_fit": 0.901,
+   "cue_lookup_test_insample": 0.9475,
+   "s191A_acc": 0.9976
+  },
+  "7": {
+   "n": 419,
+   "cue_lookup_train_fit": 0.895,
+   "cue_lookup_test_insample": 0.9475,
+   "s191A_acc": 0.9905
+  },
+  "8": {
+   "n": 419,
+   "cue_lookup_train_fit": 0.889,
+   "cue_lookup_test_insample": 0.957,
+   "s191A_acc": 0.9928
+  },
+  "9": {
+   "n": 419,
+   "cue_lookup_train_fit": 0.8998,
+   "cue_lookup_test_insample": 0.957,
+   "s191A_acc": 0.9785
+  },
+  "10": {
+   "n": 418,
+   "cue_lookup_train_fit": 0.7201,
+   "cue_lookup_test_insample": 0.9557,
+   "s191A_acc": 0.9689
+  },
+  "11": {
+   "n": 397,
+   "cue_lookup_train_fit": 0.5,
+   "cue_lookup_test_insample": 0.9534,
+   "s191A_acc": 0.9093
+  },
+  "12": {
+   "n": 326,
+   "cue_lookup_train_fit": 0.5,
+   "cue_lookup_test_insample": 0.9617,
+   "s191A_acc": 0.8405
+  },
+  "13": {
+   "n": 166,
+   "cue_lookup_train_fit": 0.5,
+   "cue_lookup_test_insample": 0.9639,
+   "s191A_acc": 0.7289
+  },
+  "14": {
+   "n": 34,
+   "cue_lookup_train_fit": 0.5,
+   "cue_lookup_test_insample": 0.9853,
+   "s191A_acc": 0.5
+  }
+ },
+ "n_cells_train": 1111
+}

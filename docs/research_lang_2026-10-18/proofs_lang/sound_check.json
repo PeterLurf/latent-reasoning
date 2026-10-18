@@ -1,0 +1,33 @@
+{
+ "fuzz": {
+  "chains": 42000,
+  "kept": 20905,
+  "label_wrong": 0,
+  "s_lt_D": 0,
+  "subset_violation": 0
+ },
+ "cex1": {
+  "D": 5,
+  "keep": true,
+  "s": 5,
+  "label_is_target": true,
+  "M_2_size": 2,
+  "R_2_size": 5,
+  "omitted_at_t2": [
+   "gomipus",
+   "lokabopus",
+   "tevepus"
+  ]
+ },
+ "cex2": {
+  "D": 3,
+  "keep": true,
+  "s": 5,
+  "label_is_target": true,
+  "marked_concept": "gotezupus",
+  "dist": 4,
+  "self_target_at_pass_D+1": "IN",
+  "gold_HOLD_after_tau_at_D+1": "OUT",
+  "gold_unheld_at_D+1": "IN"
+ }
+}
