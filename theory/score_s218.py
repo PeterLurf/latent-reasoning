@@ -82,7 +82,7 @@ L0_GATED = ("first", "random", "maxdeg", "la1")
 POOL_KEYS = {"text_ids", "slot_idx", "stmts_parsed", "marks_sound", "stop_s", "label"}
 POOL_KEPT, POOL_CAP, POOL_DEMAND = 106000, 530000, 383488
 BOOT_SEED, BOOT_REPS = 218, 2000
-GSM_MIN_BASE, CF_GSM_MIN_BASE = 50, 50      # Addendum 1 item 6 (literal: the same >= 50 rule for CF-GSM; see RESOLVED R13)
+GSM_MIN_BASE, CF_GSM_MIN_BASE = 50, 30      # Addendum 1 item 6; CF-GSM >= 30 distinct exposed base steps per Audit's R13 ruling (note 218-5)
 NOT_ADMITTED, FINAL, USER_OK = set(), set(), set()
 # ARGS-DIFF (v1 §4.3): reference cell / file and the keys allowed to differ; None = not pre-listed in v1 -> the cell reads pending until Theory sets it
 ARGS_REF = {"direct": None, "a1": ("s213_d3t_s1", "args.json"), "a2": (CELL["a1"], "args.json"), "ctrl": (CELL["a2"], "args.json"), "b1": None}
@@ -187,9 +187,8 @@ RESOLVED = [   # ambiguities in the registered text and how this scorer reads th
     "A2 GO false (UNREAD).",
     "R11 No 'diverged' censor exists in v1 §5.2 for LANG cells (THEORY §218's header lists one); none is applied.",
     "R12 NO-ENTRY is applied to DIRECT-SYM too (it logs plain_cand_ce); a censored DIRECT-SYM makes the C1 band UNREADABLE (VB-C1-L not met).",
-    "R13 CF-GSM: Addendum 1 item 6 applies 'the same cluster rule' and '>= 50 distinct items' to CF-GSM, but v1_gsm_exposure.json has only 37 exposed steps with "
-    "j >= 3 (all non-last), so <= 37 base items: as registered CF-GSM (hence VB-C1-GSM) cannot pass on the real test set. Implemented literally "
-    "(CF_GSM_MIN_BASE = 50); Theory to rule in a disclosed note before any B1 output.",
+    "R13 CF-GSM (RULED, note 218-5, Audit): Addendum 1 item 6's cluster RULE applies to CF-GSM (base-step-clustered share and rho, cluster bootstrap); "
+    "its minimum is >= 30 distinct exposed base steps with >= 1 clean pair (37 exist), fewer = UNREADABLE; (ii') / (i) keep >= 50 base items.",
     "R14 CF-GSM clustering: share = mean over base items of the per-item in-window share; Spearman on (base, j) cluster means of t* (pooled over j, not within "
     "m_bin); pair-level values reported beside.",
     "R15 The ProsQA '>= 2,000 STALL items' minimum is not applied to GSM8K (879 items at m >= 3 could never reach it).",
@@ -1768,7 +1767,7 @@ def cf_gsm_reading(x):
              pair_level={"share_window": mean(int(r["j"] - 1 <= r["ts"] <= r["j"]) for r in dec),
                          "spearman": spearman([r["ts"] for r in dec], [r["j"] for r in dec]) if len(dec) >= 2 else None})
     w = ("%d < 100 exposed clean pairs" % len(dec) if len(dec) < 100 else
-         "%d < %d distinct base items (Addendum 1 item 6; unattainable on the real test set: <= 37 base items have an exposed step j >= 3, RESOLVED R13)"
+         "%d < %d distinct exposed base steps (Addendum 1 item 6 as ruled in note 218-5: CF-GSM minimum 30)"
          % (len(g), CF_GSM_MIN_BASE) if len(g) < CF_GSM_MIN_BASE else "Spearman undefined" if rho is None else None)
     allc = [r["ts"] for r in rows if r["clean"]]; last = [r["ts"] for r in rows if r["clean"] and r["j"] == r["m_bin"]]
     lab = {"LATE_FUSION_GSM": ge(median(allc), 12) if allc else None, "late_fusion_median_tstar": median(allc),
