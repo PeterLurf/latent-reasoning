@@ -1,0 +1,15 @@
+v1_sym replication D 3 diffs {}
+v1_sym replication D 4 diffs {}
+v1_sym replication D 5 diffs {}
+v1_sym replication D 6 diffs {}
+v1_sym replication D 7 diffs {}
+v1_sym replication D 8 diffs {}
+v1_sym replication D 9 diffs {}
+v1_sym replication D 10 diffs {}
+v1_sym replication D 11 diffs {}
+v1_sym replication D 12 diffs {}
+v1_sym replication D 13 diffs {}
+v1_sym replication D 14 diffs {}
+v1_sym replication D 15 diffs {}
+v1_sym replication D 16 diffs {}
+wrote parity.json

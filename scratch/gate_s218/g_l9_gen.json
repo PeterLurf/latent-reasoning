@@ -1,0 +1,73 @@
+{
+ "spec": "LANG_v1 \u00a77 G-L9 (generator part): 100k Stream(22100).draw(D) calls, D U{3..16}, exclusion set at full size (test + GATE)",
+ "n": 100000,
+ "gen_sec": 185.88,
+ "draws_per_s": 538.0,
+ "by_D": {
+  "3": {
+   "n": 7173,
+   "draws_per_s": 781.7
+  },
+  "4": {
+   "n": 7171,
+   "draws_per_s": 706.4
+  },
+  "5": {
+   "n": 7087,
+   "draws_per_s": 720.0
+  },
+  "6": {
+   "n": 7252,
+   "draws_per_s": 644.4
+  },
+  "7": {
+   "n": 7015,
+   "draws_per_s": 602.4
+  },
+  "8": {
+   "n": 7208,
+   "draws_per_s": 556.6
+  },
+  "9": {
+   "n": 7040,
+   "draws_per_s": 561.4
+  },
+  "10": {
+   "n": 7208,
+   "draws_per_s": 529.9
+  },
+  "11": {
+   "n": 7395,
+   "draws_per_s": 502.7
+  },
+  "12": {
+   "n": 7050,
+   "draws_per_s": 481.0
+  },
+  "13": {
+   "n": 7109,
+   "draws_per_s": 458.7
+  },
+  "14": {
+   "n": 7106,
+   "draws_per_s": 438.5
+  },
+  "15": {
+   "n": 7167,
+   "draws_per_s": 428.4
+  },
+  "16": {
+   "n": 7019,
+   "draws_per_s": 414.8
+  }
+ },
+ "exclusion_set": {
+  "n_test_sigs": 14000,
+  "n_gate_sigs": 8000,
+  "test_gate_overlap": 0,
+  "sec_test": 16.1,
+  "sec_gate": 9.7
+ },
+ "omp_threads": "2",
+ "collisions": 0
+}

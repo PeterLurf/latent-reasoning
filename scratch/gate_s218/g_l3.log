@@ -1,0 +1,7 @@
+g_l3 20000 diff items 0 573 draws/s
+g_l3 40000 diff items 0 629 draws/s
+g_l3 60000 diff items 0 630 draws/s
+g_l3 80000 diff items 0 574 draws/s
+g_l3 100000 diff items 0 538 draws/s
+wrote g_l3_reach.json
+wrote g_l9_gen.json

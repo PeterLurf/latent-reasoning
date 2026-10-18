@@ -1,0 +1,89 @@
+{
+ "item_parity": {
+  "n": 2800,
+  "mismatches": {
+   "text": 0,
+   "edges": 0,
+   "names": 0,
+   "T": 0,
+   "order": 0,
+   "o1": 0,
+   "levels": 0,
+   "slot_idx": 0,
+   "panel": 0,
+   "chase": 0,
+   "chase_rng_state": 0
+  },
+  "pass": true
+ },
+ "v1_cf_exposure_replication": {
+  "seed": 24300,
+  "cells": 30,
+  "diffs": [],
+  "pass": true
+ },
+ "v1_sym_band_replication": {
+  "seed": 24000,
+  "n_per_D": 5000,
+  "rows": {
+   "3": {
+    "n_keys": 34,
+    "diffs": {}
+   },
+   "4": {
+    "n_keys": 40,
+    "diffs": {}
+   },
+   "5": {
+    "n_keys": 47,
+    "diffs": {}
+   },
+   "6": {
+    "n_keys": 53,
+    "diffs": {}
+   },
+   "7": {
+    "n_keys": 60,
+    "diffs": {}
+   },
+   "8": {
+    "n_keys": 66,
+    "diffs": {}
+   },
+   "9": {
+    "n_keys": 73,
+    "diffs": {}
+   },
+   "10": {
+    "n_keys": 79,
+    "diffs": {}
+   },
+   "11": {
+    "n_keys": 86,
+    "diffs": {}
+   },
+   "12": {
+    "n_keys": 92,
+    "diffs": {}
+   },
+   "13": {
+    "n_keys": 99,
+    "diffs": {}
+   },
+   "14": {
+    "n_keys": 105,
+    "diffs": {}
+   },
+   "15": {
+    "n_keys": 112,
+    "diffs": {}
+   },
+   "16": {
+    "n_keys": 118,
+    "diffs": {}
+   }
+  },
+  "pass": true,
+  "note": "v1_sym.json was run without the leading space (lead_space flag absent from its params); T is not compared"
+ }
+}

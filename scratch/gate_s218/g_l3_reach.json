@@ -1,0 +1,11 @@
+{
+ "spec": "LANG_v1 \u00a77 G-L3 (REACH part): reach_targets vs layer expansion over statements parsed from the text, t 0..24",
+ "n_items": 100000,
+ "D": "U{3..16} (rng 7) from Stream(22100) with the test + GATE exclusion",
+ "cells": 178541925,
+ "diff_items": 0,
+ "diff_cells": 0,
+ "examples": [],
+ "pass": true,
+ "collisions": []
+}
