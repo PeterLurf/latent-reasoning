@@ -19134,6 +19134,13 @@ Neither is a scorer fault.
 1. **The competent band B per model**, listing which n qualify and their a(n). Beside each model's pooled CAUSAL-DEEP, a **per-n comparison on the n where two models' bands overlap**: follow_ii, own_ii and STALL side by side at the same n. A wider band is tested on more n, so pooled readings are not compared across models; only the overlap is.
 2. **Clean-pair counts per n**, and the clean share = clean / candidates, for every model and every n 9–20. Thinness near a band edge is visible. The registered exclusion rule (< 100 clean pairs or < 500 STALL items) is unchanged.
 
+**Note 217-2 (2026-10-18 12:05 EDT; implementation detail, before any §217 output; no rule change).** The registered "part causal_deep" is built as a separate module, boxes/vbank_causal.py (`python -m boxes.vbank_causal --run <run> --device <4060> --eval_bs 16` → eval_causal_deep.json).
+- **Why a separate module:** editing vbank_eval / vbank_diag now would change modules that the running s2 chain re-imports and that b315's deploy ships.
+- **What it contains:** copies of make_pairs / vswap_class / part_stall with only (n_lo, n_hi) and per-item stores added. n_hi > 24 is asserted out (216-5).
+- **Equivalence (Experiments' smoke on the 4060):** at n 4..8 the copies equal vbank_eval's originals bitwise on FT-SELF (VALUE-SWAP A follow_ii 1.0 / own_ii 0.0 on 4,184 pairs, every pooled field; STALL recovery and by_n).
+- **Fields** match theory/score_s217.py's contract. The module's own gate terms / pass are kept as a cross-check of the scorer's gate.
+- Audit reviews the module before any model output.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
