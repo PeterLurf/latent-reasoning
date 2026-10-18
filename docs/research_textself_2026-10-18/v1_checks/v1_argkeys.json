@@ -1,0 +1,570 @@
+{
+ "src": "D:/Latent/boxes/nested170.py",
+ "src_sha256": "1961bd3687a903f3e44968b16aed854d78c253e2d674e367731b9a7eae088b9e",
+ "base_args": "D:/Latent/boxes/runs_fsq/s170_cot_s1/args.json",
+ "n_parser_keys": 57,
+ "parser_keys": {
+  "arm": {
+   "default": null,
+   "action": null,
+   "type": null,
+   "required": true,
+   "line": 635
+  },
+  "n_slots": {
+   "default": 8,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 635
+  },
+  "think_k": {
+   "default": 0,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 635
+  },
+  "steps": {
+   "default": 48000,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 636
+  },
+  "bs": {
+   "default": 64,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 636
+  },
+  "lr": {
+   "default": 0.0001,
+   "action": null,
+   "type": "float",
+   "required": false,
+   "line": 636
+  },
+  "seed": {
+   "default": 1,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 636
+  },
+  "n_max_train": {
+   "default": 8,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 637
+  },
+  "micro": {
+   "default": 1,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 637
+  },
+  "ckpt_passes": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 637
+  },
+  "mem_write": {
+   "default": "top",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 638
+  },
+  "write_mix_start": {
+   "default": 2000,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 638
+  },
+  "write_mix_end": {
+   "default": 6000,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 638
+  },
+  "anneal": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 639
+  },
+  "probe_loss_every": {
+   "default": 0,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 641
+  },
+  "mem_layer": {
+   "default": 6,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 643
+  },
+  "cache_lower": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 644
+  },
+  "anneal_gate": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 646
+  },
+  "csr": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 648
+  },
+  "keep_ckpt_steps": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 649
+  },
+  "iit": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 650
+  },
+  "iit_tau": {
+   "default": 1,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 652
+  },
+  "iit_nmax": {
+   "default": 0,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 652
+  },
+  "grokfast": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 653
+  },
+  "gf_alpha": {
+   "default": 0.98,
+   "action": null,
+   "type": "float",
+   "required": false,
+   "line": 654
+  },
+  "gf_lamb": {
+   "default": 2.0,
+   "action": null,
+   "type": "float",
+   "required": false,
+   "line": 654
+  },
+  "ckpt_every": {
+   "default": 2000,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 655
+  },
+  "resume": {
+   "default": null,
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 655
+  },
+  "log_every": {
+   "default": 100,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 655
+  },
+  "cot_eval_bs": {
+   "default": 64,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 656
+  },
+  "eval_only": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 656
+  },
+  "eval_bs": {
+   "default": 250,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 656
+  },
+  "per_n": {
+   "default": 1000,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 656
+  },
+  "serial_pool": {
+   "default": 2200,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 656
+  },
+  "auto_micro": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 656
+  },
+  "mem_budget": {
+   "default": 21.0,
+   "action": null,
+   "type": "float",
+   "required": false,
+   "line": 657
+  },
+  "mem_check": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 657
+  },
+  "time_steps": {
+   "default": 0,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 657
+  },
+  "eval_at": {
+   "default": 0,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 658
+  },
+  "aux_step": {
+   "default": 0.0,
+   "action": null,
+   "type": "float",
+   "required": false,
+   "line": 658
+  },
+  "aux_fade": {
+   "default": "36000,48000",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "kmatch_impl": {
+   "default": "masked",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "add_norm": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "aux_nopass": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "aux_reweight": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "aux_hold": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "kprimes": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "path_indep": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "excl_min_n": {
+   "default": 1,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 658
+  },
+  "scratch": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "warmup": {
+   "default": 100,
+   "action": null,
+   "type": "int",
+   "required": false,
+   "line": 658
+  },
+  "k_window": {
+   "default": "",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "fast_add": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "sched_scale": {
+   "default": 1.0,
+   "action": null,
+   "type": "float",
+   "required": false,
+   "line": 658
+  },
+  "fp32": {
+   "default": false,
+   "action": "store_true",
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "device": {
+   "default": "cuda:0",
+   "action": null,
+   "type": null,
+   "required": false,
+   "line": 658
+  },
+  "out": {
+   "default": null,
+   "action": null,
+   "type": null,
+   "required": true,
+   "line": 658
+  }
+ },
+ "absent_from_base": [
+  "add_norm",
+  "anneal",
+  "anneal_gate",
+  "aux_fade",
+  "aux_hold",
+  "aux_nopass",
+  "aux_reweight",
+  "aux_step",
+  "cache_lower",
+  "cot_eval_bs",
+  "csr",
+  "eval_only",
+  "excl_min_n",
+  "fast_add",
+  "gf_alpha",
+  "gf_lamb",
+  "grokfast",
+  "iit",
+  "iit_nmax",
+  "iit_tau",
+  "k_window",
+  "keep_ckpt_steps",
+  "kmatch_impl",
+  "kprimes",
+  "mem_layer",
+  "n_slots",
+  "path_indep",
+  "probe_loss_every",
+  "scratch",
+  "warmup"
+ ],
+ "n_absent": 30,
+ "TEXT_NEUTRAL_NEW_raw_defaults": {
+  "n_slots": 8,
+  "anneal": "",
+  "probe_loss_every": 0,
+  "mem_layer": 6,
+  "cache_lower": false,
+  "anneal_gate": "",
+  "csr": "",
+  "keep_ckpt_steps": "",
+  "iit": "",
+  "iit_tau": 1,
+  "iit_nmax": 0,
+  "grokfast": "",
+  "gf_alpha": 0.98,
+  "gf_lamb": 2.0,
+  "cot_eval_bs": 64,
+  "eval_only": false,
+  "aux_step": 0.0,
+  "aux_fade": "36000,48000",
+  "kmatch_impl": "masked",
+  "add_norm": "",
+  "aux_nopass": false,
+  "aux_reweight": false,
+  "aux_hold": false,
+  "kprimes": "",
+  "path_indep": false,
+  "excl_min_n": 1,
+  "scratch": "",
+  "warmup": 100,
+  "k_window": "",
+  "fast_add": false
+ },
+ "absent_covered_by_S213_META": [
+  "keep_ckpt_steps"
+ ],
+ "S213_META": [
+  "arch",
+  "auto_micro",
+  "ckpt_every",
+  "cuda_version",
+  "cudnn_version",
+  "device",
+  "eval_bs",
+  "image_tag",
+  "keep_ckpt_steps",
+  "mem_budget",
+  "mem_check",
+  "micro",
+  "mode",
+  "out",
+  "python_version",
+  "resume",
+  "stop_at",
+  "time_steps",
+  "torch_version",
+  "train_driver",
+  "train_gpu"
+ ],
+ "runtime_assigned_attrs_not_in_parser": [
+  "excl_survive_by_n",
+  "task"
+ ],
+ "info_extra_keys": [
+  "train_gpu",
+  "train_driver",
+  "hostprobe_sps",
+  "format",
+  "<env_info() keys>",
+  "aux_decoder (only if aux_step)"
+ ],
+ "base_keys_not_in_parser": [
+  "cuda_version",
+  "cudnn_version",
+  "format",
+  "image_tag",
+  "python_version",
+  "task",
+  "torch_version",
+  "train_driver",
+  "train_gpu"
+ ],
+ "base_values_of_those": {
+  "cuda_version": "12.4",
+  "cudnn_version": 90100,
+  "format": "[EOT, expr, ' ='] then ' e2 = e3 = ... = t' EOT (Feng; loss on all generated tokens)",
+  "image_tag": "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel",
+  "python_version": "3.11.10",
+  "task": "nested",
+  "torch_version": "2.5.1+cu124",
+  "train_driver": "595.71.05",
+  "train_gpu": "NVIDIA GeForce RTX 3090"
+ },
+ "base_textcot_overrides": {
+  "mem_write": null,
+  "write_mix_start": null,
+  "write_mix_end": null,
+  "think_k": 0
+ },
+ "parser_defaults_of_overridden": {
+  "mem_write": "top",
+  "write_mix_start": 2000,
+  "write_mix_end": 6000,
+  "think_k": 0
+ },
+ "base_values_vs_parser_defaults_present_keys": {
+  "arm": {
+   "base": "textcot",
+   "default": null
+  },
+  "mem_write": {
+   "base": null,
+   "default": "top"
+  },
+  "write_mix_start": {
+   "base": null,
+   "default": 2000
+  },
+  "write_mix_end": {
+   "base": null,
+   "default": 6000
+  },
+  "auto_micro": {
+   "base": true,
+   "default": false
+  },
+  "out": {
+   "base": "boxes/runs_fsq/s170_cot_s1",
+   "default": null
+  }
+ }
+}
