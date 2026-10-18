@@ -1,0 +1,57 @@
+{
+ "pool": "boxes/runs_fsq/s216_pool_r1_s2\\pool_r1.jsonl",
+ "n_records": 440000,
+ "sha256": "775278584e93ca90c556f6ffc07640a474069cfd6dd4ca94ba4f68faf1987242",
+ "excl_sizes": {
+  "test_n24": 23407,
+  "serial": 2200,
+  "s213_37_n9_24": 16000,
+  "gate1_s215": 8000,
+  "pool_r1_s215": 440000,
+  "gates:boxes/runs_fsq\\s216_gate1_s2\\gate_items.json": 8000,
+  "gates:boxes/runs_fsq\\s216_gate2_s1\\gate_items.json": 16000,
+  "pool:boxes/runs_fsq\\s216_pool_s1\\pool_r2.jsonl": 444000
+ },
+ "hits": {
+  "test_n24": 0,
+  "serial": 0,
+  "s213_37_n9_24": 0,
+  "gate1_s215": 0,
+  "pool_r1_s215": 0,
+  "gates:boxes/runs_fsq\\s216_gate1_s2\\gate_items.json": 0,
+  "gates:boxes/runs_fsq\\s216_gate2_s1\\gate_items.json": 0,
+  "pool:boxes/runs_fsq\\s216_pool_s1\\pool_r2.jsonl": 0
+ },
+ "per_n": {
+  "9": 110000,
+  "10": 110000,
+  "11": 110000,
+  "12": 110000
+ },
+ "per_n_meta": {
+  "9": 110000,
+  "10": 110000,
+  "11": 110000,
+  "12": 110000
+ },
+ "within_pool_dups": 0,
+ "draws_n": {
+  "9": 110592,
+  "10": 114688,
+  "11": 114688,
+  "12": 118784
+ },
+ "collide_n": {
+  "9": 0,
+  "10": 0,
+  "11": 0,
+  "12": 0
+ },
+ "dup_n": {
+  "9": 0,
+  "10": 0,
+  "11": 0,
+  "12": 0
+ },
+ "pass": true
+}

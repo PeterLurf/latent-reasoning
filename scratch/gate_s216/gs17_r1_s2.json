@@ -1,0 +1,12 @@
+{
+ "rc": 0,
+ "sec": 43,
+ "self_pool_line": [
+  "SELF_POOL boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl 440000 records, sha 775278584e93ca90"
+ ],
+ "memcheck": [
+  "MEMCHECK 3.791769504547119 2.7198638916015625"
+ ],
+ "note": "4060, micro / self_micro 16",
+ "pass": true
+}
