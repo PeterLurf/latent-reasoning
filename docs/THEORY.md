@@ -19584,6 +19584,16 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - What it traded was the memory channel's self-stabilisation (MEM-TRADED, §216) and, in s2, small-n K′24 stability (216-8). It was not the latents' causal role.
 - **§217 is closed.**
 
+**Note 218-10 (2026-10-18 17:15 EDT; implementation details, before any §218 eval output; no rule change).**
+- **Probe groups.** The 17-probe lockstep (17 copies of blocks 10–11 plus AdamW) OOMs on the 8 GB eval card, so langvb_eval trains probes in groups (`--probe_group G`, keys ordered by t then kind).
+  - Each group restarts the batch rng 22501 and so replays the identical batch sequence (same items, same order).
+  - Each probe has its own parameters. So a probe's training data, order and initialisation are the same as in the lockstep, and grouping is **equivalent by construction**.
+  - Plant z rngs restart per group (training) and per probe (held-out / test), which keeps each probe deterministic.
+  - G-EVMEM pins G for the heaviest probes at chunk 16. G goes into gate_evmem.json and the registered eval command, and `probe_groups` is recorded in eval_lvb.json.
+- **The rc 139 probe crash** in a CPU smoke was memory (the lockstep is ≈ 4 GB before activations), not a code fault. Experiments' CPU end-to-end ran the part to completion at OMP / MKL 2 threads.
+- **DIRECT contamination.** eval_direct.json carries contamination {test_gate_sig_hits, self_reuse} from DIRECT's own log.jsonl (`--parts panel,direct,contamination`).
+- **G-L10's restore-exact half** uses the trainer's ckpt_fingerprint.json at every checkpoint: sha256 of every model / optimiser tensor and the param groups, rng / rng_k / rng_s, the torch rng, stream band rngs, CurGate and the self counters. On resume it writes resume_check.json. A tampered np_rng was caught as diff ["rng/rng"].
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
