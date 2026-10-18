@@ -125,3 +125,25 @@ The numbers come from the brief. Arithmetic marked [derivation] is mine; its ass
 3. **Loop window / overthinking.** If inference recurrence has to grow with n, expect a finite window (Yang Prop 1; Kohli Fig 8). Sweep the loop count at n 17–24 instead of using one fixed count. The training loop budget relative to hardness sets the margin (Yang Thm 2; Kohli §6.3).
 4. **Seed variance** may decide the H_shift/H_full reading if only one seed is run (Kuo §4.1).
 5. **Collapse after many self-training rounds** is documented for RL with self-reward (Shafayat), not for filtered SFT with gold anchors as Lee uses. The risk is low over 2 rounds, but track in-support (n ≤ 12) accuracy every round.
+
+## Addendum (2026-10-18): do the cited theorems give the margin as "proportional to trained length", and with what constant? (Audit, after §216 R2-s1)
+- **The data, per Audit:**
+  - n50 / support = 1.29 / 1.29 / 1.28 for D3-T / R1 / R2 (n50 = 10.3 / 15.5 / 20.5 at support 8 / 12 / 16): a constant ratio, i.e. H_prop.
+  - The theorems were re-read in full text (pdftotext).
+- **Huang et al. 2511.07378 (THEOREM; one-layer NoPE transformer, LEGO state tracking, gradient descent):**
+  - **Thm 1.2 (informal), symmetry actions:** "standard CoT training only generalizes to a **constant factor** of the training length". The constant is not stated.
+    - For simply transitive actions, generalisation reaches d^c (0 < c < 1), which is not proportional.
+  - **Thm 5.1:** a model trained progressively on lengths L = 1..2^k (Algorithm 2, self-labelled stages) solves length 2^{k+1} with accuracy **1 − 1/poly(d)**. The "constant-factor length generalization" is instantiated as a **factor of 2 at near-perfect accuracy**.
+  - It is a **sufficient bound** under its Assumptions 3.1–3.5 and 5.1, not a fitted constant.
+  - **Verdict:** "proportional to the trained length" is correct as a multiplicative-margin statement. The only explicit constant is **≥ 2× at accuracy → 1**.
+  - That isn't comparable to our 1.28, which is measured at the 50% crossing. Our 90% crossings were about 1.14–1.16 (§215 base / round 1). Ours is well below Huang's factor, as expected when his assumptions (one layer, NoPE, LEGO) don't hold.
+- **Yang et al. 2610.14456 (THEOREM; looped transformer, graph connectivity, population gradient flow):**
+  - The margin is in **loop depth relative to training hardness**, not input length: a finite window T < T_max(G; K), where T_max involves log_3 of a 3^K-dependent term (Eq. 8).
+  - The extra depth is Θ(H·3^{K−H}). It is proportional to the training hardness H **only when K − H = O(1)**, and the constant is hidden in the Θ.
+  - **Verdict:** the note's wording ("a constant fraction of the trained length **or hardness**") is acceptable for Yang only with the qualifier "hardness, in depth, when K − H = O(1)". **It gives no numerical constant.**
+- **For contrast, the empirical precedent is additive, not proportional:** Lee 2502.01612's reverse-addition margin stays at about 3–5 digits as lengths grow from 10 to 100 (ratio falling toward ≈ 1.05).
+  - Our constant 1.28 ratio across supports 8 / 12 / 16 is the multiplicative pattern the two theorems predict qualitatively, **not** Lee's additive one.
+- **Bottom line:**
+  - H_prop is supported qualitatively by Huang (a constant-factor statement) and, with qualifiers, by Yang.
+  - **Neither supplies a constant comparable to ≈ 1.28.** Huang's explicit factor 2 is a near-perfect-accuracy sufficient bound in a different model; Yang's constant is unspecified.
+  - Treat 1.28 as an empirical in-house constant. A prediction for round 3 (n50 ≈ 1.28 × the round-3 support) rests on the observed ratio, not on a theorem.
