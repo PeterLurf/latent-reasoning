@@ -72,6 +72,9 @@ def cell(tag, d):
     need = [k for k in ("acc_n2", "acc_k", "probe", "test_meta", "vswap", "stall", "stepcap") if k not in ev]
     if need:
         o["label"] = "pending (eval_vb partial: %s)" % need; return o
+    miss = [f for f in ("eval_steppos.json", "eval_lfk.json", "eval_hist24.json", "eval_selfdepth.json") if jl(d, f) is None]
+    if miss:                                                                # note 215-7: a missing registered file is pending, never a pass (LABEL-AUDIT / CONTAMINATED
+        o["label"] = "pending (missing %s)" % miss; return o                # read eval_selfdepth; LENGTH-FREE / KEEPS read steppos, lfk, hist24)
     a, K = ev["acc_n2"], ev["acc_k"]; last = max(recs)
     dead = last < FULL
     reuse = max((r.get("self_reuse") or 0) for r in recs.values())

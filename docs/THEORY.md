@@ -18750,6 +18750,11 @@ The evals (D4_v1 §6, plus eval_stepbyt via scratch/s214_post_stepbyt.sh, d3cfda
 - A §214 negative can't separate "pausing doesn't move the stop" from "less time at n ≤ 8 / later entry".
 - **Any D4 follow-up gates the curriculum on plain steps only**, as §215 does for self items, and logs plain-only answer_ce.
 
+**Note 215-7 (2026-10-18 00:39 EDT; a score_s215 robustness fix, DISCLOSED; made after FT-SELF's output was read and before FT-CTRL's last parts exist; found by SD2's red team, M5).**
+- **Bug.** cell() read eval_selfdepth.json with `or {}`. A cell whose eval_selfdepth.json was missing therefore passed LABEL-AUDIT (`noisy` False) and CONTAMINATED (`pool_test_hits` 0) instead of reading pending. LENGTH-FREE and KEEPS-SELF-STAB likewise read a missing eval_steppos / eval_lfk / eval_hist24 as not met, not pending.
+- **Fix.** After the eval_vb check, cell() returns "pending (missing [...])" unless eval_steppos, eval_lfk, eval_hist24 and eval_selfdepth all exist. It reads nothing else first. No rule, threshold or reading changes. A registered file that never lands still fails by rule b once the chain is declared done, as before.
+- **Check.** FT-SELF's cell() output is identical to the committed theory/results/score_s215.json SELF block (all four files present). FT-CTRL reads "pending (missing ['eval_selfdepth.json'])", so the §4.4 PAIR rows read UNREAD until its re-run lands. The results file was not rewritten.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
