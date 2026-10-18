@@ -19130,6 +19130,10 @@ Theory recommends (b). The censor is on provenance metadata, not on a recipe or 
 
 Neither is a scorer fault.
 
+**Note 217-1 (2026-10-18 11:58 EDT; Audit's review asks, before any §217 output; reporting only, no rule change).** score_s217 also reports, descriptively:
+1. **The competent band B per model**, listing which n qualify and their a(n). Beside each model's pooled CAUSAL-DEEP, a **per-n comparison on the n where two models' bands overlap**: follow_ii, own_ii and STALL side by side at the same n. A wider band is tested on more n, so pooled readings are not compared across models; only the overlap is.
+2. **Clean-pair counts per n**, and the clean share = clean / candidates, for every model and every n 9–20. Thinness near a band edge is visible. The registered exclusion rule (< 100 clean pairs or < 500 STALL items) is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
