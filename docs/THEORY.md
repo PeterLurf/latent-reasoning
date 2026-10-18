@@ -19141,6 +19141,34 @@ Neither is a scorer fault.
 - **Fields** match theory/score_s217.py's contract. The module's own gate terms / pass are kept as a cross-check of the scorer's gate.
 - Audit reviews the module before any model output.
 
+**Note 216-8 (2026-10-18 12:41 EDT; the s2 lineage stops at round 1: R1-s2 is FT-DIVERGED).** s216_r1_s2, b314, RTX 3090, 12k steps from s216_d3t_s2 on its own D3-T s2-labelled n 9–12 pool. Its eval_vb.json is from the RTX 3070, fp32, bs 32.
+- **a_24(n) at n 1–8:** 0.921 / 0.973 / 0.995 / 0.995 / 1.000 / 0.999 / 1.000 / 1.000. **a_24(1) = 0.921 < 0.97 ⇒ FT-DIVERGED** (SELFDEPTH_v1 §5.2, a rule-b censor).
+- **Consequences:**
+  - Every R1-s2 reading fails.
+  - The round-2 condition (SD2 §2.4) fails, so **the s2 lineage stops at round 1**.
+  - b315 (R2-s2) is not run; $0 spent on it.
+  - **The SD2 ×2 row reads FAIL** ("lineage stopped at round 1").
+  - This was pre-stated as likely in 216-3: P(FT-DIVERGED in s2) ≈ 0.3.
+- **R1-s2's round-1 numbers** (descriptive only, censored cell):
+  - acc_n2 n 9–12: 1.000 ×4.
+  - acc_n2 n 13–16: 0.992 / 0.878 / 0.612 / 0.271, M 0.688 (FT-SELF s1: 0.999 / 0.893 / 0.633 / 0.344, M 0.717).
+  - So the GROW-like depth pattern replicates on seed 2 descriptively. The registered label is FAILURE (FT-DIVERGED).
+- **Pattern across both lineages (descriptive; a C6 finding).** Self-item fine-tuning lowers long-run stability on the shortest problems:
+
+| model | a_24(1) | a_24(2) |
+|---|---|---|
+| D3-T s1 | 1.000 | 1.000 |
+| FT-SELF | 0.990 | 1.000 |
+| R2-s1 | 0.995 | 1.000 |
+| FT-CTRL (plain FT) | 1.000 | 1.000 |
+| D3-T s2 | 0.994 | 0.987 |
+| R1-s2 | **0.921** | 0.973 |
+
+  - FT-CTRL stays at 1.000, so the drop comes from the self items, not the fine-tune.
+  - It lands on a base that was already at the edge (216-3).
+- **Remaining work:** R1-s2's other registered parts run on the 3070 for a complete record. score_s216 is re-run with `--final s2` once they land.
+- SD2 stands as **SD2-C2 in 1 of 2 lineages (s1)**. A robust depth recipe needs to protect small-n K′24 stability during self-training. That is the next design constraint.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
