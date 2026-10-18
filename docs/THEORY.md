@@ -19358,6 +19358,20 @@ The docstring of score_s217 now names boxes/vbank_causal.py (cosmetic).
 - (b) **Outside R2's band, STALL weakens:** 0.841 at n 19 and 0.641 at n 20 (follow_ii 0.996 / 0.986).
 - (c) **This answers L2's question for s1:** self-training bought depth 8 → 12 → 16 **without** eroding causal slot use at the new depths. What did erode was the memory channel's self-stabilisation (MEM-TRADED, §216).
 
+**Note 218-2 (2026-10-18 15:06 EDT; two implementation rulings from Audit's G-L13 review, before any §218 training; they implement the registered law and change no rule).**
+
+1. **A2 / A2-CTRL start at A1's final curriculum stage** whenever `--init_from` is set. v1 §2.4 registers "A1's final-stage law".
+   - As built, langvb.py restarted CurGate at stage 0 under init_from. That would have re-trained D 3–4.
+   - It would also have broken A2 ≡ A2-CTRL: their bins close at different steps because self steps skip gate_update, so the plain streams would diverge.
+   - The fix sets GATE.stage to final for init_from runs. This is the registered law, not a change. `cur` stays out of A2's ARGS-DIFF list.
+   - G-L19's plain_hash identity (steps 1..200) and G-L21 check it.
+2. **R2 weighting on sparse (SOUND-ONLY) self targets** (langvb.py l.272) is the vb_loss rule generalised to sparse target sets:
+   - a pass contributes only if it has R2 targets;
+   - its term is 0.5·tc + 0.5·tu when both changed and unchanged targets exist, else the one present (tc or tu);
+   - the item's R2 is the mean over contributing passes.
+   - On dense gold REACH targets every pass has both kinds, so it equals vbank.vb_loss exactly.
+   - Applied literally to SOUND-ONLY targets (IN on marked slots only, no OUT), vb_loss would halve a first-mark pass (0.5·tc with tu = 0) and dilute the mean with target-free passes. That is an artefact of sparsity, not a design choice. Intended as built; documented in the docstring.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
