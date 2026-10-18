@@ -1,0 +1,39 @@
+{
+ "R1": {
+  "slva_wq": 39.7021598815918,
+  "slva_wk": 50.013675689697266,
+  "rec.weight": 0.0,
+  "g.p.h_7_attn_c_attn_weight": 147.0237274169922,
+  "g.p.h_10_attn_c_attn_weight": 1.5234218835830688,
+  "beta": 6.073342800140381
+ },
+ "R2": {
+  "slva_wq": 2.7333431243896484,
+  "slva_wk": 3.5207526683807373,
+  "rec.weight": 1.2801679372787476,
+  "g.p.h_7_attn_c_attn_weight": 11.224873542785645,
+  "g.p.h_10_attn_c_attn_weight": 1.7037742736647488e-06,
+  "beta": 0.2805003523826599
+ },
+ "decorators": {
+  "rec_targets": [],
+  "vb_loss": [],
+  "main": []
+ },
+ "mass_stats": {
+  "chg": [
+   8.250608682632446,
+   118
+  ],
+  "copy": [
+   341.35069942474365,
+   750
+  ]
+ },
+ "Ks": [
+  20,
+  16
+ ],
+ "pass": true,
+ "device": "NVIDIA GeForce RTX 4060"
+}
