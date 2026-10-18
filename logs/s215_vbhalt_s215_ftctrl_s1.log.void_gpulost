@@ -1,0 +1,20 @@
+FIXTURE {'content': 300, 'collapse': 300, 'stuck1': 300, 'clockhold': 300, 'stall_shift': 300, 'n': 300, 'pass': True}
+HALT n 1 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 2 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 3 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 4 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 5 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 6 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 7 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 8 {'exact': 1.0, 'premature': 0.0, 'never': 0.0, 'gprog': 0.0, 'acc_halt': 1.0, 'acc_n2': 1.0}
+HALT n 9 {'exact': 0.48, 'premature': 0.0, 'never': 0.003, 'gprog': 0.517, 'acc_halt': 0.478, 'acc_n2': 0.938}
+HALT n 10 {'exact': 0.011, 'premature': 0.0, 'never': 0.021, 'gprog': 0.967, 'acc_halt': 0.012, 'acc_n2': 0.582}
+HALT n 11 {'exact': 0.0, 'premature': 0.0, 'never': 0.077, 'gprog': 0.923, 'acc_halt': 0.0, 'acc_n2': 0.258}
+HALT n 12 {'exact': 0.0, 'premature': 0.0, 'never': 0.088, 'gprog': 0.912, 'acc_halt': 0.0, 'acc_n2': 0.157}
+HALT n 13 {'exact': 0.0, 'premature': 0.0, 'never': 0.141, 'gprog': 0.859, 'acc_halt': 0.0, 'acc_n2': 0.107}
+HALT n 14 {'exact': 0.0, 'premature': 0.0, 'never': 0.203, 'gprog': 0.797, 'acc_halt': 0.0, 'acc_n2': 0.108}
+[W1017 22:56:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 136314880 bytes (free: 0, total: 8589410304).
+HALT n 15 {'exact': 0.0, 'premature': 0.0, 'never': 0.286, 'gprog': 0.714, 'acc_halt': 0.0, 'acc_n2': 0.076}
+HALT n 16 {'exact': 0.0, 'premature': 0.0, 'never': 0.349, 'gprog': 0.651, 'acc_halt': 0.0, 'acc_n2': 0.089}
+STALL n 4 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 2}
+STALL n 5 {'qualifying': 1000, 'shift': 1.0, 'frozen1': 0.0, 'other_never': 0.0, 'at_n': 0.0, 'ge_n2': 0.0, 'gprog': 0.0, 'other': 0.0, 'stall_t': 3}
