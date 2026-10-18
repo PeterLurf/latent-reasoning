@@ -94,6 +94,7 @@ SMOKE_LABEL = "SMOKE: not a registered reading"
 # note 218-4 (R1): DIRECT-SYM / A1 / B1 are compared with their queued args frozen by sha256 in a Theory note before launch: FROZEN_ARGS[cell] =
 # (path, sha256) (path absolute or relative to ROOT), else <cell>/args_frozen.json (sha reported, unanchored); missing -> pending. Exact match except META
 # (and the args_ref content rule). A2 / A2-CTRL keep v1's references (A2 vs A1's args, A2-CTRL vs A2's).
+FROZEN_NEW_REQUIRED = {"deterministic": False}   # note 218-14 (Audit): test-only flag added after the 218-9 freeze; True changes algorithms -> ARGS_BAD
 FROZEN_ARGS = {"direct": ("scratch/s218_args_ref_direct.json", "f494703812966edf4ae08cf2e0b12bd20b5bb4d68dc26bc8ad09ddf4367905d0"),   # Note 218-9 (cee76ef6)
                "a1": ("scratch/s218_args_ref_a1.json", "33af702ff631d798e83847443b9643cef4991d117285051a51d5ca5561e34e1d"),
                "b1": None}                                                  # B1: pending until frozen
@@ -748,9 +749,13 @@ def args_diff(k):
         return {"status": "MISSING", "ok": None, "why": "args.json missing (%s)" % ("cell" if a is None else refname)}
     ar = args_ref_check(a, b); allow = set(ARGS_ALLOW[k]) | ({"args_ref"} if ar["ok"] else set())
     shared = {x: (b[x], a[x]) for x in a if x in b and x not in META and x not in allow and a[x] != b[x]}
-    new = sorted(x for x in a if x not in b and x not in META and x not in allow)
+    post_freeze = FROZEN_NEW_REQUIRED if ARGS_REF.get(k) == "FROZEN" else {}   # note 218-14: keys added to the trainer after the 218-9 freeze
+    new = sorted(x for x in a if x not in b and x not in META and x not in allow and x not in post_freeze)
     gone = sorted(x for x in b if x not in a and x not in META and x not in allow)
     req = {x: (b.get(x), a.get(x)) for x in ARCH_KEYS if a.get(x) != b.get(x)}   # a swapped architecture never passes as META (Note 218-9)
+    for x, v in post_freeze.items():                                       # required value; absent-in-ref accepted for these keys only
+        if x in a and a[x] != v:
+            req[x] = (v, a[x])
     for x, v in (ARGS_MUST.get(k) or {}).items():
         got = a.get(x)
         if v is None:

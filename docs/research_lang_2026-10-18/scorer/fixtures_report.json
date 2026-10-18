@@ -1,11 +1,11 @@
 {
- "generated": "2026-10-18 17:48:10",
+ "generated": "2026-10-18 18:55:37",
  "scorer": "C:\\Users\\peter\\AppData\\Local\\Temp\\claude\\D--\\2f0034d5-4d85-51eb-880b-bab41adb0dff\\scratchpad\\s218_scorer\\score_s218.py",
  "registered": "docs/research_lang_2026-10-18/LANG_v1.md @ 83f2dea4 (v1 + Addendum 1)",
- "n_cases": 88,
- "n_pass": 88,
+ "n_cases": 89,
+ "n_pass": 89,
  "n_fail": 0,
- "sec": 212.4,
+ "sec": 251.2,
  "cases": [
   {
    "case": "VB-C1-L: pure serial (person-tracking S-NAME, question-conditional) passes every primary",
@@ -30,7 +30,7 @@
      "n_clean": 900
     }
    },
-   "sec": 1.03
+   "sec": 1.32
   },
   {
    "case": "A2 SD-SELF-L and SD-C2-L (A2 + required A2-CTRL)",
@@ -42,7 +42,7 @@
     "label": "SD-C2-L | VB-C1-L True | ABSORB MET | D13-16 MET | MARGIN MET | BEATS-CTRL MET | MEM KEEPS",
     "A2_GO": true
    },
-   "sec": 1.01
+   "sec": 1.23
   },
   {
    "case": "B1 VB-C1-GSM (synthetic: 60 base items with CF steps j >= 3)",
@@ -54,7 +54,7 @@
     "label": "VB-C1-GSM | B1 120k | accuracy BEATS-CODI20",
     "B_GO": true
    },
-   "sec": 1.05
+   "sec": 1.34
   },
   {
    "case": "BEATS-CODI20: exact McNemar on a constructed pair table (b 120, c 0)",
@@ -69,7 +69,7 @@
     "delta": 0.09097801364670205,
     "p_one_sided": 7.52316384526264e-37
    },
-   "sec": 1.05
+   "sec": 1.17
   },
   {
    "case": "ONESHOT-L (PROBE(2) >= 0.8 at D 8)",
@@ -80,7 +80,7 @@
    "observed": {
     "label": "VB-C1-L | labels ['ONESHOT_L', 'LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L"
    },
-   "sec": 1.34
+   "sec": 1.57
   },
   {
    "case": "LOSES-ONE-PASS (not DEEP-L, PROBE-GAIN < 0.15)",
@@ -92,7 +92,7 @@
     "label": "not VB-C1-L (DEEP_L NOT MET, PROBE_GAIN_L NOT MET) | labels ['LOSES_ONE_PASS', 'LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L",
     "gain": 0.039999999999999925
    },
-   "sec": 0.47
+   "sec": 0.57
   },
   {
    "case": "COUNT-KEYED (STALL recovery 0.5)",
@@ -104,7 +104,7 @@
     "label": "not VB-C1-L (NO_CLOCK_L NOT MET) | labels ['COUNT_KEYED', 'LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L",
     "stall": 0.5
    },
-   "sec": 0.53
+   "sec": 0.6
   },
   {
    "case": "NO-ENTRY (plain_cand_ce never <= 0.35 in two consecutive 1k bins)",
@@ -115,7 +115,7 @@
    "observed": {
     "label": "FAILURE (NO-ENTRY (plain_cand_ce never <= 0.35 in two consecutive 1k bins); rule b) | labels ['LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L"
    },
-   "sec": 0.4
+   "sec": 0.5
   },
   {
    "case": "dead run (log short of 24,000; and a guard stop)",
@@ -127,7 +127,7 @@
     "short": "FAILURE (dead (last step 20000 < 24000); rule b) | labels ['LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L",
     "guard": "FAILURE (dead (last step 24000 < 24000, guard stop); rule b) | labels ['LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L"
    },
-   "sec": 0.28
+   "sec": 0.31
   },
   {
    "case": "a G-L0-failed band (test stream D 6, LA(1) chase 0.61)",
@@ -141,7 +141,7 @@
      6
     ]
    },
-   "sec": 0.14
+   "sec": 0.13
   },
   {
    "case": "G-L0 CODE-BUG (uBIDIR 0.51 in the pool stream at D 10)",
@@ -161,7 +161,7 @@
      ]
     ]
    },
-   "sec": 1.04
+   "sec": 1.25
   },
   {
    "case": "G-L0-failed band inside A2's range (test stream D 14)",
@@ -177,7 +177,7 @@
     "MARGIN_GROWS_L": "UNREADABLE (G-L0-failed band [14])",
     "BEATS_CTRL_L": "UNREADABLE (G-L0-failed band [14])"
    },
-   "sec": 1.07
+   "sec": 1.31
   },
   {
    "case": "CF cell with 420 exposed pairs (> the registered 400)",
@@ -191,7 +191,7 @@
     ],
     "status": "MET"
    },
-   "sec": 1.44
+   "sec": 1.55
   },
   {
    "case": "A2-CTRL at --final with A2 GO undecided and never launched",
@@ -202,7 +202,7 @@
    "observed": {
     "ctrl": "UNREAD (A2 GO not established (['GATE_1_L']); never launched; never a pass)"
    },
-   "sec": 2.31
+   "sec": 2.71
   },
   {
    "case": "empty C1 band (D*_fresh 7)",
@@ -217,7 +217,7 @@
     "d_star": 7,
     "probe_gain": "UNREADABLE (EMPTY-C1-BAND (band [8]; v1 §2.6))"
    },
-   "sec": 0.52
+   "sec": 0.59
   },
   {
    "case": "(ii') with 99 exposed clean pairs",
@@ -229,7 +229,7 @@
     "ii_prime": "UNREADABLE (99 < 100 exposed clean pairs)",
     "n_clean": 99
    },
-   "sec": 0.62
+   "sec": 0.83
   },
   {
    "case": "(i') per-D exclusion (< 50 exposed clean pairs at D 5)",
@@ -246,7 +246,7 @@
      "4": "no admissible t <= D - 2 (v1 §4.1 exposure table)"
     }
    },
-   "sec": 1.53
+   "sec": 1.64
   },
   {
    "case": "PROBE-INVALID (PLANT lin 0.85 at t 1)",
@@ -258,7 +258,7 @@
     "PROBE_GAIN_L": "UNREADABLE (PROBE-INVALID(1) (PLANT lin 0.85 / xor 0.95 < 0.90))",
     "SERIAL_ONSET_L": "UNREADABLE (PROBE-INVALID([1]))"
    },
-   "sec": 0.62
+   "sec": 0.72
   },
   {
    "case": "FD-INVALID (fd_valid s3 0.85)",
@@ -269,7 +269,7 @@
    "observed": {
     "np": "UNREADABLE (FD-INVALID (['lin', 'mlp']: fd_valid s3 / s4 or fd_plant < 0.90))"
    },
-   "sec": 0.67
+   "sec": 0.74
   },
   {
    "case": "PaR-C precompute-and-carry: (ii') follow 1.0, (i') own 1.0, FD 0.95 at k >= 3, STALL 1.0, ON slope 1.0, CF t* = 1",
@@ -289,7 +289,7 @@
      "NO_PRECOMPUTE_L": "NOT MET"
     }
    },
-   "sec": 0.64
+   "sec": 0.79
   },
   {
    "case": "PaR-C, probe-undetectable variant: FD 0.5, (i') follow 1.0, CF t* = 1",
@@ -308,7 +308,7 @@
      "NO_PRECOMPUTE_L": "MET"
     }
    },
-   "sec": 0.63
+   "sec": 0.74
   },
   {
    "case": "ALL-PERSONS serial: PERSON own 1.0, (ii') follow 1.0, (i') follow 1.0, FD 0.5, PLANT valid, CF t* = j",
@@ -319,7 +319,7 @@
    "observed": {
     "label": "VB-C1-L | labels ['ALL_PERSONS_SIGNATURE', 'LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L"
    },
-   "sec": 1.42
+   "sec": 1.74
   },
   {
    "case": "ALL-ANCHORS serial: (ii') own 1.0, (i') own 1.0, RESET recovery 0.5, CF t* = j",
@@ -330,7 +330,7 @@
    "observed": {
     "label": "not VB-C1-L (SERIAL_STEP_L NOT MET) | labels ['ANCHOR_TAGGED', 'LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L"
    },
-   "sec": 0.64
+   "sec": 0.77
   },
   {
    "case": "recompute-from-V_0: (ii') own 1.0, (i') own 1.0, RESET recovery 1.0, CF t* = D",
@@ -341,7 +341,7 @@
    "observed": {
     "label": "not VB-C1-L (SERIAL_STEP_L NOT MET, CF_L NOT MET) | labels ['CF_RECOMPUTE', 'RECOMPUTE_L'] | MEM KEEPS-SELF-STAB-L"
    },
-   "sec": 0.61
+   "sec": 0.74
   },
   {
    "case": "HISTORY-READ ((ii) own 0.6, (ii') follow 1.0)",
@@ -352,7 +352,7 @@
    "observed": {
     "ii_own": 0.6
    },
-   "sec": 1.39
+   "sec": 1.71
   },
   {
    "case": "A2 MARGIN-GROWS fail (A2 D 13-16 0.82 < A1 D 9-12 0.80 + 0.10)",
@@ -368,7 +368,7 @@
     "MARGIN_GROWS_L": "NOT MET",
     "BEATS_CTRL_L": "MET"
    },
-   "sec": 1.78
+   "sec": 2.07
   },
   {
    "case": "A2-CTRL eval missing: pending, and at --final a2 -> not SD-C2-L (SD-SELF-L still read)",
@@ -380,7 +380,7 @@
     "pending": "pending (missing ['lvb_ctrl_s1/eval_lvb.json (A2-CTRL, for SD-C2-L)'])",
     "final": "SD-SELF-L (in support; not C2) | VB-C1-L True | ABSORB MET | D13-16 MET | MARGIN MET | BEATS-CTRL UNREADABLE (A2-CTRL PENDING (pending (missing ['lvb_ctrl_s1/eval_lvb.json'])): SD-C2-L not met (v1 §4.1; RESOLVED R9)) | MEM KEEPS"
    },
-   "sec": 2.57
+   "sec": 3.24
   },
   {
    "case": "A2-CTRL censored (dead) -> BEATS-CTRL-L not met",
@@ -392,7 +392,7 @@
     "ctrl": "FAILURE (dead (last step 8000 < 12000); rule b)",
     "a2": "SD-SELF-L (in support; not C2) | VB-C1-L True | ABSORB MET | D13-16 MET | MARGIN MET | BEATS-CTRL UNREADABLE (A2-CTRL FAIL (FAILURE (dead (last step 8000 < 12000); rule b)): SD-C2-L not met (v1 §4.1; RESOLVED R9)) | MEM KEEPS"
    },
-   "sec": 1.21
+   "sec": 1.49
   },
   {
    "case": "MEM-TRADED-L in A1 (STAB_self 0.3): later stages need the user's explicit OK",
@@ -408,7 +408,7 @@
      "SCORED"
     ]
    },
-   "sec": 1.58
+   "sec": 1.8
   },
   {
    "case": "MEM-TRADED-L in A2 only: B1 needs the user's explicit OK",
@@ -431,7 +431,7 @@
      ]
     }
    },
-   "sec": 2.35
+   "sec": 2.65
   },
   {
    "case": "CONTAMINATED (pool signature hit; and self_reuse > 0)",
@@ -443,7 +443,7 @@
     "pool": "FAILURE (CONTAMINATED (pool: sig_hits {'test': 1, 'gate': 0, 'probe': 0}, gold_key_hits 0); rule b) | VB-C1-L False | ABSORB MET | D13-16 MET | MARGIN MET | BEATS-CTRL MET | MEM KEEPS",
     "reuse": "FAILURE (CONTAMINATED; rule b) | VB-C1-L False | ABSORB MET | D13-16 MET | MARGIN MET | BEATS-CTRL MET | MEM KEEPS"
    },
-   "sec": 2.3
+   "sec": 2.93
   },
   {
    "case": "POOL-SHORT (D 12 kept 100,000 at the 530,000 draw cap); pool incomplete below the cap",
@@ -455,7 +455,7 @@
     "a2": "UNREAD (A2 not GO: ['POOL_NOT_SHORT', 'POOL-SHORT: kept < 106000 at D [12] at the draw cap (v1 §2.4)']; never a pass)",
     "incomplete": "pending (missing [\"A2 GO undecided (['POOL_NOT_SHORT'])\", 'A2-CTRL cell pending (SD-C2-L)', 'pool incomplete (kept < 106000, draws < 530000 at D [12])'])"
    },
-   "sec": 1.81
+   "sec": 2.31
   },
   {
    "case": "LABEL-BUG (one wrong label in LABEL-AUDIT-L; and one in GATE-1-L with A2 launched)",
@@ -467,7 +467,7 @@
     "audit": "VOID (LABEL-BUG: label_audit n_wrong 1 / n_unsound None, GATE-1-L wrong 0 {'n_tie': 0, 'n_unsound': 0}, pool n_tie None; A2 voided and re-gated; rule b)",
     "gate": "VOID (LABEL-BUG at GATE-1-L: 1 wrong labels; A2 voided and re-gated; rule b)"
    },
-   "sec": 2.48
+   "sec": 3.14
   },
   {
    "case": "Audit 2a LABEL-BUG: a GATE-1-L tie (A2 launched), an unsound audited record, a tie in the pool",
@@ -478,7 +478,7 @@
    "observed": {
     "tie": "VOID (LABEL-BUG at GATE-1-L: 0 wrong labels; A2 voided and re-gated; rule b)"
    },
-   "sec": 4.4
+   "sec": 5.3
   },
   {
    "case": "GATE-1-L fails (kept yield 0.15 < 0.2) / choice not the N9 rule's",
@@ -505,7 +505,7 @@
      ]
     }
    },
-   "sec": 2.77
+   "sec": 3.13
   },
   {
    "case": "PASS1-PRECOMPUTE-GSM (PROBE(1) == acc)",
@@ -516,7 +516,7 @@
    "observed": {
     "label": "not VB-C1-GSM (PROBE_GAIN_GSM NOT MET) | B1 120k | accuracy BEATS-CODI20"
    },
-   "sec": 1.05
+   "sec": 1.28
   },
   {
    "case": "ONE-PASS-CHAIN-L (linear FD(1, k>=3) 0.55 >= 0.8 x FD(k, k) 0.6)",
@@ -527,7 +527,7 @@
    "observed": {
     "nop": "NOT MET"
    },
-   "sec": 1.07
+   "sec": 1.3
   },
   {
    "case": "FD(k, k) 0.2 (GSM8K)",
@@ -538,7 +538,7 @@
    "observed": {
     "nop": "UNREADABLE (FD(k, k) < 0.3 pooled for ['lin', 'mlp'] (UNREADABLE, never a vacuous pass))"
    },
-   "sec": 1.16
+   "sec": 1.36
   },
   {
    "case": "accuracy: delta 0.035 with McNemar p ~0.07",
@@ -553,7 +553,7 @@
     "delta": 0.034874905231235785,
     "p_one_sided": 0.07000365878219579
    },
-   "sec": 2.24
+   "sec": 2.73
   },
   {
    "case": "accuracy BELOW (delta -0.045) and MATCHES (delta +0.008)",
@@ -571,7 +571,7 @@
      0.0075815011372251705
     ]
    },
-   "sec": 2.33
+   "sec": 2.86
   },
   {
    "case": "not admitted (A1; B1; A2-CTRL)",
@@ -586,7 +586,7 @@
     "ctrl": "UNREAD",
     "b1": "UNREAD"
    },
-   "sec": 1.21
+   "sec": 1.48
   },
   {
    "case": "CF counter-model: serial t* = j",
@@ -597,7 +597,7 @@
    "observed": {
     "status": "MET"
    },
-   "sec": 1.08
+   "sec": 1.21
   },
   {
    "case": "CF counter-model: serial with half the hops looked ahead (t* in {j-1, j}) and 10 % readout flips",
@@ -611,7 +611,7 @@
     "spearman_within_D": 0.7073369570657957,
     "n_clean": 1191
    },
-   "sec": 1.36
+   "sec": 1.78
   },
   {
    "case": "CF counter-model: precompute-and-carry (answer y at every t >= 1)",
@@ -623,7 +623,7 @@
     "share": 0.0,
     "rho": 0.0
    },
-   "sec": 0.61
+   "sec": 0.75
   },
   {
    "case": "CF counter-model: recompute from input (y' at every t < D)",
@@ -634,7 +634,7 @@
    "observed": {
     "share": 0.0
    },
-   "sec": 0.66
+   "sec": 0.75
   },
   {
    "case": "CF counter-model: D-keyed clock (t* = D - 2)",
@@ -646,7 +646,7 @@
     "share": 0.6,
     "rho": 0.0
    },
-   "sec": 0.65
+   "sec": 0.78
   },
   {
    "case": "CF counter-model: pointer doubling (t* = ceil(j / 2))",
@@ -657,7 +657,7 @@
    "observed": {
     "share": 0.3333333333333333
    },
-   "sec": 0.67
+   "sec": 0.81
   },
   {
    "case": "CF: 99 exposed clean pairs in the decisive cells (others < 30, excluded and listed)",
@@ -669,7 +669,7 @@
     "status": "UNREADABLE (99 < 100 exposed clean pairs)",
     "n_excluded": 12
    },
-   "sec": 0.55
+   "sec": 0.64
   },
   {
    "case": "CF: last-hop crossover at t = D with CF-L met on j < D; and the look-ahead last hop",
@@ -684,7 +684,7 @@
      "share_tstar_D": 0.0
     }
    },
-   "sec": 2.76
+   "sec": 3.3
   },
   {
    "case": "CF-GSM late fusion (t* = 14 at every j)",
@@ -696,7 +696,7 @@
     "cf": "NOT MET",
     "late": 14.0
    },
-   "sec": 1.43
+   "sec": 1.75
   },
   {
    "case": "CF-GSM minimum (note 218-5): 35 base steps readable, 25 UNREADABLE",
@@ -716,7 +716,7 @@
      125
     ]
    },
-   "sec": 1.57
+   "sec": 1.84
   },
   {
    "case": "GSM clustering: 21 variants of 5 base items (105 clean pairs) cannot pass",
@@ -729,7 +729,7 @@
     "n_clean": 105,
     "cf": "UNREADABLE (9 < 30 distinct exposed base steps with >= 1 clean pair (note 218-5))"
    },
-   "sec": 0.46
+   "sec": 0.57
   },
   {
    "case": "GSM clustering: a clustered mean differs from the pooled mean (designed)",
@@ -752,7 +752,7 @@
     ],
     "status": "MET"
    },
-   "sec": 1.07
+   "sec": 1.31
   },
   {
    "case": "B1 not launched (A1 not VB-C1-L -> B not GO)",
@@ -763,7 +763,7 @@
    "observed": {
     "label": "UNREAD (B not GO: ['A1 not VB-C1-L (D-13)'] (D-13; Stage B not run in this design); never a pass)"
    },
-   "sec": 0.98
+   "sec": 1.31
   },
   {
    "case": "B1 interim no-GO (FD-MLP(1, k>=3) 0.45 >= 0.8 x 0.5): scored as B1-24k",
@@ -775,7 +775,7 @@
     "label": "VB-C1-GSM | B1-24k (interim no-GO) | accuracy UNREADABLE (B1-24k: accuracy descriptive vs CODI4 0.189 (v1 §2.7))",
     "acc": "UNREADABLE (B1-24k: accuracy descriptive vs CODI4 0.189 (v1 §2.7))"
    },
-   "sec": 2.4
+   "sec": 2.75
   },
   {
    "case": "per-item assert: acc_k[10][8] != mean(items)",
@@ -786,7 +786,7 @@
    "observed": {
     "deep": "UNREADABLE (acc VOID (consistency assert): ['acc_k[10][8] 0.98 != mean(items) 0.97'])"
    },
-   "sec": 0.48
+   "sec": 0.58
   },
   {
    "case": "probe extension rule (last-2k gain 0.03 at 10k, not extended)",
@@ -797,7 +797,7 @@
    "observed": {
     "pg": "UNREADABLE (probe VOID (consistency assert): {0: ['extension rule: last-2k gain 0.0300 > 0.02 but steps_run 10000 (RESOLVED R22)'], 1: ['extension rule: last-2k gain 0.0300 > 0.02 but steps_run 10000 "
    },
-   "sec": 0.64
+   "sec": 0.72
   },
   {
    "case": "card / dtype / eval_bs / items_sha mismatches",
@@ -812,7 +812,7 @@
     "eval_bs": "VOID (mismatch ['part probe eval_bs 64 != G-EVMEM 32']; v1 §4.3 / §5.2; rule b)",
     "items_sha": "VOID (mismatch ['part acc items_sha other != G-L0 anchor sym_v1_test_sha_fixture', 'part probe items_sha other != G-L0 anchor sym_v1_test_sh"
    },
-   "sec": 9.35
+   "sec": 10.54
   },
   {
    "case": "A1 waits for DIRECT-SYM; DIRECT-SYM censored -> C1 band UNREADABLE",
@@ -827,6 +827,17 @@
    "sec": 1.0
   },
   {
+   "case": "ARGS-DIFF post-freeze key (note 218-14): deterministic absent / False OK, True -> ARGS_BAD",
+   "expect": "OK / OK / FAILURE (ARGS-DIFF)",
+   "result": "PASS",
+   "failed_checks": [],
+   "n_checks": 3,
+   "observed": {
+    "true": "FAILURE (ARGS-DIFF {'required_bad': {'deterministic': (False, True)}}; rule b) | labels ['LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-L"
+   },
+   "sec": 2.39
+  },
+  {
    "case": "ARGS-DIFF (A2-CTRL lr differs from A2's; A1 unexpected key; v1-unlisted keys -> pending)",
    "expect": "FAILURE (ARGS-DIFF); A2 not SD-C2-L; unlisted -> pending",
    "result": "PASS",
@@ -835,7 +846,7 @@
    "observed": {
     "ctrl": "FAILURE (ARGS-DIFF {'shared_diffs': {'lr': (3e-05, 0.0001)}}; rule b)"
    },
-   "sec": 3.04
+   "sec": 3.42
   },
   {
    "case": "each registered file missing -> pending; with --final <cell> -> failure (rule b)",
@@ -846,7 +857,7 @@
    "observed": {
     "pairs_checked": 29
    },
-   "sec": 37.95
+   "sec": 47.13
   },
   {
    "case": "each registered eval part missing -> pending; --final: decisive parts fail, descriptive parts do not",
@@ -855,7 +866,7 @@
    "failed_checks": [],
    "n_checks": 41,
    "observed": {},
-   "sec": 26.47
+   "sec": 31.3
   },
   {
    "case": "item 1: CF-GSM counts and clusters exposed base STEPS (base, j)",
@@ -883,7 +894,7 @@
      }
     }
    },
-   "sec": 2.05
+   "sec": 2.47
   },
   {
    "case": "item 2: frozen queued args (note 218-4)",
@@ -895,7 +906,7 @@
     "lr": "FAILURE (ARGS-DIFF {'shared_diffs': {'lr': (0.0001, 0.0002)}}; rule b) | labels ['LAST_HOP_LATE'] | MEM KEEPS-SELF-STAB-",
     "sha": "pending (mismatch ['frozen args C:\\\\Users\\\\peter\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--\\\\2f0034d5-4d85-51eb-880b-bab41adb0dff\\\\scratchpad\\\\s218_scorer\\\\_fx\\\\runs_fs"
    },
-   "sec": 5.7
+   "sec": 6.51
   },
   {
    "case": "item 3: CF full store with per-candidate 'exposed' flags (20 non-exposed precompute-like candidates per cell)",
@@ -907,7 +918,7 @@
     "status": "MET",
     "flags": []
    },
-   "sec": 2.99
+   "sec": 3.48
   },
   {
    "case": "item 4: CONTAMINATED needs evidence (A1, DIRECT-SYM, A2-CTRL; A2 self_reuse)",
@@ -918,7 +929,7 @@
    "observed": {
     "a2": "pending (missing ['lvb_self_s1: no self_reuse (contamination block or log; v1 §2.4)'])"
    },
-   "sec": 7.12
+   "sec": 8.45
   },
   {
    "case": "item 5: items_sha anchored to G-L0's test_items_sha only",
@@ -932,7 +943,7 @@
     "a2": "PENDING",
     "ctrl": "PENDING"
    },
-   "sec": 2.93
+   "sec": 3.31
   },
   {
    "case": "item 6: every registered FD-GSM cell (t 0..12, k >= t) is required",
@@ -941,7 +952,7 @@
    "failed_checks": [],
    "n_checks": 4,
    "observed": {},
-   "sec": 2.89
+   "sec": 3.36
   },
   {
    "case": "Addendum 1 CF mixtures: serial 0.9 + precompute (flips 0.05); 0.8 + recompute (0.05); 0.9 + recompute (0.10); 0.8 + precompute (0.05)",
@@ -971,7 +982,7 @@
      0.486
     ]
    },
-   "sec": 3.61
+   "sec": 4.58
   },
   {
    "case": "SERIAL-ONSET-L failing: flat ON, slope 0.5 (span 3), never reached at D 8",
@@ -997,7 +1008,7 @@
      ]
     ]
    },
-   "sec": 1.89
+   "sec": 2.26
   },
   {
    "case": "SERIAL-STEP-L per-D bar: (ii') pooled 0.90 with D 5 at 0.50",
@@ -1009,7 +1020,7 @@
     "follow": 0.9,
     "status": "NOT MET"
    },
-   "sec": 0.64
+   "sec": 0.76
   },
   {
    "case": "PROBE(12) invalid (0.85 at every D)",
@@ -1021,7 +1032,7 @@
     "PROBE_GAIN_L": "UNREADABLE (PROBE-INVALID (final state on the band: PROBE(12) 0.8500 < ACC 0.9700 - 0.05))",
     "SERIAL_ONSET_L": "UNREADABLE (PROBE-INVALID (final state D 4-8: PROBE(12) 0.8500 < ACC 0.9700 - 0.05))"
    },
-   "sec": 0.58
+   "sec": 0.72
   },
   {
    "case": "A2 readings failing singly: ABSORB (D 11 0.94), LENGTH (D 5 0.985), K'24 (D 6 0.96), DEPTH-BEYOND (D 13-16 0.78)",
@@ -1063,7 +1074,7 @@
      "BEATS_CTRL_L": "MET"
     }
    },
-   "sec": 5.83
+   "sec": 6.48
   },
   {
    "case": "BEATS-CTRL-L failing numerically (A2 0.85 vs readable A2-CTRL 0.80)",
@@ -1075,7 +1086,7 @@
     "status": "NOT MET",
     "delta": 0.04999999999999993
    },
-   "sec": 1.57
+   "sec": 1.9
   },
   {
    "case": "SERIAL-STEP-GSM failing on own 0.35 > 0.3 (follow 0.65); NO-CLOCK-GSM failing (recovery 0.5)",
@@ -1089,7 +1100,7 @@
     "status": "NOT MET",
     "stall": "NOT MET"
    },
-   "sec": 2.49
+   "sec": 2.72
   },
   {
    "case": "STALL with 1,500 items (< 2,000)",
@@ -1100,7 +1111,7 @@
    "observed": {
     "status": "UNREADABLE (1500 < 2,000 STALL items)"
    },
-   "sec": 0.53
+   "sec": 0.51
   },
   {
    "case": "item 9: swap exposure recomputed from the stored components; the eval's flag cross-checks",
@@ -1111,7 +1122,7 @@
    "observed": {
     "no_comp": "pending (missing [\"lvb_sym_s1/eval_lvb.json vswap fields ['vswap.ii_prime pair exposure field frontier_differs']\"])"
    },
-   "sec": 1.63
+   "sec": 1.66
   },
   {
    "case": "writer of record (boxes/langvb_eval.py @ ec1aec8d): every Stage A file shaped exactly as written (Theory's field list)",
@@ -1134,7 +1145,7 @@
      "flag_file_summary_differs": false
     }
    },
-   "sec": 7.8
+   "sec": 7.41
   },
   {
    "case": "FROZEN_ARGS from a scratch tree: the file is missing under ROOT -> read from the repo, sha-checked; distinct messages",
@@ -1194,7 +1205,7 @@
    "observed": {
     "error": "--smoke is refused at --final (['a1']): a smoke run is never a registered reading"
    },
-   "sec": 0.28
+   "sec": 0.29
   },
   {
    "case": "SMOKE surfaces reading-stage field-path errors that normal mode hides behind pending",
@@ -1225,7 +1236,7 @@
     ],
     "error": "SMOKE: not a registered reading | reading raised: KeyError: 'hist24 field renamed by the writer'"
    },
-   "sec": 2.83
+   "sec": 2.79
   },
   {
    "case": "CAUSAL-DEEP-L fail-safe: a band depth with 0 clean pairs and follow None; another with follow None at 200 pairs",
@@ -1246,7 +1257,7 @@
      ]
     }
    },
-   "sec": 3.22
+   "sec": 2.95
   },
   {
    "case": "informational: Experiments' e2e CPU smoke (scratch/_tmp/e2e lvb_sym_s1, trained mini-run; small files copied read-only)",
@@ -1348,7 +1359,7 @@
      "exposure counts n_candidates / n_exposed read from the file: only selected exposed pairs are stored (v1 §4.3 asks recomputation)"
     ]
    },
-   "sec": 3.45
+   "sec": 3.7
   },
   {
    "case": "real tree (D:/Latent/boxes/runs_fsq), read only, OUT redirected",

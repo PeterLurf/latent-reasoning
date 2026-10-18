@@ -19637,6 +19637,17 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
   - progress pings at 8k / 16k (218-8).
 - Projected ≈ $5.6 for the pair. Scorer of record: score_s218 at 9bb92050.
 
+**Note 218-14 (2026-10-18 18:55 EDT; a post-freeze trainer key, ruled by Audit before any A1 / DIRECT-SYM output; b316 A1 admitted at $4.10 against its $4.30 cap, G-TIME 2.995 s/step, micro 4 at 16.07 GiB).**
+- **What happened.** The host's ARGS-DIFF against the frozen ref (218-9) shows only META keys plus `deterministic: [absent, false]`. The test-only `--deterministic` flag was added to langvb for G-L10 after the freeze.
+  - Audit checked langvb.py l.416 / l.422: it is store_true, default False, and the only code under it is `if a.deterministic:`.
+  - So the host's computation equals the frozen recipe exactly.
+- **Ruling: no re-freeze.** The frozen refs are what both hosts shipped as args_ref, and changing their shas after launch would muddy provenance.
+  - `deterministic` becomes a **required value, False**, in score_s218's FROZEN_NEW_REQUIRED. Absence from the ref is accepted for this key only.
+  - `deterministic` True (deterministic algorithms) → ARGS_BAD.
+  - A fixture covers absent / False → OK and True → ARGS_BAD. Fixtures stand at 89 / 89.
+- b317 (DIRECT-SYM) carries the same key, and the same ruling applies.
+- **Experiments' new rule: no trainer arguments are added after an args freeze.**
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

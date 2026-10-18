@@ -1277,6 +1277,13 @@ def define_cases():
         o = run({"lvb_direct_s1/log.jsonl": log_text(24000, CE_NEVER)}); a = o["cells"]["a1"]; c.obs["probe_gain"] = rdg(a, "PROBE_GAIN_L")["status"]
         c.ok("DIRECT-SYM censored" in rdg(a, "PROBE_GAIN_L")["status"] and not a["VB_C1_L"], "UNREADABLE")
 
+    @case("ARGS-DIFF post-freeze key (note 218-14): deterministic absent / False OK, True -> ARGS_BAD", "OK / OK / FAILURE (ARGS-DIFF)")
+    def _(c):
+        o = run({"lvb_sym_s1/args.json": dict(A1_ARGS, deterministic=False)}); c.ok(o["cells"]["a1"]["status"] != "FAIL", "deterministic False OK")
+        o = run({"lvb_sym_s1/args.json": dict(A1_ARGS)}); c.ok(o["cells"]["a1"]["status"] != "FAIL", "deterministic absent OK")
+        o = run({"lvb_sym_s1/args.json": dict(A1_ARGS, deterministic=True)}); c.obs = {"true": o["cells"]["a1"]["label"][:160]}
+        c.ok(o["cells"]["a1"]["status"] == "FAIL" and "ARGS-DIFF" in o["cells"]["a1"]["label"], "deterministic True -> ARGS_BAD")
+
     @case("ARGS-DIFF (A2-CTRL lr differs from A2's; A1 unexpected key; v1-unlisted keys -> pending)", "FAILURE (ARGS-DIFF); A2 not SD-C2-L; unlisted -> pending")
     def _(c):
         o = run({"lvb_ctrl_s1/args.json": dict(CTRL_ARGS, lr=1e-4)}); c.obs = {"ctrl": o["cells"]["ctrl"]["label"][:200]}
