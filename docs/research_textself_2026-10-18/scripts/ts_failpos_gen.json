@@ -1,0 +1,35 @@
+{
+ "tag": "_gen",
+ "by_n": {
+  "11": {
+   "n_fail": 38,
+   "stage_median": 8.0,
+   "stage_q25_q75": [
+    7.0,
+    9.0
+   ],
+   "row_lo_median": 180.0,
+   "row_hi_median": 194.0,
+   "row_mid_q25_q75": [
+    174.625,
+    197.75
+   ],
+   "share_mid_gt_147": 0.9736842105263158
+  },
+  "12": {
+   "n_fail": 40,
+   "stage_median": 7.0,
+   "stage_q25_q75": [
+    7.0,
+    8.0
+   ],
+   "row_lo_median": 182.0,
+   "row_hi_median": 201.5,
+   "row_mid_q25_q75": [
+    180.5,
+    205.0
+   ],
+   "share_mid_gt_147": 0.925
+  }
+ }
+}
