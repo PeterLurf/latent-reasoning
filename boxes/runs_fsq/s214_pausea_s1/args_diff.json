@@ -1,0 +1,37 @@
+{
+ "ref": "scratch/s214_args_ref_d3t.json",
+ "diff": {
+  "init_from": [
+   null,
+   ""
+  ],
+  "kmax": [
+   12,
+   20
+  ],
+  "mem_check_steps": [
+   null,
+   2
+  ],
+  "out": [
+   "boxes/runs_fsq/s213_d3t_s1",
+   "boxes/runs_fsq/s214_pausea_s1"
+  ],
+  "pause": [
+   null,
+   "A"
+  ],
+  "pause_max": [
+   null,
+   8
+  ],
+  "pause_p": [
+   null,
+   0.5
+  ],
+  "train_driver": [
+   "595.58.03",
+   "570.172.08"
+  ]
+ }
+}
