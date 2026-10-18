@@ -1,0 +1,65 @@
+{
+ "ref": "scratch/s214_args_ref_d3t.json",
+ "diff": {
+  "draws_log_steps": [
+   null,
+   0
+  ],
+  "init_from": [
+   null,
+   ""
+  ],
+  "mem_check_self": [
+   null,
+   false
+  ],
+  "mem_check_steps": [
+   null,
+   1
+  ],
+  "out": [
+   "boxes/runs_fsq/s213_d3t_s1",
+   "boxes/runs_fsq/s216_d3t_s2"
+  ],
+  "p_self": [
+   null,
+   0.0
+  ],
+  "pause": [
+   null,
+   "none"
+  ],
+  "pause_max": [
+   null,
+   8
+  ],
+  "pause_p": [
+   null,
+   0.5
+  ],
+  "seed": [
+   1,
+   2
+  ],
+  "self_kextra": [
+   null,
+   4
+  ],
+  "self_kmax": [
+   null,
+   16
+  ],
+  "self_micro": [
+   null,
+   2
+  ],
+  "self_pool": [
+   null,
+   ""
+  ],
+  "train_driver": [
+   "595.58.03",
+   "595.71.05"
+  ]
+ }
+}
