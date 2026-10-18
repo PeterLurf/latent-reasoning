@@ -1,0 +1,54 @@
+{
+ "gate": "G-L17 smoke mode (Audit 17:3x): every A1 / DIRECT reading function executed on real writer output",
+ "scorer": "theory/score_s218.py at a091e98b, scratch copy theory/score_s218_smoke.py with S218_SMOKE=1 relaxing ONLY: per_D (PER_D = 2), G-EVMEM eval_bs equality, the items_sha anchor, the probe steps_run / curve minimum, ARGS-DIFF, the dead / NO-ENTRY censors (3-step runs)",
+ "pass_a_real_output": {
+  "A1_status": "SCORED",
+  "A1_readings": {
+   "DEEP_L": "NOT MET",
+   "PROBE_GAIN_L": "UNREADABLE (PROBE-INVALID(1) (PLANT lin 0.5 / xor 0.5833333333333334 < 0.90))",
+   "SERIAL_ONSET_L": "UNREADABLE (PROBE-INVALID([0, 1, 2]))",
+   "SERIAL_STEP_L": "UNREADABLE (arm unreadable: ii' UNREADABLE (0 < 100 exposed clean pairs); i' UNREADABLE (0 < 100 exposed clean pairs))",
+   "NO_CLOCK_L": "UNREADABLE (10 < 2,000 STALL items)",
+   "NO_PRECOMPUTE_L": "UNREADABLE (FD-INVALID (['lin', 'mlp']: fd_valid s3 / s4 or fd_plant < 0.90))",
+   "CF_L": "UNREADABLE (0 < 100 exposed clean pairs)"
+  },
+  "CAUSAL_DEEP_L": "NOT-APPLICABLE (empty competent band)",
+  "MEM": "not stabilising (STAB_bank < 0.10)",
+  "DIRECT_status": "SCORED",
+  "DIRECT_C1": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "A1_missing": null
+ },
+ "pass_b_forced_clean": {
+  "how": "a scratch copy of lvb_sym_s1/eval_lvb.json with ok_rec / ok_don = 1 on every exposed vswap / causal_deep / CF pair, summaries rebuilt with langvb_eval.summarise (and part_cf's cell code), count minimums (100 / 50 / 30 / 2,000 / 500) set to 0 and band B = all D 9..16, so the pooling / exclusion arithmetic runs",
+  "A1_status": "SCORED",
+  "A1_readings": {
+   "DEEP_L": "NOT MET",
+   "PROBE_GAIN_L": "UNREADABLE (PROBE-INVALID(1) (PLANT lin 0.5 / xor 0.5833333333333334 < 0.90))",
+   "SERIAL_ONSET_L": "UNREADABLE (PROBE-INVALID([0, 1, 2]))",
+   "SERIAL_STEP_L": "NOT MET",
+   "NO_CLOCK_L": "MET",
+   "NO_PRECOMPUTE_L": "UNREADABLE (FD-INVALID (['lin', 'mlp']: fd_valid s3 / s4 or fd_plant < 0.90))",
+   "CF_L": "NOT MET"
+  },
+  "CAUSAL_DEEP_L": "not CAUSAL-DEEP-L",
+  "MEM": "not stabilising (STAB_bank < 0.10)",
+  "DIRECT_status": "SCORED",
+  "DIRECT_C1": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "A1_missing": null
+ },
+ "findings": [
+  "no KeyError, no missing-field pending in either pass; PROBE_GAIN / SERIAL_ONSET / NO_PRECOMPUTE stop at PROBE-INVALID / FD-INVALID (PLANT / fd_valid < 0.90 on a 3-step model: a data condition, their numbers are computed)",
+  "scorer robustness (smoke-only, for Theory): CAUSAL-DEEP-L's pooled follow multiplies n_clean x follow without a None guard; with the registered >= 100 clean-pair minimum follow is never None, but a D admitted with 0 clean pairs raises TypeError"
+ ],
+ "pass": true
+}
