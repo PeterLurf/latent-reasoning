@@ -18726,6 +18726,53 @@ Entry is at 11k (answer_ce), the same as N1.
 
 **Cost: $0** (local 4060, est. 15–30 min per model). Scorer: theory/score_s217.py, written and fixture-checked before any output.
 
+## 218. LANG-VB: VERSION-BANK / SLVA on language with self-teaching (Stage A ProsQA-SYM; Stage B GSM8K only if Stage A reads VB-C1-L)
+
+**Header.**
+- The user's "yes" to starting the design was given 12:02 EDT 10-18, relayed verbatim by Audit.
+- **Auto-approved by Audit under the user's $30 standing rule** (one design, family cap **$25**) on review of 664fc3dd, with conditions = Addendum 1.
+- The shaded odds (P(≥ 1 decisive C1) ≈ 0.06; a null likeliest) were given to the user in Theory's session before this registration. Launches stop if the user says "hold".
+- Pre-registered 2026-10-18 14:16 EDT, before any LANG-VB code, data, pool, training or eval output.
+
+**Registered text.**
+- docs/research_lang_2026-10-18/LANG_v1.md **at 83f2dea4** (v1 + Addendum 1) is the registered text for every definition, rule, bar, formula and label. That file is now frozen.
+- Reviews: LANG_draft.md, PROOFS_LANG.md (46 PASS / 21 CORRECTED / 3 FAIL), REDTEAM_LANG.md (3 blockers, 9 majors). All are resolved in v1 §1 and Addendum 1.
+- **Derivation:** v1 §3 (L1-L; SYM v1 exchangeability; SOUND-CLOSURE; the precompute detectors; the PREMISE-SWAP × (ii′) / (i′) re-proof; S0-L).
+- **Scorer:** theory/score_s218.py, to write and fixture-check before any output. It includes the precompute-and-carry and person-tracking-serial counter-models and GSM base-item clustering.
+
+**Cells** (RTX 3090 for training, one class; off-host mirrors over 8 h; GUARD_STOP; eval cards fixed per stage):
+- **A0** ($0): A0-1 (= 191-4); the G-L0 ProsQA-SYM v1 level-wise gate (incl. undirected and decoy checks, ≤ 0.6 at every level and depth); harness gates.
+- **Stage A:** **DIRECT-SYM** `lvb_direct_s1` ∥ **A1** `lvb_sym_s1` (LANG-SLVA, gold REACH, D 3–8, 24k each) → A2 GO (DEEP ∧ NO-CLOCK ∧ GATE-1-L) → local labelling → **A2** `lvb_self_s1` ∥ **A2-CTRL** `lvb_ctrl_s1` (12k FT; self window D 9–12; pool 106k kept per D; seed 1 consumes exactly 383,488).
+- **Stage B:** only if A1 reads VB-C1-L. **B1** `lvb_gsm_s1` is the STRICT DECOMP variant (calculator-only sub-step values masked), 120k, with a probe-based interim GO at 24k. B2 is deferred.
+
+**Primary readings** (v1 §4–§5, Addendum 1):
+- **VB-C1-L** = DEEP ∧ PROBE-GAIN ≥ 0.35 (PLANT-certified, over DIRECT-SYM's C1 band) ∧ ON(D) slope ≥ 0.6 ∧ SERIAL-STEP (PREMISE-SWAP × (ii′) bank splice ≥ 0.80 **and** slot-local (i′) ≥ 0.80) ∧ **CONSUMPTION-FRONT** ∧ STALL ≥ 0.9 ∧ NO-PRECOMPUTE.
+  - CONSUMPTION-FRONT: the input is switched to a one-fact donor from pass t; crossover t* ∈ {j−1, j} on ≥ 0.75 of clean pairs ∧ within-D Spearman ≥ 0.60; last hop descriptive.
+  - NO-PRECOMPUTE: FD-MIRROR AUROC ≤ 0.65 at k ≥ 3.
+  - Wording: "hop-indexed consumption on ≥ 0.75 of clean exposed pairs (calibrated: ≈ 0.9 item-level serial share)", never "the model is serial".
+- **SD-C2-L** = SD-SELF ∧ D 13–16 ≥ 0.80 ∧ MARGIN-GROWS ∧ BEATS-CTRL.
+- **VB-C1-GSM** follows v1 §4.2 with base-item clustering (≥ 50 distinct items, cluster bootstrap). BEATS-CODI20 is paired (Δ ≥ 0.03 ∧ McNemar p ≤ 0.05; one seed: "two models on 1,319 items", not recipes). Stage B wording: "C4 via distillation from CoT, with CoT-parsed pointer annotations".
+- Never C2 / C4 for in-support results. **MEM-TRADED-L in any cell → the user's explicit OK for every later stage.**
+
+**OC** (v1 §6; priors [ASSUMED], red-team shaded):
+
+| reading | P(pass) | P(pass \| no effect) |
+|---|---|---|
+| VB-C1-L | **0.063** | **0.004** (no serial use) |
+| SD-C2-L | 0.005 | 0.02 (\| H_shift) |
+| VB-C1-GSM \| launched | ≤ 0.10 | ≤ 0.008 |
+| BEATS-CODI20 | — | 0.016 item-level / 0.12 with seed variance |
+| **≥ 1 decisive C1** | **0.064** | — |
+
+A null is the likeliest outcome. The expected value is mainly mechanism information.
+
+**Censoring:** v1 §5.2 (dead / diverged / contaminated / ARGS-DIFF / gate failures fail every reading of the cell; never-reached events are failures; the 215-7 pending rule).
+
+**Cost.**
+- Required cells projected $10.4–17.1 (central $13.3). Expected realised ≈ $7, since B1 launches only on VB-C1-L.
+- **Family cap $25**; guards sum $24.2. Cut order B1 → A-TXT → host labelling. Required A cells are never cut or shortened.
+- Realised at registration: $0.
+
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
 - **What 20k draws gave:** a 0.524 augmented share, failing I(t; M) alone (0.0514).
