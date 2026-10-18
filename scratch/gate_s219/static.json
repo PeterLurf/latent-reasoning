@@ -1,0 +1,100 @@
+{
+ "nested170_sha256": "1961bd3687a903f3e44968b16aed854d78c253e2d674e367731b9a7eae088b9e",
+ "sha_pinned_ok": true,
+ "parser": {
+  "nested170_calls": 57,
+  "textself_ft_calls": 67,
+  "verbatim_57": true,
+  "ft_keys": [
+   "--init_from",
+   "--self_pool",
+   "--p_self",
+   "--self_micro",
+   "--no_final_eval",
+   "--mem_check_self",
+   "--mem_check_steps",
+   "--stop_at",
+   "--draws_log_steps",
+   "--args_ref"
+  ],
+  "n_dests": 67,
+  "ft_keys_ok": true
+ },
+ "seal": {
+  "generation_names_used": [],
+  "files_written": [
+   "args.json",
+   "args_diff.json",
+   "ckpt_last.pt",
+   "ckpt_model_%d.pt",
+   "ckpt_model_0.pt",
+   "ckpt_prev.pt",
+   "draws_log.json",
+   "init_from.json",
+   "log.jsonl",
+   "mem_check.json",
+   "mem_check_self.json",
+   "model.pt",
+   "pool_meta.json",
+   "timing.json",
+   "train_done.json"
+  ],
+  "eval_files": [],
+  "PASS": true
+ },
+ "no_gold": {
+  "s219_gate_in_trainer": 0,
+  "chain_label_in_trainer": 0,
+  "values_sites_trainer": [
+   115,
+   121,
+   122
+  ],
+  "cot_ids_sites_trainer": [
+   124
+  ],
+  "chain_label_sites_textself": [
+   12,
+   45,
+   488,
+   493,
+   501
+  ],
+  "PASS": true
+ },
+ "decorators": {
+  "train_path": {
+   "textself_ft.py:main": [],
+   "textself_ft.py:make_loss": [],
+   "textself_ft.py:loss_items": [],
+   "textself_ft.py:draw_step": [],
+   "textself_ft.py:coin_step": [],
+   "textself_ft.py:mem_check": [],
+   "textself_ft.py:plain_hash": [],
+   "textself_ft.py:build_parser": [],
+   "textself.py:compose_T": [],
+   "textself.py:candidate": [],
+   "textself.py:reduce_shape": [],
+   "textself.py:parse_tree": [],
+   "textself.py:self_item": [],
+   "textself.py:load_pool": [],
+   "textself.py:c_struct": [],
+   "textself.py:n_of": []
+  },
+  "no_grad_fns": [
+   "textself.py:_fwd",
+   "textself.py:_run_chunks",
+   "textself.py:gen_full",
+   "textself.py:gen_reroot",
+   "textself.py:greedy_batch",
+   "textself.py:label_full",
+   "textself.py:label_reroot"
+  ],
+  "no_grad_blocks_assign_L": false,
+  "PASS": true
+ },
+ "PASS": true,
+ "sec": 0,
+ "gate": "static",
+ "clock": "2026-10-18 17:53:12"
+}

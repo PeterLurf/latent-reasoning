@@ -1,0 +1,53 @@
+{
+ "nested170_sha256": "1961bd3687a903f3e44968b16aed854d78c253e2d674e367731b9a7eae088b9e",
+ "sha_pinned_ok": true,
+ "rc": {
+  "nested170": [
+   0,
+   26
+  ],
+  "textself_ft": [
+   0,
+   26
+  ]
+ },
+ "losses": {
+  "1": {
+   "nested170": 1.1836271286010742,
+   "textself_ft": 1.1836271286010742,
+   "bitwise": true
+  },
+  "2": {
+   "nested170": 1.1764696836471558,
+   "textself_ft": 1.1764696836471558,
+   "bitwise": true
+  },
+  "3": {
+   "nested170": 1.160966157913208,
+   "textself_ft": 1.160966157913208,
+   "bitwise": true
+  }
+ },
+ "args": {
+  "non_meta_diff_excl_ft": {},
+  "ft_keys": {
+   "init_from": "",
+   "self_pool": "",
+   "p_self": 0.0,
+   "self_micro": 2,
+   "no_final_eval": true,
+   "mem_check_self": false,
+   "mem_check_steps": 2,
+   "stop_at": 3,
+   "draws_log_steps": 0,
+   "args_ref": ""
+  },
+  "ft_at_off_values": true,
+  "time_steps_note": "nested170 ran with --time_steps 3 (META), textself_ft with --stop_at 3 (META / FT); both META"
+ },
+ "eval_files_textself_ft": [],
+ "PASS": true,
+ "sec": 52,
+ "gate": "t7_plain_equiv",
+ "clock": "2026-10-18 17:55:25"
+}

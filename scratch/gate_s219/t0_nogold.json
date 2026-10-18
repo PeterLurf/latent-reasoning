@@ -1,0 +1,37 @@
+{
+ "roundtrip_records": 48,
+ "corrupted_refused": {
+  "gold_root_key": "refused: ('pool record keys', ['chain_label', 'n', 'root', 'syms', 'values'])",
+  "missing_values": "refused: ('pool record keys', ['chain_label', 'n', 'syms'])",
+  "label_not_last": "refused: pool record values",
+  "n_wrong": "refused: pool record n != #operators(syms) / len(values)",
+  "value_out_of_range": "refused: pool record values",
+  "sha_mismatch": "refused: ('pool sha mismatch', '20dd07f4bf63f5fa614598bdbe6a8d313f552040e5437d39ebe876fdd"
+ },
+ "gold_calls_self_batch": {
+  "cot_ids": 0,
+  "cot_steps": 0
+ },
+ "gold_calls_plain_batch": {
+  "cot_ids": 4,
+  "cot_steps": 4
+ },
+ "gold_patch": {
+  "apply": "raises",
+  "value": "raises",
+  "eval_tokens": "raises",
+  "cot_steps": "raises",
+  "cot_ids": "raises",
+  "reductions": "raises",
+  "gold_values": "raises",
+  "gold_free_still_run": true,
+  "labellers_run_under_patch": [
+   false,
+   false
+  ]
+ },
+ "PASS": true,
+ "sec": 3,
+ "gate": "t0_nogold",
+ "clock": "2026-10-18 17:54:16"
+}

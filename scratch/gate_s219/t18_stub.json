@@ -1,0 +1,77 @@
+{
+ "cases": {
+  "P900_C200": {
+   "budget": 125,
+   "produced": 125,
+   "max_row_fed": 1023,
+   "fed": 1023,
+   "answer": -1,
+   "ok": true
+  },
+  "P1000_C20": {
+   "budget": 25,
+   "produced": 25,
+   "max_row_fed": 1023,
+   "fed": 1023,
+   "answer": -1,
+   "ok": true
+  },
+  "P10_C20": {
+   "budget": 70,
+   "produced": 70,
+   "max_row_fed": 78,
+   "fed": 78,
+   "answer": -1,
+   "ok": true
+  },
+  "P1020_C4": {
+   "budget": 5,
+   "produced": 5,
+   "max_row_fed": 1023,
+   "fed": 1023,
+   "answer": -1,
+   "ok": true
+  }
+ },
+ "eval_loop_stub": {
+  "items": [
+   {
+    "idx": 0,
+    "n": 24,
+    "y": 0,
+    "P": 77,
+    "C_struct": 948,
+    "overflow": false,
+    "answer": -1,
+    "ntok": 948,
+    "eot": false,
+    "form_valid": false,
+    "strict": false,
+    "first_bad_step": 1,
+    "first_bad_pos": 78
+   },
+   {
+    "idx": 1,
+    "n": 24,
+    "y": 0,
+    "P": 81,
+    "C_struct": 950,
+    "overflow": true,
+    "answer": -1,
+    "ntok": 0,
+    "eot": false,
+    "form_valid": false,
+    "strict": false,
+    "first_bad_step": null,
+    "first_bad_pos": null
+   }
+  ],
+  "max_row_fed": 1023,
+  "longest_P_plus_C": 1025,
+  "overflow_items_in_23195": 35
+ },
+ "PASS": true,
+ "sec": 5,
+ "gate": "t18_stub",
+ "clock": "2026-10-18 17:54:33"
+}

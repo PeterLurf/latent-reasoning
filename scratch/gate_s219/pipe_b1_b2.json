@@ -1,0 +1,266 @@
+{
+ "steps": {
+  "gates": {
+   "rc": 0,
+   "sec": 45,
+   "tail": "EXCL {'test_n30': 29407, 'serial': 2200, 's213_37_n9_24': 16000, 'precond_23180': 2400, 'precond_23187': 2400, 'gt18_23195': 1000, 'gates:boxes/runs_fsq/s215_gate1/gate_items.json': 8000, 'gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json': 16000, 'pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl': 440000} union 525407 39 s\nGATE_ITEMS {'W1': 80} {'W1_9': 0, 'W1_10': 0, 'W1_11': 0, 'W1_12': 0} 39 s\n"
+  },
+  "label": {
+   "rc": 0,
+   "sec": 1076,
+   "tail": "LABELLED W1 items 80 tf keep 0.9875 {'tf': 128, 'full': 87, 'gen': 404, 'gen_full': 449}\n"
+  },
+  "score": {
+   "rc": 0,
+   "sec": 5,
+   "tail": "WINDOW W1 pass True {'items': 80, 'n_kept': 79, 'keep': 0.9875, 'kept_wrong_label': 0, 'kept_wrong_E': 0, 'pi': 1.0, 'pi_E': 1.0}\nGATES {'GATE_T1': True} window_labeller {'W1': 'boxes/runs_fsq/s170_cot_s1'} equiv {'W1': True} compose {'W1': True}\n"
+  },
+  "pool": {
+   "rc": 0,
+   "sec": 441,
+   "tail": ".json': 8000, 'gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json': 16000, 'pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl': 440000, 'gates:own': 80} union 525487 39 s\nPOOL n 9 window W1 kept 58 labelled 64 keep 1.0000 draws 64 excl_hits 0 dup 0 104 s\nPOOL n 10 window W1 kept 58 labelled 64 keep 1.0000 draws 64 excl_hits 0 dup 0 194 s\nPOOL n 11 window W1 kept 58 labelled 64 keep 1.0000 draws 64 excl_hits 0 dup 0 314 s\nPOOL n 12 window W1 kept 58 labelled 64 keep 0.9844 draws 64 excl_hits 0 dup 0 434 s\nDONE 232 05d52200169d075f 434\n"
+  }
+ },
+ "eval_gate": {
+  "GATE_T1": true,
+  "pooled": {
+   "items": 80,
+   "n_kept": 79,
+   "keep": 0.9875,
+   "kept_wrong_label": 0,
+   "kept_wrong_E": 0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "labeller": "boxes/runs_fsq/s170_cot_s1"
+  },
+  "equiv": {
+   "W1": {
+    "by_n": {
+     "9": {
+      "items": 20,
+      "agree_keep": 20,
+      "agree_values": 20,
+      "agree_fail_step": 20,
+      "agree_all": 20,
+      "share": 1.0,
+      "PASS": true
+     },
+     "10": {
+      "items": 20,
+      "agree_keep": 20,
+      "agree_values": 20,
+      "agree_fail_step": 20,
+      "agree_all": 20,
+      "share": 1.0,
+      "PASS": true
+     },
+     "11": {
+      "items": 20,
+      "agree_keep": 20,
+      "agree_values": 20,
+      "agree_fail_step": 20,
+      "agree_all": 20,
+      "share": 1.0,
+      "PASS": true
+     },
+     "12": {
+      "items": 20,
+      "agree_keep": 20,
+      "agree_values": 20,
+      "agree_fail_step": 20,
+      "agree_all": 20,
+      "share": 1.0,
+      "PASS": true
+     }
+    },
+    "disagreements": [],
+    "min_margin": 3.303607940673828,
+    "PASS": true
+   }
+  },
+  "equiv_full": {
+   "W1": {
+    "items": 80,
+    "agree_keep_values": 80
+   }
+  },
+  "compose": {
+   "W1": {
+    "n_kept": 79,
+    "tf_tokens_eq_compose": 0,
+    "gen_tokens_eq_compose": 79,
+    "gen_kept": 79,
+    "gold_eq_iff_values_gold": 79,
+    "PASS": true
+   }
+  },
+  "labeller_full": {
+   "9": {
+    "window": "W1",
+    "keep": 1.0,
+    "pi": 1.0,
+    "pi_E": 1.0,
+    "n_kept": 20
+   },
+   "10": {
+    "window": "W1",
+    "keep": 0.4,
+    "pi": 1.0,
+    "pi_E": 1.0,
+    "n_kept": 8
+   },
+   "11": {
+    "window": "W1",
+    "keep": 0.0,
+    "pi": null,
+    "pi_E": null,
+    "n_kept": 0
+   },
+   "12": {
+    "window": "W1",
+    "keep": 0.0,
+    "pi": null,
+    "pi_E": null,
+    "n_kept": 0
+   }
+  },
+  "kept_vs_drawn": {
+   "9": {
+    "kept": {
+     "mean_P_plus_C": 149.2,
+     "mean_height": 5.4,
+     "mean_brackets": 3.75,
+     "items": 20
+    },
+    "drawn": {
+     "mean_P_plus_C": 149.2,
+     "mean_height": 5.4,
+     "mean_brackets": 3.75,
+     "items": 20
+    }
+   },
+   "10": {
+    "kept": {
+     "mean_P_plus_C": 184.9,
+     "mean_height": 5.95,
+     "mean_brackets": 4.8,
+     "items": 20
+    },
+    "drawn": {
+     "mean_P_plus_C": 184.9,
+     "mean_height": 5.95,
+     "mean_brackets": 4.8,
+     "items": 20
+    }
+   },
+   "11": {
+    "kept": {
+     "mean_P_plus_C": 217.4,
+     "mean_height": 6.2,
+     "mean_brackets": 5.05,
+     "items": 20
+    },
+    "drawn": {
+     "mean_P_plus_C": 217.4,
+     "mean_height": 6.2,
+     "mean_brackets": 5.05,
+     "items": 20
+    }
+   },
+   "12": {
+    "kept": {
+     "mean_P_plus_C": 253.94736842105263,
+     "mean_height": 6.0,
+     "mean_brackets": 5.526315789473684,
+     "items": 19
+    },
+    "drawn": {
+     "mean_P_plus_C": 253.6,
+     "mean_height": 6.05,
+     "mean_brackets": 5.55,
+     "items": 20
+    }
+   }
+  }
+ },
+ "pool": {
+  "n_records": 232,
+  "sha_ok": true,
+  "keep_n": {
+   "9": 1.0,
+   "10": 1.0,
+   "11": 1.0,
+   "12": 0.984375
+  },
+  "T_max_by_n": {
+   "9": 173,
+   "10": 213,
+   "11": 249,
+   "12": 295
+  },
+  "L0_max_by_n": {
+   "9": 31,
+   "10": 35,
+   "11": 39,
+   "12": 41
+  },
+  "excl_sizes": {
+   "test_n30": 29407,
+   "serial": 2200,
+   "s213_37_n9_24": 16000,
+   "precond_23180": 2400,
+   "precond_23187": 2400,
+   "gt18_23195": 1000,
+   "gates:boxes/runs_fsq/s215_gate1/gate_items.json": 8000,
+   "gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json": 8000,
+   "gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json": 8000,
+   "gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json": 16000,
+   "pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl": 440000,
+   "gates:own": 80
+  },
+  "collide_n": {
+   "9": 0,
+   "10": 0,
+   "11": 0,
+   "12": 0
+  },
+  "pool_hits_own_gates": 0,
+  "precondition_counts": {
+   "23180": {
+    "9": 200,
+    "10": 200,
+    "11": 200,
+    "12": 200,
+    "13": 200,
+    "14": 200,
+    "15": 200,
+    "16": 200,
+    "17": 200,
+    "18": 200,
+    "19": 200,
+    "20": 200
+   },
+   "23187": {
+    "9": 200,
+    "10": 200,
+    "11": 200,
+    "12": 200,
+    "13": 200,
+    "14": 200,
+    "15": 200,
+    "16": 200,
+    "17": 200,
+    "18": 200,
+    "19": 200,
+    "20": 200
+   }
+  },
+  "labeller_sha256": {
+   "W1": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392"
+  }
+ },
+ "PASS": true,
+ "sec": 1567,
+ "gate": "pipe_b1_b2",
+ "clock": "2026-10-18 16:45:30"
+}

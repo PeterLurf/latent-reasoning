@@ -1,0 +1,38 @@
+{
+ "real_smoke": {
+  "shared_diffs": {},
+  "missing_base_keys": [],
+  "unexpected_new_keys": [],
+  "required_bad": {},
+  "args_ref": {
+   "ok": true,
+   "diff": []
+  },
+  "ok": true
+ },
+ "required_for_smoke": {
+  "steps": 12000,
+  "lr": 3e-05,
+  "init_from": "boxes/runs_fsq/s170_cot_s1/model.pt",
+  "self_pool": "scratch/_tmp/s219/pipe/s219_pool_t1_s1/pool_t1.jsonl",
+  "p_self": 0.5,
+  "self_micro": 2,
+  "no_final_eval": true,
+  "draws_log_steps": 12000,
+  "mem_check_self": false
+ },
+ "mutations": {
+  "lr_1e-4": false,
+  "warmup_1000": false,
+  "no_final_eval_false": false,
+  "drop_bs": false,
+  "args_ref_one_key_changed": false,
+  "unknown_new_key": false,
+  "cot_eval_bs_32": false
+ },
+ "note": "self_pool's required value is the smoke pool here; the registered T1 value is boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl",
+ "PASS": true,
+ "sec": 0,
+ "gate": "t5_args_diff",
+ "clock": "2026-10-18 17:26:21"
+}

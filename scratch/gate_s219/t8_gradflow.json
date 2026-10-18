@@ -1,0 +1,36 @@
+{
+ "self": {
+  "loss": 0.19091837108135223,
+  "requires_grad": true,
+  "tensors": 148,
+  "zero_grad_tensors": [],
+  "value_ce": 0.564425650097075,
+  "copy_ce": 0.16625279605201204,
+  "train_tokens": {
+   "self": [
+    678,
+    810,
+    1036
+   ]
+  }
+ },
+ "plain": {
+  "loss": 6.423410781053462e-08,
+  "requires_grad": true,
+  "tensors": 148,
+  "zero_grad_tensors": [],
+  "value_ce": null,
+  "copy_ce": null,
+  "train_tokens": {
+   "plain": [
+    206,
+    284,
+    532
+   ]
+  }
+ },
+ "PASS": true,
+ "sec": 11,
+ "gate": "t8_gradflow",
+ "clock": "2026-10-18 17:54:28"
+}

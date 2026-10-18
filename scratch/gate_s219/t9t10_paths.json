@@ -1,0 +1,60 @@
+{
+ "rc_mem": [
+  0,
+  44
+ ],
+ "rc_time": [
+  0,
+  35
+ ],
+ "mem_check_self": {
+  "peak_gib": null,
+  "pass": true,
+  "mem_budget": 21.0,
+  "self_micro": 2,
+  "bs": 8,
+  "steps": 2,
+  "n_top": 12,
+  "T_max": 295,
+  "gpu": "cpu",
+  "amp": "None",
+  "sec": 34.8,
+  "def": "peak after the optimiser steps (incl. AdamW's moments) on the 64 longest pool records of the deepest n at the fixed self micro"
+ },
+ "timing": {
+  "arm": "textcot",
+  "steps_timed": 2,
+  "sec_per_step": 12.5675288438797,
+  "est_hours": 41.891762812932335,
+  "sec_per_step_self": 16.71318554878235,
+  "sec_per_step_plain": 8.42187213897705,
+  "self_micro": 2,
+  "micro": 1,
+  "p_self": 0.5,
+  "gpu": "cpu",
+  "forced": "odd steps self (pool order), even steps plain; sec_per_step = p_self-weighted mix"
+ },
+ "files": {
+  "t9": [
+   "args.json",
+   "args_diff.json",
+   "init_from.json",
+   "mem_check_self.json",
+   "stdout.txt"
+  ],
+  "t10": [
+   "args.json",
+   "args_diff.json",
+   "ckpt_model_0.pt",
+   "init_from.json",
+   "log.jsonl",
+   "stdout.txt",
+   "timing.json"
+  ]
+ },
+ "eval_files": [],
+ "PASS": true,
+ "sec": 79,
+ "gate": "t9t10_paths",
+ "clock": "2026-10-18 16:53:59"
+}
