@@ -1,0 +1,660 @@
+{
+ "priors": {
+  "N-SHIFT": 0.25,
+  "POS-ADD": 0.2,
+  "N-PROP": 0.15,
+  "POS-PROP": 0.2,
+  "BETTER": 0.1,
+  "WORSE": 0.1
+ },
+ "panel_means": {
+  "N-SHIFT": {
+   "M": 0.51475,
+   "M2": 0.51475,
+   "d1": -1.0223678646934466,
+   "d2": -2.102367864693445
+  },
+  "POS-ADD": {
+   "M": 0.5134267018187321,
+   "M2": 0.5308331132537529,
+   "d1": -0.9786711860889188,
+   "d2": -1.998457100113594
+  },
+  "N-PROP": {
+   "M": 0.7485833333333334,
+   "M2": 0.887625,
+   "d1": 0.19644820295983045,
+   "d2": 0.33526427061310926
+  },
+  "POS-PROP": {
+   "M": 0.7420917783884997,
+   "M2": 0.8730086898981583,
+   "d1": 0.09679410346469908,
+   "d2": -0.032550826411231526
+  },
+  "BETTER": {
+   "M": 0.9,
+   "M2": 0.95,
+   "d1": 1.5,
+   "d2": 3.0
+  },
+  "WORSE": {
+   "M": 0.3,
+   "M2": 0.3,
+   "d1": -2.0223678646934466,
+   "d2": -4.102367864693445
+  }
+ },
+ "structural": {
+  "P_T1_UNCENS": 0.95,
+  "P_ABSORB": 0.9,
+  "P_LAB_OK": 0.99,
+  "P_T2_UNCENS": 0.95,
+  "P_GATE2": 0.85,
+  "P_ABSORB2": 0.85,
+  "P_RETAIN": 0.95
+ },
+ "cell": {
+  "sdM_0.06": {
+   "by_panel": {
+    "N-SHIFT": {
+     "T-DBS": 9.963330404039183e-07,
+     "T-DBS-2": 9.963330404039183e-07
+    },
+    "POS-ADD": {
+     "T-DBS": 8.930975974319466e-07,
+     "T-DBS-2": 3.626683849344836e-06
+    },
+    "N-PROP": {
+     "T-DBS": 0.19573779428860572,
+     "T-DBS-2": 0.9279122025117109
+    },
+    "POS-PROP": {
+     "T-DBS": 0.1672380916728946,
+     "T-DBS-2": 0.8881620279030374
+    },
+    "BETTER": {
+     "T-DBS": 0.9522096477271852,
+     "T-DBS-2": 0.9937903346742238
+    },
+    "WORSE": {
+     "T-DBS": 0.0,
+     "T-DBS-2": 0.0
+    }
+   },
+   "prior_weighted": {
+    "T-DBS": 0.1580296799533679,
+    "T-DBS-2": 0.4161992438448165
+   }
+  },
+  "sdM_0.09": {
+   "by_panel": {
+    "N-SHIFT": {
+     "T-DBS": 0.0007636532642085747,
+     "T-DBS-2": 0.0007636532642085747
+    },
+    "POS-ADD": {
+     "T-DBS": 0.0007259044237017953,
+     "T-DBS-2": 0.0013914971777286844
+    },
+    "N-PROP": {
+     "T-DBS": 0.28389940594803287,
+     "T-DBS-2": 0.8348751663391851
+    },
+    "POS-PROP": {
+     "T-DBS": 0.25997428524769794,
+     "T-DBS-2": 0.7913767878706564
+    },
+    "BETTER": {
+     "T-DBS": 0.8667397370974945,
+     "T-DBS-2": 0.9522096477271853
+    },
+    "WORSE": {
+     "T-DBS": 1.3836508938602776e-08,
+     "T-DBS-2": 1.3836508938602776e-08
+    }
+   },
+   "prior_weighted": {
+    "T-DBS": 0.18158983723593738,
+    "T-DBS-2": 0.37919681143297634
+   }
+  },
+  "sdM_0.12": {
+   "by_panel": {
+    "N-SHIFT": {
+     "T-DBS": 0.008725072658483546,
+     "T-DBS-2": 0.008725072658483546
+    },
+    "POS-ADD": {
+     "T-DBS": 0.008467617179476195,
+     "T-DBS-2": 0.012446556976032364
+    },
+    "N-PROP": {
+     "T-DBS": 0.3341536764986146,
+     "T-DBS-2": 0.7673685752342233
+    },
+    "POS-PROP": {
+     "T-DBS": 0.31470107014397253,
+     "T-DBS-2": 0.7285408003153369
+    },
+    "BETTER": {
+     "T-DBS": 0.7976716190363569,
+     "T-DBS-2": 0.8943502263331446
+    },
+    "WORSE": {
+     "T-DBS": 1.545429688232236e-05,
+     "T-DBS-2": 1.545429688232236e-05
+    }
+   },
+   "prior_weighted": {
+    "T-DBS": 0.19670676443742674,
+    "T-DBS-2": 0.35492059397103093
+   }
+  }
+ },
+ "headline_cell": {
+  "T-SELF (T1)": 0.84645,
+  "round-2 condition": 0.84645,
+  "T2 readable": 0.67667329125,
+  "T-SELF-2": 0.546413682684375,
+  "T-DBS (sd 0.09)": 0.1537067177283592,
+  "T-DBS-2 & T-SELF-2 (sd 0.09)": 0.2071983261972651,
+  "T-ABSORB | no FT effect": 0.0,
+  "T-DBS | no FT effect (base M 0.078)": 0.0
+ },
+ "comparison": {
+  "ONE_s0.20": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.697095,
+     "TEXT-AHEAD": 0.28013,
+     "LATENT-AHEAD": 0.0014625,
+     "CROSSED": 0.0213125
+    },
+    "POS-PROP": {
+     "PARITY": 0.903705,
+     "TEXT-AHEAD": 0.029755,
+     "LATENT-AHEAD": 0.0491475,
+     "CROSSED": 0.0173925
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (d 0, 0)": {
+     "PARITY": 0.915005,
+     "TEXT-AHEAD": 0.03832,
+     "LATENT-AHEAD": 0.0385425,
+     "CROSSED": 0.0081325
+    },
+    "d +1 / +1": {
+     "PARITY": 0.0021725,
+     "TEXT-AHEAD": 0.9614575,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.03637
+    },
+    "d -1 / -1": {
+     "PARITY": 0.0019825,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.96168,
+     "CROSSED": 0.0363375
+    },
+    "d -0.5 / -1": {
+     "PARITY": 0.0342125,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.96168,
+     "CROSSED": 0.0041075
+    },
+    "d +0.5 / +0.5": {
+     "PARITY": 0.332505,
+     "TEXT-AHEAD": 0.50006,
+     "LATENT-AHEAD": 0.000205,
+     "CROSSED": 0.16723
+    }
+   },
+   "given_both_rounds": {
+    "PARITY": 0.28530525,
+    "TEXT-AHEAD": 0.1479705,
+    "LATENT-AHEAD": 0.560048875,
+    "CROSSED": 0.006675375000000001
+   },
+   "unconditional_both_rounds": {
+    "PARITY": 0.19305844252840407,
+    "TEXT-AHEAD": 0.10012768524290812,
+    "LATENT-AHEAD": 0.37897011550710985,
+    "CROSSED": 0.004517047971577969
+   }
+  },
+  "ONE_s0.35": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0003875,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9993625,
+     "CROSSED": 0.00025
+    },
+    "POS-ADD": {
+     "PARITY": 0.0008425,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9986925,
+     "CROSSED": 0.000465
+    },
+    "N-PROP": {
+     "PARITY": 0.503865,
+     "TEXT-AHEAD": 0.36932,
+     "LATENT-AHEAD": 0.044855,
+     "CROSSED": 0.08196
+    },
+    "POS-PROP": {
+     "PARITY": 0.5931275,
+     "TEXT-AHEAD": 0.1409525,
+     "LATENT-AHEAD": 0.1696225,
+     "CROSSED": 0.0962975
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (d 0, 0)": {
+     "PARITY": 0.60786,
+     "TEXT-AHEAD": 0.155465,
+     "LATENT-AHEAD": 0.1553425,
+     "CROSSED": 0.0813325
+    },
+    "d +1 / +1": {
+     "PARITY": 0.03516,
+     "TEXT-AHEAD": 0.8435025,
+     "LATENT-AHEAD": 0.0007525,
+     "CROSSED": 0.120585
+    },
+    "d -1 / -1": {
+     "PARITY": 0.034985,
+     "TEXT-AHEAD": 0.0008075,
+     "LATENT-AHEAD": 0.8435225,
+     "CROSSED": 0.120685
+    },
+    "d -0.5 / -1": {
+     "PARITY": 0.1229475,
+     "TEXT-AHEAD": 0.0012475,
+     "LATENT-AHEAD": 0.8429075,
+     "CROSSED": 0.0328975
+    },
+    "d +0.5 / +0.5": {
+     "PARITY": 0.31186,
+     "TEXT-AHEAD": 0.5005925,
+     "LATENT-AHEAD": 0.0193825,
+     "CROSSED": 0.168165
+    }
+   },
+   "given_both_rounds": {
+    "PARITY": 0.194470625,
+    "TEXT-AHEAD": 0.18358850000000002,
+    "LATENT-AHEAD": 0.5902318750000001,
+    "CROSSED": 0.031709
+   },
+   "unconditional_both_rounds": {
+    "PARITY": 0.13159307787019453,
+    "TEXT-AHEAD": 0.12422943453065063,
+    "LATENT-AHEAD": 0.39939414545690866,
+    "CROSSED": 0.02145663339224625
+   }
+  },
+  "ONE_s0.50": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0066425,
+     "TEXT-AHEAD": 8.5e-05,
+     "LATENT-AHEAD": 0.9873575,
+     "CROSSED": 0.005915
+    },
+    "POS-ADD": {
+     "PARITY": 0.009765,
+     "TEXT-AHEAD": 0.0001425,
+     "LATENT-AHEAD": 0.9818925,
+     "CROSSED": 0.0082
+    },
+    "N-PROP": {
+     "PARITY": 0.34331,
+     "TEXT-AHEAD": 0.4019075,
+     "LATENT-AHEAD": 0.1128025,
+     "CROSSED": 0.14198
+    },
+    "POS-PROP": {
+     "PARITY": 0.3784375,
+     "TEXT-AHEAD": 0.2215025,
+     "LATENT-AHEAD": 0.239625,
+     "CROSSED": 0.160435
+    },
+    "BETTER": {
+     "PARITY": 0.0001,
+     "TEXT-AHEAD": 0.999725,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.000175
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (d 0, 0)": {
+     "PARITY": 0.3855,
+     "TEXT-AHEAD": 0.2321275,
+     "LATENT-AHEAD": 0.231405,
+     "CROSSED": 0.1509675
+    },
+    "d +1 / +1": {
+     "PARITY": 0.072325,
+     "TEXT-AHEAD": 0.7605375,
+     "LATENT-AHEAD": 0.00999,
+     "CROSSED": 0.1571475
+    },
+    "d -1 / -1": {
+     "PARITY": 0.0725125,
+     "TEXT-AHEAD": 0.009995,
+     "LATENT-AHEAD": 0.75975,
+     "CROSSED": 0.1577425
+    },
+    "d -0.5 / -1": {
+     "PARITY": 0.154805,
+     "TEXT-AHEAD": 0.015395,
+     "LATENT-AHEAD": 0.753165,
+     "CROSSED": 0.076635
+    },
+    "d +0.5 / +0.5": {
+     "PARITY": 0.25306,
+     "TEXT-AHEAD": 0.4996175,
+     "LATENT-AHEAD": 0.067015,
+     "CROSSED": 0.1803075
+    }
+   },
+   "given_both_rounds": {
+    "PARITY": 0.130807625,
+    "TEXT-AHEAD": 0.204608875,
+    "LATENT-AHEAD": 0.60806325,
+    "CROSSED": 0.05652025
+   },
+   "unconditional_both_rounds": {
+    "PARITY": 0.08851402612934578,
+    "TEXT-AHEAD": 0.13845336086520985,
+    "LATENT-AHEAD": 0.4114601606656716,
+    "CROSSED": 0.03824574358977281
+   }
+  },
+  "POOLED_s0.20": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.7903225,
+     "TEXT-AHEAD": 0.2047475,
+     "LATENT-AHEAD": 3e-05,
+     "CROSSED": 0.0049
+    },
+    "POS-PROP": {
+     "PARITY": 0.98452,
+     "TEXT-AHEAD": 0.003825,
+     "LATENT-AHEAD": 0.009555,
+     "CROSSED": 0.0021
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (d 0, 0)": {
+     "PARITY": 0.9873575,
+     "TEXT-AHEAD": 0.006265,
+     "LATENT-AHEAD": 0.006075,
+     "CROSSED": 0.0003025
+    },
+    "d +1 / +1": {
+     "PARITY": 7.5e-05,
+     "TEXT-AHEAD": 0.993925,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.006
+    },
+    "d -1 / -1": {
+     "PARITY": 5e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.993735,
+     "CROSSED": 0.006215
+    },
+    "d -0.5 / -1": {
+     "PARITY": 0.0059375,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.993735,
+     "CROSSED": 0.0003275
+    },
+    "d +0.5 / +0.5": {
+     "PARITY": 0.333295,
+     "TEXT-AHEAD": 0.49998,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.166725
+    }
+   },
+   "given_both_rounds": {
+    "PARITY": 0.315452375,
+    "TEXT-AHEAD": 0.131477125,
+    "LATENT-AHEAD": 0.5519155,
+    "CROSSED": 0.001155
+   },
+   "unconditional_both_rounds": {
+    "PARITY": 0.2134581968238792,
+    "TEXT-AHEAD": 0.08896705889783765,
+    "LATENT-AHEAD": 0.37346647787688936,
+    "CROSSED": 0.0007815576513937499
+   }
+  },
+  "POOLED_s0.35": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 7.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999925,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.633055,
+     "TEXT-AHEAD": 0.31951,
+     "LATENT-AHEAD": 0.008505,
+     "CROSSED": 0.03893
+    },
+    "POS-PROP": {
+     "PARITY": 0.804255,
+     "TEXT-AHEAD": 0.0642825,
+     "LATENT-AHEAD": 0.09045,
+     "CROSSED": 0.0410125
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (d 0, 0)": {
+     "PARITY": 0.8207325,
+     "TEXT-AHEAD": 0.07679,
+     "LATENT-AHEAD": 0.0762775,
+     "CROSSED": 0.0262
+    },
+    "d +1 / +1": {
+     "PARITY": 0.0086275,
+     "TEXT-AHEAD": 0.9237,
+     "LATENT-AHEAD": 2.5e-06,
+     "CROSSED": 0.06767
+    },
+    "d -1 / -1": {
+     "PARITY": 0.00848,
+     "TEXT-AHEAD": 7.5e-06,
+     "LATENT-AHEAD": 0.9231775,
+     "CROSSED": 0.068335
+    },
+    "d -0.5 / -1": {
+     "PARITY": 0.065735,
+     "TEXT-AHEAD": 7.5e-06,
+     "LATENT-AHEAD": 0.923175,
+     "CROSSED": 0.0110825
+    },
+    "d +0.5 / +0.5": {
+     "PARITY": 0.331105,
+     "TEXT-AHEAD": 0.4999575,
+     "LATENT-AHEAD": 0.002095,
+     "CROSSED": 0.1668425
+    }
+   },
+   "given_both_rounds": {
+    "PARITY": 0.25581075000000003,
+    "TEXT-AHEAD": 0.160783,
+    "LATENT-AHEAD": 0.56936425,
+    "CROSSED": 0.014041999999999999
+   },
+   "unconditional_both_rounds": {
+    "PARITY": 0.17310030213963096,
+    "TEXT-AHEAD": 0.10879756178704875,
+    "LATENT-AHEAD": 0.3852735809675878,
+    "CROSSED": 0.009501846355732499
+   }
+  },
+  "POOLED_s0.50": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.00039,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9993575,
+     "CROSSED": 0.0002525
+    },
+    "POS-ADD": {
+     "PARITY": 0.0008475,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9986475,
+     "CROSSED": 0.000505
+    },
+    "N-PROP": {
+     "PARITY": 0.499835,
+     "TEXT-AHEAD": 0.37002,
+     "LATENT-AHEAD": 0.0469475,
+     "CROSSED": 0.0831975
+    },
+    "POS-PROP": {
+     "PARITY": 0.58702,
+     "TEXT-AHEAD": 0.1420575,
+     "LATENT-AHEAD": 0.17226,
+     "CROSSED": 0.0986625
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (d 0, 0)": {
+     "PARITY": 0.6021,
+     "TEXT-AHEAD": 0.1566175,
+     "LATENT-AHEAD": 0.15783,
+     "CROSSED": 0.0834525
+    },
+    "d +1 / +1": {
+     "PARITY": 0.0359,
+     "TEXT-AHEAD": 0.8410425,
+     "LATENT-AHEAD": 0.0007175,
+     "CROSSED": 0.12234
+    },
+    "d -1 / -1": {
+     "PARITY": 0.035775,
+     "TEXT-AHEAD": 0.000805,
+     "LATENT-AHEAD": 0.842235,
+     "CROSSED": 0.121185
+    },
+    "d -0.5 / -1": {
+     "PARITY": 0.12387,
+     "TEXT-AHEAD": 0.001285,
+     "LATENT-AHEAD": 0.841615,
+     "CROSSED": 0.03323
+    },
+    "d +0.5 / +0.5": {
+     "PARITY": 0.31184,
+     "TEXT-AHEAD": 0.5001525,
+     "LATENT-AHEAD": 0.0208875,
+     "CROSSED": 0.16712
+    }
+   },
+   "given_both_rounds": {
+    "PARITY": 0.19264625,
+    "TEXT-AHEAD": 0.1839145,
+    "LATENT-AHEAD": 0.591063,
+    "CROSSED": 0.03237625
+   },
+   "unconditional_both_rounds": {
+    "PARITY": 0.1303585720344703,
+    "TEXT-AHEAD": 0.12445003002359813,
+    "LATENT-AHEAD": 0.3999565455460987,
+    "CROSSED": 0.021908143645832812
+   }
+  }
+ },
+ "p_both_rounds_readable": 0.67667329125
+}

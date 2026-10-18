@@ -1,0 +1,273 @@
+{
+ "run": "s170_cot_s1",
+ "per_n": 10,
+ "seed": 23180,
+ "excl_hits": {
+  "9": 0,
+  "10": 0,
+  "11": 0,
+  "12": 0
+ },
+ "dtype": "fp32 cpu",
+ "by_n": {
+  "9": {
+   "full": {
+    "keep": 1.0,
+    "n_kept": 10,
+    "pi": 1.0,
+    "kept_wrong": 0,
+    "kept_and_correct_share": 1.0,
+    "fail_step_hist": {},
+    "sec": 4.804223537445068
+   },
+   "gen_check": {
+    "items": 10,
+    "agree": 10
+   },
+   "reroot": {
+    "keep": 1.0,
+    "n_kept": 10,
+    "pi": 1.0,
+    "kept_wrong": 0,
+    "kept_and_correct_share": 1.0,
+    "fail_step_hist": {},
+    "sec": 7.8491599559783936
+   }
+  },
+  "12": {
+   "full": {
+    "keep": 0.0,
+    "n_kept": 0,
+    "pi": null,
+    "kept_wrong": 0,
+    "kept_and_correct_share": 0.0,
+    "fail_step_hist": {
+     "5": 1,
+     "7": 5,
+     "8": 4
+    },
+    "sec": 7.306275367736816
+   },
+   "reroot": {
+    "keep": 1.0,
+    "n_kept": 10,
+    "pi": 1.0,
+    "kept_wrong": 0,
+    "kept_and_correct_share": 1.0,
+    "fail_step_hist": {},
+    "sec": 14.21540880203247
+   }
+  }
+ },
+ "items": {
+  "9_full": [
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ]
+  ],
+  "9_reroot": [
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ]
+  ],
+  "12_full": [
+   [
+    0,
+    7,
+    null
+   ],
+   [
+    0,
+    7,
+    null
+   ],
+   [
+    0,
+    8,
+    null
+   ],
+   [
+    0,
+    7,
+    null
+   ],
+   [
+    0,
+    8,
+    null
+   ],
+   [
+    0,
+    5,
+    null
+   ],
+   [
+    0,
+    7,
+    null
+   ],
+   [
+    0,
+    8,
+    null
+   ],
+   [
+    0,
+    8,
+    null
+   ],
+   [
+    0,
+    7,
+    null
+   ]
+  ],
+  "12_reroot": [
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ],
+   [
+    1,
+    null,
+    1
+   ]
+  ]
+ },
+ "sec": 66.69360780715942
+}
