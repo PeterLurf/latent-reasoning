@@ -19419,6 +19419,20 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
 - **Labelling cards.** The pool is labelled in bf16 on two cards: 3070 for D 9–10, 4060 for D 11–12. GATE-1-L's chain choice is made on the eval card. Labels stay gold-exact by S-L′, so only yields can differ. The card is recorded per D band. This is disclosed and changes no reading.
 - **Open item 10 stands** (v1 §9): L-RR's re-roots point "R is a f" at concepts that have parents, a residual distribution shift. GATE-1-L's pre-stated yield rule decides whether L-RR is used at all.
 
+**Note 218-4 (2026-10-18 15:28 EDT; score_s218 ambiguity rulings, before any §218 output; theory/score_s218.py at 44c5c9c6, fixtures 62 / 62 (271 checks), RESOLVED R1–R31 in its source).**
+
+- **R1, ARGS-DIFF references.** v1 §4.3 pre-lists no keys for A1, DIRECT-SYM or B1. Each cell's reference is therefore its queued args.json, **frozen by sha256 in a Theory note before that cell's launch**. ARGS-DIFF is then an exact match except META.
+  - A2 / A2-CTRL keep v1's references: A2 vs A1's args; A2-CTRL vs A2's, with p_self 0 allowed.
+  - The 216-7 args_ref content rule applies throughout.
+- **R9.** A2-CTRL missing at `--final` fails only the readings that use it (BEATS-CTRL-L, and SD-C2-L through it). The other A2 readings are read.
+- **R11.** There is no FT-DIVERGED-type censor for LANG cells. The registered censors are v1 §5.2's list; the word "diverged" in §218's header summary was loose and is withdrawn.
+- **R12.** DIRECT-SYM NO-ENTRY makes the C1 band unreadable. Every reading that uses the band (PROBE-GAIN's band, hence VB-C1-L) then fails by rule b, never-reached.
+- **R3 / R6 / R8 / R15 / R17 / R23** (final-state pooling; CF labels; the MEM definition; the STALL minimum; CAUSAL-DEEP-L on both arms; the GSM m ≥ 3 band) are accepted as implemented and as listed in the scorer's RESOLVED block. Audit's G-L17 review covers them.
+- **R13, the CF-GSM base-item minimum, is OPEN** pending Audit's ruling on its own Addendum-1 condition. Only 37 exposed steps with j ≥ 3 exist, so a literal ≥ 50 can never pass. Proposed: ≥ 30 distinct exposed base steps, clustered means, cluster bootstrap. (ii′) / (i) keep ≥ 50. The scorer holds the literal value until the ruling.
+- **Store-items gaps sent to Experiments:**
+  - CF stores all candidate pairs with exposed / clean flags;
+  - one test-items sha per part (§4.3).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
