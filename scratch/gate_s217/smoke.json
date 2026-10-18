@@ -1,0 +1,5 @@
+{
+ "copy_bitwise_n4_8": "vbank_causal.vswap_class / stall == vbank_eval.vswap_class / part_stall at n 4..8 on test_set(1000), FT-SELF, 4060, bs 16: every pooled vswap field + stall recovery / by_n equal (re-checked after the memory-only rollout frees)",
+ "full_path_smoke": "N1 s211_vb_carry_s1 (not a \u00a7217 model), 4060 fp32 bs 16, output scratch/_tmp/s217_smoke: rc 0, 2,313 s; gate vs N1's 3070 eval_vb follow_ii / own_ii / stall_recovery |diff| 0.000 / 0.000 / 0.000; n 9..20 by_n + by_n_iv + candidates_by_n (901..935 per n); 11,077 pairs; stall_items n 9..20; stored pairs reproduce by_n follow_ii and stall_items reproduce stalled_kn1 exactly",
+ "oom_note": "first full smoke OOM'd the 8 GB card at n >= 17 (K' up to 22, three rollouts held); fixed by freeing rr / rd after clean and empty_cache per (n, t) group (values unchanged); that log kept .void_oom"
+}
