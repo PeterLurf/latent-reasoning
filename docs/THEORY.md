@@ -18926,6 +18926,19 @@ keep_kv by n:
 - For SD2-SELF's wording (v1 §5.1), the labels are gold-equivalent at π = 0.9997 (W2) / 0.9999 (W1).
 - The pool (444k, FT-SELF on both windows) is being built on the 3070. G-S17 and LABEL-AUDIT-2 follow.
 
+**Note 216-2 (2026-10-18 05:27 EDT; G-S18's required baseline, read after s216_r2_s1's admission (05:13) per D2; descriptive, no threshold depends on it).** s215_ftself_s1/eval_deep.json: RTX 3070, fp32, tf32 off, eval_bs 16, peak 4.21 GiB. items_sha256 equals the scorer's recomputation, and acc_k == mean(ans == y) at every K′ and n (Experiments; re-read by Theory).
+
+FT-SELF a(n) at K′ n + 2:
+
+| n | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| a(n) | 0.999 | 0.893 | 0.633 | 0.344 | 0.172 | 0.133 | 0.121 | 0.124 | 0.100 | 0.105 | 0.107 | 0.115 |
+
+Chance is 0.10–0.12.
+- The extension that SD2_v1 §3.4 assumed for n 17–20 (0.180 / 0.124 / 0.110 / 0.110) was close. H_shift's reference panel at n 21–24 is therefore at chance, as assumed.
+- The registered bars come from eval_vb at n ≤ 16 and are unaffected: M2_shift 0.717, MARGIN-GROWS-2 0.785.
+- BS-CHECK on FT-SELF: eval_deep (bs 16) vs eval_vb (bs 32) at n 13–16 over the 72 shared (K′, n) cells gives max |Δ| = 0.0000, so the bs-16 eval_deep reproduces eval_vb exactly.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
