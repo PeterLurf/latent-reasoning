@@ -128,7 +128,7 @@ def g_l7b(dev, n=2000, bs=8, cal_n=16, fp64=False):
         S = sp.shape[1]; out = []
         for b in range(h.shape[0]):
             last = int(sp[b].nonzero().max()); rows = [last] + [S + k for k in range(dec.shape[1] - 1)]
-            lp = torch.log_softmax((h[b, rows] @ W.T).float(), -1)        # the model's path: logits in the model dtype, log_softmax in fp32
+            lg = h[b, rows] @ W.T; lp = torch.log_softmax(lg if lg.dtype == torch.float64 else lg.float(), -1)   # the model's dtype end to end
             out.append(float(sum(lp[k, int(dec[b, k])] for k in range(dec.shape[1]))))
         return out
     rows_out = []
