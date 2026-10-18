@@ -19246,6 +19246,25 @@ Two further corrections:
 
 **Cost $0.** About 10–20 min per model on the 2070. Scored by Theory with a short script that reads eval_a01.json + anticue's strata; Audit reproduces.
 
+**Note 217-3 (2026-10-18 13:21 EDT; scope of the §217 claim, pre-stated before any output; Audit's review).** These are the predicted competent bands (a(n) ≥ 0.95, from the committed eval_vb / eval_deep acc_n2).
+
+| model | band | basis |
+|---|---|---|
+| D3-T s1 | empty → NOT-APPLICABLE | a(9) 0.923 |
+| FT-SELF | n 9–13 | a(14) 0.893 |
+| R2-s1 | n 9–18 | a(19) 0.862 |
+| FT-CTRL | empty | — |
+| D3-T s2 | {9} | — |
+| R1-s2 | n 9–13 | — |
+
+**Consequence for the wording.**
+- In s1, CAUSAL-PRESERVED rests on **FT-SELF and R2-s1 only**, overlapping at n 9–13. It says nothing about base → round 1 at the new depths, because the base has no band there. Base → R1 → R2 is covered only at the old depths n 4–8, by the registered eval_vb arms (follow_ii 1.000, STALL 1.000 in all three).
+- In s2 the models overlap only at n 9. R1-s2 is censored for §216 (FT-DIVERGED), but its §217 reading is a separate, eval-only reading and stands on its own gate.
+- The §217 wording is therefore fixed as: *"causal use at the new depths is preserved from round 1 to round 2 (s1, overlap n 9–13; R2 also at n 14–18), and at the old depths n 4–8 from the base through both rounds"*.
+- Never write "preserved from the base model at the new depths".
+
+The docstring of score_s217 now names boxes/vbank_causal.py (cosmetic).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
