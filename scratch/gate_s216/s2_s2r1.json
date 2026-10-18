@@ -1,0 +1,17 @@
+{
+ "pool_first_1000": {
+  "n_equal": 1000,
+  "n_diff": 0,
+  "n_diff_label_correct": 0
+ },
+ "Kb": 16,
+ "gate_gs2": {
+  "W1": {
+   "n_cmp": 7802,
+   "n_equal": 7802,
+   "diff_not_wrong_state": 0,
+   "PASS": true
+  }
+ },
+ "pass": true
+}
