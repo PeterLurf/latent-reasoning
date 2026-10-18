@@ -18715,6 +18715,21 @@ Entry is at 11k (answer_ce), the same as N1.
 - **A better labeller for round 2:** the FT-SELF model's chain at n 13–16 is 0.992 / 0.989 / 0.980 / 0.951 (D3-T 0.970 / 0.958 / 0.932 / 0.897).
 - **Pending:** FT-CTRL's evals, then the pair's SELF-ATTRIBUTED / FT-EFFECT / MEM attribution.
 
+**Note 214-4 (2026-10-17 23:29 EDT; b309 landed, training-log facts only, recorded before any §214 eval output exists).** s214_pausea_s1 (RTX 3090) landed 23:27 10-17 per Experiments:
+- 48,000 steps, so **not dead**; c 0; pause_item_frac 0.49; 0 nonfinite.
+- **Realised ≈ $2.62 of $4.50.**
+
+Basin entry, using the registered rule (score_s211.entry_on, answer_ce < 0.5 on every later 1k block):
+- **entry 26,000**, against D3-T's 11,000. So **not NO-ENTRY**.
+- The gap is **15k > 5k, so CONFOUNDED vs D3-T (descriptive)**. Every §214 depth / stop difference from D3-T is stated with this confound beside it (the §187 basin-entry rule, as in §214's censoring line).
+- One caveat, descriptive only and not a rule change: §214's training answer_ce averages over the ~0.49 pause items as well, so its curve is not item-for-item D3-T's. Entry stays as registered.
+
+answer_ce at 1k blocks (§214 / D3-T):
+- 6k 0.55 / 0.07; 8k 0.27 / 0.14; 14k 0.33 / 0.16; 18k 0.57 / 0.04; 26k 0.51 / 0.005; 28k 0.13 / 0.002; 48k 0.006 / 0.000.
+- So §214 dipped below 0.5 twice before staying in from 26k.
+
+The evals (D4_v1 §6, plus eval_stepbyt via scratch/s214_post_stepbyt.sh, d3cfda24) wait for the 3070, which was lost at ~22:56 and needs a reboot (same-card rule). Nothing is scored before they land.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
