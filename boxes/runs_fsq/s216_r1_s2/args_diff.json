@@ -1,0 +1,25 @@
+{
+ "ref": "scratch/s216_args_ref_ftself.json",
+ "diff": {
+  "init_from": [
+   "boxes/runs_fsq/s213_d3t_s1/model.pt",
+   "boxes/runs_fsq/s216_d3t_s2/model.pt"
+  ],
+  "out": [
+   "boxes/runs_fsq/s215_ftself_s1",
+   "boxes/runs_fsq/s216_r1_s2"
+  ],
+  "seed": [
+   1,
+   2
+  ],
+  "self_pool": [
+   "boxes/runs_fsq/s215_pool/pool_r1.jsonl",
+   "boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl"
+  ],
+  "train_driver": [
+   "595.84",
+   "595.71.05"
+  ]
+ }
+}
