@@ -19055,6 +19055,26 @@ The r1-s2 pool (110k per n, n 9–12) is building on the 3070.
 
 Theory recommends (b). The censor is on provenance metadata, not on a recipe or model difference. The corrected rule is stricter in content. And it is decided before any s2 fine-tune output exists. s1's result does not depend on the choice. theory/results/score_s216.json is committed as the literal-rule output until Audit rules.
 
+**Note 216-7 (2026-10-18 11:23 EDT; Audit's ruling on 216-6, applied).** Audit ruled **option (b)** after verifying the args itself. It approved b312 at G-S13 knowing this reference file, and the ruling comes before any s2 fine-tune output.
+
+**Rule, now in score_s216.args_diff via `args_ref_check`, for every SD2 cell:** `args_ref` may differ from the reference's **iff** the file it names equals the reference args.json on every non-META key. An equal pointer passes. A missing or unreadable file fails.
+- This replaces the unconditional args_ref allowance that R1 / R2 had, so it is stricter there.
+- Checks on the real files:
+  - s1 R2: scratch/s216_args_ref_ftself.json equals FT-SELF's args → ok.
+  - s2 base: scratch/s214_args_ref_d3t.json equals D3-T s1's args → ok.
+- In-process tests: a pointer to a file with one changed key (lr) fails ("content differs: ['lr']"); a missing file fails; the same pointer passes.
+
+**Re-run** (theory/results/score_s216.json):
+- s1 R2 is unchanged: SD2-C2 (MEM-TRADED-2) | GROW, as in the §216 s1 round-2 result.
+- s2 base: PASS, COMPETENT-BASE.
+- s2 row pending at R1; **×2 UNREAD (pending)**.
+
+**Fixtures.** 37 / 39 still pass on the edited scorer. The two that fail are real-tree snapshots taken before any SD2 cell existed, now superseded by landed data:
+- "real_tree_read_only_all_UNREAD": s1 is now scored.
+- "panels_reproduce_v1_panels_per_n": FT-SELF's eval_deep now exists (read after r2_s1's launch per D2), so the descriptive panel uses it instead of the assumed extension.
+
+Neither is a scorer fault.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

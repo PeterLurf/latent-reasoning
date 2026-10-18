@@ -33,6 +33,11 @@
     "unexpected_new_keys": [],
     "required_bad": {},
     "pause_on": false,
+    "args_ref": {
+     "ok": true,
+     "why": "content equals the reference args",
+     "file": "scratch/s216_args_ref_ftself.json"
+    },
     "ok": true
    },
    "status": "SCORED",
@@ -706,16 +711,16 @@
    "lineage": "s2",
    "ARGS_DIFF": {
     "ref": "s213_d3t_s1",
-    "shared_diffs": {
-     "args_ref": [
-      "scratch/s213_args_ref_n2.json",
-      "scratch/s214_args_ref_d3t.json"
-     ]
-    },
+    "shared_diffs": {},
     "unexpected_new_keys": [],
     "required_bad": {},
     "pause_on": false,
-    "ok": false
+    "args_ref": {
+     "ok": true,
+     "why": "content equals the reference args",
+     "file": "scratch/s214_args_ref_d3t.json"
+    },
+    "ok": true
    },
    "last_step": 48000,
    "nonfinite_steps": 0,
@@ -726,8 +731,8 @@
    "CONFOUNDED": false,
    "STAB_self": 0.684,
    "VB_C1": true,
-   "status": "FAIL",
-   "label": "FAILURE (s2 base ARGS-DIFF; rule b)"
+   "status": "PASS",
+   "label": "COMPETENT-BASE"
   },
   "gate1": {
    "recomputed": true,
@@ -778,9 +783,9 @@
    "K_BEYOND": 0.25
   },
   "row": {
-   "status": "FAIL",
-   "stage": "base",
-   "why": "s216_d3t_s2: FAILURE (s2 base ARGS-DIFF; rule b)",
+   "status": "PENDING",
+   "stage": "r1",
+   "why": "s216_r1_s2: pending (missing ['s216_r1_s2/args.json', 's216_r1_s2/draws_log.json', 's216_r1_s2/eval_hist24.json', 's216_r1_s2/eval_lfk.json', 's216_r1_s2/eval_selfdepth.json', 's216_r1_s2/eval_steppos.json', 's216_r1_s2/eval_vb.json', 's216_r1_s2/log.jsonl'])",
    "SD2_SELF": null,
    "SD2_C2": null,
    "LIT_C2_2": null,
@@ -797,11 +802,8 @@
   "panels": null
  },
  "X2": {
-  "outcome": "FAIL",
-  "label": "FAIL: SD2-C2 in 1 of 2 lineages",
-  "failing": {
-   "s2": "base: s216_d3t_s2: FAILURE (s2 base ARGS-DIFF; rule b)"
-  }
+  "outcome": "UNREAD",
+  "label": "UNREAD (pending; never a pass)"
  },
  "SD2_SELF_X2": null,
  "BASELINES": {

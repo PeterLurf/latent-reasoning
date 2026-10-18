@@ -363,8 +363,11 @@ def args_diff(lin, role):
     L = LIN[lin]; d = L[role]; a, b = jl(d, "args.json"), jl(REF_BASE if role == "base" else REF_FT, "args.json")
     if a is None or b is None:
         return None
-    allowed = ALLOW[role] | ({"seed"} if (role == "r2" and lin == "s2") else set())
-    must = ({"seed": 2} if role == "base" else
+    allowed = (ALLOW[role] - {"args_ref"}) | ({"seed"} if (role == "r2" and lin == "s2") else set())   # note 216-6 (Audit's ruling (b)): args_ref below
+    ar = args_ref_check(a, b)
+    if ar["ok"]:
+        allowed = allowed | {"args_ref"}
+    must =({"seed": 2} if role == "base" else
             {"seed": 2, "init_from": rel(L["base"], "model.pt"), "self_pool": rel(L["pool_r1"], POOL_FILE["pool_r1"])} if role == "r1" else
             {"seed": SEED[lin], "self_kmax": 20, "init_from": rel(L["r1"], "model.pt"), "self_pool": rel(L["pool_r2"], POOL_FILE["pool_r2"])})
     shared = {k: (b[k], a[k]) for k in a if k in b and k not in S213.META and k not in allowed and a[k] != b[k]}
@@ -372,7 +375,24 @@ def args_diff(lin, role):
     req = {k: (v, a.get(k)) for k, v in must.items() if not (same_path(a.get(k), v) if isinstance(v, str) else a.get(k) == v)}
     pause_on = a.get("pause") not in (None, "none", "")
     return {"ref": REF_BASE if role == "base" else REF_FT, "shared_diffs": shared, "unexpected_new_keys": new, "required_bad": req, "pause_on": pause_on,
-            "ok": not shared and not new and not req and not pause_on}
+            "args_ref": ar, "ok": not shared and not new and not req and not pause_on}
+
+
+def args_ref_check(a, b):
+    """note 216-6 (Audit's ruling (b), every SD2 cell): args_ref may differ from the reference's iff the file it names (repo-relative) equals the reference
+    args.json on every non-META key; equal pointers pass; a missing or unreadable file fails."""
+    va, vb = a.get("args_ref"), b.get("args_ref")
+    if va == vb:
+        return {"ok": True, "why": "same pointer"}
+    p = va if (va and os.path.isabs(str(va))) else os.path.join(ROOT, str(va or ""))
+    if not va or not os.path.isfile(p):
+        return {"ok": False, "why": "args_ref file missing: %s" % va}
+    try:
+        f = json.load(open(p))
+    except Exception as e:                                                  # noqa: BLE001
+        return {"ok": False, "why": "args_ref unreadable: %s" % e}
+    diff = sorted(k for k in set(f) | set(b) if k not in S213.META and k != "args_ref" and f.get(k) != b.get(k))
+    return {"ok": not diff, "why": "content equals the reference args" if not diff else "content differs: %s" % diff[:10], "file": va}
 
 
 def _recs(d):
