@@ -304,6 +304,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **CLOSED 10-18: not D4-C2 (DEPTH 0.729 vs D3-T 0.480); ladder KEPT (L0, gain after K'10 0.079); START-D GATED-COUNT; KEEPS-SELF-STAB (0.719); entry 26k + CurGate CONFOUNDED (214-4/214-5); ~$2.62 / $4.50** |
 | 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **CLOSED 10-18: FT-SELF SD-SELF (in support; not C2), GROW (M 0.717, STOP 15, K'-BEYOND 0.155); pair SELF-ATTRIBUTED (CTRL gain -0.021, D3-T level), MEM-TRADED by the self items (STAB_self 0.782 -> CTRL 0.696 -> SELF 0.489; weakened, not lost); ~$1.07 / $1.50; round 2 = SD2 (proposed §216) needs the user's explicit OK** |
 | 216 | SELF-DEPTH-CHAIN round 2 (SD2; user-approved 01:31 10-18, "Approve (Recommended)"; family cap $6.50): s216_r2_s1 from FT-SELF on its own chain (2/3 n 13-16, 1/3 n 9-12) + lineage s2 (D3-T seed 2 -> R1 -> R2); SD2-SELF / SD2-C2 (DBS-2 n 17-20 >= 0.80, eval_deep) / LIT-C2-2 / SD2-C2-MEM / x2; SD2_v1.md at e9ade2ec; scorer score_s216 (to write) | registered | **gates + Audit G-S13 diff review; not launched** |
+| 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **part causal_deep to build (Experiments) + Audit review; not run** |
 
 ## Live sections
 
@@ -18670,6 +18671,60 @@ Entry is at 11k (answer_ce), the same as N1.
 **Cost.**
 - Projected $0.69–1.27 per R2 cell (admission ≤ $1.45, guard $1.70). Family projected $2.9–5.0; **family cap $6.50** (GUARD_STOP; the per-cell guards sum to $6.45).
 - Realised at registration: $0. Round 1 realised ≈ $1.07.
+
+## 217. CAUSAL-ACROSS-ROUNDS: is self-training buying depth by eroding causal use of the latents? (eval-only, $0 local; Audit's research-pass lead L2, 10-18; under the user's $30 standing rule (cap $0); pre-registered 2026-10-18 11:56 EDT, before any deep-n VALUE-SWAP / STALL output on any model)
+
+**Question.** §215 / §216 extended depth by self-training (support 8 → 12 → 16), at a measured memory cost (STAB_self 0.782 → 0.489 → 0.437).
+- Jin et al. 2607.06648 report that latent steps' causal contribution shrinks over training (Literature 11966136).
+- In range (n 4–8), the registered VB-C1 arms show **no erosion so far**. From eval_vb on the 3070:
+
+| model | VALUE-SWAP follow_ii / own_ii | STALL | PROBE(t) at t 0 / 4 / 8 (n 3–8) | follow_iv |
+|---|---|---|---|---|
+| D3-T s1 | 1.000 / 0.000 | 1.000 | 0.113 / 0.557 / 1.000 | 0.792 |
+| FT-SELF | 1.000 / 0.000 | 1.000 | 0.119 / 0.550 / 1.000 | 0.779 |
+| R2-s1 | 1.000 / 0.000 | 1.000 | 0.113 / 0.547 / 1.000 | 0.767 |
+
+- The open question is the **new depths**, where the self-trained computation lives. The registered arms stop at n 8.
+
+**Method** (eval-only; no training, no new model; boxes code by Experiments, reviewed by Audit):
+- A new part `causal_deep` runs vbank_eval's **VALUE-SWAP class A** (make_pairs: rng 21120, the same donor rule; arms i / ii / iv; clean = recipient and donor correct at K′ n + 2) and **STALL** (V_t := V_{t−1} at t = ⌈n/2⌉; stalled acc at K′ n + 1 over intact acc at K′ n) **unchanged except the n-range**.
+- **n 9–20**, on test_set(1000, n_max 24) items. The sealed n 25–30 (216-5) are never used.
+- Output eval_causal_deep.json, with per-pair and per-item outputs stored (store-items rule).
+- Card: **the local RTX 4060, fp32, eval_bs 16, for every model.** All comparisons inside this section are on that one card, which keeps the 3070 free for the s2 lineage. Before any reading, a gate: part_vswap and part_stall at n 4–8 on the 4060 must reproduce each model's committed 3070 eval_vb values (follow_ii, own_ii, STALL recovery) within ±0.005.
+- **Models:** D3-T s1, FT-SELF, R2-s1, FT-CTRL, and when they land, D3-T s2, R1-s2, R2-s2.
+
+**Readings** (per model, comparator-free; then across rounds):
+- **Competent band** B(model) = {n ∈ 9..20 : a(n) ≥ 0.95}, with a(n) from the model's committed eval_vb (n ≤ 16) and eval_deep (n 17–20). An n with fewer than 100 clean pairs, or fewer than 500 STALL items, is excluded and reported.
+- **CAUSAL-DEEP(model)** iff B is non-empty and, pooled over B: follow_ii ≥ 0.95 ∧ own_ii ≤ 0.02 ∧ STALL recovery ≥ 0.95, **and** every n ∈ B has follow_ii ≥ 0.90.
+- An empty B reads **NOT-APPLICABLE**. That covers D3-T s1 (a(9) 0.923) and FT-CTRL, so they contribute only the n 4–8 gate.
+- **CAUSAL-PRESERVED (lineage)** iff CAUSAL-DEEP holds for every model of that lineage with a non-empty B. Otherwise **ERODED-AT** the first failing round, with its failing component named (swap follow, own, or STALL).
+- **Descriptive:**
+  - follow_iv (V_0 masked after t) per n;
+  - follow_ii and STALL at every n 9–20 for every model, including outside B (clean pairs only);
+  - class-B swaps;
+  - per-round slopes of follow_iv. In range it drifts 0.792 → 0.779 → 0.767; any further trend is descriptive only.
+
+**Predictions** [ASSUMED]:
+- In range nothing eroded. FT-SELF's and R2-s1's training targets were the same per-pass R2 states as D3-T's, which reward a value-carrying slot.
+- So P(CAUSAL-DEEP | FT-SELF) ≈ 0.85 and P(CAUSAL-DEEP | R2-s1) ≈ 0.8, giving P(CAUSAL-PRESERVED, s1) ≈ 0.7.
+- The alternative, H_erode: deeper items are solved by a non-slot route (Jin et al.; Zhang 2512.21711 placeholders), giving follow_ii < 0.95 or STALL < 0.95 at the new depths.
+
+**OC.**
+- P(CAUSAL-DEEP passes | H_erode with true follow 0.85) ≈ 0: at ≥ 1,000 clean pairs pooled, the SE is about 0.011, so 0.95 sits 9 SE away.
+- P(fails | intact causal use, true follow 0.99) ≤ 0.01.
+- STALL at ≥ 500 items per n is the same order.
+- The binding uncertainty is definitional (the competent band), not sampling.
+
+**Censoring.**
+- A model whose 4060 n 4–8 gate fails is **UNREADABLE** on this card. That fails its CAUSAL-DEEP (rule b) and it is reported.
+- A missing file is pending (the 215-7 rule).
+- Never-clean n are excluded by the band rule and listed.
+
+**Wording.**
+- CAUSAL-PRESERVED: "self-training extended depth without eroding the latents' causal use at the new depths (VALUE-SWAP follow ≥ 0.95, STALL ≥ 0.95 in each round's competent band; one lineage)". It is a C1 statement at the new depths, never C2 or C4.
+- ERODED-AT: stated beside every §216 positive.
+
+**Cost: $0** (local 4060, est. 15–30 min per model). Scorer: theory/score_s217.py, written and fixture-checked before any output.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
