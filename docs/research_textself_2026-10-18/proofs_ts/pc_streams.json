@@ -1,0 +1,80 @@
+{
+ "cells": {
+  "s215_ftself_s1": {
+   "seed": 1,
+   "p_self": 0.5,
+   "self_kextra": 4,
+   "records": 12000,
+   "first_last_step": [
+    1,
+    12000
+   ],
+   "replay_self_steps": 5992,
+   "logged_self_steps": 5992,
+   "log_jsonl_last_n_self_steps": 5992,
+   "coin_agree": 12000,
+   "U_agree_self_steps": 5992,
+   "self_items": 383488,
+   "vector_U_same_coins": true,
+   "coin_only_self_steps": 6051,
+   "coin_only_agree_steps": 5923
+  },
+  "s216_r2_s1": {
+   "seed": 1,
+   "p_self": 0.5,
+   "self_kextra": 4,
+   "records": 12000,
+   "first_last_step": [
+    1,
+    12000
+   ],
+   "replay_self_steps": 5992,
+   "logged_self_steps": 5992,
+   "log_jsonl_last_n_self_steps": 5992,
+   "coin_agree": 12000,
+   "U_agree_self_steps": 5992,
+   "self_items": 383488,
+   "vector_U_same_coins": true,
+   "coin_only_self_steps": 6051,
+   "coin_only_agree_steps": 5923
+  },
+  "s216_r1_s2": {
+   "seed": 2,
+   "p_self": 0.5,
+   "self_kextra": 4,
+   "records": 12000,
+   "first_last_step": [
+    1,
+    12000
+   ],
+   "replay_self_steps": 6076,
+   "logged_self_steps": 6076,
+   "log_jsonl_last_n_self_steps": 6076,
+   "coin_agree": 12000,
+   "U_agree_self_steps": 6076,
+   "self_items": 388864,
+   "vector_U_same_coins": true,
+   "coin_only_self_steps": 6112,
+   "coin_only_agree_steps": 6050
+  }
+ },
+ "binom_sd_self_steps": 54.772255750516614,
+ "hypergeom": {
+  "T1 per n (96,000)": {
+   "mean": 95872.0,
+   "sd": 9.791437568984282
+  },
+  "T2 new n (64,000)": {
+   "mean": 63914.666666666664,
+   "sd": 8.42712769780128
+  },
+  "T2 old n (32,000)": {
+   "mean": 31957.333333333332,
+   "sd": 6.249725168299581
+  }
+ },
+ "take": 383488,
+ "spare": 512,
+ "T2_pool_total": 384000,
+ "T1_pool_total": 384000
+}

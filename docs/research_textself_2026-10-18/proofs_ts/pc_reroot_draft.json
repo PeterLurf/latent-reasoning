@@ -1,0 +1,151 @@
+{
+ "by_n": {
+  "11": {
+   "keep_tf": 0.975,
+   "kept_wrong_tf": 1,
+   "reproduces_draft_items": 200,
+   "keep_gen": 0.975,
+   "agree_keep_and_values": 200,
+   "tf_rejected": 5,
+   "tf_rejected_gen_also_rejects": 5,
+   "tf_rejected_same_fail_step": 5,
+   "rejected_detail": [
+    {
+     "i": 10,
+     "L0": 35,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 4.5348358154296875
+    },
+    {
+     "i": 73,
+     "L0": 31,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 3.1138534545898438
+    },
+    {
+     "i": 156,
+     "L0": 29,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 1.1994171142578125
+    },
+    {
+     "i": 162,
+     "L0": 31,
+     "tf_fail": 3,
+     "gen_fail": 3,
+     "gen_min_margin": 5.071378707885742
+    },
+    {
+     "i": 189,
+     "L0": 31,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 2.2703628540039062
+    }
+   ],
+   "kept_wrong_detail": [
+    {
+     "i": 191,
+     "values": [
+      8,
+      1,
+      2,
+      5,
+      3,
+      6,
+      10,
+      6,
+      2,
+      7,
+      4
+     ],
+     "gold": [
+      6,
+      9,
+      10,
+      1,
+      3,
+      6,
+      6,
+      10,
+      7,
+      1,
+      9
+     ],
+     "gen_values": [
+      8,
+      1,
+      2,
+      5,
+      3,
+      6,
+      10,
+      6,
+      2,
+      7,
+      4
+     ]
+    }
+   ]
+  },
+  "12": {
+   "keep_tf": 0.97,
+   "kept_wrong_tf": 0,
+   "reproduces_draft_items": 200,
+   "keep_gen": 0.97,
+   "agree_keep_and_values": 200,
+   "tf_rejected": 6,
+   "tf_rejected_gen_also_rejects": 6,
+   "tf_rejected_same_fail_step": 6,
+   "rejected_detail": [
+    {
+     "i": 14,
+     "L0": 37,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 1.2652740478515625
+    },
+    {
+     "i": 20,
+     "L0": 41,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 4.7931365966796875
+    },
+    {
+     "i": 22,
+     "L0": 41,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 2.304290771484375
+    },
+    {
+     "i": 44,
+     "L0": 41,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 1.5212860107421875
+    },
+    {
+     "i": 120,
+     "L0": 37,
+     "tf_fail": 1,
+     "gen_fail": 1,
+     "gen_min_margin": 4.3963775634765625
+    },
+    {
+     "i": 199,
+     "L0": 41,
+     "tf_fail": 3,
+     "gen_fail": 3,
+     "gen_min_margin": 2.8701171875
+    }
+   ],
+   "kept_wrong_detail": []
+  }
+ },
+ "sec": 1306.2115831375122
+}

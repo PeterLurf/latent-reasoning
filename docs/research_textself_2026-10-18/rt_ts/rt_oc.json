@@ -1,0 +1,2200 @@
+{
+ "noise": {
+  "pairs": {
+   "latent base": [
+    10.31,
+    10.51
+   ],
+   "text base": [
+    10.4376,
+    10.6
+   ],
+   "latent R1 (s2 censored)": [
+    15.46,
+    15.33
+   ]
+  },
+  "abs_diffs": [
+   0.1999999999999993,
+   0.16239999999999988,
+   0.13000000000000078
+  ],
+  "sigma_arm_rms": 0.11780899795855994,
+  "sigma_Delta_one_lineage_each": 0.16660708268257973,
+  "chi2_3dof_95_upper_factor": 3.728506522686087,
+  "note": "3 seed pairs; sigma poorly determined (95% upper ~3.7x)"
+ },
+ "one_lineage": {
+  "s0.17_band0.50_bias+0.00": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.74239,
+     "TEXT-AHEAD": 0.245675,
+     "LATENT-AHEAD": 0.0002525,
+     "CROSSED": 0.0116825
+    },
+    "POS-PROP": {
+     "PARITY": 0.9533175,
+     "TEXT-AHEAD": 0.013385,
+     "LATENT-AHEAD": 0.0260575,
+     "CROSSED": 0.00724
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9602625,
+     "TEXT-AHEAD": 0.0187525,
+     "LATENT-AHEAD": 0.01882,
+     "CROSSED": 0.002165
+    },
+    "-1/-1": {
+     "PARITY": 0.00045,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9812475,
+     "CROSSED": 0.0183025
+    },
+    "+1/+1": {
+     "PARITY": 0.0005225,
+     "TEXT-AHEAD": 0.98118,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0182975
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.302022,
+    "TEXT-AHEAD": 0.13952825000000002,
+    "LATENT-AHEAD": 0.555249375,
+    "CROSSED": 0.003200375
+   }
+  },
+  "s0.17_band0.50_bias+0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.4826425,
+     "TEXT-AHEAD": 0.475265,
+     "LATENT-AHEAD": 1.75e-05,
+     "CROSSED": 0.042075
+    },
+    "POS-PROP": {
+     "PARITY": 0.8885475,
+     "TEXT-AHEAD": 0.0553025,
+     "LATENT-AHEAD": 0.005205,
+     "CROSSED": 0.050945
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.912985,
+     "TEXT-AHEAD": 0.0717825,
+     "LATENT-AHEAD": 0.003475,
+     "CROSSED": 0.0117575
+    },
+    "-1/-1": {
+     "PARITY": 0.00751,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9282175,
+     "CROSSED": 0.0642725
+    },
+    "+1/+1": {
+     "PARITY": 1.5e-05,
+     "TEXT-AHEAD": 0.996525,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.00346
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.25010587500000003,
+    "TEXT-AHEAD": 0.18235025,
+    "LATENT-AHEAD": 0.551043625,
+    "CROSSED": 0.01650025
+   }
+  },
+  "s0.17_band0.50_bias+0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.2154425,
+     "TEXT-AHEAD": 0.713025,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0715325
+    },
+    "POS-PROP": {
+     "PARITY": 0.6549425,
+     "TEXT-AHEAD": 0.16574,
+     "LATENT-AHEAD": 0.0007125,
+     "CROSSED": 0.178605
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.737825,
+     "TEXT-AHEAD": 0.2021375,
+     "LATENT-AHEAD": 0.0004175,
+     "CROSSED": 0.05962
+    },
+    "-1/-1": {
+     "PARITY": 0.0593775,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.7978625,
+     "CROSSED": 0.1427575
+    },
+    "+1/+1": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.9995825,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0004175
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.163305375,
+    "TEXT-AHEAD": 0.24010175,
+    "LATENT-AHEAD": 0.550142,
+    "CROSSED": 0.046450875
+   }
+  },
+  "s0.17_band0.50_bias-0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.9013375,
+     "TEXT-AHEAD": 0.094375,
+     "LATENT-AHEAD": 0.0021475,
+     "CROSSED": 0.00214
+    },
+    "POS-PROP": {
+     "PARITY": 0.901865,
+     "TEXT-AHEAD": 0.0023775,
+     "LATENT-AHEAD": 0.093365,
+     "CROSSED": 0.0023925
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.91142,
+     "TEXT-AHEAD": 0.0034825,
+     "LATENT-AHEAD": 0.0728875,
+     "CROSSED": 0.01221
+    },
+    "-1/-1": {
+     "PARITY": 1e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9965175,
+     "CROSSED": 0.0034725
+    },
+    "+1/+1": {
+     "PARITY": 0.007655,
+     "TEXT-AHEAD": 0.9271125,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0652325
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.31557362499999997,
+    "TEXT-AHEAD": 0.11463175,
+    "LATENT-AHEAD": 0.568995125,
+    "CROSSED": 0.0007995000000000001
+   }
+  },
+  "s0.17_band0.50_bias-0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.9519,
+     "TEXT-AHEAD": 0.0264475,
+     "LATENT-AHEAD": 0.01309,
+     "CROSSED": 0.0085625
+    },
+    "POS-PROP": {
+     "PARITY": 0.742695,
+     "TEXT-AHEAD": 0.0002875,
+     "LATENT-AHEAD": 0.243485,
+     "CROSSED": 0.0135325
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.7369525,
+     "TEXT-AHEAD": 0.0004825,
+     "LATENT-AHEAD": 0.20286,
+     "CROSSED": 0.059705
+    },
+    "-1/-1": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9995175,
+     "CROSSED": 0.0004825
+    },
+    "+1/+1": {
+     "PARITY": 0.0596475,
+     "TEXT-AHEAD": 0.79714,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.1432125
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.291324,
+    "TEXT-AHEAD": 0.10402462500000001,
+    "LATENT-AHEAD": 0.6006605,
+    "CROSSED": 0.0039908750000000005
+   }
+  },
+  "s0.17_band0.75_bias+0.00": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.9578625,
+     "TEXT-AHEAD": 0.041845,
+     "LATENT-AHEAD": 2.5e-06,
+     "CROSSED": 0.00029
+    },
+    "POS-PROP": {
+     "PARITY": 0.997945,
+     "TEXT-AHEAD": 0.0006025,
+     "LATENT-AHEAD": 0.0013925,
+     "CROSSED": 6e-05
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.998155,
+     "TEXT-AHEAD": 0.000925,
+     "LATENT-AHEAD": 0.0009075,
+     "CROSSED": 1.25e-05
+    },
+    "-1/-1": {
+     "PARITY": 0.0323075,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.85169,
+     "CROSSED": 0.1160025
+    },
+    "+1/+1": {
+     "PARITY": 0.0327625,
+     "TEXT-AHEAD": 0.850915,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.1163225
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.34326887500000003,
+    "TEXT-AHEAD": 0.10639725000000001,
+    "LATENT-AHEAD": 0.550278375,
+    "CROSSED": 5.55e-05
+   }
+  },
+  "s0.17_band0.75_bias+0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.8621025,
+     "TEXT-AHEAD": 0.134665,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0032325
+    },
+    "POS-PROP": {
+     "PARITY": 0.994245,
+     "TEXT-AHEAD": 0.0042825,
+     "LATENT-AHEAD": 0.000165,
+     "CROSSED": 0.0013075
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.99342,
+     "TEXT-AHEAD": 0.0062975,
+     "LATENT-AHEAD": 9.5e-05,
+     "CROSSED": 0.0001875
+    },
+    "-1/-1": {
+     "PARITY": 0.160815,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.6620325,
+     "CROSSED": 0.1771525
+    },
+    "+1/+1": {
+     "PARITY": 0.003345,
+     "TEXT-AHEAD": 0.9517225,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0449325
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.3281655,
+    "TEXT-AHEAD": 0.12105625,
+    "LATENT-AHEAD": 0.550031875,
+    "CROSSED": 0.0007463750000000001
+   }
+  },
+  "s0.17_band0.75_bias+0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.999995,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 4.5e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.999955,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.664645,
+     "TEXT-AHEAD": 0.31585,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.019505
+    },
+    "POS-PROP": {
+     "PARITY": 0.96278,
+     "TEXT-AHEAD": 0.0222675,
+     "LATENT-AHEAD": 1e-05,
+     "CROSSED": 0.0149425
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9668375,
+     "TEXT-AHEAD": 0.03048,
+     "LATENT-AHEAD": 2.5e-06,
+     "CROSSED": 0.00268
+    },
+    "-1/-1": {
+     "PARITY": 0.43736,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.4179675,
+     "CROSSED": 0.1446725
+    },
+    "+1/+1": {
+     "PARITY": 0.000185,
+     "TEXT-AHEAD": 0.988705,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.01111
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.292263,
+    "TEXT-AHEAD": 0.15183100000000002,
+    "LATENT-AHEAD": 0.54999175,
+    "CROSSED": 0.005914249999999999
+   }
+  },
+  "s0.17_band0.75_bias-0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.99053,
+     "TEXT-AHEAD": 0.0094,
+     "LATENT-AHEAD": 5.5e-05,
+     "CROSSED": 1.5e-05
+    },
+    "POS-PROP": {
+     "PARITY": 0.99062,
+     "TEXT-AHEAD": 6.75e-05,
+     "LATENT-AHEAD": 0.009295,
+     "CROSSED": 1.75e-05
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9932475,
+     "TEXT-AHEAD": 0.0001125,
+     "LATENT-AHEAD": 0.00648,
+     "CROSSED": 0.00016
+    },
+    "-1/-1": {
+     "PARITY": 0.0032175,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.952425,
+     "CROSSED": 0.0443575
+    },
+    "+1/+1": {
+     "PARITY": 0.161685,
+     "TEXT-AHEAD": 0.6610275,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.1772875
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.3467035,
+    "TEXT-AHEAD": 0.1014235,
+    "LATENT-AHEAD": 0.55186725,
+    "CROSSED": 5.75e-06
+   }
+  },
+  "s0.17_band0.75_bias-0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.997885,
+     "TEXT-AHEAD": 0.001515,
+     "LATENT-AHEAD": 0.000535,
+     "CROSSED": 6.5e-05
+    },
+    "POS-PROP": {
+     "PARITY": 0.9583275,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.04137,
+     "CROSSED": 0.0003
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.966525,
+     "TEXT-AHEAD": 5e-06,
+     "LATENT-AHEAD": 0.0307625,
+     "CROSSED": 0.0027075
+    },
+    "-1/-1": {
+     "PARITY": 0.000155,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.988875,
+     "CROSSED": 0.01097
+    },
+    "+1/+1": {
+     "PARITY": 0.4388075,
+     "TEXT-AHEAD": 0.4167475,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.144445
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.34134825,
+    "TEXT-AHEAD": 0.10022775,
+    "LATENT-AHEAD": 0.55835425,
+    "CROSSED": 6.974999999999999e-05
+   }
+  },
+  "s0.20_band0.50_bias+0.00": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 2.5e-06
+    },
+    "N-PROP": {
+     "PARITY": 0.6981975,
+     "TEXT-AHEAD": 0.2793125,
+     "LATENT-AHEAD": 0.0015325,
+     "CROSSED": 0.0209575
+    },
+    "POS-PROP": {
+     "PARITY": 0.903525,
+     "TEXT-AHEAD": 0.0297325,
+     "LATENT-AHEAD": 0.0493175,
+     "CROSSED": 0.017425
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9148075,
+     "TEXT-AHEAD": 0.03846,
+     "LATENT-AHEAD": 0.0385725,
+     "CROSSED": 0.00816
+    },
+    "-1/-1": {
+     "PARITY": 0.0020875,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.96154,
+     "CROSSED": 0.0363725
+    },
+    "+1/+1": {
+     "PARITY": 0.002075,
+     "TEXT-AHEAD": 0.9614275,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0364975
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.285434625,
+    "TEXT-AHEAD": 0.147843375,
+    "LATENT-AHEAD": 0.560092875,
+    "CROSSED": 0.0066291250000000005
+   }
+  },
+  "s0.20_band0.50_bias+0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.4661525,
+     "TEXT-AHEAD": 0.478835,
+     "LATENT-AHEAD": 0.0002475,
+     "CROSSED": 0.054765
+    },
+    "POS-PROP": {
+     "PARITY": 0.826165,
+     "TEXT-AHEAD": 0.08728,
+     "LATENT-AHEAD": 0.0144925,
+     "CROSSED": 0.0720625
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.8588525,
+     "TEXT-AHEAD": 0.1072075,
+     "LATENT-AHEAD": 0.011,
+     "CROSSED": 0.02294
+    },
+    "-1/-1": {
+     "PARITY": 0.0168575,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.8927925,
+     "CROSSED": 0.0903475
+    },
+    "+1/+1": {
+     "PARITY": 0.0001825,
+     "TEXT-AHEAD": 0.988995,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0108225
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.235157,
+    "TEXT-AHEAD": 0.18928125,
+    "LATENT-AHEAD": 0.5529345,
+    "CROSSED": 0.02262725
+   }
+  },
+  "s0.20_band0.50_bias+0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 1.75e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999825,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.233855,
+     "TEXT-AHEAD": 0.683595,
+     "LATENT-AHEAD": 3.5e-05,
+     "CROSSED": 0.082515
+    },
+    "POS-PROP": {
+     "PARITY": 0.6074875,
+     "TEXT-AHEAD": 0.2049375,
+     "LATENT-AHEAD": 0.0033075,
+     "CROSSED": 0.1842675
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.68325,
+     "TEXT-AHEAD": 0.2388475,
+     "LATENT-AHEAD": 0.0022975,
+     "CROSSED": 0.075605
+    },
+    "-1/-1": {
+     "PARITY": 0.0823325,
+     "TEXT-AHEAD": 1.75e-05,
+     "LATENT-AHEAD": 0.7611525,
+     "CROSSED": 0.1564975
+    },
+    "+1/+1": {
+     "PARITY": 5e-06,
+     "TEXT-AHEAD": 0.9977,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.002295
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.15657987499999998,
+    "TEXT-AHEAD": 0.24352675,
+    "LATENT-AHEAD": 0.5506626250000001,
+    "CROSSED": 0.049230750000000004
+   }
+  },
+  "s0.20_band0.50_bias-0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.8528475,
+     "TEXT-AHEAD": 0.13213,
+     "LATENT-AHEAD": 0.0078725,
+     "CROSSED": 0.00715
+    },
+    "POS-PROP": {
+     "PARITY": 0.853705,
+     "TEXT-AHEAD": 0.0077775,
+     "LATENT-AHEAD": 0.1304625,
+     "CROSSED": 0.008055
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.858165,
+     "TEXT-AHEAD": 0.0107825,
+     "LATENT-AHEAD": 0.107695,
+     "CROSSED": 0.0233575
+    },
+    "-1/-1": {
+     "PARITY": 0.0001425,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9892175,
+     "CROSSED": 0.01064
+    },
+    "+1/+1": {
+     "PARITY": 0.0170125,
+     "TEXT-AHEAD": 0.892305,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0906825
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.29866812500000006,
+    "TEXT-AHEAD": 0.12137500000000001,
+    "LATENT-AHEAD": 0.577273375,
+    "CROSSED": 0.0026835
+   }
+  },
+  "s0.20_band0.50_bias-0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.9015125,
+     "TEXT-AHEAD": 0.0497175,
+     "LATENT-AHEAD": 0.02938,
+     "CROSSED": 0.01939
+    },
+    "POS-PROP": {
+     "PARITY": 0.697745,
+     "TEXT-AHEAD": 0.0016825,
+     "LATENT-AHEAD": 0.277055,
+     "CROSSED": 0.0235175
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.68168,
+     "TEXT-AHEAD": 0.002465,
+     "LATENT-AHEAD": 0.24019,
+     "CROSSED": 0.075665
+    },
+    "-1/-1": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.997535,
+     "CROSSED": 0.0024625
+    },
+    "+1/+1": {
+     "PARITY": 0.08305,
+     "TEXT-AHEAD": 0.75981,
+     "LATENT-AHEAD": 7.5e-06,
+     "CROSSED": 0.1571325
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.274775875,
+    "TEXT-AHEAD": 0.107794125,
+    "LATENT-AHEAD": 0.609818,
+    "CROSSED": 0.007612000000000001
+   }
+  },
+  "s0.20_band0.75_bias+0.00": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.9281575,
+     "TEXT-AHEAD": 0.0704025,
+     "LATENT-AHEAD": 6.75e-05,
+     "CROSSED": 0.0013725
+    },
+    "POS-PROP": {
+     "PARITY": 0.9908775,
+     "TEXT-AHEAD": 0.0029175,
+     "LATENT-AHEAD": 0.0056975,
+     "CROSSED": 0.0005075
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.99172,
+     "TEXT-AHEAD": 0.00403,
+     "LATENT-AHEAD": 0.0041025,
+     "CROSSED": 0.0001475
+    },
+    "-1/-1": {
+     "PARITY": 0.051175,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.812365,
+     "CROSSED": 0.13646
+    },
+    "+1/+1": {
+     "PARITY": 0.05193,
+     "TEXT-AHEAD": 0.8112875,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.1367825
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.33740025,
+    "TEXT-AHEAD": 0.111143875,
+    "LATENT-AHEAD": 0.5511485,
+    "CROSSED": 0.00030737500000000003
+   }
+  },
+  "s0.20_band0.75_bias+0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 1.75e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999825,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 6.5e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999325,
+     "CROSSED": 2.5e-06
+    },
+    "N-PROP": {
+     "PARITY": 0.817915,
+     "TEXT-AHEAD": 0.17382,
+     "LATENT-AHEAD": 2.5e-06,
+     "CROSSED": 0.0082625
+    },
+    "POS-PROP": {
+     "PARITY": 0.981475,
+     "TEXT-AHEAD": 0.0126775,
+     "LATENT-AHEAD": 0.00109,
+     "CROSSED": 0.0047575
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9813675,
+     "TEXT-AHEAD": 0.01697,
+     "LATENT-AHEAD": 0.00075,
+     "CROSSED": 0.0009125
+    },
+    "-1/-1": {
+     "PARITY": 0.1822825,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.638815,
+     "CROSSED": 0.1789025
+    },
+    "+1/+1": {
+     "PARITY": 0.0089925,
+     "TEXT-AHEAD": 0.921115,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0698925
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.31899962499999995,
+    "TEXT-AHEAD": 0.12860850000000001,
+    "LATENT-AHEAD": 0.5502005,
+    "CROSSED": 0.002191375
+   }
+  },
+  "s0.20_band0.75_bias+0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.00012,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99988,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0004275,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9995725,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.6278525,
+     "TEXT-AHEAD": 0.34173,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0304175
+    },
+    "POS-PROP": {
+     "PARITY": 0.9274975,
+     "TEXT-AHEAD": 0.0435025,
+     "LATENT-AHEAD": 0.0001725,
+     "CROSSED": 0.0288275
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9371425,
+     "TEXT-AHEAD": 0.0553175,
+     "LATENT-AHEAD": 0.0001075,
+     "CROSSED": 0.0074325
+    },
+    "-1/-1": {
+     "PARITY": 0.4213175,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.4303825,
+     "CROSSED": 0.1482975
+    },
+    "+1/+1": {
+     "PARITY": 0.000955,
+     "TEXT-AHEAD": 0.9739525,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0250925
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.279792875,
+    "TEXT-AHEAD": 0.15996,
+    "LATENT-AHEAD": 0.549919,
+    "CROSSED": 0.010328125
+   }
+  },
+  "s0.20_band0.75_bias-0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 2.5e-06
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.976565,
+     "TEXT-AHEAD": 0.022815,
+     "LATENT-AHEAD": 0.000455,
+     "CROSSED": 0.000165
+    },
+    "POS-PROP": {
+     "PARITY": 0.9767325,
+     "TEXT-AHEAD": 0.0005225,
+     "LATENT-AHEAD": 0.0225725,
+     "CROSSED": 0.0001725
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.981385,
+     "TEXT-AHEAD": 0.0007375,
+     "LATENT-AHEAD": 0.017005,
+     "CROSSED": 0.0008725
+    },
+    "-1/-1": {
+     "PARITY": 0.0088225,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9221575,
+     "CROSSED": 0.06902
+    },
+    "+1/+1": {
+     "PARITY": 0.1830025,
+     "TEXT-AHEAD": 0.63806,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.1789375
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.34183175,
+    "TEXT-AHEAD": 0.10352675,
+    "LATENT-AHEAD": 0.554581625,
+    "CROSSED": 5.9875e-05
+   }
+  },
+  "s0.20_band0.75_bias-0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.99091,
+     "TEXT-AHEAD": 0.00583,
+     "LATENT-AHEAD": 0.002725,
+     "CROSSED": 0.000535
+    },
+    "POS-PROP": {
+     "PARITY": 0.9284425,
+     "TEXT-AHEAD": 7.25e-05,
+     "LATENT-AHEAD": 0.070025,
+     "CROSSED": 0.00146
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.9361325,
+     "TEXT-AHEAD": 0.000125,
+     "LATENT-AHEAD": 0.05583,
+     "CROSSED": 0.0079125
+    },
+    "-1/-1": {
+     "PARITY": 0.0009425,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9742075,
+     "CROSSED": 0.02485
+    },
+    "+1/+1": {
+     "PARITY": 0.4228225,
+     "TEXT-AHEAD": 0.42897,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.1482075
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.334325,
+    "TEXT-AHEAD": 0.100889,
+    "LATENT-AHEAD": 0.56441375,
+    "CROSSED": 0.00037224999999999997
+   }
+  },
+  "s0.35_band0.50_bias+0.00": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0004025,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9993625,
+     "CROSSED": 0.0002325
+    },
+    "POS-ADD": {
+     "PARITY": 0.0008025,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9986975,
+     "CROSSED": 0.0004975
+    },
+    "N-PROP": {
+     "PARITY": 0.5048675,
+     "TEXT-AHEAD": 0.3679825,
+     "LATENT-AHEAD": 0.045375,
+     "CROSSED": 0.081775
+    },
+    "POS-PROP": {
+     "PARITY": 0.594395,
+     "TEXT-AHEAD": 0.1396925,
+     "LATENT-AHEAD": 0.1698175,
+     "CROSSED": 0.096095
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.6092725,
+     "TEXT-AHEAD": 0.154165,
+     "LATENT-AHEAD": 0.1553025,
+     "CROSSED": 0.08126
+    },
+    "-1/-1": {
+     "PARITY": 0.0346,
+     "TEXT-AHEAD": 0.0007775,
+     "LATENT-AHEAD": 0.844735,
+     "CROSSED": 0.1198875
+    },
+    "+1/+1": {
+     "PARITY": 0.035175,
+     "TEXT-AHEAD": 0.84363,
+     "LATENT-AHEAD": 0.000725,
+     "CROSSED": 0.12047
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.19487025,
+    "TEXT-AHEAD": 0.183137,
+    "LATENT-AHEAD": 0.590349875,
+    "CROSSED": 0.031642875
+   }
+  },
+  "s0.35_band0.50_bias+0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.00124,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.998185,
+     "CROSSED": 0.0005725
+    },
+    "POS-ADD": {
+     "PARITY": 0.002435,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9966425,
+     "CROSSED": 0.00092
+    },
+    "N-PROP": {
+     "PARITY": 0.39073,
+     "TEXT-AHEAD": 0.4872225,
+     "LATENT-AHEAD": 0.0226625,
+     "CROSSED": 0.099385
+    },
+    "POS-PROP": {
+     "PARITY": 0.540325,
+     "TEXT-AHEAD": 0.2189575,
+     "LATENT-AHEAD": 0.1020275,
+     "CROSSED": 0.13869
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.5745475,
+     "TEXT-AHEAD": 0.238305,
+     "LATENT-AHEAD": 0.0929675,
+     "CROSSED": 0.09418
+    },
+    "-1/-1": {
+     "PARITY": 0.07994,
+     "TEXT-AHEAD": 0.0023575,
+     "LATENT-AHEAD": 0.76115,
+     "CROSSED": 0.1565525
+    },
+    "+1/+1": {
+     "PARITY": 0.0127925,
+     "TEXT-AHEAD": 0.9055075,
+     "LATENT-AHEAD": 0.000215,
+     "CROSSED": 0.081485
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.16747150000000002,
+    "TEXT-AHEAD": 0.216876,
+    "LATENT-AHEAD": 0.572679625,
+    "CROSSED": 0.042972875
+   }
+  },
+  "s0.35_band0.50_bias+0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.003505,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9954975,
+     "CROSSED": 0.000995
+    },
+    "POS-ADD": {
+     "PARITY": 0.0063125,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9920925,
+     "CROSSED": 0.0015925
+    },
+    "N-PROP": {
+     "PARITY": 0.2666075,
+     "TEXT-AHEAD": 0.6068175,
+     "LATENT-AHEAD": 0.0103925,
+     "CROSSED": 0.1161825
+    },
+    "POS-PROP": {
+     "PARITY": 0.4342875,
+     "TEXT-AHEAD": 0.318445,
+     "LATENT-AHEAD": 0.0562825,
+     "CROSSED": 0.190985
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.4812525,
+     "TEXT-AHEAD": 0.3420975,
+     "LATENT-AHEAD": 0.051085,
+     "CROSSED": 0.125565
+    },
+    "-1/-1": {
+     "PARITY": 0.1585025,
+     "TEXT-AHEAD": 0.006185,
+     "LATENT-AHEAD": 0.657595,
+     "CROSSED": 0.1777175
+    },
+    "+1/+1": {
+     "PARITY": 0.00393,
+     "TEXT-AHEAD": 0.9469775,
+     "LATENT-AHEAD": 8.25e-05,
+     "CROSSED": 0.04901
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.128987375,
+    "TEXT-AHEAD": 0.25471275,
+    "LATENT-AHEAD": 0.5601082500000001,
+    "CROSSED": 0.056191625
+   }
+  },
+  "s0.35_band0.50_bias-0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.000105,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9997775,
+     "CROSSED": 0.0001175
+    },
+    "POS-ADD": {
+     "PARITY": 0.000255,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99952,
+     "CROSSED": 0.000225
+    },
+    "N-PROP": {
+     "PARITY": 0.5801725,
+     "TEXT-AHEAD": 0.2597025,
+     "LATENT-AHEAD": 0.0827625,
+     "CROSSED": 0.0773625
+    },
+    "POS-PROP": {
+     "PARITY": 0.5811,
+     "TEXT-AHEAD": 0.0826175,
+     "LATENT-AHEAD": 0.2590275,
+     "CROSSED": 0.077255
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.5746675,
+     "TEXT-AHEAD": 0.092065,
+     "LATENT-AHEAD": 0.23959,
+     "CROSSED": 0.0936775
+    },
+    "-1/-1": {
+     "PARITY": 0.012715,
+     "TEXT-AHEAD": 0.000235,
+     "LATENT-AHEAD": 0.9063225,
+     "CROSSED": 0.0807275
+    },
+    "+1/+1": {
+     "PARITY": 0.0806875,
+     "TEXT-AHEAD": 0.7598075,
+     "LATENT-AHEAD": 0.002325,
+     "CROSSED": 0.15718
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.20332312499999997,
+    "TEXT-AHEAD": 0.15547887500000002,
+    "LATENT-AHEAD": 0.61406825,
+    "CROSSED": 0.02712975
+   }
+  },
+  "s0.35_band0.50_bias-0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 2.75e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99993,
+     "CROSSED": 4.25e-05
+    },
+    "POS-ADD": {
+     "PARITY": 5e-05,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99984,
+     "CROSSED": 0.00011
+    },
+    "N-PROP": {
+     "PARITY": 0.5934325,
+     "TEXT-AHEAD": 0.1699725,
+     "LATENT-AHEAD": 0.13891,
+     "CROSSED": 0.097685
+    },
+    "POS-PROP": {
+     "PARITY": 0.504815,
+     "TEXT-AHEAD": 0.0449275,
+     "LATENT-AHEAD": 0.3668675,
+     "CROSSED": 0.08339
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.9999975,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 2.5e-06
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.4817175,
+     "TEXT-AHEAD": 0.0505625,
+     "LATENT-AHEAD": 0.34299,
+     "CROSSED": 0.12473
+    },
+    "-1/-1": {
+     "PARITY": 0.003905,
+     "TEXT-AHEAD": 4.75e-05,
+     "LATENT-AHEAD": 0.9474475,
+     "CROSSED": 0.0486
+    },
+    "+1/+1": {
+     "PARITY": 0.15904,
+     "TEXT-AHEAD": 0.656725,
+     "LATENT-AHEAD": 0.0063625,
+     "CROSSED": 0.1778725
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.18999475000000002,
+    "TEXT-AHEAD": 0.134481125,
+    "LATENT-AHEAD": 0.6441605,
+    "CROSSED": 0.031363625
+   }
+  },
+  "s0.35_band0.75_bias+0.00": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0025725,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99677,
+     "CROSSED": 0.0006575
+    },
+    "POS-ADD": {
+     "PARITY": 0.004785,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9940925,
+     "CROSSED": 0.0011225
+    },
+    "N-PROP": {
+     "PARITY": 0.759145,
+     "TEXT-AHEAD": 0.2004375,
+     "LATENT-AHEAD": 0.014165,
+     "CROSSED": 0.0262525
+    },
+    "POS-PROP": {
+     "PARITY": 0.844635,
+     "TEXT-AHEAD": 0.056445,
+     "LATENT-AHEAD": 0.073695,
+     "CROSSED": 0.025225
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.9999975,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 2.5e-06
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.8514025,
+     "TEXT-AHEAD": 0.0640425,
+     "LATENT-AHEAD": 0.0649975,
+     "CROSSED": 0.0195575
+    },
+    "-1/-1": {
+     "PARITY": 0.1327625,
+     "TEXT-AHEAD": 0.00021,
+     "LATENT-AHEAD": 0.694225,
+     "CROSSED": 0.1728025
+    },
+    "+1/+1": {
+     "PARITY": 0.1333525,
+     "TEXT-AHEAD": 0.693275,
+     "LATENT-AHEAD": 0.0001925,
+     "CROSSED": 0.17318
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.284398875,
+    "TEXT-AHEAD": 0.141354375,
+    "LATENT-AHEAD": 0.56487475,
+    "CROSSED": 0.009372000000000002
+   }
+  },
+  "s0.35_band0.75_bias+0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0065325,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99257,
+     "CROSSED": 0.0008975
+    },
+    "POS-ADD": {
+     "PARITY": 0.0117125,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9867775,
+     "CROSSED": 0.0015075
+    },
+    "N-PROP": {
+     "PARITY": 0.651225,
+     "TEXT-AHEAD": 0.2951825,
+     "LATENT-AHEAD": 0.006475,
+     "CROSSED": 0.0471175
+    },
+    "POS-PROP": {
+     "PARITY": 0.8109975,
+     "TEXT-AHEAD": 0.09973,
+     "LATENT-AHEAD": 0.039845,
+     "CROSSED": 0.0494275
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.8260425,
+     "TEXT-AHEAD": 0.11197,
+     "LATENT-AHEAD": 0.0345425,
+     "CROSSED": 0.027445
+    },
+    "-1/-1": {
+     "PARITY": 0.24052,
+     "TEXT-AHEAD": 0.0006,
+     "LATENT-AHEAD": 0.580905,
+     "CROSSED": 0.177975
+    },
+    "+1/+1": {
+     "PARITY": 0.06377,
+     "TEXT-AHEAD": 0.79016,
+     "LATENT-AHEAD": 6.5e-05,
+     "CROSSED": 0.146005
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.26385887500000005,
+    "TEXT-AHEAD": 0.16422387500000002,
+    "LATENT-AHEAD": 0.55443825,
+    "CROSSED": 0.017478999999999998
+   }
+  },
+  "s0.35_band0.75_bias+0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0156775,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.983235,
+     "CROSSED": 0.001085
+    },
+    "POS-ADD": {
+     "PARITY": 0.0257725,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.972475,
+     "CROSSED": 0.00175
+    },
+    "N-PROP": {
+     "PARITY": 0.5143625,
+     "TEXT-AHEAD": 0.407665,
+     "LATENT-AHEAD": 0.0025075,
+     "CROSSED": 0.075465
+    },
+    "POS-PROP": {
+     "PARITY": 0.722895,
+     "TEXT-AHEAD": 0.16384,
+     "LATENT-AHEAD": 0.01978,
+     "CROSSED": 0.093485
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.75045,
+     "TEXT-AHEAD": 0.1810225,
+     "LATENT-AHEAD": 0.0169825,
+     "CROSSED": 0.051545
+    },
+    "-1/-1": {
+     "PARITY": 0.381,
+     "TEXT-AHEAD": 0.001765,
+     "LATENT-AHEAD": 0.46014,
+     "CROSSED": 0.157095
+    },
+    "+1/+1": {
+     "PARITY": 0.0261725,
+     "TEXT-AHEAD": 0.8671425,
+     "LATENT-AHEAD": 1.25e-05,
+     "CROSSED": 0.1066725
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.23080724999999996,
+    "TEXT-AHEAD": 0.19391887500000002,
+    "LATENT-AHEAD": 0.544635875,
+    "CROSSED": 0.030638000000000002
+   }
+  },
+  "s0.35_band0.75_bias-0.15": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.000875,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.998745,
+     "CROSSED": 0.00038
+    },
+    "POS-ADD": {
+     "PARITY": 0.0017425,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9975175,
+     "CROSSED": 0.00074
+    },
+    "N-PROP": {
+     "PARITY": 0.8252,
+     "TEXT-AHEAD": 0.1261625,
+     "LATENT-AHEAD": 0.029555,
+     "CROSSED": 0.0190825
+    },
+    "POS-PROP": {
+     "PARITY": 0.82595,
+     "TEXT-AHEAD": 0.02964,
+     "LATENT-AHEAD": 0.125345,
+     "CROSSED": 0.019065
+    },
+    "BETTER": {
+     "PARITY": 5e-06,
+     "TEXT-AHEAD": 0.9999925,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 2.5e-06
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.8252775,
+     "TEXT-AHEAD": 0.0344025,
+     "LATENT-AHEAD": 0.112465,
+     "CROSSED": 0.027855
+    },
+    "-1/-1": {
+     "PARITY": 0.0632975,
+     "TEXT-AHEAD": 6.25e-05,
+     "LATENT-AHEAD": 0.79126,
+     "CROSSED": 0.14538
+    },
+    "+1/+1": {
+     "PARITY": 0.2419225,
+     "TEXT-AHEAD": 0.5797025,
+     "LATENT-AHEAD": 0.000575,
+     "CROSSED": 0.1778
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.28953775,
+    "TEXT-AHEAD": 0.124851625,
+    "LATENT-AHEAD": 0.578692,
+    "CROSSED": 0.006918625
+   }
+  },
+  "s0.35_band0.75_bias-0.30": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0002675,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9995425,
+     "CROSSED": 0.00019
+    },
+    "POS-ADD": {
+     "PARITY": 0.0005225,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9991025,
+     "CROSSED": 0.000375
+    },
+    "N-PROP": {
+     "PARITY": 0.843715,
+     "TEXT-AHEAD": 0.0733725,
+     "LATENT-AHEAD": 0.056365,
+     "CROSSED": 0.0265475
+    },
+    "POS-PROP": {
+     "PARITY": 0.75796,
+     "TEXT-AHEAD": 0.0144175,
+     "LATENT-AHEAD": 0.1996775,
+     "CROSSED": 0.027945
+    },
+    "BETTER": {
+     "PARITY": 4.75e-05,
+     "TEXT-AHEAD": 0.9999525,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF": {
+     "PARITY": 0.7492425,
+     "TEXT-AHEAD": 0.0169325,
+     "LATENT-AHEAD": 0.182085,
+     "CROSSED": 0.05174
+    },
+    "-1/-1": {
+     "PARITY": 0.0259125,
+     "TEXT-AHEAD": 2.5e-05,
+     "LATENT-AHEAD": 0.8675325,
+     "CROSSED": 0.10653
+    },
+    "+1/+1": {
+     "PARITY": 0.382295,
+     "TEXT-AHEAD": 0.45939,
+     "LATENT-AHEAD": 0.0016275,
+     "CROSSED": 0.1566875
+    }
+   },
+   "prior_weighted_given_both": {
+    "PARITY": 0.278325375,
+    "TEXT-AHEAD": 0.113884625,
+    "LATENT-AHEAD": 0.598096375,
+    "CROSSED": 0.009693625
+   }
+  }
+ },
+ "pooled_2text_1latent": {
+  "s0.20": {
+   "s_eff": 0.17320508075688773,
+   "NO-DIFF": {
+    "PARITY": 0.95632,
+    "TEXT-AHEAD": 0.02051,
+    "LATENT-AHEAD": 0.0205925,
+    "CROSSED": 0.0025775
+   },
+   "-1/-1": {
+    "PARITY": 0.0005625,
+    "TEXT-AHEAD": 0.0,
+    "LATENT-AHEAD": 0.97949,
+    "CROSSED": 0.0199475
+   },
+   "draft_claimed_s_eff (s/sqrt2)": 0.1414213562373095
+  },
+  "s0.35": {
+   "s_eff": 0.3031088913245535,
+   "NO-DIFF": {
+    "PARITY": 0.703465,
+    "TEXT-AHEAD": 0.1206925,
+    "LATENT-AHEAD": 0.1210875,
+    "CROSSED": 0.054755
+   },
+   "-1/-1": {
+    "PARITY": 0.0214675,
+    "TEXT-AHEAD": 0.0001525,
+    "LATENT-AHEAD": 0.87898,
+    "CROSSED": 0.0994
+   },
+   "draft_claimed_s_eff (s/sqrt2)": 0.2474873734152916
+  }
+ },
+ "base_corrected": {
+  "s0.20_rho0_0.0": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 2.5e-06,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9999975,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.7495225,
+     "TEXT-AHEAD": 0.1989275,
+     "LATENT-AHEAD": 0.0204925,
+     "CROSSED": 0.0310575
+    },
+    "POS-PROP": {
+     "PARITY": 0.7756225,
+     "TEXT-AHEAD": 0.0283775,
+     "LATENT-AHEAD": 0.1631425,
+     "CROSSED": 0.0328575
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (proportional parity incl. offset scaling 12/8, 16/8)": {
+     "PARITY": 0.78952,
+     "TEXT-AHEAD": 0.1404325,
+     "LATENT-AHEAD": 0.0351025,
+     "CROSSED": 0.034945
+    }
+   },
+   "prior_weighted": {
+    "PARITY": 0.267553375,
+    "TEXT-AHEAD": 0.135514625,
+    "LATENT-AHEAD": 0.585701875,
+    "CROSSED": 0.011230125
+   }
+  },
+  "s0.20_rho0_0.5": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "POS-ADD": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "N-PROP": {
+     "PARITY": 0.81703,
+     "TEXT-AHEAD": 0.1669525,
+     "LATENT-AHEAD": 0.0098375,
+     "CROSSED": 0.00618
+    },
+    "POS-PROP": {
+     "PARITY": 0.849335,
+     "TEXT-AHEAD": 0.0145125,
+     "LATENT-AHEAD": 0.1304275,
+     "CROSSED": 0.005725
+    },
+    "BETTER": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 1.0,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 0.0
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (proportional parity incl. offset scaling 12/8, 16/8)": {
+     "PARITY": 0.86425,
+     "TEXT-AHEAD": 0.10937,
+     "LATENT-AHEAD": 0.019055,
+     "CROSSED": 0.007325
+    }
+   },
+   "prior_weighted": {
+    "PARITY": 0.2924215,
+    "TEXT-AHEAD": 0.127945375,
+    "LATENT-AHEAD": 0.577561125,
+    "CROSSED": 0.002072
+   }
+  },
+  "s0.35_rho0_0.0": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.0018075,
+     "TEXT-AHEAD": 2.5e-06,
+     "LATENT-AHEAD": 0.9975225,
+     "CROSSED": 0.0006675
+    },
+    "POS-ADD": {
+     "PARITY": 0.0030075,
+     "TEXT-AHEAD": 5e-06,
+     "LATENT-AHEAD": 0.9959725,
+     "CROSSED": 0.001015
+    },
+    "N-PROP": {
+     "PARITY": 0.4527525,
+     "TEXT-AHEAD": 0.3119675,
+     "LATENT-AHEAD": 0.1211925,
+     "CROSSED": 0.1140875
+    },
+    "POS-PROP": {
+     "PARITY": 0.4607825,
+     "TEXT-AHEAD": 0.136965,
+     "LATENT-AHEAD": 0.28493,
+     "CROSSED": 0.1173225
+    },
+    "BETTER": {
+     "PARITY": 4e-05,
+     "TEXT-AHEAD": 0.9998875,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 7.25e-05
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (proportional parity incl. offset scaling 12/8, 16/8)": {
+     "PARITY": 0.4654625,
+     "TEXT-AHEAD": 0.2679725,
+     "LATENT-AHEAD": 0.14972,
+     "CROSSED": 0.116845
+    }
+   },
+   "prior_weighted": {
+    "PARITY": 0.16112675,
+    "TEXT-AHEAD": 0.1741785,
+    "LATENT-AHEAD": 0.6237400000000001,
+    "CROSSED": 0.04095475
+   }
+  },
+  "s0.35_rho0_0.5": {
+   "by_case": {
+    "N-SHIFT": {
+     "PARITY": 0.00033,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.9994025,
+     "CROSSED": 0.0002675
+    },
+    "POS-ADD": {
+     "PARITY": 0.000595,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 0.99889,
+     "CROSSED": 0.000515
+    },
+    "N-PROP": {
+     "PARITY": 0.5564475,
+     "TEXT-AHEAD": 0.2886875,
+     "LATENT-AHEAD": 0.090115,
+     "CROSSED": 0.06475
+    },
+    "POS-PROP": {
+     "PARITY": 0.56818,
+     "TEXT-AHEAD": 0.1061325,
+     "LATENT-AHEAD": 0.2590475,
+     "CROSSED": 0.06664
+    },
+    "BETTER": {
+     "PARITY": 5e-06,
+     "TEXT-AHEAD": 0.9999925,
+     "LATENT-AHEAD": 0.0,
+     "CROSSED": 2.5e-06
+    },
+    "WORSE": {
+     "PARITY": 0.0,
+     "TEXT-AHEAD": 0.0,
+     "LATENT-AHEAD": 1.0,
+     "CROSSED": 0.0
+    },
+    "NO-DIFF (proportional parity incl. offset scaling 12/8, 16/8)": {
+     "PARITY": 0.57537,
+     "TEXT-AHEAD": 0.2394475,
+     "LATENT-AHEAD": 0.1171375,
+     "CROSSED": 0.068045
+    }
+   },
+   "prior_weighted": {
+    "PARITY": 0.197305125,
+    "TEXT-AHEAD": 0.164528875,
+    "LATENT-AHEAD": 0.614955375,
+    "CROSSED": 0.023210625000000002
+   }
+  }
+ },
+ "structural": {
+  "p_both_rounds_draft": 0.67667329125,
+  "p_both_rounds_rt": 0.74036018925,
+  "p_stall_draft": 0.1269675,
+  "p_stall_rt": 0.059251499999999964,
+  "p_round1_only_not_absorbed": 0.09404999999999998
+ }
+}
