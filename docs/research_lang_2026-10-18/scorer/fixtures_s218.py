@@ -970,6 +970,13 @@ def define_cases():
         c.obs = {"cf": b["READINGS"]["CF_GSM"]["status"], "late": b["LABELS"]["late_fusion_median_tstar"]}
         c.ok(b["READINGS"]["CF_GSM"]["status"] == "NOT MET" and b["LABELS"]["LATE_FUSION_GSM"] is True and not b["VB_C1_GSM"], "LATE-FUSION-GSM")
 
+    @case("CF-GSM minimum (note 218-5): 35 base steps readable, 25 UNREADABLE", "CF-GSM MET at 35; UNREADABLE at 25 (< 30)")
+    def _(c):
+        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_part(lambda j, mb: j, bases=range(35)))}); s35 = o["cells"]["b1"]["READINGS"]["CF_GSM"]["status"]
+        o = run({"lvb_gsm_s1/eval_lvb_gsm.json": ev_gsm(b1_ok(120, 0), cf=cf_gsm_part(lambda j, mb: j, bases=range(25)))}); s25 = o["cells"]["b1"]["READINGS"]["CF_GSM"]["status"]
+        c.obs = {"35": s35, "25": s25}
+        c.ok(s35 == "MET", "35 distinct base steps -> readable and MET"); c.ok(s25.startswith("UNREADABLE") and "25 < 30" in s25, "25 < 30 -> UNREADABLE")
+
     @case("GSM clustering: 21 variants of 5 base items (105 clean pairs) cannot pass", "SERIAL-STEP-GSM UNREADABLE (5 < 50 distinct base items); CF-GSM likewise")
     def _(c):
         arms = {a: gsm_arm(bases=range(5), variants=21) for a in ("ii_prime", "i", "ii", "iv")}
@@ -977,7 +984,7 @@ def define_cases():
         b = o["cells"]["b1"]; s = b["READINGS"]["SERIAL_STEP_GSM"]["ii_prime"]; cfs = b["READINGS"]["CF_GSM"]
         c.obs = {"ii_prime": s["status"], "n_clean": s.get("n_clean_band"), "cf": cfs["status"]}
         c.ok(s.get("n_clean_band") == 105 and "5 < 50 distinct base items" in s["status"] and s.get("follow") == 1.0, "vswap >= 50 rule")
-        c.ok(cfs["status"].startswith("UNREADABLE") and "5 < 50" in cfs["status"], "CF-GSM >= 50 rule"); c.ok(not b["VB_C1_GSM"], "not VB-C1-GSM")
+        c.ok(cfs["status"].startswith("UNREADABLE") and "5 < 30" in cfs["status"], "CF-GSM >= 30 rule (note 218-5)"); c.ok(not b["VB_C1_GSM"], "not VB-C1-GSM")
 
     @case("GSM clustering: a clustered mean differs from the pooled mean (designed)", "clustered follow 0.833 / own 0.167 (met); pair-level 0.20 / 0.80")
     def _(c):

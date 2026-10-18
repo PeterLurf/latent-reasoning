@@ -19433,6 +19433,14 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
   - CF stores all candidate pairs with exposed / clean flags;
   - one test-items sha per part (§4.3).
 
+**Note 218-5 (2026-10-18 15:34 EDT; Audit's ruling on R13, an interpretation of LANG_v1 Addendum 1 item 6; before any §218 output. Ruled by Audit, author of the Addendum-1 condition).**
+- The Addendum's intent for CF-GSM was the cluster **rule**, not the ≥ 50 count. A ≥ 50 count cannot apply when only 37 exposed steps with j ≥ 3 exist (v1_gsm_exposure.json).
+- **Registered: CF-GSM requires ≥ 30 distinct exposed base steps with ≥ 1 clean pair.**
+  - Its share and ρ are computed on base-step-clustered values, with variants averaged within each step first, and cluster-bootstrap CIs.
+  - Fewer than 30 steps reads UNREADABLE, which counts as not met.
+- (ii′) / (i) keep ≥ 50 distinct base items.
+- score_s218.py now sets CF_GSM_MIN_BASE = 30. A fixture checks that 35 base steps read MET and 25 read UNREADABLE. The fixtures stand at 63 / 63.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
