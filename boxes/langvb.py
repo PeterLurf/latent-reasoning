@@ -163,7 +163,7 @@ class LangSLVA(SL.SLVA):
         (the last real slot row for k = 0)."""
         b, SL_, _ = h.shape; L = dec.shape[1]; S = SL_ - L; last = spad.sum(1) - 1
         rows = torch.cat([h[torch.arange(b, device=h.device), last][:, None], h[:, S:S + L - 1]], 1)        # (b, L, D)
-        lp = torch.log_softmax(self.g.logits(rows).float(), -1)
+        lg = self.g.logits(rows); lp = torch.log_softmax(lg if lg.dtype == torch.float64 else lg.float(), -1)   # fp64 stays fp64 (exactness gates)
         return lp.gather(-1, dec[..., None]).squeeze(-1)
 
     @torch.no_grad()
@@ -258,7 +258,8 @@ def lvb_loss(m, items, Ks, dev, ac, rec_w=1.0, sg_input=False, keep=False):
     win = {t: torch.nonzero((tau <= t) & (t <= Kt)).flatten() for t in range(0, Kb + 1)}; win = {t: r_ for t, r_ in win.items() if len(r_)}
     with ac():
         r = m.rollout_ls(x, pad, si, sp, Kb, coda_rows=win, dec=dR, lens=lens, sg_input=sg_input)
-    ans_sum = torch.zeros(B, device=dev); ans_cnt = torch.zeros(B, device=dev); cc_sum = torch.zeros(B, device=dev)
+    dt = torch.float64 if m.g.w("wte.weight").dtype == torch.float64 else torch.float32     # fp64 models (exactness gates) accumulate in fp64
+    ans_sum = torch.zeros(B, device=dev, dtype=dt); ans_cnt = torch.zeros(B, device=dev, dtype=dt); cc_sum = torch.zeros(B, device=dev, dtype=dt)
     for t, (rows, h) in r["coda"].items():
         lpR = m.dec_logprobs(h, sp[rows], dR[rows]); ce = -lpR.mean(1)
         ans_sum = ans_sum.index_add(0, rows, ce); ans_cnt = ans_cnt.index_add(0, rows, torch.ones_like(ce))
@@ -390,6 +391,9 @@ def main():
     ap.add_argument("--stop_at", type=int, default=0); ap.add_argument("--keep_ckpt_steps", default=""); ap.add_argument("--cal_n", type=int, default=64)
     ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=200, help="host eval: the first per_n test items per D 3..12")
     ap.add_argument("--fp32", action="store_true"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--args_only", action="store_true", help="write the args.json this command would write (args_only recorded False) and exit (Theory freezes it)")
+    ap.add_argument("--host_eval_at", default="8000,16000", help="Note 218-8 (descriptive): candidate accuracy at K' = D + 2 on a fixed non-test set "
+                    "(Stream 21170 / rng 21171, 100 per D 3..8) logged at these steps")
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device; direct = a.arch == "direct"
     from boxes import s5
     from boxes.fsq120 import lr_at, driver_version, env_info
@@ -401,6 +405,10 @@ def main():
     ns = [int(v) for v in a.cur.split(",")]; thr, need, cap = a.cur_gate.split(":"); GATE = VB.CurGate(ns, float(thr), int(need), int(cap))
     ch0, ch1 = (int(v) for v in a.c_sched.split(","))
     assert DM().POS_OFFSET == 0 and not DM().POS_KEEP0, "training needs the plain position table"
+    if a.args_only:                                                         # before any model / GPU allocation: the args.json the launch would write
+        a.arch_class = "GPT2KV" if direct else "LangSLVA"; a.args_only = False
+        info = {"train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info()}
+        json.dump({**vars(a), **info}, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1); print("ARGS_ONLY", a.out, flush=True); return
     m = s5.load_gpt2(dev) if direct else make_model(s5.load_gpt2(dev), a.table).to(dev); a.arch_class = type(m).__name__
     pool, rng_s, selfst = None, None, {"cursor": 0, "n_self_steps": 0, "self_reuse": 0}
     if a.self_pool:                                                         # §2.4: the pool (key set + sha checked by the loader); rng_s = seed + 21800
@@ -473,6 +481,7 @@ def main():
         if a.auto_micro and dev.startswith("cuda"):
             a.self_micro = pick_micro(deep_its, a.self_kmax, "self_micro")
     KEEP = {int(v) for v in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
+    HEV = {int(v) for v in a.host_eval_at.split(",")} if a.host_eval_at else set(); HSET = {}
     if 0 in KEEP and step0 == 1:
         torch.save({"model": m.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
     if a.mem_check or a.time_steps:
@@ -569,6 +578,16 @@ def main():
             log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []
         if step in KEEP:
             torch.save({"model": m.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
+        if step in HEV and not (a.mem_check or a.time_steps):             # Note 218-8: descriptive host candidate accuracy (read by no rule)
+            if not HSET:
+                s_h = PS().Stream(21170, EXCL); HSET.update({D: [lvb_item(s_h.draw(D)) for _ in range(100)] for D in range(3, 9)})
+            m.eval(); ha = {}
+            for D, its_ in HSET.items():
+                ok_ = []
+                for i_ in range(0, len(its_), a.eval_bs):
+                    sR, sP = cand_scores(m, its_[i_:i_ + a.eval_bs], D + 2, dev, ac); ok_ += (sR > sP).tolist()
+                ha[str(D)] = float(np.mean(ok_))
+            log.write(json.dumps({"step": step, "host_cand_acc": ha, "host_set": "Stream 21170, 100 per D 3..8, K' = D + 2"}) + "\n"); log.flush(); print("HOST_ACC", step, ha, flush=True)
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps and not (a.mem_check or a.time_steps):
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
