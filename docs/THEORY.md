@@ -302,7 +302,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 212 | VB-2G (user-approved 12:32 10-16, rove -> approve; Stage 0 $0 + G1 <= $3 + FT ~$0.6 on trigger; cap $6): compaction masks + restamp at storage + HISTORY-INSERT + gentler anneal + true_answer_ce + CONTENT-HALT on N2; VB2G-C1 = C1 + C2 (DEPTH-GENERAL, SELF-SIMILAR, STEP-FLAT) + clock + C5 | registered | **G1 HELD unlaunched (user B, 12:45; Stage 0 HEAD-LIMITED, 212-4); Stage 0 continues; D3 v1 drafted (D3_v1.md; Stage 0 rows S0-1..3 pre-stated 212-15); awaiting Audit review, then the user** |
 | 213 | D3 = SLVA on VERSION-BANK (user-approved 14:36 10-16, option A; cap $4.5): D3-T (N2 + SLVA) and D3-F (+ frozen pretrained table), 3090, seed 1, 48k; D3-C2-ATTN = LENGTH-FREE + DEPTH-GENERAL + VB-C1 + causal HISTORY-USED; scorer score_s213 | registered | **CLOSED 10-17: both parts (LENGTH-FREE met; D3-T STEP-GENERAL met; DEPTH 0.480 / 0.494; HISTORY-USED 0, RNN-in-function); ~$2.68; follow-up D4 drafting** |
 | 214 | D4 option B: computed PAUSE passes, one 48k cell from pretrained on D3-T's recipe (user-approved 11:58 10-17, "both approve"; cap $2.5 -> $4.50, 214-3): D4-C2 = DEPTH-GENERAL + LENGTH-FREE + VB-C1 + K24-STABLE (pi-free); decode-free DEADLINE-BOUND ladder; KEEPS-SELF-STAB / MEM-TRADED; scorer score_s214 | registered | **cap raised to $4.50 by the user 12:34 (214-3; forced G-TIME $4.08 admits; realistic ~$2.6-3.0); relaunch pending** |
-| 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **pool + GATE-1 + gates + Audit diff review; not launched** |
+| 215 | SELF-DEPTH-CHAIN round 1: FT pair from D3-T on self-labelled fresh n 9-12 (re-rooted chain labeller; user-approved 11:58 10-17; cap $1.5): SD-SELF (ABSORB, in support) / SD-C2 (DEPTH-BEYOND-SELF n 13-16 >= 0.80) / SD-C2-MEM; contamination rules; scorer score_s215 | registered | **CLOSED 10-18: FT-SELF SD-SELF (in support; not C2), GROW (M 0.717, STOP 15, K'-BEYOND 0.155); pair SELF-ATTRIBUTED (CTRL gain -0.021, D3-T level), MEM-TRADED by the self items (STAB_self 0.782 -> CTRL 0.696 -> SELF 0.489; weakened, not lost); ~$1.07 / $1.50; round 2 = SD2 (proposed §216) needs the user's explicit OK** |
 
 ## Live sections
 
@@ -18754,6 +18754,45 @@ The evals (D4_v1 §6, plus eval_stepbyt via scratch/s214_post_stepbyt.sh, d3cfda
 - **Bug.** cell() read eval_selfdepth.json with `or {}`. A cell whose eval_selfdepth.json was missing therefore passed LABEL-AUDIT (`noisy` False) and CONTAMINATED (`pool_test_hits` 0) instead of reading pending. LENGTH-FREE and KEEPS-SELF-STAB likewise read a missing eval_steppos / eval_lfk / eval_hist24 as not met, not pending.
 - **Fix.** After the eval_vb check, cell() returns "pending (missing [...])" unless eval_steppos, eval_lfk, eval_hist24 and eval_selfdepth all exist. It reads nothing else first. No rule, threshold or reading changes. A registered file that never lands still fails by rule b once the chain is declared done, as before.
 - **Check.** FT-SELF's cell() output is identical to the committed theory/results/score_s215.json SELF block (all four files present). FT-CTRL reads "pending (missing ['eval_selfdepth.json'])", so the §4.4 PAIR rows read UNREAD until its re-run lands. The results file was not rewritten.
+
+**§215 pair result and family close (2026-10-18 01:24 EDT; FT-CTRL s215_ftctrl_s1, b311, RTX 3090, 12,000 steps (log complete), c 0; evals local fp32, eval_bs 32, RTX 3070 (card field in every file), committed 80bfe082. rs was re-run after the 20:00 reboot; vbhalt / chainlabel ×2 / selfdepth were re-run after the 22:56 3070 loss (partials kept *.void*). d3hist gate True. Scored with theory/score_s215.py after note 215-7, all registered files present. Realised ≈ $1.07 of $1.50 for the pair.)**
+
+**Label: SELF-ATTRIBUTED. FT-EFFECT false. MEM: "traded by the self items". EROSION-FT false.**
+
+| FT-CTRL reading (v1 §4) | value | |
+|---|---|---|
+| censoring (dead / FT-DIVERGED / CONTAMINATED / ARGS-DIFF) | none (ARGS-DIFF ok: no shared diffs, no new keys) | — |
+| ABSORB (min a(n), n 9–12 ≥ 0.95) | 0.157 (n 12); a(9..12) 0.938 / 0.582 / 0.258 / 0.157 | ✗ (D3-T level) |
+| M (n 13–16) | 0.095 | ✗ |
+| STOP-LOC | **10** (G(9) 0.032, G(10) −0.021) = D3-T's base reading | — |
+| STOP-MOVED (gain after K′ 10 ≥ 0.10) | **−0.021** | ✗ → FT-EFFECT false |
+| K′-BEYOND | −0.002 | ✗ |
+| LENGTH-FREE / VB-C1 / K′24-STABLE (a_24 n 1–8 all 1.000) | ✓ / ✓ / ✓ | — |
+| **KEEPS-SELF-STAB** | CONTENT-STABILISES, STAB_self **0.696 ≥ 0.5** | ✓ |
+| MEMO (pool vs fresh, descriptive; CTRL never trained on the pool) | \|gap\| ≤ 0.018 at n 9–12 | — |
+
+**Pair rows (v1 §4.4):**
+- **SELF-ATTRIBUTED** = FT-SELF STOP-MOVED (gain 0.841) ∧ CTRL ¬STOP-MOVED (−0.021).
+  - The same FT on identical plain batches (G-S3: plain_hash equal at all 12,000 steps), without the self items, leaves the loop at D3-T's depth and stop.
+  - So the in-support absorption of n 9–12 and the growth past it (n 13–16) come from the self items.
+  - As pre-stated, this attributes the in-support absorption, not extrapolation. It is not C2.
+- **MEM: "traded by the self items"** (FT-SELF MEM-TRADED, CTRL KEEPS-SELF-STAB).
+  - STAB_self: D3-T 0.782 → CTRL 0.696 → FT-SELF 0.489.
+  - bank_ablate: 0.796 / 0.738 / 0.648.
+  - dup_newest: 0.899 / 0.903 / 0.877.
+  - Descriptive split: the re-heated FT alone lowers STAB_self by 0.086 without crossing the 0.5 bar; the self items lower it by a further 0.207.
+  - Wording (Audit): **MEM-TRADED, traded by the self items; the channel weakened, not lost** (content still stabilises, dup_newest 0.877).
+- **K′24 at n 1** reads 0.990 in FT-SELF and 1.000 in CTRL. The edge dip is also self-item-specific (descriptive).
+- **EROSION-FT** false: neither cell diverged.
+
+**§215 is closed.**
+- FT-SELF: **SD-SELF (in support; not C2) | GROW (M 0.717; n 13–16 0.999 / 0.893 / 0.633 / 0.344; STOP 15; K′-BEYOND 0.155) | SELF-ATTRIBUTED | MEM-TRADED by the self items (at the edge)**.
+- SD-C2 and SD-C2-MEM are not met. One seed.
+
+Round 2 follows the pre-stated plan (v1 §9):
+- GROW → round 2 plus a second seed.
+- MEM-TRADED → **only with the user's explicit OK**.
+- SD2 (proposed §216) is drafted, red-teamed and proof-checked. Its v1 is being written; it is not registered. It goes to the user with this result.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
