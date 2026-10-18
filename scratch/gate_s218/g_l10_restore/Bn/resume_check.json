@@ -1,0 +1,7 @@
+{
+ "ckpt_step": 300,
+ "resume_step0": 301,
+ "n_keys": 672,
+ "equal": true,
+ "diff_keys": []
+}

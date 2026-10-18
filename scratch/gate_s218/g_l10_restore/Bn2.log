@@ -1,0 +1,5 @@
+EXCLUSION 22000 signatures (25 s)
+RESUME scratch/gate_s218/g_l10_restore/Bn/ckpt_last.pt step 300
+RESUME_CHECK {"ckpt_step": 300, "resume_step0": 301, "n_keys": 672, "equal": true, "diff_keys": []}
+{'step': 301, 'loss': 2.867429494857788, 'sec': 234, 'answer_ce': 2.2139346599578857, 'rec_ce': 0.6534948945045471, 'plain_cand_ce': 2.2362184524536133, 'D_max_train': 4, 'cur_stage': 0, 'lr': 1.4368074053739739e-05, 'c': 10000.0, 'gn_preclip': 29.438270568847656, 'clip_frac_100': 1.0, 'slva_gn': None, 'stream_collisions': 0, 't_train_max': 554, 'test_gate_sig_hits': 0}
+STOPPED_AT 301
