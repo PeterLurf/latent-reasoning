@@ -1,0 +1,65 @@
+{
+ "nested_D3T_ref": {
+  "token_layers": 2176,
+  "work_ratio": 1.0,
+  "attn_entries_M": 5.0,
+  "attn_GB_fp32_bs64": 1.3,
+  "est_s_per_step": 0.42,
+  "usd_per_24k": 0.62,
+  "usd_per_120k": 3.08
+ },
+ "prosqa_sym_D8": {
+  "token_layers": 5604,
+  "work_ratio": 2.58,
+  "attn_entries_M": 28.4,
+  "attn_GB_fp32_bs64": 7.3,
+  "est_s_per_step": 0.82,
+  "usd_per_24k": 1.2,
+  "usd_per_120k": 5.99
+ },
+ "prosqa_sym_D12_self": {
+  "token_layers": 8456,
+  "work_ratio": 3.89,
+  "attn_entries_M": 69.2,
+  "attn_GB_fp32_bs64": 17.7,
+  "est_s_per_step": 1.15,
+  "usd_per_24k": 1.68,
+  "usd_per_120k": 8.41
+ },
+ "prosqa_sym_D16_eval": {
+  "token_layers": 12060,
+  "work_ratio": 5.54,
+  "attn_entries_M": 148.4,
+  "attn_GB_fp32_bs64": 38.0,
+  "est_s_per_step": 1.56,
+  "usd_per_24k": 2.29,
+  "usd_per_120k": 11.47
+ },
+ "prosqa_mention_slots_D8": {
+  "token_layers": 8620,
+  "work_ratio": 3.96,
+  "attn_entries_M": 70.7,
+  "attn_GB_fp32_bs64": 18.1,
+  "est_s_per_step": 1.17,
+  "usd_per_24k": 1.71,
+  "usd_per_120k": 8.55
+ },
+ "gsm_q12": {
+  "token_layers": 1272,
+  "work_ratio": 0.58,
+  "attn_entries_M": 1.3,
+  "attn_GB_fp32_bs64": 0.3,
+  "est_s_per_step": 0.42,
+  "usd_per_24k": 0.62,
+  "usd_per_120k": 3.08
+ },
+ "gsm_q12_p90": {
+  "token_layers": 1452,
+  "work_ratio": 0.67,
+  "attn_entries_M": 1.7,
+  "attn_GB_fp32_bs64": 0.4,
+  "est_s_per_step": 0.42,
+  "usd_per_24k": 0.62,
+  "usd_per_120k": 3.08
+ }
+}
