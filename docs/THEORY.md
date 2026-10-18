@@ -19391,6 +19391,34 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
 - The 191-2 caveat is closed at "small contribution at most; not the mechanism". No registered §191 reading changes.
 - New ProsQA work still uses ProsQA-SYM (§218), which removes the cue by construction.
 
+**Note 218-3 (2026-10-18 15:22 EDT; langvb_label.py ambiguity resolutions accepted, before any §218 pool or GATE-1-L output; boxes/langvb_label.py at 83a75180; Experiments' A1–A12 docstring). All are consistent with LANG_v1 §2.4; none changes a reading.**
+
+**Labeller and verifier:**
+- **A1.** A tie (both options entering M′ at the same first pass) is not kept. It is impossible on SYM, where o_P ∉ Reach(R).
+- **A2.**
+  - L-ROLL's M_t is the per-pass argmax-IN set, as registered (not forced monotone).
+  - L-RR's M_t is cumulative, M_{t−1} ∪ F_t. This is what §2.4's F_{t+1} definition implies.
+- **A3.** L-RR's step 1 is the original item at K = 2. M_1 is the pass-1 marks, F_2 = (pass 2 \ pass 1) \ M_1, and re-renders run from t ≥ 2.
+  - Rollouts per chain = 1 + Σ_{t ≥ 2} ⌈|F_t| / 4⌉, a mean of 9.78 at D 9–12 on the oracle.
+  - §8's L-RR projection (≈ 11) is therefore ~10 % conservative.
+- **A4.** Chunk member i takes R's i-th original statement slot and surplus slots are deleted, as registered ("at the original sentence slots").
+  - Extra members go at uniform sentence boundaries. The rng is Random("21850:<sha1(ids)>:t:k"), unregistered, deterministic, and read by no rule.
+  - The question is unchanged, and slots are recomputed per re-render.
+- **A5.** L-RR stops at the first KEEP, at t = 16, or when F is empty. In the last case the closure runs on the held marks.
+- **A7.** Field definitions, all descriptive:
+  - omit_rate = mean |R_s \ M′_s| / |R_s| over kept items;
+  - FALSE-IN = raw (c, t) marks with dist > t over all raw marks;
+  - STOP-LAG = mean(s − D);
+  - kept-vs-drawn frontier = the widest gold BFS layer.
+- **A8.** GATE-1-L also requires 0 wrong labels in the **non-chosen** chain. Lemma S-L′ gives π_label = 1 for any chain under SOUND-CLOSURE, so a wrong label in either chain can only be a code fault (LABEL-BUG). This is a correctness assert, not a selection change.
+- **A9.** marks_sound is stored in delta form (the slot ordinals entering at pass t), with stop_s = len(marks_sound). This is equivalent to "M′ by pass".
+
+**Operations:**
+- The A2 host needs ≈ 4 GB of free RAM for the compact pool. A RAM check is added to the host probe.
+- For G-L20, the builder writes pool_sigs.txt in pool order, for the exclusion check against the probe streams.
+- **Labelling cards.** The pool is labelled in bf16 on two cards: 3070 for D 9–10, 4060 for D 11–12. GATE-1-L's chain choice is made on the eval card. Labels stay gold-exact by S-L′, so only yields can differ. The card is recorded per D band. This is disclosed and changes no reading.
+- **Open item 10 stands** (v1 §9): L-RR's re-roots point "R is a f" at concepts that have parents, a residual distribution shift. GATE-1-L's pre-stated yield rule decides whether L-RR is used at all.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
