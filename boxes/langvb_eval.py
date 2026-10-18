@@ -558,7 +558,10 @@ def probe_forward(m, pr, kind, t, its, b, S, dirs, zs, dev):
     return sA, sB, (1 - y).long()
 
 
-def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=200000, pbs=64, chunk=16, hold_n=1000, pool_override=None, eval_every=500):
+def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=200000, pbs=64, chunk=16, hold_n=1000, pool_override=None, eval_every=500, group=0):
+    """group > 0 (G-EVMEM: 17 lockstep probes do not fit 8 GB): probes / plants ordered by t then kind are trained in groups of `group`, each group
+    replaying the SAME batch sequence (np rng 22501 restarted) - so every probe still sees the same items in the same order; only the rollout is shared
+    within a group. Plant z: np rng 22551 / 22552 restarted per group (train), 22553 / 22554 restarted per probe (held-out and test)."""
     t0 = time.time()
     if pool_override is not None:                                           # G-EVMEM only: fixed (deepest) items
         held, pool = pool_override[:hold_n], pool_override
@@ -567,8 +570,8 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
         held = [ev(s.draw(int(D))) for D in Dseq[:hold_n]]; pool = [ev(s.draw(int(D))) for D in Dseq[hold_n:]]
     print("PROBE pool", len(pool), "held", len(held), round(time.time() - t0), "s", flush=True)
     dirs = plant_dirs(m, pool, list(pts), dev, chunk) if pts else {}
-    keys = [("probe", t) for t in ts] + [(k, t) for t in pts for k in ("lin", "xor")]; prs = {k: Probe(m, 1e-4) for k in keys}
-    rb = np.random.default_rng(22501); rz = {"lin": np.random.default_rng(22551), "xor": np.random.default_rng(22552)}; seen = set()   # pool indices drawn (Note 218-6)
+    keys = sorted([("probe", t) for t in ts] + [(k, t) for t in pts for k in ("lin", "xor")], key=lambda k: (k[1], k[0])); prs = {}
+    rb = rz = None; seen = set()                                            # pool indices drawn (Note 218-6)
 
     def zdraw(r_, n):
         return torch.tensor(r_.integers(0, 2, size=n), device=dev), torch.tensor(r_.integers(0, 2, size=n), device=dev)
@@ -600,27 +603,35 @@ def part_probe(m, TE, dev, bs, ts=T_SET, pts=PLANT_TS, steps=10000, pool_n=20000
                 for k in sel_keys:
                     prs[k].curve.append((st, float(np.mean(ok[k]))))
                 print("PROBE step", st, {"%s%d" % k: round(prs[k].curve[-1][1], 3) for k in sel_keys}, round(time.time() - t0), "s", flush=True)
-    train(keys, steps)
-    ext = [k for k in keys if len(prs[k].curve) >= 5 and prs[k].curve[-1][1] - prs[k].curve[-5][1] > 0.02]   # curve every 500: [-5] = 2k steps earlier
-    if ext:
-        print("PROBE extend to %d:" % (2 * steps), ext, flush=True); train(ext, steps)
-    out_p = {}; out_pl = {}
-    rt = {"lin": np.random.default_rng(22553), "xor": np.random.default_rng(22554)}
-    for k in keys:
-        Ds = [D for D in range(3, 13 if k[0] == "probe" else 9) if D in TE]; its = [it for D in Ds for it in TE[D]]; Dl = [it["D"] for it in its]
-        ok = evaluate(its, rt, [k], k[1])[k]; byD = {str(D): float(np.mean([o for o, d in zip(ok, Dl) if d == D])) for D in Ds}
-        rec = {"acc_by_D": byD, "items": {str(D): [o for o, d in zip(ok, Dl) if d == D] for D in Ds}, "curve": prs[k].curve, "steps_run": prs[k].steps}
-        if k[0] == "probe":
-            out_p[str(k[1])] = rec
-        else:
-            d = out_pl.setdefault(str(k[1]), {"eps": dirs[k[1]]["eps"], "eps_rel": dirs[k[1]]["eps_rel"], "pcs": dirs[k[1]]["eig"]})
-            rec["acc"] = float(np.mean(ok)); rec["items_flat"] = ok; d[k[0]] = rec
-        print("PROBE read", k, byD, flush=True)
+    def read_group(gk, out_p, out_pl):
+        """the test-set readout of each probe in gk (plant z from np rng 22553 / 22554, restarted per probe)."""
+        for k in gk:
+            Ds = [D for D in range(3, 13 if k[0] == "probe" else 9) if D in TE]; its = [it for D in Ds for it in TE[D]]; Dl = [it["D"] for it in its]
+            rt = {"lin": np.random.default_rng(22553), "xor": np.random.default_rng(22554)}
+            ok = evaluate(its, rt, [k], k[1])[k]; byD = {str(D): float(np.mean([o for o, d in zip(ok, Dl) if d == D])) for D in Ds}
+            rec = {"acc_by_D": byD, "items": {str(D): [o for o, d in zip(ok, Dl) if d == D] for D in Ds}, "curve": prs[k].curve, "steps_run": prs[k].steps}
+            if k[0] == "probe":
+                out_p[str(k[1])] = rec
+            else:
+                d = out_pl.setdefault(str(k[1]), {"eps": dirs[k[1]]["eps"], "eps_rel": dirs[k[1]]["eps_rel"], "pcs": dirs[k[1]]["eig"]})
+                rec["acc"] = float(np.mean(ok)); rec["items_flat"] = ok; d[k[0]] = rec
+            print("PROBE read", k, byD, flush=True)
+    out_p = {}; out_pl = {}; G = group if group and group < len(keys) else len(keys); groups = [keys[i:i + G] for i in range(0, len(keys), G)]
+    for gk in groups:
+        prs = {k: Probe(m, 1e-4) for k in gk}; rb = np.random.default_rng(22501); rz = {"lin": np.random.default_rng(22551), "xor": np.random.default_rng(22552)}
+        print("PROBE group", gk, flush=True); train(gk, steps)
+        ext = [k for k in gk if len(prs[k].curve) >= 5 and prs[k].curve[-1][1] - prs[k].curve[-5][1] > 0.02]   # curve every 500: [-5] = 2k steps earlier
+        if ext:
+            print("PROBE extend to %d:" % (2 * steps), ext, flush=True); train(ext, steps)
+        read_group(gk, out_p, out_pl)
+        prs = {}
+        if str(dev).startswith("cuda"):
+            torch.cuda.empty_cache()
     valid = {t: bool(out_pl[t].get("lin", {}).get("acc", 0) >= 0.90 and out_pl[t].get("xor", {}).get("acc", 0) >= 0.90) for t in out_pl}
     proto = __doc__.split("  probe ")[1].split("  fd ")[0].strip()
     return {"probe": out_p, "plant": out_pl, "probe_valid": valid, "probe_protocol": proto, "probe_sec": round(time.time() - t0),
-            "probe_n_distinct_seen": len(seen), "probe_pool_n": len(pool), "probe_chunk": chunk,
-            "probe_n_distinct_note": "distinct pool items drawn over all lockstep steps (with replacement; Note 218-6); extended probes share the same draws"}
+            "probe_n_distinct_seen": len(seen), "probe_pool_n": len(pool), "probe_chunk": chunk, "probe_groups": [["%s%d" % k for k in g_] for g_ in groups],
+            "probe_n_distinct_note": "distinct pool items drawn over all steps (with replacement; Note 218-6); every group replays the same batch sequence"}
 
 
 # ---------------------------------------------------------------- FD-MIRROR
@@ -765,7 +776,17 @@ def part_evmem(m, TE, dev, budget=7.0, bss=(32, 16, 8, 4), chunks_=(16, 8, 4)):
         ok = [int(c) for c, v in pk.items() if v != "OOM" and v <= budget]
         res[part] = {"peak_gib_by_chunk": pk, "chunk": max(ok) if ok else None, "eval_bs": 16 if ok else None}   # the readout bs tested (16) + the rollout chunk
         print("EVMEM", part, res[part], flush=True)
-    res["plant"] = dict(res["probe"], note="PLANT is trained and read inside the probe part (same eval_bs / chunk)")
+    if res["probe"]["chunk"] is None:                                       # all 17 in lockstep do not fit: the largest group of the HEAVIEST probes (top t)
+        e8, _ = longest(8, 64); gp = {}                                     # that fits at chunk 16 (part_probe --probe_group; plants at t <= 2 are lighter)
+        for G in (8, 6, 4, 3, 2, 1):
+            gp[str(G)] = try_(lambda: part_probe(m, {8: e8[:16]}, dev, 16, T_SET[-G:], (), steps=1, pool_n=64, pbs=64, chunk=16, hold_n=16, pool_override=e8,
+                                                  eval_every=1))
+            if gp[str(G)] != "OOM" and gp[str(G)] <= budget:
+                break
+        okg = [int(g) for g, v in gp.items() if v != "OOM" and v <= budget]
+        res["probe"].update({"peak_gib_by_group_chunk16": gp, "group": max(okg) if okg else None, "chunk": 16 if okg else None, "eval_bs": 16 if okg else None})
+        print("EVMEM probe groups", res["probe"], flush=True)
+    res["plant"] = dict(res["probe"], note="PLANT is trained and read inside the probe part (same eval_bs / chunk / group)")
     res["budget_gib"] = budget; res["pass"] = all(v.get("eval_bs", v.get("chunk")) is not None for k, v in res.items() if isinstance(v, dict))
     return {"evmem": res}
 
@@ -779,6 +800,7 @@ def main():
     ap.add_argument("--probe_ts", default=",".join(map(str, T_SET))); ap.add_argument("--plant_ts", default=",".join(map(str, PLANT_TS)))
     ap.add_argument("--probe_steps", type=int, default=10000, help="smokes only"); ap.add_argument("--pool_n", type=int, default=200000, help="smokes only")
     ap.add_argument("--fd_items", type=int, default=200000, help="smokes only"); ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--cal_n", type=int, default=64)
+    ap.add_argument("--probe_group", type=int, default=0, help="probes trained per group (G-EVMEM's value; 0 = all in lockstep)")
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = untrained(dev, a.cal_n) if a.untrained else load(a.run, dev); direct = not is_lslva(m)
     bsd = {}
@@ -816,7 +838,7 @@ def main():
             r = part_causal_deep(m, TE, dev, bs, out)
         elif part == "probe":
             r = part_probe(m, TEv, dev, bs, tuple(int(v) for v in a.probe_ts.split(",") if v != ""), tuple(int(v) for v in a.plant_ts.split(",") if v != ""),
-                           a.probe_steps, a.pool_n, chunk=a.chunk)
+                           a.probe_steps, a.pool_n, chunk=a.chunk, group=a.probe_group)
             for k_ in ("probe", "plant"):                                   # parts run in pieces merge per t
                 if k_ in out:
                     out[k_].update(r.pop(k_))

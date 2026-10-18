@@ -8,6 +8,8 @@
 # HOSTMAX (3 = 1 + 2 more, G-L12) tries; then the off-host mirror (~2k steps, G-L10), the cell guard (guard - the cell's BAD spend) and, once, s218fam.
 #   QS="316:lvb_sym_s1:4.30:4.70:24000 317:lvb_direct_s1:3.60:3.90:24000" nohup bash scratch/s218_fill.sh >> logs/fill_s218.out 2>&1 &
 cd "$(dirname "$0")/.."
+dirty=$(git status --porcelain boxes/ scratch/s218_args_ref_a1.json scratch/s218_args_ref_direct.json | grep -v "^??" | grep -v "boxes/runs" )   # Audit: deploys ship the working tree
+[ -n "$dirty" ] && { echo "$(date '+%F %T') fill_s218 REFUSED: uncommitted module / ref edits: $dirty"; exit 2; }
 PMAX=${PMAX:-0.25}; CAPF=25.00; SETUP_H=0.4; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s218_bad_cost.log; ADMLOG=logs/s218_admitted.log
 QS="${QS:-316:lvb_sym_s1:4.30:4.70:24000 317:lvb_direct_s1:3.60:3.90:24000}"
 FAMC="316:lvb_sym_s1:4.70:24000 317:lvb_direct_s1:3.90:24000"   # unstarted cells project at their guard
@@ -76,7 +78,7 @@ for cell in $QS; do
       log "b$n: ckpt mirror (every $evh h ~ 2k steps; host boxes/runs_fsq/$run/ckpt_last.pt -> scratch/ckpt_mirror/$run/ckpt_last.pt; remote sha256 before / after + local sha256 + torch.load step check per copy) + cell guard (\$$GSTOP - rejected-host \$$cb = \$$gl, GUARD_STOP=1) started"
       ad=""; for i in $(seq 1 20); do ad=$(sq "$h" "$p" "grep -h '^ARGS-DIFF' /workspace/Latent/logs/gen_$run.log | tail -n 1"); [ -n "$ad" ] && break; sleep 60; done
       bad=$(echo "${ad#ARGS-DIFF }" | python -c "import json, sys
-META = {'train_gpu', 'train_driver', 'cuda_version', 'cudnn_version', 'torch_version', 'python_version', 'image_tag', 'micro', 'auto_micro'}
+META = {'train_gpu', 'train_driver', 'cuda_version', 'cudnn_version', 'torch_version', 'python_version', 'image_tag', 'micro', 'auto_micro', 'mem_budget', 'ckpt_every'}
 try: d = json.load(sys.stdin)
 except Exception: print('UNREADABLE'); sys.exit()
 print(' '.join(k for k in d if k not in META))" 2>/dev/null)
