@@ -1,0 +1,91 @@
+{
+ "file": "D:/Latent/prosqa/data/prosqa_test.json",
+ "stats": {
+  "items": 500
+ },
+ "by_depth": {
+  "3": {
+   "opt_first": 0.4208,
+   "opt_first_df": 0.5792,
+   "opt_last": 0.5396,
+   "opt_last_df": 0.5396,
+   "opt_last_first": 0.5792,
+   "opt_last_first_df": 0.5792,
+   "opt_mentions": 0.3861,
+   "opt_mentions_df": 0.6139,
+   "opt_parents": 0.3861,
+   "opt_parents_df": 0.6139,
+   "opt_pindeg": 0.5371,
+   "opt_pindeg_df": 0.5371,
+   "opt_proximity": 0.8614,
+   "opt_proximity_df": 0.8614,
+   "n_opt": 202,
+   "n_anc": 0
+  },
+  "4": {
+   "opt_first": 0.3917,
+   "opt_first_df": 0.6083,
+   "opt_last": 0.4009,
+   "opt_last_df": 0.5991,
+   "opt_last_first": 0.6083,
+   "opt_last_first_df": 0.6083,
+   "opt_mentions": 0.3134,
+   "opt_mentions_df": 0.6866,
+   "opt_parents": 0.3134,
+   "opt_parents_df": 0.6866,
+   "opt_pindeg": 0.5276,
+   "opt_pindeg_df": 0.5276,
+   "opt_proximity": 0.9286,
+   "opt_proximity_df": 0.9286,
+   "n_opt": 217,
+   "n_anc": 0
+  },
+  "5": {
+   "opt_first": 0.4058,
+   "opt_first_df": 0.5942,
+   "opt_last": 0.3333,
+   "opt_last_df": 0.6667,
+   "opt_last_first": 0.5942,
+   "opt_last_first_df": 0.5942,
+   "opt_mentions": 0.3043,
+   "opt_mentions_df": 0.6957,
+   "opt_parents": 0.3043,
+   "opt_parents_df": 0.6957,
+   "opt_pindeg": 0.442,
+   "opt_pindeg_df": 0.558,
+   "opt_proximity": 0.9855,
+   "opt_proximity_df": 0.9855,
+   "n_opt": 69,
+   "n_anc": 0
+  },
+  "6": {
+   "opt_first": 0.5833,
+   "opt_first_df": 0.5833,
+   "opt_last": 0.3333,
+   "opt_last_df": 0.6667,
+   "opt_last_first": 0.4167,
+   "opt_last_first_df": 0.5833,
+   "opt_mentions": 0.1667,
+   "opt_mentions_df": 0.8333,
+   "opt_parents": 0.1667,
+   "opt_parents_df": 0.8333,
+   "opt_pindeg": 0.3333,
+   "opt_pindeg_df": 0.6667,
+   "opt_proximity": 1.0,
+   "opt_proximity_df": 1.0,
+   "n_opt": 12,
+   "n_anc": 0
+  }
+ },
+ "strata_m2": {},
+ "pooled": {
+  "opt_first": 0.41,
+  "opt_last": 0.446,
+  "opt_last_first": 0.59,
+  "opt_mentions": 0.338,
+  "opt_parents": 0.338,
+  "opt_pindeg": 0.515,
+  "opt_proximity": 0.911
+ },
+ "strata_m2_depth_ge5": {}
+}

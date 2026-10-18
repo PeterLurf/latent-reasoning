@@ -1,0 +1,18 @@
+{
+ "test": {
+  "equations": 4203,
+  "wrong_half_ulp": 0,
+  "share_half": 0.0,
+  "wrong_trunc": 0,
+  "share_trunc": 0.0,
+  "rhs_nonnumeric": 1
+ },
+ "train_all": {
+  "equations": 992057,
+  "wrong_half_ulp": 3054,
+  "share_half": 0.00308,
+  "wrong_trunc": 1834,
+  "share_trunc": 0.00185,
+  "rhs_nonnumeric": 823
+ }
+}

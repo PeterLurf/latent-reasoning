@@ -1,0 +1,96 @@
+{
+ "draft_rows": {
+  "sym_D8": {
+   "work_ratio": 2.575,
+   "s_step": 0.817,
+   "attn_M": 28.4,
+   "GB_fp32_bs64": 7.3,
+   "usd": 1.2
+  },
+  "sym_D12_self": {
+   "work_ratio": 3.886,
+   "s_step": 1.147,
+   "attn_M": 69.2,
+   "GB_fp32_bs64": 17.7,
+   "usd": 0.84
+  },
+  "sym_D16_eval": {
+   "work_ratio": 5.542,
+   "s_step": 1.565,
+   "attn_M": 148.4,
+   "GB_fp32_bs64": 38.0,
+   "usd": 2.29
+  },
+  "mention_D8": {
+   "work_ratio": 3.961,
+   "s_step": 1.166,
+   "attn_M": 70.7,
+   "GB_fp32_bs64": 18.1,
+   "usd": 1.71
+  }
+ },
+ "measured_T": {
+  "sym_D8_T533_S50": {
+   "work_ratio": 2.858,
+   "s_step": 0.888,
+   "attn_M": 34.9,
+   "GB_fp32_bs64": 8.9,
+   "usd": 1.3
+  },
+  "sym_D12_self_T690_S64": {
+   "work_ratio": 4.134,
+   "s_step": 1.21,
+   "attn_M": 77.8,
+   "GB_fp32_bs64": 19.9,
+   "usd": 0.89
+  },
+  "sym_D16_eval_T830_S84": {
+   "work_ratio": 5.818,
+   "s_step": 1.634,
+   "attn_M": 162.9,
+   "GB_fp32_bs64": 41.7,
+   "usd": 2.4
+  }
+ },
+ "fullT_entries_M": 758.2,
+ "fullT_GB_bs64": 194.1,
+ "B1": {
+  "P_batch_has_K16": 0.9913,
+  "launch_bound_s_step_16_over_12": 0.56,
+  "usd_120k_at_0.45": 3.3,
+  "usd_120k_at_0.56": 4.11,
+  "usd_120k_at_0.9": 6.6
+ },
+ "required_total": {
+  "sum_of_lows": 4.6,
+  "central": 5.95,
+  "sum_of_highs": 10.6,
+  "draft_low_is": 5.25,
+  "with_10pct": [
+   5.06,
+   11.66
+  ],
+  "with_B1_low_0.56": 5.41
+ },
+ "guards_sum": 16.1,
+ "worst_case_spend_incl_optionals_10pct": 14.41,
+ "A2CTRL_usd_at_0.22": 0.6,
+ "A2_usd": 0.72,
+ "ATXT_usd": 0.99,
+ "D3T_anchor_usd_48k_0.20": 1.12,
+ "OC": {
+  "VB_C1_L_components_product": 0.4284,
+  "VB_C1_GSM_components_product": 0.3672,
+  "P_VBC1L_from_0.35x0.5": 0.175,
+  "plus_false_pos_bound": 0.188,
+  "P_ge1_indep_C1_only": 0.264,
+  "P_ge1_indep_incl_SD": 0.3008,
+  "P_ge1_lower_bound_max": 0.2,
+  "SD_C2_chain_low": 0.0133,
+  "SD_C2_chain_high": 0.0421,
+  "ABSORB_unconditional_from_chain": 0.1768,
+  "BEATS_fp": 0.0161,
+  "A0_2_max_0.5+3.2SE": 0.5506,
+  "BEATS_power_d0.06": 0.9839
+ }
+}
