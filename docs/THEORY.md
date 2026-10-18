@@ -19485,6 +19485,18 @@ Strata are anchor-level proximity at m ≥ 2, depth ≥ 5. CUE-RELIANT would nee
 - (ii′) / (i) keep ≥ 50 distinct base items.
 - score_s218.py now sets CF_GSM_MIN_BASE = 30. A fixture checks that 35 base steps read MET and 25 read UNREADABLE. The fixtures stand at 63 / 63.
 
+**Note 218-6 (2026-10-18 16:11 EDT; two rulings from Audit's langvb_eval review, before any probe or swap output; no rule change).**
+
+**(a) Probe training items.** LANG_v1 §2.5's "trained on fresh items (seed 22500, D 6–8, ≥ 200,000 items)" means **a pool of ≥ 200,000 fresh items**.
+- The probe samples it with replacement (langvb_eval l.589). 10k steps × 64 reach ≈ 191.8k distinct items, so the requirement is met.
+- eval_lvb.json reports `n_distinct_seen` per probe and FD fit (descriptive).
+- No reading depends on distinct coverage. The fresh-items requirement guards against test leakage (the probe stream is excluded from every test / GATE item), not against reuse within the probe's own training.
+
+**(b) Swap splices and SLVA normalisation.** Spliced donor rows enter SLVA normalised by the **recipient's** rms0, the vbank edit convention also used by every nested VALUE-SWAP / STALL arm (§211–§217).
+- So "(ii′) SLVA source := the donor's" holds up to a per-slot rescale wherever the two V_0 differ. PREMISE-SWAP donors have the same token positions and differ only in the swapped names.
+- **Intended.** It keeps the language and nested causal readings on one convention.
+- A follow result cannot come from the rescale itself: a rescale carries no donor information. An own result under the rescale is read as registered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
