@@ -642,3 +642,15 @@ Panels [DERIVED v1_panels]: H_shift → SHIFT (M2 0.717, STOP 20), H_prop → GR
 - **Still unbuilt (flagged):** T1, B1, B2, E1–E4, score_s216, queue scripts. Memory, time and eval-memory projections are model extrapolations; G-S9 / G-S10 / G-S16 decide.
 
 *v1 written 2026-10-18 01:08–01:29 EDT (Opus design-revision subagent for Theory; $0; nothing committed, registered or launched).*
+
+---
+
+## Addendum 1 (2026-10-18 01:31 EDT; Audit's review of 3afb01e3, before registration): pre-stated eval-card fallback
+
+The 3070 dropped off the bus at ~22:56 10-17 ("GPU is lost") and runs hot. eval_deep (n 13–24, K′ 0..28) is the longest eval in the family.
+1. **3070 lost mid-chain, then recovered** (reboot): the parts not yet complete re-run **on the 3070** after recovery, as on 10-17/18. Partial outputs are kept as `*.void_gpulost`, never deleted. Completed parts stand if their gates (the d3hist gate, BS-CHECK, items_sha256) pass after the re-run.
+2. **3070 not recoverable** (fails again after a reboot, or is removed): **every registered eval of both lineages moves together to one named card, the local RTX 4060 (8 GB), fp32, the same eval_bs per part** (eval_vb 32, eval_deep 16, G-S16 re-run on the 4060 first).
+   - **Reference re-evals come first on that card:** eval_vb + eval_deep on s213_d3t_s1 and s215_ftself_s1 (and, for s2, its own base and round-1 model). No SD2 cell output is read on the 4060 before they exist.
+   - **The s1 bars are recomputed by the registered §4.3 formulas** from FT-SELF's 4060 curves (the B1 per-lineage formula machinery, applied per card). Every reading compares on that card only, and the card is recorded per file.
+   - 3070 outputs of SD2 cells already landed stay on record and are reported beside, never mixed into a reading.
+3. A partial move (some parts on each card) is not allowed within a cell's registered reading set.
