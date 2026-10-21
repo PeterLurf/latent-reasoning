@@ -161,3 +161,18 @@ Same seed, stream, curriculum and budget across cells. Single-change args diffs 
    - No `@torch.no_grad` / `.detach()` on z_j in the train path (grep plus an ast check of decorators).
    - The plain-path smoke (construct the model + 1 step without the new flags) must reproduce the base CODI port.
    - The check outputs gate JSONs, which Audit reads before the G-D.
+
+## Addendum B (2026-10-21; Audit's approval conditions, frozen with v1)
+1. **Curriculum gate (§214 lesson).** CurGate advances on the **answer CE of plain items only**, never the total loss. M1's λ·R_j term must not change when PS / M1-only advance relative to DIRECT / M2-only.
+   - Each cell's stage-advance steps are logged, and the entry step (answer CE < 0.5) is reported per cell.
+   - **Basin-entry rule:** if entry steps differ by more than 5k between PS and an ablation, that attribution reads **CONFOUNDED**.
+2. **One seed.** Every label is stated per cell as "one seed, templated word task". **"Needs both" attribution (§5) is descriptive only**, because one seed cannot separate it from seed variance.
+3. **Build gates before any spend:**
+   - Audit's G-D on the codi_port changes (bucketing, the explicit masks, the D head);
+   - per-term gradflow, including the zero-grad probe into the question / `<bot>` inputs under M2;
+   - a plain-path smoke;
+   - frozen args with single-change diffs;
+   - the driver recorded per cell;
+   - the new cost_guard (marks to the final step);
+   - off-host full-state checkpoints with a tested resume.
+   - **DIRECT runs first** (it fixes n\* and the C1 band before any latent output).
