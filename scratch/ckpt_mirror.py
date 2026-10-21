@@ -65,6 +65,24 @@ def stage(h, p, run):
     return sh if all(f in sh for f in COMP) else None
 
 
+def attempt_aside(md, run, n, h, p):
+    """2026-10-21 (Audit; a relaunch of the same run name overwrote §218 attempt 1's kept mirror): if <md>/meta.json exists and names a different run /
+    queue / host, rename <md> to <md>.attempt<k> (k = 1 + the highest existing attempt index) before the first copy - never delete. Refuses (returns False,
+    logs MIRROR_ASIDE_REFUSED) if that target already exists. -> the new path, None (nothing to move) or False."""
+    mf = os.path.join(md, "meta.json")
+    if not os.path.exists(mf):
+        return None
+    m_ = json.load(open(mf))
+    if m_.get("run") == run and m_.get("queue") == n and m_.get("host") == "%s:%s" % (h, p):
+        return None
+    ks = [int(x.rsplit("attempt", 1)[1]) for x in os.listdir(os.path.dirname(md)) if x.startswith(os.path.basename(md) + ".attempt") and x.rsplit("attempt", 1)[1].isdigit()]
+    tgt = "%s.attempt%d" % (md, (max(ks) if ks else 0) + 1)
+    if os.path.exists(tgt):
+        log("MIRROR_ASIDE_REFUSED %s: %s exists" % (run, tgt)); return False
+    os.rename(md, tgt); log("MIRROR_ASIDE %s: previous mirror (%s, %s, step %s) moved to %s" % (run, m_.get("host"), m_.get("queue"), m_.get("step"), tgt))
+    return tgt
+
+
 def mirror(n, run):
     hp = host(n)
     if hp is None:
@@ -110,6 +128,9 @@ def mirror(n, run):
         fsteps = {f: json.load(open(lp)).get("step") for f, lp in cl.items() if f.endswith(".json") and isinstance(json.load(open(lp)), dict)}
         if any(v is not None and v != step for v in fsteps.values()):
             log("MIRROR_RETRY %s companion step %s != ckpt step %s (attempt %d)" % (run, fsteps, step, attempt + 1)); os.remove(part); time.sleep(60); continue
+        aside = attempt_aside(md, run, n, h, p)
+        if aside is False:
+            os.remove(part); [os.remove(lp) for lp in cl.values()]; return "refused (attempt-aside target exists)"
         os.makedirs(md, exist_ok=True)
         for f, lp in cl.items():                                            # companions first, the ckpt last: a ckpt in the mirror always has its set
             os.replace(lp, os.path.join(md, f))
