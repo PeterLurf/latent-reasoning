@@ -20116,6 +20116,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 5. **Contract points accepted:** ref.pred maps inf → None; official_bs1's ref.sha / ntok are descriptive; determinism's ref.repo_commit = the s220 run commit. No full zen determinism re-run (`--full_intact` not required).
 6. **Descriptive bf16 row (Audit).** One official bs-1 run in **bf16** on all 1,319 items (gate_fid.json `ref_bf16`: {pred, acc}). score_s221 reports agree(port fp32, official bf16) and the accuracy beside G-FID(a). It is **never a gate**.
 
+**Note 218-24 (2026-10-21 06:12 EDT; 218-22 routing outcome, recorded mechanically; files under scratch/gate_s218/g_l5_known/, committed by Experiments).**
+| branch | model | LATE anti-lin ×10 | LATE anti-xor ×10 | holds? |
+|---|---|---|---|---|
+| (i) UNTRAINED-ANTI | untrained LangSLVA | 1.000 | **0.522** | no (xor) |
+| (ii) TRAINED-REFERENCE-ANTI | re-run G-L1c gate model (same-model gate SAME, 0.984375; items disjoint from SYM test / GATE) | 1.000 | **0.515** | no (xor) |
+
+- **Routing = (iii) NO-PLANT-CERTIFICATE.** No plant definition changes, and G-L5 reads as registered, which fails. A recipe change can come only through 218-23's pre-stated selection rule (R1 lr 1e-4 at 10k → R2 3e-4 → R3 1e-3, at ×1.5; the first candidate with anti-lin and anti-xor LATE ≥ 0.90 is adopted, together with the anti plant at m 1.5), and then only with its own Note carrying the derivation (direction per reading) and the OC pair, committed before any A1 probe output.
+- **Inputs so far:**
+  - R2 (lr 3e-4, untrained): lin 0.991 / xor 0.532, so it does not qualify. R3 and R1 are pending.
+  - The information is present: K2-anti-xor (sign-product oracle) reads 0.98 at ×1.5.
+- **The linear plant is solved; the XOR leg is the binding limit of the registered probe recipe.**
+- **If no candidate qualifies:** A1's PROBE-VALID(t) is read as registered with the symmetric plant. That cannot pass by construction (K3 symmetric: chance at every strength), so PROBE-GAIN-L reads UNREADABLE and VB-C1-L is not met.
+  - That outcome would be due to a positive-control design flaw found before any A1 output, and it is reported as such. The bar and the both-plants rule stay as registered.
+- A1's non-probe eval parts run at landing as planned. Its probe parts wait for 218-18.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
