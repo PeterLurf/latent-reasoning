@@ -186,6 +186,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - Round-3 FREEZE-G / PARAM-SWAP (docs/LIT_R3_FREEZEG_2026-10-21.md): Brunner et al. [1908.04211](https://arxiv.org/abs/1908.04211); Panigrahi et al. [2302.06600](https://arxiv.org/abs/2302.06600); Surgical fine-tuning [2210.11466](https://arxiv.org/abs/2210.11466); LoRA forgets less [2405.09673](https://arxiv.org/abs/2405.09673); Layer swapping [2410.01335](https://arxiv.org/abs/2410.01335); Stoehr et al. [2403.19851](https://arxiv.org/abs/2403.19851); Varma et al. [2309.02390](https://arxiv.org/abs/2309.02390); Lubana et al. [2211.08422](https://arxiv.org/abs/2211.08422); TIES [2306.01708](https://arxiv.org/abs/2306.01708); Frankle et al. [1912.05671](https://arxiv.org/abs/1912.05671); Juneja et al. [2205.12411](https://arxiv.org/abs/2205.12411); Kong et al. [2601.14758](https://arxiv.org/abs/2601.14758).
 
+- Idle-pass drift / fixed-point levers (docs/LIT_IDLE_HORIZON_PRESCOUT_2026-10-21.md): Viakhirev et al. [2608.18222](https://arxiv.org/abs/2608.18222); Bai et al. [2106.14342](https://arxiv.org/abs/2106.14342); Kolawole et al. [2609.39277](https://arxiv.org/abs/2609.39277); Bansal et al. [2202.05826](https://arxiv.org/abs/2202.05826).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
