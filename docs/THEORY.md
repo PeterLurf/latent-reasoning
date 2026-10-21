@@ -19784,6 +19784,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **Cost:** $0. 4060, after the G-L5 known-answer test (218-17). Estimated < 30 min per model.
 
+**Note 216-11 (2026-10-20 22:43 EDT; OC pair for 216-10 KL-DRIFT (Audit, the user's 10-14 OC rule), before any KL output; scorer theory/score_s216_kl.py, fixtures 7/7).**
+- **Simulation model [ASSUMED].** Per-item KL is lognormal with item CV 3 or 10 (heavy-tailed) and pairwise correlation 0.5 across models on the same items. Each trial applies the registered rule (ratio ≥ 2 ∧ CI95 low > 1 from 400 item-bootstraps ∧ KL_R2 ≥ KL_SELF) at 4,000 items.
+- **P(pass | no effect: KL_SELF = KL_CTRL)** = 0.000 in 1,000 trials at both CVs (< 0.003), with or without R2 above SELF.
+  - This covers **item sampling only**. It does **not** cover seed-to-seed spread between FT runs: one FT pair, one seed, so a pass is "an instance".
+- **P(pass | effect)**, at true ratio 2.5 with R2 = 1.2 × SELF:
+  - 0.997 at CV 3, 0.78 at CV 10.
+  - At true ratio 2.0: 0.52 / 0.43.
+  - At ratio 2.5 with R2 = SELF exactly: 0.52 / 0.45, since the KL_R2 ≥ KL_SELF clause is then a coin flip.
+- **Realised $: $0** (local 4060).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
