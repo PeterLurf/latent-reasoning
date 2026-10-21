@@ -20629,6 +20629,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - The ≥ 0.998 agreement tolerance applies only to a model re-run on another card or bs. In that case the intact per-n acc must match within 0.002 (eval_vb stores no per-item answers) and the hist24 item share must be ≥ 0.998.
     - Each self / ctrl pair's Δ is read at their common largest K′ (Audit's G-D condition).
     - score_s216_ih follows this.
+  - **Amendment 2 (15:52 EDT, before any eval_khorizon grid value is read; Experiments' finding, Audit's recommendation).** The committed eval_hist24.json of s213_d3t_s1 / s215_ftctrl_s1 / s215_ftself_s1 (10-17, 4d67bac0) predate §216 E4 and hold no per-item answers.
+    - For those three, G-IH0 is **aggregate-level**, on the reference card and bs: intact per-n K′ 24 acc == eval_vb acc_k['24'] at every n, AND every arm's per-n K′ 24 acc == eval_hist24 [arm]['acc_k24'] at n 3–8 (|d| < 1e-9).
+    - This is weaker than per-item, and is recorded per model in the gate field. The three models keep full weight.
+    - A fresh per-item hist24 re-run is not used: it could only be tied to the committed reference through the same per-n aggregates.
+    - The other three models keep the per-item bitwise gate.
+    - score_s216_ih.gate_agg implements it (fixtures 17/17).
 - **Readings (per lineage: s1 self = FT-SELF, R2-s1 vs control FT-CTRL; s2 self = R1-s2 vs control D3-T s2).** Δ(m, n) = intact a(n, K′ 24) − a(n, K′ 64).
   - **H_RED** (benign redundancy): every self model has intact a(n, K′) ≥ 0.99 at every n 3–8 and K′ ≤ 64, and Δ(self, n) − Δ(ctrl, n) < 0.02 at every n 1–3.
   - **H_DRIFT** (decaying hold): some self model has Δ(self, n) − Δ(ctrl, n) ≥ 0.02 at some n 1–3, with Δ(self, n) ≥ 2 × its binomial SE.

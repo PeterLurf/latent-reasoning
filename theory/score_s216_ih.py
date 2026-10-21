@@ -52,6 +52,32 @@ def gate(ev, ref=None):
     return False, "G-IH0 failed (max |d| %s, min share %s)" % (max(d) if d else None, sh)
 
 
+def gate_agg(ev, vb, h24, ref):
+    """Note 216-14 amendment 2: for a model whose committed eval_hist24.json has no per-item answers (the 10-17 files of s213_d3t_s1 / s215_ftctrl_s1 /
+    s215_ftself_s1), G-IH0 = on the reference card / bs, intact per-n K' 24 acc == eval_vb acc_k['24'] at every n AND every arm's per-n K' 24 acc ==
+    eval_hist24 [arm]['acc_k24'] at n 3..8 (|d| < 1e-9). Aggregate-level, weaker than per-item; recorded as such."""
+    if ref is None or (ev.get("card"), ev.get("eval_bs")) != tuple(ref):
+        return False, "G-IH0 (aggregate) needs the reference card / bs %s" % (ref,)
+    acc = ev.get("acc") or {}; bad = []
+    for n, v in (vb.get("acc_k") or {}).get("24", {}).items():
+        if str(n) in acc.get("intact", {}).get("24", {}) and abs(acc["intact"]["24"][str(n)] - v) >= 1e-9:
+            bad.append(("intact_vs_eval_vb", n))
+    seen = 0
+    for arm in ARMS:
+        if arm not in h24 or arm not in acc:
+            continue
+        for n in range(3, 9):
+            hv = h24[arm].get("acc_k24", {}).get(str(n)); kv = acc[arm].get("24", {}).get(str(n))
+            if hv is None or kv is None:
+                bad.append((arm, n, "missing")); continue
+            seen += 1
+            if abs(hv - kv) >= 1e-9:
+                bad.append((arm, n))
+    if bad or seen == 0:
+        return False, "G-IH0 (aggregate) failed: %s" % (bad[:6] or "nothing compared")
+    return True, "aggregate-level (per-n equality, %d arm x n cells; weaker than per-item: committed hist24 has no items)" % seen
+
+
 def ok_vec(ev, arm, n, k):
     a = np.asarray(ev["items"][arm][str(n)][str(k)]); y = np.asarray(ev["items"]["y"][str(n)]); return (a == y).astype(np.int64)
 
@@ -79,7 +105,12 @@ def score(runs=RUNS):
         ev = jl(os.path.join(runs, r, "eval_khorizon.json"))
         if ev is None:
             out["models"][r] = {"status": "pending (eval_khorizon.json)"}; continue
-        vb = jl(os.path.join(runs, r, "eval_vb.json")); okg, why = gate(ev, (vb.get("card"), vb.get("eval_bs")) if vb else None)
+        vb = jl(os.path.join(runs, r, "eval_vb.json")); ref = (vb.get("card"), vb.get("eval_bs")) if vb else None
+        h24 = jl(os.path.join(runs, r, "eval_hist24.json"))
+        if h24 is not None and "items" not in h24 and vb is not None:      # amendment 2: committed hist24 without per-item answers
+            okg, why = gate_agg(ev, vb, h24, ref)
+        else:
+            okg, why = gate(ev, ref)
         out["models"][r] = {"gate": why, **describe(ev)}
         if not okg:
             out["models"][r]["status"] = "UNREADABLE"; continue
@@ -172,6 +203,17 @@ def fixtures():
     res.append(("other bs, 0.999 share -> tolerance admits", o["models"]["s215_ftself_s1"]["status"] == "READ", o["models"]["s215_ftself_s1"]["gate"]))
     e = dict(base); e["s215_ftself_s1"] = _ev(decay(0.002), seed=18); e["s215_ftctrl_s1"] = _ev(flat, kmax=48, seed=19)
     o = run(e); res.append(("common K' per pair (ctrl k_max 48)", all(r_["kmax"] == 48 for r_ in o["rows"] if r_["self"] == "s215_ftself_s1"), [r_["kmax"] for r_ in o["rows"]][:3]))
+    d2 = tempfile.mkdtemp(); _put(d2, base); ev2 = _ev(decay(0.002), bitwise=False, seed=20); ev2["eval_bs"] = 32
+    json.dump(ev2, open(os.path.join(d2, "s215_ftself_s1", "eval_khorizon.json"), "w"))
+    vb2 = {"card": "fixture", "eval_bs": 32, "acc_k": {"24": dict(ev2["acc"]["intact"]["24"])}}
+    h2 = {arm: {"acc_k24": {str(n): ev2["acc"][arm]["24"][str(n)] for n in range(3, 9)}} for arm in ARMS}
+    json.dump(vb2, open(os.path.join(d2, "s215_ftself_s1", "eval_vb.json"), "w")); json.dump(h2, open(os.path.join(d2, "s215_ftself_s1", "eval_hist24.json"), "w"))
+    o = score(d2); res.append(("amend 2: no-items hist24, per-n equal -> aggregate gate READ", o["models"]["s215_ftself_s1"]["status"] == "READ" and o["models"]["s215_ftself_s1"]["gate"].startswith("aggregate"), o["models"]["s215_ftself_s1"]["gate"]))
+    h2["self_ablate"]["acc_k24"]["5"] += 0.001; json.dump(h2, open(os.path.join(d2, "s215_ftself_s1", "eval_hist24.json"), "w"))
+    o = score(d2); res.append(("amend 2: one arm x n differs -> UNREADABLE", o["models"]["s215_ftself_s1"]["status"] == "UNREADABLE", o["models"]["s215_ftself_s1"]["gate"]))
+    h2["self_ablate"]["acc_k24"]["5"] -= 0.001; ev2["eval_bs"] = 16; json.dump(h2, open(os.path.join(d2, "s215_ftself_s1", "eval_hist24.json"), "w"))
+    json.dump(ev2, open(os.path.join(d2, "s215_ftself_s1", "eval_khorizon.json"), "w"))
+    o = score(d2); res.append(("amend 2: other bs -> UNREADABLE (aggregate needs ref card/bs)", o["models"]["s215_ftself_s1"]["status"] == "UNREADABLE", o["models"]["s215_ftself_s1"]["gate"]))
     e = dict(base); e["s216_r1_s2"] = _ev(flat, kmax=32, seed=14)
     o = run(e); res.append(("k_max 32 -> UNREADABLE", o["verdict"] == "UNREADABLE (k_max < 48)", o["verdict"]))
     e = dict(base); e["s216_r2_s1"] = None
