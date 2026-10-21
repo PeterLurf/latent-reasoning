@@ -20498,6 +20498,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - j = 1 share ≤ 0.79 where j has a choice.
   - **Test sha 652635f84ef07ad9…** (registered for §223).
 
+**Note 223-2 (2026-10-21 14:01 EDT; §223 eval-contract rulings (boxes/ps_eval.py draft; trainer 9562591e), before any §223 output; no bar or label changes).**
+- **Q1, eval K = d + 2** (the trained maximum; latents beyond d are HOLD-trained) for acc, swaps, onset and front. The K-sweep (K = d−1..d+2) is descriptive. This follows VB's K′ = n + 2 convention.
+- **Q2, COPY-CONTROL budget and power.**
+  - D′ is trained post hoc on K0-pass z (z_1 = prj(h at `<bot>`), no latent steps).
+  - **D_post** gets the same architecture, init and budget (5,000 steps, bs 64, the train stream, lr 1e-4) on the real z_t.
+  - COPY-CONTROL holds iff D′ reads R_t value tokens at t ≥ 2 at ≤ floor + 0.05 **and** D_post reaches ≥ 0.80 on the same items. Otherwise the control is under-powered: COPY-CONTROL UNREADABLE, which fails PORT-STATE.
+  - DECODE-VAL uses the jointly trained D, as registered.
+- **Q3, the value-token floor:** accuracy of predicting R_t's value tokens with another item's R_t values (same d and t, permuted within d), computed by the eval.
+- **Q4, the counterfactual:** option (a). Back-referenced S_j (j ≤ t) come from the **donor**: the state carries everything up to t. Option (b) (recipient S_j) is stored as cf_b, descriptive.
+- **Q5, BUDGET-FRONT sampling:** every swap t ∈ 1..d−1 on every third kept pair. "≥ 1,000 clean pairs" (v1.1) is read as **≥ 1,000 (pair, t) observations from ≥ 300 distinct pairs** in the band. Fewer → UNREADABLE.
+- **Q6, card:** on-host RTX 3090, fp32, right after training, for all four cells. One card class for every §223 eval; card and driver recorded per file.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
