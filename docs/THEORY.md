@@ -20527,6 +20527,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - No trainer argument may be added after this freeze.
 - **DIRECT launches first,** after F2 timing, Audit's G-D and the filler. It fixes n\* and the C1 band before any latent cell.
 
+**Note 218-27 (2026-10-21 14:17 EDT; DEEP-L read at its registered point, under Audit's Option C (218-26). A1's eval_lvb.json acc part (4060, fp32, acc:8, part done ≈ 13:36); score_s218.p_acc (void None, nothing missing) + the DEEP-L rule; G-L0 has no failed band in D 4–8. Only the acc part was read; probe / fd stay held.)**
+- **A1 acc_d2 (K′ = D + 2), D 3–16:** 0.503 / 0.496 / 0.505 / 0.487 / 0.473 / 0.531 / 0.492 / 0.491 / 0.504 / 0.528 / 0.509 / 0.495 / 0.515 / 0.518.
+  - That is **chance (½) at every depth**: A1 did not learn ProsQA-SYM at all.
+- **DEEP-L: NOT MET** (needs ≥ 0.90 at every D 4–8).
+- **Registered consequences, by rule (scored formally by score_s218 at --final; nothing re-decided):**
+  - **VB-C1-L NOT MET** (already NOT MET by 218-18; now also via DEEP-L).
+  - **A2 GO false** (A2 GO requires DEEP-L), so A2 / A2-CTRL do not run.
+  - B1 does not run.
+  - **§222's VB-C1-L-S is unreachable** (DEEP-L is a conjunct).
+- **Likely censor, to be read by score_s218, not here:** NO-ENTRY (plain_cand_ce never ≤ 0.35 in two consecutive 1k bins to 24k), given chance accuracy everywhere.
+- **Next:** §222's decision note (B vs close) per 218-26.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
