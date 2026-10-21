@@ -1,0 +1,9 @@
+ok   pick_both: boxes/runs_fsq/both/ckpt_last.pt
+ok   pick_prevonly: boxes/runs_fsq/prevonly/ckpt_prev.pt
+ok   pick_none: 
+ok   pick_emptylast: boxes/runs_fsq/emptylast/ckpt_prev.pt
+ok   tar_both: boxes/runs_fsq/both/ckpt_last.pt
+ok   tar_prevonly: boxes/runs_fsq/prevonly/ckpt_prev.pt
+ok   tar_none: 
+ok   tar_emptylast: boxes/runs_fsq/emptylast/ckpt_prev.pt
+FAILS 0

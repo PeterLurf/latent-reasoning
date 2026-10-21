@@ -24,7 +24,9 @@ Ambiguities resolved here (TS_v1 silent; nearest precedent followed):
   A5 --keep_ckpt_steps accepts 0 = a model-only copy right after init (vbank's convention; G-T4's step-0 check).
   A6 draws_log record = {step, plain_hash = sha1(json.dumps([syms of the 64 plain items])), coin, n (plain) | self_n + U (self)}; the latent's U values
      are logged so G-T3 can compare every U as PROOFS P4 did.
-  A7 --time_steps (G-T10) alternates self (odd steps; the next pool records in pool order, as vbank) and plain (even) and writes timing.json only
+  A7 --time_steps (G-T10) alternates self (odd steps) and plain (even) and writes timing.json only. Note 219-4 (3): the forced self batch is the 64
+     LONGEST records of the round's deepest n (T1 n 12, T2 n 16) at the round's fixed self micro, every odd step (deep_self, the same batch as G-T9),
+     so the projection is the worst self shape and never an under-projection from pool order. Timing only:
      (never eval.json: SEAL-BREACH reads any eval.json in a cell dir); the stage scripts must use timing.json / mem_check_self.json / train_done.json as
      their done markers.
   A8 TRAIN-TOKENS (Addendum 2 item 2): cumulative per type in every log record and train_done.json: target tokens, token-positions (prompt + target,
@@ -103,6 +105,19 @@ def build_parser():
 
 def plain_hash(its):
     return hashlib.sha1(json.dumps([it["syms"] for it in its]).encode()).hexdigest()
+
+
+def atomic_json(obj, path, **kw):
+    """json to path + '.tmp', then os.replace: a crash leaves the previous complete file (G-T13 item 4)."""
+    with open(path + ".tmp", "w", newline="\n") as fh:
+        json.dump(obj, fh, **kw)
+    os.replace(path + ".tmp", path)
+
+
+def deep_self(pool, bs):
+    """the deepest self shape (G-T9 and, Note 219-4 (3), G-T10): the bs longest records of the pool's deepest n. -> (records, n_top)."""
+    n_top = max(r_["n"] for r_ in pool)                                     # once (O(N); b310's lesson)
+    return sorted([r_ for r_ in pool if r_["n"] == n_top], key=lambda r_: -len(r_["syms"]))[:bs], n_top
 
 
 def coin_step(rng_s, p_self, bs):
@@ -212,7 +227,7 @@ def main(argv=None):
         json.dump({"ref": a.args_ref, "diff": dif}, open(os.path.join(a.out, "args_diff.json"), "w", newline="\n"), indent=1); print("ARGS-DIFF", json.dumps(dif), flush=True)
     params = g; opt = make_opt(params, a.lr)
     if a.mem_check_self:                                                    # G-T9: the deepest self shape, fixed self micro, real optimiser steps
-        n_top = max(r_["n"] for r_ in pool); deep = sorted([r_ for r_ in pool if r_["n"] == n_top], key=lambda r_: -len(r_["syms"]))[:a.bs]
+        deep, n_top = deep_self(pool, a.bs)
         its = [TS.self_item(r_) for r_ in deep]; ch = len(its) // a.self_micro; t_max = max(len(r_["syms"]) + 2 + TS.c_struct(r_["syms"]) for r_ in deep)
         if dev.startswith("cuda"):
             torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev)
@@ -242,10 +257,16 @@ def main(argv=None):
             rng_s.bit_generator.state = ck["rng_s"]; selfst.update(ck["self_state"])
         if os.path.exists(os.path.join(a.out, "draws_log.json")):
             draws_log = [d for d in json.load(open(os.path.join(a.out, "draws_log.json"))) if d["step"] < step0]
+        if a.draws_log_steps and not a.time_steps:                          # G-T13 item 4: draws_log is written BEFORE each checkpoint, so it covers 1..step0-1
+            assert [d["step"] for d in draws_log] == list(range(1, min(step0 - 1, a.draws_log_steps) + 1)), "§219: draws_log.json does not cover the resumed range"
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush(); print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
     KEEP_CK = {int(v_) for v_ in a.keep_ckpt_steps.split(",")} if a.keep_ckpt_steps else set()
     if 0 in KEEP_CK and step0 == 1:                                         # A5: the model right after init
         torch.save({"model": params.state_dict(), "step": 0}, os.path.join(a.out, "ckpt_model_0.pt"))
+
+    if a.time_steps and pool is not None:                                   # Note 219-4 (3): G-T10's forced self batch = the deepest self shape
+        deep_recs, deep_n = deep_self(pool, a.bs); deep_its = [TS.self_item(r_) for r_ in deep_recs]
+        deep_T = max(len(r_["syms"]) + 2 + TS.c_struct(r_["syms"]) for r_ in deep_recs)
 
     def draw_step(step):
         """the plain batch first (every step, the base's stream), then the coin; a self step takes the next bs pool records (no reuse). -> its, is_self, dl."""
@@ -256,8 +277,12 @@ def main(argv=None):
             if lg_:
                 dl.update({"coin": False, "n": [it["n"] for it in its]})
             return its, False, dl
-        if a.time_steps:                                                    # A7: forced alternation (G-TIME), U still drawn as vbank
-            coin = step % 2 == 1; U = [int(rng_s.integers(0, 5)) for _ in range(a.bs)] if coin else None
+        if a.time_steps:                                                    # A7 / Note 219-4 (3): forced alternation; odd steps = the deepest self shape
+            coin = step % 2 == 1
+            if coin:
+                U = [int(rng_s.integers(0, 5)) for _ in range(a.bs)]            # (drawn as vbank's G-TIME; no cursor: the deep batch every odd step)
+                return deep_its, True, None
+            U = None
         else:
             coin, U = coin_step(rng_s, a.p_self, a.bs)
         if not coin:
@@ -316,21 +341,23 @@ def main(argv=None):
             torch.save({"model": params.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
         if a.ckpt_every and step % a.ckpt_every == 0 and step < a.steps and not a.time_steps:
             cp = os.path.join(a.out, "ckpt_last.pt")
-            if os.path.exists(cp):
-                os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
+            if draws_log:                                                   # G-T13 item 4: draws_log FIRST (atomic), then the checkpoint (tmp + os.replace), so
+                atomic_json(draws_log, os.path.join(a.out, "draws_log.json"))   # every checkpoint on disk is covered by the draws_log on disk
             torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "torch_rng": torch.get_rng_state(), "step": step,
                         "n_nonfinite": n_nonfinite, "gn_log": gn_log, "tok": tok, "self_n_counts": self_n_counts, "elapsed": time.time() - t0,
-                        **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {})}, cp)
-            if draws_log:
-                json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
+                        **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {})}, cp + ".tmp")
+            if os.path.exists(cp):
+                os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
+            os.replace(cp + ".tmp", cp)
     if draws_log:
-        json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
+        atomic_json(draws_log, os.path.join(a.out, "draws_log.json"))
     if a.time_steps:                                                        # G-T10 (A7): timing.json only
         sps_self = tself[0] / max(1, tself[1]); sps_plain = tself[2] / max(1, tself[3])
         sps = (a.p_self * sps_self + (1 - a.p_self) * sps_plain) if pool is not None else (time.time() - tt0) / max(1, last - step0 + 1)
         tj = {"arm": a.arm, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours": sps * a.steps / 3600, "sec_per_step_self": sps_self if tself[1] else None,
               "sec_per_step_plain": sps_plain if tself[3] else None, "self_micro": a.self_micro, "micro": a.micro, "p_self": a.p_self, "gpu": info["train_gpu"],
-              "forced": "odd steps self (pool order), even steps plain; sec_per_step = p_self-weighted mix" if pool is not None else "plain"}
+              "forced": ("odd steps self = the %d longest records of the deepest n %d (T_max %d; Note 219-4 (3)), even steps plain; sec_per_step = p_self-weighted "
+                         "mix" % (len(deep_its), deep_n, deep_T)) if pool is not None else "plain", **({"deep_n": deep_n, "deep_T_max": deep_T} if pool is not None else {})}
         json.dump(tj, open(os.path.join(a.out, "timing.json"), "w", newline="\n"), indent=1); print("TIMING", sps, flush=True); return
     if a.stop_at and last < a.steps:
         print("STOPPED_AT", last, flush=True); return

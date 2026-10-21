@@ -70,12 +70,12 @@ done
 for j in $runs; do r_=$(s219_check_fetched $j); [ "$r_" = OK ] || { echo "FETCH_INCOMPLETE $ID $j $r_"; exit 1; }   # §219 change (1)
   [ -s $j/train_done.json ] && { [ -s $j/model.pt ] || { echo "FETCH_INCOMPLETE $ID $j MISSING model.pt"; exit 1; }; }; done        # §219 change (3)
 # Theory 2026-10-05 (aborted-run rule): failed runs not fetched above keep their partial args.json + log.jsonl as <dir>.void_partial
-# (user 2026-10-06: + ckpt_last.pt, args_resume_*.json and log.jsonl.pre_resume_* when present, so a crashed run resumes with --resume)
+# (user 2026-10-06: + ckpt_last.pt (else ckpt_prev.pt: s219_resume_ckpt, Audit G-T13 cond. 2), args_resume_*.json and log.jsonl.pre_resume_* when present, so a crashed run resumes with --resume)
 # (sha-verified; non-fatal - a miss is reported, the drain continues). Their run dir names stay free for local reruns.
 vp=""; for j in $(echo "$st" | sed -n 's/^BADM\{0,1\} //p'); do case " $keep " in *" $j "*) continue;; esac
   n=$(echo $j | tr '/' '_')_vp; ok=0
   for try in 1 2 3; do
-    rs=$($S "cd /workspace/Latent && tar -czf /tmp/f_$n.tgz --ignore-failed-read $j/args*.json $j/log.jsonl* $j/draws_log.json $j/init_from.json $j/ckpt_last.pt 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+    rs=$($S "$(declare -f s219_resume_ckpt); cd /workspace/Latent && tar -czf /tmp/f_$n.tgz --ignore-failed-read $j/args*.json $j/log.jsonl* $j/draws_log.json $j/init_from.json \$(s219_resume_ckpt $j) 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
     scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
     [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 10
   done
