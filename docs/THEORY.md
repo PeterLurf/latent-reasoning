@@ -20025,6 +20025,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The raw eval_gcs.json, committed by Experiments, also contains them. The seal is a no-read commitment on that file too.
   - If zen-gpt2 fails G-R on the same structural ground, a successor design (swap arms under the official padded semantics) is drafted rather than a second gate amendment.
 
+**Note 218-23 (2026-10-21 03:54 EDT; SELECTION RULE for the 2070 learning-rate known-answer sweep, pre-stated before the sweep runs (Audit's condition 1). It applies only if 218-22 routes to (iii). Known: untrained anti-lin ×10 LATE 1.000, anti-xor ×10 LATE 0.522, K2-anti-xor ×1.5 0.98, K2-anti-lin ×1.5 0.993. Route (ii) inputs pending.)**
+- **Sweep** (2070, fp32, untrained LangSLVA, antisymmetric plant at **×1.5**, the untrained m-rule value; registered batches rng 22501 and z rngs; held-out every 250):
+  - recipe candidates, in this order: **R1 = AdamW lr 1e-4 for 10,000 steps** (the registered lr at the registered full budget); **R2 = lr 3e-4, 2,000 steps**; **R3 = lr 1e-3, 2,000 steps**;
+  - each candidate run for **anti-lin and anti-xor**;
+  - LATE = the mean of the last three held-out evaluations.
+  - ×10 runs at R2 / R3 are descriptive.
+- **Selection rule (used only if (iii) fires):** R* = the **first** candidate in the order R1, R2, R3 with LATE(anti-lin, ×1.5) ≥ 0.90 **and** LATE(anti-xor, ×1.5) ≥ 0.90.
+  - **No candidate qualifies:** no recipe change and no plant change. PLANT reads as registered, which makes A1's PROBE-VALID fail and PROBE-GAIN-L UNREADABLE (not met), and that is reported.
+  - **A candidate R\* qualifies:** the (iii) Note adopts the antisymmetric plant at m = 1.5 together with R\*, for every PROBE(t) and PLANT read (G-L5 and each model's own PROBE-VALID, A1 included). FD-MIRROR's per-slot probes have their own registered recipe and are untouched.
+  - The adoption is conditional on a G-L5 re-run with R\* on the untrained model passing as registered (lin and xor ≥ 0.90 at t 0–2; PROBE(0) 0.50 ± 0.03). Otherwise there is no change.
+- **The (iii) Note must also** (Audit's condition 2, not asserted here) derive the direction of R\*'s effect on every registered PROBE / PLANT / FD reading and give the OC pair under R\*. PROBE-VALID and the PROBE(12) final-state check become easier; PROBE-GAIN-L = ACC − PROBE(1) has its direction set by PROBE(1)'s response.
+- No routing input of 218-22 is read by this sweep.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
