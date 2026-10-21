@@ -1,0 +1,41 @@
+SETUP 245 s eps 6.859230622202918
+PROBE2 head inputs ONLY hA (64, 768) hB (64, 768)
+PROBE2 cexor 1.5 None 250 0.509 405 s
+PROBE2 cexor 1.5 None 500 0.488 836 s
+PROBE2 cexor 1.5 None 750 0.498 1249 s
+PROBE2 cexor 1.5 None 1000 0.508 1650 s
+PROBE2 cexor 1.5 None 1250 0.521 2061 s
+PROBE2 cexor 1.5 None 1500 0.493 2482 s
+PROBE2 cexor 1.5 None 1750 0.496 2897 s
+PROBE2 cexor 1.5 None 2000 0.498 3305 s
+WROTE feas2_S2_cexor_x1.5
+PROBE2 head inputs ONLY hA (64, 768) hB (64, 768)
+PROBE2 lin 1.5 None 250 0.507 410 s
+PROBE2 lin 1.5 None 500 0.508 819 s
+PROBE2 lin 1.5 None 750 0.923 1230 s
+PROBE2 lin 1.5 None 1000 0.963 1642 s
+PROBE2 lin 1.5 None 1250 0.975 2053 s
+PROBE2 lin 1.5 None 1500 0.989 2463 s
+PROBE2 lin 1.5 None 1750 0.99 2874 s
+PROBE2 lin 1.5 None 2000 0.994 3288 s
+WROTE feas2_S2_lin_x1.5
+PROBE2 head inputs ONLY hA (64, 768) hB (64, 768)
+PROBE2 probe0 0.0 None 250 0.504 374 s
+PROBE2 probe0 0.0 None 500 0.496 749 s
+PROBE2 probe0 0.0 None 750 0.518 1126 s
+PROBE2 probe0 0.0 None 1000 0.482 1503 s
+PROBE2 probe0 0.0 None 1250 0.516 1885 s
+PROBE2 probe0 0.0 None 1500 0.517 2270 s
+PROBE2 probe0 0.0 None 1750 0.482 2652 s
+PROBE2 probe0 0.0 None 2000 0.496 3033 s
+WROTE feas2_S2_probe0_x0
+PROBE2 head inputs ONLY hA (64, 768) hB (64, 768)
+PROBE2 cexor 1.5 shuffled 250 0.495 424 s
+PROBE2 cexor 1.5 shuffled 500 0.507 823 s
+PROBE2 cexor 1.5 shuffled 750 0.5 1234 s
+PROBE2 cexor 1.5 shuffled 1000 0.505 1633 s
+PROBE2 cexor 1.5 shuffled 1250 0.499 2027 s
+PROBE2 cexor 1.5 shuffled 1500 0.471 2430 s
+PROBE2 cexor 1.5 shuffled 1750 0.459 2830 s
+PROBE2 cexor 1.5 shuffled 2000 0.475 3235 s
+WROTE feas2_S2_cexor_x1.5_shuffled
