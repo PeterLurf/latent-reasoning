@@ -20304,6 +20304,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Family cap $20.** s222fam GUARD_STOP on realised spend.
   - **Per-host admission:** G-TIME s/step × 20,000 / 3600 + 0.35 h, priced at the host's $/h, must not exceed the cell's share. **Per-host guard** = 1.3 × that projection.
   - Drain waiters armed. Vast launches proceed under the user's standing OK (10-20). §222's filler starts only after §219 T2 admits.
+- **(Note 222-3, Audit):** resume and probe readings are exact up to the SDPA backward's non-determinism at t ≥ 2 (registered kernel unchanged); code equivalence proven bitwise under math SDP.
 - **Unchanged:** plants, m = 3 (m_rule.json 8a3dca1b, untrained 4060), streams, bars, controls, the choice rule S1 > S2 > none, readings.
 - **score_s222** now requires card class **"3090"** across every §222 cert / A1 file, and accepts the ACC-check file. It is committed with a fixture before any deploy.
 
@@ -20374,6 +20375,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Engine equivalence** is accepted if old-vs-Engine differences lie within the **measured new-vs-new run-to-run envelope** (same state, same card). Every LATE / held-out reading must differ by ≤ that envelope, and in no case by more than 1 held-out item.
   - **222-1's "bitwise" resume test is replaced by the same envelope criterion.** Losses for the next 100 steps after resume, and the next held-out evaluation, must lie within the same-state run-to-run envelope. A drift outside it is a resume fault.
   - The envelope is measured once per card class (the Engine new-vs-new run in progress, and one 3090 pair on the first host), and recorded.
+- **Superseded in part by Audit's ruling (same hour, before any deploy).** **Code equivalence and the resume test are proven BITWISE under forced math SDP** (a gate-only setting; the registered runs keep the registered memory-efficient kernel). The envelope criterion above remains only as the description of registered-run variation.
+  - **Line added to 222-1 (Audit):** "resume and probe readings are exact up to the SDPA backward's non-determinism at t ≥ 2 (registered kernel unchanged); code equivalence proven bitwise under math SDP".
 - **Readings.** The certification bars (LATE ≥ 0.90; controls ≤ 0.55) sit far from run-to-run noise of this size. The A1 probe readings carry the same property as §218's registered probe. Both are recorded as a known source of non-bitwise variation, never as a censor.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
