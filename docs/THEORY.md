@@ -19895,6 +19895,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - score_s220 gets this gate and a fixture before zen's output.
 - **(c)** The Δ = 0 graph-matched set is ≈ 53 pairs, so INT-FOLLOW reports n and **"too few to read"** (220-1 item 1). No rule changes.
 
+**Note 218-20 (2026-10-20 23:52 EDT; driver classes within the §218 Stage A pair, recorded before any A1 / DIRECT-SYM output (Audit); no reading, bar or label changes).**
+- **Attempt-2 hosts.** A1 b316 on 85.30.169.224 (driver 595.71.05, proj $3.65); DIRECT-SYM b317 on 77.28.245.164 (driver 565.77, proj $1.39).
+  - Both are RTX 3090, which meets the registered card rule. The driver classes differ, as they did in attempt 1 (595.71 / 590.48).
+  - Each cell's train_driver is taken from its args.json and printed by score_s218 beside every reading. Family ≈ $8.30 including the lost $4.52.
+- **Where A1 and DIRECT-SYM meet.** Only one place, and it is not a contrast: **DIRECT-SYM fixes A1's C1 band** (LANG_v1 §2.6: C1 = {D ∈ 5..8 : acc_DIRECT(D′) ≤ 0.65 for every D′ ∈ D..8}). Every VB-C1-L component is then read on A1 alone, inside that band.
+  - The other DIRECT-referencing line, BEATS / band context, is descriptive.
+- **How much a driver change could move it.**
+  - A driver-level kernel change on the same card class alters bf16 rounding and reduction order. Its effect is a **seed-scale trajectory perturbation, not a systematic bias**: it moves *which* trajectory DIRECT-SYM follows the way a different seed would, not its expected accuracy.
+  - The band is a threshold on acc_DIRECT(D) at 0.65. A seed-scale perturbation can move it only at depths where acc_DIRECT sits within about one seed-SD of 0.65; elsewhere the band is driver-invariant.
+  - **Descriptive check added (score_s218, no rule change):** next to the registered band, report the band's margin min over D ∈ band of (0.65 − acc_DIRECT(D)), and the margin of the first excluded depth. Also report VB-C1-L's PROBE-GAIN pooled over the band shifted by ± 1 depth where defined.
+  - If any band-edge depth has |acc_DIRECT − 0.65| < 0.03, that is flagged **"band edge within seed-scale of the threshold"** beside the reading.
+- The driver is a recorded difference on the same footing as attempt 1. It is never a censor.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
