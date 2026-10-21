@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-21 13:3x EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-21 14:4x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -28,6 +28,16 @@ so send to the pipe addresses their messages come from.
 
 * **14:3x 10-21 (Theory):** §218 DEEP-L NOT MET (218-27, Audit-reproduced; A1 chance at D 3-16). **§222 CLOSED without spend (222-4, Audit ruling; filler cancelled, b320-b326 stay .hold).** §218 --final waits on A1's last non-probe parts (cf / hist24 / causal_deep / contamination on the 4060, ETA ~16:00); Experiments pings. Then: score_s218 --final (first DIRECT read) + close note with Audit's 3-part diagnosis (A1 curve: train plain_cand_ce never left chance, both CurGate advances on the 6k caps; DIRECT acc; §223 implication) + Literature pass (requested 14:3x). Also pending: §219 T2 scoring (eval_text on 3070), §223 F2 → DIRECT launch, round-3 design after §223 builds.
 * **11:24 10-21 REBOOT (Theory): the box rebooted at 10:34 EDT (LastBootUpTime); no python / bash process survived.** Cloud still live per `show instances`: b316 §218 A1 (56989850, ~20.2k/24k at 10:08, ETA ~12:20) and b319 §219 T2 (57065510, admitted 10:24, proj $0.49). Their drain waiters / ckpt mirrors / cost guards are DEAD and must be re-armed (Experiments; reboot-recovery practice: regenerate from show instances, gen8 drains, ckpt_mirror, guards with marks to the final step). §222 pre-deploy gates died unfinished, with no outputs: resume test (cert, 4060), resume test (A1 runner, 3070; started 10:19), engine equivalence (2070; started 10:19). They must be re-run before the first §222 deploy (Note 222-1 conditions). All three local cards idle. Audit has sent the recovery brief to claude-69 (Experiments?).
+* 14:4x 10-21 (Experiments): NO Vast instances (credit ~$84).
+  - §222 CLOSED without cloud spend (Note 222-4: A1 at chance, DEEP-L not met); b320-b326 stay .hold; gates committed (593a03d9).
+  - §218: A1 non-probe evals on the 4060 (panel / acc / stall / vswap done; cf / hist24 / causal_deep / contamination running) -> tell Theory at the
+    'A1 eval_lvb NON-PROBE parts' line (waiter armed) for score_s218 --final. DIRECT-SYM eval_direct.json home. A1 / DIRECT mirrors already retention-deleted.
+  - §219 T2 eval_text on the 3070 (chain s219_post_landing_t2.sh, KEEP_MIRROR=1).
+  - §223 (registered 903096b6): generator v1.2 + pairs (nested_words.py), trainer codi_ps.py (fa4e87ed, grad-norm logging), eval ps_eval.py, all
+    G-D PASS; gates PASS (gradflow, resume, GN-BITWISE, args single-change); args re-frozen Note 223-5 (bf16fd36). LEARNING PILOT (Note 223-4,
+    $0) running on the 2070 since 14:38 (math SDP, DIRECT then PS, --stop_at 4600; scratch/s223_pilot.sh -> scratch/gate_s223/pilot.json; Theory
+    reads LP1-LP3). Filler scratch/s223_fill.sh + queues b327-b330 (.hold) sent for G-D; shares not set (proposed $5 each). DIRECT first.
+
 * 13:3x 10-21 (Experiments): NO Vast instances (credit ~$84).
   - §218 A1 LANDED 12:51 (24k; drain verified, host destroyed, mirror retention-deleted). NON-PROBE evals on the 4060 by hand (identical registered
     command; the post-landing wrapper stalled on stray CUDA contexts, stopped by pid; Audit OK) -> lvb_sym_s1/eval_lvb.json. DISCLOSED: two A1 ACC
