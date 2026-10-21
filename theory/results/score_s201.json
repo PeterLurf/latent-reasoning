@@ -126,7 +126,21 @@
    "R_FD": 0.8252594993354287,
    "reading": "DELTA-INTRINSIC"
   },
-  "s182_window_s2": null
+  "s182_window_s2": {
+   "acc_k24": {
+    "CLEAN": 0.99849999944369,
+    "FA": 0.9835000038146973,
+    "FD": 0.9994999965031942,
+    "FB": 0.9994999965031942
+   },
+   "D": 0.000999997059504265,
+   "gates": {
+    "fb_identity": true,
+    "clean_vs_s173_maxdiff": 2.622604367008563e-08,
+    "s173_dtype": "None"
+   },
+   "reading": "NOTHING-TO-RECOVER (no-harm FAILED)"
+  }
  },
  "T2": {
   "s185_rms_s1": {
