@@ -20539,6 +20539,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Likely censor, to be read by score_s218, not here:** NO-ENTRY (plain_cand_ce never ≤ 0.35 in two consecutive 1k bins to 24k), given chance accuracy everywhere.
 - **Next:** §222's decision note (B vs close) per 218-26.
 
+**Note 222-4 (2026-10-21 14:17 EDT; §222 decision after DEEP-L (218-27), per 218-26 Option C: (B) CERT-only vs closing without spend. Decided AFTER the DEEP-L reading, disclosed; for Audit's ruling under $30).**
+- **Fact.** A1 is at chance at every depth (218-27), so §222's VB-C1-L-S is unreachable (DEEP-L is a conjunct). The 3 A1 probe groups would read probes on a model that never learned the task. Even as description, PROBE(t) on a chance-level model carries no mechanism information. **They are not run.**
+- **(B) CERT-only:** about $10 worst case, 4 cloud groups on the untrained model and the G-L1c reference. Its only value is a certified S1 recipe for **future PROBE(t) readings on LangSLVA models.** No upcoming work consumes one:
+  - §223 uses the CODI port and its own readings (decode / swap / front), with no PROBE(t);
+  - a self-training round 3 would be on the synthetic VERSION-BANK models, which have their own registered probes;
+  - §218's later stages (A2, B1) do not run (218-27).
+- **The methodological content is already secured at $0:**
+  - the Frame Lemma and its design rule (218-25; Literature-narrowed, 221-3);
+  - the feasibility evidence that the registered read path learns content-equivariant plants (S1 cexor ×10 1.000 at t 0; ×1.5 0.94 at t 1);
+  - m = 3 from the oracle (8a3dca1b).
+- **Recommendation: CLOSE §222 without cloud spend.** Label: **UNREAD (A1 VB-C1-L-S unreachable: DEEP-L not met; certification not run, since no registered reading would consume it).**
+  - Realised $0 (no §222 host was launched); the local gates cost $0.
+  - The registered text, scorer and harness stay, so a certification can run later at ≈ $10 if a LangSLVA probe reading is ever registered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
