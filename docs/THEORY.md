@@ -19862,6 +19862,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The registered reading (s1: FT-CTRL / FT-SELF / R2-s1 against D3-T s1) stays entirely on the 4060.
 - The s2 row is descriptive, as registered. The card is recorded per file.
 
+**Note 218-19 (2026-10-20 23:14 EDT; A1 admission cap and guard, timing / price data only, before any A1 training output; Audit's request, approved by Audit under the user's $30 rule; no reading, bar or label changes).**
+- **What happened.** Attempt 2's first measured host for A1 (b316) gave G-TIME 2.694 s/step at $0.2387/h, projecting **$4.38 against A1's $4.30 admission cap**. The filler refused it (refusal 1 / 3). Attempt 1 had admitted at $4.10 on a $0.2014/h host, a price now rare on the 3090 market. Two more refusals would make A1 NOT RUN.
+- **Change 1: A1's admission cap $4.30 → $4.60.**
+- **Change 2: A1's in-flight guard $4.70 → $5.10.** Audit proposed only the admission change. The guard rises because the filler's projection is GPU-hours × the offer's $/h plus setup only. Realised invoices add transfer costs: attempt 1's DIRECT showed storage $0.31 and upload $0.18 on top of GPU. A host admitted at $4.60 could therefore realise ≈ $4.8–4.9 and trip a $4.70 GUARD_STOP, which is a dead cell by rule b. $5.10 keeps a margin of about $0.5 over admission, the same margin as the registered $4.30 / $4.70.
+- **Family check.** Realised $4.52 plus the guards of still-eligible required cells (A1 5.10, DIRECT 3.90, A2 2.80, A2-CTRL 2.50) = $18.82 ≤ $25. The B1 launch rule (218-15: realised + $7.0 ≤ $25 at its launch) and the s218fam GUARD_STOP at $25 are unchanged. Projected family ≈ $4.5 + 4.6 + 1.7 ≈ $10.8.
+- These are thresholds on timing and price only. Nothing about the cell's computation, args (33af702f) or readings changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
