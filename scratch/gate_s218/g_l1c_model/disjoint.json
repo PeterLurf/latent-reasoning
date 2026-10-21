@@ -1,0 +1,12 @@
+{
+ "items_sha": "7973da5bc4e23ad1fb8df8259dcfcc24eccfda29e286ba2098da4088d05d8e29",
+ "items_sha_matches_7973da5b": true,
+ "n_items": 256,
+ "n_distinct_sigs": 256,
+ "test_sigs": 14000,
+ "gate_sigs": 8000,
+ "hits_test": 0,
+ "hits_gate": 0,
+ "def": "Note 218-22 (ii): the re-run G-L1c reference model's 256 training items must be disjoint from A1's eval items (the SYM test set) - signature check\nagainst prosqa_sym.test_set (and the GATE set, i.e. excl_sigs), recorded -> scratch/gate_s218/g_l1c_model/disjoint.json. Regenerates the items exactly as\nscratch/gate_s218_l1c.py / s218_l1c_save.py do (Stream 21160 with exclusion_sigs, D from np rng 21161 U{3..4}, 256 items).",
+ "disjoint": true
+}
