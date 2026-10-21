@@ -307,6 +307,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **CLOSED 10-18: CAUSAL-PRESERVED in both lineages (s1 FT-SELF 9-13 / R2 9-18; s2 base {9} / R1 9-13; follow_ii 1.000, STALL >= 0.99, gates 0.000); depth bought without eroding causal slot use; $0** |
 | 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **Stage A LAUNCHED 10-18 (218-13); both cells HOST-LOST in the 10-18/20 outage, nothing read, $4.52 lost; RELAUNCH from step 0 Audit-approved 10-20 (218-15)** |
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **code + gates + Audit diff review; not launched** |
+| 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **scorer + port + G-D; not run** |
 
 ## Live sections
 
@@ -18817,6 +18818,68 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 - Projected $0.70–2.15. Admission bounds $1.00 / $1.45, guards $1.20 / $1.70, **family cap $3.00** (GUARD_STOP).
 - About 9.7–15.3 h of 3070 time.
 - Realised at registration: $0.
+
+## 220. GSM-CACHE-SWAP: where does CODI's latent computation live on natural GSM8K, and does it port? (formerly SCALE-PROBE; Theory's research step after §215–219, ranked first by Theory and Audit; **auto-approved by Audit under the user's $30 standing rule, cap $0**, on review of 289ebace with conditions = Addendum 1; pre-registered 2026-10-20 23:05 EDT, before any §220 code, download or output)
+
+**Registered text.**
+- docs/research_scaleprobe_2026-10-20/GCS_v1.md **at 3a88762e** (v1 + Addendum 1) is the registered text for every definition, rule, bar and label. That file is now frozen.
+- Reviews:
+  - SP_draft.md → REVIEW_SP.md (Opus proof check + red team: 2 BLOCKERs, fixed);
+  - Literature LIT_SCALEPROBE_CHUNKSNAP_2026-10-20.md (2d35f1dc) with the SCIT 2608.27265 follow-ups;
+  - Audit's controls.
+- Eval-only diagnostic, so no architecture or method change and no derivation required (Audit).
+- **Scorer:** theory/score_s220.py, written and fixture-checked before any output (the 215-7 pending rule; label precedence fixtures).
+
+**Prior and novelty.**
+- SCIT already ran latent-tail KV transplants at GPT-2 and LLaMA3-1B on **synthetic** templates, with a closed-set oracle-cf metric. Cache 0.70–1.00 vs h-only ≤ 0.25.
+- Novelty here is limited to:
+  - natural GSM8K pairs;
+  - free-generation donor-final follow, with SCIT's metric as a bridge;
+  - the h-only and cache granularities paired on the same items;
+  - the released CODI-1B stage.
+
+**Design.**
+- **Stage 0:** our CODI20 (gsm_codi_20ep_s1, primary) and the official zen-E/CODI-gpt2 (comparator).
+- **Stage 1:** zen-E/CODI-llama3.2-1b-Instruct (primary). It runs only on the §6 trigger: CARRIER-PORTS in either GPT-2 model, else a new Note is needed.
+- **Execution:** bs 1 for every arm; official parser; HF gsm8k test pinned by sha.
+- **Pairs:** exact-question-length donors (Δ = 0), each donor used at most 3 times.
+- **Arms:**
+  - INTACT, MEAN-Z, **STATE-SWAP** (210-4's h-only), **CACHE-SWAP** (latent-position K/V, all layers);
+  - **LEAK-SEG** (the donor's last 6 question-content K/V rows), **SELF-SWAP** (bitwise identity);
+  - descriptive: K-sweep, NOISE, PREFIX-SWAP, QUESTION-DROP, QMASK, LOGIT-LENS, the SCIT bridge, graph-matched int-follow (Δ = 0).
+- **Floor:** the permutation floor of each arm's outputs.
+
+**Primary (per stage).**
+- **CACHE-CARRIER-GSM** = NECESSARY (INTACT − MEAN-Z ≥ 0.10) ∧ CACHE-SWAP follow ≥ floor + 0.30 ∧ LEAK-SEG follow ≤ 0.25 ∧ SELF-SWAP bitwise.
+- Labels in precedence order: UNREAD > UNNECESSARY > CARRIER-PORTS > CARRIER-LEAK > SCAFFOLD > CONTEXT-BOUND > MIXED.
+- Pre-stated descriptives: GRANULARITY (McNemar), LATE vs DISTRIBUTED, INTERMEDIATE.
+- Outcome → action: v1 §6.
+- Wording: a portability property of CODI's latents. Never serial C1, C3 or C4.
+
+**OC.**
+- About 480 pairs at stage 0 (about 700 at stage 1).
+- **P(pass | no effect) ≈ 0.**
+- P(pass | floor + 0.35) 0.98–0.99; + 0.32: 0.81–0.84; + 0.30: 0.52.
+- Leak gate: 0.997 / 0.52 / 0.008 at a true 0.20 / 0.25 / 0.30.
+- A cluster-bootstrap CI over donors is reported beside these.
+- Prior P(CARRIER-PORTS, stage 0) ≈ 0.35 [ASSUMED].
+
+**Censoring (rule b).**
+- UNREAD: the G-R gate fails; a pin or load failure; a test sha mismatch; card / dtype / bs mismatch; SELF-SWAP not bitwise; a cache-row assertion fails.
+- Fewer than 300 pairs makes the swap arms UNREADABLE.
+- Unparseable output counts as wrong.
+- A missing file is pending. A stage not triggered reads UNREAD.
+
+**Gates before output:**
+- G-M memory;
+- G-R INTACT reproduction: bs 1 against the official-semantics virtual bs 128 run, per-item agreement ≥ 0.97 and |Δacc| ≤ 0.025; CODI20 also ±0.025 of 0.379;
+- G-I identity;
+- G-C cache-row asserts;
+- G-RoPE (stage-1 descriptive set);
+- **G-D Audit's diff review** of the port and the swap / cache hooks;
+- G-S scorer fixtures.
+
+**Cost: $0** (local, about 3 h per model). Cards: after KL-DRIFT (216-10), one card per model, recorded. Realised at registration: $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
