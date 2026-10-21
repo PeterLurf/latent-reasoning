@@ -1,0 +1,30 @@
+[W1021 15:20:35.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 134217728 bytes (free: 0, total: 8589410304).
+[W1021 15:20:36.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 165675008 bytes (free: 0, total: 8589410304).
+[W1021 15:20:36.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 186646528 bytes (free: 0, total: 8589410304).
+[W1021 15:20:36.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 201326592 bytes (free: 0, total: 8589410304).
+[W1021 15:20:55.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 2097152 bytes (free: 0, total: 8589410304).
+[W1021 15:21:19.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 81788928 bytes (free: 0, total: 8589410304).
+[W1021 15:21:48.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 90177536 bytes (free: 0, total: 8589410304).
+[W1021 15:21:50.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 104857600 bytes (free: 0, total: 8589410304).
+[W1021 15:21:50.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 109051904 bytes (free: 0, total: 8589410304).
+[W1021 15:21:52.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 106954752 bytes (free: 0, total: 8589410304).
+[W1021 15:21:52.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 106954752 bytes (free: 0, total: 8589410304).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\vbank_diag.py", line 1640, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\vbank_diag.py", line 1631, in main
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run, a.lineage, a.round) if a.part == "selfdepth" else part_deep(m, TE, dev, a.eval_bs, a.run) if a.part == "deep" else part_khorizon(m, TE, dev, a.eval_bs, a.run) if a.part == "khorizon" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+                                                                                                                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\vbank_diag.py", line 991, in part_khorizon
+    r_ = m.rollout(x, pad, kmax, coda_rows={k: rows for k in KS})
+  File "D:\Latent\boxes\vbank.py", line 332, in rollout
+    h = block_bank(g, i, h, bk, bv, bb, M)
+  File "D:\Latent\boxes\vbank.py", line 91, in block_bank
+    o = F.scaled_dot_product_attention(q, torch.cat([bk.to(q.dtype), k], 2), torch.cat([bv.to(q.dtype), v], 2), attn_mask=mask)
+                                                                             ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 102.00 MiB. GPU 1 has a total capacity of 8.00 GiB of which 0 bytes is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 2.92 GiB is allocated by PyTorch, and 4.36 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

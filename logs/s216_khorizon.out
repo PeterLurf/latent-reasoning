@@ -1,0 +1,5 @@
+2026-10-21 14:53:29 khorizon queue armed (3070 GPU-bda2f3be-d9b5-46de-6b2a-97dcecfd5acb, cuda:1): waiting for the card
+2026-10-21 15:20:28 s213_d3t_s1 khorizon rc 1 
+2026-10-21 15:21:52 s215_ftctrl_s1 khorizon rc 1 
+2026-10-21 15:23:17 s215_ftself_s1 khorizon rc 1 
+2026-10-21 15:24:23 khorizon run 1 STOPPED by pid: K' 64 OOM in the arm loop on s213_d3t_s1 / s215_ftctrl_s1 / s215_ftself_s1 (rc 1, no eval_khorizon.json; s216_r2_s1 stopped in setup). Measured deepest chunk: K' 64 peak 6.62 GiB alloc / 7.25 reserved of 8; K' 48 5.09. Fix: per-chunk empty_cache + check peak <= 0.85 of the card; logs -> .void_oom
