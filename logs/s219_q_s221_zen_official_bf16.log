@@ -1,0 +1,52 @@
+SETTING test.py:163  bs from CLI                eval_step = math.ceil(len(question)/data_args.batch_size)
+SETTING test.py:88   pad side                   padding_side="left",
+SETTING test.py:132  question format            question = [f"{example[question_name].strip().replace('  ', ' ')}" for example in test_set]
+SETTING test.py:183  remove_eos -> q + <bot>    bot_tensor = torch.tensor([model.bot_id], dtype=torch.long).expand(batch["input_ids"].size(0), 1)
+SETTING test.py:100  dtype cast (D1)            model.to(torch.bfloat16)
+SETTING test.py:193  max new tokens             "max_new_tokens": 256,
+SETTING test.py:224  latent loop                for i in range(inf_latent_iterations):
+SETTING test.py:257  logits slice (no <eot>)    logits = out.logits[:, -1, :model.codi.config.vocab_size-1]
+SETTING test.py:260  greedy branch              if training_args.greedy:
+SETTING test.py:261  greedy argmax              next_token_ids = torch.argmax(logits, dim=-1).squeeze(-1)
+SETTING test.py:287  token appended before stop pred_tokens[b].append(next_token_ids[b].item())
+SETTING test.py:288  stop at EOS                if next_token_ids[b] == tokenizer.eos_token_id:
+SETTING test.py:292  all finished               if finished.all():
+SETTING test.py:300  decode                     decoded_pred = tokenizer.decode(pred_token, skip_special_tokens=True)
+SETTING test.py:319  parser commas              sentence = sentence.replace(',', '')
+SETTING test.py:320  parser regex               pred = [s for s in re.findall(r'-?\d+\.?\d*', sentence)]
+SETTING test.py:337  parser last number         pred_answer = float(pred[-1])
+SETTING test.py:334  parser none -> inf         return float('inf')
+SETTING test.py:349  accuracy                   if p == g:
+SETTING parsed CLI {"data_name": "gsm8k", "batch_size": 1, "model_name_or_path": "gpt2", "ckpt_dir": "prosqa/ckpt_ext/hf/codi", "lora_init": true, "lora_r": 128, "lora_alpha": 32, "full_precision": true, "greedy": true, "num_latent": 6, "use_prj": true, "prj_dim": 768, "prj_no_ln": false, "prj_dropout": 0.0, "inf_latent_iterations": 6, "inf_num_iterations": 1, "remove_eos": true, "use_lora": true, "bf16": true, "model_max_length": 512, "seed": 11}
+SETTING deviations from scripts/test_gpt2.sh: batch_size 128 -> 1; ckpt_dir / output_dir paths
+SETTING D9 bs-1 shape fix, test.py:261
+  - next_token_ids = torch.argmax(logits, dim=-1).squeeze(-1)
+  + next_token_ids = torch.argmax(logits, dim=-1).reshape(-1)
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  61%|######    | 90/148 [00:00<00:00, 870.23it/s]Loading weights: 100%|##########| 148/148 [00:00<00:00, 556.21it/s]
+[transformers] The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+D:\Latent\third_party\venv_codi\Lib\site-packages\peft\tuners\lora\layer.py:1768: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+WARNING:root:Downloading Data
+Using the latest cached version of the dataset since openai/gsm8k couldn't be found on the Hugging Face Hub (offline mode is enabled).
+WARNING:datasets.load:Using the latest cached version of the dataset since openai/gsm8k couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'main' at C:\Users\peter\.cache\huggingface\datasets\openai___gsm8k\main\0.0.0\740312add88f781978c0658806c59bc2815b9866 (last modified on Wed Oct 21 05:40:35 2026).
+WARNING:datasets.packaged_modules.cache.cache:Found the latest cached dataset configuration 'main' at C:\Users\peter\.cache\huggingface\datasets\openai___gsm8k\main\0.0.0\740312add88f781978c0658806c59bc2815b9866 (last modified on Wed Oct 21 05:40:35 2026).
+WARNING:root:Formatting inputs...
+WARNING:root:Tokenizing inputs...
+WARNING:root:Total example: 1319 | eval batch size: 1eval steps: 1319
+[    38s] official items 100
+[    67s] official items 200
+[    96s] official items 300
+[   124s] official items 400
+[   153s] official items 500
+[   181s] official items 600
+[   209s] official items 700
+[   237s] official items 800
+[   266s] official items 900
+[   294s] official items 1000
+[   322s] official items 1100
+[   350s] official items 1200
+[   378s] official items 1300
+[   383s] official test.py finished; 1319 decoded items
+WROTE scratch\s220\zen_codi_gpt2\official_bf16\fid_official_bs1.json items 1319 sha256 5a3e009decd03a0224deb19597a95d81c6b2df12fbf372827b7d26d9c3e1ac20

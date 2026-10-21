@@ -1,0 +1,16 @@
+2026-10-21 04:44:21 r2_gates rc 0
+2026-10-21 04:45:17 r2_label STOPPED by pid ~30 s in (Audit 10-21: reorder by priority; nothing written) -> scratch/s219_3070_queue_r2b.sh
+2026-10-21 04:50:15 zen_shuffle_22030 rc 0
+2026-10-21 04:54:44 zen_shuffle_22031 rc 0
+2026-10-21 04:54:44 zen_official_self rc 0
+2026-10-21 05:27:13 sweep_R2_lin_x1.5_3070 rc 0
+2026-10-21 06:01:27 sweep_R2_xor_x1.5_3070 ended (started by r2b; 1 WROTE line)
+2026-10-21 06:29:40 sweep_R3_lin_x1.5_3070 STOPPED by pid (uninformative by Note 218-25; partial log .void_closed); R3 xor not run
+2026-10-21 06:36:45 s221_zen_official_fp32 rc 0
+2026-10-21 06:37:39 s221_gfid_zen rc 0
+2026-10-21 06:38:04 r2_gates rc 0
+2026-10-21 06:41:01 r2_label rc 1
+2026-10-21 07:02:27 t1_textself_gpu rc 0
+2026-10-21 07:04:17 s219_t1_s1 off-host mirror DELETED (Note 219-7 / 219-10: score_s219 re-run with the GPU keys); mirror pid stopped first
+2026-10-21 07:08:51 s221_zen_official_bf16 rc 0
+2026-10-21 07:08:51 3070 queue (r2d) done
