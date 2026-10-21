@@ -1,11 +1,11 @@
 {
  "rc_a": [
   0,
-  394
+  397
  ],
  "rc_b": [
   0,
-  295
+  274
  ],
  "b_ckpt_steps": [
   1,
@@ -13,13 +13,13 @@
  ],
  "rc_c_truncated_resume": [
   1,
-  8
+  7
  ],
  "c_refused": true,
  "no_tmp_files": true,
  "rc_b_resume": [
   0,
-  104
+  93
  ],
  "step0_eq_init": true,
  "init_from_line": [
@@ -92,7 +92,7 @@
   "stdout.txt"
  ],
  "PASS": true,
- "sec": 806,
+ "sec": 778,
  "gate": "t4_init_resume",
- "clock": "2026-10-18 19:15:50"
+ "clock": "2026-10-20 22:50:54"
 }

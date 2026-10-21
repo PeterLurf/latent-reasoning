@@ -1,0 +1,11 @@
+2026-10-20 22:35:33 regate static rc 0 GATE static PASS {'PASS': True, 'sec': 0}
+2026-10-20 22:35:38 regate t0 rc 0 GATE t0_nogold PASS {'PASS': True, 'sec': 3}
+2026-10-20 22:35:47 regate t3 rc 0 GATE t3_streams PASS {'PASS': True, 'sec': 7}
+2026-10-20 22:35:59 regate t8 rc 0 GATE t8_gradflow PASS {'PASS': True, 'sec': 9}
+2026-10-20 22:36:46 regate t7 rc 0 GATE t7_plain_equiv PASS {'PASS': True, 'sec': 44}
+2026-10-20 22:37:53 regate t9t10 rc 0 GATE t9t10_paths PASS {'PASS': True, 'sec': 64}
+2026-10-20 22:50:55 regate t4 rc 0 GATE t4_init_resume PASS {'PASS': True, 'sec': 778}
+2026-10-20 22:50:57 regate t5 rc 0 GATE t5_args_diff PASS {'PASS': True, 'sec': 0}
+2026-10-20 23:01:04 regate e2e rc 0 GATE t12_e2e PASS {'PASS': True, 'sec': 603}
+2026-10-20 23:01:15 plain-path smoke rc 0 steps 1 eval_files 0
+2026-10-20 23:01:15 §219 G-T13 regate done

@@ -6,23 +6,23 @@
   ],
   "train": [
    0,
-   235
+   218
   ],
   "eval_text_s219_base_s1": [
    0,
-   146
+   100
   ],
   "eval_text_s219_t1_s1": [
    0,
-   240
+   149
   ],
   "textself_cpu": [
    0,
-   22
+   17
   ],
   "textself_gpu_smoke": [
    0,
-   132
+   105
   ]
  },
  "reading": "READING: base base fp32 | n50 10.500 | n90 10.100 | \\u03940 0.194 -> BASE-PARITY levels | MG_T 0.650 SB_T 0.420 || T1 FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.000 (T-DBS not met) | n50 12.500 | n50/12 1.042 | round-2 condition False || T2 pending (missing ['s219_gate_t2_s1/eval_gate.json', 's219_pool_t2_s1/pool_meta.json', 's219_t2_s1/args.json', 's219_t2_s1/draws_log.json', 's219_t2_s1/eval_text.json', 's219_t2_s1/eval_textself.json', 's219_t2_s1/log.jsonl']) || comparison TEXT-CENSORED (r1, FAILURE (dead, ARGS-DIFF; rule b) | UNLABELLED (censored) | M_T 0.000 (T-DBS not met) | n50 12.500 | n50/12 1.042 | round-2 condition False): every comparison row fails (rule b) | one lineage each (latent = the surviving s1 lineage; s2 censored at R1, 216-8); GPT-2 small with learned absolute positions (1,024 rows); Arithmetic(n, 11); two rounds (CTX-BOUND: GPT-2's 1,024 rows) | latent cost: MEM-TRADED-2, MEM-ERODING (STAB_self 0.782 \\u2192 0.489 \\u2192 0.437) | TOKEN-COST n 13\\u201316: n/a | TRAIN-TOKENS r1: n/a; TRAIN-TOKENS r2: n/a | exposure matched in items and step indices, not in training tokens or FLOPs | \\u03940 0.194, statistic levels | CTX-BOUND (GPT-2's 1,024 learned position rows; n 24: 0.971 feasible)",
@@ -191,7 +191,7 @@
   "t1_other_censors": []
  },
  "PASS": true,
- "sec": 792,
+ "sec": 603,
  "gate": "t12_e2e",
- "clock": "2026-10-18 19:02:18"
+ "clock": "2026-10-20 23:01:03"
 }
