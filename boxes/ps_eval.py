@@ -334,7 +334,10 @@ def main():
     enc = tiktoken.get_encoding("gpt2"); PS.VALUE_TOKS.update(PS.value_tokens(enc)); vt = torch.tensor(sorted(PS.VALUE_TOKS), device=dev)
     m, prj, D, a, A = load_run(a_.run, dev); TEF = NW.test_set(); TE = {d: v[:a_.per_d] for d, v in TEF.items()}; PC = NW.pair_candidates()
     excl = {it["sig"] for d in TEF.values() for it in d} | {x["sig"] for ps in PC.values() for pr in ps for x in pr}
-    fo = a_.out or os.path.join(a_.run, "eval_ps.json"); out = json.load(open(fo)) if os.path.exists(fo) else {}
+    fo = a_.out or os.path.join(a_.run, "eval_ps.json")
+    if os.path.isdir(fo) or not fo.endswith(".json"):                       # gen_vast_job appends --out <run dir>: the file goes inside it
+        fo = os.path.join(fo, "eval_ps.json")
+    out = json.load(open(fo)) if os.path.exists(fo) else {}
     out["meta"] = {"cell": A.get("cell"), "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
                    "driver": os.popen("nvidia-smi --query-gpu=driver_version --format=csv,noheader").read().strip().split("\n")[0] if dev.startswith("cuda") else None,
                    "dtype": "fp32", "torch": torch.__version__, "transformers": __import__("transformers").__version__,

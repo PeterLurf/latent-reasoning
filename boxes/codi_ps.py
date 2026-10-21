@@ -19,6 +19,8 @@ boxes/nested_words.py (NESTED-WORDS v1.2). Cells by flags (single-change diffs, 
   * recipe (codi_port): LoRA r128 alpha32 dropout 0.1 on frozen bf16 GPT-2 + prj (+ D); AdamW lr 3e-3 wd 0.1 (no decay on biases / LayerNorm), cosine
     with 3% warm-up over --steps (24k), clip 2.0, bf16 autocast, effective batch 64 = micro x accumulation. Train stream nested_words.Stream(22330,
     excl = the test set + the pair candidates' signatures), frames 0-5.
+  * per-term grad norms (Audit 10-21, logged only): on each log step, from the first micro-batch, |d answer CE / d shared| and |d lam recode CE /
+    d shared| over LoRA + prj, and their cosine (gn_ans_shared / gn_rec_shared / cos_ans_rec), via torch.autograd.grad (no .grad change).
   * outputs: args.json (--args_only stops there; --args_ref -> args_diff.json + an ARGS-DIFF line), log.jsonl every --log_every (step / loss / sec
     adjacent for cost_guard), stages.json (every advance), a full-state ckpt_last.pt + ckpt_fingerprint.json every --ckpt_every (LoRA / prj / D,
     optimiser, scheduler, CurGate, the item stream and the step-draw generator states, torch / cuda RNG, elapsed), trainable.pt + train_done.json
@@ -174,7 +176,7 @@ def forward(m, prj, D, b, a, probe=None):
     nce = F.cross_entropy(nl, nt); parts = {"ans_ce": float(ce.detach()), "num_ce": float(nce.detach()), "num_acc": float((nl.argmax(-1) == nt).float().mean())}
     loss = ce
     if a.recode and not a.direct:
-        rce, rv, nv = recode_ce(m, D, zs, b, dev); loss = loss + a.lam * rce
+        rce, rv, nv = recode_ce(m, D, zs, b, dev); loss = loss + a.lam * rce; ex["rce"] = rce
         parts.update({"recode_ce": float(rce.detach()), "recode_val_ce": rv, "recode_val_n": nv})
     ex.update({"zs": zs, "nce": nce, "ce": ce}); return loss, parts, ex
 
@@ -216,6 +218,18 @@ VALUE_TOKS = set()
 
 def value_tokens(enc):
     return {enc.encode(" %d" % n)[0] for n in range(100)} | {enc.encode("%d" % n)[0] for n in range(100) if len(enc.encode("%d" % n)) == 1}
+
+
+def term_grad_norms(SH, ex, a):
+    """Audit 10-21 (logged only): the L2 norms of d(answer CE)/d(shared) and d(lam x recode CE)/d(shared), and their cosine, on one micro-batch."""
+    ga = torch.autograd.grad(ex["ce"], SH, retain_graph=True, allow_unused=True)
+    va = torch.cat([g.float().flatten() if g is not None else torch.zeros(p_.numel(), device=p_.device) for g, p_ in zip(ga, SH)])
+    out = {"gn_ans_shared": float(va.norm())}
+    if a.recode and not a.direct and "rce" in ex:
+        gr = torch.autograd.grad(a.lam * ex["rce"], SH, retain_graph=True, allow_unused=True)
+        vr = torch.cat([g.float().flatten() if g is not None else torch.zeros(p_.numel(), device=p_.device) for g, p_ in zip(gr, SH)])
+        out.update({"gn_rec_shared": float(vr.norm()), "cos_ans_rec": float(F.cosine_similarity(va, vr, dim=0))})
+    return out
 
 
 def build_all(a, dev):
@@ -304,6 +318,7 @@ def main(argv=None):
         info["micro"] = a.micro; info["accumulation"] = a.eff_bs // a.micro; json.dump(info, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     acc_steps = a.eff_bs // a.micro; assert a.eff_bs % a.micro == 0
     opt, sch, warm = make_opt(a, TP, a.steps); step = 0; t0 = time.time(); entry = None; ck = os.path.join(a.out, "ckpt_last.pt")
+    SH = [p_ for n, p_ in TP if ".lora_" in n or n.startswith("prj.")]      # the params both loss terms train
     if a.resume and os.path.exists(ck):
         c_ = torch.load(ck, map_location=dev, weights_only=False)
         for n, p_ in TP:
@@ -321,7 +336,9 @@ def main(argv=None):
         for q0 in range(0, a.eff_bs, a.micro):
             b = collate(its[q0:q0 + a.micro], K, dev, a.codi_compat)
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=dev.startswith("cuda")):
-                l_, pt, _ = forward(m, prj, D, b, a)
+                l_, pt, ex = forward(m, prj, D, b, a)
+            if q0 == 0 and (step + 1) % a.log_every == 0:                    # Audit 10-21: per-term grad norms on the SHARED params (LoRA + prj), logged only:
+                pt.update(term_grad_norms(SH, ex, a))                       # autograd.grad reads gradients without touching .grad, so the update is unchanged
             (l_ / acc_steps).backward(); P.append((float(l_.detach()), pt))
         gn = torch.nn.utils.clip_grad_norm_([p_ for _, p_ in TP], a.clip); opt.step(); sch.step(); step += 1; tl.append(time.time() - t1)
         num = float(np.mean([p["num_ce"] for _, p in P])); hist.append((float(np.mean([x for x, _ in P])), {k: float(np.mean([p[k] for _, p in P if p.get(k) is not None]))
