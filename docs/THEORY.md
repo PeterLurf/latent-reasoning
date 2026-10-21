@@ -20214,6 +20214,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **§220 seal.** §220 and its successor are now closed, so §220's sealed values may be shown once as an appendix ("pad-free bs-1 harness, gate-failed, not a reading"). They are byte-identical to §221's readings above, so no separate appendix adds anything; recorded.
 
+**Note 219-10 (2026-10-21 07:03 EDT; T1's eval_textself GPU parts, descriptive; score_s219 re-run with the full file (53520dd1; its CPU keys are identical to the version 219-8 read); T1's label unchanged).**
+- **MEMO-GAP-T:** |gap| ≤ 0.0005 at n 9–12, with no flag.
+- **LABELLER-KEPT-T** (T1's own REROOT on 500 fresh items per n): keep is 1.000 at n 9–14 and 0.996–0.968 at n 15–17. Further out, keep / π:
+  - n 18–20: 0.934 / 0.998, 0.926 / 0.998, 0.898 / 1.000;
+  - n 21–24: 0.778, 0.734, 0.682, 0.598, with π ≥ 0.993.
+  - So the text labeller is gold-equivalent well past round 2's window (n 13–16). Its reach falls past n 20.
+- T1's label stays T-SELF | T-SHIFT/MIXED, n50 14.606.
+- T1's off-host mirror may now be deleted (219-7).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
