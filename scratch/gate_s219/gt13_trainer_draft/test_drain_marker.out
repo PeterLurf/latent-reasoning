@@ -1,0 +1,37 @@
+scratch/_tmp/s219_fix/test_drain_marker.sh: line 16: boxes/runs_fsq/s219_t1_s1_empty_marker/train_done.json: No such file or directory
+ok   mark_cell: RUN
+ok   mark_mem: RUN
+ok   mark_gtime: RUN
+ok   mark_crash: BADM
+ok   mark_dead: BAD
+ok   mark_empty_marker: BAD
+ok   check_cell: OK
+ok   check_mem: OK
+ok   check_gtime: OK
+ok   check_noinit: MISSING init_from.json
+ok   check_breach: MISSING eval.json(eval-file) eval_2k.json(eval-file)
+--- status script output:
+QD=1
+ps: unknown option -- o
+Try `ps --help' for more information.
+PROCS=0
+RUN boxes/runs_fsq/s219_t1_s1
+RUN boxes/runs_fsq/s219_t1_s1_mem
+RUN boxes/runs_fsq/s219_t1_s1_gtime
+BADM boxes/runs_fsq/s219_t1_s1_crash
+BAD boxes/runs_fsq/s219_t1_s1_dead
+SEAL_BREACH boxes/runs_fsq/s219_t1_s1_breach/eval.json
+SEAL_BREACH boxes/runs_fsq/s219_t1_s1_breach/eval_2k.json
+RUN boxes/runs_fsq/s219_t1_s1_breach
+END_OK
+ok   status_end: END_OK
+ok   status_qd: 1
+ok   status_runs: boxes/runs_fsq/s219_t1_s1 boxes/runs_fsq/s219_t1_s1_mem boxes/runs_fsq/s219_t1_s1_gtime boxes/runs_fsq/s219_t1_s1_breach
+ok   status_bad: boxes/runs_fsq/s219_t1_s1_crash boxes/runs_fsq/s219_t1_s1_dead
+ok   status_seal: boxes/runs_fsq/s219_t1_s1_breach/eval.json boxes/runs_fsq/s219_t1_s1_breach/eval_2k.json
+ok   breach_renamed: 2 0
+ok   breach_after_rename: OK
+ok   notdone_qd: 0
+ok   notdone_no_rename: 0
+ok   drain_no_eval_marker: 0
+FAILS 0

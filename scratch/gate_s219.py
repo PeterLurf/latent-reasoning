@@ -41,7 +41,10 @@ import subprocess
 import sys
 import time
 
-os.environ["CUDA_VISIBLE_DEVICES"] = ""; os.environ["OMP_NUM_THREADS"] = "2"; os.environ["MKL_NUM_THREADS"] = "2"; os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+DET = os.environ.get("S219_DET") == "1"   # Note 219-3 item 2: S219_DET=1 -> 1 thread + torch.use_deterministic_algorithms in every subprocess (sitecustomize)
+os.environ["CUDA_VISIBLE_DEVICES"] = ""; os.environ["OMP_NUM_THREADS"] = "1" if DET else "2"; os.environ["MKL_NUM_THREADS"] = os.environ["OMP_NUM_THREADS"]; os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+if DET:
+    os.environ["PYTHONPATH"] = "D:/Latent/scratch/_tmp/s219_det" + (os.pathsep + os.environ["PYTHONPATH"] if os.environ.get("PYTHONPATH") else "")
 sys.dont_write_bytecode = True; sys.path.insert(0, "D:/Latent"); os.chdir("D:/Latent")
 try:
     ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x40)   # IDLE_PRIORITY_CLASS (children inherit it)
@@ -50,7 +53,15 @@ except Exception:                                                           # no
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 
-torch.set_num_threads(2)
+torch.set_num_threads(1 if DET else 2)
+if DET:
+    torch.use_deterministic_algorithms(True)
+TRAINER = os.environ.get("S219_TRAINER", "")   # pre-apply testing of a drafted trainer: a script path run in place of -m boxes.textself_ft
+if TRAINER:
+    os.environ["PYTHONPATH"] = "D:/Latent" + os.pathsep + os.environ.get("PYTHONPATH", "")
+FTM = [TRAINER] if TRAINER else ["-m", "boxes.textself_ft"]
+FTP = TRAINER or "D:/Latent/boxes/textself_ft.py"
+FTSRC = TRAINER or "boxes/textself_ft.py"
 import boxes.nested170 as N  # noqa: E402
 import boxes.textself as TS  # noqa: E402
 import boxes.textself_ft as FT  # noqa: E402
@@ -109,9 +120,9 @@ def synth_pool(d, ns, per_n, seed, values="gold"):
 
 # ------------------------------------------------------------------------------------------------ static
 def g_static():
-    t0 = time.time(); o = {}; src = open("boxes/textself_ft.py", encoding="utf-8").read(); tr = ast.parse(src)
+    t0 = time.time(); o = {}; src = open(FTSRC, encoding="utf-8").read(); tr = ast.parse(src)
     o["nested170_sha256"] = TS.file_sha256("boxes/nested170.py"); o["sha_pinned_ok"] = o["nested170_sha256"] == TS.NESTED170_SHA256
-    cn = add_arg_calls("boxes/nested170.py", "main"); ct = add_arg_calls("boxes/textself_ft.py", "build_parser")
+    cn = add_arg_calls("boxes/nested170.py", "main"); ct = add_arg_calls(FTSRC, "build_parser")
     o["parser"] = {"nested170_calls": len(cn), "textself_ft_calls": len(ct), "verbatim_57": [ast.dump(c) for c in cn] == [ast.dump(c) for c in ct[:len(cn)]],
                    "ft_keys": [c.args[0].value for c in ct[len(cn):]]}
     dests = [x.dest for x in FT.build_parser()._actions if x.dest != "help"]; o["parser"]["n_dests"] = len(dests); o["parser"]["ft_keys_ok"] = sorted(o["parser"]["ft_keys"]) == sorted("--" + k for k in FT.FT_KEYS)
@@ -131,11 +142,12 @@ def g_static():
     o["no_gold"]["chain_label_sites_textself"] = [i + 1 for i, ln in enumerate(ts_src.split("\n")) if "chain_label" in ln]
     o["no_gold"]["PASS"] = o["no_gold"]["s219_gate_in_trainer"] == 0 and o["no_gold"]["chain_label_in_trainer"] == 0 and len(o["no_gold"]["cot_ids_sites_trainer"]) == 1
     dec = {}
-    for path in ("boxes/textself_ft.py", "boxes/textself.py"):
+    for path in (FTSRC, "boxes/textself.py"):
         for nd in ast.walk(ast.parse(open(path, encoding="utf-8").read())):
             if isinstance(nd, ast.FunctionDef):
                 dec["%s:%s" % (os.path.basename(path), nd.name)] = [ast.unparse(d) for d in nd.decorator_list]
-    train_fns = ["textself_ft.py:" + f for f in ("main", "make_loss", "loss_items", "draw_step", "coin_step", "mem_check", "plain_hash", "build_parser")] + \
+    train_fns = ["textself_ft.py:" + f for f in ("main", "make_loss", "loss_items", "draw_step", "coin_step", "mem_check", "plain_hash", "build_parser",
+                                                       "deep_self", "atomic_json")] + \
                 ["textself.py:" + f for f in ("compose_T", "candidate", "reduce_shape", "parse_tree", "self_item", "load_pool", "c_struct", "n_of")]
     o["decorators"] = {"train_path": {f: dec.get(f) for f in train_fns}, "no_grad_fns": sorted(k for k, v in dec.items() if any("no_grad" in x for x in v))}
     lf = next(nd for nd in ast.walk(tr) if isinstance(nd, ast.FunctionDef) and nd.name == "loss_items")
@@ -357,7 +369,7 @@ def g_t7():
     common = ["--arm", "textcot", "--steps", "12000", "--lr", "3e-05", "--bs", "8", "--log_every", "1", "--device", "cpu"]
     dn, dt = fresh(TMP + "/t7_n170"), fresh(TMP + "/t7_ts")
     rcn = run(PY + ["-m", "boxes.nested170"] + common + ["--time_steps", "3", "--out", dn], dn + "/stdout.txt")
-    rct = run(PY + ["-m", "boxes.textself_ft"] + common + ["--p_self", "0", "--stop_at", "3", "--no_final_eval", "--out", dt], dt + "/stdout.txt")
+    rct = run(PY + FTM + common + ["--p_self", "0", "--stop_at", "3", "--no_final_eval", "--out", dt], dt + "/stdout.txt")
     o["rc"] = {"nested170": rcn, "textself_ft": rct}
     ln = {r["step"]: r["loss"] for r in map(json.loads, open(dn + "/log.jsonl")) if "loss" in r}; lt = {r["step"]: r["loss"] for r in map(json.loads, open(dt + "/log.jsonl")) if "loss" in r}
     o["losses"] = {str(s): {"nested170": ln.get(s), "textself_ft": lt.get(s), "bitwise": ln.get(s) is not None and struct.pack("<d", ln[s]) == struct.pack("<d", lt.get(s, float("nan")))}
@@ -401,7 +413,7 @@ def g_pipe():
 
 # ------------------------------------------------------------------------------------------------ t4 / t5 / t9t10
 def t4_cmd(out, extra):
-    return PY + ["-m", "boxes.textself_ft", "--arm", "textcot", "--init_from", TS.BASE_MODEL, "--steps", "12000", "--lr", "3e-05", "--self_pool", PIPE_POOL, "--p_self", "0.5",
+    return PY + FTM + ["--arm", "textcot", "--init_from", TS.BASE_MODEL, "--steps", "12000", "--lr", "3e-05", "--self_pool", PIPE_POOL, "--p_self", "0.5",
                  "--self_micro", "2", "--no_final_eval", "--draws_log_steps", "12000", "--auto_micro", "--args_ref", BASE_ARGS, "--device", "cpu", "--ckpt_every", "1",
                  "--keep_ckpt_steps", "0", "--out", out] + extra
 
@@ -420,6 +432,14 @@ def g_t4():
     t0 = time.time(); o = {}; da, db = fresh(TMP + "/t4_a"), fresh(TMP + "/t4_b")
     o["rc_a"] = run(t4_cmd(da, ["--stop_at", "3"]), da + "/stdout.txt"); o["rc_b"] = run(t4_cmd(db, ["--stop_at", "2"]), db + "/stdout_1.txt")
     cl = torch.load(db + "/ckpt_last.pt", weights_only=False, map_location="cpu"); cp = torch.load(db + "/ckpt_prev.pt", weights_only=False, map_location="cpu"); o["b_ckpt_steps"] = [cp["step"], cl["step"]]; del cl, cp
+    dc = fresh(TMP + "/t4_c")                                               # G-T13 item 4: a draws_log that does not cover the checkpoint must be refused
+    for f in ("ckpt_last.pt", "args.json", "log.jsonl"):
+        shutil.copy(db + "/" + f, dc + "/" + f)
+    json.dump([d for d in json.load(open(db + "/draws_log.json")) if d["step"] < 2], open(dc + "/draws_log.json", "w", newline="\n"))
+    o["rc_c_truncated_resume"] = run(t4_cmd(dc, ["--stop_at", "3", "--resume", dc + "/ckpt_last.pt"]), dc + "/stdout.txt")
+    o["c_refused"] = o["rc_c_truncated_resume"][0] != 0 and "does not cover the resumed range" in open(dc + "/stdout.txt").read()
+    o["no_tmp_files"] = not glob.glob(db + "/*.tmp") and not glob.glob(da + "/*.tmp") if os.path.exists(da) else None
+    shutil.rmtree(dc)
     o["rc_b_resume"] = run(t4_cmd(db, ["--stop_at", "3", "--resume", db + "/ckpt_last.pt"]), db + "/stdout_2.txt")
     base = torch.load(TS.BASE_MODEL, weights_only=True, map_location="cpu"); k0 = torch.load(da + "/ckpt_model_0.pt", weights_only=True, map_location="cpu")["model"]; o["step0_eq_init"] = _sd_eq(base, k0); del base, k0
     out_a = open(da + "/stdout.txt").read(); o["init_from_line"] = [ln for ln in out_a.split("\n") if ln.startswith("INIT_FROM")]
@@ -437,7 +457,8 @@ def g_t4():
                 od["%s.%s" % (names[int(i)], q)] = float((v.float() - cb["opt"]["state"][i][q].float()).abs().max())
     # the CPU backward of the tied wte embedding gather (index accumulate) is not bitwise repeatable (scratch/_tmp/s219/det_check.py: 1.2e-7 between two
     # identical backward passes, the other 147 tensors bitwise); so the step-3 update may differ in wte (and its AdamW moments) only, at that scale
-    allowed = {"p.wte_weight"}
+    allowed = set() if DET else {"p.wte_weight"}                          # Note 219-3 item 2: deterministic single-thread -> every tensor bitwise
+    o["deterministic"] = DET
     o["ckpt3"] = {"steps": [ca["step"], cb["step"]], "model_diff": md, "opt_diff": od, "np_rng_eq": ca["np_rng"] == cb["np_rng"], "rng_s_eq": ca["rng_s"] == cb["rng_s"],
                   "self_state_eq": ca["self_state"] == cb["self_state"], "tok_eq": ca["tok"] == cb["tok"], "opt_groups_eq": ca["opt"]["param_groups"] == cb["opt"]["param_groups"]}
     o["ckpt3"]["model_eq"] = set(md) <= allowed and all(v <= 1e-6 for v in md.values())
@@ -453,7 +474,7 @@ def g_t4():
     o["PASS"] = bool(o["rc_a"][0] == 0 and o["rc_b"][0] == 0 and o["rc_b_resume"][0] == 0 and o["b_ckpt_steps"] == [1, 2] and o["step0_eq_init"] and o["init_from_line"]
                      and "missing [] unexpected []" in o["init_from_line"][0] and o["init_from_json"]["sha256"] == TS.BASE_SHA256 and o["step3"]["bitwise"]
                      and all(o["ckpt3"][k] for k in ("model_eq", "opt_eq", "np_rng_eq", "rng_s_eq", "self_state_eq", "tok_eq")) and o["draws_log_eq"]
-                     and o["draws_vs_replay"]["coin_agree"] == 3 and o["draws_vs_replay"]["plain_hash_agree"] == 3 and o["self_counts"]["eq"] and not o["eval_files"])
+                     and o["draws_vs_replay"]["coin_agree"] == 3 and o["draws_vs_replay"]["plain_hash_agree"] == 3 and o["self_counts"]["eq"] and not o["eval_files"] and o["c_refused"] and o["no_tmp_files"])
     for d in (da, db):                                                      # model-sized files: delete (args / logs / draws_log kept for t5)
         for p in glob.glob(d + "/*.pt"):
             os.remove(p)
@@ -503,7 +524,8 @@ def g_t9t10():
     o["timing"] = json.load(open(d10 + "/timing.json")) if os.path.exists(d10 + "/timing.json") else None
     o["files"] = {"t9": sorted(os.listdir(d9)), "t10": sorted(os.listdir(d10))}; o["eval_files"] = [f for v in o["files"].values() for f in v if f.startswith("eval")]
     o["PASS"] = bool(o["rc_mem"][0] == 0 and o["rc_time"][0] == 0 and o["mem_check_self"] and o["mem_check_self"]["pass"] and o["timing"] and not o["eval_files"]
-                     and "args.json" in o["files"]["t9"] and "args.json" in o["files"]["t10"] and o["mem_check_self"]["n_top"] == 12)
+                     and "args.json" in o["files"]["t9"] and "args.json" in o["files"]["t10"] and o["mem_check_self"]["n_top"] == 12
+                     and o["timing"].get("deep_n") == 12 and o["timing"].get("deep_T_max") == o["mem_check_self"]["T_max"])   # Note 219-4 (3): G-T10 = the deepest shape
     for dd in (d9, d10):
         for p in glob.glob(dd + "/*.pt"):
             os.remove(p)
@@ -630,7 +652,7 @@ def g_e2e():
         shutil.copy(TS.BASE_RUN + "/" + f, E2E_RF + "/s170_cot_s1/" + f)
     shutil.copytree(PIPE + "/s219_gate_t1_s1", E2E_RF + "/s219_gate_t1_s1"); shutil.copytree(PIPE + "/s219_pool_t1_s1", E2E_RF + "/s219_pool_t1_s1")
     o["steps"]["gate_score"] = run(PY + ["scratch/s219_gate.py", "--round", "1", "--stage", "score", "--out_root", E2E_RF], E2E + "/gate_score.log")
-    ENV2 = dict(ENV); cmd = PY + ["D:/Latent/boxes/textself_ft.py", "--arm", "textcot", "--init_from", "boxes/runs_fsq/s170_cot_s1/model.pt", "--steps", "3", "--lr", "3e-05",
+    ENV2 = dict(ENV); cmd = PY + [FTP, "--arm", "textcot", "--init_from", "boxes/runs_fsq/s170_cot_s1/model.pt", "--steps", "3", "--lr", "3e-05",
                                   "--self_pool", "boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl", "--p_self", "0.5", "--self_micro", "2", "--no_final_eval", "--draws_log_steps",
                                   "12000", "--auto_micro", "--args_ref", "boxes/runs_fsq/s170_cot_s1/args.json", "--device", "cpu", "--out", "boxes/runs_fsq/s219_t1_s1"]
     t1 = time.time()
@@ -680,6 +702,68 @@ def g_e2e():
     o["sec"] = round(time.time() - t0); return save("t12_e2e", o)
 
 
+def g_b1b2rules():
+    """G-T13 items 1-3 (Audit's review of 3b0bb06f): (a) s219_build_pool.window_impl on synthetic eval_gate dicts: TF-GREEDY only on a PASSED EQUIV of the
+    window's own labeller (primary equiv[W] / fallback[W].equiv), generation on a failed / missing one or --gen_windows; label_bs / dtype / tf32 / card /
+    missing label_settings refused. (b) s219_gate.py --stage score on the pipe's real labels with the primary corrupted (one kept value wrong at n 9) and
+    the uncorrupted labels as a BASE-LABELLED fallback: the fallback block carries its own equiv / compose, window_impl then picks TF from the fallback's
+    EQUIV; a fallback on another card is refused. (c) the round-2 builder refuses a missing or sha-mismatched T1 pool and accepts the real one."""
+    t0 = time.time(); o = {"impl": {}}; sys.path.insert(0, "D:/Latent/scratch"); import s219_build_pool as B1
+    cfg2 = B1.cfg_for(2, ""); LS = {"card": "C", "label_bs": 128, "dtype": "fp32", "tf32": False}
+
+    def eg_(**kw):
+        e = {"labeller": "T1", "equiv": {"W2": {"PASS": True}, "W1": {"PASS": True}}, "fallback": {"W1": {"labeller": "BASE", "equiv": {"PASS": False}}},
+             "label_settings": {"primary": dict(LS), "fallback": dict(LS)}}
+        e.update(kw); return e
+    WL = {"W2": "T1", "W1": "BASE"}
+
+    def case(name, eg, wl=WL, gen=(), card="C", expect=None):
+        try:
+            g_, why = B1.window_impl(eg, cfg2, wl, set(gen), 128, card); got = {w: ("gen" if w in g_ else "tf") for w in cfg2["windows"]}; o["impl"][name] = {"got": got, "why": why}
+            o["impl"][name]["ok"] = got == expect
+        except AssertionError as e:
+            o["impl"][name] = {"refused": str(e)[:160], "ok": expect == "refused"}
+    case("fallback_equiv_failed", eg_(), expect={"W2": "tf", "W1": "gen"})
+    case("fallback_equiv_pass", eg_(fallback={"W1": {"labeller": "BASE", "equiv": {"PASS": True}}}), expect={"W2": "tf", "W1": "tf"})
+    case("primary_equiv_failed", eg_(equiv={"W2": {"PASS": False}, "W1": {"PASS": True}}), expect={"W2": "gen", "W1": "gen"})
+    case("primary_equiv_missing", eg_(equiv={}), wl={"W2": "T1", "W1": "T1"}, expect={"W2": "gen", "W1": "gen"})
+    case("gen_windows_forced", eg_(fallback={"W1": {"labeller": "BASE", "equiv": {"PASS": True}}}), gen=("W2",), expect={"W2": "gen", "W1": "tf"})
+    case("label_bs_64", eg_(label_settings={"primary": dict(LS, label_bs=64), "fallback": dict(LS)}), expect="refused")
+    case("card_mismatch", eg_(), card="D", expect="refused")
+    case("fallback_bf16", eg_(label_settings={"primary": dict(LS), "fallback": dict(LS, dtype="bf16")}), expect="refused")
+    case("no_label_settings", eg_(label_settings=None), expect="refused")
+    case("labeller_not_fallback", eg_(), wl={"W2": "T1", "W1": "OTHER"}, expect="refused")
+    root = fresh(TMP + "/b1b2"); gd = root + "/s219_gate_t1_s1"; os.makedirs(gd)
+    shutil.copy(PIPE + "/s219_gate_t1_s1/gate_items.json", gd + "/gate_items.json"); prim = json.load(open(PIPE + "/s219_gate_t1_s1/gate_labels_primary.json"))
+    fb = dict(prim, labeller="boxes/runs_fsq/s170_cot_s1_AS_FALLBACK"); bad = json.loads(json.dumps(prim)); L = bad["windows"]["W1"]
+    gi = json.load(open(gd + "/gate_items.json"))["windows"]["W1"]["items"]
+    i9 = next(i for i, (it, x) in enumerate(zip(gi, L["tf"])) if it["n"] == 9 and x["keep"]); L["tf"][i9]["values"][-1] = (L["tf"][i9]["values"][-1] + 1) % 11
+    json.dump(bad, open(gd + "/gate_labels_primary.json", "w", newline="\n")); json.dump(fb, open(gd + "/gate_labels_fallback.json", "w", newline="\n"))
+    o["score_rc"] = run(PY + ["scratch/s219_gate.py", "--round", "1", "--stage", "score", "--out_root", root], root + "/score.log")
+    eg = json.load(open(gd + "/eval_gate.json")); fbw = (eg.get("fallback") or {}).get("W1") or {}
+    o["score"] = {"GATE_T1": eg.get("GATE_T1"), "primary_equiv_PASS": eg["equiv"]["W1"]["PASS"], "fallback_GATE": fbw.get("GATE"),
+                  "fallback_equiv_PASS": (fbw.get("equiv") or {}).get("PASS"), "fallback_compose_PASS": (fbw.get("compose") or {}).get("PASS"),
+                  "window_labeller": eg["window_labeller"], "label_settings": eg.get("label_settings")}
+    g_, why = B1.window_impl(eg, B1.cfg_for(1, root), eg["window_labeller"], set(), 128, "cpu"); o["score"]["impl_from_real_gate"] = why
+    json.dump(dict(fb, card="NVIDIA GeForce RTX 2070"), open(gd + "/gate_labels_fallback.json", "w", newline="\n"))
+    o["score_rc_card_mismatch"] = run(PY + ["scratch/s219_gate.py", "--round", "1", "--stage", "score", "--out_root", root], root + "/score_card.log")
+    o["card_mismatch_refused"] = o["score_rc_card_mismatch"][0] != 0 and "ONE card" in open(root + "/score_card.log").read()
+    r2 = fresh(TMP + "/b1b2r2"); c2 = PY + ["scratch/s219_build_pool.py", "--round", "2", "--stage", "gates", "--out_root", r2, "--scale", "0.002", "--device", "cpu"]
+    o["r2_no_t1_pool"] = run(c2, r2 + "/no_t1.log"); o["r2_no_t1_refused"] = o["r2_no_t1_pool"][0] != 0 and "T1's pool" in open(r2 + "/no_t1.log").read()
+    shutil.copytree(PIPE + "/s219_pool_t1_s1", r2 + "/s219_pool_t1_s1"); shutil.copytree(PIPE + "/s219_gate_t1_s1", r2 + "/s219_gate_t1_s1")
+    with open(r2 + "/s219_pool_t1_s1/pool_t1.jsonl", "a", newline="\n") as fh:
+        fh.write("\n")
+    o["r2_sha_bad"] = run(c2, r2 + "/sha_bad.log"); o["r2_sha_bad_refused"] = o["r2_sha_bad"][0] != 0 and "sha" in open(r2 + "/sha_bad.log").read()
+    shutil.copy(PIPE + "/s219_pool_t1_s1/pool_t1.jsonl", r2 + "/s219_pool_t1_s1/pool_t1.jsonl")
+    o["r2_ok"] = run(c2, r2 + "/ok.log"); o["r2_ok_line"] = [ln for ln in open(r2 + "/ok.log").read().split("\n") if ln.startswith("T1 POOL IN EXCLUSION")]
+    s = o["score"]
+    o["PASS"] = bool(all(v["ok"] for v in o["impl"].values()) and o["score_rc"][0] == 0 and s["GATE_T1"] is False and s["fallback_GATE"] is True
+                     and s["fallback_equiv_PASS"] is True and s["fallback_compose_PASS"] is True and s["window_labeller"]["W1"] == fb["labeller"]
+                     and "fallback" in (s["label_settings"] or {}) and s["impl_from_real_gate"]["W1"].startswith("TF-GREEDY") and "fallback" in s["impl_from_real_gate"]["W1"]
+                     and o["card_mismatch_refused"] and o["r2_no_t1_refused"] and o["r2_sha_bad_refused"] and o["r2_ok"][0] == 0 and o["r2_ok_line"])
+    o["sec"] = round(time.time() - t0); return save("b1b2_rules", o)
+
+
 def g_pre(rnd):
     """pre-launch on the REAL round pool (after B1, before the deploy): G-T1 pool ∩ exclusion = ∅ (re-built set), the loader, G-T3's precomputed per-n
     self counts from the pool order + the replayed coin stream, the consumed T_train / copy maxima, and the exact TRAIN-TOKENS of both item types
@@ -710,7 +794,7 @@ def g_pre(rnd):
 
 
 GATES = {"pre1": lambda: g_pre(1), "pre2": lambda: g_pre(2), "static": g_static, "t2": g_t2, "t3": g_t3, "t0": g_t0, "t6": g_t6, "t8": g_t8, "t18": g_t18, "t7": g_t7, "pipe": g_pipe, "t4": g_t4, "t5": g_t5, "t9t10": g_t9t10,
-         "t16": g_t16, "t17": g_t17, "evals": g_evals, "e2e": g_e2e}
+         "t16": g_t16, "t17": g_t17, "evals": g_evals, "e2e": g_e2e, "b1b2rules": g_b1b2rules}
 
 if __name__ == "__main__":
     for nm in (sys.argv[1:] if sys.argv[1:] != ["all"] else list(GATES)):

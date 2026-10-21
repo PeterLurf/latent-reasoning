@@ -1,19 +1,25 @@
 {
  "rc_a": [
   0,
-  242
+  394
  ],
  "rc_b": [
   0,
-  181
+  295
  ],
  "b_ckpt_steps": [
   1,
   2
  ],
+ "rc_c_truncated_resume": [
+  1,
+  8
+ ],
+ "c_refused": true,
+ "no_tmp_files": true,
  "rc_b_resume": [
   0,
-  67
+  104
  ],
  "step0_eq_init": true,
  "init_from_line": [
@@ -34,6 +40,7 @@
   "a_self_steps": 1,
   "b_self_steps": 1
  },
+ "deterministic": true,
  "ckpt3": {
   "steps": [
    3,
@@ -85,7 +92,7 @@
   "stdout.txt"
  ],
  "PASS": true,
- "sec": 496,
+ "sec": 806,
  "gate": "t4_init_resume",
- "clock": "2026-10-18 18:10:43"
+ "clock": "2026-10-18 19:15:50"
 }

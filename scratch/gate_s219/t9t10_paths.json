@@ -1,11 +1,11 @@
 {
  "rc_mem": [
   0,
-  44
+  40
  ],
  "rc_time": [
   0,
-  35
+  33
  ],
  "mem_check_self": {
   "peak_gib": null,
@@ -18,21 +18,23 @@
   "T_max": 295,
   "gpu": "cpu",
   "amp": "None",
-  "sec": 34.8,
+  "sec": 32.1,
   "def": "peak after the optimiser steps (incl. AdamW's moments) on the 64 longest pool records of the deepest n at the fixed self micro"
  },
  "timing": {
   "arm": "textcot",
   "steps_timed": 2,
-  "sec_per_step": 12.5675288438797,
-  "est_hours": 41.891762812932335,
-  "sec_per_step_self": 16.71318554878235,
-  "sec_per_step_plain": 8.42187213897705,
+  "sec_per_step": 12.095362544059753,
+  "est_hours": 40.317875146865845,
+  "sec_per_step_self": 16.565985441207886,
+  "sec_per_step_plain": 7.624739646911621,
   "self_micro": 2,
   "micro": 1,
   "p_self": 0.5,
   "gpu": "cpu",
-  "forced": "odd steps self (pool order), even steps plain; sec_per_step = p_self-weighted mix"
+  "forced": "odd steps self = the 8 longest records of the deepest n 12 (T_max 295; Note 219-4 (3)), even steps plain; sec_per_step = p_self-weighted mix",
+  "deep_n": 12,
+  "deep_T_max": 295
  },
  "files": {
   "t9": [
@@ -54,7 +56,7 @@
  },
  "eval_files": [],
  "PASS": true,
- "sec": 79,
+ "sec": 74,
  "gate": "t9t10_paths",
- "clock": "2026-10-18 16:53:59"
+ "clock": "2026-10-18 18:49:06"
 }

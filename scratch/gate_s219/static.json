@@ -46,12 +46,12 @@
   "s219_gate_in_trainer": 0,
   "chain_label_in_trainer": 0,
   "values_sites_trainer": [
-   115,
-   121,
-   122
+   130,
+   136,
+   137
   ],
   "cot_ids_sites_trainer": [
-   124
+   139
   ],
   "chain_label_sites_textself": [
    12,
@@ -72,6 +72,8 @@
    "textself_ft.py:mem_check": [],
    "textself_ft.py:plain_hash": [],
    "textself_ft.py:build_parser": [],
+   "textself_ft.py:deep_self": [],
+   "textself_ft.py:atomic_json": [],
    "textself.py:compose_T": [],
    "textself.py:candidate": [],
    "textself.py:reduce_shape": [],
@@ -96,5 +98,5 @@
  "PASS": true,
  "sec": 0,
  "gate": "static",
- "clock": "2026-10-18 17:53:12"
+ "clock": "2026-10-18 18:46:52"
 }
