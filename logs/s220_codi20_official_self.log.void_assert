@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\Latent\scratch\s220_official_self.py", line 16, in <module>
+    S = {sd_: json.load(open(os.path.join(sd, "official_shuffle_%d.json" % sd_)))["pred"] for sd_ in (22030, 22031)}
+                        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:/Latent\\scratch/s220\\official_shuffle_22030.json'

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "D:\Latent\scratch\s220_gcs.py", line 627, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\scratch\s220_gcs.py", line 432, in main
+    assert not os.path.exists(fo), "refusing to overwrite %s" % fo
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: refusing to overwrite D:\Latent\boxes\runs_fsq\gsm_codi_20ep_s1\eval_gcs.json
