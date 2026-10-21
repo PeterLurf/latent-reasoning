@@ -20418,6 +20418,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - (2) **Resume** = within the measured same-state envelope on the registered kernel, **plus** one t ≥ 2 resume bitwise under math SDP.
     - (3) The registered runs are unchanged.
     - **The first §222 deploy waits for (1).**
+    - **(2)'s envelope test, pre-stated (Experiments' proposal, accepted).** Run on the first 3090 host (b320, scratch/s222_envelope.py): a same-state A / B pair (t2 group, 200 steps), and a kill-at-130 / resume-from-100 run R. **PASS** iff per probe max |CE_R − CE_A| over steps 101–200 ≤ max(2 × the envelope's max |CE_B − CE_A| over probes, 1e-6), **and** every held-out evaluation after the resume is within 1 item of A. All numbers go in envelope.json.
   - **Line added to 222-1 (Audit):** "resume and probe readings are exact up to the SDPA backward's non-determinism at t ≥ 2 (registered kernel unchanged); code equivalence proven bitwise under math SDP".
 - **Readings.** The certification bars (LATE ≥ 0.90; controls ≤ 0.55) sit far from run-to-run noise of this size. The A1 probe readings carry the same property as §218's registered probe. Both are recorded as a known source of non-bitwise variation, never as a censor.
 
