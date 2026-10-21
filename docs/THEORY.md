@@ -20472,6 +20472,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The 3 A1 groups (≈ $8.4 projected at worst) would give only descriptive A1 probe curves if DEEP-L fails.
   - Any stop is disclosed as decided **after** this outcome information, never as a registered rule.
 
+**Note 223-1 (2026-10-21 13:14 EDT; NESTED-WORDS generator rulings, before any §223 DIRECT or model output; Audit's tick).**
+- **Reading of frozen §1, "at least one step per program multiplies two variables".** "Variable" means a **computed** spine quantity (S_j, j ≥ 1), never a stated number.
+  - The constant-given version (F1 v1.0, mul_v) did not meet §1: it left every program an affine map x → a·x + b.
+  - v1.1 (01a4d88e) added **mul_s: S_t = S_{t−1} × S_j** forced once per program. Its j = 0 case multiplies by the stated S_0, which is still affine in the state. So **v1.2 requires j ≥ 1 for the forced mul_s** (t ∈ 3..d; d < 3 is not gated).
+- **Implementation choices (accepted; within §1's text):**
+  - ops add_c / sub_c / mul_c / add_v / sub_v / mul_v, plus add_s as a regular op;
+  - R_t keeps any back-referenced S_k as its constant sentence (§1's R_t definition);
+  - frames 6 / 7 held out;
+  - distractors 0–2;
+  - a random topological statement order;
+  - G-W0 gated at d 3–8.
+- **Narrowing beyond §1's text, stated explicitly:** both mul_s factors are **≥ 2**. A factor of 1 is a no-op that an affine chain reproduces, and with factors ≥ 1 v1.1's affine solver still read 0.10–0.13 at d 3–6. §1 required only nonzero multiplicands, so this narrows the task distribution in order to close the shortcut §1 targets.
+- **G-W0 (i) adds a strong affine solver.** It treats every stated-operand step (including j = 0) as affine. Accuracy must be ≤ 0.10 at every d 3–8, and its representable share must be 0 by construction. The panel is re-run on v1.2 and the test sha re-pinned (v1.1 5f260b5a… is superseded) before DIRECT.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
