@@ -8,7 +8,8 @@ so dirs[1] is G-L5's u / eps). t = 1, PLANT-lin only, fp32, tf32 off. No A1 / DI
             eps x {1, 3, 10}; features standardised on train; L2 (weight decay on w) tuned on a 16k / 4k split of train, refit on all 20k.
   K3 PROBE-LEARN  the registered recipe (Probe(m, 1e-4): AdamW 1e-4 wd 0.01, the step-0 init; pbs 64; batches np rng 22501, z rng 22551 drawn as G-L5's
             zdraw), PLANT-lin t 1 alone, eps x {1, 10, 100}, 2,000 steps each, held-out accuracy (z rng 22553 restarted per read) every 250 steps.
-    python -B scratch/s218_gl5_known.py --device cuda:0 [--arms k1,k2,k3]"""
+    python -B scratch/s218_gl5_known.py --device cuda:0 [--arms k1,k2,k3]
+  Theory 10-20: --arms k2 --k2_mults 1.75 --k2_name k2_oracle_eps175 (the planned Note 218-18 plant, same oracle)."""
 import argparse
 import json
 import os
@@ -93,7 +94,7 @@ def logreg(Xtr, ytr, Xte, yte, l2, dev, iters=300):
         return float(((Xte.to(dev) @ w + c > 0).double() == yte.to(dev)).double().mean())
 
 
-def k2(m, pool, d1, dev, chunk, bs):
+def k2(m, pool, d1, dev, chunk, bs, mults=(1, 3, 10)):
     tr, te = pool[2000:22000], pool[22000:24000]; t0 = time.time()
     Rtr, Rte = rows_V1(m, tr, dev, chunk, bs), rows_V1(m, te, dev, chunk, bs); u = d1["u"].double().cpu()
     ztr = torch.tensor(np.random.default_rng(22571).integers(0, 2, len(tr)), dtype=torch.float64); zte = torch.tensor(np.random.default_rng(22572).integers(0, 2, len(te)), dtype=torch.float64)
@@ -102,7 +103,7 @@ def k2(m, pool, d1, dev, chunk, bs):
     p1, p2 = Rtr[:, 0] @ u, Rtr[:, 1] @ u
     res["proj_std_u"] = [float(p1.std()), float(p2.std())]; res["proj_corr_u"] = float(torch.corrcoef(torch.stack([p1, p2]))[0, 1])
     grid = [0.0, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1]
-    for mult in (1, 3, 10):
+    for mult in mults:
         e = d1["eps"] * mult
         Xtr = (Rtr + e * (2 * ztr - 1)[:, None, None] * u[None, None]).reshape(len(tr), -1); Xte = (Rte + e * (2 * zte - 1)[:, None, None] * u[None, None]).reshape(len(te), -1)
         mu, sd = Xtr.mean(0), Xtr.std(0).clamp_min(1e-8); Xtr, Xte = (Xtr - mu) / sd, (Xte - mu) / sd
@@ -143,7 +144,7 @@ def k3(m, pool, held, d1, dev, chunk, bs, steps=2000, every=250, pbs=64):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--arms", default="k1,k2,k3"); ap.add_argument("--bs", type=int, default=16)
-    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000)
+    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle")
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
     m, info = E.untrained(dev, 16)
     excl = E.PS.exclusion_sigs(); s = E.PS.Stream(22500, excl); rng = np.random.default_rng(22500); Dseq = rng.integers(3, 9, size=1000 + a.pool_n)
@@ -157,7 +158,7 @@ def main():
     if "k1" in arms:
         r = k1(m, held, d1, dev, a.chunk, a.bs); save("k1_path", {**meta, **r, "rule": "K1 = 0 to float precision (mean |delta| <= 1e-6 at every eps) -> BUG"})
     if "k2" in arms:
-        r = k2(m, pool, d1, dev, a.chunk, a.bs); save("k2_oracle", {**meta, **r})
+        r = k2(m, pool, d1, dev, a.chunk, a.bs, tuple(float(v) for v in a.k2_mults.split(","))); save(a.k2_name, {**meta, **r})
     if "k3" in arms:
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, steps=a.k3_steps); save("k3_probe_learn", {**meta, **r})
 
