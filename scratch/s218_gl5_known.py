@@ -574,13 +574,13 @@ def main():
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="lin"); save("k3_sym", {**meta, **r})
     if "k3symxor" in arms:
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="xor"); save("k3_sym_xor", {**meta, **r})
-    if "feas2" in arms:                                                   # Note 218-25 revised feasibility (Audit-approved): S1 then S2
+    if "feas2" in arms or "feas2_s1" in arms or "feas2_s2" in arms:      # Note 218-25 revised feasibility (Audit-approved): S1 then S2 (feas2_s1 / feas2_s2: one set only; Theory 10-21 card split)
         S1 = [("cexor", 0, 1.5, None), ("cexor", 0, 10, None), ("cexor", 1, 1.5, None), ("cexor", 1, 10, None), ("lin", 0, 1.5, None),
               ("cexor_noplant", 1, 0, None), ("cexor", 1, 10, "shuffled")]
-        for kind, t, mu, ctl in S1:
+        for kind, t, mu, ctl in (S1 if "feas2_s2" not in arms or "feas2" in arms else []):
             r = k3gen(m, pool, held, dirs, dev, a.chunk, a.bs, kind, t, mu, control=ctl, steps=a.k3_steps); save("feas2_S1_%s_t%d_x%s%s" % (kind, t, mu, ("_" + ctl) if ctl else ""), {**meta, **r})
         S2 = [("cexor", 1.5, None), ("lin", 1.5, None), ("probe0", 0, None), ("cexor", 1.5, "shuffled")]
-        for kind, mu, ctl in S2:
+        for kind, mu, ctl in (S2 if "feas2_s1" not in arms or "feas2" in arms else []):
             r = probe2(m, pool, held, d1, dev, a.chunk, a.bs, kind, float(mu), steps=a.k3_steps, control=ctl, head_kind="anti"); save("feas2_S2_%s_x%s%s" % (kind, mu, ("_" + ctl) if ctl else ""), {**meta, **r})
     if "probe2" in arms:
         for spec in a.probe2_specs.split(";"):
