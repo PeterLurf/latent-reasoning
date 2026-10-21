@@ -1,0 +1,14 @@
+{
+ "peak_gib": 11.268526077270508,
+ "pass": true,
+ "mem_budget": 21.0,
+ "self_micro": 2,
+ "bs": 64,
+ "steps": 2,
+ "n_top": 12,
+ "T_max": 313,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "amp": "torch.bfloat16",
+ "sec": 1.4,
+ "def": "peak after the optimiser steps (incl. AdamW's moments) on the 64 longest pool records of the deepest n at the fixed self micro"
+}

@@ -1,0 +1,15 @@
+{
+ "arm": "textcot",
+ "steps_timed": 200,
+ "sec_per_step": 0.512407785654068,
+ "est_hours": 1.7080259521802266,
+ "sec_per_step_self": 0.7039791679382325,
+ "sec_per_step_plain": 0.32083640336990354,
+ "self_micro": 2,
+ "micro": 1,
+ "p_self": 0.5,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "forced": "odd steps self = the 64 longest records of the deepest n 12 (T_max 313; Note 219-4 (3)), even steps plain; sec_per_step = p_self-weighted mix",
+ "deep_n": 12,
+ "deep_T_max": 313
+}

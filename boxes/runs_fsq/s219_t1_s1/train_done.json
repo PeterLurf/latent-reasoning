@@ -1,0 +1,27 @@
+{
+ "steps": 12000,
+ "train_sec": 5557,
+ "n_nonfinite": 0,
+ "n_self_steps": 5992,
+ "pool_cursor": 383488,
+ "self_reuse": 0,
+ "train_tokens": {
+  "plain": {
+   "target_tokens": 16332410,
+   "token_positions": 22805744,
+   "padded_positions": 51750656
+  },
+  "self": {
+   "target_tokens": 64124688,
+   "token_positions": 76966988,
+   "padded_positions": 106225408
+  }
+ },
+ "self_n_counts": {
+  "10": 95843,
+  "9": 95822,
+  "11": 95926,
+  "12": 95897
+ },
+ "model_sha256": "65b020b053008f94a9f494d1bf85c5264e5b1a18e800e83cbf357fb278901bf6"
+}
