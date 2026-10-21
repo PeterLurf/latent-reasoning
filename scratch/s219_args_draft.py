@@ -49,7 +49,8 @@ def sha(p):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--queue", default="scratch/gen_q_b318.txt.hold"); ap.add_argument("--line", type=int, default=3)
     ap.add_argument("--out_file", default="scratch/s219_args_frozen_t1.json.draft"); ap.add_argument("--tmp", default="scratch/_tmp/s219_argsdraft")
-    a = ap.parse_args(); os.chdir(ROOT)
+    ap.add_argument("--links", default="", help="T2 (10-21): comma list of repo files mirrored into the tree (default: T1's LINKS)")
+    a = ap.parse_args(); os.chdir(ROOT); links = tuple(x for x in a.links.split(",") if x) or LINKS
     cmds = [l.split() for l in open(a.queue, encoding="utf-8").read().split("\n") if l.strip() and not l.startswith("#")]
     out, mod, rest = cmds[a.line - 1][0], cmds[a.line - 1][1], cmds[a.line - 1][2:]
     assert mod == "boxes.textself_ft", mod
@@ -57,7 +58,7 @@ def main():
     tree = os.path.abspath(a.tmp)
     if os.path.exists(tree):
         shutil.rmtree(tree)
-    for f in LINKS:
+    for f in links:
         os.makedirs(os.path.dirname(os.path.join(tree, f)), exist_ok=True)
         try:
             os.link(f, os.path.join(tree, f))
