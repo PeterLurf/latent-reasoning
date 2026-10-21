@@ -20104,6 +20104,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Seal.** Both GPT-2 models' arms, descriptive rows and NECESSARY values are now sealed in scratch/s220/SEALED_score_s220_arms.json, **sha256 7c3822cfe02ecaa572950c7d368c2895f9ac526b919e8150ca5167e770735760**. This supersedes ce504bde, which held CODI20 only. They stay sealed through the registration and freeze of any successor (Audit's ruling).
 - **Successor:** a draft goes to Audit with a fidelity gate (the port against the official code at bs 1, where no pads exist, plus the established-accuracy gates). Not registered.
 
+**Note 221-1 (2026-10-21 05:53 EDT; G-FID build rulings on the official-runner wrapper (dcb189ad), before any G-FID GPU run and before Audit's G-D OK; no reading, bar or label changes).**
+1. **D9 accepted.** The official test.py crashes at batch size 1 as written: l.261's `argmax(...).squeeze(-1)` is 0-dim at B = 1, so l.287's `[b].item()` raises IndexError. The wrapper's in-memory change `.squeeze(-1)` → `.reshape(-1)` yields the same argmax values at B = 1 and changes nothing at B ≥ 2. The checkout stays clean (zhenyi4/codi at 2c231466…, test.py sha 93a8bdba…).
+2. **D1 accepted: the official run in fp32 (`--dtype fp32`, required, no default).**
+   - test.py casts the model to bf16 itself. A per-item fidelity comparison against our fp32 port needs one dtype on both sides, or it measures dtype rather than the port.
+   - CPU smoke on 30 synthetic items: fp32 official = the port on 30 / 30 preds and token shas; bf16 only 26 / 30.
+   - An official bf16 bs-1 run may be added as descriptive.
+3. **Scorer fix.** score_s221 read per_item.intact.pred as a dict, but s220_gcs.py stores it as a list in golds-key order. Fixed (list → dict by golds keys, length asserted) with two real-layout fixtures. **Fixtures 25 / 25.**
+4. **Stack.** No repo-pinned torch 2.7.1 / transformers 4.52.4 stack. The official run uses the same system torch 2.14 / transformers 5.18 as the port, plus the repo's peft / accelerate pins, so stack differences cannot pose as port infidelity.
+   - D2–D8 (observation-only hooks cross-checked to test.py's printed lines; 'openai/gsm8k'; strict load; TF32 off / deterministic; log redirection; resume_download dropped; sdpa + unmerged LoRA official vs eager + merged port) go to Audit's G-D as listed in the wrapper docstring. The residual numeric differences are what G-FID(a)'s 0.97 tolerance covers.
+5. **Contract points accepted:** ref.pred maps inf → None; official_bs1's ref.sha / ntok are descriptive; determinism's ref.repo_commit = the s220 run commit. No full zen determinism re-run (`--full_intact` not required).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
