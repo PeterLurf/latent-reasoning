@@ -24,3 +24,10 @@
 2026-10-21 12:29:54 CORRECTION: 'engine equiv new2 rc 0' above is date's status (rc-after-$(date) bug); new2 was STOPPED by pid 13604 at ~step 2 (Note 222-3 + Audit (a'): envelope optional; the 2070 goes to the det gate); log -> .void_superseded
 2026-10-21 12:29:54 engine equiv DET start (2070, math SDP + deterministic, Audit (a'))
 2026-10-21 12:29:54 resume test cert DET start (3070, t2 group, math SDP)
+2026-10-21 12:54:34 envelope smoke (co-tenant on the 3070, 12:38) STOPPED by pid in setup: the 3070 hit 7.99 / 8.19 GB beside the det resume test (WDDM spill risk to the gate); re-run armed right after the det resume ends
+2026-10-21 13:06:07 engine equiv old det rc 0
+2026-10-21 13:41:48 resume test cert_det RESUME-TEST cert_det PASS
+2026-10-21 13:41:52 envelope smoke start (3070, --steps 20, scratch/_tmp/s222_env_smoke_1341)
+2026-10-21 13:43:56 engine equiv new det rc 0
+2026-10-21 13:43:59 DET ENGINE-EQUIV PASS {'curve_diff': [], 'field_diff': [], 'param_diff': [], 'extended_arms': ['cexor_t0', 'lin_t0', 'lin_t1', 'noplant_t2', 'shuffled_t0']}
+2026-10-21 13:50:55 envelope smoke rc 0 ENVELOPE {"envelope_ce_max_abs": 2.86102294921875e-06, "resume_ce_max_abs_by_probe_R_vs_A": {"cexor_t2": 1.5497207641601562e-06, "lin_t2": 3.129243850708008e-06, "noplant_t2": 4.082918167114258e-06}, "bitwise_B_vs_A": false, "bitwise_R_vs_A": false, "proposed_PASS": true, "gpu": "NVIDIA GeForce RTX 

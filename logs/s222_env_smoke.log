@@ -1,0 +1,5 @@
+ENVELOPE run A rc 0 154 s
+ENVELOPE run B rc 0 305 s
+ENVELOPE run K rc 9 409 s
+ENVELOPE run R rc 0 542 s
+ENVELOPE {"envelope_ce_max_abs": 2.86102294921875e-06, "resume_ce_max_abs_by_probe_R_vs_A": {"cexor_t2": 1.5497207641601562e-06, "lin_t2": 3.129243850708008e-06, "noplant_t2": 4.082918167114258e-06}, "bitwise_B_vs_A": false, "bitwise_R_vs_A": false, "proposed_PASS": true, "gpu": "NVIDIA GeForce RTX 3070"}

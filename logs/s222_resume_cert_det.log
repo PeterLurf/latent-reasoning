@@ -1,0 +1,77 @@
+2026-10-21 12:29:54 REF
+DET_WRAP math SDP, deterministic algorithms strict; target scratch/s222_cert.py
+[W1021 12:30:47.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 541065216 bytes (free: 0, total: 8589410304).
+SETUP 88 s m 3 eps {'0': 11.623897177886096, '1': 20.632775215469398, '2': 24.62637979138485} groups [['cexor_t0', 'lin_t0', 'noplant_t0'], ['probe0', 'shuffled_t0', 'cexor_t1'], ['lin_t1', 'noplant_t1', 'shuffled_t1'], ['cexor_t2', 'lin_t2', 'noplant_t2'], ['shuffled_t2']] run [3]
+CERT group 3 ['cexor_t2', 'lin_t2', 'noplant_t2']
+CERT step 50 {'cexor_t2': 0.516, 'lin_t2': 0.5, 'noplant_t2': 0.469} 101 s
+CERT step 100 {'cexor_t2': 0.469, 'lin_t2': 0.625, 'noplant_t2': 0.531} 203 s
+CKPT CERT group 3 step 100
+CERT step 150 {'cexor_t2': 0.5, 'lin_t2': 0.5, 'noplant_t2': 0.531} 306 s
+CERT step 200 {'cexor_t2': 0.469, 'lin_t2': 0.719, 'noplant_t2': 0.484} 407 s
+CKPT CERT group 3 step 200
+CERT step 250 {'cexor_t2': 0.516, 'lin_t2': 0.797, 'noplant_t2': 0.438} 1440 s
+CERT step 300 {'cexor_t2': 0.562, 'lin_t2': 0.875, 'noplant_t2': 0.484} 1544 s
+CKPT CERT group 3 step 300
+CERT step 350 {'cexor_t2': 0.516, 'lin_t2': 0.953, 'noplant_t2': 0.453} 1648 s
+CERT step 400 {'cexor_t2': 0.672, 'lin_t2': 0.969, 'noplant_t2': 0.484} 1750 s
+CKPT CERT group 3 step 400
+CERT extend to 800: ['cexor_t2', 'lin_t2']
+CERT step 450 {'cexor_t2': 0.656, 'lin_t2': 0.984} 1836 s
+CERT step 500 {'cexor_t2': 0.766, 'lin_t2': 1.0} 1922 s
+CKPT CERT group 3 step 500
+CERT step 550 {'cexor_t2': 0.781, 'lin_t2': 1.0} 2009 s
+CERT step 600 {'cexor_t2': 0.797, 'lin_t2': 1.0} 2094 s
+CKPT CERT group 3 step 600
+CERT step 650 {'cexor_t2': 0.766, 'lin_t2': 0.984} 2181 s
+CERT step 700 {'cexor_t2': 0.875, 'lin_t2': 1.0} 2267 s
+CKPT CERT group 3 step 700
+CERT step 750 {'cexor_t2': 0.891, 'lin_t2': 1.0} 2355 s
+CERT step 800 {'cexor_t2': 0.906, 'lin_t2': 1.0} 2442 s
+CKPT CERT group 3 step 800
+WROTE scratch/_tmp/s222_resume_cert_det/ref\cert_untrained.g3.json group 3 done 2443 s
+ref rc 0
+2026-10-21 13:12:09 KILL at 330
+DET_WRAP math SDP, deterministic algorithms strict; target scratch/s222_cert.py
+[W1021 13:13:04.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 541065216 bytes (free: 0, total: 8589410304).
+SETUP 91 s m 3 eps {'0': 11.623897177886096, '1': 20.632775215469398, '2': 24.62637979138485} groups [['cexor_t0', 'lin_t0', 'noplant_t0'], ['probe0', 'shuffled_t0', 'cexor_t1'], ['lin_t1', 'noplant_t1', 'shuffled_t1'], ['cexor_t2', 'lin_t2', 'noplant_t2'], ['shuffled_t2']] run [3]
+CERT group 3 ['cexor_t2', 'lin_t2', 'noplant_t2']
+CERT step 50 {'cexor_t2': 0.516, 'lin_t2': 0.5, 'noplant_t2': 0.469} 103 s
+CERT step 100 {'cexor_t2': 0.469, 'lin_t2': 0.625, 'noplant_t2': 0.531} 205 s
+CKPT CERT group 3 step 100
+CERT step 150 {'cexor_t2': 0.5, 'lin_t2': 0.5, 'noplant_t2': 0.531} 310 s
+CERT step 200 {'cexor_t2': 0.469, 'lin_t2': 0.719, 'noplant_t2': 0.484} 412 s
+CKPT CERT group 3 step 200
+CERT step 250 {'cexor_t2': 0.516, 'lin_t2': 0.797, 'noplant_t2': 0.438} 516 s
+CERT step 300 {'cexor_t2': 0.562, 'lin_t2': 0.875, 'noplant_t2': 0.484} 618 s
+CKPT CERT group 3 step 300
+STOP_AT 330 (resume-test kill)
+kill rc 9 (9 expected)
+2026-10-21 13:25:04 RESUME
+DET_WRAP math SDP, deterministic algorithms strict; target scratch/s222_cert.py
+[W1021 13:26:01.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 541065216 bytes (free: 0, total: 8589410304).
+SETUP 93 s m 3 eps {'0': 11.623897177886096, '1': 20.632775215469398, '2': 24.62637979138485} groups [['cexor_t0', 'lin_t0', 'noplant_t0'], ['probe0', 'shuffled_t0', 'cexor_t1'], ['lin_t1', 'noplant_t1', 'shuffled_t1'], ['cexor_t2', 'lin_t2', 'noplant_t2'], ['shuffled_t2']] run [3]
+RESUME CERT group 3 from step 300 ext None
+CERT group 3 ['cexor_t2', 'lin_t2', 'noplant_t2']
+CERT step 350 {'cexor_t2': 0.516, 'lin_t2': 0.953, 'noplant_t2': 0.453} 104 s
+CERT step 400 {'cexor_t2': 0.672, 'lin_t2': 0.969, 'noplant_t2': 0.484} 206 s
+CKPT CERT group 3 step 400
+CERT extend to 800: ['cexor_t2', 'lin_t2']
+CERT step 450 {'cexor_t2': 0.656, 'lin_t2': 0.984} 296 s
+CERT step 500 {'cexor_t2': 0.766, 'lin_t2': 1.0} 383 s
+CKPT CERT group 3 step 500
+CERT step 550 {'cexor_t2': 0.781, 'lin_t2': 1.0} 471 s
+CERT step 600 {'cexor_t2': 0.797, 'lin_t2': 1.0} 556 s
+CKPT CERT group 3 step 600
+CERT step 650 {'cexor_t2': 0.766, 'lin_t2': 0.984} 646 s
+CERT step 700 {'cexor_t2': 0.875, 'lin_t2': 1.0} 731 s
+CKPT CERT group 3 step 700
+CERT step 750 {'cexor_t2': 0.891, 'lin_t2': 1.0} 819 s
+CERT step 800 {'cexor_t2': 0.906, 'lin_t2': 1.0} 905 s
+CKPT CERT group 3 step 800
+WROTE scratch/_tmp/s222_resume_cert_det/res\cert_untrained.g3.json group 3 done 907 s
+resume rc 0
+kill-run steps 1 - 330 == ref: True
+resume steps 301 - 800 (500) == ref bitwise: True ; ref steps 800
+group file blocks ('arms',) identical: True
+RESUME-TEST cert_det PASS
+2026-10-21 13:41:48 done

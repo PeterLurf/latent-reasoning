@@ -1,0 +1,32 @@
+[W1021 13:07:04.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 541065216 bytes (free: 0, total: 8589606912).
+SETUP 112 s m 3 eps {'0': 11.623897171629553, '1': 20.632775174969858, '2': 24.626380291442686} groups [['cexor_t0', 'lin_t0', 'noplant_t0', 'probe0', 'shuffled_t0', 'cexor_t1', 'lin_t1'], ['noplant_t1', 'shuffled_t1', 'cexor_t2', 'lin_t2', 'noplant_t2', 'shuffled_t2']] run [0, 1]
+CERT group 0 ['cexor_t0', 'lin_t0', 'noplant_t0', 'probe0', 'shuffled_t0', 'cexor_t1', 'lin_t1']
+CERT step 30 {'cexor_t0': 0.547, 'lin_t0': 0.531, 'noplant_t0': 0.531, 'probe0': 0.547, 'shuffled_t0': 0.516, 'cexor_t1': 0.547, 'lin_t1': 0.531} 129 s
+CERT step 60 {'cexor_t0': 0.609, 'lin_t0': 0.5, 'noplant_t0': 0.531, 'probe0': 0.625, 'shuffled_t0': 0.594, 'cexor_t1': 0.578, 'lin_t1': 0.547} 259 s
+CERT step 90 {'cexor_t0': 0.609, 'lin_t0': 0.719, 'noplant_t0': 0.547, 'probe0': 0.547, 'shuffled_t0': 0.484, 'cexor_t1': 0.516, 'lin_t1': 0.719} 391 s
+CERT step 120 {'cexor_t0': 0.688, 'lin_t0': 0.906, 'noplant_t0': 0.578, 'probe0': 0.516, 'shuffled_t0': 0.453, 'cexor_t1': 0.531, 'lin_t1': 0.891} 521 s
+CERT step 150 {'cexor_t0': 0.734, 'lin_t0': 1.0, 'noplant_t0': 0.5, 'probe0': 0.516, 'shuffled_t0': 0.547, 'cexor_t1': 0.562, 'lin_t1': 0.922} 651 s
+CERT extend to 300: ['cexor_t0', 'lin_t0', 'shuffled_t0', 'lin_t1']
+CERT step 180 {'cexor_t0': 0.734, 'lin_t0': 1.0, 'shuffled_t0': 0.484, 'lin_t1': 0.938} 749 s
+CERT step 210 {'cexor_t0': 0.734, 'lin_t0': 0.984, 'shuffled_t0': 0.641, 'lin_t1': 0.984} 846 s
+CERT step 240 {'cexor_t0': 0.703, 'lin_t0': 0.984, 'shuffled_t0': 0.453, 'lin_t1': 0.969} 945 s
+CERT step 270 {'cexor_t0': 0.719, 'lin_t0': 1.0, 'shuffled_t0': 0.547, 'lin_t1': 0.984} 1043 s
+CERT step 300 {'cexor_t0': 0.734, 'lin_t0': 1.0, 'shuffled_t0': 0.625, 'lin_t1': 0.984} 1141 s
+CERT probe0 test 0.5667
+WROTE scratch/_tmp/s222_equiv\new_det\cert_untrained.g0.json group 0 done 1142 s
+CERT group 1 ['noplant_t1', 'shuffled_t1', 'cexor_t2', 'lin_t2', 'noplant_t2', 'shuffled_t2']
+[W1021 13:29:11.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 2 while trying to allocate 532676608 bytes (free: 0, total: 8589606912).
+CERT step 30 {'noplant_t1': 0.547, 'shuffled_t1': 0.547, 'cexor_t2': 0.547, 'lin_t2': 0.609, 'noplant_t2': 0.438, 'shuffled_t2': 0.531} 1272 s
+CERT step 60 {'noplant_t1': 0.547, 'shuffled_t1': 0.562, 'cexor_t2': 0.531, 'lin_t2': 0.516, 'noplant_t2': 0.516, 'shuffled_t2': 0.594} 1403 s
+CERT step 90 {'noplant_t1': 0.609, 'shuffled_t1': 0.578, 'cexor_t2': 0.516, 'lin_t2': 0.609, 'noplant_t2': 0.516, 'shuffled_t2': 0.516} 1535 s
+CERT step 120 {'noplant_t1': 0.641, 'shuffled_t1': 0.5, 'cexor_t2': 0.562, 'lin_t2': 0.594, 'noplant_t2': 0.516, 'shuffled_t2': 0.484} 1667 s
+CERT step 150 {'noplant_t1': 0.547, 'shuffled_t1': 0.484, 'cexor_t2': 0.5, 'lin_t2': 0.5, 'noplant_t2': 0.531, 'shuffled_t2': 0.547} 1798 s
+CERT extend to 300: ['noplant_t2']
+CERT step 180 {'noplant_t2': 0.484} 1870 s
+CERT step 210 {'noplant_t2': 0.453} 1939 s
+CERT step 240 {'noplant_t2': 0.469} 2010 s
+CERT step 270 {'noplant_t2': 0.484} 2082 s
+CERT step 300 {'noplant_t2': 0.484} 2152 s
+WROTE scratch/_tmp/s222_equiv\new_det\cert_untrained.g1.json group 1 done 1010 s
+MERGED 2 -> scratch/_tmp/s222_equiv\new_det\cert_untrained.json
+EQUIV_RUN new det True arms 13 src_sha 33ba6d593b55

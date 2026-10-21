@@ -1,0 +1,121 @@
+{
+ "arms_old": [
+  "cexor_t0",
+  "cexor_t1",
+  "cexor_t2",
+  "lin_t0",
+  "lin_t1",
+  "lin_t2",
+  "noplant_t0",
+  "noplant_t1",
+  "noplant_t2",
+  "probe0",
+  "shuffled_t0",
+  "shuffled_t1",
+  "shuffled_t2"
+ ],
+ "arms_new": [
+  "cexor_t0",
+  "cexor_t1",
+  "cexor_t2",
+  "lin_t0",
+  "lin_t1",
+  "lin_t2",
+  "noplant_t0",
+  "noplant_t1",
+  "noplant_t2",
+  "probe0",
+  "shuffled_t0",
+  "shuffled_t1",
+  "shuffled_t2"
+ ],
+ "curve_diff": [],
+ "field_diff": [],
+ "param_diff": [],
+ "steps": {
+  "cexor_t0": [
+   300,
+   300
+  ],
+  "cexor_t1": [
+   150,
+   150
+  ],
+  "cexor_t2": [
+   150,
+   150
+  ],
+  "lin_t0": [
+   300,
+   300
+  ],
+  "lin_t1": [
+   300,
+   300
+  ],
+  "lin_t2": [
+   150,
+   150
+  ],
+  "noplant_t0": [
+   150,
+   150
+  ],
+  "noplant_t1": [
+   150,
+   150
+  ],
+  "noplant_t2": [
+   300,
+   300
+  ],
+  "probe0": [
+   150,
+   150
+  ],
+  "shuffled_t0": [
+   300,
+   300
+  ],
+  "shuffled_t1": [
+   150,
+   150
+  ],
+  "shuffled_t2": [
+   150,
+   150
+  ]
+ },
+ "n_param_tensors_per_arm": 26,
+ "extended_arms": [
+  "cexor_t0",
+  "lin_t0",
+  "lin_t1",
+  "noplant_t2",
+  "shuffled_t0"
+ ],
+ "PASS": true,
+ "card": "NVIDIA GeForce RTX 2070",
+ "def": "\u00a7222 Audit G-D condition 1 (10-21): ENGINE EQUIVALENCE. The cert group loop Audit G-D'd at e6ed5638 (old) vs the Note 222-1 Engine (new, the working\ntree) on the same short run: untrained model, smoke sizes (pool 3000, held 64, per_D 3), --steps 150 --eval_every 30 (5 curve points, so the extension\nrule is live), group 7 (both groups, all 13 arms), same card / fp32. Each impl runs in its own process with Arm.__init__ wrapped to keep every arm; at the\nend every arm's trainable state (P, beta, gam) and steps go to <out>/params.pt. PASS iff per-arm curves (and probe0's test read) are identical and every\nfinal parameter tensor is bitwise equal.\n    python -B scratch/s222_engine_equiv.py run old|new --device cuda:2      (old = git show e6ed5638:scratch/s222_cert.py)\n    python -B scratch/s222_engine_equiv.py compare                          -> scratch/gate_s222/engine_equiv.json\nNote 222-3 / Audit (a') 10-21: --det runs the gate under forced math SDP + torch.use_deterministic_algorithms(True) (scratch/s222_det_wrap.apply; GATE ONLY,\nthe registered runs keep the memory-efficient kernel) into <impl>_det dirs; compare --det -> engine_equiv_det.json (bitwise required).\ncompare_pair <dirA> <dirB> <out name>: descriptive same-code envelope (e.g. new vs new2 on the default kernel).",
+ "old_src": "git show e6ed5638:scratch/s222_cert.py",
+ "new_sha256": "33ba6d593b55ac3a3c863d8794c09a617e28864a7577df66d4545979338627b0",
+ "dirs": [
+  "old_det",
+  "new_det"
+ ],
+ "max_abs_param_diff_by_arm": {
+  "cexor_t0": 0.0,
+  "cexor_t1": 0.0,
+  "cexor_t2": 0.0,
+  "lin_t0": 0.0,
+  "lin_t1": 0.0,
+  "lin_t2": 0.0,
+  "noplant_t0": 0.0,
+  "noplant_t1": 0.0,
+  "noplant_t2": 0.0,
+  "probe0": 0.0,
+  "shuffled_t0": 0.0,
+  "shuffled_t1": 0.0,
+  "shuffled_t2": 0.0
+ }
+}
