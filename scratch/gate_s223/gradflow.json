@@ -1,0 +1,129 @@
+{
+ "batch": {
+  "n": 2,
+  "d": 3,
+  "K": 4,
+  "rng": "777 / 778"
+ },
+ "cells": {
+  "PS": {
+   "answer_ce": {
+    "lora": 13639.614515304565,
+    "prj": 144249.80656433105,
+    "D": 0.0
+   },
+   "recode_ce": {
+    "lora": 475.7110481262207,
+    "prj": 6763.8409333229065,
+    "D": 30202.975209236145,
+    "value": 11.661164283752441
+   },
+   "probe_M2_on": {
+    "question_bot_kv_grad": 0.0,
+    "bos_kv_grad": 93.0849609375,
+    "latent_kv_grad": 723.3984375
+   },
+   "probe_M2_off": {
+    "question_bot_kv_grad": 396.15625,
+    "bos_kv_grad": 58.87890625,
+    "latent_kv_grad": 210.546875
+   },
+   "pass": true
+  },
+  "M1-only": {
+   "answer_ce": {
+    "lora": 7146.758018493652,
+    "prj": 20398.96360397339,
+    "D": 0.0
+   },
+   "recode_ce": {
+    "lora": 475.7110481262207,
+    "prj": 6763.8409333229065,
+    "D": 30202.975209236145,
+    "value": 11.661164283752441
+   },
+   "probe_M2_on": {
+    "question_bot_kv_grad": 0.0,
+    "bos_kv_grad": 93.0849609375,
+    "latent_kv_grad": 723.3984375
+   },
+   "probe_M2_off": {
+    "question_bot_kv_grad": 396.15625,
+    "bos_kv_grad": 58.87890625,
+    "latent_kv_grad": 210.546875
+   },
+   "pass": true
+  },
+  "M2-only": {
+   "answer_ce": {
+    "lora": 13639.614515304565,
+    "prj": 144249.80656433105,
+    "D": 0.0
+   },
+   "probe_M2_on": {
+    "question_bot_kv_grad": 0.0,
+    "bos_kv_grad": 93.0849609375,
+    "latent_kv_grad": 723.3984375
+   },
+   "probe_M2_off": {
+    "question_bot_kv_grad": 396.15625,
+    "bos_kv_grad": 58.87890625,
+    "latent_kv_grad": 210.546875
+   },
+   "pass": true
+  },
+  "DIRECT": {
+   "answer_ce": {
+    "lora": 13563.870089530945,
+    "prj": 0.0,
+    "D": 0.0
+   },
+   "pass": true
+  },
+  "PLAIN": {
+   "answer_ce": {
+    "lora": 7146.758018493652,
+    "prj": 20398.96360397339,
+    "D": 0.0
+   },
+   "probe_M2_on": {
+    "question_bot_kv_grad": 0.0,
+    "bos_kv_grad": 93.0849609375,
+    "latent_kv_grad": 723.3984375
+   },
+   "probe_M2_off": {
+    "question_bot_kv_grad": 396.15625,
+    "bos_kv_grad": 58.87890625,
+    "latent_kv_grad": 210.546875
+   },
+   "pass": true
+  }
+ },
+ "ast": {
+  "decorated_functions": [],
+  "no_grad_mentions": [
+   "with torch.no_grad():"
+  ],
+  "detach_lines": [
+   "nce = F.cross_entropy(nl, nt); parts = {\"ans_ce\": float(ce.detach()), \"num_ce\": float(nce.detach()),",
+   "parts.update({\"recode_ce\": float(rce.detach()), \"recode_val_ce\": rv, \"recode_val_n\": nv})",
+   "a_k = k[:, :, :n_enc].detach().clone().requires_grad_(True); a_v = v[:, :, :n_enc].detach().clone().",
+   "b_k = k[:, :, n_enc:].detach().clone().requires_grad_(True); b_v = v[:, :, n_enc:].detach().clone().",
+   "(l_ / acc_steps).backward(); P.append((float(l_.detach()), pt))",
+   "torch.save({\"tp\": {n: p_.detach() for n, p_ in TP}, \"opt\": opt.state_dict(), \"sched\": sch.state_dict",
+   "torch.save({n: p_.detach().cpu() for n, p_ in TP}, os.path.join(a.out, \"trainable.pt\"))"
+  ]
+ },
+ "plain_vs_codi_port": {
+  "codi_ps_ans_ce": 6.689549922943115,
+  "codi_port_ce": 6.689549922943115,
+  "bitwise_equal": true
+ },
+ "plain_one_step": {
+  "loss": 7.387190341949463,
+  "finite": true,
+  "params_changed": 102,
+  "n_params": 102
+ },
+ "PASS": true
+}
