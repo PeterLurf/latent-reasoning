@@ -1,0 +1,2 @@
+{'step': 1, 'loss': 1.1836271286010742, 'loss_last': 1.1836271286010742, 'sec': 5, 'plain_loss': 1.1836271286010742, 'self_loss': None, 'self_value_ce': None, 'self_copy_ce': None, 'self_frac': 0.0, 'pool_cursor': 0, 'n_self_steps': 0, 'self_reuse': 0, 'lr': 2.999999948595811e-07, 'gn_preclip': 9.620509147644043, 'clip_frac_100': 1.0, 'n_nonfinite': 0, 'train_tokens': {'plain': {'target_tokens': 456, 'token_positions': 616, 'padded_positions': 824}, 'self': {'target_tokens': 0, 'token_positions': 0, 'padded_positions': 0}}}
+STOPPED_AT 1

@@ -1,11 +1,11 @@
 {
  "rc_mem": [
   0,
-  40
+  35
  ],
  "rc_time": [
   0,
-  33
+  29
  ],
  "mem_check_self": {
   "peak_gib": null,
@@ -18,16 +18,16 @@
   "T_max": 295,
   "gpu": "cpu",
   "amp": "None",
-  "sec": 32.1,
+  "sec": 28.5,
   "def": "peak after the optimiser steps (incl. AdamW's moments) on the 64 longest pool records of the deepest n at the fixed self micro"
  },
  "timing": {
   "arm": "textcot",
   "steps_timed": 2,
-  "sec_per_step": 12.095362544059753,
-  "est_hours": 40.317875146865845,
-  "sec_per_step_self": 16.565985441207886,
-  "sec_per_step_plain": 7.624739646911621,
+  "sec_per_step": 10.63550055027008,
+  "est_hours": 35.45166850090027,
+  "sec_per_step_self": 14.249396324157715,
+  "sec_per_step_plain": 7.021604776382446,
   "self_micro": 2,
   "micro": 1,
   "p_self": 0.5,
@@ -56,7 +56,7 @@
  },
  "eval_files": [],
  "PASS": true,
- "sec": 74,
+ "sec": 64,
  "gate": "t9t10_paths",
- "clock": "2026-10-18 18:49:06"
+ "clock": "2026-10-20 22:37:53"
 }
