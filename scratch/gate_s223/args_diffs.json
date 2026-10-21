@@ -1,0 +1,93 @@
+{
+ "ignored_keys": [
+  "accumulation",
+  "cell",
+  "cuda_version",
+  "device",
+  "micro",
+  "out",
+  "python_version",
+  "resume_from",
+  "torch_version",
+  "train_driver",
+  "train_gpu",
+  "transformers_version"
+ ],
+ "diffs": {
+  "PS vs M1-only": {
+   "keys": {
+    "bottleneck": [
+     true,
+     false
+    ]
+   },
+   "allowed": [
+    "bottleneck"
+   ],
+   "ok": true
+  },
+  "PS vs M2-only": {
+   "keys": {
+    "lam": [
+     1.0,
+     0.0
+    ],
+    "recode": [
+     true,
+     false
+    ]
+   },
+   "allowed": [
+    "lam",
+    "recode"
+   ],
+   "ok": true
+  },
+  "PS vs DIRECT": {
+   "keys": {
+    "bottleneck": [
+     true,
+     false
+    ],
+    "direct": [
+     false,
+     true
+    ],
+    "lam": [
+     1.0,
+     0.0
+    ],
+    "recode": [
+     true,
+     false
+    ]
+   },
+   "allowed": [
+    "bottleneck",
+    "direct",
+    "lam",
+    "recode"
+   ],
+   "ok": true
+  }
+ },
+ "pass": true,
+ "drafts": {
+  "PS": {
+   "file": "scratch/s223_args_frozen_ps.json.draft",
+   "sha256": "a225c57c3b15ac12a652c9cfc54b1fb61f88afb47944ffbb2aad868206c98114"
+  },
+  "M1-only": {
+   "file": "scratch/s223_args_frozen_m1.json.draft",
+   "sha256": "6739af6ac5879153bdeac35403914da91b2a79739d434ec18d8cc12a39acaf86"
+  },
+  "M2-only": {
+   "file": "scratch/s223_args_frozen_m2.json.draft",
+   "sha256": "b8e8c89de29cee2c8deb4156d11c5b6184ca52eaf4f2103781f5c87eebb56235"
+  },
+  "DIRECT": {
+   "file": "scratch/s223_args_frozen_direct.json.draft",
+   "sha256": "3aa945706609d1515ebaeec77bc3c099f60a3902a4308f63d7060b1977feb42b"
+  }
+ }
+}
