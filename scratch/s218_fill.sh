@@ -7,10 +7,14 @@
 # (gtime s/step x steps / 3600 + SETUP_H) x $/h <= the cell's bound AND admitted + BAD + proj <= $25; only a MEASURED G-TIME refusal uses one of
 # HOSTMAX (3 = 1 + 2 more, G-L12) tries; then the off-host mirror (~2k steps, G-L10), the cell guard (guard - the cell's BAD spend) and, once, s218fam.
 #   QS="316:lvb_sym_s1:4.30:4.70:24000 317:lvb_direct_s1:3.60:3.90:24000" nohup bash scratch/s218_fill.sh >> logs/fill_s218.out 2>&1 &
+# ATTEMPT 2 (Note 218-15, Audit 10-20): attempt 1 (b316 / b317) was HOST-LOST in the 10-18..10-20 outage (realised $4.52 by the invoices). Both cells restart
+# from step 0 on the frozen refs. Attempt-2 admission / BAD logs are new files (per-attempt cell guards on the attempt's own spend: A1 $4.70, DIRECT $3.90);
+# the family accounting (fam(), the s218fam2 GUARD_STOP guard at $25 - LOST) carries the lost $4.52. The mirror copies ckpt_last.pt + ckpt_fingerprint.json
+# + log.jsonl together, sha-checked (draws_log.json if present).
 cd "$(dirname "$0")/.."
 dirty=$(git status --porcelain boxes/ scratch/s218_args_ref_a1.json scratch/s218_args_ref_direct.json | grep -v "^??" | grep -v "boxes/runs" )   # Audit: deploys ship the working tree
 [ -n "$dirty" ] && { echo "$(date '+%F %T') fill_s218 REFUSED: uncommitted module / ref edits: $dirty"; exit 2; }
-PMAX=${PMAX:-0.25}; CAPF=25.00; SETUP_H=0.4; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s218_bad_cost.log; ADMLOG=logs/s218_admitted.log
+PMAX=${PMAX:-0.25}; CAPF=25.00; SETUP_H=0.4; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s218_bad_cost_a2.log; ADMLOG=logs/s218_admitted_a2.log; LOST=4.52
 QS="${QS:-316:lvb_sym_s1:4.30:4.70:24000 317:lvb_direct_s1:3.60:3.90:24000}"
 FAMC="316:lvb_sym_s1:4.70:24000 317:lvb_direct_s1:3.90:24000"   # unstarted cells project at their guard
 cell_extra() {   # per-cell shipped files beside the queue's modules (auto_ship): the frozen ARGS-DIFF ref; prosqa_sym (also auto-shipped)
@@ -21,7 +25,7 @@ cell_extra() {   # per-cell shipped files beside the queue's modules (auto_ship)
 }
 log() { echo "$(date +%T) fill_s218 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 sq() { timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "$3" 2>/dev/null; }
-fam() { python -c "import sys; s = 0.0
+fam() { python -c "import sys; s = $LOST
 for f in ('$ADMLOG', '$BADLOG'):
     try: s += sum(float(l.split()[-1]) for l in open(f) if l.strip() and not l.startswith('#'))
     except OSError: pass
@@ -72,10 +76,10 @@ for cell in $QS; do
     if python -c "import sys; sys.exit(0 if $proj <= $CAPC and $fs + $proj <= $CAPF else 1)"; then
       echo "$n:$run $h:$p $iid \$$dph/h sps $sps $proj" >> "$ADMLOG"; log "b$n: ADMIT $run on $h:$p (instance $iid): \$$proj"
       evh=$(python -c "print(round(max(0.25, 2000 * $sps / 3600), 2))")       # the mirror every ~2k steps (LANG_v1 G-L10; user rule 2026-10-15)
-      nohup python scratch/ckpt_mirror.py "$n:$run" --every_h "$evh" > "logs/ckpt_mirror_b$n.out" 2>&1 &
+      nohup python scratch/ckpt_mirror.py "$n:$run" --every_h "$evh" --companions ckpt_fingerprint.json,log.jsonl --optional draws_log.json >> "logs/ckpt_mirror_b$n.out" 2>&1 &
       cb=$(awk -v n="b$n" '!/^#/ && $3 == n {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0); gl=$(python -c "print(round($GSTOP - $cb, 4))")
-      GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,16000 nohup python scratch/cost_guard.py "s218_b$n" "$gl" "$STEPS" "$n:$run:$proj:$STEPS" > "logs/s218_guard_b$n.out" 2>&1 &
-      log "b$n: ckpt mirror (every $evh h ~ 2k steps; host boxes/runs_fsq/$run/ckpt_last.pt -> scratch/ckpt_mirror/$run/ckpt_last.pt; remote sha256 before / after + local sha256 + torch.load step check per copy) + cell guard (\$$GSTOP - rejected-host \$$cb = \$$gl, GUARD_STOP=1) started"
+      GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,16000 nohup python scratch/cost_guard.py "s218a2_b$n" "$gl" "$STEPS" "$n:$run:$proj:$STEPS" > "logs/s218a2_guard_b$n.out" 2>&1 &
+      log "b$n: ckpt mirror (every $evh h ~ 2k steps; host boxes/runs_fsq/$run/ckpt_last.pt + ckpt_fingerprint.json + log.jsonl -> scratch/ckpt_mirror/$run/; remote sha256 before / after + local sha256 + torch.load step == fingerprint step per copy) + cell guard (\$$GSTOP - rejected-host \$$cb = \$$gl, GUARD_STOP=1) started"
       ad=""; for i in $(seq 1 20); do ad=$(sq "$h" "$p" "grep -h '^ARGS-DIFF' /workspace/Latent/logs/gen_$run.log | tail -n 1"); [ -n "$ad" ] && break; sleep 60; done
       bad=$(echo "${ad#ARGS-DIFF }" | python -c "import json, sys
 META = {'train_gpu', 'train_driver', 'cuda_version', 'cudnn_version', 'torch_version', 'python_version', 'image_tag', 'micro', 'auto_micro', 'mem_budget', 'ckpt_every'}
@@ -84,9 +88,10 @@ except Exception: print('UNREADABLE'); sys.exit()
 print(' '.join(k for k in d if k not in META))" 2>/dev/null)
       log "b$n: host ARGS-DIFF vs the frozen ref: ${ad:-none after 20 min} -> non-META keys: ${bad:-none}"
       [ -n "$bad" ] && log "ALERT b$n: ARGS-DIFF has non-META keys ($bad) - Audit / Theory review (the cell keeps running under its guard)"
-      if ! ps -ef | grep "cost_guard.py s218fam " | grep -v grep > /dev/null; then   # the FAMILY \$25 guard with GUARD_STOP=1 (BAD hosts included)
-        GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,16000 nohup python scratch/cost_guard.py s218fam 25.00 24000 $FAMC > logs/s218fam_guard.out 2>&1 &
-        log "guard s218fam (\$25, GUARD_STOP=1; $FAMC) started"
+      if ! ps -ef | grep "cost_guard.py s218fam2 " | grep -v grep > /dev/null; then   # the FAMILY \$25 guard with GUARD_STOP=1, minus the lost attempt-1 \$4.52
+        famcap=$(python -c "print(round($CAPF - $LOST, 2))")
+        GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,16000 nohup python scratch/cost_guard.py s218fam2 "$famcap" 24000 $FAMC > logs/s218fam2_guard.out 2>&1 &
+        log "guard s218fam2 (\$25 - lost \$$LOST = \$$famcap on attempt 2's projection, GUARD_STOP=1; $FAMC) started"
       fi
       sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; break
     fi

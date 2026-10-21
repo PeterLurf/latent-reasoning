@@ -1,0 +1,22 @@
+MEMCAP 6.0 GiB on cuda:1 (fraction 0.750)
+Traceback (most recent call last):
+  File "D:\Latent\scratch\s219_gate.py", line 193, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\scratch\s219_gate.py", line 189, in main
+    (label_stage if a.stage == "label" else score_stage)(a, cfg)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\Latent\scratch\s219_gate.py", line 54, in label_stage
+    full = TS.label_full(g, sy, a.label_bs) if not a.skip_full else None; t_full = time.time() - t0
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\textself.py", line 372, in label_full
+    am, mg, past, kvalid = _run_chunks(g, chunks, lens, past, kvalid, reads)
+                           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\textself.py", line 298, in _run_chunks
+    lg = h[torch.tensor(rr, device=dev), torch.tensor(cc, device=dev)] @ g.w("wte.weight").T
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 252.00 MiB. GPU 1 has a total capacity of 8.00 GiB of which 1.11 GiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 6.00 GiB allowed; Of the allocated memory 4.85 GiB is allocated by PyTorch, and 961.35 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

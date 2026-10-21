@@ -1,0 +1,5 @@
+EXCLUSION 22000 signatures (18 s)
+RESUME scratch/_tmp/mirsmoke/restore/lvb_mirsmoke/ckpt_last.pt step 300
+RESUME_CHECK {"ckpt_step": 300, "resume_step0": 301, "n_keys": 672, "equal": true, "diff_keys": []}
+{'step': 301, 'loss': 2.8447351455688477, 'sec': 201, 'answer_ce': 2.19156551361084, 'rec_ce': 0.653169572353363, 'plain_cand_ce': 2.0900306701660156, 'D_max_train': 4, 'cur_stage': 0, 'lr': 1.4368074053739739e-05, 'c': 10000.0, 'gn_preclip': 28.615440368652344, 'clip_frac_100': 1.0, 'slva_gn': None, 'stream_collisions': 0, 't_train_max': 554, 'test_gate_sig_hits': 0}
+STOPPED_AT 301

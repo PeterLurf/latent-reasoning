@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-14 16:3x EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-20 22:3x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -22,7 +22,26 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (03:22 2026-10-09; credit ~$98; cap 16 hosts / < $4/h)
+## Running now (22:3x 2026-10-20; credit $89.49; NO Vast instances)
+
+* 22:3x 10-20 (Experiments): RECOVERY after the LOCAL OUTAGE 10-18 ~22:10 -> 10-20 22:12 (every local job, watcher, guard and mirror died).
+  - §218 attempt 1 HOST-LOST (Note 218-15, 9a6964ff): b316 A1 host vanished Vast-side 0.63 h after create (never checkpointed; $0.135); b317 DIRECT trained
+    (~8.2k+ by 21:55 10-18), billing stopped Vast-side ~11:37 10-19, nothing drained ($4.319); BAD host $0.066. Family realised $4.52 / $25 (invoices).
+    Old step-5000 DIRECT mirror (scratch/ckpt_mirror/lvb_direct_s1, sha 17cd24ca) KEPT until §218 is scored (Audit trail); not used for resume.
+    RELAUNCH (Audit APPROVED 10-20 under 218-15; both cells from step 0, frozen refs A1 33af702f / DIRECT f4947038; args_only diff = deterministic only):
+    scratch/s218_fill.sh attempt 2 (ADMLOG logs/s218_admitted_a2.log, BADLOG logs/s218_bad_cost_a2.log, fam() seeded $4.52, guards s218a2_b316 $4.70 /
+    s218a2_b317 $3.90 + s218fam2 $20.48 GUARD_STOP); ckpt_mirror.py now copies ckpt_last.pt + ckpt_fingerprint.json + log.jsonl (+ draws_log.json) together,
+    sha-checked, fingerprint step == ckpt step (--companions); mirror -> resume smoke scratch/s218_mirror_smoke.sh -> scratch/gate_s218/mirror_smoke/.
+    Launch is HELD for the user's re-confirm. Launch: QS default, nohup bash scratch/s218_fill.sh >> logs/fill_s218.out 2>&1 &; then drain waiters per cell.
+    Note 218-16 BANK-NOISE / BANK-ZERO eval arms: build into langvb_eval only AFTER both deploys shipped, + Audit's NON-INTERFERENCE gate (arms on/off bitwise).
+    G-L7(b')(iii) CPU fp64 run 2 PASS 7.1e-15 (38e3c61e). G-L5 (2070) partial voided (.void_outage) -> re-run scratch/s218_gl5_rerun.sh (cuda:2, ~11 h).
+  - §219 TEXT-SELF: s219_base_s1/eval_text.json DONE 19:33 10-18 (3070 fp32, 24k items; 38e3c61e). Gate JSONs all PASS (38e3c61e); the 18:46-19:15 re-runs
+    used the trainer DRAFT (G-T13 items 4/5 + Note 219-4 (3)) in scratch/gate_s219/gt13_trainer_draft/ (+ .diff) - NOT applied to boxes/ until Audit's
+    diff review; after applying, re-run static / t4 / t7 / t9t10 / t12 against boxes/. Running on the 3070: scratch/s219_gate_t1_chain.sh (GATE-T1 label ->
+    score -> T1 pool; logs/s219_gate_t1.out). Open: G-T13 trainer review (Audit), G-T15 GATE-T1 (running), G-T16 EQUIV (in the label stage), G-T19 base-bars
+    note (Theory), G-T9 / T10 / T11 / T14 at launch.
+  - §216 / §217 CLOSED and scored (score_s216.json / score_s217.json). Cards: 3070 §219 GATE-T1 chain; 2070 G-L5 re-run; 4060 mirror smoke, then free.
+
 
 **User rules:** full runs on Vast 3090s (>= 16 GB, checkpointed); local cards short memory-capped jobs only, never idle. smoke_plain before commits
 touching fsq120 / table132 / core. Never edit a module while a deploy is in flight (auto_ship is transitive: fixedchunk / multrow ship multpair,

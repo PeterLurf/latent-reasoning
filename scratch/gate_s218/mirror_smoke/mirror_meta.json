@@ -1,0 +1,13 @@
+{
+ "run": "lvb_mirsmoke",
+ "queue": 999,
+ "host": "local:0",
+ "step": 300,
+ "sha256": "3835e004b3ed5615dcdce24df36f6a7452b4aeda2c4e50832ae8530f1bc5fee9",
+ "companions": {
+  "ckpt_fingerprint.json": "677e68e140c6edbcc851f1726354507a0f8f1e0db294e9e850b57d4604754668",
+  "log.jsonl": "841637bda89edfe5543a767797d9fbde274843dfb1861541007ae0db521978ad"
+ },
+ "bytes": 1507746891,
+ "time": "2026-10-20 22:31:43"
+}
