@@ -307,7 +307,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 217 | CAUSAL-ACROSS-ROUNDS (eval-only, $0, local 4060; Audit lead L2): VALUE-SWAP class A + STALL at n 9-20 per model in its competent band (a(n) >= 0.95); CAUSAL-DEEP / CAUSAL-PRESERVED vs ERODED-AT; 4060 n 4-8 reproduction gate; scorer score_s217 (to write) | registered | **CLOSED 10-18: CAUSAL-PRESERVED in both lineages (s1 FT-SELF 9-13 / R2 9-18; s2 base {9} / R1 9-13; follow_ii 1.000, STALL >= 0.99, gates 0.000); depth bought without eroding causal slot use; $0** |
 | 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **Stage A LAUNCHED 10-18 (218-13); both cells HOST-LOST in the 10-18/20 outage, nothing read, $4.52 lost; RELAUNCH from step 0 Audit-approved 10-20 (218-15)** |
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **T1 SCORED 10-21 (219-8, Audit-reproduced): T-SELF, T-SHIFT/MIXED, n50 14.606 vs latent R1 15.460 (Delta1 -0.854, PARITY unreachable); round 2 cleared; ~$0.42 / $3.00** |
-| 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **scorer + port + G-D; not run** |
+| 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **CLOSED 10-21 at stage 0: UNREAD in both GPT-2 models (amended G-R: padded official semantics batch-dependent; pad-free bs-1 reproduces 0.379 / 0.4246 bitwise); stage 1 not triggered; arms SEALED (7c3822cf); successor to draft; $0** |
 
 ## Live sections
 
@@ -20056,6 +20056,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Δ^g_1 = Δ_1 − Δ_0 = −0.981 (descriptive).
 - **Round-2 condition: TRUE** (T-SELF; LABEL-AUDIT-T and CONTAMINATED clean). GATE-T2 / GATE-T1′ (T1 labeller at n 13–16; base fallback per window) may start.
 - Wording (score_s219 WORDING): "text depth extended from 8 to 12 by distilling the text base's own re-rooted chain; labels gold-equivalent (π 0.9998); in support; not C2, not C3". TOKEN-COST and TRAIN-TOKENS sit beside every comparison line at scoring.
+
+**§220 stage 0 close (2026-10-21 04:55 EDT; zen-E/CODI-gpt2 scratch/s220/zen_codi_gpt2/eval_gcs.json (3070, fp32, bs 1) + gate_official_self.json (51fd8c3a); theory/score_s220.py; only gate blocks read, every swap arm SEALED).**
+- **zen-gpt2: UNREAD (amended G-R).** C = min(0.676, 0.674, 0.662) = **0.662**. agree(bs-1, official) = **0.411 < 0.632**, and |Δacc| = **0.177**: acc_bs1 0.4246, acc_official 0.2472.
+  - The zen format gate passes: acc_bs1 = **0.4245640636846095, bitwise equal to §209 G1′'s 0.4245640636846095** on our harness. The published figure is 43.7.
+- **CODI20: UNREAD**, as recorded earlier (agree 0.667 < 0.837). acc_bs1 0.3791 equals 210-4's 0.379.
+- **Stage-1 trigger: NOT MET** (no GPT-2 model reads CARRIER-PORTS). By v1 §6, stage 1 needs a new Note with a fresh justification. **§220 closes at stage 0 as UNREAD in both GPT-2 models; $0.**
+- **What the gate data show** (gate blocks only, no arm):
+  - The official test.py semantics attend unmasked left pads, which makes them batch-dependent. They disagree with themselves on 13 % (CODI20) and 34 % (zen) of items across batch compositions.
+  - For zen they lower accuracy by 0.18 against the published 43.7.
+  - Our pad-free bs-1 path reproduces both checkpoints' established accuracies exactly: 210-4's 0.379 and G1′'s 0.4246, bitwise.
+  - So G-R's premise, that the padded official run is the reference computation, does not hold. The pad-free path is the faithful one, and G-R compared it against a degraded reference.
+  - This is recorded as a lesson. It does not amend §220: Audit ruled no second amendment.
+- **Seal.** Both GPT-2 models' arms, descriptive rows and NECESSARY values are now sealed in scratch/s220/SEALED_score_s220_arms.json, **sha256 7c3822cfe02ecaa572950c7d368c2895f9ac526b919e8150ca5167e770735760**. This supersedes ce504bde, which held CODI20 only. They stay sealed through the registration and freeze of any successor (Audit's ruling).
+- **Successor:** a draft goes to Audit with a fidelity gate (the port against the official code at bs 1, where no pads exist, plus the established-accuracy gates). Not registered.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
