@@ -9,7 +9,7 @@ so dirs[1] is G-L5's u / eps). t = 1, PLANT-lin only, fp32, tf32 off. No A1 / DI
   K3 PROBE-LEARN  the registered recipe (Probe(m, 1e-4): AdamW 1e-4 wd 0.01, the step-0 init; pbs 64; batches np rng 22501, z rng 22551 drawn as G-L5's
             zdraw), PLANT-lin t 1 alone, eps x {1, 10, 100}, 2,000 steps each, held-out accuracy (z rng 22553 restarted per read) every 250 steps.
     python -B scratch/s218_gl5_known.py --device cuda:0 [--arms k1,k2,k3]
-  Theory 10-21: --arms overfit32,k3anti,k2anti,k3diag (OVERFIT-32 first, then item 6 antisymmetric plant, then K3-DIAG items 1-5, then K2-anti; Note 218-18 waits on them).
+  Theory 10-21: --arms overfit32,k3anti,k3antixor,k2anti,k2antixor,k3diag (OVERFIT-32 first, then item 6 antisymmetric plant, then K3-DIAG items 1-5, then K2-anti; Note 218-18 waits on them).
   Theory 10-20: --arms k2 --k2_mults 1.75 --k2_name k2_oracle_eps175 (the planned Note 218-18 plant, same oracle)."""
 import argparse
 import json
@@ -117,21 +117,21 @@ def k2(m, pool, d1, dev, chunk, bs, mults=(1, 3, 10)):
     return res
 
 
-def k3(m, pool, held, d1, dev, chunk, bs, steps=2000, every=250, pbs=64, mults=(1, 10, 100)):
+def k3(m, pool, held, d1, dev, chunk, bs, steps=2000, every=250, pbs=64, mults=(1, 10, 100), kind="lin"):
     res = {"recipe": "Probe(m, 1e-4) (AdamW lr 1e-4 wd 0.01, step-0 init); pbs 64; batches np rng 22501; z rng 22551 (zdraw); held-out 1000, z rng 22553 per read",
            "eps_base": d1["eps"], "by_mult": {}}
     for mult in mults:
         d = {1: scaled(d1, mult)}; pr = E.Probe(m, 1e-4); rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); curve = []; t0 = time.time()
         for st in range(1, steps + 1):
             ix = rb.integers(0, len(pool), pbs); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, 1, dev, chunk); zs = zd(rz, pbs, dev)
-            pr.opt.zero_grad(set_to_none=True); sA, sB, y = E.probe_forward(m, pr, "lin", 1, sub, b, S, d, zs, dev)
+            pr.opt.zero_grad(set_to_none=True); sA, sB, y = E.probe_forward(m, pr, kind, 1, sub, b, S, d, zs, dev)
             F.cross_entropy(torch.stack([sA, sB], 1), y).backward(); pr.opt.step(); del S
             if st % every == 0:
                 rh = np.random.default_rng(22553); zz = zd(rh, len(held), dev); ok = []
                 for ch in E.chunks(range(len(held)), bs):
                     sub = [held[j] for j in ch]; b, S = E.stored(m, sub, 1, dev, chunk)
                     with torch.no_grad():
-                        sA, sB, y = E.probe_forward(m, pr, "lin", 1, sub, b, S, d, (zz[0][ch], zz[1][ch]), dev); ok += ((sA > sB).long() == (1 - y)).long().tolist()
+                        sA, sB, y = E.probe_forward(m, pr, kind, 1, sub, b, S, d, (zz[0][ch], zz[1][ch]), dev); ok += ((sA > sB).long() == (1 - y)).long().tolist()
                     del S
                 curve.append((st, float(np.mean(ok)))); print("K3", mult, st, curve[-1][1], round(time.time() - t0), "s", flush=True)
         first = np.mean([a for s_, a in curve if s_ <= 750]); last = np.mean([a for s_, a in curve if s_ > steps - 750])
@@ -192,6 +192,39 @@ def psha(pr):
     for t_ in (pr.beta, pr.gam):
         h.update(t_.detach().float().cpu().numpy().tobytes())
     return h.hexdigest()
+
+
+def k3antixor(m, pool, held, d1, dev, chunk, bs, mults=(1, 10), steps=2000):
+    """Theory 10-21: item 6 in XOR form - the registered K3 recipe, PLANT-xor t 1 (target z1 xor z2), with the ANTISYMMETRIC plant (o1 += eps (2z1 - 1) u
+    + eps (2z2 - 1) u2, o2 -= the same; E.plant_V patched in this process only), eps x1 and x10, 2,000 steps, held-out every 250."""
+    orig = E.plant_V; E.plant_V = plant_V_anti
+    try:
+        r = k3(m, pool, held, d1, dev, chunk, bs, steps=steps, mults=mults, kind="xor")
+    finally:
+        E.plant_V = orig
+    r["plant"] = plant_V_anti.__doc__ + " (xor form)"; return r
+
+
+def k2antixor(m, pool, d1, dev, chunk, bs, mults=(1, 1.5, 2)):
+    """K2-anti-xor: under the antisymmetric xor plant, the sign-product oracle sign((r1 - r2).u - thr_u) x sign((r1 - r2).u2 - thr_u2) -> z1 xor z2
+    (thresholds = the unplanted train means), and a learned reference: logreg on [pu, pu2, pu * pu2] (centred projections), L2 tuned on a 16k / 4k split."""
+    tr, te = pool[2000:22000], pool[22000:24000]; Rtr, Rte = rows_V1(m, tr, dev, chunk, bs), rows_V1(m, te, dev, chunk, bs)
+    u = d1["u"].double().cpu(); u2 = d1["u2"].double().cpu(); res = {"n_train": len(tr), "n_test": len(te), "eps_base": d1["eps"], "z_rng": [22573, 22574, 22575, 22576], "by_mult": {}}
+    zt = [torch.tensor(np.random.default_rng(sd).integers(0, 2, n_), dtype=torch.float64) for sd, n_ in ((22573, len(tr)), (22574, len(tr)), (22575, len(te)), (22576, len(te)))]
+    z1tr, z2tr, z1te, z2te = zt; ytr, yte = (z1tr != z2tr).double(), (z1te != z2te).double(); grid = [0.0, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1]
+    D0tr = Rtr[:, 0] - Rtr[:, 1]; D0te = Rte[:, 0] - Rte[:, 1]; tu, tu2 = float((D0tr @ u).mean()), float((D0tr @ u2).mean())
+    for mult in mults:
+        e = d1["eps"] * mult
+        Dtr = D0tr + 2 * e * ((2 * z1tr - 1)[:, None] * u[None] + (2 * z2tr - 1)[:, None] * u2[None]); Dte = D0te + 2 * e * ((2 * z1te - 1)[:, None] * u[None] + (2 * z2te - 1)[:, None] * u2[None])
+        pa, pb = Dte @ u - tu, Dte @ u2 - tu2; oracle = float((((pa * pb) < 0).double() == yte).double().mean())
+        def feats(D_):
+            x1, x2 = D_ @ u - tu, D_ @ u2 - tu2; return torch.stack([x1, x2, x1 * x2], 1)
+        Ftr, Fte = feats(Dtr), feats(Dte); mu, sd = Ftr.mean(0), Ftr.std(0).clamp_min(1e-8); Ftr, Fte = (Ftr - mu) / sd, (Fte - mu) / sd
+        val = {str(l2): logreg(Ftr[:16000], ytr[:16000], Ftr[16000:], ytr[16000:], l2, dev) for l2 in grid}
+        best = max(grid, key=lambda l2: (val[str(l2)], l2)); acc = logreg(Ftr, ytr, Fte, yte, best, dev)
+        res["by_mult"][str(mult)] = {"eps": e, "sign_product_oracle_acc": oracle, "logreg_product_acc": acc, "l2": best, "val_acc_by_l2": val}
+        print("K2ANTIXOR", mult, oracle, acc, flush=True)
+    return res
 
 
 def overfit32(m, pool, d1, dev, chunk, mult=10, steps=300, every=10):
@@ -342,6 +375,10 @@ def main():
         r = overfit32(m, pool, d1, dev, a.chunk); save("overfit32", {**meta, **r})
     if "k3anti" in arms:
         r = k3anti(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_anti", {**meta, **r})
+    if "k3antixor" in arms:
+        r = k3antixor(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_anti_xor", {**meta, **r})
+    if "k2antixor" in arms:
+        r = k2antixor(m, pool, d1, dev, a.chunk, a.bs); save("k2_anti_xor", {**meta, **r})
     if "k2anti" in arms:
         r = k2anti(m, pool, d1, dev, a.chunk, a.bs); save("k2_anti", {**meta, **r})
     if "k3diag" in arms:
