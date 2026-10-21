@@ -19908,6 +19908,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - If any band-edge depth has |acc_DIRECT − 0.65| < 0.03, that is flagged **"band edge within seed-scale of the threshold"** beside the reading.
 - The driver is a recorded difference on the same footing as attempt 1. It is never a censor.
 
+**Note 219-5 (2026-10-21 00:04 EDT; G-T19 BASE FIRST: the base bars, Δ_0 and the BASE-PARITY branch, recorded before any T1 output exists or is read; s219_base_s1/eval_text.json (RTX 3070, fp32, tf32 off, cot_eval_bs 32, model_sha256 36f4659b…3392, every text_read check true); theory/score_s219.base_cell in-process).**
+- **Base curve a_0** (fp32): n 1–8 = 1.000; n 9–12 = 0.996 / 0.701 / 0.237 / 0.115; n 13–16 = 0.097 / 0.086 / 0.072 / 0.042; n 17–24 at 0.030–0.047. Chance is ≈ 0.10–0.12.
+  - FORM_VALID falls to 0.569 at n 10 and 0.001 at n 12, and STRICT to 0.557 / 0.000 at n 10 / 12. Past n 9 the base text CoT mostly stops producing well-formed chains.
+- **n50 10.433, n90 9.325, WIDTH_T 1.108, n50 / support 1.304.** Latent base: n50 10.306, n50 / support 1.29.
+- **Δ_0 = 10.433 − 10.306 = +0.127. |Δ_0| ≤ 0.25 ⇒ BASE-PARITY = "levels"**: the four-way rule reads Δ_1 and Δ_2. Δ^g is always reported beside it.
+- **Round-1 bars (§4.3, from a_0):** M_shift (mean a_0, n 9–12) 0.512; MARGIN-GROWS 0.665; SHRINK below 0.435; DBS 0.80; FULL M 0.80; K-BEYOND 0.25. M_13_16 = 0.074.
+- **BF16-VS-FP32** (descriptive; 219-4 item 4: batch composition also differs): max |Δ| 0.010 over n 1–16; n50 bf16 10.438 vs fp32 10.433.
+- **CTX-FEASIBLE:** n 24 share 0.971; a_24 on feasible items 0.048.
+- **CARD-GATE** not run. The 2070 takes no §219 work, so every §219 eval is on the 3070.
+- score_s219 gets BASE_NOTE = {"note": "219-5", "branch": "levels"} and asserts that its own branch matches.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
