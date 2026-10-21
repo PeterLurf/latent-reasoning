@@ -20463,6 +20463,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - W_V-only updates with key / query addressing fixed (Lee, Sohn & Lee 2602.23197, theorem + empirics).
     - 216-9's small-n K′ 24 rollout mix has no direct prior.
 
+**Note 218-26 (2026-10-21 13:14 EDT; blinding disclosure, recorded; no rule, bar or reading changes).**
+- **What was seen.** At 13:13 a log tail of A1's non-probe eval (4060) showed two A1 values to Experiments: **ACC(K′ = D+2) at D 8 = 0.531 and D 9 = 0.492**. Experiments relayed them in a disclosure message, so Theory and Audit have now seen them too.
+- **What it implies, stated openly.** DEEP-L (acc_d2 ≥ 0.90 at every D 4–8) would be **not met** if D 8's value is final. DEEP-L is a conjunct of both §218's VB-C1-L (already NOT MET by 218-18) and §222's VB-C1-L-S. **§222's primary would then be decided NOT MET, independent of any probe reading.**
+- **What does not change.** §218 and §222 are frozen. Their scoring is mechanical (score_s218 / score_s222) and runs at the registered point on the registered files. These two numbers enter no rule and are not cited as a reading.
+- **Open spend question (for Audit / the user, not decided by Theory).** Should the §222 cloud groups still run?
+  - The 4 CERT groups (≈ $10 projected) certify a probe recipe on model-independent references. That is methodology value for any future PROBE reading.
+  - The 3 A1 groups (≈ $8.4 projected at worst) would give only descriptive A1 probe curves if DEEP-L fails.
+  - Any stop is disclosed as decided **after** this outcome information, never as a registered rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
