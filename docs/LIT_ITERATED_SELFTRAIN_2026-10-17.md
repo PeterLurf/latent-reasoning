@@ -147,3 +147,6 @@ The numbers come from the brief. Arithmetic marked [derivation] is mine; its ass
   - H_prop is supported qualitatively by Huang (a constant-factor statement) and, with qualifiers, by Yang.
   - **Neither supplies a constant comparable to ≈ 1.28.** Huang's explicit factor 2 is a near-perfect-accuracy sufficient bound in a different model; Yang's constant is unspecified.
   - Treat 1.28 as an empirical in-house constant. A prediction for round 3 (n50 ≈ 1.28 × the round-3 support) rests on the observed ratio, not on a theorem.
+
+## Addendum 2026-10-21 (our §219 / §216 numbers vs the margins above)
+- Text and latent self-training lineages (Note 219-13) hold n50 / support ≈ 1.22–1.30 across base / R1 / R2 (support 8 / 12 / 16). That is consistent with a margin proportional to trained depth (Huang 2511.07378, Yang 2610.14456) rather than Lee's near-constant +3–5 on reverse addition. It is two rounds and one lineage each, so descriptive only. See LIT_S219_TEXTSELF_RESULT_2026-10-21.

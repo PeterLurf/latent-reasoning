@@ -188,6 +188,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - Idle-pass drift / fixed-point levers (docs/LIT_IDLE_HORIZON_PRESCOUT_2026-10-21.md): Viakhirev et al. [2608.18222](https://arxiv.org/abs/2608.18222); Bai et al. [2106.14342](https://arxiv.org/abs/2106.14342); Kolawole et al. [2609.39277](https://arxiv.org/abs/2609.39277); Bansal et al. [2202.05826](https://arxiv.org/abs/2202.05826).
 
+- §219 result vs self-improvement (docs/LIT_S219_TEXTSELF_RESULT_2026-10-21.md): our matched text-CoT vs latent self-training (Note 219-13, CROSSED; n50 20.16 vs 20.54 at round 2) bears on Lee [2502.01612](https://arxiv.org/abs/2502.01612) (margin form) and Huang [2511.07378](https://arxiv.org/abs/2511.07378) (proportional margin); STaR [2203.14465](https://arxiv.org/abs/2203.14465), ReST^EM [2312.06585](https://arxiv.org/abs/2312.06585).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
