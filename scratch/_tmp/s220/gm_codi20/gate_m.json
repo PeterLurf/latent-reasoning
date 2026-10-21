@@ -1,0 +1,1 @@
+{"gate": "G-M", "longest_question_tokens": 180, "K": 10, "decode_steps": 256, "peak_gib": 0.5536642074584961, "sec": 4.5, "card": "NVIDIA GeForce RTX 2070", "input": "synthetic token ids (' the' x Lmax), no test item"}
