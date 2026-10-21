@@ -20176,6 +20176,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **§218's readings are unchanged**: (iii), PROBE-VALID on A1 fails structurally, so PROBE-GAIN-L / SERIAL-ONSET-L are UNREADABLE and VB-C1-L is NOT MET.
 - **For any successor:** a valid xor control for an order-blind readout must be **content-equivariant** (REVIEW_P2 §2.4). A fair coin picks the target row T. T += ε(s1u + s2u2) with s1s2 = +1, and the other row += ε(s3u + s4u2) with s3s4 = −1. The label is "the row whose u- and u2-signs agree".
 
+**Note 219-9 (2026-10-21 06:41 EDT; GATE-T2 label stage OOM on the 3070 (06:41, rc 1, nothing written); ruling before the retry; no reading changes).**
+- **Where it failed.** Window W2 (n 13–16). The PRIMARY TF-GREEDY labelling (label_reroot, label_bs 128) had completed. The OOM came in the next pass, the descriptive LABELLER-FULL (TS.label_full, which also feeds the descriptive EQUIV-full), at label_bs 128.
+- **(a) approved:** re-run the label stage with `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`. This is an allocator setting only, with identical numerics.
+- **(b) pre-authorised if (a) still OOMs:** run label_full only in internal micro-chunks of 64 inside each label batch of 128.
+  - The primary TF-GREEDY labelling stays at bs 128, untouched.
+  - LABELLER-FULL and EQUIV-full are descriptive (GATE_DESCRIPTIVE). Any last-bit difference there moves no gate, label or reading. The chunking is recorded in the gate file.
+- **(c) is not needed** unless (b) also fails. In that case LABELLER-FULL for W2 is reported "not run (memory)" and nothing registered changes.
+- GATE-T2 has no deadline. The retry follows T1's eval_textself GPU parts on the 3070.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
