@@ -19871,6 +19871,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **DIRECT-SYM (checked, unchanged; Audit).** Its admission $3.60 against its guard $3.90 leaves only $0.30 against the ≈ $0.5 transfer overhead. But its projection is ≈ $1.7 (attempt 1 G-TIME), so realised exposure sits far below $3.60. No change.
 - Audit approved both changes (admission and guard) on 10-20.
 
+**Note 220-1 (2026-10-20 23:25 EDT; build rulings on scratch/s220_gcs.py (e5ea9325), Experiments' three issues and U1–U12; before Audit's G-D OK and before any real-model output; no primary reading, bar or label changes).**
+1. **GRAPH-MATCHED at Δ = 0 is small.**
+   - The facts: only 55 recipients over all 1,319 items have a same-signature, same-length partner, and the draw gives 53 Δ = 0 pairs against 380 Δ ≠ 0. REVIEW_SP's ≈ 179 ignored the Δ = 0 restriction.
+   - INT-FOLLOW was always descriptive (v1 §5). It is reported on the Δ = 0 row with n and a Wilson 95 % CI, and is marked **"underpowered (n < 100), descriptive"** at stage 0.
+   - The Δ ≠ 0 row (graph_matched_dne0) is reported with Δ per item and is **never read as carrier evidence**. On GPT-2 its cache rows sit at mismatched absolute positions (Addendum 1.3).
+2. **No gate on reproducing 210-4's per-pair outputs.** REVIEW §8i's bitwise-reproduction suggestion is not in v1 §9 and is not added. 210-4 used bs 16, max 40 new tokens and a different parser. pairs_210_4 stores 210-4's predictions beside the bs-1 re-run, descriptive only.
+3. **Prompt-format evidence.**
+   - G-R compares two runs on the same prompt, so it cannot catch a wrong format. Format evidence per model:
+     - **CODI20:** the registered extra check |acc − 0.379| ≤ 0.025 (210-4's committed INTACT on our own harness), which is a gate.
+     - **zen-E/CODI-gpt2:** a sanity flag (not a gate, like the 1B flag): |acc − 0.437| ≤ 0.03 against the published 43.7. Our earlier port read 0.425 (G1′). A miss is reported beside every reading.
+4. **U1–U12 accepted as written.** Notes on four of them:
+   - **U1:** stage 1 keeps BOS in QMASK / QDROP (REVIEW 2), whereas GPT-2 has none.
+   - **U4:** z is already prj's LayerNorm output, so no ln_f is consistent.
+   - **U6:** the oracle-cf follows SCIT's analogue (the donor's first intermediate in the recipient's program). The step-(n−1) variant is stored. Both are descriptive.
+   - **U8:** the test sha is the local json's; equality with HF openai/gsm8k is per the reviewer.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
