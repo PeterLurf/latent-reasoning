@@ -1,0 +1,194 @@
+{
+ "ref": "boxes/runs_fsq/s170_cot_s1/args.json",
+ "diff": {
+  "add_norm": [
+   null,
+   ""
+  ],
+  "anneal": [
+   null,
+   ""
+  ],
+  "anneal_gate": [
+   null,
+   ""
+  ],
+  "aux_fade": [
+   null,
+   "36000,48000"
+  ],
+  "aux_hold": [
+   null,
+   false
+  ],
+  "aux_nopass": [
+   null,
+   false
+  ],
+  "aux_reweight": [
+   null,
+   false
+  ],
+  "aux_step": [
+   null,
+   0.0
+  ],
+  "cache_lower": [
+   null,
+   false
+  ],
+  "cot_eval_bs": [
+   null,
+   64
+  ],
+  "csr": [
+   null,
+   ""
+  ],
+  "draws_log_steps": [
+   null,
+   12000
+  ],
+  "eval_only": [
+   null,
+   false
+  ],
+  "excl_min_n": [
+   null,
+   1
+  ],
+  "excl_survive_by_n": [
+   null,
+   {
+    "1": 0.1105,
+    "2": 0.978,
+    "3": 0.9995,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0
+   }
+  ],
+  "fast_add": [
+   null,
+   false
+  ],
+  "gf_alpha": [
+   null,
+   0.98
+  ],
+  "gf_lamb": [
+   null,
+   2.0
+  ],
+  "grokfast": [
+   null,
+   ""
+  ],
+  "hostprobe_sps": [
+   null,
+   "0.6631"
+  ],
+  "iit": [
+   null,
+   ""
+  ],
+  "iit_nmax": [
+   null,
+   0
+  ],
+  "iit_tau": [
+   null,
+   1
+  ],
+  "init_from": [
+   null,
+   "boxes/runs_fsq/s170_cot_s1/model.pt"
+  ],
+  "k_window": [
+   null,
+   ""
+  ],
+  "keep_ckpt_steps": [
+   null,
+   ""
+  ],
+  "kmatch_impl": [
+   null,
+   "masked"
+  ],
+  "kprimes": [
+   null,
+   ""
+  ],
+  "lr": [
+   0.0001,
+   3e-05
+  ],
+  "mem_check_self": [
+   null,
+   false
+  ],
+  "mem_check_steps": [
+   null,
+   2
+  ],
+  "mem_layer": [
+   null,
+   6
+  ],
+  "n_slots": [
+   null,
+   8
+  ],
+  "no_final_eval": [
+   null,
+   true
+  ],
+  "out": [
+   "boxes/runs_fsq/s170_cot_s1",
+   "boxes/runs_fsq/s219_t1_s1_gtime"
+  ],
+  "p_self": [
+   null,
+   0.5
+  ],
+  "path_indep": [
+   null,
+   false
+  ],
+  "probe_loss_every": [
+   null,
+   0
+  ],
+  "scratch": [
+   null,
+   ""
+  ],
+  "self_micro": [
+   null,
+   2
+  ],
+  "self_pool": [
+   null,
+   "boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl"
+  ],
+  "steps": [
+   48000,
+   12000
+  ],
+  "stop_at": [
+   null,
+   0
+  ],
+  "time_steps": [
+   0,
+   200
+  ],
+  "warmup": [
+   null,
+   100
+  ]
+ }
+}

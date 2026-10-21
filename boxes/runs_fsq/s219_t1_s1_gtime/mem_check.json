@@ -1,0 +1,12 @@
+{
+ "checks": [
+  {
+   "micro": 1,
+   "peak_gib": 9.949306964874268
+  }
+ ],
+ "micro": 1,
+ "peak_gib": 9.949306964874268,
+ "train": "the longest of 4 bs draws at n <= 8",
+ "eval": "none (\u00a7219 seal: no generation in the trainer)"
+}
