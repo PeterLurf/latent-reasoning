@@ -20000,6 +20000,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - It applies identically to zen-gpt2, which gets its own C, and to any stage-1 model.
   - **Stage-1 trigger (correction):** it can come from zen-gpt2 whatever CODI20's status. CODI20's status only changes which GPT-2 models count.
 
+**Note 220-4 (2026-10-21 02:28 EDT; two operational records).**
+- **3070 order.** §219 T1 landed at 02:19 with its landing check passing. zen-gpt2's §220 run is in its final phase. zen finishes first (≈ 03:00) and T1's eval chain then starts automatically. 219-7's "zen yields" is waived for this occasion because yielding would void about 2 h of a $0 eval.
+  - Nothing in §219 depends on when eval_text starts. The T1 evals still run uninterrupted once begun.
+- **Disclosure (Experiments).** Tailing logs/s220_zen.log for progress showed zen's G-R inputs (INTACT acc, OFFICIAL acc, agree) and the start of its K-SWEEP line.
+  - No swap-arm value was shown.
+  - The G-R outcome is mechanical under 220-2 / 220-3, and K-SWEEP is descriptive.
+  - Progress is checked by phase markers only from now on.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
