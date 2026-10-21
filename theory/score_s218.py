@@ -1418,6 +1418,14 @@ def readings_A(P, l0, c1, ev):
         elif p12 < accp - 0.05 - EPS:
             w = "PROBE-INVALID (final state on the band: PROBE(12) %.4f < ACC %.4f - 0.05)" % (p12, accp)
     o["PROBE_GAIN_L"] = rd(ge(gain, 0.35), w, gain=gain, band=band, acc_band=accp, probe1_band=p1, probe12_band=p12)
+    # Note 218-20 (descriptive): PROBE-GAIN pooled over the band shifted by +-1 depth (contiguous suffixes of 5..8 with >= 2 depths)
+    shifted = {}
+    if w is None and band:
+        for sh in (-1, 1):
+            b2 = list(range(min(band) + sh, 9))
+            if len(b2) >= 2 and min(b2) >= 5:
+                shifted[sh] = {"band": b2, "gain": mean(acc_items(acc, b2)) - probe_pooled(pr, 1, b2)}
+    o["PROBE_GAIN_L"]["shifted_band"] = shifted
     # SERIAL-ONSET-L
     ON, slope, never = {}, None, []
     w = wp or ("G-L0-failed band %s" % failed_in(l0, range(4, 9)) if failed_in(l0, range(4, 9)) else None)
@@ -1678,6 +1686,12 @@ def direct_cell(ctx):
                "d_star_fresh": dstar, "acc_by_D": a, "file_c1_band": body.get("c1_band"), "file_d_star_fresh": body.get("d_star_fresh"),
                "flag_file_differs": sorted(body.get("c1_band") or []) != band or body.get("d_star_fresh") != dstar,
                "flag_followup_d_star_ge_6": bool(dstar is not None and dstar >= 6)}
+    # Note 218-20 (descriptive): band margin and the first excluded depth's margin; edge flag if any band-edge |acc - 0.65| < 0.03
+    exc = max((D for D in range(5, 9) if D not in band), default=None)
+    o["C1"]["band_margin"] = min((0.65 - a[D] for D in band), default=None)
+    o["C1"]["first_excluded_margin"] = (a[exc] - 0.65) if exc is not None else None
+    edges = [D for D in ([min(band)] if band else []) + ([exc] if exc is not None else []) if abs(a[D] - 0.65) < 0.03]
+    o["C1"]["flag_band_edge_seed_scale"] = bool(edges); o["C1"]["band_edge_depths_within_0.03"] = edges
     o.update(status="FAIL" if (cen["censored"] or bad) else "SCORED", censored=cen["censored"], censors=cen, void=bad or None)
     o["label"] = ("FAILURE (%s; rule b)" % "; ".join(cen["why"]) if cen["censored"] else "VOID (eval_direct consistency: %s)" % bad[:2] if bad else
                   "C1 band %s%s | D*_fresh %s" % (band, " = EMPTY-C1-BAND (< 2 depths: VB-C1-L not met)" if len(band) < 2 else "", dstar))
