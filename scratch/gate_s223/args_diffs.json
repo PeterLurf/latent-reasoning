@@ -75,19 +75,19 @@
  "drafts": {
   "PS": {
    "file": "scratch/s223_args_frozen_ps.json.draft",
-   "sha256": "a225c57c3b15ac12a652c9cfc54b1fb61f88afb47944ffbb2aad868206c98114"
+   "sha256": "a1bc6c2488e69052b4e2b5f63d68dd50a1b330e297622683f1bb99f6ad1d4b7e"
   },
   "M1-only": {
    "file": "scratch/s223_args_frozen_m1.json.draft",
-   "sha256": "6739af6ac5879153bdeac35403914da91b2a79739d434ec18d8cc12a39acaf86"
+   "sha256": "178f395cc3b4744c5746ba6e93ba346bb9d90ba7bf2762c6450abe6360ea5246"
   },
   "M2-only": {
    "file": "scratch/s223_args_frozen_m2.json.draft",
-   "sha256": "b8e8c89de29cee2c8deb4156d11c5b6184ca52eaf4f2103781f5c87eebb56235"
+   "sha256": "2c4835d114aaf0e3d7f744eaee5b1e77ba234362d3a667b85a19dbd0ec176d32"
   },
   "DIRECT": {
    "file": "scratch/s223_args_frozen_direct.json.draft",
-   "sha256": "3aa945706609d1515ebaeec77bc3c099f60a3902a4308f63d7060b1977feb42b"
+   "sha256": "b20663fb5422e4b30253a4211bb0789014da0aa16a0120d01cd58e00cd7e3af8"
   }
  }
 }
