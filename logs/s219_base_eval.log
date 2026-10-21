@@ -1,0 +1,26 @@
+MEMCAP 6.0 GiB on cuda:1 (fraction 0.750)
+TEXT n 1 acc 1.000 form 1.000 overflow 0 4 s
+TEXT n 2 acc 1.000 form 1.000 overflow 0 7 s
+TEXT n 3 acc 1.000 form 1.000 overflow 0 13 s
+TEXT n 4 acc 1.000 form 1.000 overflow 0 23 s
+TEXT n 5 acc 1.000 form 1.000 overflow 0 42 s
+TEXT n 6 acc 1.000 form 1.000 overflow 0 70 s
+TEXT n 7 acc 1.000 form 1.000 overflow 0 107 s
+TEXT n 8 acc 1.000 form 1.000 overflow 0 157 s
+TEXT n 9 acc 0.996 form 0.996 overflow 0 217 s
+TEXT n 10 acc 0.701 form 0.569 overflow 0 291 s
+TEXT n 11 acc 0.237 form 0.070 overflow 0 387 s
+TEXT n 12 acc 0.115 form 0.001 overflow 0 507 s
+TEXT n 13 acc 0.097 form 0.000 overflow 0 649 s
+TEXT n 14 acc 0.086 form 0.000 overflow 0 826 s
+TEXT n 15 acc 0.072 form 0.000 overflow 0 1051 s
+TEXT n 16 acc 0.042 form 0.000 overflow 0 1312 s
+TEXT n 17 acc 0.047 form 0.000 overflow 0 1612 s
+TEXT n 18 acc 0.036 form 0.000 overflow 0 1956 s
+TEXT n 19 acc 0.047 form 0.000 overflow 0 2403 s
+TEXT n 20 acc 0.030 form 0.000 overflow 0 2880 s
+TEXT n 21 acc 0.038 form 0.000 overflow 0 3434 s
+TEXT n 22 acc 0.040 form 0.000 overflow 0 4063 s
+TEXT n 23 acc 0.039 form 0.000 overflow 0 4743 s
+TEXT n 24 acc 0.047 form 0.000 overflow 29 5449 s
+DONE boxes/runs_fsq/s219_base_s1\eval_text.json 5453

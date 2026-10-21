@@ -4,11 +4,11 @@
  "rc": {
   "nested170": [
    0,
-   26
+   31
   ],
   "textself_ft": [
    0,
-   26
+   29
   ]
  },
  "losses": {
@@ -47,7 +47,7 @@
  },
  "eval_files_textself_ft": [],
  "PASS": true,
- "sec": 52,
+ "sec": 60,
  "gate": "t7_plain_equiv",
- "clock": "2026-10-18 17:55:25"
+ "clock": "2026-10-18 18:47:52"
 }

@@ -1,0 +1,140 @@
+{
+ "impl": {
+  "fallback_equiv_failed": {
+   "got": {
+    "W2": "tf",
+    "W1": "gen"
+   },
+   "why": {
+    "W2": "TF-GREEDY (G-T16 EQUIV PASS, primary labeller)",
+    "W1": "generation (G-T16 EQUIV FAILED for the fallback labeller)"
+   },
+   "ok": true
+  },
+  "fallback_equiv_pass": {
+   "got": {
+    "W2": "tf",
+    "W1": "tf"
+   },
+   "why": {
+    "W2": "TF-GREEDY (G-T16 EQUIV PASS, primary labeller)",
+    "W1": "TF-GREEDY (G-T16 EQUIV PASS, fallback labeller)"
+   },
+   "ok": true
+  },
+  "primary_equiv_failed": {
+   "got": {
+    "W2": "gen",
+    "W1": "gen"
+   },
+   "why": {
+    "W2": "generation (G-T16 EQUIV FAILED for the primary labeller)",
+    "W1": "generation (G-T16 EQUIV FAILED for the fallback labeller)"
+   },
+   "ok": true
+  },
+  "primary_equiv_missing": {
+   "got": {
+    "W2": "gen",
+    "W1": "gen"
+   },
+   "why": {
+    "W2": "generation (G-T16 EQUIV missing for the primary labeller)",
+    "W1": "generation (G-T16 EQUIV missing for the primary labeller)"
+   },
+   "ok": true
+  },
+  "gen_windows_forced": {
+   "got": {
+    "W2": "gen",
+    "W1": "tf"
+   },
+   "why": {
+    "W2": "generation (--gen_windows)",
+    "W1": "TF-GREEDY (G-T16 EQUIV PASS, fallback labeller)"
+   },
+   "ok": true
+  },
+  "label_bs_64": {
+   "refused": "(\"label settings differ from the gate's\", {'card': 'C', 'label_bs': 64, 'dtype': 'fp32', 'tf32': False})",
+   "ok": true
+  },
+  "card_mismatch": {
+   "refused": "(\"\u00a7219 G-T13 item 2 (\u00a7218 labeller rule): the pool's card must be the gate's label card\", 'C', 'D')",
+   "ok": true
+  },
+  "fallback_bf16": {
+   "refused": "(\"label settings differ from the gate's\", {'card': 'C', 'label_bs': 128, 'dtype': 'bf16', 'tf32': False})",
+   "ok": true
+  },
+  "no_label_settings": {
+   "refused": "\u00a7219 G-T13 item 2: eval_gate.json has no label_settings for the primary labeller (re-run s219_gate.py --stage score)",
+   "ok": true
+  },
+  "labeller_not_fallback": {
+   "refused": "(\"window labeller is neither the primary nor the window's fallback\", 'W1')",
+   "ok": true
+  }
+ },
+ "score_rc": [
+  0,
+  3
+ ],
+ "score": {
+  "GATE_T1": false,
+  "primary_equiv_PASS": false,
+  "fallback_GATE": true,
+  "fallback_equiv_PASS": true,
+  "fallback_compose_PASS": true,
+  "window_labeller": {
+   "W1": "boxes/runs_fsq/s170_cot_s1_AS_FALLBACK"
+  },
+  "label_settings": {
+   "primary": {
+    "card": "cpu",
+    "label_bs": 128,
+    "dtype": "fp32",
+    "tf32": false,
+    "labeller": "boxes/runs_fsq/s170_cot_s1",
+    "labeller_sha256": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392"
+   },
+   "fallback": {
+    "card": "cpu",
+    "label_bs": 128,
+    "dtype": "fp32",
+    "tf32": false,
+    "labeller": "boxes/runs_fsq/s170_cot_s1_AS_FALLBACK",
+    "labeller_sha256": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392"
+   }
+  },
+  "impl_from_real_gate": {
+   "W1": "TF-GREEDY (G-T16 EQUIV PASS, fallback labeller)"
+  }
+ },
+ "score_rc_card_mismatch": [
+  1,
+  3
+ ],
+ "card_mismatch_refused": true,
+ "r2_no_t1_pool": [
+  1,
+  25
+ ],
+ "r2_no_t1_refused": true,
+ "r2_sha_bad": [
+  1,
+  25
+ ],
+ "r2_sha_bad_refused": true,
+ "r2_ok": [
+  0,
+  25
+ ],
+ "r2_ok_line": [
+  "T1 POOL IN EXCLUSION scratch/_tmp/s219/b1b2r2/s219_pool_t1_s1/pool_t1.jsonl 232 sha ok"
+ ],
+ "PASS": true,
+ "sec": 81,
+ "gate": "b1b2_rules",
+ "clock": "2026-10-18 18:32:15"
+}

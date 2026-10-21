@@ -5,10 +5,15 @@ label batch 128. Two stages per round (textself.ROUNDS):
      own rng, n order, 2,000 per n, redrawn on an exclusion hit; syms + n only) -> <gate dir>/gate_items.json. No model. Then scratch/s219_gate.py.
   --stage pool: G-T15: reads <gate dir>/eval_gate.json's window_labeller (a window with none -> no pool, exit 3); round 2 also needs
      s219_t1_s1/eval_text.json (the seal, V3); the exclusion set + this round's gate items; the gold patch; per n (n order) 4,096-draw chunks labelled by
-     the window's labeller (TF-GREEDY REROOT; --gen_windows W: per-step KV-cache generation instead, the G-T16 fallback), kept = KEEP-T and CV-T,
+     the window's labeller (TF-GREEDY REROOT only if eval_gate's G-T16 EQUIV for THAT labeller and window PASSed - equiv[W] for the primary,
+     fallback[W].equiv for a BASE-LABELLED window; a failed or missing EQUIV, or --gen_windows W, labels the window by per-step KV-cache generation,
+     TS_v1 §7 G-T16), the label settings asserted against eval_gate.label_settings (label_bs 128, fp32, tf32 off, the SAME card; G-T13 item 2),
+     kept = KEEP-T and CV-T,
      exclusion hits and within-pool duplicates redrawn (counted per set), until the per-n target; one interleaved order (default_rng(perm seed)
      .permutation) -> <pool dir>/<pool file> (keys exactly {syms, n, chain_label, values}) + pool_meta.json.
   The labeller's chain is the model's own argmax only; gold functions raise from the patch on (G-T0).
+  RETENTION GUARD (G-T13 item 3): round 2 (both stages) asserts that T1's pool exists, matches its pool_meta sha256 and is fully in T2's exclusion set
+  (and T1's gate items too); it refuses to run otherwise. Keep s219_pool_t1_s1/ until T2's pool is built AND T2's eval_textself CPU parts are scored.
     python -B scratch/s219_build_pool.py --round 1 --stage gates
     python -B scratch/s219_build_pool.py --round 1 --stage pool --device cuda:1
   Smokes: --out_root scratch/_tmp/s219/<tag>/ (pool / gate dirs re-rooted there) --scale 0.01 [--labeller_override <run dir>]."""
@@ -43,6 +48,29 @@ def cfg_for(rnd, out_root):
     return cfg
 
 
+def window_impl(eg, cfg, wl, gen_w, label_bs, card_here, override=False):
+    """G-T13 items 1 / 2 (TS_v1 §7 G-T16, §2.2): per window, the labeller's source (primary / BASE-LABELLED fallback), its label settings asserted against
+    eval_gate.label_settings (label_bs 128, fp32, tf32 off, the gate's label card == this pool's card), and the labelling implementation: TF-GREEDY
+    only if THAT labeller's EQUIV for the window PASSed, else per-step KV-cache generation. -> (generation windows, {W: reason})."""
+    gen_w = set(gen_w); why = {}
+    for w in cfg["windows"]:
+        src = "primary" if (override or wl[w] == eg.get("labeller")) else "fallback"
+        fbw = (eg.get("fallback") or {}).get(w) or {}
+        assert src == "primary" or fbw.get("labeller") == wl[w], ("window labeller is neither the primary nor the window's fallback", w)
+        ls = (eg.get("label_settings") or {}).get(src)
+        assert isinstance(ls, dict), ("§219 G-T13 item 2: eval_gate.json has no label_settings for the %s labeller (re-run s219_gate.py --stage score)" % src)
+        assert ls.get("label_bs") == label_bs == TS.LABEL_BS and ls.get("dtype") == "fp32" and ls.get("tf32") is False, ("label settings differ from the gate's", ls)
+        assert ls.get("card") == card_here, ("§219 G-T13 item 2 (§218 labeller rule): the pool's card must be the gate's label card", ls.get("card"), card_here)
+        eq = (eg.get("equiv") or {}).get(w) if src == "primary" else fbw.get("equiv")
+        if w in gen_w:
+            why[w] = "generation (--gen_windows)"
+        elif not (isinstance(eq, dict) and eq.get("PASS") is True):
+            gen_w.add(w); why[w] = "generation (G-T16 EQUIV %s for the %s labeller)" % ("FAILED" if isinstance(eq, dict) else "missing", src)
+        else:
+            why[w] = "TF-GREEDY (G-T16 EQUIV PASS, %s labeller)" % src
+    return gen_w, why
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--round", type=int, required=True, choices=[1, 2]); ap.add_argument("--stage", required=True, choices=["gates", "pool"])
     ap.add_argument("--device", default="cuda:1"); ap.add_argument("--label_bs", type=int, default=TS.LABEL_BS)
@@ -57,9 +85,21 @@ def main():
     pool_fp = os.path.join(cfg["pool_dir"], cfg["pool_file"]); gate_fp = os.path.join(cfg["gate_dir"], "gate_items.json")
     if a.stage == "pool" and a.round == 2 and not a.out_root:
         assert os.path.exists(os.path.join(TS.ROUNDS[1]["cell"], "eval_text.json")), "§219 V3: the T2 pool only after s219_t1_s1/eval_text.json"
+    assert a.label_bs == TS.LABEL_BS, "§219 §2.2: label batch 128 (fixed)"
     S, smeta = TS.exclusion_sets(own_pool=pool_fp, own_gate=gate_fp, with_own_gate=(a.stage == "pool"))
     if a.stage == "pool" and a.out_root:                                    # a smoke's own gate items are not globbed (they live under scratch/)
         S["gates:own"] = TS._gate_syms(gate_fp)
+    if a.round == 2:                                                        # G-T13 item 3: T1's pool / gates must be in T2's exclusions (never silently dropped)
+        c1 = cfg_for(1, a.out_root); p1 = os.path.join(c1["pool_dir"], c1["pool_file"]).replace("\\", "/"); g1 = os.path.join(c1["gate_dir"], "gate_items.json").replace("\\", "/")
+        assert os.path.exists(p1), ("§219 G-T13 item 3: T1's pool %s is missing; T2's gates / pool need it in the exclusion set. Restore it (pool_meta sha) "
+                                    "before building T2 - RETENTION: keep T1's pool until T2's pool is built and T2's eval_textself CPU parts are scored" % p1)
+        m1 = json.load(open(os.path.join(c1["pool_dir"], "pool_meta.json"))); assert TS.file_sha256(p1) == m1["sha256"], ("T1 pool sha != its pool_meta", p1)
+        assert os.path.exists(g1), ("T1's gate items missing", g1)
+        if a.out_root:                                                      # smokes: scratch trees are not globbed
+            S["pool:" + p1] = TS._pool_syms(p1); S["gates:" + g1] = TS._gate_syms(g1)
+        assert ("pool:" + p1) in S and len(S["pool:" + p1]) == m1["n_records"], ("T1's pool is not (fully) in T2's exclusion set", p1)
+        assert ("gates:" + g1) in S, ("T1's gate items are not in T2's exclusion set", g1)
+        print("T1 POOL IN EXCLUSION", p1, len(S["pool:" + p1]), "sha ok", flush=True)
     allx = set().union(*S.values())
     print("EXCL", {k: len(v) for k, v in S.items()}, "union", len(allx), "%.0f s" % (time.time() - t0), flush=True)
     TS.patch_gold()                                                         # G-T0: no gold function from here on
@@ -84,7 +124,10 @@ def main():
     if any(wl.get(w) is None for w in cfg["windows"]):
         print("NO_POOL: a window has no passing labeller", wl, flush=True); sys.exit(3)
     models = {p: TS.load_model(os.path.join(p, "model.pt"), dev) for p in sorted(set(wl.values()))}
-    gen_w = set(x for x in a.gen_windows.split(",") if x)
+    card_here = torch.cuda.get_device_name(dev) if dev.startswith("cuda") else dev
+    gen_w, impl_why = window_impl(eg, cfg, wl, set(x for x in a.gen_windows.split(",") if x), a.label_bs, card_here, bool(a.labeller_override))
+    for w in cfg["windows"]:
+        print("WINDOW", w, "labeller", wl[w], "->", impl_why[w], flush=True)
     win_of = {n: w for w, (_, ns, _) in cfg["windows"].items() for n in ns}
     rp = np.random.default_rng(cfg["pool_seed"]); kept, seen = [], set(); M = {k: {} for k in ("draws", "dup", "labelled", "dropped", "keep_all", "at_target", "T_max", "L0_max", "sec")}
     hits = {k: {} for k in S}
@@ -129,7 +172,8 @@ def main():
             "keep_n": M["keep_all"], "keep_def": "kept-eligible (KEEP-T and CV-T) / all labelled, incl. the last chunk's overshoot", "keep_to_target": {k: v["keep"] for k, v in M["at_target"].items()},
             "at_target": M["at_target"], "T_max_by_n": M["T_max"], "T_max_def": "max P + C over the kept records of n (P = len(syms) + 2, C = c_struct)", "L0_max_by_n": M["L0_max"],
             "sec_by_n": M["sec"], "windows": {w: {"seed": s_, "ns": list(ns), "gate": g_, "labeller": wl[w], "labeller_sha256": models[wl[w]][1],
-                                                  "impl": "gen_reroot" if w in gen_w else "label_reroot (TF-GREEDY)"} for w, (s_, ns, g_) in cfg["windows"].items()},
+                                                  "impl": "gen_reroot" if w in gen_w else "label_reroot (TF-GREEDY)", "impl_why": impl_why[w]}
+                        for w, (s_, ns, g_) in cfg["windows"].items()},
             "labeller": {w: wl[w] for w in cfg["windows"]}, "labeller_sha256": {w: models[wl[w]][1] for w in cfg["windows"]},
             "excl": {k: {"size": len(v), "hits_by_n": hits[k]} for k, v in S.items()}, "excl_meta": smeta, "precondition_stream_sha": smeta["precondition_stream_sha"],
             "collide_n": {str(n): sum(h[str(n)] for h in hits.values()) for n in cfg["per_n"]}, "gate_dir": cfg["gate_dir"], "sha256": TS.file_sha256(pool_fp),

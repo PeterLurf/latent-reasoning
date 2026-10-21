@@ -10,7 +10,9 @@ Two stages so that gold is scored in a separate process from the labelling:
      window_labeller {W: run | None}, labeller_full {W: {n: keep, pi}}, kept_vs_drawn {n: {kept, drawn: mean P + C, height, brackets}}, equiv {n: ...,
      PASS (>= 0.995 of items identical in keep flag, every value and the failing step)}, equiv_full (descriptive), compose (G-T2 on the gate items:
      compose_T == the independently GENERATED tokens on every generation-kept EQUIV item; compose_T == N.cot_ids(gold) iff every value is gold, on every
-     TF-kept item), card.
+     TF-kept item), card; fallback[W] also carries that labeller's own equiv / equiv_full / compose (G-T13 item 1); label_settings {primary,
+     fallback: {card, label_bs, dtype, tf32, labeller, labeller_sha256}}, asserted label_bs 128 / fp32 / tf32 off / one card (G-T13 item 2; B1
+     asserts the pool against these too).
   Rule per window (= GATE-1's, SD2 count form): 200 * wrong_pool <= kept_pool and 100 * wrongE_pool <= kept_pool and, at every n, 100 * wrong_n <= kept_n
      and 10 * kept_n >= 7 * items_n (pi_pool >= 0.995, pi^E_pool >= 0.99, pi_n >= 0.99, keep_n >= 0.70).
     python -B scratch/s219_gate.py --round 1 --stage label --labeller primary --device cuda:1
@@ -33,7 +35,8 @@ from s219_build_pool import cfg_for  # noqa: E402
 
 
 def label_stage(a, cfg):
-    TS.patch_gold()
+    TS.patch_gold(); assert a.label_bs == TS.LABEL_BS, "§219 §2.2: label batch 128 (fixed)"
+    assert not torch.backends.cuda.matmul.allow_tf32 and not torch.backends.cudnn.allow_tf32
     if a.round == 2 and not a.out_root:
         assert os.path.exists(os.path.join(TS.ROUNDS[1]["cell"], "eval_text.json")), "§219 V3: GATE-T2 / GATE-T1' only after s219_t1_s1/eval_text.json"
     run = a.labeller_override or (cfg["labeller"] if a.labeller == "primary" else cfg["fallback"]); assert run, "no %s labeller for round %d" % (a.labeller, a.round)
@@ -86,6 +89,39 @@ def _recs(its, tf, gold):
     return out
 
 
+def equiv_compose(its, L, gold):
+    """one labeller's G-T16 EQUIV (TF-GREEDY vs per-step KV generation on its equiv items), FULL equivalence (descriptive) and G-T2 compose
+    readings on a window's gate items (L = that labeller's gate_labels window). -> (equiv or None, equiv_full or None, compose)."""
+    eqr = efr = None
+    cmp_ = {"n_kept": 0, "gen_tokens_eq_compose": 0, "gen_kept": 0, "gold_eq_iff_values_gold": 0}
+    for i, (it, o) in enumerate(zip(its, L["tf"])):                    # G-T2 on the gate items (gold side here)
+        if o["keep"]:
+            cmp_["n_kept"] += 1; ct = TS.compose_T(it["syms"], o["values"]); cg = N.cot_ids(TS.parse_tree(it["syms"]))
+            cmp_["gold_eq_iff_values_gold"] += int((ct == cg) == (o["values"] == gold[i]))
+    if L.get("gen"):
+        eq = {}; dis = []
+        for q, i in enumerate(L["equiv_idx"]):
+            a_, b_ = L["tf"][i], L["gen"][q]; n = its[i]["n"]; e = eq.setdefault(str(n), {"items": 0, "agree_keep": 0, "agree_values": 0, "agree_fail_step": 0, "agree_all": 0})
+            ak = a_["keep"] == b_["keep"]; av = a_["values"] == b_["values"]; af = a_["fail_step"] == b_["fail_step"]
+            e["items"] += 1; e["agree_keep"] += int(ak); e["agree_values"] += int(av); e["agree_fail_step"] += int(af); e["agree_all"] += int(ak and av and af)
+            if b_["keep"]:
+                cmp_["gen_kept"] += 1; toks = [t for s in b_["steps"] for t in s]; cmp_["gen_tokens_eq_compose"] += int(toks == TS.compose_T(its[i]["syms"], b_["values"]))
+            if not (ak and av and af):
+                dis.append({"i": i, "n": n, "tf": [a_["keep"], a_["fail_step"], a_["values"]], "gen": [b_["keep"], b_["fail_step"], b_["values"]], "gen_min_margin": b_["min_margin"],
+                            "tf_min_margin": a_["min_margin"]})
+        for n, e in eq.items():
+            e["share"] = e["agree_all"] / e["items"]; e["PASS"] = bool(e["share"] >= 0.995)
+        mg = [o["min_margin"] for o in L["gen"]]
+        eqr = {"by_n": eq, "disagreements": dis, "min_margin": float(min(mg)) if mg else None, "PASS": bool(eq and all(e["PASS"] for e in eq.values()))}
+    if L.get("gen_full") and L.get("full"):
+        ef = {"items": 0, "agree_keep_values": 0}
+        for q, i in enumerate(L["equiv_idx"]):
+            ef["items"] += 1; ef["agree_keep_values"] += int(L["full"][i]["keep"] == L["gen_full"][q]["keep"] and L["full"][i]["values"] == L["gen_full"][q]["values"])
+        efr = ef
+    cmp_["PASS"] = cmp_["gold_eq_iff_values_gold"] == cmp_["n_kept"] and cmp_["gen_tokens_eq_compose"] == cmp_["gen_kept"]
+    return eqr, efr, cmp_
+
+
 def score_stage(a, cfg):
     gi = json.load(open(os.path.join(cfg["gate_dir"], "gate_items.json"))); prim = json.load(open(os.path.join(cfg["gate_dir"], "gate_labels_primary.json")))
     fbp = os.path.join(cfg["gate_dir"], "gate_labels_fallback.json"); fb = json.load(open(fbp)) if os.path.exists(fbp) else None
@@ -113,37 +149,28 @@ def score_stage(a, cfg):
                 return {"mean_P_plus_C": float(np.mean([len(its[i]["syms"]) + 2 + TS.c_struct(its[i]["syms"]) for i in sel])), "mean_height": float(np.mean([TS.height(t) for t in tr])),
                         "mean_brackets": float(np.mean([its[i]["syms"].count(" (") for i in sel])), "items": len(sel)}
             res["kept_vs_drawn"][str(n)] = {"kept": desc(kp), "drawn": desc(ix)}
-        cmp_ = {"n_kept": 0, "gen_tokens_eq_compose": 0, "gen_kept": 0, "gold_eq_iff_values_gold": 0}
-        for i, (it, o) in enumerate(zip(its, L["tf"])):                    # G-T2 on the gate items (gold side here)
-            if o["keep"]:
-                cmp_["n_kept"] += 1; ct = TS.compose_T(it["syms"], o["values"]); cg = N.cot_ids(TS.parse_tree(it["syms"]))
-                cmp_["gold_eq_iff_values_gold"] += int((ct == cg) == (o["values"] == gold[i]))
-        if L.get("gen"):
-            eq = {}; dis = []
-            for q, i in enumerate(L["equiv_idx"]):
-                a_, b_ = L["tf"][i], L["gen"][q]; n = its[i]["n"]; e = eq.setdefault(str(n), {"items": 0, "agree_keep": 0, "agree_values": 0, "agree_fail_step": 0, "agree_all": 0})
-                ak = a_["keep"] == b_["keep"]; av = a_["values"] == b_["values"]; af = a_["fail_step"] == b_["fail_step"]
-                e["items"] += 1; e["agree_keep"] += int(ak); e["agree_values"] += int(av); e["agree_fail_step"] += int(af); e["agree_all"] += int(ak and av and af)
-                if b_["keep"]:
-                    cmp_["gen_kept"] += 1; toks = [t for s in b_["steps"] for t in s]; cmp_["gen_tokens_eq_compose"] += int(toks == TS.compose_T(its[i]["syms"], b_["values"]))
-                if not (ak and av and af):
-                    dis.append({"i": i, "n": n, "tf": [a_["keep"], a_["fail_step"], a_["values"]], "gen": [b_["keep"], b_["fail_step"], b_["values"]], "gen_min_margin": b_["min_margin"],
-                                "tf_min_margin": a_["min_margin"]})
-            for n, e in eq.items():
-                e["share"] = e["agree_all"] / e["items"]; e["PASS"] = bool(e["share"] >= 0.995)
-            mg = [o["min_margin"] for o in L["gen"]]
-            res["equiv"][w] = {"by_n": eq, "disagreements": dis, "min_margin": float(min(mg)) if mg else None, "PASS": bool(eq and all(e["PASS"] for e in eq.values()))}
-        if L.get("gen_full") and L.get("full"):
-            ef = {"items": 0, "agree_keep_values": 0}
-            for q, i in enumerate(L["equiv_idx"]):
-                ef["items"] += 1; ef["agree_keep_values"] += int(L["full"][i]["keep"] == L["gen_full"][q]["keep"] and L["full"][i]["values"] == L["gen_full"][q]["values"])
-            res["equiv_full"][w] = ef
-        cmp_["PASS"] = cmp_["gold_eq_iff_values_gold"] == cmp_["n_kept"] and cmp_["gen_tokens_eq_compose"] == cmp_["gen_kept"]; res["compose"][w] = cmp_
+        eq_, ef_, cmp_ = equiv_compose(its, L, gold)                         # G-T16 EQUIV + G-T2 compose for the primary labeller
+        if eq_ is not None:
+            res["equiv"][w] = eq_
+        if ef_ is not None:
+            res["equiv_full"][w] = ef_
+        res["compose"][w] = cmp_
         print("WINDOW", w, "pass", ok, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in po.items() if not k.endswith("ci95")}, flush=True)
         if not ok and fb and w in fb["windows"]:                            # the pre-stated BASE-LABELLED fallback, same items, separate entry
-            Lb = fb["windows"][w]; rb = _recs(its, Lb["tf"], gold); by_nb, pob, okb = _window(rb, wd["ns"], fb["labeller"])
-            res["fallback"] = res["fallback"] or {}; res["fallback"][w] = {"labeller": fb["labeller"], "labeller_sha256": fb["labeller_sha256"], "by_n": by_nb, "pooled": pob, "GATE": okb}
+            Lb = fb["windows"][w]
+            assert (Lb.get("items_used") or None) == (L.get("items_used") or None) and Lb["n_items"] == L["n_items"], ("the fallback labelled other items", w)
+            rb = _recs(its, Lb["tf"], gold); by_nb, pob, okb = _window(rb, wd["ns"], fb["labeller"])
+            eqb, efb, cmpb = equiv_compose(its, Lb, gold)                   # G-T13 item 1: the BASE-LABELLED window's own EQUIV / compose
+            res["fallback"] = res["fallback"] or {}; res["fallback"][w] = {"labeller": fb["labeller"], "labeller_sha256": fb["labeller_sha256"], "by_n": by_nb, "pooled": pob, "GATE": okb,
+                                                                            "equiv": eqb, "equiv_full": efb, "compose": cmpb}
             res["window_labeller"][w] = fb["labeller"] if okb else None; print("FALLBACK", w, fb["labeller"], "pass", okb, flush=True)
+    ls = {"primary": {k: prim.get(k) for k in ("card", "label_bs", "dtype", "tf32", "labeller", "labeller_sha256")}}   # G-T13 item 2: asserted, recorded
+    if fb:
+        ls["fallback"] = {k: fb.get(k) for k in ("card", "label_bs", "dtype", "tf32", "labeller", "labeller_sha256")}
+    for k_, v_ in ls.items():
+        assert v_["label_bs"] == TS.LABEL_BS and v_["dtype"] == "fp32" and v_["tf32"] is False, ("§219 label settings (label_bs 128, fp32, tf32 off)", k_, v_)
+        assert v_["card"] == ls["primary"]["card"], ("§219 G-T13 item 2: every label run of a round on ONE card", ls)
+    res["label_settings"] = ls
     res.update({"dtype": "fp32", "label_bs": prim.get("label_bs"), "t_start": min([x for x in (prim.get("t_start"), (fb or {}).get("t_start")) if x] or [None]), "def": __doc__}); json.dump(res, open(os.path.join(cfg["gate_dir"], "eval_gate.json"), "w", newline="\n"), indent=1)
     print("GATES", {k: v for k, v in res.items() if k.startswith("GATE_")}, "window_labeller", res["window_labeller"], "equiv",
           {w: v["PASS"] for w, v in res["equiv"].items()}, "compose", {w: v["PASS"] for w, v in res["compose"].items()}, flush=True)
