@@ -104,18 +104,10 @@ def _draw_program(rng, d):
         restarts += 1
 
 
-def make(rng, d, frames=FRAME_TRAIN, stats=None):
-    """one item of depth d."""
-    ops, bs, js, s, ts, rs = _draw_program(rng, d)
-    if stats is not None:
-        stats["restarts"] = stats.get("restarts", 0) + rs; stats["items"] = stats.get("items", 0) + 1
-    n_v = sum(op.endswith("_v") for op in ops); n_dis = int(rng.integers(0, 3))
-    pick = rng.choice(len(NAMES), size=d + 1 + n_v + n_dis, replace=False); nm = [NAMES[i] for i in pick]
-    spine = nm[:d + 1]; gnames = nm[d + 1:d + 1 + n_v]; dnames = nm[d + 1 + n_v:]; u = UNITS[int(rng.integers(0, len(UNITS)))]
-    st = [{"id": "S0", "kind": "given", "deps": [], "name": spine[0], "v": s[0]}]
-    gi = 0; givens = []
+def _statements(ops, bs, js, s, spine, gnames, dnames, fr, dis_vals):
+    st = [{"id": "S0", "kind": "given", "deps": [], "name": spine[0], "v": s[0]}]; gi = 0; givens = []
     for i, op in enumerate(ops, 1):
-        f = int(frames[int(rng.integers(0, len(frames)))])
+        f = fr[i - 1]
         if op.endswith("_v"):
             g = gnames[gi]; gi += 1; givens.append({"name": g, "v": bs[i - 1], "step": i})
             st.append({"id": "G%d" % i, "kind": "given", "deps": [], "name": g, "v": bs[i - 1]})
@@ -126,8 +118,12 @@ def make(rng, d, frames=FRAME_TRAIN, stats=None):
         else:
             st.append({"id": "S%d" % i, "kind": "op", "op": op, "frame": f, "deps": ["S%d" % (i - 1)], "B": spine[i], "A": spine[i - 1], "C": None, "c": bs[i - 1]})
     for j, x in enumerate(dnames):
-        st.append({"id": "D%d" % j, "kind": "distractor", "deps": [], "name": x, "v": int(rng.integers(1, 100))})
-    order = topo_shuffle(rng, st); byid = {x["id"]: x for x in st}; seq = [byid[i] for i in order]
+        st.append({"id": "D%d" % j, "kind": "distractor", "deps": [], "name": x, "v": dis_vals[j]})
+    return st, givens
+
+
+def _finish(d, ops, bs, js, s, ts, spine, gnames, dnames, u, fr, dis_vals, order, n_dis):
+    st, givens = _statements(ops, bs, js, s, spine, gnames, dnames, fr, dis_vals); byid = {x["id"]: x for x in st}; seq = [byid[i] for i in order]
     q = QUESTION.format(u=u, A=spine[-1])
 
     def render(x, val=None):
@@ -145,9 +141,64 @@ def make(rng, d, frames=FRAME_TRAIN, stats=None):
         R.append(" ".join([render(x, keep_const.get(x["id"])) for x in seq if x["id"] not in drop] + [q]))
     R.append(GIVEN.format(A=spine[-1], v=s[-1], u=u))                       # R_d = the answer sentence
     it = {"d": d, "text": text, "question": q, "answer": s[-1], "R": R, "values": s, "ops": ops, "operands": bs, "src_j": js, "mul_s_t": ts, "givens": givens,
-          "frames": [x.get("frame") for x in st if x["kind"] == "op"], "names": {"spine": spine, "givens": gnames, "distractors": dnames}, "unit": u,
-          "n_distractors": n_dis, "order": order}
+          "frames": list(fr), "names": {"spine": spine, "givens": gnames, "distractors": dnames}, "unit": u, "n_distractors": n_dis, "order": order,
+          "distractor_values": list(dis_vals)}
     it["sig"] = hashlib.sha1(text.encode()).hexdigest(); return it
+
+
+def make(rng, d, frames=FRAME_TRAIN, stats=None):
+    """one item of depth d (the generator draws in this order: program, n_dis, names, unit, one frame per op, distractor values, statement order)."""
+    ops, bs, js, s, ts, rs = _draw_program(rng, d)
+    if stats is not None:
+        stats["restarts"] = stats.get("restarts", 0) + rs; stats["items"] = stats.get("items", 0) + 1
+    n_v = sum(op.endswith("_v") for op in ops); n_dis = int(rng.integers(0, 3))
+    pick = rng.choice(len(NAMES), size=d + 1 + n_v + n_dis, replace=False); nm = [NAMES[i] for i in pick]
+    spine = nm[:d + 1]; gnames = nm[d + 1:d + 1 + n_v]; dnames = nm[d + 1 + n_v:]; u = UNITS[int(rng.integers(0, len(UNITS)))]
+    fr = [int(frames[int(rng.integers(0, len(frames)))]) for _ in ops]
+    dis_vals = [int(rng.integers(1, 100)) for _ in dnames]
+    st, _ = _statements(ops, bs, js, s, spine, gnames, dnames, fr, dis_vals); order = topo_shuffle(rng, st)
+    return _finish(d, ops, bs, js, s, ts, spine, gnames, dnames, u, fr, dis_vals, order, n_dis)
+
+
+def redraw(rng, it, tries=1000):
+    """a DONOR on the recipient's skeleton (PS2_v1 §5 pairs): the same ops, cross-spine partners j, forced-mul_s position, names, unit, frames,
+    distractor count and statement order (so the token length is identical: every number 0..99 is one token); new S_0, operands, givens and
+    distractor values under the generator's constraints (values 0..99, mul factors >= 2 for mul_s, nonzero multiplicands); None after `tries`."""
+    ops, js, d = it["ops"], it["src_j"], it["d"]
+    for _ in range(tries):
+        s = [int(rng.integers(1, 21))]; bs = []; ok = True
+        for t, (op, j) in enumerate(zip(ops, js), 1):
+            if op.endswith("_s"):
+                b = s[j]
+                if op == "mul_s" and (s[j] < 2 or s[t - 1] < 2):
+                    ok = False; break
+            else:
+                b = _operand(rng, op)
+            if BASE[op] == "mul" and s[t - 1] == 0:
+                ok = False; break
+            v = apply(op, s[t - 1], b)
+            if not 0 <= v <= 99:
+                ok = False; break
+            bs.append(b); s.append(v)
+        if ok:
+            dv = [int(rng.integers(1, 100)) for _ in it["names"]["distractors"]]
+            return _finish(d, ops, bs, js, s, it["mul_s_t"], it["names"]["spine"], it["names"]["givens"], it["names"]["distractors"], it["unit"], it["frames"],
+                           dv, it["order"], it["n_distractors"])
+    return None
+
+
+def pair_candidates(per_d=3000, ds=range(1, 13), seed=SEED_PAIRS):
+    """the §223 pair CANDIDATES {d: [(recipient, donor)]} from the pair stream (all 8 frames); the eval module filters them (own / donor-final /
+    counterfactual distinct, exposure); their signatures join the training exclusion now (a superset of every pair later used)."""
+    r = np.random.default_rng(seed); s = Stream(seed + 1, frames=FRAME_ALL); out = {}
+    for d in ds:
+        ps = []
+        while len(ps) < per_d:
+            rec = s.draw(d); don = redraw(r, rec)
+            if don is not None and don["sig"] != rec["sig"]:
+                ps.append((rec, don))
+        out[d] = ps
+    return out
 
 
 def affine_solve(it):
