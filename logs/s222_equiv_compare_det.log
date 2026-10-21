@@ -1,0 +1,1 @@
+ENGINE-EQUIV PASS {'curve_diff': [], 'field_diff': [], 'param_diff': [], 'extended_arms': ['cexor_t0', 'lin_t0', 'lin_t1', 'noplant_t2', 'shuffled_t0']}
