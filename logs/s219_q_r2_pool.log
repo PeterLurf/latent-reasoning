@@ -1,0 +1,13 @@
+T1 POOL IN EXCLUSION boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl 388000 sha ok
+EXCL {'test_n30': 29407, 'serial': 2200, 's213_37_n9_24': 16000, 'precond_23180': 2400, 'precond_23187': 2400, 'gt18_23195': 1000, 'gates:boxes/runs_fsq/s215_gate1/gate_items.json': 8000, 'gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json': 16000, 'gates:boxes/runs_fsq/s219_gate_t1_s1/gate_items.json': 8000, 'gates:boxes/runs_fsq/s219_gate_t2_s1/gate_items.json': 16000, 'pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl': 440000, 'pool:boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl': 388000} union 937407 19 s
+WINDOW W2 labeller boxes/runs_fsq/s219_t1_s1 -> TF-GREEDY (G-T16 EQUIV PASS, primary labeller)
+WINDOW W1 labeller boxes/runs_fsq/s219_t1_s1 -> TF-GREEDY (G-T16 EQUIV PASS, primary labeller)
+POOL n 9 window W1 kept 32500 labelled 32768 keep 1.0000 draws 32768 excl_hits 0 dup 0 323 s
+POOL n 10 window W1 kept 32500 labelled 32768 keep 1.0000 draws 32768 excl_hits 0 dup 0 685 s
+POOL n 11 window W1 kept 32500 labelled 32768 keep 0.9999 draws 32768 excl_hits 0 dup 0 1116 s
+POOL n 12 window W1 kept 32500 labelled 32768 keep 0.9997 draws 32768 excl_hits 0 dup 0 1618 s
+POOL n 13 window W2 kept 65000 labelled 65536 keep 0.9982 draws 65536 excl_hits 0 dup 0 2772 s
+POOL n 14 window W2 kept 65000 labelled 65536 keep 0.9962 draws 65536 excl_hits 0 dup 0 4102 s
+POOL n 15 window W2 kept 65000 labelled 69632 keep 0.9901 draws 69632 excl_hits 0 dup 0 7636 s
+POOL n 16 window W2 kept 65000 labelled 69632 keep 0.9815 draws 69632 excl_hits 0 dup 0 9436 s
+DONE 390000 9461efb6ba6f5950 9439

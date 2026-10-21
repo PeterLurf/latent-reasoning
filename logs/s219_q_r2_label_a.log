@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "D:\Latent\scratch\s219_gate.py", line 194, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\scratch\s219_gate.py", line 190, in main
+    (label_stage if a.stage == "label" else score_stage)(a, cfg)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "D:\Latent\scratch\s219_gate.py", line 55, in label_stage
+    full = TS.label_full(g, sy, a.full_bs or a.label_bs) if not a.skip_full else None; t_full = time.time() - t0   # Note 219-9 (b): --full_bs 64 = micro-chunks of 64 inside each 128 batch (label_full batches consecutive chunks of the length-sorted items)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\textself.py", line 372, in label_full
+    am, mg, past, kvalid = _run_chunks(g, chunks, lens, past, kvalid, reads)
+                           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\textself.py", line 298, in _run_chunks
+    lg = h[torch.tensor(rr, device=dev), torch.tensor(cc, device=dev)] @ g.w("wte.weight").T
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+RuntimeError: CUDA driver error: out of memory
+The CUDA driver logged these messages, which may provide useful details:
+Returning 2 (CUDA_ERROR_OUT_OF_MEMORY) from cuMemSetAccess
+
