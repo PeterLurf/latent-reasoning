@@ -1,0 +1,16 @@
+{
+ "official_self": [
+  0.6762699014404853,
+  0.6739954510993177,
+  0.6618650492797574
+ ],
+ "n": 1319,
+ "def": "A1 = agree(off, off_22030), A2 = agree(off, off_22031), A3 = agree(off_22030, off_22031); agree = equal parsed predictions (None == None agrees), U10",
+ "sources": {
+  "eval_gcs": "scratch\\s220\\zen_codi_gpt2\\eval_gcs.json",
+  "shuffles": [
+   "scratch\\s220\\zen_codi_gpt2\\official_shuffle_22030.json",
+   "scratch\\s220\\zen_codi_gpt2\\official_shuffle_22031.json"
+  ]
+ }
+}
