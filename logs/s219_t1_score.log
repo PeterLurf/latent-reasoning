@@ -1,0 +1,2 @@
+WINDOW W1 pass True {'items': 8000, 'n_kept': 7913, 'keep': 0.9891, 'kept_wrong_label': 0, 'kept_wrong_E': 0, 'pi': 1.0, 'pi_E': 1.0}
+GATES {'GATE_T1': True} window_labeller {'W1': 'boxes/runs_fsq/s170_cot_s1'} equiv {'W1': True} compose {'W1': True}
