@@ -429,7 +429,7 @@ def main():
     if a.smoke_all_correct:
         assert a.model == "tiny" or a.synthetic, "--smoke_all_correct is for tiny / synthetic smokes only"
     os.makedirs(out_dir, exist_ok=True); fo = os.path.join(out_dir, "eval_gcs.json"); fp = os.path.join(out_dir, "eval_gcs.partial.json")
-    assert not os.path.exists(fo), "refusing to overwrite %s" % fo
+    assert a.official_shuffle is not None or not os.path.exists(fo), "refusing to overwrite %s" % fo   # --official_shuffle writes only its own file (own guard)
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; torch.use_deterministic_algorithms(True, warn_only=True)
     t_start = time.time()
     test_sha = sha256_file(TEST)
