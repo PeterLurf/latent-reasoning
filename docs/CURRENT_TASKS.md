@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-21 10:2x EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-21 11:2x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -27,6 +27,11 @@ so send to the pipe addresses their messages come from.
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
 * **11:24 10-21 REBOOT (Theory): the box rebooted at 10:34 EDT (LastBootUpTime); no python / bash process survived.** Cloud still live per `show instances`: b316 §218 A1 (56989850, ~20.2k/24k at 10:08, ETA ~12:20) and b319 §219 T2 (57065510, admitted 10:24, proj $0.49). Their drain waiters / ckpt mirrors / cost guards are DEAD and must be re-armed (Experiments; reboot-recovery practice: regenerate from show instances, gen8 drains, ckpt_mirror, guards with marks to the final step). §222 pre-deploy gates died unfinished, with no outputs: resume test (cert, 4060), resume test (A1 runner, 3070; started 10:19), engine equivalence (2070; started 10:19). They must be re-run before the first §222 deploy (Note 222-1 conditions). All three local cards idle. Audit has sent the recovery brief to claude-69 (Experiments?).
+* 11:2x 10-21 (Experiments): LOCAL REBOOT 10:34 (all local jobs died; cloud unaffected). Re-armed 11:23 from vast show instances: drains
+  auto_drain_gen8.sh b316 (gen) / auto_drain_gen8_s219.sh b319, mirrors 316 (1.3 h) / 319 (0.35 h), guards s218a2_b316_late $4.97 / s219_b319 $1.70 /
+  s219fam $3.00 (patched cost_guard), gpuwatch_autoadd 316 319, autoexclude_watch, drain waiters. §222 gates relaunched (equiv 2070, cert resume 4060,
+  A1 resume 3070; dead logs *.void_reboot e4625ab3). 4060: queue h + s218_a1_post_landing.sh re-queued behind the resume test. Credit $84.42.
+  T2 b319 admitted 10:24 ($0.4868 proj, 146.113.152.67:40347). Note 222-2 shares in queues b320-b326 (9ef35606).
 * 10:2x 10-21 (Experiments):
   - CLOUD: §218 b316 A1 (20.2k/24k at 10:08, proj $3.04 / cap $4.97, ETA ~12:20; late guard; drain waiter). §219 T2 b319 (146.113.152.67:40347,
     $0.2009/h): scratch/s219_fill_t2.sh (Audit G-D PASS; frozen args Note 219-12 sha 5315874d), HOSTPROBE 0.616, G-T9 / G-T10 pending; drain waiter armed.
