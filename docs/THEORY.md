@@ -19648,13 +19648,13 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - b317 (DIRECT-SYM) carries the same key, and the same ruling applies.
 - **Experiments' new rule: no trainer arguments are added after an args freeze.**
 
-**§216 close (2026-10-20 22:3x EDT; theory/score_s216.py `--final s1 --final s2 --not_admitted s216_r2_s2`, every registered s1 / s2 file present (R1-s2's panel d0824cd5 / 744d79fc). No number moves from 9ba27dc9 / 216-8.)**
+**§216 close (2026-10-20 22:22 EDT; theory/score_s216.py `--final s1 --final s2 --not_admitted s216_r2_s2`, every registered s1 / s2 file present (R1-s2's panel d0824cd5 / 744d79fc). No number moves from 9ba27dc9 / 216-8.)**
 - **s1:** R2 = **SD2-C2 (MEM-TRADED-2) | GROW**; LIT-C2-2 not met (0.018).
 - **s2:** base PASS (COMPETENT) → R1 **FAILURE (FT-DIVERGED, a_24(1) 0.921; rule b)** → R2 UNREAD (not admitted, $0). Row FAIL at r1.
 - **×2: FAIL** ("SD2-C2 in 1 of 2 lineages").
 - **Family realised ≈ $2.67 / $6.50** (s216_d3t_s2 ≈ $1.11, s216_r2_s1 ≈ $1.02, s216_r1_s2 ≈ $0.54; b315 never deployed). **§216 is closed.**
 
-**Note 218-15 (2026-10-20 23:0x EDT; §218 Stage A relaunch after the 10-18 ~22:10 → 10-20 22:12 local outage; before any relaunch and before any A1 / DIRECT-SYM output is read; facts from Experiments (Vast invoices, filler / guard / mirror logs, a CPU load of the mirror); Audit approves the relaunch only after this Note).**
+**Note 218-15 (2026-10-20 22:25 EDT; §218 Stage A relaunch after the 10-18 ~22:10 → 10-20 22:12 local outage; before any relaunch and before any A1 / DIRECT-SYM output is read; facts from Experiments (Vast invoices, filler / guard / mirror logs, a CPU load of the mirror); Audit approves the relaunch only after this Note).**
 
 **What was lost.** Both 10-18 Stage A cells went with the outage. Nothing was fetched.
 - **A1 `lvb_sym_s1`** (b316, 56627574): the host became unreachable at about step 300 and stopped billing around 19:05 10-18. It never wrote a checkpoint, so nothing was mirrored or drained.
@@ -19698,7 +19698,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **Also recorded.** 218-12's second G-L7(b′)(iii) run (CPU float64) completed 19:25 10-18: **PASS, max |diff| 7.105e-15** ≤ 1e-9 (scratch/gate_s218/g_l7b_fp64.json). Both fp64 runs pass.
 
-**Note 218-16 (2026-10-20 23:2x EDT; descriptive eval-only arms after Cui 2602.22441 (Literature cb35c10b, Audit's item A); pre-stated before any A1 / DIRECT-SYM output exists; no change to the frozen args 33af702f / f4947038 or to any reading, bar or label).**
+**Note 218-16 (2026-10-20 22:27 EDT; descriptive eval-only arms after Cui 2602.22441 (Literature cb35c10b, Audit's item A); pre-stated before any A1 / DIRECT-SYM output exists; no change to the frozen args 33af702f / f4947038 or to any reading, bar or label).**
 
 **Zero-latent arm.** Already registered: `acc_k[K′ = 0]` (v1 §4 eval contract, K′ 0..24) is the zero-latent-step accuracy, and score_s218 reports it as it stands. Nothing new is added.
 
@@ -19716,6 +19716,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Written into langvb_eval only **after** both Stage A deploys have shipped, so no module edits happen while a deploy is in flight. It runs post-landing on the local eval card.
   - score_s218 gets fixtures for the new keys before any landing; they are descriptive keys only.
   - If the arm is not built by the time A1's evals run, it is not run, and that is recorded. It can never be run after A1's eval_lvb has been read.
+- **Audit's condition (approved 10-20): NON-INTERFERENCE gate.** Before the arms run on any real model, langvb_eval runs on one existing model with the arms ON and OFF, at the same --eval_bs / card / dtype. Every registered key must be bitwise identical. The noise draws from its own torch.Generator(21850), never from the global RNG. The gate JSON is committed.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
