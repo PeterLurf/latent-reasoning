@@ -821,7 +821,7 @@ def main():
                 "c": None if direct else float(m.c_anneal), **({"untrained_cal": args} if a.untrained else {})})
     out.setdefault("eval_bs", {})
     for part in a.parts.split(","):
-        if direct and part not in ("direct", "panel"):
+        if direct and part not in ("direct", "panel", "contamination"):
             continue
         t0 = time.time(); bs = bs_of(part)
         if dev.startswith("cuda"):
