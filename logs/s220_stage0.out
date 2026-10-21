@@ -1,3 +1,10 @@
 2026-10-20 23:25:43 s220 G-M codi20 (2070) rc 0
 2026-10-21 00:08:15 s220 G-M zen (3070) rc 0
 2026-10-21 01:55:14 s220 codi20 (2070) rc 0 boxes/runs_fsq/gsm_codi_20ep_s1/eval_gcs.json
+2026-10-21 02:54:07 s220 codi20 official_shuffle 22030 (2070) rc 1
+2026-10-21 02:54:09 s220 codi20 official_shuffle 22031 (2070) rc 1
+2026-10-21 02:54:09 s220 codi20 official_self rc 1: FileNotFoundError: [Errno 2] No such file or directory: 'D:/Latent\\scratch/s220\\official_shuffle_22030.json'
+2026-10-21 03:00:19 s220 codi20 official_shuffle 22030 (2070) rc 0
+2026-10-21 03:05:37 s220 codi20 official_shuffle 22031 (2070) rc 0
+2026-10-21 03:05:37 s220 codi20 official_self rc 0: OFFICIAL_SELF [0.8741470811220622, 0.8779378316906747, 0.866565579984837]
+2026-10-21 03:14:21 s220 zen (3070) rc 0 scratch/s220/zen_codi_gpt2/eval_gcs.json
