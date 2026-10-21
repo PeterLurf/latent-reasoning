@@ -22,7 +22,7 @@ import os
 import sys
 import time
 
-sys.path.insert(0, "D:/Latent"); os.chdir("D:/Latent")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, ROOT); os.chdir(ROOT)   # D:/Latent locally, /workspace/Latent on a host
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
@@ -189,6 +189,8 @@ def mode_m_rule(a, dev):
 # ------------------------------------------------------------------ certification (PS §3)
 class Arm:
     """one probe: kind in KINDS, pass t; its own Probe and its own generator instances (train streams continue across the extension)."""
+    GENS = ("rz", "rc", "rs", "rn", "rp")
+
     def __init__(self, m, kind, t, dev):
         self.kind, self.t, self.dev = kind, t, dev; self.pr = E.Probe(m, 1e-4)
         self.rz = np.random.default_rng(STREAMS["lin_z"][0]); self.rc = np.random.default_rng(STREAMS["xor_coin"][0])
@@ -237,9 +239,184 @@ def sl(args, q0, q1):
     return tuple(x[q0:q1] for x in args)
 
 
+# ------------------------------------------------------------------ group engine (Note 222-1: one group per host, full-state off-host checkpoints)
+def provenance():
+    """host / driver / image / torch / code (Note 222-1 item 4)."""
+    import platform
+    import socket
+    mods = sorted({os.path.relpath(f).replace(os.sep, "/") for f in (E.__file__, E.PS.__file__, E.LV.__file__, E.VB.__file__)})
+    return {"hostname": socket.gethostname(), "platform": platform.platform(), "nvidia_smi": os.popen("nvidia-smi --query-gpu=name,driver_version --format=csv,noheader").read().strip(),
+            "torch": torch.__version__, "cuda": torch.version.cuda, "python": sys.version.split()[0], "image": os.environ.get("LATENT_IMAGE", ""),
+            "code_sha256": {f: sha_file(f) for f in mods}, "cert_script_sha256": sha_file(__file__)}
+
+
+def arm_state(x):
+    return {"P": {k: v.detach().cpu().clone() for k, v in x.pr.P.items()}, "beta": x.pr.beta.detach().cpu().clone(), "gam": x.pr.gam.detach().cpu().clone(),
+            "opt": x.pr.opt.state_dict(), "steps": x.pr.steps, "curve": [list(c) for c in x.pr.curve], "gens": {g: getattr(x, g).bit_generator.state for g in x.GENS}}
+
+
+def arm_load(x, s_):
+    with torch.no_grad():
+        for k, v in s_["P"].items():
+            x.pr.P[k].copy_(v)
+        x.pr.beta.copy_(s_["beta"]); x.pr.gam.copy_(s_["gam"])
+    x.pr.opt.load_state_dict(s_["opt"]); x.pr.steps = s_["steps"]; x.pr.curve = [tuple(c) for c in s_["curve"]]
+    for g, st in s_["gens"].items():
+        getattr(x, g).bit_generator.state = st
+
+
+def wjson_plain(p, o):
+    tmp = p + ".tmp"; json.dump(o, open(tmp, "w", newline="\n"), indent=1); os.replace(tmp, p)
+
+
+class Engine:
+    """trains one lockstep group (part_probe's recipe: shared rollout per batch; extension rule; held-out every eval_every) with a FULL-STATE checkpoint
+    (every probe's params + AdamW state + generator states + curve, the batch generator, ext keys, seen, torch RNG) to <ckpt_dir>/ckpt_last.pt every
+    ckpt_every steps (+ ckpt_fingerprint.json {step} after it, for ckpt_mirror's companion check); --resume continues each probe exactly."""
+    def __init__(self, m, pool, held, dev, a, dirs, batch_seed, tag, show_vals, script_sha):
+        self.m, self.pool, self.held, self.dev, self.a, self.dirs, self.batch_seed, self.tag, self.show, self.sha = m, pool, held, dev, a, dirs, batch_seed, tag, show_vals, script_sha
+        self.seen = set(); self.t0 = time.time()
+
+    def evaluate(self, A, its, Kmax):
+        a, m, dev = self.a, self.m, self.dev; ok = {x.key: [] for x in A}; lab = {x.key: x.draw_held(len(its)) for x in A}
+        for ch in E.chunks(range(len(its)), a.bs):
+            sub = [its[j] for j in ch]; b, S = E.stored(m, sub, Kmax, dev, a.chunk); ix = torch.tensor(ch, device=dev)
+            with torch.no_grad():
+                for x in A:
+                    y, args = lab[x.key]; sA, sB = x.scores(m, sub, b, S, tuple(v[ix] for v in args), self.dirs.get(x.t))
+                    ok[x.key] += ((sA > sB).long() == (1 - y[ix])).long().tolist()
+            del S
+        return ok
+
+    def save(self, gi, A, rb, ext_keys, st):
+        d = self.a.ckpt_dir; os.makedirs(d, exist_ok=True); p = os.path.join(d, "ckpt_last.pt"); tmp = p + ".tmp"
+        ck = {"step": st, "group": gi, "keys": [x.key for x in A], "arms": {x.key: arm_state(x) for x in A}, "rb": rb.bit_generator.state, "ext_keys": ext_keys,
+              "seen": sorted(self.seen), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(self.dev) if str(self.dev).startswith("cuda") else None,
+              "script_sha256": self.sha, "tag": self.tag}
+        torch.save(ck, tmp); os.replace(tmp, p)
+        wjson_plain(os.path.join(d, "ckpt_fingerprint.json"), {"step": st, "group": gi, "keys": ck["keys"], "ext_keys": ext_keys, "tag": self.tag})
+        print("CKPT", self.tag, "group", gi, "step", st, flush=True)
+
+    def train_until(self, gi, T, A, target, rb, ext_keys):
+        a, m, dev = self.a, self.m, self.dev; Kmax = max(x.t for x in T)
+        while T[0].pr.steps < target:
+            ix = rb.integers(0, len(self.pool), a.pbs); self.seen.update(int(j) for j in ix); sub = [self.pool[j] for j in ix]
+            b, S = E.stored(m, sub, Kmax, dev, a.chunk); L = {}
+            for x in T:
+                y, args = x.draw_train(a.pbs); x.pr.opt.zero_grad(set_to_none=True); lt = 0.0
+                for q0 in range(0, a.pbs, a.pmicro):
+                    q1 = min(a.pbs, q0 + a.pmicro); bq = tuple(t_[q0:q1] for t_ in b); Sq = [s_[q0:q1] for s_ in S]
+                    sA, sB = x.scores(m, sub[q0:q1], bq, Sq, sl(args, q0, q1), self.dirs.get(x.t))
+                    lq = F.cross_entropy(torch.stack([sA, sB], 1), y[q0:q1]) * ((q1 - q0) / a.pbs); lq.backward()
+                    if a.loss_log:
+                        lt += float(lq.detach())
+                x.pr.opt.step(); x.pr.steps += 1; L[x.key] = lt
+            del S
+            st = T[0].pr.steps
+            if st % 100 == 0:                                               # progress for cost_guard / the drain's activity check: step + sec only (no loss)
+                open(os.path.join(a.out, "log.jsonl"), "a", newline="\n").write(json.dumps({"step": st, "loss": None, "sec": int(time.time() - self.t0), "group": gi, "n_training": len(T)}) + "\n")
+            if a.loss_log:
+                open(a.loss_log, "a", newline="\n").write(json.dumps({"g": gi, "step": st, "loss": {k: repr(v) for k, v in L.items()}}) + "\n")
+            if st % a.eval_every == 0:
+                ok = self.evaluate(T, self.held, Kmax)
+                for x in T:
+                    x.pr.curve.append((st, float(np.mean(ok[x.key]))))
+                print(self.tag, "step", st, {x.key: round(x.pr.curve[-1][1], 3) for x in T} if self.show else "%d probes" % len(T), round(time.time() - self.t0), "s", flush=True)
+            if a.ckpt_dir and a.ckpt_every and st % a.ckpt_every == 0:
+                self.save(gi, A, rb, ext_keys, st)
+            if a.stop_at and st >= a.stop_at:
+                print("STOP_AT", st, "(resume-test kill)", flush=True); sys.exit(9)
+
+    def run_group(self, gi, gk, make_arm):
+        a = self.a; A = [make_arm(k, t) for k, t in gk]; rb = np.random.default_rng(self.batch_seed); ext_keys = None
+        p = os.path.join(a.ckpt_dir, "ckpt_last.pt") if a.ckpt_dir else ""
+        if a.resume and p and os.path.exists(p):
+            ck = torch.load(p, map_location="cpu", weights_only=False)
+            assert ck["group"] == gi and ck["keys"] == [x.key for x in A] and ck["script_sha256"] == self.sha and ck["tag"] == self.tag, "checkpoint does not match this group / script"
+            for x in A:
+                arm_load(x, ck["arms"][x.key])
+            rb.bit_generator.state = ck["rb"]; ext_keys = ck["ext_keys"]; self.seen.update(ck["seen"]); torch.set_rng_state(ck["torch_rng"])
+            if ck["cuda_rng"] is not None and str(self.dev).startswith("cuda"):
+                torch.cuda.set_rng_state(ck["cuda_rng"], self.dev)
+            print("RESUME", self.tag, "group", gi, "from step", ck["step"], "ext", ext_keys if self.show else (None if ext_keys is None else len(ext_keys)), flush=True)
+        print(self.tag, "group", gi, [x.key for x in A], flush=True)
+        if ext_keys is None:
+            self.train_until(gi, A, A, a.steps, rb, None)
+            ext_keys = [x.key for x in A if len(x.pr.curve) >= 5 and x.pr.curve[-1][1] - x.pr.curve[-5][1] > 0.02]   # curve every 500: [-5] = 2k steps earlier
+        X = [x for x in A if x.key in ext_keys]
+        if X:
+            print(self.tag, "extend to %d:" % (2 * a.steps), ext_keys if self.show else "%d probes" % len(X), flush=True)
+            self.train_until(gi, X, A, 2 * a.steps, rb, ext_keys)
+        return A, ext_keys
+
+
+def time_group(eng, gi, gk, make_arm, n):
+    """G-TIME (Note 222-1): n training steps of this group's real shape (no eval, no checkpoint, no output beyond timing) -> s/step and peak memory."""
+    A = [make_arm(k, t) for k, t in gk]; rb = np.random.default_rng(12345); a = eng.a; Kmax = max(x.t for x in A); cu = str(eng.dev).startswith("cuda")
+    if cu:
+        torch.cuda.reset_peak_memory_stats(eng.dev); torch.cuda.synchronize(eng.dev)
+    ts = []
+    for i in range(n):
+        t1 = time.time(); ix = rb.integers(0, len(eng.pool), a.pbs); sub = [eng.pool[j] for j in ix]; b, S = E.stored(eng.m, sub, Kmax, eng.dev, a.chunk)
+        for x in A:
+            y, args = x.draw_train(a.pbs); x.pr.opt.zero_grad(set_to_none=True)
+            for q0 in range(0, a.pbs, a.pmicro):
+                q1 = min(a.pbs, q0 + a.pmicro)
+                sA, sB = x.scores(eng.m, sub[q0:q1], tuple(t_[q0:q1] for t_ in b), [s_[q0:q1] for s_ in S], sl(args, q0, q1), eng.dirs.get(x.t))
+                (F.cross_entropy(torch.stack([sA, sB], 1), y[q0:q1]) * ((q1 - q0) / a.pbs)).backward()
+            x.pr.opt.step()
+        del S
+        if cu:
+            torch.cuda.synchronize(eng.dev)
+        ts.append(time.time() - t1)
+    w = ts[min(10, n // 4):]
+    return {"group": gi, "keys": [x.key for x in A], "Kmax": Kmax, "steps_timed": n, "sec_per_step": float(np.mean(w)), "sec_per_step_median": float(np.median(w)),
+            "peak_gib": torch.cuda.max_memory_allocated(eng.dev) / 2 ** 30 if cu else None, "gpu": torch.cuda.get_device_name(eng.dev) if cu else "cpu",
+            "note": "timing only: batches from np rng 12345, plant / label draws from fresh probe generators; no eval, no output"}
+
+
+def group_sel(a, n):
+    sel = list(range(n)) if a.groups in ("", "all") else [int(g) for g in a.groups.split(",")]
+    assert all(0 <= g < n for g in sel), (sel, n)
+    if a.ckpt_dir:
+        assert len(sel) == 1, "--ckpt_dir takes exactly one --groups index (one group per process / host)"
+    return sel
+
+
+def merge_files(paths, out_p, kind):
+    """per-group files -> one file. All metas must agree except provenance / timing / group fields; arms (cert) or probe / plant_s (A1) united."""
+    F_ = [json.load(open(p)) for p in paths]; skip = {"provenance", "sec", "groups_run"}
+    base = {k: v for k, v in F_[0]["meta"].items() if k not in skip}
+    for f, p in zip(F_[1:], paths[1:]):
+        o = {k: v for k, v in f["meta"].items() if k not in skip}
+        assert o == base, "meta mismatch in %s: %s" % (p, sorted(k for k in set(o) | set(base) if o.get(k) != base.get(k)))
+    meta = dict(base); meta["provenance_by_group"] = {str(g): f["meta"]["provenance"] for f in F_ for g in f["meta"]["groups_run"]}
+    meta["group_files"] = {os.path.basename(p): sha_file(p) for p in paths}; done = sorted(g for f in F_ for g in f["meta"]["groups_run"])
+    assert done == list(range(len(meta["groups"]))), "groups %s != all %d" % (done, len(meta["groups"]))
+    if kind == "cert":
+        arms = {}
+        for f in F_:
+            assert not set(arms) & set(f["arms"]); arms.update(f["arms"])
+        wjson_plain(out_p, {"meta": meta, "arms": arms, "def": F_[0].get("def")})
+    else:
+        pr, pl = {}, {}
+        for f in F_:
+            assert not set(pr) & set(f["probe"]); pr.update(f["probe"])
+            for t, v in f["plant_s"].items():
+                d = pl.setdefault(t, {k: v[k] for k in ("eps", "eps_rel", "pcs")})
+                for k in ("lin", "cexor"):
+                    if k in v:
+                        assert k not in d; d[k] = v[k]
+        o = {"meta": meta, "probe": pr, "plant_s": pl}
+        for k in ("k2_guard", "diag_align", "meta_pre", "k2_guard_sha256"):
+            o[k] = F_[0].get(k)
+        wjson_plain(out_p, {**o, "def": F_[0].get("def")})
+    print("MERGED", len(paths), "->", out_p, flush=True)
+
+
 def mode_cert(a, dev):
     t0 = time.time(); torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
-    mr = json.load(open(os.path.join(OUT, "m_rule.json"))); M = mr["m"]; mult = float(M)
+    mr = json.load(open(a.m_rule)); M = mr["m"]; mult = float(M); sha = sha_file(__file__)
     if a.model == "ref":
         m, info = E.load(REF_RUN, dev); info = {"model_run": REF_RUN, "model_sha256": sha_file(os.path.join(REF_RUN, "model.pt")), **{k: info.get(k) for k in ("arch", "arch_class", "source", "items_sha", "steps_run")}}
     else:
@@ -247,76 +424,44 @@ def mode_cert(a, dev):
     held, pool = build_pool(a.pool_n, a.hold_n); dirs0 = plant_dirs_seeded(m, pool, [0, 1, 2], dev, a.chunk, 22750); dirs = {t: scaled(dirs0[t], mult) for t in dirs0}
     raw = E.PS.test_set(a.per_D); TE = {D: [E.ev(it) for it in its] for D, its in raw.items()}
     keys = sorted([("probe", 0)] + [(k, t) for t in (0, 1, 2) for k in ("cexor", "lin", "noplant", "shuffled")], key=lambda k: (k[1], k[0]))
-    G = a.group; groups = [keys[i:i + G] for i in range(0, len(keys), G)]
-    meta = {"section": 222, "registered": "PS_v1.md at 7174fc3b, section 3 (S1)", "set": "S1", "model_kind": a.model, **info,
+    G = a.group; groups = [keys[i:i + G] for i in range(0, len(keys), G)]; sel = group_sel(a, len(groups))
+    meta = {"section": 222, "registered": "PS_v1.md at 7174fc3b, section 3 (S1); Note 222-1 (one group per host)", "set": "S1", "model_kind": a.model, **info,
             "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "dtype": "fp32", "tf32": False,
-            "commit": os.popen("git rev-parse --short HEAD").read().strip(), "script_sha256": sha_file(__file__), "m": M, "m_rule_flag": mr["flag"],
+            "script_sha256": sha, "m": M, "m_rule_flag": mr["flag"], "m_rule_sha256": sha_file(a.m_rule),
             "dirs_seed": 22750, "eps": {str(t): dirs[t]["eps"] for t in dirs}, "eps_rel": {str(t): dirs[t]["eps_rel"] for t in dirs},
             "eps_base": {str(t): dirs0[t]["eps"] for t in dirs0}, "pool_stream": 22700, "pool_n": len(pool), "held_n": len(held), "batches": 22701,
             "streams": dict(STREAMS), "shuffled_plant_streams": "fresh instances of xor_coin / xor_signs (train), true targets on 22754 / 22756 (held-out)",
             "steps": a.steps, "eval_every": a.eval_every, "ext_rule": "curve[-1] - curve[-5] > 0.02 (last 2k gain) -> +%d steps once" % a.steps,
             "pbs": a.pbs, "pmicro": a.pmicro, "bs": a.bs, "chunk": a.chunk, "groups": [[("probe0" if k[0] == "probe" else "%s_t%d" % k) for k in g] for g in groups],
-            "test_set": {"per_D": a.per_D, "test_items_sha": E.PS.set_sha([it for D in sorted(raw) for it in raw[D]]), "probe0_D": [D for D in range(3, 13) if D in TE]}}
-    print("SETUP", round(time.time() - t0), "s m", M, "eps", meta["eps"], "groups", meta["groups"], flush=True)
-    part_p = os.path.join(OUT, "cert_%s.partial.json" % a.model); arms = {}; done_g = []
-    if a.resume and os.path.exists(part_p):
-        P = json.load(open(part_p)); assert P["meta"]["script_sha256"] == meta["script_sha256"] and P["meta"]["m"] == M; arms, done_g = P["arms"], P["groups_done"]
-        print("RESUME groups done", done_g, flush=True)
-    seen = set()
-
-    def evaluate(A, its, Kmax):
-        ok = {x.key: [] for x in A}; lab = {x.key: x.draw_held(len(its)) for x in A}
-        for ch in E.chunks(range(len(its)), a.bs):
-            sub = [its[j] for j in ch]; b, S = E.stored(m, sub, Kmax, dev, a.chunk); ix = torch.tensor(ch, device=dev)
-            with torch.no_grad():
-                for x in A:
-                    y, args = lab[x.key]; sA, sB = x.scores(m, sub, b, S, tuple(v[ix] for v in args), dirs[x.t]); ok[x.key] += ((sA > sB).long() == (1 - y[ix])).long().tolist()
-            del S
-        return ok
-
-    def train(A, n_steps, rb):
-        Kmax = max(x.t for x in A)
-        for _ in range(n_steps):
-            ix = rb.integers(0, len(pool), a.pbs); seen.update(int(j) for j in ix); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, Kmax, dev, a.chunk)
-            for x in A:
-                y, args = x.draw_train(a.pbs); x.pr.opt.zero_grad(set_to_none=True)
-                for q0 in range(0, a.pbs, a.pmicro):
-                    q1 = min(a.pbs, q0 + a.pmicro); bq = tuple(t_[q0:q1] for t_ in b); Sq = [s_[q0:q1] for s_ in S]
-                    sA, sB = x.scores(m, sub[q0:q1], bq, Sq, sl(args, q0, q1), dirs[x.t])
-                    (F.cross_entropy(torch.stack([sA, sB], 1), y[q0:q1]) * ((q1 - q0) / a.pbs)).backward()
-                x.pr.opt.step(); x.pr.steps += 1
-            del S
-            st = A[0].pr.steps
-            if st % a.eval_every == 0:
-                ok = evaluate(A, held, Kmax)
-                for x in A:
-                    x.pr.curve.append((st, float(np.mean(ok[x.key]))))
-                print("CERT step", st, {x.key: round(x.pr.curve[-1][1], 3) for x in A}, round(time.time() - t0), "s", flush=True)
-
-    for gi, gk in enumerate(groups):
-        if gi in done_g:
-            continue
-        tg = time.time(); A = [Arm(m, k, t, dev) for k, t in gk]; rb = np.random.default_rng(22701)
-        print("CERT group", gi, [x.key for x in A], flush=True); train(A, a.steps, rb)
-        ext = [x for x in A if len(x.pr.curve) >= 5 and x.pr.curve[-1][1] - x.pr.curve[-5][1] > 0.02]
-        if ext:
-            print("CERT extend to %d:" % (2 * a.steps), [x.key for x in ext], flush=True); train(ext, a.steps, rb)
+            "test_set": {"per_D": a.per_D, "test_items_sha": E.PS.set_sha([it for D in sorted(raw) for it in raw[D]]), "probe0_D": [D for D in range(3, 13) if D in TE]},
+            "ckpt_every": a.ckpt_every, "provenance": provenance(), "groups_run": sel}
+    print("SETUP", round(time.time() - t0), "s m", M, "eps", meta["eps"], "groups", meta["groups"], "run", sel, flush=True)
+    eng = Engine(m, pool, held, dev, a, dirs, 22701, "CERT", True, sha)
+    if a.time_steps:
+        tj = {**time_group(eng, sel[0], groups[sel[0]], lambda k, t: Arm(m, k, t, dev), a.time_steps), "provenance": meta["provenance"], "model_kind": a.model, "script_sha256": sha}
+        wjson_plain(os.path.join(a.out, "timing.json"), tj); print("TIMING", json.dumps({k: tj[k] for k in ("group", "Kmax", "sec_per_step", "peak_gib", "gpu")}), flush=True); return
+    files = []
+    for gi in sel:
+        gp = os.path.join(a.out, "cert_%s.g%d.json" % (a.model, gi)); files.append(gp)
+        if a.resume and os.path.exists(gp):
+            print("group", gi, "file exists - skipped", flush=True); continue
+        tg = time.time(); A, ext = eng.run_group(gi, groups[gi], lambda k, t: Arm(m, k, t, dev)); arms = {}
         for x in A:
-            c = x.pr.curve; arms[x.key] = {"kind": x.kind, "t": x.t, "curve": c, "LATE": float(np.mean([v for _, v in c[-3:]])), "steps_run": x.pr.steps,
-                                           "extended": x in ext, "n_held": len(held), "group": gi}
+            c = x.pr.curve; arms[x.key] = {"kind": x.kind, "t": x.t, "curve": [list(v) for v in c], "LATE": float(np.mean([v for _, v in c[-3:]])), "steps_run": x.pr.steps,
+                                           "extended": x.key in ext, "n_held": len(held), "group": gi}
         p0 = [x for x in A if x.kind == "probe"]
         if p0:
-            x = p0[0]; Ds = meta["test_set"]["probe0_D"]; its = [it for D in Ds for it in TE[D]]; Dl = [it["D"] for it in its]; ok = evaluate([x], its, 0)[x.key]
+            x = p0[0]; Ds = meta["test_set"]["probe0_D"]; its = [it for D in Ds for it in TE[D]]; Dl = [it["D"] for it in its]; ok = eng.evaluate([x], its, 0)[x.key]
             arms["probe0"].update({"test_acc": float(np.mean(ok)), "test_acc_by_D": {str(D): float(np.mean([o for o, d in zip(ok, Dl) if d == D])) for D in Ds},
                                    "n_test": len(ok), "items": {str(D): [o for o, d in zip(ok, Dl) if d == D] for D in Ds}})
             print("CERT probe0 test", round(arms["probe0"]["test_acc"], 4), flush=True)
-        done_g.append(gi); del A
+        del A
         if str(dev).startswith("cuda"):
             torch.cuda.empty_cache()
-        print("CERT group", gi, "done", round(time.time() - tg), "s", flush=True)
-        dump("cert_%s.partial" % a.model, {"meta": meta, "arms": arms, "groups_done": done_g, "n_distinct_seen_this_process": len(seen)})
-    meta["sec"] = round(time.time() - t0)
-    dump("cert_%s" % a.model, {"meta": meta, "arms": arms, "n_distinct_seen_this_process": len(seen), "def": __doc__})
+        gm = {**meta, "groups_run": [gi], "sec": round(time.time() - tg)}
+        wjson_plain(gp, {"meta": gm, "arms": arms, "n_distinct_seen_group": len(eng.seen), "def": __doc__}); print("WROTE", gp, "group", gi, "done", gm["sec"], "s", flush=True)
+    if sel == list(range(len(groups))):
+        merge_files(files, os.path.join(a.out, "cert_%s.json" % a.model), "cert")
 
 
 def main():
@@ -324,8 +469,17 @@ def main():
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--bs", type=int, default=16); ap.add_argument("--chunk", type=int, default=16)
     ap.add_argument("--steps", type=int, default=10000); ap.add_argument("--eval_every", type=int, default=500); ap.add_argument("--pbs", type=int, default=64)
     ap.add_argument("--pmicro", type=int, default=16); ap.add_argument("--group", type=int, default=7); ap.add_argument("--per_D", type=int, default=1000)
-    ap.add_argument("--resume", action="store_true"); ap.add_argument("--hold_n", type=int, default=1000); ap.add_argument("--k2_ntr", type=int, default=20000); ap.add_argument("--k2_nte", type=int, default=2000); ap.add_argument("--out", default=OUT, help="smokes only")
+    ap.add_argument("--resume", action="store_true"); ap.add_argument("--hold_n", type=int, default=1000); ap.add_argument("--k2_ntr", type=int, default=20000); ap.add_argument("--k2_nte", type=int, default=2000)
+    ap.add_argument("--out", default=OUT, help="output dir (m_rule.json; cert: per-group cert_<model>.g<i>.json, + cert_<model>.json when every group ran in this process)")
+    ap.add_argument("--m_rule", default=os.path.join(OUT, "m_rule.json")); ap.add_argument("--groups", default="all", help="Note 222-1: comma list of group indices (default all)")
+    ap.add_argument("--ckpt_dir", default="", help="full-state checkpoint dir (ckpt_last.pt + ckpt_fingerprint.json); needs exactly one --groups index")
+    ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--time_steps", type=int, default=0, help="G-TIME: time this many steps of the selected group -> <out>/timing.json, exit")
+    ap.add_argument("--loss_log", default="", help="resume test only: per-step per-probe CE (repr) jsonl"); ap.add_argument("--stop_at", type=int, default=0, help="resume test only: exit 9 after this step")
+    ap.add_argument("--merge", default="", help="comma list of per-group cert files -> --merge_out"); ap.add_argument("--merge_out", default="")
     a = ap.parse_args(); globals()["OUT"] = a.out
+    if a.merge:
+        return merge_files(a.merge.split(","), a.merge_out, "cert")
+    os.makedirs(a.out, exist_ok=True)
     (mode_m_rule if a.mode == "m_rule" else mode_cert)(a, a.device)
 
 
