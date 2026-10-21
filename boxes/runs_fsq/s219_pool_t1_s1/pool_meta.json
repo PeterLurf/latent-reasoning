@@ -1,0 +1,293 @@
+{
+ "round": 1,
+ "lineage": "s1",
+ "seeds": {
+  "pool": 23200,
+  "perm": 23201
+ },
+ "per_n": {
+  "9": 97000,
+  "10": 97000,
+  "11": 97000,
+  "12": 97000
+ },
+ "ns": [
+  9,
+  10,
+  11,
+  12
+ ],
+ "n_records": 388000,
+ "draws_n": {
+  "9": 98304,
+  "10": 98304,
+  "11": 98304,
+  "12": 102400
+ },
+ "dup_n": {
+  "9": 0,
+  "10": 0,
+  "11": 0,
+  "12": 0
+ },
+ "labelled_n": {
+  "9": 98304,
+  "10": 98304,
+  "11": 98304,
+  "12": 102400
+ },
+ "dropped_extra_n": {
+  "9": 1288,
+  "10": 1111,
+  "11": 527,
+  "12": 2879
+ },
+ "keep_n": {
+  "9": 0.9998372395833334,
+  "10": 0.9980367024739584,
+  "11": 0.992095947265625,
+  "12": 0.975380859375
+ },
+ "keep_def": "kept-eligible (KEEP-T and CV-T) / all labelled, incl. the last chunk's overshoot",
+ "keep_to_target": {
+  "9": 0.999835078749897,
+  "10": 0.9980553354803527,
+  "11": 0.9921142260997637,
+  "12": 0.9753546972881117
+ },
+ "at_target": {
+  "9": {
+   "draws": 98304,
+   "labelled": 97016,
+   "keep": 0.999835078749897
+  },
+  "10": {
+   "draws": 98304,
+   "labelled": 97189,
+   "keep": 0.9980553354803527
+  },
+  "11": {
+   "draws": 98304,
+   "labelled": 97771,
+   "keep": 0.9921142260997637
+  },
+  "12": {
+   "draws": 102400,
+   "labelled": 99451,
+   "keep": 0.9753546972881117
+  }
+ },
+ "T_max_by_n": {
+  "9": 183,
+  "10": 223,
+  "11": 267,
+  "12": 313
+ },
+ "T_max_def": "max P + C over the kept records of n (P = len(syms) + 2, C = c_struct)",
+ "L0_max_by_n": {
+  "9": 35,
+  "10": 39,
+  "11": 43,
+  "12": 45
+ },
+ "sec_by_n": {
+  "9": 943,
+  "10": 1100,
+  "11": 1305,
+  "12": 1577
+ },
+ "windows": {
+  "W1": {
+   "seed": 23260,
+   "ns": [
+    9,
+    10,
+    11,
+    12
+   ],
+   "gate": "GATE_T1",
+   "labeller": "boxes/runs_fsq/s170_cot_s1",
+   "labeller_sha256": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392",
+   "impl": "label_reroot (TF-GREEDY)",
+   "impl_why": "TF-GREEDY (G-T16 EQUIV PASS, primary labeller)"
+  }
+ },
+ "labeller": {
+  "W1": "boxes/runs_fsq/s170_cot_s1"
+ },
+ "labeller_sha256": {
+  "W1": "36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392"
+ },
+ "excl": {
+  "test_n30": {
+   "size": 29407,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "serial": {
+   "size": 2200,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "s213_37_n9_24": {
+   "size": 16000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "precond_23180": {
+   "size": 2400,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "precond_23187": {
+   "size": 2400,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "gt18_23195": {
+   "size": 1000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "gates:boxes/runs_fsq/s215_gate1/gate_items.json": {
+   "size": 8000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json": {
+   "size": 8000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json": {
+   "size": 8000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json": {
+   "size": 16000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "gates:boxes/runs_fsq/s219_gate_t1_s1/gate_items.json": {
+   "size": 8000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  },
+  "pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl": {
+   "size": 440000,
+   "hits_by_n": {
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0
+   }
+  }
+ },
+ "excl_meta": {
+  "precondition_stream_sha": "c933960057835ff8369c776c037bc0982c1e5ba03db14f858e0d38baed26069e",
+  "precondition_counts": {
+   "23180": {
+    "9": 200,
+    "10": 200,
+    "11": 200,
+    "12": 200,
+    "13": 200,
+    "14": 200,
+    "15": 200,
+    "16": 200,
+    "17": 200,
+    "18": 200,
+    "19": 200,
+    "20": 200
+   },
+   "23187": {
+    "9": 200,
+    "10": 200,
+    "11": 200,
+    "12": 200,
+    "13": 200,
+    "14": 200,
+    "15": 200,
+    "16": 200,
+    "17": 200,
+    "18": 200,
+    "19": 200,
+    "20": 200
+   }
+  },
+  "files": [
+   "boxes/runs_fsq/s215_gate1/gate_items.json",
+   "boxes/runs_fsq/s215_gate1_rebuild/gate_items.json",
+   "boxes/runs_fsq/s216_gate1_s2/gate_items.json",
+   "boxes/runs_fsq/s216_gate2_s1/gate_items.json",
+   "boxes/runs_fsq/s219_gate_t1_s1/gate_items.json",
+   "boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl"
+  ],
+  "numpy": "2.5.2"
+ },
+ "precondition_stream_sha": "c933960057835ff8369c776c037bc0982c1e5ba03db14f858e0d38baed26069e",
+ "collide_n": {
+  "9": 0,
+  "10": 0,
+  "11": 0,
+  "12": 0
+ },
+ "gate_dir": "boxes/runs_fsq/s219_gate_t1_s1",
+ "sha256": "b2cbc8a6acd4713d43fef11d2a09462a438ae4fe580d7e4fd2d9ff55bc6d2b6e",
+ "builder_commit": "9b8381f5",
+ "nested170_sha256": "1961bd3687a903f3e44968b16aed854d78c253e2d674e367731b9a7eae088b9e",
+ "card": "NVIDIA GeForce RTX 3070",
+ "dtype": "fp32",
+ "tf32": false,
+ "label_bs": 128,
+ "filter": "KEEP-T and CV-T",
+ "collision_bound": "deleted latent pools not regenerated (Addendum 1 item 4): P(render = s) <= (1/11) 40^-n per draw",
+ "scale": 1.0,
+ "sec": 4950,
+ "t_start": "2026-10-21T02:39:34+00:00"
+}
