@@ -1,0 +1,37 @@
+{
+ "ref": "scratch/s218_args_ref_a1.json",
+ "diff": {
+  "cuda_version": [
+   "13.0",
+   "12.4"
+  ],
+  "cudnn_version": [
+   92400,
+   90100
+  ],
+  "deterministic": [
+   null,
+   false
+  ],
+  "image_tag": [
+   null,
+   "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"
+  ],
+  "python_version": [
+   "3.14.7",
+   "3.11.10"
+  ],
+  "torch_version": [
+   "2.14.0+cu130",
+   "2.5.1+cu124"
+  ],
+  "train_driver": [
+   "591.86",
+   "595.71.05"
+  ],
+  "train_gpu": [
+   "NVIDIA GeForce RTX 4060",
+   "NVIDIA GeForce RTX 3090"
+  ]
+ }
+}
