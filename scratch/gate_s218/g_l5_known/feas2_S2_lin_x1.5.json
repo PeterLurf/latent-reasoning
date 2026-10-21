@@ -1,0 +1,130 @@
+{
+ "note": "Note 218-17",
+ "model": "langvb_eval.untrained(cal_n 16)",
+ "untrained_cal": {
+  "arch": "lslva",
+  "untrained": true,
+  "cal_n": 16,
+  "cal_max_m99": 0.019807225093245506
+ },
+ "card": "NVIDIA GeForce RTX 2070",
+ "dtype": "fp32",
+ "tf32": false,
+ "pool_n": 200000,
+ "held_n": 1000,
+ "eps": 10.288845933304376,
+ "eps_rel": 0.044832918352196174,
+ "vnorm": 152.99540771177377,
+ "eig_40_60": [
+  54.24106562303117,
+  53.273478305414656,
+  52.8131996348933,
+  52.20372437742417,
+  51.5097737259956,
+  50.23805295148596,
+  49.377107204658984,
+  48.282623095970756,
+  48.21142972747092,
+  47.45891403909795,
+  47.04904472856623,
+  46.400903597267664,
+  46.25500906618781,
+  45.27931923008071,
+  44.98759876222317,
+  43.58961159746001,
+  42.5918319993579,
+  41.72891376820483,
+  41.428508625112926,
+  41.172983937147464,
+  40.3390460038545
+ ],
+ "eig_50": 47.04904472856623,
+ "setup_sec": 245,
+ "commit": "271d6bf3",
+ "set": "S2 (PROBE2, anti head)",
+ "head_kind": "anti",
+ "kind": "lin",
+ "mult": 1.5,
+ "t": 1,
+ "control": null,
+ "curve": [
+  [
+   250,
+   0.507
+  ],
+  [
+   500,
+   0.508
+  ],
+  [
+   750,
+   0.923
+  ],
+  [
+   1000,
+   0.963
+  ],
+  [
+   1250,
+   0.975
+  ],
+  [
+   1500,
+   0.989
+  ],
+  [
+   1750,
+   0.99
+  ],
+  [
+   2000,
+   0.994
+  ]
+ ],
+ "LATE": 0.991,
+ "final": 0.994,
+ "recipe": "PROBE2 feasibility (Theory 10-21 + Audit): untrained LangSLVA; kind 'lin' / 'xor' = PLANT at t 1 with the ANTISYMMETRIC plant at eps x mult (target\nindex 0 iff option A = o1 is the planted-true one; lin: z1, xor: z1 xor z2); kind 'probe0' = PROBE(0): t 0, no plant, A / B = gold / other with the\norder RANDOMISED per item (train rng 22593, held-out 22594; target = which side is gold) - fixed order would let the head win by always answering 0.\ncontrol 'shuffled': (Theory / Audit) anti-xor x10 with the TRAINING targets permuted per batch (rng 22597); held-out scored on the true targets - expected 0.5.\nRecipe: the registered Probe (blocks 10-11 + beta / gam copy, step-0 init) AdamW lr 1e-4 wd 0.01 + the head AdamW lr 1e-3 wd 0.01; bs 64; batches\nrng 22501, z rng 22551 (zdraw); held-out 1,000 (z rng 22553) every 250.",
+ "sec": 3288,
+ "head_log": {
+  "head_inputs": {
+   "hA": [
+    64,
+    768
+   ],
+   "hB": [
+    64,
+    768
+   ]
+  },
+  "head_input_def": "the ln_f hidden of the coda copy at each option's name-token decoder rows (mean); no label / gold token path",
+  "posA_example": [
+   1,
+   2
+  ],
+  "posB_example": [
+   1,
+   2
+  ]
+ },
+ "probe_lr": 0.0001,
+ "head_lr": 0.001,
+ "steps": 2000,
+ "seeds_consumed": {
+  "pool_held_stream": 22500,
+  "batches": 22501,
+  "z_train": [
+   22551,
+   "zdraw pairs"
+  ],
+  "z_held": 22553,
+  "plant_dirs": 22550,
+  "probe0_order_train": 22593,
+  "probe0_order_held": 22594,
+  "shuffle_perm": null,
+  "coin_train": 22601,
+  "signs_train": 22602,
+  "coin_held": 22603,
+  "signs_held": 22604,
+  "note": "feasibility consumed these registered streams; the certification uses FRESH streams (Theory 10-21)"
+ }
+}
