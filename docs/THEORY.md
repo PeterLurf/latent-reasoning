@@ -19654,6 +19654,50 @@ score_s219.crossed_subcase implements this, with a fixture. Fixtures stand at 49
 - **×2: FAIL** ("SD2-C2 in 1 of 2 lineages").
 - **Family realised ≈ $2.67 / $6.50** (s216_d3t_s2 ≈ $1.11, s216_r2_s1 ≈ $1.02, s216_r1_s2 ≈ $0.54; b315 never deployed). **§216 is closed.**
 
+**Note 218-15 (2026-10-20 23:0x EDT; §218 Stage A relaunch after the 10-18 ~22:10 → 10-20 22:12 local outage; before any relaunch and before any A1 / DIRECT-SYM output is read; facts from Experiments (Vast invoices, filler / guard / mirror logs, a CPU load of the mirror); Audit approves the relaunch only after this Note).**
+
+**What was lost.** Both 10-18 Stage A cells went with the outage. Nothing was fetched.
+- **A1 `lvb_sym_s1`** (b316, 56627574): the host became unreachable at about step 300 and stopped billing around 19:05 10-18. It never wrote a checkpoint, so nothing was mirrored or drained.
+- **DIRECT-SYM `lvb_direct_s1`** (b317, 56637398): the guard last read step 8,200 (21:55 10-18), and billing stopped 11:37 10-19 on Vast's side. Whether it reached 24k is unknown.
+  - The off-host mirror holds `ckpt_last.pt` at step 5,000 only (sha256 17cd24ca…, remote = local).
+  - It has **no ckpt_fingerprint.json and no log.jsonl**, so log rows 1–5,000 cannot be recovered.
+
+**(c) Nothing was read.** Anyone's view of either cell was limited to:
+- the guards' step and s/step;
+- the filler's HOSTPROBE / G-TIME / ARGS-DIFF lines (218-14).
+
+No loss, eval, probe or log content of either cell was seen. The relaunch is therefore not a selection on outcome.
+
+**(a) DIRECT-SYM restarts from step 0, not from the step-5,000 mirror.** A resume would not be the registered cell as checked:
+- **Registered files.** DIRECT's contamination record (218-10) and every log-read rule (NO-ENTRY "to the end", dead-run "log short of the registered steps") read the cell's own log.jsonl. Steps 1–5,000 of that log are gone.
+- **Exact restore.** G-L10's restore-exact check needs ckpt_fingerprint.json next to the ckpt (langvb.py l.457–462). A fingerprint computed now from the mirror would only check load against load.
+- **Cost.** The restart costs ≈ $0.5 more (≈ $1.69 against ≈ $1.2).
+
+**(b) A1 restarts from step 0.**
+- Both cells relaunch under their frozen refs (218-9): A1 scratch/s218_args_ref_a1.json sha256 33af702f…; DIRECT scratch/s218_args_ref_direct.json sha256 f4947038….
+- Same seed and stream, RTX 3090 only, the G-L12 admission per host, and the 218-14 `deterministic` ruling.
+- The lost attempts are recorded as **HOST-LOST attempts**. They are not cells, so no rule-b censor applies to them. The relaunched attempts are the cells.
+
+**Mirror condition (user rule: off-host full-state checkpoints, tested resume).**
+- Before the relaunch, every mirror copy carries `ckpt_last.pt` + `ckpt_fingerprint.json` + `log.jsonl` together, each sha-checked.
+- This gets one local smoke: mirror at a checkpoint, then resume from the mirror copy and check that resume_check.json is written.
+- Any later resume is then a G-L10 resume of the same cell. Resume step and host go in the launch log.
+
+**Spend against the $25 family cap.**
+- **Realised so far: $4.52.** A1 lost $0.135; DIRECT's BAD host $0.066 actual (the guard's $0.219 was an upper estimate); DIRECT lost $4.319.
+- **Family cap.** Lost spend counts in full against the $25 family cap, and against the s218fam GUARD_STOP on realised spend.
+- **Per-cell guards.** §8's per-cell in-flight guard ("realised incl. refused / BAD hosts") applies **per attempt**: the relaunched attempt's own spend, including its own refused / BAD hosts. Two reasons:
+  - Charging DIRECT's $4.39 outage spend to its $3.9 guard would make a required cell unrunnable.
+  - §8 rules that required A cells are never cut or shortened.
+  - The guards stay A1 $4.7 and DIRECT $3.9.
+- **Remainder and B1.** The remainder for the guards of still-eligible cells is $25 − $4.52 = $20.48, against registered guards of $24.2. Host labelling ($3.3) is conditional and local labelling is the plan. §8's cut order binds through one pre-stated launch rule:
+  - **B1 launches only if realised spend + B1's $7.0 guard ≤ $25 at its launch**, A-TXT's rule. Otherwise B1 is not run in this design (UNREAD) and the user is told.
+  - Required A cells are unaffected.
+  - Projected at the relaunch: ≈ $4.52 + A1 ≈ $4.1 + DIRECT ≈ $1.7 ≈ **$10.3**, with A2 + A2-CTRL ≈ $3.2 if A2 goes.
+- No reading, bar, formula or label changes.
+
+**Also recorded.** 218-12's second G-L7(b′)(iii) run (CPU float64) completed 19:25 10-18: **PASS, max |diff| 7.105e-15** ≤ 1e-9 (scratch/gate_s218/g_l7b_fp64.json). Both fp64 runs pass.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
