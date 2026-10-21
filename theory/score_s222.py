@@ -20,6 +20,8 @@ OUT = os.path.join(ROOT, "theory", "results", "score_s222.json")
 MS = ("1.5", "2", "3")
 STREAMS = {"lin_z": [22751, 22752], "xor_coin": [22753, 22754], "xor_signs": [22755, 22756], "noplant_coin": 22757, "shuffle_perm": 22758}
 EPS = 1e-12
+CARD_CLASS = "3090"        # Note 222-1: every §222 cert / A1 file on one cloud class, RTX 3090 (fp32)
+ACC_TOL = 0.01             # Note 222-1: ACC cross-card check
 
 
 def jl(p):
@@ -49,7 +51,7 @@ def cert_model(c, m, s2=False):
         return None, ["missing (pending)"], {}
     why, tab = [], {}
     me = c["meta"]
-    if "4060" not in str(me.get("card")) or me.get("dtype") != "fp32" or me.get("tf32") not in (False, "false", None):
+    if CARD_CLASS not in str(me.get("card")) or me.get("dtype") != "fp32" or me.get("tf32") not in (False, "false", None):
         why.append("card/dtype/tf32 %s/%s/%s" % (me.get("card"), me.get("dtype"), me.get("tf32")))
     if str(me.get("m")) != str(m):
         why.append("m %s != m_rule %s" % (me.get("m"), m))
@@ -170,6 +172,14 @@ def readings_s(ev, P_acc, c1, l0, S):
     return o
 
 
+def acc_crosscard(P4060, P3090):
+    """Note 222-1: max |acc_d2(3090) - acc_d2(4060)| over D 3..12; > ACC_TOL -> PROBE-GAIN-S uses the 3090 ACC (decided by this check only)."""
+    ds = [D for D in range(3, 13) if P4060["a"].get(D) is not None and P3090["a"].get(D) is not None]
+    mx = max(abs(P3090["a"][D] - P4060["a"][D]) for D in ds) if ds else None
+    use3090 = mx is not None and mx > ACC_TOL + EPS
+    return (P3090 if use3090 else P4060), {"max_abs_delta": mx, "use_3090_acc": use3090, "flag": "ACC from the 3090 (cross-card > %.2f)" % ACC_TOL if use3090 else None}
+
+
 NONPROBE = ("DEEP_L", "SERIAL_STEP_L", "CF_L", "NO_CLOCK_L", "NO_PRECOMPUTE_L")
 
 
@@ -183,8 +193,14 @@ def score_a1(choice):
     out = s218.score(); a1 = out["cells"]["a1"]
     if a1.get("status") not in ("SCORED", "FAIL"):
         return {"status": "pending (score_s218 A1: %s)" % a1.get("status")}
+    if CARD_CLASS not in str((ev.get("meta") or {}).get("card")):
+        return {"status": "UNREAD (eval_lvb_s222 card %s, Note 222-1 requires %s)" % ((ev.get("meta") or {}).get("card"), CARD_CLASS)}
     P_acc = s218.p_acc(s218.jl(s218.CELL["a1"], "eval_lvb.json") or {})
-    rs = readings_s(ev, P_acc, a1.get("C1"), out.get("G_L0"), choice)
+    acc3090 = s218.jl(s218.CELL["a1"], "eval_lvb_s222_acc3090.json")
+    if acc3090 is None:
+        return {"status": "pending (eval_lvb_s222_acc3090.json missing: Note 222-1 ACC cross-card check)"}
+    P_acc, xcard = acc_crosscard(P_acc, s218.p_acc(acc3090))
+    rs = readings_s(ev, P_acc, a1.get("C1"), out.get("G_L0"), choice); rs["ACC_CROSSCARD"] = xcard
     comp = {c: a1["READINGS"][c]["met"] for c in NONPROBE}
     comp["PROBE_GAIN_S"] = rs["PROBE_GAIN_S"]["met"]; comp["SERIAL_ONSET_S"] = rs["SERIAL_ONSET_S"]["met"]
     vb = all(comp.values()) and not a1.get("censored")
@@ -204,7 +220,7 @@ def _mrule(vals):
     return {"k2": k2, "m": m or "3", "flag": None if m else "ceiling below 0.985"}
 
 
-def _cert(m, lin=0.97, cex=0.95, nop=0.50, shf=0.51, p0=0.50, card="NVIDIA GeForce RTX 4060", s2guards=None, drop=None):
+def _cert(m, lin=0.97, cex=0.95, nop=0.50, shf=0.51, p0=0.50, card="NVIDIA GeForce RTX 3090", s2guards=None, drop=None):
     arms = {}
     for t in (0, 1, 2):
         for k, v in (("lin", lin), ("cexor", cex), ("noplant", nop), ("shuffled", shf)):
@@ -240,7 +256,7 @@ def fixtures():
     res.append(("S2 guard fails -> NO CERTIFIABLE PROBE", o["choice"].startswith("NO CERTIFIABLE"), o["choice"]))
     o = run({"m_rule": mr, "cert_untrained": _cert("3", nop=0.6), "cert_ref": _cert("3")}); res.append(("NOPLANT > 0.55 fails S1", o["cert"]["S1"]["CERT"] is False, o["cert"]["S1"]["untrained"]["why"]))
     o = run({"m_rule": mr, "cert_untrained": _cert("3", p0=0.52), "cert_ref": _cert("3")}); res.append(("PROBE(0) outside band fails", o["cert"]["S1"]["CERT"] is False, o["cert"]["S1"]["untrained"]["why"]))
-    o = run({"m_rule": mr, "cert_untrained": _cert("3", card="NVIDIA GeForce RTX 3070"), "cert_ref": _cert("3")}); res.append(("wrong card fails", o["cert"]["S1"]["CERT"] is False, o["cert"]["S1"]["untrained"]["why"]))
+    o = run({"m_rule": mr, "cert_untrained": _cert("3", card="NVIDIA GeForce RTX 4060"), "cert_ref": _cert("3")}); res.append(("wrong card (4060) fails", o["cert"]["S1"]["CERT"] is False, o["cert"]["S1"]["untrained"]["why"]))
     o = run({"m_rule": mr, "cert_untrained": _cert("2"), "cert_ref": _cert("2")}); res.append(("cert at wrong m fails", o["cert"]["S1"]["CERT"] is False, o["cert"]["S1"]["untrained"]["why"][:1]))
     bad = dict(mr); bad["m"] = "2"; o = run({"m_rule": bad, "cert_untrained": _cert("2"), "cert_ref": _cert("2")}); res.append(("m_rule file inconsistent -> VOID", o["choice"].startswith("VOID"), o["choice"]))
     low = _mrule({t: {"1.5": (0.9, 0.8), "2": (0.95, 0.9), "3": (0.98, 0.96)} for t in ("t0", "t1")}); res.append(("no m qualifies -> 3 flagged", bool(low["m"] == "3" and low["flag"]), low["flag"]))
@@ -270,6 +286,9 @@ def fixtures():
     r = readings_s(ev222(serial, k2c=0.95), P_acc, c1, None, "S1"); res.append(("K2 ceiling guard -> UNREADABLE", "plant at ceiling" in r["PROBE_GAIN_S"]["status"], r["PROBE_GAIN_S"]["status"]))
     r = readings_s(ev222(serial, sset="S2"), P_acc, c1, None, "S1"); res.append(("file set != selected -> UNREADABLE", r["PROBE_GAIN_S"]["status"].startswith("UNREADABLE"), r["PROBE_GAIN_S"]["status"]))
     r = readings_s(ev222(serial), P_acc, {"readable": True, "band": [8]}, None, "S1"); res.append(("C1 band < 2 depths -> UNREADABLE", r["PROBE_GAIN_S"]["status"].startswith("UNREADABLE (EMPTY-C1-BAND"), r["PROBE_GAIN_S"]["status"]))
+    Pa = {"a": {D: 0.95 for D in range(3, 13)}}; Pb = {"a": {D: 0.95 + (0.02 if D == 7 else 0.0) for D in range(3, 13)}}
+    use, x = acc_crosscard(Pa, Pb); res.append(("ACC cross-card > 0.01 -> 3090 ACC used", use is Pb and x["use_3090_acc"], x))
+    Pc = {"a": {D: 0.955 for D in range(3, 13)}}; use, x = acc_crosscard(Pa, Pc); res.append(("ACC cross-card <= 0.01 -> 4060 ACC kept", use is Pa and not x["use_3090_acc"], x))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(r[1] for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
