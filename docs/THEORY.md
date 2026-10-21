@@ -308,7 +308,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **Stage A LAUNCHED 10-18 (218-13); both cells HOST-LOST in the 10-18/20 outage, nothing read, $4.52 lost; RELAUNCH from step 0 Audit-approved 10-20 (218-15)** |
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **T1 SCORED 10-21 (219-8, Audit-reproduced): T-SELF, T-SHIFT/MIXED, n50 14.606 vs latent R1 15.460 (Delta1 -0.854, PARITY unreachable); round 2 cleared; ~$0.42 / $3.00** |
 | 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **CLOSED 10-21 at stage 0: UNREAD in both GPT-2 models (amended G-R: padded official semantics batch-dependent; pad-free bs-1 reproduces 0.379 / 0.4246 bitwise); stage 1 not triggered; arms SEALED (7c3822cf); successor to draft; $0** |
-| 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **scorer + G-D on the official runner, then G-FID; seal lifts after** |
+| 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **CLOSED 10-21: G-FID pass (zen agree 1.000; CODI20 bitwise); both GPT-2 CONTEXT-BOUND (cache-swap follow 0.033 / 0.029 vs floor 0.008; state-swap 0.033 / 0.015; NECESSARY +0.25 / +0.32); SCIT carrier not reproduced on natural GSM8K; stage 1 not triggered; $0** |
 
 ## Live sections
 
@@ -20184,6 +20184,35 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - LABELLER-FULL and EQUIV-full are descriptive (GATE_DESCRIPTIVE). Any last-bit difference there moves no gate, label or reading. The chunking is recorded in the gate file.
 - **(c) is not needed** unless (b) also fails. In that case LABELLER-FULL for W2 is reported "not run (memory)" and nothing registered changes.
 - GATE-T2 has no deadline. The retry follows T1's eval_textself GPU parts on the 3070.
+
+**§221 result (2026-10-21 06:54 EDT; theory/score_s221.py, one run after both gate_fid.json files (CODI20 06:35 on the 2070, zen 06:37 on the 3070); data = the pinned §220 bs-1 files (82aa8413 / fec1f9ec), "generated under §220's run, sealed, unread until §221's freeze"; $0).**
+
+**G-FID passes in both GPT-2 models.**
+- zen: official test.py at bs 1 vs our port, per-item agreement **1.000**, |Δacc| 0.000 (0.4246 both).
+- CODI20: determinism bitwise on all 1,319 intact shas.
+- Both: pairs[0:50] INTACT / CACHE / LEAK token shas bitwise (50 / 50 / 50).
+- Established accuracies 0.379 / 0.4246 (recorded facts).
+
+**Labels: CODI20 = CONTEXT-BOUND; zen-gpt2 = CONTEXT-BOUND. Stage-1 trigger NOT MET.**
+
+| model | pairs (max reuse) | NECESSARY (INTACT − MEAN-Z) | CACHE-SWAP follow / own / neither (floor; donor-cluster CI) | STATE-SWAP follow / own | LEAK-SEG follow / own (floor) | GRANULARITY cache − state (McNemar) |
+|---|---|---|---|---|---|---|
+| CODI20 | 483 (3) | ✓ +0.255 | **0.033** / 0.079 / 0.888 (0.008; [0.018, 0.050]) | 0.033 / 0.083 | 0.008 / 0.503 (0.005) | 0.000 (4 / 4, p 1.0) |
+| zen-gpt2 | 545 (3) | ✓ +0.319 | **0.029** / 0.059 / 0.912 (0.008; [0.015, 0.045]) | 0.015 / 0.051 | 0.009 / 0.534 (0.005) | +0.015 (9 / 1, p 0.021) |
+
+**Reading.**
+- On natural GSM8K, transplanting a donor's **latent-position K/V cache** (all layers, exact-length pairs) makes CODI-GPT2 output the donor's final answer **≈ 3 % of the time**, against a permutation floor of 0.8 %. Swapping the latent vectors alone gives the same.
+- The latents are **necessary** (+0.25 / +0.32 vs MEAN-Z), but a donor's latent computation, carried in either the vectors or the cache, mostly **breaks** the recipient's answer (neither 0.89 / 0.91) rather than redirecting it.
+- **SCIT's synthetic-template carrier (cache transplant target-win 0.70–1.00 on GPT-2) does not reproduce on natural GSM8K** at GPT-2 scale, under free-generation donor-final follow.
+- The granularity difference is tiny: zen's cache beats state by 1.5 pt (p 0.02); CODI20's is 0.
+- LEAK-SEG: overwriting the donor's last 6 question rows rarely carries the donor's answer (≤ 0.9 %), but halves the recipient's own (own ≈ 0.5). The answer still depends on the question tokens.
+- This replicates 210-4's GPT-2 reading at the cache granularity: **necessary but context-bound**.
+
+**Wording (v1 §5):** *"on natural GSM8K, neither the latent vectors nor the latent positions' KV rows of CODI-GPT2 (two models: our 20-epoch port and the official checkpoint) carry a donor's answer into another question (follow 0.03 vs floor 0.008); the latents are necessary but context-bound at both granularities. One eval-only measurement per model; not serial C1, not C3 / C4."*
+
+**Action (v1 §6):** stage 0 is not CARRIER-PORTS in either GPT-2 model, so SCIT's carrier does not reproduce on natural GSM8K in our harness. **Stage 1 (CODI-1B) needs a new Note with a fresh justification.** §221 closes. For the north star, language C1 portability is not delivered by CODI-style distillation at GPT-2 scale, which supports §218's explicit state-target route as the language-C1 candidate.
+
+**§220 seal.** §220 and its successor are now closed, so §220's sealed values may be shown once as an appendix ("pad-free bs-1 harness, gate-failed, not a reading"). They are byte-identical to §221's readings above, so no separate appendix adds anything; recorded.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
