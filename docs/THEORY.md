@@ -19939,6 +19939,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - GATE-T2 / GATE-T1′ (T1 labelling at n 13–16) still wait for the note, as §2.9 step 5 registers.
 - Items 1–2 of Audit's list, the args freeze and the 216-7 args_ref reading, are Note 219-6 (3cb9ac3a).
 
+**Note 218-21 (2026-10-21 00:31 EDT; disclosure, recorded; no reading depends on it).** Attempt 2's first DIRECT-SYM mirror (00:30 10-21, step 2,000, all companions present) overwrote attempt 1's step-5,000 mirror bytes in scratch/ckpt_mirror/lvb_direct_s1/, because the run-name directory is shared.
+- That file was an audit-trail copy only. It was never used for a resume (218-15 restarted from step 0).
+- Its sha 17cd24ca… and meta survive in 8260afa4.
+- Experiments is adding a per-attempt directory guard to ckpt_mirror.py.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
