@@ -1,0 +1,126 @@
+{
+ "def": "R3 draft OC ($0, CPU). Every prior and noise level is [ASSUMED]; the effect sizes come from committed STAB_self values (score_s213.hist24).\nStage A (mechanism test; one FRZ cell per lineage, paired with the existing no-lever twin: s1 FT-SELF, s2 R1-s2):\n  per seed  D = STAB_self(FRZ) - STAB_self(twin) = delta + e,  e ~ N(0, sqrt(2) * s_rep)  (two independent FT runs; item SE ~0.008 folded in)\n  SEED-PASS = D >= 0.08  and  STAB_self(FRZ) <= STAB_base + 0.10 (two-sided: OVERSHOOT is not a pass)  and  ABSORB (Bernoulli p_abs)\n  ADDR-CARRIES = SEED-PASS in both seeds.\n  delta: none 0 / 0; half 0.104 / 0.055; full 0.207 / 0.109 (s1 = FT-CTRL 0.696 - FT-SELF 0.489; s2 = (base 0.684 - 0.086 FT share, ASSUMED\n  equal to s1's) - R1-s2 0.489).\nStage B (round 3 proper, one lineage; R3-FRZ, with R3-PLAIN as the ablation arm): primary R3-STABLE-DEPTH = AR (ABSORB-3 and RETAIN-3) and\n  K24 (K'24-STABLE and not FT-DIVERGED) and MEMH (STAB_self(R3-FRZ) >= STAB_self(R2-s1) - 0.03) and DBS (mean a, n 21-24 >= 0.80).\n  Under no lever effect the round-3 STAB drop d ~ N(0.05, 0.04) (R2's own drop 0.052) [ASSUMED]; under the effect d ~ N(0, 0.02).\n  DBS: M3 ~ N(mu, s_lin) with mu 0.8745 (H_shift = R2's n 17-20 mean) or 0.935 (H_prop panel, derived in R3_draft section 3), s_lin 0.06-0.12.\nUsage: python -B r3_oc_sim.py  (writes r3_oc_sim.json beside this script).",
+ "stage_a": {
+  "s_rep 0.02 | none": {
+   "seed_s1": 0.0022,
+   "seed_s2": 0.0022,
+   "ADDR_CARRIES_both": 0.0,
+   "ADDR_PARTIAL_exactly_one": 0.0044,
+   "mc_both": 0.0
+  },
+  "s_rep 0.02 | half": {
+   "seed_s1": 0.7173,
+   "seed_s2": 0.1653,
+   "ADDR_CARRIES_both": 0.1186,
+   "ADDR_PARTIAL_exactly_one": 0.6455,
+   "mc_both": 0.1186
+  },
+  "s_rep 0.02 | full": {
+   "seed_s1": 0.85,
+   "seed_s2": 0.7203,
+   "ADDR_CARRIES_both": 0.6122,
+   "ADDR_PARTIAL_exactly_one": 0.3458,
+   "mc_both": 0.6101
+  },
+  "s_rep 0.04 | none": {
+   "seed_s1": 0.0747,
+   "seed_s2": 0.0747,
+   "ADDR_CARRIES_both": 0.0056,
+   "ADDR_PARTIAL_exactly_one": 0.1383,
+   "mc_both": 0.0058
+  },
+  "s_rep 0.04 | half": {
+   "seed_s1": 0.595,
+   "seed_s2": 0.2935,
+   "ADDR_CARRIES_both": 0.1746,
+   "ADDR_PARTIAL_exactly_one": 0.5392,
+   "mc_both": 0.1752
+  },
+  "s_rep 0.04 | full": {
+   "seed_s1": 0.839,
+   "seed_s2": 0.5911,
+   "ADDR_CARRIES_both": 0.496,
+   "ADDR_PARTIAL_exactly_one": 0.4382,
+   "mc_both": 0.4936
+  },
+  "s_rep 0.06 | none": {
+   "seed_s1": 0.1642,
+   "seed_s2": 0.164,
+   "ADDR_CARRIES_both": 0.0269,
+   "ADDR_PARTIAL_exactly_one": 0.2744,
+   "mc_both": 0.027
+  },
+  "s_rep 0.06 | half": {
+   "seed_s1": 0.5479,
+   "seed_s2": 0.3416,
+   "ADDR_CARRIES_both": 0.1872,
+   "ADDR_PARTIAL_exactly_one": 0.5152,
+   "mc_both": 0.1867
+  },
+  "s_rep 0.06 | full": {
+   "seed_s1": 0.7808,
+   "seed_s2": 0.5266,
+   "ADDR_CARRIES_both": 0.4112,
+   "ADDR_PARTIAL_exactly_one": 0.4851,
+   "mc_both": 0.409
+  }
+ },
+ "stage_b": {
+  "effect False | s_lin 0.06 | mu 0.8745": {
+   "AR": 0.75,
+   "K24": 0.6,
+   "MEMH": 0.3864,
+   "DBS": 0.8928,
+   "R3_STABLE_DEPTH": 0.1552
+  },
+  "effect False | s_lin 0.06 | mu 0.9350": {
+   "AR": 0.75,
+   "K24": 0.6,
+   "MEMH": 0.3864,
+   "DBS": 0.9878,
+   "R3_STABLE_DEPTH": 0.1718
+  },
+  "effect False | s_lin 0.12 | mu 0.8745": {
+   "AR": 0.75,
+   "K24": 0.6,
+   "MEMH": 0.3864,
+   "DBS": 0.7326,
+   "R3_STABLE_DEPTH": 0.1274
+  },
+  "effect False | s_lin 0.12 | mu 0.9350": {
+   "AR": 0.75,
+   "K24": 0.6,
+   "MEMH": 0.3864,
+   "DBS": 0.8697,
+   "R3_STABLE_DEPTH": 0.1512
+  },
+  "effect True | s_lin 0.06 | mu 0.8745": {
+   "AR": 0.75,
+   "K24": 0.8,
+   "MEMH": 0.6915,
+   "DBS": 0.8928,
+   "R3_STABLE_DEPTH": 0.3704
+  },
+  "effect True | s_lin 0.06 | mu 0.9350": {
+   "AR": 0.75,
+   "K24": 0.8,
+   "MEMH": 0.6915,
+   "DBS": 0.9878,
+   "R3_STABLE_DEPTH": 0.4098
+  },
+  "effect True | s_lin 0.12 | mu 0.8745": {
+   "AR": 0.75,
+   "K24": 0.8,
+   "MEMH": 0.6915,
+   "DBS": 0.7326,
+   "R3_STABLE_DEPTH": 0.304
+  },
+  "effect True | s_lin 0.12 | mu 0.9350": {
+   "AR": 0.75,
+   "K24": 0.8,
+   "MEMH": 0.6915,
+   "DBS": 0.8697,
+   "R3_STABLE_DEPTH": 0.3608
+  }
+ }
+}
