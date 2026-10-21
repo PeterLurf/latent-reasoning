@@ -40,7 +40,7 @@
  "python_version": "3.14.7",
  "cuda_version": "13.0",
  "generator_sha256": "cd659df8c07818abd28b5eca557288c5ff704821412fe6c658e270b91ad2170e",
- "module_sha256": "49aadce90b62e48317982d263d84032e42f97decd8bfeea9a9eccc72ddd1777a",
+ "module_sha256": "45baec0d27b82ea92c766d48fbe99438e299fbb9dfb378b10ce5582e76ae9f16",
  "codi_port_sha256": "5a04f7696dfb11b4f61888b7b408037308ae25c2f24f17065f787a463d121710",
  "test_items_sha": "652635f84ef07ad947dbe095139f7974ae4e65a11101d6c866de39e0f166b296",
  "pair_candidates_sha": "d5d089c7ab582f04300068df933ce55ce39dff9487b7481ae5d5cc69aef2d7fb",
