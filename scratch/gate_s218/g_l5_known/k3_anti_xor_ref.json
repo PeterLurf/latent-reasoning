@@ -1,0 +1,96 @@
+{
+ "note": "Note 218-17",
+ "model": "scratch/gate_s218/g_l1c_model",
+ "untrained_cal": {
+  "model_run": "scratch/gate_s218/g_l1c_model",
+  "arch": "lslva",
+  "arch_class": "LangSLVA",
+  "source": "scratch/s218_l1c_save.py (G-L1c re-run, 218-17 (a))",
+  "items_sha": "7973da5bc4e23ad1fb8df8259dcfcc24eccfda29e286ba2098da4088d05d8e29",
+  "steps_run": 200
+ },
+ "card": "NVIDIA GeForce RTX 4060",
+ "dtype": "fp32",
+ "tf32": false,
+ "pool_n": 200000,
+ "held_n": 1000,
+ "eps": 7.8609547116856895,
+ "eps_rel": 0.04766710641449648,
+ "vnorm": 164.91361240452855,
+ "eig_40_60": [
+  73.43747273738877,
+  71.70143811203262,
+  70.6165518511083,
+  70.30895147215165,
+  68.51669825259391,
+  67.41399972518859,
+  67.13487091102009,
+  64.85578563429672,
+  64.42914621471515,
+  63.70360888685768,
+  61.79460897917344,
+  61.263160479320746,
+  59.07689061177684,
+  58.98208561391886,
+  58.16426417387103,
+  57.3779028186184,
+  56.3033018501696,
+  55.46757071996437,
+  55.09963103557593,
+  54.12590511907572,
+  54.00801156375129
+ ],
+ "eig_50": 61.79460897917344,
+ "setup_sec": 243,
+ "commit": "5e03d315",
+ "recipe": "Probe(m, 1e-4) (AdamW lr 1e-4 wd 0.01, step-0 init); pbs 64; batches np rng 22501; z rng 22551 (zdraw); held-out 1000, z rng 22553 per read",
+ "eps_base": 7.8609547116856895,
+ "by_mult": {
+  "10": {
+   "eps": 78.6095471168569,
+   "curve": [
+    [
+     250,
+     0.477
+    ],
+    [
+     500,
+     0.486
+    ],
+    [
+     750,
+     0.5
+    ],
+    [
+     1000,
+     0.519
+    ],
+    [
+     1250,
+     0.481
+    ],
+    [
+     1500,
+     0.501
+    ],
+    [
+     1750,
+     0.514
+    ],
+    [
+     2000,
+     0.53
+    ]
+   ],
+   "final": 0.53,
+   "max": 0.53,
+   "first750_mean": 0.4876666666666667,
+   "last750_mean": 0.515,
+   "rising_005": false,
+   "sec": 2428
+  }
+ },
+ "plant": "Theory 10-21 item 6 (scratch only; Note 218-18 candidate): ANTISYMMETRIC plant - o1 row += eps (2z - 1) u (+ eps (2 z2 - 1) u2 for xor), o2 row -= the same. (xor form)",
+ "probe_lr": 0.0001,
+ "k3_steps": 2000
+}
