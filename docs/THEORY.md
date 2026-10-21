@@ -20164,6 +20164,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - A different probe architecture (for example an MLP head on the option rows) would be a **new design after §218 is scored**, not a rescue of §218's registered probe readings.
 - This supersedes the earlier symmetric m rule (1.75 / 2.0) and closes 218-17's question: **(a) the bar sat at the symmetric plant's ceiling, and the plant was invisible to the readout; not wiring.**
 
+**Note 218-25 (2026-10-21 06:28 EDT; CORRECTION to Note 218-18 item 3 (diagnosis), from the PROBE2 review (REVIEW_P2.md §1, Opus proof check); predictions pre-stated before R1 / R3 xor outputs exist; §218's outcome (218-18 items 1–2) is unchanged).**
+- **Frame Lemma [PROVED at t = 0; checked against coda_ls / block_bank / dec_logprobs / plant_V_anti].**
+  - The registered PLANT readout scores each option by a function of (V_t, that option's name string): Δ = s(V_t, name_A) − s(V_t, name_B). It can choose an option only by **content**. The decoder strings do not see the question, and V_0 precedes it, so at t = 0 the readout has no access to **display order** (which option was named first).
+  - The antisymmetric xor plant (o1 += ε(s1u + s2u2), o2 −= the same; label z1 ⊕ z2) gives the two rows sign products s1·s2 and (−s1)(−s2) = s1·s2, which are **identical**. So no content rule separates the rows, and the label is a function of display order alone.
+  - Hence registered anti-xor reads **exactly ½ at t = 0 for every recipe, learning rate, budget and strength**. At t ≥ 1 it is capped by how well display order can be read from V_t, which is about ½ here.
+  - This explains 0.522 / 0.515 / 0.532 and why K2's oracles, which receive [r1, r2] in order, read xor easily.
+  - The antisymmetric lin plant is content-separable (the target row carries +u), so 1.000 is consistent.
+- **Correction.** 218-18 item 3's "capacity / architecture limit of this probe" is **withdrawn**. The anti-xor failure is a **plant-definition flaw (order-dependent label vs an order-blind readout)**, not a probe-capacity limit.
+- **218-23 sweep: closed by construction.** Any G-L5 re-run includes t = 0, where anti-xor is ½. **Pre-stated prediction:** R1 (lr 1e-4, 10k) and R3 (lr 1e-3) anti-xor LATE ≈ 0.50 (no candidate qualifies). They finish as descriptive known-answer rows.
+- **§218's readings are unchanged**: (iii), PROBE-VALID on A1 fails structurally, so PROBE-GAIN-L / SERIAL-ONSET-L are UNREADABLE and VB-C1-L is NOT MET.
+- **For any successor:** a valid xor control for an order-blind readout must be **content-equivariant** (REVIEW_P2 §2.4). A fair coin picks the target row T. T += ε(s1u + s2u2) with s1s2 = +1, and the other row += ε(s3u + s4u2) with s3s4 = −1. The label is "the row whose u- and u2-signs agree".
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
