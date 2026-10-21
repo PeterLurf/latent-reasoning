@@ -43,7 +43,8 @@ def label_stage(a, cfg):
     g, sha = TS.load_model(os.path.join(run, "model.pt"), a.device); gi = json.load(open(os.path.join(cfg["gate_dir"], "gate_items.json")))
     outp = os.path.join(cfg["gate_dir"], "gate_labels_%s.json" % a.labeller)
     res = {"labeller": run, "labeller_sha256": sha, "windows": {}, "card": torch.cuda.get_device_name(a.device) if a.device.startswith("cuda") else "cpu",
-           "t_start": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
+           "t_start": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"), "label_full_bs": a.full_bs or a.label_bs,
+           "label_full_bs_note": "Note 219-9 (b): descriptive LABELLER-FULL in micro-chunks of 64 inside each 128 batch" if a.full_bs else None}
     wsel = [w for w in a.windows.split(",") if w] or list(gi["windows"])
     for w in wsel:
         wd = gi["windows"][w]; its = wd["items"]
@@ -51,7 +52,7 @@ def label_stage(a, cfg):
             its = [it for n in wd["ns"] for it in [x for x in its if x["n"] == n][:a.per_n_cap]]
         sy = [it["syms"] for it in its]; t0 = time.time()
         tf = TS.label_reroot(g, sy, a.label_bs); t_tf = time.time() - t0; t0 = time.time()
-        full = TS.label_full(g, sy, a.label_bs) if not a.skip_full else None; t_full = time.time() - t0
+        full = TS.label_full(g, sy, a.full_bs or a.label_bs) if not a.skip_full else None; t_full = time.time() - t0   # Note 219-9 (b): --full_bs 64 = micro-chunks of 64 inside each 128 batch (label_full batches consecutive chunks of the length-sorted items)
         eq_idx = [i for n in wd["ns"] for i in [q for q, it in enumerate(its) if it["n"] == n][:TS.EQUIV_PER_N]]; t0 = time.time()
         ge = TS.gen_reroot(g, [sy[i] for i in eq_idx]) if not a.skip_equiv else None; t_ge = time.time() - t0; t0 = time.time()
         gf = TS.gen_full(g, [sy[i] for i in eq_idx]) if not (a.skip_equiv or a.skip_full) else None; t_gf = time.time() - t0
@@ -179,7 +180,7 @@ def score_stage(a, cfg):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--round", type=int, required=True, choices=[1, 2]); ap.add_argument("--stage", required=True, choices=["label", "score"])
     ap.add_argument("--labeller", default="primary", choices=["primary", "fallback"]); ap.add_argument("--windows", default=""); ap.add_argument("--device", default="cuda:1")
-    ap.add_argument("--label_bs", type=int, default=TS.LABEL_BS); ap.add_argument("--skip_full", action="store_true", help="smokes only"); ap.add_argument("--skip_equiv", action="store_true", help="smokes only")
+    ap.add_argument("--label_bs", type=int, default=TS.LABEL_BS); ap.add_argument("--skip_full", action="store_true", help="smokes only"); ap.add_argument("--full_bs", type=int, default=0, help="Note 219-9 (b): label_full (descriptive) batch; 0 = label_bs"); ap.add_argument("--skip_equiv", action="store_true", help="smokes only")
     ap.add_argument("--out_root", default="", help="smokes only"); ap.add_argument("--labeller_override", default="", help="smokes only"); ap.add_argument("--per_n_cap", type=int, default=0, help="smokes only")
     a = ap.parse_args()
     if a.out_root or a.labeller_override or a.per_n_cap or a.skip_full or a.skip_equiv:
