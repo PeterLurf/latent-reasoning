@@ -19979,6 +19979,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **The OC pair** for PROBE-VALID under the chosen plant is computed from that branch's K2-anti / K3-anti data and stated in 218-18.
 - **Supersedes** the symmetric m rule pre-stated for 218-18 (1.75 / 2.0).
 
+**Note 220-3 (2026-10-21 01:56 EDT; G-R agreement criterion: a pre-stated known-answer check before any amendment. CODI20's eval_gcs.json exists and score_s220 read it UNREAD at G-R (agree 0.667 < 0.97; |Δacc| 0.021 ≤ 0.025; acc_bs1 0.3791). **No swap-arm value has been read by Theory, Experiments or Audit.** For Audit's ruling; nothing here runs before Audit's OK.)**
+- **The concern.** The official semantics (test.py: left pads attended, no attention mask, virtual bs 128) make each item's output depend on its batch's composition and maximum length (REVIEW 1b). A per-item agreement bar of 0.97 against one official run may then be unattainable even for the official code itself, which would make the gate vacuous.
+- **Check (CODI20 first; the same check for zen-gpt2 and any stage-1 model before its G-R is read).**
+  - Two more official-semantics runs on the same checkpoint and card, with the item order shuffled before forming the 128-blocks (rng 22030, 22031). Official arm only, written to scratch/s220/official_shuffle_<seed>.json.
+  - **A_oo** = the mean of the three pairwise per-item agreements among {the original official run, shuffle 22030, shuffle 22031}.
+- **Rule (mechanical):**
+  - **A_oo ≥ 0.97:** the official semantics are self-consistent, so our bs-1 harness genuinely differs. **UNREAD stands.**
+  - **A_oo < 0.97:** the registered per-item bar is unattainable by construction. G-R becomes:
+    - |Δacc(bs-1 vs official)| ≤ 0.025;
+    - **and** agree(bs-1, official) ≥ A_oo − 0.05: the harness may disagree with the official run no more than the official run disagrees with itself, plus 0.05;
+    - **and** the format gates (CODI20 |acc − 0.379| ≤ 0.025; zen-gpt2 |acc − 0.4246| ≤ 0.025, 220-2).
+  - The amended gate is applied to every §220 model identically. A_oo and all agreements are reported.
+- **Nothing else changes:** the asserts, the pairs and every reading, bar and label.
+- The scorer output (theory/results/score_s220.json) is not committed and not opened beyond its label until the rule has fired.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
