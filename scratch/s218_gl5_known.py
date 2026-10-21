@@ -28,10 +28,12 @@ OUT = "scratch/gate_s218/g_l5_known"
 
 
 TAG = ""
+PROBE_LR = 1e-4                                                             # the registered probe lr; --probe_lr only for descriptive arms (Theory 10-21)
+OUT_NAME = ""
 
 
 def save(name, o):
-    name = name + TAG if TAG and not name.endswith(TAG) else name; os.makedirs(OUT, exist_ok=True); json.dump(o, open(os.path.join(OUT, name + ".json"), "w", newline="\n"), indent=1); print("WROTE", name, flush=True)
+    name = OUT_NAME or (name + TAG if TAG and not name.endswith(TAG) else name); os.makedirs(OUT, exist_ok=True); json.dump(o, open(os.path.join(OUT, name + ".json"), "w", newline="\n"), indent=1); print("WROTE", name, flush=True)
 
 
 def scaled(d, mult):
@@ -124,7 +126,7 @@ def k3(m, pool, held, d1, dev, chunk, bs, steps=2000, every=250, pbs=64, mults=(
     res = {"recipe": "Probe(m, 1e-4) (AdamW lr 1e-4 wd 0.01, step-0 init); pbs 64; batches np rng 22501; z rng 22551 (zdraw); held-out 1000, z rng 22553 per read",
            "eps_base": d1["eps"], "by_mult": {}}
     for mult in mults:
-        d = {1: scaled(d1, mult)}; pr = E.Probe(m, 1e-4); rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); curve = []; t0 = time.time()
+        d = {1: scaled(d1, mult)}; pr = E.Probe(m, PROBE_LR); rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); curve = []; t0 = time.time()
         for st in range(1, steps + 1):
             ix = rb.integers(0, len(pool), pbs); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, 1, dev, chunk); zs = zd(rz, pbs, dev)
             pr.opt.zero_grad(set_to_none=True); sA, sB, y = E.probe_forward(m, pr, kind, 1, sub, b, S, d, zs, dev)
@@ -395,8 +397,8 @@ def fl(x):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--arms", default="k1,k2,k3"); ap.add_argument("--bs", type=int, default=16)
-    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2")
-    a = ap.parse_args(); global TAG; TAG = a.tag; dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
+    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2"); ap.add_argument("--probe_lr", type=float, default=1e-4, help="descriptive arms only (registered: 1e-4)"); ap.add_argument("--out_name", default="", help="override the saved JSON name (one arm per call)")
+    a = ap.parse_args(); global TAG, PROBE_LR, OUT_NAME; TAG = a.tag; PROBE_LR = a.probe_lr; OUT_NAME = a.out_name; dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
     if a.model_run:
         m, info = E.load(a.model_run, dev); info = {"model_run": a.model_run, **{k: info.get(k) for k in ('arch', 'arch_class', 'source', 'items_sha', 'steps_run')}}
     else:
@@ -424,7 +426,7 @@ def main():
     if "k3anti" in arms:
         r = k3anti(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults)); save("k3_anti", {**meta, **r})
     if "k3antixor" in arms:
-        r = k3antixor(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults)); save("k3_anti_xor", {**meta, **r})
+        r = k3antixor(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), steps=a.k3_steps); save("k3_anti_xor", {**meta, **r, "probe_lr": PROBE_LR, "k3_steps": a.k3_steps})
     if "k2antixor" in arms:
         r = k2antixor(m, pool, d1, dev, a.chunk, a.bs); save("k2_anti_xor", {**meta, **r})
     if "k2anti" in arms:
