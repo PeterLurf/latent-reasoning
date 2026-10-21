@@ -77,7 +77,7 @@ dirty=$( { git status --porcelain boxes/ | grep -v "^??" | grep -v "boxes/runs";
 log "start: QS $QS; family \$$CAPF; PSTEPS $PSTEPS; SETUP_H $SETUP_H; HOSTMAX $HOSTMAX; m_rule sha $(sha256sum $MR | cut -c1-12); s222_cert sha $(sha256sum scratch/s222_cert.py | cut -c1-12); s222_a1 sha $(sha256sum scratch/s222_a1.py | cut -c1-12)"
 
 for cell in $QS; do
-  IFS=: read -r n run CAPC <<<"$cell"; tries=0; gi=$(cell_group "$run"); xh=0; [ "$run" = s222_a1_g0 ] && xh=$EXTRA_H
+  IFS=: read -r n run CAPC <<<"$cell"; tries=0; gi=$(cell_group "$run"); xh=0; [ "$run" = s222_a1_g0 ] && xh=$EXTRA_H; [ "$n" = 320 ] && xh=${ENV_H:-0.5}   # b320 also runs the Note 222-3 (b) envelope line
   grep -q "^$n:$run " "$ADMLOG" 2>/dev/null && { log "b$n: $run already admitted - next"; continue; }
   [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
   case "$run" in s222_a1_*)
