@@ -12,3 +12,11 @@
 2026-10-21 04:43:57 s219_post_t1 GPU parts STOPPED by pid ~2 min in (Note 219-8: round-2 gates first on the 3070; nothing written; rerun in scratch/s219_3070_queue_r2.sh)
 2026-10-21 12:05:28 s219_post_t2 armed (pid 2750): waiting for the gen_b319 drain + boxes/runs_fsq/s219_t2_s1/train_done.json + model.pt
 2026-10-21 12:33:11 §219 T2 b319 drained 12:30 DESTROYED_VERIFIED; s219fam guard (pid 941) + 319 mirror process (pid 936) stopped by pid; mirror dir kept (KEEP_MIRROR, until score_s219)
+2026-10-21 12:35:29 s219_post_t2 LANDED: 2026-10-21 12:30:37 gen_b319 57065510 
+2026-10-21 12:35:32 s219_post_t2 landing rc 0
+2026-10-21 12:35:33 s219_post_t2 landing check PASS: model_sha256 300c99ef847ae16f self steps 5992 train_sec 6649 nonfinite 0 5992: True
+2026-10-21 12:35:33 s219_post_t2 G-T19 ok (base eval_text.json + BASE_NOTE BASE_NOTE = {"note": "219-5", "branch": "levels"})
+2026-10-21 12:35:33 s219_post_t2 waiting for the 3070 (busy: GPU-bda2f3be-d9b5-46de-6b2a-97dcecfd5acb, 11604, C:\Users\peter\AppData\Local\Python\bin\python.exe;)
+2026-10-21 15:17:43 s219_post_t2 eval_text rc 0
+2026-10-21 15:17:43 s219_post_t2 T2 eval_text meta: OK NVIDIA GeForce RTX 3070 fp32 tf32 False bs 32 sec 4919 peak_gib 4.980096817016602
+2026-10-21 15:17:43 s219_post_t2 STAGE_BOUNDARY (G-T11): commit boxes/runs_fsq/s219_t2_s1/eval_text.json now (off the working card)
