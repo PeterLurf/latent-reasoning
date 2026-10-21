@@ -1,0 +1,15 @@
+2026-10-21 02:53:31 218-17 k3swap (untrained, 2070) rc 0
+2026-10-21 04:41:53 l1c_save (4060) rc 0
+2026-10-21 04:42:41 l1c disjoint rc 0
+2026-10-21 04:42:41 l1c same-model gate rc 0: SAME-MODEL SAME (within 0.005)
+2026-10-21 05:26:59 ref anti_x10 rc 0
+2026-10-21 06:12:48 ref antixor_x10 ended (1 WROTE line; started by s218_after_diag_4060b.sh)
+2026-10-21 06:23:24 ref k2anti ended (1 WROTE line; started by s218_4060_queue_c.sh)
+2026-10-21 06:29:40 218-23 sweep_R1_lin_x1.5_2070 STOPPED by pid (uninformative by Note 218-25; partial log .void_closed); R1 xor + the x10 extras not run
+2026-10-21 06:29:40 218-23 sweep (2070 part) done (stopped, uninformative by 218-25)
+2026-10-21 06:41:23 §218 DIRECT eval_direct python ended (started by queue e): boxes/runs_fsq/lvb_direct_s1/eval_direct.json; log tail: DONE boxes/runs_fsq/lvb_direct_s1\eval_direct.json
+2026-10-21 09:36:33 218-25 feas2_s1 python (pid 9100) STOPPED by pid during lin t0 x1.5 (Theory + Audit 10-21: superseded by §222 certification); remaining arms lin t0 / noplant t1 / shuffled not run; log -> .void_superseded
+2026-10-21 10:18:55 218-25 feas2 S2 (untrained, 2070) rc 0
+2026-10-21 11:24:47 post-reboot: queue h + s218_a1_post_landing.sh relaunched (wait for the 4060 / b316 drain / queue d done)
+2026-10-21 12:23:56 218-25 feas2 S1 python ended (started by queue g; 4 WROTE lines)
+2026-10-21 12:24:15 §218 DIRECT contamination re-run (4060) rc 0; identity check rc 0: SAME differing keys: [] | contamination key present after: True

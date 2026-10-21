@@ -1,0 +1,32 @@
+SETUP 91 s m 3 eps {'0': 11.623897070735415, '1': 20.632774760138766, '2': 24.62638082031204} groups [['cexor_t0', 'lin_t0', 'noplant_t0', 'probe0', 'shuffled_t0', 'cexor_t1', 'lin_t1'], ['noplant_t1', 'shuffled_t1', 'cexor_t2', 'lin_t2', 'noplant_t2', 'shuffled_t2']]
+CERT group 0 ['cexor_t0', 'lin_t0', 'noplant_t0', 'probe0', 'shuffled_t0', 'cexor_t1', 'lin_t1']
+CERT step 30 {'cexor_t0': 0.547, 'lin_t0': 0.531, 'noplant_t0': 0.531, 'probe0': 0.547, 'shuffled_t0': 0.516, 'cexor_t1': 0.547, 'lin_t1': 0.531} 188 s
+CERT step 60 {'cexor_t0': 0.609, 'lin_t0': 0.5, 'noplant_t0': 0.531, 'probe0': 0.625, 'shuffled_t0': 0.594, 'cexor_t1': 0.578, 'lin_t1': 0.547} 291 s
+CERT step 90 {'cexor_t0': 0.609, 'lin_t0': 0.719, 'noplant_t0': 0.547, 'probe0': 0.547, 'shuffled_t0': 0.484, 'cexor_t1': 0.516, 'lin_t1': 0.719} 397 s
+CERT step 120 {'cexor_t0': 0.688, 'lin_t0': 0.906, 'noplant_t0': 0.578, 'probe0': 0.516, 'shuffled_t0': 0.453, 'cexor_t1': 0.531, 'lin_t1': 0.891} 503 s
+CERT step 150 {'cexor_t0': 0.734, 'lin_t0': 1.0, 'noplant_t0': 0.5, 'probe0': 0.516, 'shuffled_t0': 0.547, 'cexor_t1': 0.562, 'lin_t1': 0.922} 608 s
+CERT extend to 300: ['cexor_t0', 'lin_t0', 'shuffled_t0', 'lin_t1']
+CERT step 180 {'cexor_t0': 0.734, 'lin_t0': 1.0, 'shuffled_t0': 0.484, 'lin_t1': 0.938} 686 s
+CERT step 210 {'cexor_t0': 0.734, 'lin_t0': 0.984, 'shuffled_t0': 0.641, 'lin_t1': 0.984} 763 s
+CERT step 240 {'cexor_t0': 0.703, 'lin_t0': 0.984, 'shuffled_t0': 0.453, 'lin_t1': 0.969} 841 s
+CERT step 270 {'cexor_t0': 0.719, 'lin_t0': 1.0, 'shuffled_t0': 0.547, 'lin_t1': 0.984} 920 s
+CERT step 300 {'cexor_t0': 0.734, 'lin_t0': 1.0, 'shuffled_t0': 0.625, 'lin_t1': 0.984} 999 s
+CERT probe0 test 0.5667
+CERT group 0 done 909 s
+WROTE scratch/_tmp/s222_equiv\old\cert_untrained.partial.json
+CERT group 1 ['noplant_t1', 'shuffled_t1', 'cexor_t2', 'lin_t2', 'noplant_t2', 'shuffled_t2']
+CERT step 30 {'noplant_t1': 0.547, 'shuffled_t1': 0.547, 'cexor_t2': 0.547, 'lin_t2': 0.609, 'noplant_t2': 0.438, 'shuffled_t2': 0.531} 1107 s
+CERT step 60 {'noplant_t1': 0.547, 'shuffled_t1': 0.562, 'cexor_t2': 0.531, 'lin_t2': 0.516, 'noplant_t2': 0.516, 'shuffled_t2': 0.594} 1216 s
+CERT step 90 {'noplant_t1': 0.609, 'shuffled_t1': 0.578, 'cexor_t2': 0.516, 'lin_t2': 0.609, 'noplant_t2': 0.516, 'shuffled_t2': 0.516} 1325 s
+CERT step 120 {'noplant_t1': 0.641, 'shuffled_t1': 0.5, 'cexor_t2': 0.562, 'lin_t2': 0.594, 'noplant_t2': 0.516, 'shuffled_t2': 0.484} 1429 s
+CERT step 150 {'noplant_t1': 0.547, 'shuffled_t1': 0.484, 'cexor_t2': 0.5, 'lin_t2': 0.5, 'noplant_t2': 0.531, 'shuffled_t2': 0.547} 1537 s
+CERT extend to 300: ['noplant_t2']
+CERT step 180 {'noplant_t2': 0.484} 1595 s
+CERT step 210 {'noplant_t2': 0.453} 1651 s
+CERT step 240 {'noplant_t2': 0.469} 1708 s
+CERT step 270 {'noplant_t2': 0.484} 1766 s
+CERT step 300 {'noplant_t2': 0.484} 1822 s
+CERT group 1 done 823 s
+WROTE scratch/_tmp/s222_equiv\old\cert_untrained.partial.json
+WROTE scratch/_tmp/s222_equiv\old\cert_untrained.json
+EQUIV_RUN old arms 13 src_sha 86f652f68d79
