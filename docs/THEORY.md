@@ -20553,6 +20553,30 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Realised $0 (no §222 host was launched); the local gates cost $0.
   - The registered text, scorer and harness stay, so a certification can run later at ≈ $10 if a LangSLVA probe reading is ever registered.
 
+**Note 223-4 (2026-10-21 14:24 EDT; §223 LEARNING PILOT, an engineering gate before any §223 cloud cell (Audit's request after §218's diagnosis); pre-stated before any §223 training output; descriptive, feeds no registered reading; no bar, label or args change).**
+- **Why.** §218 A1 (answer CE + recode CE, the same loss shape as §223 PS / M1-only) fitted the template tokens (answer_ce 0.24) and its recode targets (rec_ce 0.22). It never fitted the choice: train plain_cand_ce stayed ≥ ln 2 at every 1k bin, and both CurGate advances came on the 6k caps (diagnosis in the §218 close). A $0 local pilot checks that §223's recipe leaves the answer learnable before up to $20 of cloud spend.
+- **Runs (local, any free card, bf16 as registered; outputs under scratch/_tmp/s223_pilot/<cell>):**
+  - DIRECT and PS, with each frozen args file of 223-3 exactly, except --out and --stop_at 4600. --steps 24000 is kept, so warm-up and cosine are the registered schedule.
+  - M1-only if a card is free; M2-only is optional and descriptive.
+  - With cg_cap 2500 and need 2 × 1k bins, 4,600 steps shows the stage 1 → 2 decision and, when stage 1 advanced by threshold at ≤ 2,000, also the stage 2 → 3 decision (earliest 4,000, cap ≤ 4,500).
+- **Pass (per gating cell; read from stages.jsonl `reason`, log.jsonl `entry_step` and the num_ce 1k bins):**
+  - **LP1 (DIRECT sanity):** DIRECT's stage 1 → 2 advance is by threshold (reason starts "threshold"), not the cap.
+  - **LP2 (PS):** PS's stage 1 → 2 advance is by threshold. If DIRECT's stage 2 → 3 advance is by threshold, PS's must be too.
+  - **LP3 (no starvation):** PS entry_step ≤ DIRECT entry_step + 1,500 (entry = the first logged step with the 100-step window num_ce < 0.5; None by 4,600 = fail).
+  - **M1-only, if run:** LP2 / LP3 against DIRECT in the same way. If not run, its cloud cell needs its own pilot pass before launch.
+- **Descriptive:** per-term grad norms on the shared params (LoRA + prj: gn_ans_shared, gn_rec_shared, cos_ans_rec, each log step). **§218 signature flag:** median gn_rec / gn_ans ≥ 10 over logged steps while every num_ce bin is ≥ 1.0. It is reported and does not gate.
+- **Outcome.**
+  - LP1 fails → the recipe or task is at fault for every cell. No §223 cloud cell; a design Note comes first.
+  - LP2 or LP3 fails → no §223 cloud cell (DIRECT included, since it only serves the latent cells); a design Note comes first.
+  - All pass → the filler may run as registered (DIRECT first).
+  - A pilot that dies before its decision is re-run, not failed.
+- **No OC block:** no registered reading depends on it. A false FAIL costs time only, a false PASS costs at most the §223 cap.
+- **Module change after the 223-3 freeze (logged only).** The per-term norms come from a logging-only edit to boxes/codi_ps.py: term_grad_norms via torch.autograd.grad(retain_graph=True) on the first micro-batch of each log step. There are no new or changed arguments. The edit lands only if:
+  - (a) it is committed before any pilot or deploy, and its sha is recorded here by a follow-up line as the registered module (args' module_sha256 differs from 223-3's files in that key only; ARGS-DIFF = {module_sha256});
+  - (b) a ≥ 50-step PS run from the 223-3 commit vs the new commit, same card / seed / micro under the G-D deterministic setting, gives identical loss and num_ce at every logged step and an identical trainable sha at stop;
+  - (c) the plain-path smoke passes.
+  - Otherwise the pilot runs on the 223-3 module and the norms are not logged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
