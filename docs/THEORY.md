@@ -19794,6 +19794,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - At ratio 2.5 with R2 = SELF exactly: 0.52 / 0.45, since the KL_R2 ≥ KL_SELF clause is then a coin flip.
 - **Realised $: $0** (local 4060).
 
+**Note 216-12 (2026-10-20 22:52 EDT; KL-DRIFT card split before any KL output (Experiments' question; the 2070 is free); descriptive rows only).** The s2 pair (R1-s2 with its base D3-T s2) may run on the local RTX 2070, fp32, eval_bs 32, with its own n 3–8 gate against eval_vb (±0.005).
+- Every KL is computed within a model / base pair **on one card**, so the split never mixes cards inside a comparison.
+- The registered reading (s1: FT-CTRL / FT-SELF / R2-s1 against D3-T s1) stays entirely on the 4060.
+- The s2 row is descriptive, as registered. The card is recorded per file.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
