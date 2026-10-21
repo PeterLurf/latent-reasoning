@@ -20307,6 +20307,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Unchanged:** plants, m = 3 (m_rule.json 8a3dca1b, untrained 4060), streams, bars, controls, the choice rule S1 > S2 > none, readings.
 - **score_s222** now requires card class **"3090"** across every §222 cert / A1 file, and accepts the ACC-check file. It is committed with a fixture before any deploy.
 
+**Note 222-2 (2026-10-21 10:22 EDT; per-host admission shares for 222-1, before any §222 deploy; budget arithmetic only).**
+- Equal shares ($20 / 7 = $2.857) would refuse A1 g1 at its own worst-case projection: 4.27 s/step locally → ≈ 2.85 s/step on a 3090 × 20k steps ≈ 16.2 h ≈ $3.7. That is the long pole.
+- **Shares are proportional to each group's measured worst-case hours.** Hours = local s/step ÷ 1.5 × 20,000 / 3600 + 0.35 h setup. Share = $20 × hours / Σ hours, with Σ hours ≈ 81 h (≈ $18.7 at $0.23 / h):
+
+  | host | share |
+  |---|---|
+  | CERT untrained g0 | $2.62 |
+  | CERT untrained g1 | $2.68 |
+  | CERT reference g0 | $2.62 |
+  | CERT reference g1 | $2.68 |
+  | **A1 g0** | **$3.05** |
+  | **A1 g1** | **$3.97** |
+  | A1 g2 | $2.38 |
+
+- Admission rule (222-1): the host's G-TIME s/step × 20,000 / 3600 + 0.35 h, priced at the host's $/h, must not exceed its share.
+- The per-host guard is 1.3 × the admitted projection. The family stays capped at **$20** by s222fam GUARD_STOP on realised spend, so the shares cannot add spend beyond the cap.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
