@@ -13,3 +13,4 @@
 2026-10-21 11:24:47 post-reboot: queue h + s218_a1_post_landing.sh relaunched (wait for the 4060 / b316 drain / queue d done)
 2026-10-21 12:23:56 218-25 feas2 S1 python ended (started by queue g; 4 WROTE lines)
 2026-10-21 12:24:15 §218 DIRECT contamination re-run (4060) rc 0; identity check rc 0: SAME differing keys: [] | contamination key present after: True
+2026-10-21 12:45:48 4060 queue d done (queue h)
