@@ -20324,6 +20324,34 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - Admission rule (222-1): the host's G-TIME s/step × 20,000 / 3600 + 0.35 h, priced at the host's $/h, must not exceed its share.
 - The per-host guard is 1.3 × the admitted projection. The family stays capped at **$20** by s222fam GUARD_STOP on realised spend, so the shares cannot add spend beyond the cap.
 
+**Note 221-2 (2026-10-21 12:12 EDT; §221's descriptive arms, read after §221's close (Audit, relaying the user's 10-21 go-ahead). Pointers vs carriers. Descriptive only, no verdict; from the pinned eval_gcs.json files (CODI20 82aa8413 / zen fec1f9ec). Lens script: docs/research_scaleprobe_2026-10-20/lens221.py.)**
+
+**Question.** Are CODI-GPT2's GSM8K latents **(a) pointers** that make the answer phase re-read the question, or **(b) carriers** of intermediate values that the answer phase recombines with the recipient's question?
+
+| arm (both GPT-2 models; CODI20 / zen) | value | reading |
+|---|---|---|
+| K-sweep K 0 / 3 / 6 / 10 | 0.173 / 0.287 / 0.379 / 0.370 · 0.224 / 0.372 / 0.425 / 0.409 | no gain past K 6; jump at K 3 |
+| **QMASK** (answer phase cannot attend to question content) | **0.005 / 0.002** (K0 floor 0.014 / 0.000) | the answer **needs the question** |
+| QDROP (own latents, no question) | 0.054 / 0.062 (K0 floor 0.014 / 0.015) | a small residue above floor (≈ +4 pt) |
+| **LOGIT-LENS** h_j (final-layer state at latent j) → an **intermediate result** of the gold solution | **j2 / j4 / j6: 0.49 / 0.51 / 0.48** · 0.54 / 0.45 / 0.44 (odd j 0.06–0.21) | intermediates are decodable at alternate latents |
+| LOGIT-LENS → the **final answer** | ≤ 0.03 at every j | the answer is **not** in the latents |
+| LOGIT-LENS → a question number | 0.03–0.26 | some copying |
+| PREFIX-SWAP z_1..z_k (follow / own) | k1 0.00 / 1.00 · 0.004 / 0.48; k3 0.01 / 0.50 · 0.009 / 0.27; k5 0.03 / 0.08 · 0.015 / 0.04 | z_1 inert in CODI20; middle latents load-bearing |
+| cache variants, own kept | k_only 0.80 / 0.75; v_only **0.11 / 0.06**; last_row 0.96 / 0.96; layers_lo 0.96 / 0.97; layers_hi **0.10 / 0.06** | the content sits in **upper-layer V rows across latent positions** |
+| **INT-FOLLOW** (graph-matched pairs; output = the recipient's program applied to the donor's first intermediate, U6) | **Δ = 0: cache 0.39 / 0.50, state 0.46 / 0.54** (n 33 / 26); Δ ≠ 0 (position-confounded): cache 0.34 / 0.33, state 0.34 / 0.35 (n 202 / 249) | swapped latents deliver the donor's **intermediate**; own ≤ 0.05 |
+
+**Descriptive read: (b) carriers.**
+- CODI-GPT2's latents carry **intermediate values** of the solution, readable by logit lens in about half the items at alternate latent positions, but almost never the final answer.
+- The answer phase recombines them with numbers **re-read from the recipient's question**: QMASK collapses to about 0, and swapped latents yield the **counterfactual** (donor's intermediate + recipient's remaining steps) 0.33–0.54 of the time on structure-matched pairs, rather than the donor's final answer.
+- This explains §221's CONTEXT-BOUND reading: donor-final follow 0.03 because the program and the remaining operands come from the question.
+- It reproduces SCIT's oracle-counterfactual pattern on natural GSM8K, here at **both** granularities: the state swap carries intermediates too, unlike SCIT's h-only 0.
+- **Caveats:**
+  - INT-FOLLOW has no registered floor. Coincidence with the counterfactual value should be small, but is not measured.
+  - Δ = 0 n is 33 / 26. The Δ ≠ 0 rows are position-confounded on GPT-2.
+  - The lens labels are first-match (gold > intermediate > question number).
+  - **Descriptive only.**
+- **For design:** a question-independent latent state on language must carry the **remaining program and its operands**, not just intermediate values. That is what §208's question-once bottleneck tried, and it collapsed to a pass-1 precompute. The next design starts from this constraint (Audit's item 2).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
