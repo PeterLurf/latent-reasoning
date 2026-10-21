@@ -103,6 +103,9 @@ def score_model(key, f):
     else:
         kind = FID_KIND.get(key, "official_bs1"); gf["kind"] = kind
         port = f["per_item"]["intact"]["pred"]
+        if isinstance(port, list):                                        # s220_gcs.py stores per_item.*.pred as a list in golds-key order (Experiments, dcb189ad)
+            gk = list(f["golds"].keys()); assert len(gk) == len(port), "per_item.intact.pred length != golds"
+            port = dict(zip(gk, port))
         if kind != fid.get("kind"):
             why.append("G-FID kind %s != %s" % (fid.get("kind"), kind))
         elif kind == "official_bs1":
@@ -260,6 +263,10 @@ def fixtures():
     res.append(("zen format gate fail", "G-FID(b) zen format" in score_model("s0_zen_gpt2", z2)["label"], score_model("s0_zen_gpt2", z2)["label"]))
     z3 = _mk(0.6, 0.1, 0.04, 0.05, acc=0.43, fid_kind="determinism"); z3["_sha"] = PIN["s0_zen_gpt2"]
     res.append(("zen wrong G-FID kind", "G-FID kind" in score_model("s0_zen_gpt2", z3)["label"], score_model("s0_zen_gpt2", z3)["label"]))
+    L = _mk(0.6, 0.1, 0.04, 0.05); L["per_item"]["intact"]["pred"] = [L["per_item"]["intact"]["pred"][k] for k in L["golds"]]
+    res.append(("per_item pred as list (real layout) parses + passes", score_model("fixture", L)["label"] == "CARRIER-PORTS", score_model("fixture", L)["label"]))
+    L2 = _mk(0.6, 0.1, 0.04, 0.05, fid_agree=0.95); L2["per_item"]["intact"]["pred"] = [L2["per_item"]["intact"]["pred"][k] for k in L2["golds"]]
+    res.append(("list layout, agree 0.95 -> UNREAD", score_model("fixture", L2)["label"].startswith("UNREAD (G-FID(a)"), score_model("fixture", L2)["label"]))
     pm = score_model("fixture", _mk(0.7, 0.1, 0.04, 0.02, no_fid=True)); res.append(("G-FID missing -> pending", pm.get("status", "").startswith("pending"), pm.get("status")))
     m = mcnemar_exact([True] * 10 + [False] * 10, [False] * 20); res.append(("mcnemar 10/0", abs(m["p"] - 2 / 1024) < 1e-12, m["p"]))
     for r in res:
