@@ -173,6 +173,13 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 - Interpretability tool: Ghandeharioun et al. 2024, *Patchscopes*, [2401.06102](https://arxiv.org/abs/2401.06102).
 - Neuroscience and cognitive science (non-arXiv): Mordvintsev et al. 2020, *Growing Neural Cellular Automata*, Distill (sample-pool training); Kay et al. 2020, *Constant Sub-second Cycling between Representations of Possible Futures in the Hippocampus*, Cell 180:552 (doi 10.1016/j.cell.2020.01.014); Reynolds & Heeger 2009, *The Normalization Model of Attention*, Neuron 61:168–185; Carandini & Heeger 2012, *Normalization as a Canonical Neural Computation*, Nat Rev Neurosci 13:51–62; Ma, Husain, Bays 2014, *Changing Concepts of Working Memory*, Nat Neurosci 17:347–356.
 
+## 13. Added 2026-10-21 (Literature; details in docs/LIT_NOVELTY_221_222_PS2_2026-10-21.md)
+- Chang et al. 2026, *Unlocking the Black Box of Latent Reasoning*, [2606.01243](https://arxiv.org/abs/2606.01243): GSM8K whole latent-sequence transplant flips 2.5 % (Table 2), the nearest natural-data prior to §221's donor-final follow 0.03.
+- Wang et al. 2026, *Latent CoT as Planning* (PLaT), [2601.21358](https://arxiv.org/abs/2601.21358): a question-blind decoder of latent groups to CoT segments; adding the question hurts. Prior for question-blind decoding (PORT-STATE).
+- Elesedy & Zaidi 2021, [2102.10333](https://arxiv.org/abs/2102.10333): invariant / anti-invariant orthogonal decomposition (Lemma 1). The Frame Lemma is a corollary.
+- Shen et al. 2025, CODI [2502.21074](https://arxiv.org/abs/2502.21074) §5.1: intermediates decoded from latents, separated by placeholder latents (Table 3: 97.1 / 83.9 / 75.0 %). Prior for Note 221-2's lens reading.
+- Blogs, not peer-reviewed: Cywiński et al. (LessWrong, 2025-12-22, CODI-1B latents 3 / 5 hold steps; https://www.lesswrong.com/posts/YGAimivLxycZcqRFR); Realmbird (LessWrong, 2026-03-19, compute / store alternation on CODI-1B; https://www.lesswrong.com/posts/rnwjdw5hzddjRvBoC).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
