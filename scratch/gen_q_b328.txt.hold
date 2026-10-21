@@ -1,0 +1,5 @@
+# THEORY §223 PORT-STATE PS cell s223_ps_s1 (PS2_v1.md at 54f63381; Notes 223-1..223-5; frozen args scratch/s223_args_frozen_ps.json (Note 223-5); family cap $20 GUARD_STOP; scratch/s223_fill.sh). Line 1 G-TIME (the cell's own flags, deepest shape d_max 8, 60 steps, auto_micro: step time + memory on this host's transformers); line 2 the cell (24k steps, full-state ckpt every 2k, --resume); line 3 boxes.ps_eval on-host 3090 fp32 (Note 223-2 Q6). Done markers scratch/s223_done_marker.sh; drain scratch/auto_drain_gen8_s223.sh.
+# P=1
+boxes/runs_fsq/s223_ps_s1_gtime boxes.codi_ps --recode --lam 1 --bottleneck --d_stages 8 --time_steps 60 --auto_micro
+boxes/runs_fsq/s223_ps_s1 boxes.codi_ps --recode --lam 1 --bottleneck --auto_micro --resume --args_ref scratch/s223_args_frozen_ps.json
+boxes/runs_fsq/s223_ps_s1 boxes.ps_eval --run boxes/runs_fsq/s223_ps_s1
