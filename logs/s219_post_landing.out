@@ -9,3 +9,6 @@
 2026-10-21 04:39:59 s219_post_t1 STAGE_BOUNDARY (G-T11): commit boxes/runs_fsq/s219_t1_s1/eval_text.json now (off the working card)
 2026-10-21 04:40:35 s219_post_t1 textself_cpu rc 0
 2026-10-21 04:40:35 s219_post_t1 eval_textself CPU parts done (boxes/runs_fsq/s219_t1_s1/eval_textself.json: label_audit, contamination); Theory's step-4 note (T1 readings, Delta_1, the round-2 condition) is next; STAGE_BOUNDARY: commit eval_textself.json
+2026-10-21 04:43:57 s219_post_t1 GPU parts STOPPED by pid ~2 min in (Note 219-8: round-2 gates first on the 3070; nothing written; rerun in scratch/s219_3070_queue_r2.sh)
+2026-10-21 12:05:28 s219_post_t2 armed (pid 2750): waiting for the gen_b319 drain + boxes/runs_fsq/s219_t2_s1/train_done.json + model.pt
+2026-10-21 12:33:11 §219 T2 b319 drained 12:30 DESTROYED_VERIFIED; s219fam guard (pid 941) + 319 mirror process (pid 936) stopped by pid; mirror dir kept (KEEP_MIRROR, until score_s219)
