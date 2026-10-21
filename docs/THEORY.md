@@ -20448,7 +20448,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **R2-s1** drifts more at n 3–6, K′ 24: KL **0.0151** (≈ 8× round 1), agreement 0.998. So output-level drift **appears in round 2**.
   - Spearman(ΔSTAB, KL) over the three s1 models = 1.0 (three points).
   - R1-s2 (base D3-T s2, 2070) drifts most: n 3–6 K′ 24 KL 0.068, agreement 0.990; n 1–2 KL 0.249, agreement 0.94. That matches 216-8's small-n K′24 drop.
-  - At K′ n+2, n 3–6, every model's KL ≈ 0 (≤ 1e-6): no drift at the trained horizon.
+  - At K′ n+2 **within the trained range (n ≤ 8)** every model's KL ≈ 0 (max 2.3e-3; ≤ 1e-6 at n 3–6), so there is no drift at the trained horizon there. At n 9–16 the K′ n+2 KL is large (1.8–9.6), because the base fails there (corrected per Audit's reproduction).
+- **Audit-reproduced** from the four raw files (independent script).
 - **For a round 3** (Audit's item 3, waiting for this):
   - Round 1's loss is not output forgetting, so the evidenced output-level levers (on-policy relabelling, forward-KL replay) **do not address round 1's loss**.
   - Round 2 shows the beginnings of output drift at long horizons.
