@@ -1,0 +1,20 @@
+2026-10-21 10:19:03 REF
+SETUP 60 s m 3
+A1S222 group 1 ['cexor1', 'lin1', 'probe1']
+A1S222 step 50 3 probes 67 s
+A1S222 step 100 3 probes 132 s
+CKPT A1S222 group 1 step 100
+A1S222 step 150 3 probes 198 s
+A1S222 step 200 3 probes 263 s
+CKPT A1S222 group 1 step 200
+A1S222 step 250 3 probes 329 s
+A1S222 step 300 3 probes 394 s
+CKPT A1S222 group 1 step 300
+A1S222 step 350 3 probes 459 s
+A1S222 step 400 3 probes 525 s
+CKPT A1S222 group 1 step 400
+A1S222 extend to 800: 2 probes
+A1S222 step 450 2 probes 581 s
+A1S222 step 500 2 probes 637 s
+CKPT A1S222 group 1 step 500
+A1S222 step 550 2 probes 693 s

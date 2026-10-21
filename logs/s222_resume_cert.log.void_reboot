@@ -1,0 +1,38 @@
+2026-10-21 10:04:53 REF
+SETUP 93 s m 3 eps {'0': 11.623898045932162, '1': 20.632775722842826, '2': 24.626375966914622} groups [['cexor_t0', 'lin_t0', 'noplant_t0'], ['probe0', 'shuffled_t0', 'cexor_t1'], ['lin_t1', 'noplant_t1', 'shuffled_t1'], ['cexor_t2', 'lin_t2', 'noplant_t2'], ['shuffled_t2']] run [1]
+CERT group 1 ['probe0', 'shuffled_t0', 'cexor_t1']
+CERT step 50 {'probe0': 0.625, 'shuffled_t0': 0.578, 'cexor_t1': 0.578} 87 s
+CERT step 100 {'probe0': 0.531, 'shuffled_t0': 0.531, 'cexor_t1': 0.5} 174 s
+CKPT CERT group 1 step 100
+CERT step 150 {'probe0': 0.516, 'shuffled_t0': 0.547, 'cexor_t1': 0.562} 261 s
+CERT step 200 {'probe0': 0.547, 'shuffled_t0': 0.562, 'cexor_t1': 0.656} 347 s
+CKPT CERT group 1 step 200
+CERT step 250 {'probe0': 0.547, 'shuffled_t0': 0.531, 'cexor_t1': 0.734} 434 s
+CERT step 300 {'probe0': 0.562, 'shuffled_t0': 0.625, 'cexor_t1': 0.875} 524 s
+CKPT CERT group 1 step 300
+CERT step 350 {'probe0': 0.531, 'shuffled_t0': 0.484, 'cexor_t1': 0.875} 612 s
+CERT step 400 {'probe0': 0.516, 'shuffled_t0': 0.531, 'cexor_t1': 0.953} 697 s
+CKPT CERT group 1 step 400
+CERT extend to 800: ['cexor_t1']
+CERT step 450 {'cexor_t1': 0.953} 761 s
+CERT step 500 {'cexor_t1': 0.938} 824 s
+CKPT CERT group 1 step 500
+CERT step 550 {'cexor_t1': 0.922} 887 s
+CERT step 600 {'cexor_t1': 0.969} 949 s
+CKPT CERT group 1 step 600
+CERT step 650 {'cexor_t1': 0.969} 1013 s
+CERT step 700 {'cexor_t1': 0.969} 1075 s
+CKPT CERT group 1 step 700
+CERT step 750 {'cexor_t1': 0.969} 1139 s
+CERT step 800 {'cexor_t1': 0.953} 1201 s
+CKPT CERT group 1 step 800
+CERT probe0 test 0.6
+WROTE scratch/_tmp/s222_resume_cert/ref\cert_untrained.g1.json group 1 done 1203 s
+ref rc 0
+2026-10-21 10:26:32 KILL at 330
+SETUP 97 s m 3 eps {'0': 11.623898045932162, '1': 20.632775722842826, '2': 24.626375966914622} groups [['cexor_t0', 'lin_t0', 'noplant_t0'], ['probe0', 'shuffled_t0', 'cexor_t1'], ['lin_t1', 'noplant_t1', 'shuffled_t1'], ['cexor_t2', 'lin_t2', 'noplant_t2'], ['shuffled_t2']] run [1]
+CERT group 1 ['probe0', 'shuffled_t0', 'cexor_t1']
+CERT step 50 {'probe0': 0.625, 'shuffled_t0': 0.578, 'cexor_t1': 0.578} 87 s
+CERT step 100 {'probe0': 0.531, 'shuffled_t0': 0.531, 'cexor_t1': 0.5} 175 s
+CKPT CERT group 1 step 100
+CERT step 150 {'probe0': 0.516, 'shuffled_t0': 0.547, 'cexor_t1': 0.562} 261 s
