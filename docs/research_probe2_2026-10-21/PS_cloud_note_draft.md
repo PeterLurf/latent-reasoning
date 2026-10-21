@@ -17,3 +17,8 @@
   - **Family cap $15 under the user's $30 rule (Audit approves ≤ $30).** s222fam GUARD_STOP on realised spend; per-host guards = projection × 1.3. Off-host full-state mirrors every 2k steps for any host > 8 h, plus a tested resume. Drain waiters armed at launch.
   - Vast launches proceed under the user's standing OK for registered work (10-20).
 - **Unchanged:** the plants, m (from m_rule.json, computed on the untrained model, card recorded), streams, bars, controls, the choice rule, the readings and the scorer. score_s222 checks `card` for "4060". Under this Note it accepts the class "3090" for every §222 certification and A1 probe file, and requires that one class across them all (a scorer constant changed with a fixture before any output).
+
+**Audit's additions (approved in principle; part of the Note if committed):**
+1. **A1 on its own training host:** allowed only after A1's normal drain (model.pt + logs home, sha-verified) has completed. The probe groups then run on that host, which is destroyed only after its probe outputs are fetched, and never before model.pt is safely home.
+2. **Driver per host** is recorded (cert hosts and A1 hosts may differ). It is a recorded difference, as in Note 218-20. One image, one torch version and one code sha are pinned across all hosts.
+3. **No module edits while any §222 deploy is in flight** (deploys ship the working tree). Every score_s222 change, including the "3090" card constant and its fixture, is committed before the first deploy.
