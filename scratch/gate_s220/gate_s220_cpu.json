@@ -1,0 +1,115 @@
+{
+ "tests": [
+  {
+   "test": "T1 last number anywhere",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T1 commas removed",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T1 negative / decimal",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T1 no number -> None",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T2 signature",
+   "pass": true,
+   "info": "('q-q-q', 'r0*q')"
+  },
+  {
+   "test": "T2 oracle-cf (recipient program on donor's step-1 result)",
+   "pass": true,
+   "info": "28.0"
+  },
+  {
+   "test": "T2 non-executable annotation flagged",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T2 reviewer's signature count (855 distinct; reviewer used the HF answer field)",
+   "pass": true,
+   "info": "distinct 855, executable 1112 / 1319"
+  },
+  {
+   "test": "T3 exact-length draw invariants (all items eligible)",
+   "pass": true,
+   "info": "pairs 1299 no-donor 20 max reuse 3"
+  },
+  {
+   "test": "T3 exact-length availability on a 38% pseudo-pool",
+   "pass": true,
+   "info": "pool 501 pairs 478 (0.954) max reuse 3"
+  },
+  {
+   "test": "T3 graph-matched draw invariants (38% pseudo-pool)",
+   "pass": true,
+   "info": "d0 2 dne0 131 counts {'no_candidate': 276, 'no_exec_or_1step': 92}"
+  },
+  {
+   "test": "T4 cache length P+K, latent slots",
+   "pass": true,
+   "info": "(17, [17, 18, 19, 20, 21, 22], [10, 11, 12, 13, 14, 15])"
+  },
+  {
+   "test": "T4 self cache-write: assert ok and decode == intact bitwise",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T4 self STATE-SWAP == intact bitwise",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T4 donor cache-write: assert ok, latent rows replaced, <eot>-step logits change",
+   "pass": true,
+   "info": "max|dlogit| 6.17e-03"
+  },
+  {
+   "test": "T4 LEAK-SEG write (Lq-6..Lq-1): assert ok",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T4 assertion FIRES on corrupted outside rows (K row 0; V in a non-written layer; V under a K-only write)",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T4 official semantics with 0 pads == bs-1 path bitwise",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T4 official with 3 pads: cache includes pads",
+   "pass": true,
+   "info": ""
+  },
+  {
+   "test": "T4 QMASK changes the answer-phase logits; an all-ones mask matches no mask",
+   "pass": true,
+   "info": "max|all-ones - none| 0.00e+00"
+  },
+  {
+   "test": "T4 SCIT teacher-forced log-probs == incremental (8 greedy tokens)",
+   "pass": true,
+   "info": "max diff 9.54e-07"
+  },
+  {
+   "test": "T4 SCIT candidates scored (tail = number + EOS)",
+   "pass": true,
+   "info": "{'a': {'n': '18', 'sum': -64.72087097167969, 'ntok': 6, 'tail_sum': -21.928518295288086, 'tail_ntok': 2}, 'b': {'n': '1200', 'sum': -64.73494720458984, 'ntok': 6, 'tail_sum': -21.942596435546875, 'tail_ntok': 2}}"
+  }
+ ],
+ "all_pass": true
+}
