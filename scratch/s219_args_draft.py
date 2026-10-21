@@ -5,7 +5,7 @@ s170_cot_s1/{model.pt,args.json} and s219_pool_t1_s1/{pool_t1.jsonl,pool_meta.js
 is written under boxes/. boxes.fsq120.make_opt is replaced by a sentinel that raises: main() has by then written args.json (+ args_diff.json vs --args_ref,
 init_from.json) and nothing else (no log.jsonl, no model, no checkpoint, no optimiser step). The tree is removed afterwards (links only; the repo files
 are untouched). CPU, 2 threads. Differences from the host's args.json are META_T only (device, train_gpu, train_driver, env keys, hostprobe_sps, micro).
-    python -B scratch/s219_args_draft.py [--queue scratch/gen_q_b318.txt.hold] [--line 3] [--out_file scratch/s219_args_ref_t1.json.draft]"""
+    python -B scratch/s219_args_draft.py [--queue scratch/gen_q_b318.txt.hold] [--line 3] [--out_file scratch/s219_args_frozen_t1.json.draft]"""
 import argparse
 import hashlib
 import json
@@ -48,7 +48,7 @@ def sha(p):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--queue", default="scratch/gen_q_b318.txt.hold"); ap.add_argument("--line", type=int, default=3)
-    ap.add_argument("--out_file", default="scratch/s219_args_ref_t1.json.draft"); ap.add_argument("--tmp", default="scratch/_tmp/s219_argsdraft")
+    ap.add_argument("--out_file", default="scratch/s219_args_frozen_t1.json.draft"); ap.add_argument("--tmp", default="scratch/_tmp/s219_argsdraft")
     a = ap.parse_args(); os.chdir(ROOT)
     cmds = [l.split() for l in open(a.queue, encoding="utf-8").read().split("\n") if l.strip() and not l.startswith("#")]
     out, mod, rest = cmds[a.line - 1][0], cmds[a.line - 1][1], cmds[a.line - 1][2:]

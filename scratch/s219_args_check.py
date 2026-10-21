@@ -5,7 +5,7 @@
   (2) FROZEN: every key outside score_s219.META_T equal to the frozen args (Theory's sha-frozen copy of the cell's CPU args.json, scratch/s219_args_draft.py),
       except, for the smokes only, the probe keys they set (mem: mem_check_self, mem_check_steps; gtime: none beyond META time_steps).
 One line on stdout:  ARGS-CHECK <role> OK | BAD scorer_ok <bool> scorer_bad [...] frozen_bad [...] | UNREADABLE <why>   exit 0 OK / 1 BAD / 2 unreadable.
-    sq ... "cat /workspace/Latent/boxes/runs_fsq/s219_t1_s1/args.json" | python scratch/s219_args_check.py cell - [--round t1] [--frozen scratch/s219_args_ref_t1.json]"""
+    sq ... "cat /workspace/Latent/boxes/runs_fsq/s219_t1_s1/args.json" | python scratch/s219_args_check.py cell - [--round t1] [--frozen scratch/s219_args_frozen_t1.json]"""
 import argparse
 import hashlib
 import importlib.util
@@ -42,7 +42,7 @@ def check(role, a, frozen, rnd="t1", S=None):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("role", choices=["mem", "gtime", "cell"]); ap.add_argument("args_json")
-    ap.add_argument("--round", default="t1", choices=["t1", "t2"]); ap.add_argument("--frozen", default="scratch/s219_args_ref_t1.json")
+    ap.add_argument("--round", default="t1", choices=["t1", "t2"]); ap.add_argument("--frozen", default="scratch/s219_args_frozen_t1.json")
     a = ap.parse_args()
     try:
         txt = sys.stdin.read() if a.args_json == "-" else open(a.args_json, encoding="utf-8").read(); host = json.loads(txt)

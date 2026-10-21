@@ -16,23 +16,23 @@
 #     covered since a resume keeps draws with step < step0); the cell guard and s219fam run scratch/cost_guard_s219.py (stock cost_guard.py cannot parse
 #     textself_ft's log.jsonl: "loss_last" sits between "loss" and "sec"); the cell's host args.json through s219_args_check.py cell (ALERT if BAD; the
 #     cell keeps running under its guard, as §218), and the trainer's own ARGS-DIFF line (vs s170_cot_s1/args.json) logged (G-T5 "printed in each launch log");
-#   - start refusals: another filler running (one filler at a time), FROZEN_SHA unset or != sha256(scratch/s219_args_ref_t1.json), the frozen ref
+#   - start refusals: another filler running (one filler at a time), FROZEN_SHA unset or != sha256(scratch/s219_args_frozen_t1.json), the frozen ref
 #     untracked / dirty, boxes/ modules dirty, s170_cot_s1/args.json or pool_meta.json dirty / untracked, model.pt sha != the V6 pin, pool_t1.jsonl sha !=
 #     pool_meta.json's, or the queue's three lines not reproducing args that pass s219_args_check (CPU, the trainer's own main(), ~35 s);
 #   - logs/fill_s219.out (stdout), logs/s219_admitted.log, logs/s219_bad_cost.log; stop file scratch/fill_s219.stop.
 # Unchanged: ONE filler; cells in QS order each on its own RTX 3090; offer <= PMAX, never 580.x (offer_pick); HOSTPROBE; HOSTMAX 3 = 1 + 2 more
 # MEASURED refusals; BAD / non-start / hostprobe / missing-file hosts use no try but count toward the cell guard and the family; steps never reduced.
-#   FROZEN_SHA=<Theory's sha256 of scratch/s219_args_ref_t1.json> nohup bash scratch/s219_fill.sh >> logs/fill_s219.out 2>&1 &
+#   FROZEN_SHA=<Theory's sha256 of scratch/s219_args_frozen_t1.json> nohup bash scratch/s219_fill.sh >> logs/fill_s219.out 2>&1 &
 # Tests: S219_FILL_LIB=1 source scratch/s219_fill.sh (defines the helpers, returns before any check / deploy).
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 2
 PMAX=${PMAX:-0.25}; CAPF=3.00; SETUP_H=${SETUP_H:-0.35}; BADN=${BAD0:-0}; BADMAX=${BADMAX:-4}; HOSTMAX=${HOSTMAX:-3}; BADSPENDMAX=${BADSPENDMAX:-0.30}
-BADLOG=${BADLOG:-logs/s219_bad_cost.log}; ADMLOG=${ADMLOG:-logs/s219_admitted.log}; FROZEN=scratch/s219_args_ref_t1.json; MEMMAX=21.0
+BADLOG=${BADLOG:-logs/s219_bad_cost.log}; ADMLOG=${ADMLOG:-logs/s219_admitted.log}; FROZEN=scratch/s219_args_frozen_t1.json; MEMMAX=21.0
 QS="${QS:-318:s219_t1_s1:1.00:1.20:12000}"
 FAMC="318:s219_t1_s1:1.20:12000 319:s219_t2_s1:1.70:12000"   # unstarted cells project at their guard
 BASE_SHA=36f4659b99f08a65202b303f4af74ef20ac65f1e60d2a25f3e84aafbfb2e3392   # TS_v1 V6 (s170_cot_s1/model.pt)
 cell_extra() {   # per-cell shipped files beside the queue's modules (auto_ship also ships existing file tokens of the queue): frozen ref, init model, base args, pool
   case "$1" in
-    318) echo "scratch/s219_args_ref_t1.json boxes/runs_fsq/s170_cot_s1/model.pt boxes/runs_fsq/s170_cot_s1/args.json boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl boxes/runs_fsq/s219_pool_t1_s1/pool_meta.json" ;;
+    318) echo "scratch/s219_args_frozen_t1.json boxes/runs_fsq/s170_cot_s1/model.pt boxes/runs_fsq/s170_cot_s1/args.json boxes/runs_fsq/s219_pool_t1_s1/pool_t1.jsonl boxes/runs_fsq/s219_pool_t1_s1/pool_meta.json" ;;
   esac
 }
 log() { echo "$(date +%T) fill_s219 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
