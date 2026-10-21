@@ -10,7 +10,7 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 
 **STANDING USER RULE (2026-10-17 ~12:36 EDT, relayed verbatim by Audit: "auto approve all future taks below 30"):** any single registered task / design (all its cells) with a cap <= $30 is auto-approved by Audit, relayed as "auto-approved under the user's $30 standing rule". Over $30, a cap raise taking a design past $30, or splitting a design to stay under -> still the user's call. Unchanged: pre-registration, math backing, OC + censoring, Audit diff review, guards with GUARD_STOP, off-host checkpoints, one GPU class, flag credit below $30. Replaces the $10 Audit line and the "GSM8K / new-architecture spend goes to the user" rule for tasks <= $30.
 
-**STANDING USER RULE (2026-10-20 ~22:42 EDT, typed in the Experiments / Audit / Literature sessions: "approve vast launches all in future"):** Vast launches of registered, Audit-approved designs need no per-launch user re-confirm. Unchanged: designs over $30 to the user, pre-registration, math backing, guards / GUARD_STOP, drain waiters, off-host ckpts, flag credit below $30.
+**STANDING USER RULE (2026-10-20 ~22:42 EDT, typed in the Experiments / Audit / Literature sessions: "approve vast launches all in future"):** Vast launches of registered, Audit-approved designs need no per-launch user re-confirm. Unchanged: designs over $30 to the user, pre-registration, math backing, guards / GUARD_STOP, drain waiters, off-host ckpts, flag credit below $30. **Scope CONFIRMED by the user to Audit 2026-10-20 22:50 EDT ("Keep $30 line"): not a cap raise; designs or cap raises over $30 still need the user's OK.**
 
 ## Sessions
 
