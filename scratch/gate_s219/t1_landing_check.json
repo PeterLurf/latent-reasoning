@@ -1,0 +1,38 @@
+{
+ "run": "boxes/runs_fsq/s219_t1_s1",
+ "train_done": {
+  "steps": 12000,
+  "train_sec": 5557,
+  "n_nonfinite": 0,
+  "n_self_steps": 5992,
+  "pool_cursor": 383488,
+  "self_reuse": 0,
+  "model_sha256": "65b020b053008f94a9f494d1bf85c5264e5b1a18e800e83cbf357fb278901bf6"
+ },
+ "checks": {
+  "steps_12000": true,
+  "self_reuse_0": true,
+  "model_sha_matches": true,
+  "log_last_step_12000": true,
+  "draws_log_1_12000": true,
+  "init_from_V6": true,
+  "args_json": true,
+  "no_eval_files (G-T20)": true,
+  "no_ckpt_weights_home (Audit 10-21, retention)": true,
+  "G_T6": true
+ },
+ "model_sha256": "65b020b053008f94a9f494d1bf85c5264e5b1a18e800e83cbf357fb278901bf6",
+ "n_self_steps_expected_5992": true,
+ "G_T6": {
+  "strict_load": true,
+  "sha256": "65b020b053008f94a9f494d1bf85c5264e5b1a18e800e83cbf357fb278901bf6",
+  "forward_shape": [
+   2,
+   40,
+   50257
+  ],
+  "finite": true,
+  "input": "random ids rng 21903, never a test item"
+ },
+ "PASS": true
+}
