@@ -20038,6 +20038,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **The (iii) Note must also** (Audit's condition 2, not asserted here) derive the direction of R\*'s effect on every registered PROBE / PLANT / FD reading and give the OC pair under R\*. PROBE-VALID and the PROBE(12) final-state check become easier; PROBE-GAIN-L = ACC − PROBE(1) has its direction set by PROBE(1)'s response.
 - No routing input of 218-22 is read by this sweep.
 
+**Note 219-8 (2026-10-21 04:42 EDT; §219 step-4 note: T1's readings, Δ_1 and the round-2 condition; from the registered step-4 inputs only: s219_t1_s1/eval_text.json (RTX 3070, fp32, bs 32), eval_textself.json CPU keys (label_audit, contamination; sha 34c67bc8…), log / args / draws_log / train_done; theory/score_s219.ft_cell in-process. No eval_textself GPU value is cited, none existing yet (219-7).)**
+- **Cell:** s219_t1_s1, 12,000 steps, 0 nonfinite. 5,992 self steps, cursor 383,488 (seed-1 replay exact), self_reuse 0.
+  - Censors none: dead / FT-DIVERGED-T / LABEL-NOISY-T / CONTAMINATED / ARGS-DIFF / SEAL-BREACH / card / gate all false.
+- **Label: T-SELF (in support) | T-SHIFT/MIXED | T-DBS not met.**
+  - T-ABSORB: min a(n), n 9–12 = 1.000.
+  - M_T (mean a, n 13–16) = **0.557**, against the R1 bars from a_0 (219-5): M_shift 0.512, MARGIN-GROWS 0.665, DBS 0.80, SHRINK below 0.435. That puts it between shift and growth, hence T-SHIFT/MIXED.
+- **Curve a_1:**
+  - n 1–12 = 1.000;
+  - n 13–16 = 0.997 / 0.854 / 0.270 / 0.108;
+  - n 17–24 = 0.034–0.081 (chance ≈ 0.10).
+  - **n50 14.606**, n90 13.678, WIDTH_T 0.928, n50 / support **1.217**. The latent R1 had 1.29.
+- **Labels:** GATE-T1 PASS (π = π^E = 1.000 pooled; keep 0.969–1.000 at n 9–12). LABEL-AUDIT-T π = π^E = 0.9998, with one kept-wrong record ("− 1 3 → 1", gold 9), CIs overlapping the gate's. CONTAMINATION all zero; pool sha matches meta.
+- **Δ_1 (BASE-PARITY = levels, 219-5):** text n50 14.606 − latent R1 n50 15.460 = **−0.854**. The latent is ahead by 0.85 depth at round 1.
+  - Under the registered four-way rule, PARITY needs |Δ_1| ≤ 0.5 and |Δ_2| ≤ 0.5, so **PARITY is no longer reachable**.
+  - The comparison label (LATENT-AHEAD / TEXT-AHEAD / CROSSED, "marginal" if |Δ_2| ≤ 1) is decided at round 2.
+  - Δ^g_1 = Δ_1 − Δ_0 = −0.981 (descriptive).
+- **Round-2 condition: TRUE** (T-SELF; LABEL-AUDIT-T and CONTAMINATED clean). GATE-T2 / GATE-T1′ (T1 labeller at n 13–16; base fallback per window) may start.
+- Wording (score_s219 WORDING): "text depth extended from 8 to 12 by distilling the text base's own re-rooted chain; labels gold-equivalent (π 0.9998); in support; not C2, not C3". TOKEN-COST and TRAIN-TOKENS sit beside every comparison line at scoring.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
