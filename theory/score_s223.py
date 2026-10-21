@@ -14,7 +14,7 @@ Readings:
 Labels (precedence): UNREAD > M1-NOT-MET > PORT-STATE > PORT-RELAY (follow, front fails) > PORT-PRECOMPUTE (follow, onset fails) > CARRIER
   (cf == pred rate >= cf floor + 0.30) > CONTEXT-BOUND (follow < floor + 0.10) > MIXED. M2-only has no decode head: decode / copy / onset / PORT-STATE
   are N/A and its label is drawn from PORT-RELAY / FOLLOW-FRONT / CARRIER / CONTEXT-BOUND / MIXED (descriptive attribution).
-Addendum B: entry step (first 1k-bin mean ans_ce < 0.5); |entry(PS) - entry(ablation)| > 5,000 -> that attribution CONFOUNDED. 'Needs both' is descriptive.
+Addendum B: entry step (first 1k-bin mean num_ce (number-token CE) < 0.5); |entry(PS) - entry(ablation)| > 5,000 -> that attribution CONFOUNDED. 'Needs both' is descriptive.
 Censoring: log short of 24,000 steps (dead), a missing file -> pending; G-W0 failure -> UNREAD.
     python theory/score_s223.py [--fixtures]
 """
@@ -45,8 +45,8 @@ def log_info(path):
     last = max((r.get("step", 0) for r in rows), default=0)
     bins = {}
     for r in rows:
-        if r.get("ans_ce") is not None:
-            bins.setdefault(int(r["step"]) // 1000, []).append(float(r["ans_ce"]))
+        if r.get("num_ce") is not None:                                   # the NUMBER-token CE (what CurGate reads; Experiments' trainer field)
+            bins.setdefault(int(r["step"]) // 1000, []).append(float(r["num_ce"]))
     entry = next((1000 * (b + 1) for b in sorted(bins) if np.mean(bins[b]) < 0.5), None)
     return {"last_step": last, "entry_step": entry}
 
@@ -249,7 +249,7 @@ def fixtures():
         os.makedirs(os.path.join(d, CELLS[cell]), exist_ok=True); json.dump(ev, open(os.path.join(d, CELLS[cell], "eval_ps.json"), "w"))
         with open(os.path.join(d, CELLS[cell], "log.jsonl"), "w") as fh:
             for s in range(100, 24001, 100):
-                fh.write(json.dumps({"step": s, "ans_ce": 0.2 if s > entry else 1.0}) + "\n")
+                fh.write(json.dumps({"step": s, "ans_ce": 9.9, "num_ce": 0.2 if s > entry else 1.0}) + "\n")
     put("direct", _ev(m1=False, direct_acc={1: .9, 2: .8, 3: .6, 4: .45, 5: .3, 6: .2, 7: .15, 8: .1}), 3000)
     put("ps", _ev(), 4000); put("m1", _ev(follow=0.05, cf=0.6), 4500); put("m2", _ev(m1=False, follow=0.05, cf=0.05), 12000)
     out = score(d)
