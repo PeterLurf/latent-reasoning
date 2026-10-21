@@ -7,3 +7,5 @@
 2026-10-21 04:39:58 s219_post_t1 eval_text rc 0
 2026-10-21 04:39:59 s219_post_t1 T1 eval_text meta: OK NVIDIA GeForce RTX 3070 fp32 tf32 False bs 32 sec 4917 peak_gib 4.980096817016602
 2026-10-21 04:39:59 s219_post_t1 STAGE_BOUNDARY (G-T11): commit boxes/runs_fsq/s219_t1_s1/eval_text.json now (off the working card)
+2026-10-21 04:40:35 s219_post_t1 textself_cpu rc 0
+2026-10-21 04:40:35 s219_post_t1 eval_textself CPU parts done (boxes/runs_fsq/s219_t1_s1/eval_textself.json: label_audit, contamination); Theory's step-4 note (T1 readings, Delta_1, the round-2 condition) is next; STAGE_BOUNDARY: commit eval_textself.json
