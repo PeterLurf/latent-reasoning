@@ -1,0 +1,9 @@
+{
+ "arch": "lslva",
+ "table": "train",
+ "arch_class": "LangSLVA",
+ "source": "scratch/s218_l1c_save.py (G-L1c re-run, 218-17 (a))",
+ "items_sha": "7973da5bc4e23ad1fb8df8259dcfcc24eccfda29e286ba2098da4088d05d8e29",
+ "steps_run": 200,
+ "final_host_acc_256": 0.984375
+}

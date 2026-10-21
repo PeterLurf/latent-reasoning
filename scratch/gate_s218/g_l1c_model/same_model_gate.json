@@ -1,0 +1,79 @@
+{
+ "meta_equal": {
+  "items_sha": [
+   "7973da5bc4e23ad1fb8df8259dcfcc24eccfda29e286ba2098da4088d05d8e29",
+   "7973da5bc4e23ad1fb8df8259dcfcc24eccfda29e286ba2098da4088d05d8e29",
+   true
+  ],
+  "card": [
+   "NVIDIA GeForce RTX 4060",
+   "NVIDIA GeForce RTX 4060",
+   true
+  ],
+  "amp": [
+   "torch.bfloat16",
+   "torch.bfloat16",
+   true
+  ],
+  "micro": [
+   2,
+   2,
+   true
+  ],
+  "steps_run": [
+   200,
+   200,
+   true
+  ],
+  "n_items": [
+   256,
+   256,
+   true
+  ],
+  "bs": [
+   16,
+   16,
+   true
+  ],
+  "cal_n": [
+   16,
+   16,
+   true
+  ]
+ },
+ "curve": [
+  {
+   "step": 100,
+   "pcc": [
+    1.0663059618469561,
+    1.0612118897103937
+   ],
+   "acc": [
+    0.8515625,
+    0.87109375
+   ],
+   "bitwise": false
+  },
+  {
+   "step": 200,
+   "pcc": [
+    0.17228210488341034,
+    0.16468550777371774
+   ],
+   "acc": [
+    0.984375,
+    0.984375
+   ],
+   "bitwise": false
+  }
+ ],
+ "final_acc": [
+  0.984375,
+  0.984375
+ ],
+ "bitwise": false,
+ "within_0005": true,
+ "verdict": "SAME (within 0.005)",
+ "PASS": true,
+ "def": "Audit 10-21 (Note 218-22 branch (ii) precondition): the re-run G-L1c reference model must be the SAME model as the committed G-L1c - same card (4060),\ndtype (bf16 autocast), seed and recipe. Compares scratch/gate_s218/g_l1c_rerun.json (s218_l1c_save.py) with the committed scratch/gate_s218/g_l1c.json:\nitems_sha, card, amp, micro, steps_run, the curve rows (step, plain_cand_ce, host_acc_256) and the final accuracy. PASS = everything bitwise equal, else\n|delta final acc| <= 0.005 with the same steps_run / items / card / amp / micro (reported as NEAR). A mismatch blocks branch (ii).\n-> scratch/gate_s218/g_l1c_model/same_model_gate.json"
+}
