@@ -182,6 +182,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - Internal-only forgetting (Note 216-13; docs/LIT_INTERNAL_ONLY_FORGETTING_2026-10-21.md): Haskins & Adams [2505.10822](https://arxiv.org/abs/2505.10822); Wang et al. [2502.11812](https://arxiv.org/abs/2502.11812); Chhabra et al. [2503.01896](https://arxiv.org/abs/2503.01896); LDIFS, Mukhoti et al. [2308.13320](https://arxiv.org/abs/2308.13320); Lee, Sohn & Lee [2602.23197](https://arxiv.org/abs/2602.23197); L2-SP [1802.01483](https://arxiv.org/abs/1802.01483).
 
+- §218 close / §223 aux risk (docs/LIT_S218_CLOSE_S223_AUX_2026-10-21.md): Saparov et al. [2412.04703](https://arxiv.org/abs/2412.04703); Ravichander et al. [2005.00719](https://arxiv.org/abs/2005.00719); Du et al. [1812.02224](https://arxiv.org/abs/1812.02224); PCGrad [2001.06782](https://arxiv.org/abs/2001.06782); GradNorm [1711.02257](https://arxiv.org/abs/1711.02257); Frydenlund [2410.13779](https://arxiv.org/abs/2410.13779); Sanford et al. [2402.09268](https://arxiv.org/abs/2402.09268).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
