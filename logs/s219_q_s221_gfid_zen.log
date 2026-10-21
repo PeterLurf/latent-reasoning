@@ -1,0 +1,10 @@
+[    13s] START zen official_bs1 NVIDIA GeForce RTX 3070 s220@b1a6ae32 items 1319 subset pairs 50
+[    23s] INTACT done 50
+[    29s] pairs 10 / 50
+[    35s] pairs 20 / 50
+[    41s] pairs 30 / 50
+[    47s] pairs 40 / 50
+[    53s] pairs 50 / 50
+[    53s] WROTE scratch\s220\zen_codi_gpt2\fid_port.json sha256 57146354b25c0bdb539db3b10df81b2c6c077aa5a552afe95ae2933d9e700780
+[    53s] BITWISE {"subset_intact_match": 50, "subset_cache_match": 50, "subset_leak_match": 50, "subset_n": 50, "cache_rows_ok": true, "n_row_checks": 100, "subset_bitwise": true}
+WROTE scratch\s220\zen_codi_gpt2\gate_fid.json sha256 778b8b811ab76eb92537ce9acf858ae3d4305f19a471c76962d43e5fb7aa2712
