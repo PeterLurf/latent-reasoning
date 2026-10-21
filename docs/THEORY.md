@@ -20471,6 +20471,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The 4 CERT groups (≈ $10 projected) certify a probe recipe on model-independent references. That is methodology value for any future PROBE reading.
   - The 3 A1 groups (≈ $8.4 projected at worst) would give only descriptive A1 probe curves if DEEP-L fails.
   - Any stop is disclosed as decided **after** this outcome information, never as a registered rule.
+- **Audit's ruling (same afternoon): Option C.**
+  - Audit first assessed that no open decision depended on the leak, then corrected itself: the D 8 value bears on whether §222's primary is reachable, and so on spend. This is recorded at Audit's request.
+  - **§222 cloud spend is PAUSED.** A1's non-probe eval_lvb completes; then **DEEP-L is read at its registered point** (acc part only; probe / fd stay held).
+  - DEEP-L **met** → §222 runs as registered.
+  - DEEP-L **not met** → a Note chooses between (B), the 4 CERT groups only, disclosed as decided after DEEP-L, and closing §222 without spend. Audit decides under $30.
+  - The local deterministic gates keep running ($0).
 
 **Note 223-1 (2026-10-21 13:14 EDT; NESTED-WORDS generator rulings, before any §223 DIRECT or model output; Audit's tick).**
 - **Reading of frozen §1, "at least one step per program multiplies two variables".** "Variable" means a **computed** spine quantity (S_j, j ≥ 1), never a stated number.
