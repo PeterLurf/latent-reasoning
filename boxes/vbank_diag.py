@@ -973,7 +973,11 @@ def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64)):
         try:
             torch.cuda.empty_cache() if str(dev).startswith("cuda") else None
             its = [TE[j] for j in deep]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
-            r_ = m.rollout(x, pad, kk, coda_rows={k: rows for k in ks if k <= kk}); del r_; res["k_tried"].append([kk, "ok"]); kmax = kk; break
+            torch.cuda.reset_peak_memory_stats(dev); r_ = m.rollout(x, pad, kk, coda_rows={k: rows for k in ks if k <= kk}); del r_
+            pk = torch.cuda.max_memory_allocated(dev) / torch.cuda.get_device_properties(dev).total_memory   # 216-14 run 1: a bare fit OOMed later (fragmentation)
+            if pk > 0.85:
+                res["k_tried"].append([kk, "peak %.3f of the card > 0.85" % pk]); continue
+            res["k_tried"].append([kk, "ok, peak %.3f of the card" % pk]); kmax = kk; break
         except torch.OutOfMemoryError:
             res["k_tried"].append([kk, "OOM"]); torch.cuda.empty_cache()
     assert kmax is not None, "no K' >= 48 fits: %s" % res["k_tried"]
@@ -988,6 +992,8 @@ def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64)):
             for n in ns:
                 for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
                     its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+                    if str(dev).startswith("cuda"):
+                        torch.cuda.empty_cache()                            # 216-14 run 1: per-chunk release (allocator only; no numeric change)
                     r_ = m.rollout(x, pad, kmax, coda_rows={k: rows for k in KS})
                     for k in KS:
                         A[k][ch] = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
