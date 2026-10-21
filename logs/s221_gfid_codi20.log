@@ -1,0 +1,23 @@
+[    12s] START codi20 determinism NVIDIA GeForce RTX 2070 s220@59a90e07 items 1319 subset pairs 50
+[    36s] INTACT 100 / 1319
+[    61s] INTACT 200 / 1319
+[    84s] INTACT 300 / 1319
+[   106s] INTACT 400 / 1319
+[   126s] INTACT 500 / 1319
+[   148s] INTACT 600 / 1319
+[   170s] INTACT 700 / 1319
+[   191s] INTACT 800 / 1319
+[   212s] INTACT 900 / 1319
+[   234s] INTACT 1000 / 1319
+[   257s] INTACT 1100 / 1319
+[   278s] INTACT 1200 / 1319
+[   300s] INTACT 1300 / 1319
+[   305s] INTACT done 1319
+[   311s] pairs 10 / 50
+[   318s] pairs 20 / 50
+[   325s] pairs 30 / 50
+[   331s] pairs 40 / 50
+[   338s] pairs 50 / 50
+[   338s] WROTE boxes\runs_fsq\gsm_codi_20ep_s1\fid_port.json sha256 48f8a99c425010e03593e3ca1d0c1c9bb5ca773e23f6a7ac80eb188dea2124b8
+[   338s] BITWISE {"subset_intact_match": 50, "subset_cache_match": 50, "subset_leak_match": 50, "subset_n": 50, "cache_rows_ok": true, "n_row_checks": 100, "subset_bitwise": true, "intact_full_match": 1319, "intact_full_n": 1319, "intact_full_bitwise": true}
+WROTE boxes\runs_fsq\gsm_codi_20ep_s1\gate_fid.json sha256 64f6e43377f112cf0670267b66318abec54ff5b7c2198bf2d9f9ea5506d41a13
