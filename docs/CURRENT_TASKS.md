@@ -10,6 +10,8 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 
 **STANDING USER RULE (2026-10-17 ~12:36 EDT, relayed verbatim by Audit: "auto approve all future taks below 30"):** any single registered task / design (all its cells) with a cap <= $30 is auto-approved by Audit, relayed as "auto-approved under the user's $30 standing rule". Over $30, a cap raise taking a design past $30, or splitting a design to stay under -> still the user's call. Unchanged: pre-registration, math backing, OC + censoring, Audit diff review, guards with GUARD_STOP, off-host checkpoints, one GPU class, flag credit below $30. Replaces the $10 Audit line and the "GSM8K / new-architecture spend goes to the user" rule for tasks <= $30.
 
+**STANDING USER RULE (2026-10-20 ~22:42 EDT, typed in the Experiments / Audit / Literature sessions: "approve vast launches all in future"):** Vast launches of registered, Audit-approved designs need no per-launch user re-confirm. Unchanged: designs over $30 to the user, pre-registration, math backing, guards / GUARD_STOP, drain waiters, off-host ckpts, flag credit below $30.
+
 ## Sessions
 
 | Session | Owns |
@@ -32,7 +34,7 @@ so send to the pipe addresses their messages come from.
     scratch/s218_fill.sh attempt 2 (ADMLOG logs/s218_admitted_a2.log, BADLOG logs/s218_bad_cost_a2.log, fam() seeded $4.52, guards s218a2_b316 $4.70 /
     s218a2_b317 $3.90 + s218fam2 $20.48 GUARD_STOP); ckpt_mirror.py now copies ckpt_last.pt + ckpt_fingerprint.json + log.jsonl (+ draws_log.json) together,
     sha-checked, fingerprint step == ckpt step (--companions); mirror -> resume smoke scratch/s218_mirror_smoke.sh -> scratch/gate_s218/mirror_smoke/.
-    Launch is HELD for the user's re-confirm. Launch: QS default, nohup bash scratch/s218_fill.sh >> logs/fill_s218.out 2>&1 &; then drain waiters per cell.
+    LAUNCHED 22:42 10-20 (user approved in this session): scratch/s218_fill.sh attempt 2 (logs/fill_s218.out); drain waiters per cell at admit.
     Note 218-16 BANK-NOISE / BANK-ZERO eval arms: build into langvb_eval only AFTER both deploys shipped, + Audit's NON-INTERFERENCE gate (arms on/off bitwise).
     G-L7(b')(iii) CPU fp64 run 2 PASS 7.1e-15 (38e3c61e). G-L5 (2070) partial voided (.void_outage) -> re-run scratch/s218_gl5_rerun.sh (cuda:2, ~11 h).
   - §219 TEXT-SELF: s219_base_s1/eval_text.json DONE 19:33 10-18 (3070 fp32, 24k items; 38e3c61e). Gate JSONs all PASS (38e3c61e); the 18:46-19:15 re-runs
