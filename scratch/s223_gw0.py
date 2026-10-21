@@ -7,8 +7,9 @@
   * test set: per_d 1,000 at d 1..12 (all 8 frames), sha per d and pooled;
   * shortcut panel: single-feature rules on N draws per d (train stream and test set): first / last / max / min / random number in the text,
     sum of all numbers mod 100, the number in the last statement naming the asked quantity (near_q), and the per-d majority answer of the train
-    stream (mode), and (Theory 10-21) the affine-chain solver (S_0 through every stated operand, cross-spine ops ignored) which must be <= 0.10.
-    Gate: every rule < 0.6 and affine <= 0.10 at every d in GATE_DS (3..8) on both streams (PS2_v1 §1 G-W0 (i): 'any single-feature rule <= 0.6 at every
+    stream (mode); and (Theory 10-21, v1.2) the STRONG affine solver (boxes.nested_words.affine_strong: every stated-coefficient step composed exactly;
+    only a computed-j product is not representable) whose accuracy must be <= 0.10 AND whose representable share must be 0 at every gated d
+    (the weak ignore-the-cross-terms rule is reported). Gate: every rule < 0.6, affine_strong <= 0.10 and representable share 0 at every d in GATE_DS (3..8) on both streams (PS2_v1 §1 G-W0 (i): 'any single-feature rule <= 0.6 at every
     d'; d 1-2 reported, not gated - a d-1 item is one operation, so a rule can BE the computation there).
     python -B scratch/s223_gw0.py [--n 5000] -> scratch/gate_s223/g_w0.json"""
 import argparse
@@ -34,7 +35,7 @@ def nums(text):
 def rules(it, rng, mode):
     t = it["text"]; body = t[:t.rfind("How many")]; ns = nums(body); tgt = it["names"]["spine"][-1]
     sents = [s for s in re.split(r"(?<=\.)\s+", body.strip()) if s]; nq = [nums(s) for s in sents if re.search(r"\b%s\b" % tgt, s)]
-    return {"affine": NW.affine_solve(it), "first": ns[0], "last": ns[-1], "max": max(ns), "min": min(ns), "random": ns[int(rng.integers(0, len(ns)))], "sum_mod100": sum(ns) % 100,
+    return {"affine_strong": NW.affine_strong(it)[1], "affine_weak": NW.affine_solve(it), "first": ns[0], "last": ns[-1], "max": max(ns), "min": min(ns), "random": ns[int(rng.integers(0, len(ns)))], "sum_mod100": sum(ns) % 100,
             "near_q": (nq[-1][-1] if nq and nq[-1] else None), "mode": mode}
 
 
@@ -65,7 +66,8 @@ def main():
         row = {"n_train": len(T), "collisions_after_exclusion": coll, "mode_answer": mode, "restarts_per_item": round(rest, 4),
                "mul_s_t_hist": {str(k): int(v) for k, v in sorted(Counter(it["mul_s_t"] for it in T if it["mul_s_t"]).items())},
                "mul_s_j_hist": {str(k): int(v) for k, v in sorted(Counter(it["src_j"][it["mul_s_t"] - 1] for it in T if it["mul_s_t"]).items())},
-               "add_s_share": round(float(np.mean(["add_s" in it["ops"] for it in T])), 4)}
+               "add_s_share": round(float(np.mean(["add_s" in it["ops"] for it in T])), 4),
+               "affine_representable_share": {nm: round(float(np.mean([NW.affine_strong(it)[0] for it in S_])), 4) for nm, S_ in (("train", T), ("test", TE[d]))}}
         for nm, S in (("train", T), ("test", TE[d])):
             acc = {}
             for it in S:
@@ -74,22 +76,23 @@ def main():
             row[nm] = {k: round(float(np.mean(v)), 4) for k, v in acc.items()}
             row[nm + "_max"] = max(row[nm].items(), key=lambda kv: kv[1])
             for it in S[:1000]:
-                if NW.solve(it["text"]) != it["answer"] or any(NW.solve(it["R"][t]) != it["answer"] for t in range(1, d)) or it["ops"].count("mul_s") != (1 if d >= 2 else 0) \
+                if NW.solve(it["text"]) != it["answer"] or any(NW.solve(it["R"][t]) != it["answer"] for t in range(1, d)) or it["ops"].count("mul_s") != (1 if d >= 3 else 0) \
                         or not all(0 <= v <= 99 for v in it["values"]) or it["R"][-1] != NW.GIVEN.format(A=it["names"]["spine"][-1], v=it["answer"], u=it["unit"]):
                     inv_fail.append([nm, d, it["text"][:200]])
         row["answer_hist_top5"] = [[int(x), int(c)] for x, c in sorted(enumerate(np.bincount([it["answer"] for it in T], minlength=100)), key=lambda kv: -kv[1])[:5]]
         row["T_words"] = {"mean": float(np.mean([len(it["text"].split()) for it in T])), "max": int(max(len(it["text"].split()) for it in T))}
-        panel[str(d)] = row; print("G-W0 d", d, "train max", row["train_max"], "test max", row["test_max"], "affine", row["train"]["affine"], row["test"]["affine"], "restarts", row["restarts_per_item"], "coll", coll, round(time.time() - t0), "s", flush=True)
+        panel[str(d)] = row; print("G-W0 d", d, "train max", row["train_max"], "test max", row["test_max"], "affine_strong", row["train"]["affine_strong"], row["test"]["affine_strong"], "repr", row["affine_representable_share"], "restarts", row["restarts_per_item"], "coll", coll, round(time.time() - t0), "s", flush=True)
     out["panel"] = panel; out["raw_test_overlap_by_d"] = raw_hits; out["invariant_failures"] = inv_fail[:20]; out["invariant_failures_total"] = len(inv_fail)
-    gate = {str(d): max(max(v for k, v in panel[str(d)][nm].items() if k != "affine") for nm in ("train", "test")) for d in GATE_DS}
-    gate_aff = {str(d): max(panel[str(d)]["train"]["affine"], panel[str(d)]["test"]["affine"]) for d in GATE_DS}; out["gate_affine_by_d"] = gate_aff
+    gate = {str(d): max(max(v for k, v in panel[str(d)][nm].items() if k != "affine_strong") for nm in ("train", "test")) for d in GATE_DS}
+    gate_aff = {str(d): max(panel[str(d)]["train"]["affine_strong"], panel[str(d)]["test"]["affine_strong"]) for d in GATE_DS}; out["gate_affine_strong_by_d"] = gate_aff
+    rep = {str(d): max(panel[str(d)]["affine_representable_share"].values()) for d in GATE_DS}; out["gate_affine_representable_by_d"] = rep
     tk = out["tokens"]
     out["gate_max_by_d"] = gate
-    out["pass"] = bool(all(v < 0.6 for v in gate.values()) and all(v <= 0.10 for v in gate_aff.values()) and not inv_fail and all(panel[str(d)]["collisions_after_exclusion"] == 0 for d in range(1, 13))
+    out["pass"] = bool(all(v < 0.6 for v in gate.values()) and all(v <= 0.10 for v in gate_aff.values()) and all(v == 0 for v in rep.values()) and not inv_fail and all(panel[str(d)]["collisions_after_exclusion"] == 0 for d in range(1, 13))
                        and tk["names_one_token"] and tk["names_tokens_distinct"] and tk["numbers_one_token_0_99"] and all(tk["units_one_token"].values()))
     out["sec"] = round(time.time() - t0); out["generator_sha256"] = __import__("hashlib").sha256(open("boxes/nested_words.py", "rb").read()).hexdigest()
     os.makedirs("scratch/gate_s223", exist_ok=True); json.dump(out, open("scratch/gate_s223/g_w0.json", "w", newline="\n"), indent=1)
-    print("G-W0 PASS" if out["pass"] else "G-W0 FAIL", json.dumps(gate), "affine", json.dumps(gate_aff), "tokens", {k: tk[k] for k in ("names_one_token", "names_tokens_distinct", "numbers_one_token_0_99")}, flush=True)
+    print("G-W0 PASS" if out["pass"] else "G-W0 FAIL", json.dumps(gate), "affine_strong", json.dumps(gate_aff), "representable", json.dumps(rep), "tokens", {k: tk[k] for k in ("names_one_token", "names_tokens_distinct", "numbers_one_token_0_99")}, flush=True)
 
 
 if __name__ == "__main__":
