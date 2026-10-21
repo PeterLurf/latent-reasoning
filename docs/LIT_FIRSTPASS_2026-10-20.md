@@ -11,7 +11,7 @@ Written 2026-10-20 ~22:50 EDT (from `date`), by the Literature session, for Audi
    - Date oddity: the API gives v1 as 2026-05-19, which does not fit a 2607 ID. Cite it by ID.
    - **Result:** GPT-2 + LoRA, 6 latents. **48.1 ± 0.3 over 3 seeds**, against CODI 43.7, SIM-CoT 42.6 and SFT-CoT 44.1 in the same table (checked).
    - **Ablation** (Fig. 3, checked): accuracy goes **32.7 → 48.2** as the number of latents given the local loss goes from 0 to 6.
-   - **Loss** (sub): answer CE + β·KL(each latent's decoded token mixture ‖ a geometric-weighted mixture of its aligned CoT span's subwords) + γ·CODI L2 to a stop-grad teacher, with β = γ = 1.
+   - **Loss** (sub): answer CE + β·KL(each latent's decoded token mixture ‖ a position-weighted mixture of its aligned CoT span's subwords) + γ·CODI L2 to a stop-grad teacher, with β = γ = 1. **Correction (23:20):** GPT-2 uses sinusoidal weighting; geometric is the LLaMA setting (LIT_MUX_FORGETTING_2026-10-20).
    - **Assumptions:**
      - LoRA r128 for 40 epochs; our §210 run was 20 epochs.
      - The CODI baseline is copied, not re-run.
@@ -51,7 +51,7 @@ Written 2026-10-20 ~22:50 EDT (from `date`), by the Literature session, for Audi
      - **Adding CIR as an auxiliary reward raised it at matched accuracy** (abs + sub).
    - **For us:** a lead for any round 3 / §218 A2 is a two-sided memory-use term on the self items. For example, a swap + V_0-mask follow loss or a KL of the read to the frozen base's read on n 3–6. Per the Goodhart memory, tie it to decodable task information.
    - **Output-level remedies are weaker for this metric:** KL replay to a frozen pre-FT model (Marek 2605.26097) and correct-set turnover tracking (Qin 2606.03087).
-   - Also relevant to §217's falling follow_iv (0.54 at n 9 → 0.23 at n 18): Kuo 2606.29983 [empirics] finds loop count correlated with length in training breeds depth-keyed shortcuts. Our K = min(n + U{0..4}, 20) is n-coupled.
+   - ~~Kuo 2606.29983 as a cause of §217's falling follow_iv~~ **WITHDRAWN (23:00, after reading the paper):** Kuo's outcome is the across-seed variance of OOD accuracy (from scratch, binary addition / Dyck-1 / Unique Set / Copy; K = n gives 22.1 / std 9.9, K = n ± 5 gives 30.9 / 5.9, RL-Halt gives 45.0 / 2.7) [empirics; appendix props D.2 / E.2 are derivations]. Our K = min(n + U{0..4}, 20) is already their randomised fix, and the paper says nothing about causal use. At most this suggests a $0 descriptive check: follow_iv at fixed n across eval K′.
 
 ## §219 TEXT-SELF (Q2)
 - **Verdict:**
