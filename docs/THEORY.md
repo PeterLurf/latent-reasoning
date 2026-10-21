@@ -19868,6 +19868,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Change 2: A1's in-flight guard $4.70 → $5.10.** Audit proposed only the admission change. The guard rises because the filler's projection is GPU-hours × the offer's $/h plus setup only. Realised invoices add transfer costs: attempt 1's DIRECT showed storage $0.31 and upload $0.18 on top of GPU. A host admitted at $4.60 could therefore realise ≈ $4.8–4.9 and trip a $4.70 GUARD_STOP, which is a dead cell by rule b. $5.10 keeps a margin of about $0.5 over admission, the same margin as the registered $4.30 / $4.70.
 - **Family check.** Realised $4.52 plus the guards of still-eligible required cells (A1 5.10, DIRECT 3.90, A2 2.80, A2-CTRL 2.50) = $18.82 ≤ $25. The B1 launch rule (218-15: realised + $7.0 ≤ $25 at its launch) and the s218fam GUARD_STOP at $25 are unchanged. Projected family ≈ $4.5 + 4.6 + 1.7 ≈ $10.8.
 - These are thresholds on timing and price only. Nothing about the cell's computation, args (33af702f) or readings changes.
+- **DIRECT-SYM (checked, unchanged; Audit).** Its admission $3.60 against its guard $3.90 leaves only $0.30 against the ≈ $0.5 transfer overhead. But its projection is ≈ $1.7 (attempt 1 G-TIME), so realised exposure sits far below $3.60. No change.
+- Audit approved both changes (admission and guard) on 10-20.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
