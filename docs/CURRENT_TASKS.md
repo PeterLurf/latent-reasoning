@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-21 09:4x EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-21 10:2x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -24,19 +24,21 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (09:4x 2026-10-21; credit $85.07; 1 Vast instance $0.235/h)
+## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
-* 09:4x 10-21 (Experiments):
-  - CLOUD: §218 b316 A1 only (85.30.169.224:40503, 18.1k/24k at 08:47, ETA ~12:40, proj ~$3.0 / cap $4.97; late guard s218a2_b316_late; drain waiter re-armed).
-    b317 DIRECT landed + drained 06:3x (mirror deleted by retention).
-  - §222 PROBE-S (registered 18d8e578, PS_v1 at 7174fc3b; score_s222 complete): scratch/s222_cert.py (e6ed5638; m_rule + cert modes, E1 streams,
-    lockstep groups 7 + 6, per-group cert_<model>.partial.json, final file only at the end). m_rule RUNNING on the 4060 (co-tenant, Theory OK; logs/s222_m_rule.log,
-    chain lines logs/s222_chain.out). Next: scratch/s222_timing_4060.sh (50-step timing + memory smoke at the real group shapes, after feas2_s1's pid 9100),
-    then scratch/s222_4060_queue_i.sh (NOT started; cert untrained -> ref after A1's non-probe evals). CERT runtime unmeasured (22-78 h est.); Audit: if > ~24 h,
-    a Theory Note moves CERT + A1's §222 probe parts together to one cloud class. No A1 probe parts before CERT (Audit).
-  - 4060: feas2_s1 (218-25 descriptive; Audit proposes stopping the last 3 arms, asked Theory) -> timing -> queue h (DIRECT contamination re-run + KL-DRIFT s1)
-    -> s218_a1_post_landing.sh (A1 non-probe evals) -> queue i (§222 CERT).
-  - 2070: feas2_s2 (S2 probe0 then cexor shuffled). 3070: s219_r2_retry_3070.sh (T2 pool stage). CPU: k2cexor descriptive (22500 / 22550 streams).
+* 10:2x 10-21 (Experiments):
+  - CLOUD: §218 b316 A1 (20.2k/24k at 10:08, proj $3.04 / cap $4.97, ETA ~12:20; late guard; drain waiter). §219 T2 b319 (146.113.152.67:40347,
+    $0.2009/h): scratch/s219_fill_t2.sh (Audit G-D PASS; frozen args Note 219-12 sha 5315874d), HOSTPROBE 0.616, G-T9 / G-T10 pending; drain waiter armed.
+  - §222 (Note 222-1, 274cd4fe; Audit APPROVED cap $20, 7 x 3090, one group per host): build e9e83427 (s222_cert.py Engine, s222_a1.py, s222_fill.sh,
+    queues gen_q_b320-b326.txt.hold, drain/watcher/deploy copies). m = 3 (8a3dca1b). Gates before the first deploy: resume tests (cert on the 4060,
+    A1 runner on the 3070; scratch/s222_resume_test.sh), engine equivalence e6ed5638 vs Engine on the 2070 (scratch/s222_engine_equiv.py), T2 admitted
+    + its filler exited (one filler at a time). Then CAPF=20 QS="320:s222_cert_untrained_g0:2.857 ... 326:s222_a1_g2:2.857" bash scratch/s222_fill.sh;
+    A1 cells wait for b316's drain. After landing: merge per-group files -> scratch/gate_s222/cert_{untrained,ref}.json, lvb_sym_s1/eval_lvb_s222.json,
+    copy s222_acc3090/eval_lvb.json -> lvb_sym_s1/eval_lvb_s222_acc3090.json; stop each guard by pid after its verified drain; delete mirrors after.
+  - §219: T2 pool committed (5eb21224; Note 219-11 GATE-T2 PASS).
+  - 4060 after the resume test: queue h (DIRECT contamination re-run + KL-DRIFT s1) -> s218_a1_post_landing.sh (A1 non-probe evals, acc:8).
+    scratch/s222_4060_queue_i.sh is SUPERSEDED by Note 222-1 (never started).
+  - feasibility 218-25 closed: S1 stopped (cdc2ae13, superseded), S2 done (bfadb141).
 
 * 04:5x 10-21 (Experiments):
   - CLOUD: §218 b316 A1 (85.30.169.224:40503, ETA ~15:30) + b317 DIRECT (77.28.245.164:40420, ETA ~06:30); mirrors with companions on the attempt-aside
