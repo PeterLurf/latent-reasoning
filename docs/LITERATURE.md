@@ -180,6 +180,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 - Shen et al. 2025, CODI [2502.21074](https://arxiv.org/abs/2502.21074) §5.1: intermediates decoded from latents, separated by placeholder latents (Table 3: 97.1 / 83.9 / 75.0 %). Prior for Note 221-2's lens reading.
 - Blogs, not peer-reviewed: Cywiński et al. (LessWrong, 2025-12-22, CODI-1B latents 3 / 5 hold steps; https://www.lesswrong.com/posts/YGAimivLxycZcqRFR); Realmbird (LessWrong, 2026-03-19, compute / store alternation on CODI-1B; https://www.lesswrong.com/posts/rnwjdw5hzddjRvBoC).
 
+- Internal-only forgetting (Note 216-13; docs/LIT_INTERNAL_ONLY_FORGETTING_2026-10-21.md): Haskins & Adams [2505.10822](https://arxiv.org/abs/2505.10822); Wang et al. [2502.11812](https://arxiv.org/abs/2502.11812); Chhabra et al. [2503.01896](https://arxiv.org/abs/2503.01896); LDIFS, Mukhoti et al. [2308.13320](https://arxiv.org/abs/2308.13320); Lee, Sohn & Lee [2602.23197](https://arxiv.org/abs/2602.23197); L2-SP [1802.01483](https://arxiv.org/abs/1802.01483).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
