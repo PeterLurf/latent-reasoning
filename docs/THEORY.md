@@ -20577,6 +20577,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (c) the plain-path smoke passes.
   - Otherwise the pilot runs on the 223-3 module and the norms are not logged.
 
+**Note 223-5 (2026-10-21 14:38 EDT; 223-4's module conditions met; §223 args RE-FREEZE, before any §223 training output; no bar, label or flag change).**
+- **(a)** boxes/codi_ps.py was committed at fa4e87ed (logging-only term_grad_norms; no new arguments). The registered module sha256 is now 45baec0d27b82ea92c766d48fbe99438e299fbb9dfb378b10ce5582e76ae9f16, re-hashed by Theory.
+- **(b) GN-BITWISE PASS** (logs/s223_gn_bitwise.log, 9c6f0bb8): 9562591e vs fa4e87ed; PS on the 2070 under the G-D deterministic wrapper; seed 1, eff_bs 8 / micro 8, 60 steps, log_every 1.
+  - Every per-step loss / ans_ce / num_ce / num_acc / recode_ce / recode_val_ce / gn_preclip / lr / stage is identical.
+  - trainable.pt sha 83c01f23… is identical. The resume gate re-passes on the new module.
+- **(c)** gradflow + plain path PASS (scratch/gate_s223/gradflow.json; plain == codi_port bitwise).
+- **Re-frozen files.** Each differs from its 223-3 file in **module_sha256 only** (diffed by Theory); single-change diffs unchanged. They replace the 223-3 files at the same paths; the 223-3 versions stay in git history.
+
+| cell | file | sha256 |
+|---|---|---|
+| DIRECT | scratch/s223_args_frozen_direct.json | b20663fb5422e4b30253a4211bb0789014da0aa16a0120d01cd58e00cd7e3af8 |
+| PS | scratch/s223_args_frozen_ps.json | a1bc6c2488e69052b4e2b5f63d68dd50a1b330e297622683f1bb99f6ad1d4b7e |
+| M1-only | scratch/s223_args_frozen_m1.json | 178f395cc3b4744c5746ba6e93ba346bb9d90ba7bf2762c6450abe6360ea5246 |
+| M2-only | scratch/s223_args_frozen_m2.json | 2c4835d114aaf0e3d7f744eaee5b1e77ba234362d3a667b85a19dbd0ec176d32 |
+
+- The 223-4 learning pilot runs on this module (2070, DIRECT then PS, the same card and kernel). Cloud cells still wait on its pass.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
