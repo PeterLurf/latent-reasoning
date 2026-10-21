@@ -19993,6 +19993,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The amended gate is applied to every §220 model identically. A_oo and all agreements are reported.
 - **Nothing else changes:** the asserts, the pairs and every reading, bar and label.
 - The scorer output (theory/results/score_s220.json) is not committed and not opened beyond its label until the rule has fired.
+- **Addendum (Audit's ruling, before the check runs; supersedes the A_oo / −0.05 form above). This is a POST-FAILURE GATE AMENDMENT, decided on a known-answer test with no arm read.**
+  - The agreements are A1 = agree(off, off_22030), A2 = agree(off, off_22031), A3 = agree(off_22030, off_22031). **The ceiling is C = min(A1, A2, A3).**
+  - **C ≥ 0.97:** the registered criterion is attainable, and CODI20 stays UNREAD.
+  - **C < 0.97:** amended G-R = |Δacc| ≤ 0.025 ∧ the format gates (CODI20 0.379 / zen-gpt2 0.4246, ± 0.025) ∧ **agree(bs-1, off) ≥ C − 0.03**.
+  - It applies identically to zen-gpt2, which gets its own C, and to any stage-1 model.
+  - **Stage-1 trigger (correction):** it can come from zen-gpt2 whatever CODI20's status. CODI20's status only changes which GPT-2 models count.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
