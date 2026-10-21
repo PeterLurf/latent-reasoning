@@ -1,0 +1,61 @@
+{
+ "task": "prosqa_sym_v1",
+ "arm": "langvb",
+ "arch": "direct",
+ "seed": 1,
+ "acc_cand_host": {
+  "3": 0.5,
+  "4": 0.5,
+  "5": 0.5,
+  "6": 0.49,
+  "7": 0.42,
+  "8": 0.515,
+  "9": 0.505,
+  "10": 0.425,
+  "11": 0.42,
+  "12": 0.475
+ },
+ "per_n": 200,
+ "train_sec": 21796,
+ "n_nonfinite": 0,
+ "gate_hist": [
+  {
+   "step": 6000,
+   "from": 4,
+   "to": 6,
+   "reason": "cap 6000 steps",
+   "bins": [
+    0.8392282524108887,
+    0.818920025408268,
+    0.7936502568423748,
+    0.7831580092608929
+   ]
+  },
+  {
+   "step": 12000,
+   "from": 6,
+   "to": 8,
+   "reason": "cap 6000 steps",
+   "bins": [
+    0.7637842615544796,
+    0.7568971188366413,
+    0.7489846197366714,
+    0.745957703024149
+   ]
+  }
+ ],
+ "stream_collisions": 0,
+ "t_train_max_since_resume": 974,
+ "test_gate_sig_hits_since_resume": 0,
+ "self_state": null,
+ "eval_dtype": "torch.bfloat16",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "565.77",
+ "torch_version": "2.5.1+cu124",
+ "cuda_version": "12.4",
+ "cudnn_version": 90100,
+ "python_version": "3.11.10",
+ "image_tag": "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel",
+ "eval_sec": 16,
+ "note": "descriptive host eval (cand accuracy at K' = D + 2, D 3..12, first per_n test items); the registered readings come from langvb_eval (fp32)"
+}

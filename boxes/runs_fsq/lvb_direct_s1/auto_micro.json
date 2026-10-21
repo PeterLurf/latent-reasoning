@@ -1,0 +1,9 @@
+{
+ "micro": 2,
+ "peak_gib_by_micro": {
+  "1": "OOM",
+  "2": 15.3
+ },
+ "mem_budget": 21.0,
+ "K": 12
+}

@@ -1,0 +1,9 @@
+{
+ "peak_gib_train_step": 15.305692195892334,
+ "shape": "plain (64 longest of 512 D 8 draws, K 12)",
+ "bs": 64,
+ "micro": 2,
+ "arch": "direct",
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "amp": "torch.bfloat16"
+}

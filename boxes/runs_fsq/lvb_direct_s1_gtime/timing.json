@@ -1,0 +1,16 @@
+{
+ "arch": "direct",
+ "steps_timed": 300,
+ "warmup": 20,
+ "sec_per_step": 0.9762026000022889,
+ "sec_per_step_wall": 0.9762026000022889,
+ "est_hours": 6.508017333348592,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "micro": 2,
+ "self_micro": 1,
+ "p_self": 0.0,
+ "sec_per_step_self": null,
+ "sec_per_step_plain": 0.976194171110789,
+ "n_self_timed": 0,
+ "law": "final stage D U{3..8}, K min(D + U{0..4}, 12); self / plain by the registered rng_s coin"
+}
