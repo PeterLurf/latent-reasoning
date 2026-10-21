@@ -1,20 +1,25 @@
-"""§223 PORT-STATE F1: the NESTED-WORDS v1 generator (docs/research_portstate_2026-10-21/PS2_v1.md at 54f63381 §1; REVIEW B3 / M6). NEW module,
-imported by nothing else yet. A program is a straight-line chain of d steps over named quantities with a forced dependency SPINE: step i defines
-spine quantity S_i from S_{i-1} (and, for the two-variable ops, a given quantity G_i stated as a constant), so the DAG depth equals d.
-  * ops: add_c / sub_c / mul_c (spine with a constant) and add_v / sub_v / mul_v (spine with a given quantity); every program has >= 1 mul_v
-    (a two-variable multiplication: breaks the affine-chain shortcut, §170 flag); every quantity (given or computed) lies in 0..99 (the draw is
-    regenerated otherwise); multiplicands are nonzero (mul_c constants 2..9, mul_v givens 2..9, the spine operand of a mul > 0).
-  * language: 8 paraphrase frames per op (frames 6 and 7 are held out of training, FRAME_TRAIN = 0..5; test items draw from all 8 and record the frame
-    of every statement); sampled single-token person names; one sampled unit noun per program; 0-2 numeric DISTRACTOR sentences (unused names, same
-    unit); statements in a random topological order (a statement comes after the statements it reads - S_0, its given, S_{i-1}); the question
-    "How many <u> does <S_d> have?" is the last sentence.
+"""§223 PORT-STATE F1: the NESTED-WORDS v1 generator (docs/research_portstate_2026-10-21/PS2_v1.md at 54f63381 §1; REVIEW B3 / M6; Theory 10-21 on
+ea7c1fbc: mul_s). NEW module, imported by nothing else yet. A program is a straight-line chain of d steps over named quantities with a forced
+dependency SPINE: step t defines spine quantity S_t from S_{t-1} and one more operand, so the DAG depth equals d.
+  * ops: add_c / sub_c / mul_c (S_{t-1} with a constant), add_v / sub_v / mul_v (S_{t-1} with a GIVEN quantity G_t stated as a constant sentence), and
+    the cross-spine ops mul_s / add_s (S_{t-1} with an EARLIER spine quantity S_j, j <= t-2; S_0 counts). Every program of d >= 2 has exactly one
+    forced mul_s at a uniform t in 2..d (a product of two computed / spine quantities: no composition of affine maps x -> a x + b reproduces it, the
+    REVIEW B3(b) shortcut); add_s is a regular op; a d = 1 program is a single mul_v (no mul_s is possible; d 1-2 are not in the G-W0 gate range).
+    Every quantity (given or computed) lies in 0..99; multiplicands are nonzero (mul_c constants 2..9, mul_v givens 2..9; both factors of mul_s >= 2, so the cross product is never a x1 no-op that
+    an affine chain would reproduce - G-W0's affine rule).
+    Construction: steps are drawn in order; a non-forced step whose value leaves 0..99 is redrawn (up to 50 tries); the forced mul_s picks j uniformly
+    among the j <= t-2 with S_j >= 2, S_{t-1} >= 2 and S_{t-1} x S_j <= 99; if a step cannot be placed the whole program restarts (counted: Stream.restarts).
+  * language: 8 paraphrase frames per op (mul_s uses mul_v's frames and add_s add_v's, with the partner's name; frames 6 and 7 are held out of
+    training, FRAME_TRAIN = 0..5; test items draw from all 8 and record each op statement's frame); sampled single-token person names; one sampled
+    unit noun per program; 0-2 numeric DISTRACTOR sentences (unused names, same unit); statements in a random topological order (a statement comes
+    after every statement it reads); the question "How many <u> does <S_d> have?" is the last sentence.
   * R_t (t = 0..d; the re-rooted problem after the first t spine steps): R_0 = the problem. For 1 <= t < d: the statement defining S_t is replaced
-    IN PLACE by the constant sentence "<S_t> has <value> <u>." (given frame 0), and the statements of S_0..S_{t-1} and of the givens read only by
-    steps <= t are removed; every other statement keeps its frame, name and position; distractors and the question are kept. R_d = the answer
-    sentence "<S_d> has <answer> <u>." alone. With constant givens the DAG has no parallel branches; the leftmost-first tie-break is therefore a
-    no-op in v1 (kept as the rule for any reduction order: statements are reduced in sentence order, leftmost first).
-  * item: {"d", "text", "question", "answer", "R": [R_0..R_d], "values": [S_0..S_d], "ops", "givens", "frames", "names", "unit", "n_distractors",
-    "order", "sig"}; sig = sha1 of the rendered text (exclusion by rendered match).
+    IN PLACE by the constant sentence "<S_t> has <value> <u>."; every S_k (k < t) statement that a later step (> t) still reads (via mul_s / add_s)
+    is likewise KEPT IN PLACE as its constant sentence; all other S_k (k < t) statements and the givens of steps <= t are removed; every remaining
+    statement keeps its frame, name and position; distractors and the question are kept. R_d = the answer sentence "<S_d> has <answer> <u>." alone.
+    The DAG has back-edges but no parallel branches, so the spine order defines R_t uniquely (the leftmost-first tie-break is a no-op in v1).
+  * item: {"d", "text", "question", "answer", "R": [R_0..R_d], "values": [S_0..S_d], "ops", "operands", "src_j", "mul_s_t", "givens", "frames",
+    "names", "unit", "n_distractors", "order", "sig"}; sig = sha1 of the rendered text (exclusion by rendered match).
   * streams: Stream(seed, excl) draws items of a given d from np.random.default_rng(seed), skipping any whose sig is in excl. Sets: test_set /
     pair seeds are fixed below; set_sha = sha256 over the rendered texts in order.
     python -B -m boxes.nested_words --selfcheck"""
@@ -27,7 +32,9 @@ import numpy as np
 NAMES = ["Ann", "Bob", "Jim", "Dan", "Eve", "Finn", "Gus", "Hal", "Ivy", "Jon", "Kim", "Leo", "Mia", "Ned", "Joe", "Pam", "Ray", "Sam", "Tom", "Kate",
          "Val", "Wes", "Zoe", "Amy", "Ben", "Cal", "Dee", "Eli", "Fay", "Gil", "Ian", "Joy", "Ken", "Lou", "Max", "Nan", "Pat", "Ron", "Sue", "Ted"]
 UNITS = ["coins", "apples", "stamps", "books", "eggs", "shells", "cards", "pens", "cups", "keys"]
-OPS = ("add_c", "sub_c", "mul_c", "add_v", "sub_v", "mul_v")
+OPS = ("add_c", "sub_c", "mul_c", "add_v", "sub_v", "mul_v", "add_s", "mul_s")
+OPS_REG = ("add_c", "sub_c", "mul_c", "add_v", "sub_v", "mul_v", "add_s")   # the regular (non-forced) ops
+BASE = {"add_c": "add", "sub_c": "sub", "mul_c": "mul", "add_v": "add", "sub_v": "sub", "mul_v": "mul", "add_s": "add", "mul_s": "mul"}
 FRAME_TRAIN = tuple(range(6)); FRAME_ALL = tuple(range(8))
 FRAMES = {
     "add_c": ["{B} has {c} more {u} than {A}.", "{B} owns {c} {u} more than {A} does.", "Compared with {A}, {B} has {c} extra {u}.",
@@ -49,49 +56,62 @@ FRAMES = {
               "{B}'s {u} equal {A}'s multiplied by {C}'s.", "Multiply {A}'s {u} by {C}'s {u} to get {B}'s {u}.", "{B} holds {A}'s {u} multiplied by {C}'s {u}.",
               "For each of {C}'s {u}, {B} has as many {u} as {A}.", "The {u} of {B} number {A}'s times {C}'s."],
 }
+FRAMES["mul_s"] = FRAMES["mul_v"]; FRAMES["add_s"] = FRAMES["add_v"]      # the partner {C} is an earlier spine quantity's name
 GIVEN = "{A} has {v} {u}."
 QUESTION = "How many {u} does {A} have?"
 SEED_TEST, SEED_PAIRS = 22300, 22310            # §223 test / pair streams (PS2_v1 §1: test and pair sets carry a sha)
 
 
 def apply(op, a, b):
-    return {"add_c": a + b, "sub_c": a - b, "mul_c": a * b, "add_v": a + b, "sub_v": a - b, "mul_v": a * b}[op]
+    return {"add": a + b, "sub": a - b, "mul": a * b}[BASE[op]]
+
+
+def _operand(rng, op):
+    return int(rng.integers(2, 10)) if BASE[op] == "mul" else int(rng.integers(1, 21))
 
 
 def _draw_program(rng, d):
-    """-> (ops, operands b_i, S values) with every value in 0..99, >= 1 mul_v, nonzero multiplicands; regenerated until valid."""
+    """-> (ops, operands b_t, src_j (None unless *_s), S values, mul_s_t, restarts); every value in 0..99; one forced mul_s at t in 2..d (d >= 2)."""
+    restarts = 0
     while True:
-        ops = [OPS[int(rng.integers(0, len(OPS)))] for _ in range(d)]
-        if "mul_v" not in ops:
-            ops[int(rng.integers(0, d))] = "mul_v"
-        s = [int(rng.integers(1, 21))]; bs = []; ok = True
-        for op in ops:
-            if op in ("add_c", "add_v"):
-                b = int(rng.integers(1, 21))
-            elif op in ("sub_c", "sub_v"):
-                b = int(rng.integers(1, 21))
+        ts = int(rng.integers(2, d + 1)) if d >= 2 else None
+        s = [int(rng.integers(1, 21))]; ops, bs, js = [], [], []; ok = True
+        for t in range(1, d + 1):
+            if t == ts:                                                     # the forced cross-spine product
+                cand = [j for j in range(0, t - 1) if s[j] >= 2 and s[t - 1] >= 2 and s[t - 1] * s[j] <= 99]   # both factors >= 2: never a x1 / x0 no-op
+                if not cand:
+                    ok = False; break
+                j = cand[int(rng.integers(0, len(cand)))]; ops.append("mul_s"); bs.append(s[j]); js.append(j); s.append(s[t - 1] * s[j]); continue
+            for _ in range(50):
+                op = "mul_v" if d == 1 else OPS_REG[int(rng.integers(0, len(OPS_REG)))]
+                if op == "add_s":
+                    if t < 2:
+                        continue
+                    j = int(rng.integers(0, t - 1)); b = s[j]
+                else:
+                    j = None; b = _operand(rng, op)
+                if BASE[op] == "mul" and s[t - 1] == 0:
+                    continue
+                v = apply(op, s[t - 1], b)
+                if 0 <= v <= 99:
+                    break
             else:
-                b = int(rng.integers(2, 10))
-                if s[-1] == 0:
-                    ok = False
-            v = apply(op, s[-1], b)
-            if not (0 <= v <= 99):
-                ok = False
-            bs.append(b); s.append(v)
-            if not ok:
-                break
+                ok = False; break
+            ops.append(op); bs.append(b); js.append(j); s.append(v)
         if ok:
-            return ops, bs, s
+            return ops, bs, js, s, ts, restarts
+        restarts += 1
 
 
-def make(rng, d, frames=FRAME_TRAIN):
+def make(rng, d, frames=FRAME_TRAIN, stats=None):
     """one item of depth d."""
-    ops, bs, s = _draw_program(rng, d)
+    ops, bs, js, s, ts, rs = _draw_program(rng, d)
+    if stats is not None:
+        stats["restarts"] = stats.get("restarts", 0) + rs; stats["items"] = stats.get("items", 0) + 1
     n_v = sum(op.endswith("_v") for op in ops); n_dis = int(rng.integers(0, 3))
     pick = rng.choice(len(NAMES), size=d + 1 + n_v + n_dis, replace=False); nm = [NAMES[i] for i in pick]
     spine = nm[:d + 1]; gnames = nm[d + 1:d + 1 + n_v]; dnames = nm[d + 1 + n_v:]; u = UNITS[int(rng.integers(0, len(UNITS)))]
-    st = []                                                                 # statements: dict(kind, deps, render)
-    st.append({"id": "S0", "kind": "given", "deps": [], "name": spine[0], "v": s[0]})
+    st = [{"id": "S0", "kind": "given", "deps": [], "name": spine[0], "v": s[0]}]
     gi = 0; givens = []
     for i, op in enumerate(ops, 1):
         f = int(frames[int(rng.integers(0, len(frames)))])
@@ -99,6 +119,9 @@ def make(rng, d, frames=FRAME_TRAIN):
             g = gnames[gi]; gi += 1; givens.append({"name": g, "v": bs[i - 1], "step": i})
             st.append({"id": "G%d" % i, "kind": "given", "deps": [], "name": g, "v": bs[i - 1]})
             st.append({"id": "S%d" % i, "kind": "op", "op": op, "frame": f, "deps": ["S%d" % (i - 1), "G%d" % i], "B": spine[i], "A": spine[i - 1], "C": g, "c": None})
+        elif op.endswith("_s"):
+            j = js[i - 1]
+            st.append({"id": "S%d" % i, "kind": "op", "op": op, "frame": f, "deps": ["S%d" % (i - 1), "S%d" % j], "B": spine[i], "A": spine[i - 1], "C": spine[j], "c": None})
         else:
             st.append({"id": "S%d" % i, "kind": "op", "op": op, "frame": f, "deps": ["S%d" % (i - 1)], "B": spine[i], "A": spine[i - 1], "C": None, "c": bs[i - 1]})
     for j, x in enumerate(dnames):
@@ -107,21 +130,32 @@ def make(rng, d, frames=FRAME_TRAIN):
     q = QUESTION.format(u=u, A=spine[-1])
 
     def render(x, val=None):
+        if val is not None:
+            return GIVEN.format(A=x["B"] if x["kind"] == "op" else x["name"], v=val, u=u)
         if x["kind"] in ("given", "distractor"):
             return GIVEN.format(A=x["name"], v=x["v"], u=u)
-        if val is not None:
-            return GIVEN.format(A=x["B"], v=val, u=u)
         return FRAMES[x["op"]][x["frame"]].format(B=x["B"], A=x["A"], C=x["C"], c=x["c"], u=u)
     text = " ".join([render(x) for x in seq] + [q])
     R = [text]
-    for t in range(1, d):                                                   # R_t: S_t's statement -> a constant in place; consumed statements removed
-        drop = {"S%d" % k for k in range(t)} | {"G%d" % k for k in range(1, t + 1)}
-        R.append(" ".join([render(x, s[t] if x["id"] == "S%d" % t else None) for x in seq if x["id"] not in drop] + [q]))
+    for t in range(1, d):                                                   # R_t (Theory 10-21: back-referenced S_k kept as constants)
+        later = {js[k - 1] for k in range(t + 1, d + 1) if js[k - 1] is not None}
+        keep_const = {"S%d" % k: s[k] for k in later if k < t}; keep_const["S%d" % t] = s[t]
+        drop = {"S%d" % k for k in range(t)} - set(keep_const) | {"G%d" % k for k in range(1, t + 1)}
+        R.append(" ".join([render(x, keep_const.get(x["id"])) for x in seq if x["id"] not in drop] + [q]))
     R.append(GIVEN.format(A=spine[-1], v=s[-1], u=u))                       # R_d = the answer sentence
-    it = {"d": d, "text": text, "question": q, "answer": s[-1], "R": R, "values": s, "ops": ops, "operands": bs, "givens": givens,
+    it = {"d": d, "text": text, "question": q, "answer": s[-1], "R": R, "values": s, "ops": ops, "operands": bs, "src_j": js, "mul_s_t": ts, "givens": givens,
           "frames": [x.get("frame") for x in st if x["kind"] == "op"], "names": {"spine": spine, "givens": gnames, "distractors": dnames}, "unit": u,
           "n_distractors": n_dis, "order": order}
     it["sig"] = hashlib.sha1(text.encode()).hexdigest(); return it
+
+
+def affine_solve(it):
+    """the affine-chain shortcut (Theory 10-21 G-W0 rule): S_0 pushed through every op with its stated operand, cross-spine (*_s) ops ignored."""
+    x = it["values"][0]
+    for op, b in zip(it["ops"], it["operands"]):
+        if not op.endswith("_s"):
+            x = apply(op, x, b)
+    return x
 
 
 def topo_shuffle(rng, st):
@@ -167,11 +201,11 @@ def solve(text):
 
 class Stream:
     def __init__(self, seed, excl=(), frames=FRAME_TRAIN):
-        self.rng = np.random.default_rng(seed); self.excl = set(excl); self.frames = frames
+        self.rng = np.random.default_rng(seed); self.excl = set(excl); self.frames = frames; self.stats = {}
 
     def draw(self, d):
         while True:
-            it = make(self.rng, d, self.frames)
+            it = make(self.rng, d, self.frames, self.stats)
             if it["sig"] not in self.excl:
                 return it
 
@@ -195,7 +229,7 @@ def selfcheck(n=300):
             for t in range(1, d):
                 if solve(it["R"][t]) != it["answer"]:
                     bad.append(("R_t", d, t, it["R"][t]))
-            if "mul_v" not in it["ops"] or not all(0 <= v <= 99 for v in it["values"]):
+            if (it["ops"].count("mul_s") != (1 if d >= 2 else 0)) or not all(0 <= v <= 99 for v in it["values"]):
                 bad.append(("constraint", d))
     print("SELFCHECK", "PASS" if not bad else "FAIL", len(bad), bad[:3]); return not bad
 
