@@ -162,3 +162,15 @@
 ## 10. Cost
 
 **$0.** Local cards, ≈ 3 h per model. Stage 0 needs no download. Stage 1 downloads ≈ 5 GB once.
+
+## Addendum 1 (2026-10-20; Audit's four approval conditions, before registration and before any output)
+
+1. **Label precedence:** UNREAD > UNNECESSARY > CARRIER-PORTS > CARRIER-LEAK > SCAFFOLD > CONTEXT-BOUND > MIXED. The first label whose condition holds is the label. score_s220's fixtures cover every overlap: SCAFFOLD with CONTEXT-BOUND; ¬NECESSARY with high follow; PORTS with high own; LEAK with SCAFFOLD.
+2. **Donor reuse:**
+   - **Each donor is used at most 3 times.** Donors are drawn with rng 22020 among eligible exact-length donors whose use count is below 3. A recipient with no eligible donor left is excluded and counted.
+   - Beside every binomial reading, report the max reuse and an **item-cluster bootstrap CI** (clusters = donor items; 10,000 resamples, rng 22025).
+   - The bar is read on the point estimate, as registered. The cluster CI is descriptive.
+3. **GRAPH-MATCHED Δ:**
+   - Pair set (ii) is restricted to **Δ = 0** (same question token length) where an exact-length graph-matched donor exists.
+   - Graph-matched pairs with Δ ≠ 0 are a separate descriptive row with Δ reported per item. Their int-follow is confounded by position, so it is never pooled with the Δ = 0 row.
+4. **LEAK-SEG floor:** LEAK-SEG's own permutation floor (§4 method) is recorded beside its follow. The gate stays absolute (≤ 0.25).
