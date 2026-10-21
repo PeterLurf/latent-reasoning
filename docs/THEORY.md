@@ -20131,6 +20131,39 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - That outcome would be due to a positive-control design flaw found before any A1 output, and it is reported as such. The bar and the both-plants rule stay as registered.
 - A1's non-probe eval parts run at landing as planned. Its probe parts wait for 218-18.
 
+**Note 218-18 (2026-10-21 06:13 EDT; the PLANT fix decision under 218-22 → (iii) (218-24), committed before A1 lands and before ANY A1 probe output exists; consequences stated by the censoring rule, not rescued; Audit's three items).**
+
+**1. Consequence of (iii) for A1 as registered** (unless 218-23 adopts a recipe; see item 2).
+- PLANT stays as registered: symmetric, ×1. K1 / K3 / K3-DIAG show it is invisible to the option-choice readout by construction: chance at ×1 / ×10 / ×100 with sound wiring (OVERFIT-32; K3-DIAG items 1–5).
+- **So PROBE-VALID(t) on A1 fails structurally,** whatever A1 learned. By rule b, "PROBE-INVALID (PLANT)" makes UNREADABLE (= not met):
+  - **PROBE-GAIN-L** (needs PROBE-VALID(1));
+  - **SERIAL-ONSET-L / ON(D) slope** (needs PROBE-VALID(t) at t 0–2; score_s218 SERIAL_ONSET_L).
+- **Hence VB-C1-L is not met** (a conjunction including both).
+- Downstream, by the registered stage rules:
+  - **SD-SELF and SD-C2-L are not met** for A2 (SD-SELF requires the cell's VB-C1-L, read with the same symmetric plant).
+  - **Stage B (B1) does not run** (it requires VB-C1-L), so **VB-C1-GSM / BEATS-CODI20 read UNREAD** (not admitted).
+- **Unaffected and reported as component readings** (they use no PROBE(t)):
+  - DEEP-L;
+  - SERIAL-STEP-L (PREMISE-SWAP × (ii′) / (i′) splices);
+  - CONSUMPTION-FRONT;
+  - STALL / NO-CLOCK-L;
+  - NO-PRECOMPUTE-L (FD-MIRROR: its own per-slot plant is read per slot, not as an option choice, and has its own FD-VALID);
+  - every descriptive row, including 218-16 BANK-NOISE / ZERO.
+- **A2 under (iii).** A2 GO is registered as DEEP-L ∧ NO-CLOCK-L ∧ GATE-1-L, which does not involve PROBE. But A2's primary SD-C2-L would then be unreachable: P(pass) = 0 by construction. Spending A2 + A2-CTRL (≈ $3.2) on a cell whose primary cannot pass is **the user's decision** under the OC rule. If A2 GO fires, Audit takes it to the user with this note, and A2 does not launch automatically.
+
+**2. 218-23 sweep: the only route to a recipe change.**
+- The pre-stated rule adopts the first of R1 (lr 1e-4 at 10k) → R2 (3e-4) → R3 (1e-3) with anti-lin **and** anti-xor LATE ≥ 0.90 at ×1.5 (untrained), together with the anti plant at m 1.5.
+- R2 is in: lin 0.991 / **xor 0.532, so it does not qualify**. R1 and R3 are pending.
+- **If neither qualifies: no recipe change, full stop.** Item 1 stands.
+- If one qualifies, a short Note 218-18b adopts it. It must carry the derivation of the direction on every PROBE / PLANT / FD reading and the OC pair. The adoption also needs the G-L5 re-run with R* to pass, and must be committed before any A1 probe output.
+- **Nothing about §218's probe readings is re-decided after A1's probe outputs exist.**
+
+**3. Diagnosis (descriptive).**
+- anti-xor sits at chance on the untrained model, on the trained reference coda, and at 3× lr. Meanwhile K2's sign-product oracle reads xor 0.89 / 0.98 / 0.998 at ×1 / 1.5 / 2, and anti-lin is learned at 1.000 everywhere.
+- This suggests the probe's read path, a 2-block coda copy whose output is the decoder likelihood of each option name through a frozen decoder, does not represent the u × u2 interaction within the registered budget: **a capacity / architecture limit of this probe, not a learning-rate problem.**
+- A different probe architecture (for example an MLP head on the option rows) would be a **new design after §218 is scored**, not a rescue of §218's registered probe readings.
+- This supersedes the earlier symmetric m rule (1.75 / 2.0) and closes 218-17's question: **(a) the bar sat at the symmetric plant's ceiling, and the plant was invisible to the readout; not wiring.**
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
