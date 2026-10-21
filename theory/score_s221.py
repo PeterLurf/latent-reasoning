@@ -112,6 +112,10 @@ def score_model(key, f):
             ref = fid["ref"]["pred"]; ks = sorted(port, key=int)
             agree = sum(1 for k in ks if (port[k] is None and ref.get(k) is None) or eq(port[k], ref.get(k))) / len(ks)
             gf.update(agree=agree, acc_ref=fid["ref"]["acc"], dacc=abs(g["acc_bs1"] - fid["ref"]["acc"]))
+            if fid.get("ref_bf16"):                                       # Note 221-1 item 6: descriptive, never a gate
+                rb = fid["ref_bf16"]["pred"]
+                gf["bf16_descriptive"] = {"agree_port_fp32": sum(1 for k in ks if (port[k] is None and rb.get(k) is None) or eq(port[k], rb.get(k))) / len(ks),
+                                          "acc": fid["ref_bf16"].get("acc")}
             if not (agree >= 0.97 - EPS and gf["dacc"] <= 0.01 + EPS):
                 why.append("G-FID(a) (agree %.3f, |dacc| %.3f)" % (agree, gf["dacc"]))
         else:

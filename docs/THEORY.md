@@ -20114,6 +20114,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 4. **Stack.** No repo-pinned torch 2.7.1 / transformers 4.52.4 stack. The official run uses the same system torch 2.14 / transformers 5.18 as the port, plus the repo's peft / accelerate pins, so stack differences cannot pose as port infidelity.
    - D2–D8 (observation-only hooks cross-checked to test.py's printed lines; 'openai/gsm8k'; strict load; TF32 off / deterministic; log redirection; resume_download dropped; sdpa + unmerged LoRA official vs eager + merged port) go to Audit's G-D as listed in the wrapper docstring. The residual numeric differences are what G-FID(a)'s 0.97 tolerance covers.
 5. **Contract points accepted:** ref.pred maps inf → None; official_bs1's ref.sha / ntok are descriptive; determinism's ref.repo_commit = the s220 run commit. No full zen determinism re-run (`--full_intact` not required).
+6. **Descriptive bf16 row (Audit).** One official bs-1 run in **bf16** on all 1,319 items (gate_fid.json `ref_bf16`: {pred, acc}). score_s221 reports agree(port fp32, official bf16) and the accuracy beside G-FID(a). It is **never a gate**.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
