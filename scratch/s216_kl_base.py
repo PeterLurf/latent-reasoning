@@ -2,7 +2,7 @@
 (N.test_set(1000)) at n 1..16, the answer distribution over the 11 value classes (log_softmax over NUM_IDS of answer_logits) at K' = n + 2 and K' = 24,
 from ONE K' 24 rollout per chunk (vbank_diag.part_hist24's method: coda_rows {n + 2, 24}; chunks of the per-n test-order pool, vbank_eval.chunks).
 The note reads n 3..6 and 9..16; n 1..2 are a descriptive a_24(n) table; n 7..8 are computed for the GATE only. Local RTX 4060 (cuda:0), fp32, tf32 off,
-eval_bs 32. GATE: the intact acc_n2 and acc_k['24'] at n 3..8 == each model's (and base's) committed eval_vb within +-0.005, else UNREADABLE on this card.
+eval_bs 32 (Note 216-12: R1-s2 + its base D3-T s2 on the 2070, --runs s216_r1_s2 --device cuda:2; one card per model/base pair; card in meta). GATE: the intact acc_n2 and acc_k['24'] at n 3..8 == each model's (and base's) committed eval_vb within +-0.005, else UNREADABLE on this card.
 Per item (store-items rule): lp_r / lp_b at both K' (theory/score_s216_kl.py's layout). n runs 16 -> 1 (largest shape first). -> <run>/eval_kl_base.json.
 Smokes: --per_n 2 --pairs 1 --out_root scratch/_tmp/s216_kl (writes <out_root>/<run>/eval_kl_base.json, never a run dir).
     python -B scratch/s216_kl_base.py --device cuda:0"""
@@ -63,12 +63,14 @@ def kl(pb, pr):                                                             # KL
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32)
-    ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--pairs", type=int, default=len(PAIRS)); ap.add_argument("--out_root", default=""); a = ap.parse_args()
+    ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--pairs", type=int, default=len(PAIRS)); ap.add_argument("--out_root", default="")
+    ap.add_argument("--runs", default="", help="Note 216-12: only these model runs (comma list), e.g. s216_r1_s2 on the 2070"); a = ap.parse_args()
     dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     TE = N.test_set(a.per_n); Nn = np.array([it["n"] for it in TE]); Yall = np.array([it["t"] for it in TE])
     Y = {n: Yall[Nn == n] for n in NS}; idx = {n: np.nonzero(Nn == n)[0] for n in NS}
     card = torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu"; commit = os.popen("git rev-parse --short HEAD").read().strip(); base_cache = {}
-    for run, base in PAIRS[:a.pairs]:
+    sel = [x for x in a.runs.split(",") if x]
+    for run, base in [pr_ for pr_ in PAIRS[:a.pairs] if not sel or pr_[0] in sel]:
         if base not in base_cache:
             Db, ib = dists(R + base, TE, dev, a.eval_bs); ab = acc_tables(Db, Y); base_cache[base] = (Db, ib, ab, gate(base, ab))
             print("GATE base", base, base_cache[base][3]["PASS"], flush=True)
