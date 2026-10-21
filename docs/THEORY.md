@@ -20265,6 +20265,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **T2 pool:** 390,000 records (32.5k each n 9–12; 65k each n 13–16), sha 9461efb6, exclusion hits 0, duplicates 0.
 - **The round-2 path is clear for T2.** Its frozen args are drafted by Experiments on T1's pattern (textself_ft main on the queue line) and frozen by sha in a note before launch.
 
+**Note 219-12 (2026-10-21 10:09 EDT; §219 T2 args FREEZE, before any T2 launch or output; Experiments a693a330).**
+- **Frozen:** scratch/s219_args_frozen_t2.json.draft, renamed to **scratch/s219_args_frozen_t2.json**. **sha256 5315874deb61f893060c8780e4859e68be188c2d9e720d9ccacdc63289bb752d** (1,852 bytes), re-hashed by Theory. It was written by textself_ft.main on the exact T2 queue-line tokens, with make_opt as a raising sentinel. init_from sha 65b020b0 (T1's model.pt) loads with no missing or unexpected keys.
+- **Against the frozen T1 file (98af9b75), exactly four keys differ** (re-checked by Theory). All are TS_v1 §2.6 / m8 registered round-2 changes:
+  - init_from: s170 → **s219_t1_s1/model.pt**;
+  - self_pool: → **s219_pool_t2_s1/pool_t2.jsonl** (sha 9461efb6, 219-11);
+  - **self_micro 2 → 4** (T2's fixed micro, m8);
+  - out: → s219_t2_s1.
+- **args_ref** stays s170_cot_s1/args.json (the 216-7 rule, as T1). No trainer argument may be added after this freeze.
+- The T2 filler variant (s219_fill_t2.sh) goes to Audit's G-D. It must use T2's pins: the frozen sha above, BASE_SHA = T1's 65b020b0, the T2 pool_meta sha, and G-T9 at self_micro 4 at T2's deepest shape (TS_v1 §3.6: projected 12.8 GiB).
+- The family guard is seeded with T1's realised $0.415. The §219 family cap stays $3.00.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
