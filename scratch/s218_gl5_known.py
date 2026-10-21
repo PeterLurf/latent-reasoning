@@ -419,6 +419,50 @@ class AntiHead(torch.nn.Module):
         g = (self.f(torch.cat([hA, hB], -1)) - self.f(torch.cat([hB, hA], -1))).squeeze(-1); return torch.stack([g, -g], -1)
 
 
+def rows_Vt(m, its, t, dev, chunk, bs):
+    """V_t at o1_slot / o2_slot, unplanted -> (N, 2, D) float64 cpu (rows_V1 for any pass t)."""
+    out = []
+    for ch in E.chunks(range(len(its)), bs * 4):
+        sub = [its[j] for j in ch]; b, S = E.stored(m, sub, t, dev, chunk); ar = torch.arange(len(sub), device=dev)
+        o1 = torch.tensor([it["o1_slot"] for it in sub], device=dev); o2 = torch.tensor([it["o2_slot"] for it in sub], device=dev)
+        out.append(torch.stack([S[t][ar, o1], S[t][ar, o2]], 1).double().cpu()); del S
+    return torch.cat(out, 0)
+
+
+def k2cexor(m, pool, dirs, dev, chunk, bs, ts=(0, 1), mults=(1.5, 2, 3), n_train=20000, n_test=2000):
+    """Theory 10-21 (PROBE2 v1 m rule): the cexor ceiling on the untrained model. Rows planted as plant_V_cexor (coin / signs rng 22611 / 22612 train,
+    22613 / 22614 test; fresh, not the feasibility streams). (i) RULE oracle: per row the sign product sign((row - mu) . u) * sign((row - mu) . u2),
+    mu = the unplanted train mean of that pass's option rows; choose the row with +1 (both or neither -> 0.5). (ii) LOGREG reference on the differenced
+    per-row features [pu, pu2, pu * pu2] (row o1 minus row o2; centred by mu), L2 tuned on a split of train. Target: o1 is the target row."""
+    tr, te = pool[2000:2000 + n_train], pool[2000 + n_train:2000 + n_train + n_test]; res = {"n_train": len(tr), "n_test": len(te), "by_t": {}, "def": k2cexor.__doc__}
+    grid = [0.0, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1]
+    for t in ts:
+        d = dirs[t]; u = d["u"].double().cpu(); u2 = d["u2"].double().cpu(); t0 = time.time()
+        Rtr, Rte = rows_Vt(m, tr, t, dev, chunk, bs), rows_Vt(m, te, t, dev, chunk, bs); mu = Rtr.reshape(-1, Rtr.shape[-1]).mean(0)
+        res["by_t"][str(t)] = {"eps_base": d["eps"], "rows_sec": round(time.time() - t0), "by_mult": {}}
+        for mult in mults:
+            e = d["eps"] * mult; out = {}
+            for nm, R, sd in (("train", Rtr, (22611, 22612)), ("test", Rte, (22613, 22614))):
+                T, sg = cexor_draw(np.random.default_rng(sd[0]), np.random.default_rng(sd[1]), len(R), "cpu"); T = T.long(); sg = sg.double()
+                P = R.clone(); ar = torch.arange(len(R)); tgt = T; oth = 1 - T
+                P[ar, tgt] += e * (sg[:, 0:1] * u + sg[:, 1:2] * u2); P[ar, oth] += e * (sg[:, 2:3] * u + sg[:, 3:4] * u2)
+                C = P - mu; pu, pu2 = C @ u, C @ u2                                            # (N, 2) per row
+                out[nm] = (pu, pu2, (T == 0).double())                                          # y = 1 iff o1 is the target row
+            pu, pu2, y = out["test"]; sp = torch.sign(pu) * torch.sign(pu2)                     # (N, 2)
+            pick = torch.where(sp[:, 0] > sp[:, 1], torch.ones_like(y), torch.where(sp[:, 0] < sp[:, 1], torch.zeros_like(y), torch.full_like(y, 0.5)))
+            rule = float((torch.where(pick == 0.5, torch.full_like(y, 0.5), (pick == y).double())).mean())
+            def feats(o):
+                a, b, _ = o; f = torch.stack([a, b, a * b], -1); return f[:, 0] - f[:, 1]       # differenced per-row features (o1 - o2)
+            Ftr, Fte = feats(out["train"]), feats(out["test"]); ytr = out["train"][2]; mu_f, sd_f = Ftr.mean(0), Ftr.std(0).clamp_min(1e-8)
+            Ftr, Fte = (Ftr - mu_f) / sd_f, (Fte - mu_f) / sd_f; k = int(0.8 * len(Ftr))
+            val = {str(l2): logreg(Ftr[:k], ytr[:k], Ftr[k:], ytr[k:], l2, "cpu") for l2 in grid}
+            best = max(grid, key=lambda l2: (val[str(l2)], l2)); acc = logreg(Ftr, ytr, Fte, y, best, "cpu")
+            res["by_t"][str(t)]["by_mult"][str(mult)] = {"eps": e, "rule_oracle_acc": rule, "logreg_acc": acc, "l2": best, "val_acc_by_l2": val}
+            print("K2CEXOR t", t, "x", mult, "rule", round(rule, 4), "logreg", round(acc, 4), flush=True)
+    res["seeds_consumed"] = {"coin_train": 22611, "signs_train": 22612, "coin_test": 22613, "signs_test": 22614, "pool": 22500, "plant_dirs": 22550}
+    return res
+
+
 def overfit32(m, pool, d1, dev, chunk, mult=10, steps=300, every=10):
     """Theory / Audit 10-21 item 0: OVERFIT-32 - the registered probe (Probe(m, 1e-4)) trained on 32 FIXED items (pool[24000:24032], fixed z rng 22581)
     as one full batch per step, eps x10, train accuracy + CE every 10 steps; with the registered SYMMETRIC plant and the ANTISYMMETRIC plant (item 6).
@@ -552,7 +596,7 @@ def fl(x):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--arms", default="k1,k2,k3"); ap.add_argument("--bs", type=int, default=16)
-    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2"); ap.add_argument("--probe_lr", type=float, default=1e-4, help="descriptive arms only (registered: 1e-4)"); ap.add_argument("--out_name", default="", help="override the saved JSON name (one arm per call)"); ap.add_argument("--probe2_specs", default="lin:1.5;xor:1.5;lin:10;xor:10;probe0:;xor:10:shuffled", help="PROBE2 runs kind:mult[:control];...")
+    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2"); ap.add_argument("--probe_lr", type=float, default=1e-4, help="descriptive arms only (registered: 1e-4)"); ap.add_argument("--out_name", default="", help="override the saved JSON name (one arm per call)"); ap.add_argument("--k2c_train", type=int, default=20000); ap.add_argument("--probe2_specs", default="lin:1.5;xor:1.5;lin:10;xor:10;probe0:;xor:10:shuffled", help="PROBE2 runs kind:mult[:control];...")
     a = ap.parse_args(); global TAG, PROBE_LR, OUT_NAME; TAG = a.tag; PROBE_LR = a.probe_lr; OUT_NAME = a.out_name; dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
     if a.model_run:
         m, info = E.load(a.model_run, dev); info = {"model_run": a.model_run, **{k: info.get(k) for k in ('arch', 'arch_class', 'source', 'items_sha', 'steps_run')}}
@@ -574,6 +618,8 @@ def main():
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="lin"); save("k3_sym", {**meta, **r})
     if "k3symxor" in arms:
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="xor"); save("k3_sym_xor", {**meta, **r})
+    if "k2cexor" in arms:
+        r = k2cexor(m, pool, dirs, dev, a.chunk, a.bs, n_train=a.k2c_train); save("k2_cexor", {**meta, **r})
     if "feas2" in arms or "feas2_s1" in arms or "feas2_s2" in arms:      # Note 218-25 revised feasibility (Audit-approved): S1 then S2 (feas2_s1 / feas2_s2: one set only; Theory 10-21 card split)
         S1 = [("cexor", 0, 1.5, None), ("cexor", 0, 10, None), ("cexor", 1, 1.5, None), ("cexor", 1, 10, None), ("lin", 0, 1.5, None),
               ("cexor_noplant", 1, 0, None), ("cexor", 1, 10, "shuffled")]
