@@ -1,0 +1,35 @@
+2026-10-18 14:38:32 l1b rc 1
+2026-10-18 14:47:29 rerun_l1a rc 0
+2026-10-18 14:47:40 l7b_cpu96 rc 0
+2026-10-18 14:47:42 rerun_l1b rc 0
+2026-10-18 14:48:19 rerun_l2 rc 0
+2026-10-18 15:24:51 l5_smoke rc 0
+2026-10-18 15:32:22 l9_loader rc 0
+2026-10-18 15:35:23 eval_smoke rc 0
+2026-10-18 15:47:28 eval_smoke2 rc 0
+2026-10-18 15:48:32 eval_smoke_direct rc 0
+2026-10-18 15:51:52 e2e train lslva rc 0
+2026-10-18 15:52:56 e2e train direct rc 0
+2026-10-18 16:08:57 l1b rc 0
+2026-10-18 16:14:00 l7b rc 0
+2026-10-18 16:21:26 l7b_fp64 rc 0
+2026-10-18 16:39:01 l10 rcA 0 rcB1 0 rcB2 0 rcC 0
+2026-10-18 16:40:40 l4b_hook rc 0
+2026-10-18 16:47:40 l7b_fp64_full rc 0
+2026-10-18 16:52:30 l4b_hook_cpu rc 0
+2026-10-18 16:53:39 l6 rcStep 0 rcAcc 0
+2026-10-18 16:54:39 l1c rc 0
+2026-10-18 17:00:33 evmem rc 0
+2026-10-18 17:14:52 e2e eval lslva rc 0
+2026-10-18 17:19:14 l10_det rcA 0 rcB1 0 rcB2 0 rcC 0
+2026-10-18 17:20:35 evmem2 rc 0
+2026-10-18 17:22:37 e2e2 eval lslva rc 0
+2026-10-18 17:22:45 e2e2 eval direct rc 0
+2026-10-18 17:24:37 l10_restore rc1 0 rc2 0
+2026-10-18 17:29:36 evmem3 rc 0
+2026-10-18 17:32:59 e2e3 eval probe,fd rc 0 (group 8 pmicro 16)
+2026-10-18 18:21:30 l7b_fp64_gpu rc 0
+2026-10-18 19:25:52 l7b_fp64_run2 rc 0
+2026-10-20 22:32:17 mirror_smoke rc 0 0 0
+2026-10-20 22:51:13 l5 rerun rc 127
+2026-10-20 22:51:23 l5 rerun ABORTED by pid (Theory + Audit 10-20, superseded by 218-17 K2: eps x1 linear ceiling 0.910 vs the 0.90 bar) -> g_l5.void_eps1
