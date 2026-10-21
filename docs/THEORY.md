@@ -20008,6 +20008,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The G-R outcome is mechanical under 220-2 / 220-3, and K-SWEEP is descriptive.
   - Progress is checked by phase markers only from now on.
 
+**§220 stage 0, CODI20 (2026-10-21 03:06 EDT; gsm_codi_20ep_s1/eval_gcs.json, 2070, fp32, bs 1, s220_gcs.py at e5ea9325; sidecar gate_official_self.json (Note 220-3); theory/score_s220.py at 8e62df09).**
+- **Label: UNREAD (G-R fails under the amended rule).**
+  - **Official self-consistency:** A1 / A2 / A3 = 0.874 / 0.878 / 0.867, so **C = 0.867 < 0.97**, and the amended G-R applies.
+  - **Harness agreement:** agree(bs-1, official) = **0.667 < C − 0.03 = 0.837**. |Δacc| 0.021 and the 0.379 format gate pass.
+  - **Reading:** the official semantics disagree with themselves on about 13 % of items across batch compositions, as expected from unmasked pads. Our bs-1 path disagrees with them on 33 %, well beyond the official code's own noise. So by the registered gate our bs-1 harness does not reproduce the official computation for this checkpoint.
+  - All asserts are clean (4,427 cache-row checks; self / donor-own bitwise; 483 pairs, reuse ≤ 3).
+- **Consequences:**
+  - Every CODI20 reading is not met (rule b). **No swap-arm value has been read.** score_s220.json is not committed and the arms stay unread, pending Audit's ruling on whether any descriptive row of a gate-failed cell may ever be shown.
+  - The stage-1 trigger now rests on zen-gpt2 alone (220-3 addendum).
+  - zen's own G-R needs its official-shuffle runs (3070, after zen and T1's evals).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
