@@ -55,15 +55,67 @@
    "sealed": "arms / descriptive values sealed (Audit ruling 10-21; THEORY \u00a7220 notes): see SEALED_OUT sha"
   },
   "s0_zen_gpt2": {
-   "status": "pending (missing eval_gcs.json)"
+   "meta": {
+    "model": "zen",
+    "path": "prosqa/ckpt_ext/hf/codi/pytorch_model.bin",
+    "model_sha256": "fd223b14932b8b66605c2a688e7d7193058ff2b40b2c6f6c1547c227d06d8417",
+    "params_loaded": 244,
+    "hf": "zen-E/CODI-gpt2 (sha pinned in boxes/codi_g1.py)",
+    "stage": 0,
+    "card": "NVIDIA GeForce RTX 3070",
+    "device": "cuda:1",
+    "dtype": "fp32 (LoRA merged)",
+    "bs": 1,
+    "test_sha256": "3d497ddbd728358309e25046b47a383adf582428cd3b5574767a55376b291d8d",
+    "test_file": "prosqa/ckpt_ext/hf/data/gsm8k_test.json",
+    "transformers": "5.18.0",
+    "torch": "2.14.0+cu130",
+    "attn_implementation": "eager",
+    "tf32": false,
+    "max_new": 256,
+    "n_items": 1319,
+    "commit": "b1a6ae32f8865e612b02a4ce1d398acff0ba9722",
+    "script_sha256": "575d4cfb6997ce3910e0a7aea965608a4c9bfcfe0a517a81bce8fbe76172e8b1",
+    "script_git_status": "",
+    "codi_port_sha256": "5a04f7696dfb11b4f61888b7b408037308ae25c2f24f17065f787a463d121710",
+    "codi_port_git": "06da84e9e48f5bcf503a7f1fc59fda923679f496",
+    "registered": "docs/research_scaleprobe_2026-10-20/GCS_v1.md at 3a88762e",
+    "smoke": false,
+    "limit": null,
+    "synthetic": null,
+    "smoke_all_correct": false,
+    "rng": {
+     "pairs": 22020,
+     "graph": 22021,
+     "noise": 22022,
+     "scit_random": 22023
+    },
+    "sec": 11162
+   },
+   "status": "ok",
+   "G_R": {
+    "C": 0.6618650492797574,
+    "official_self": [
+     0.6762699014404853,
+     0.6739954510993177,
+     0.6618650492797574
+    ],
+    "rule": "amended (C < 0.97): agree >= C - 0.03"
+   },
+   "n_pairs": 545,
+   "max_reuse": 3,
+   "label": "UNREAD (G-R amended (agree 0.411 vs C - 0.03 = 0.632, |dacc| 0.177))",
+   "sealed": "arms / descriptive values sealed (Audit ruling 10-21; THEORY \u00a7220 notes): see SEALED_OUT sha"
   },
   "s1_zen_1b": {
-   "status": "pending (stage 0 incomplete)"
+   "status": "UNREAD (stage 1 not triggered; v1 \u00a76: a new Note needed)",
+   "label": "UNREAD",
+   "sealed": "arms / descriptive values sealed (Audit ruling 10-21; THEORY \u00a7220 notes): see SEALED_OUT sha"
   }
  },
- "stage1_trigger": "pending",
+ "stage1_trigger": "not met",
  "primary": {
   "0": "UNREAD (G-R amended (agree 0.667 vs C - 0.03 = 0.837, |dacc| 0.021))",
-  "1": "pending (stage 0 incomplete)"
+  "1": "UNREAD"
  }
 }
