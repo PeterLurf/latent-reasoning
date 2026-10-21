@@ -15,3 +15,12 @@
 2026-10-21 11:24:26 resume test cert start (4060, post-reboot)
 2026-10-21 11:24:26 resume test a1 start (3070, post-reboot)
 2026-10-21 11:24:26 engine equiv start (2070, post-reboot)
+2026-10-21 11:54:54 engine equiv old rc 0
+2026-10-21 12:00:08 resume test a1 RESUME-TEST a1 PASS
+2026-10-21 12:09:43 resume test cert RESUME-TEST cert PASS
+2026-10-21 12:22:47 engine equiv new rc 0
+2026-10-21 12:22:49 ENGINE-EQUIV FAIL {'curve_diff': [], 'field_diff': [], 'param_diff': ['cexor_t0.P.h_10_attn_c_attn_bias', 'cexor_t0.P.h_10_attn_c_attn_weight', 'cexor_t0.P.h_10_attn_c_proj_bias', 'cexor_t0.P.h_10_attn_c_proj_weight', 'cexor_t0.P.h_10_ln_1_bias', 'cexor_t0.P.h_10_ln_1_weight', 'cexor_t0.P.h_10_ln_2_
+2026-10-21 12:29:36 engine equiv new2 rc 0
+2026-10-21 12:29:54 CORRECTION: 'engine equiv new2 rc 0' above is date's status (rc-after-$(date) bug); new2 was STOPPED by pid 13604 at ~step 2 (Note 222-3 + Audit (a'): envelope optional; the 2070 goes to the det gate); log -> .void_superseded
+2026-10-21 12:29:54 engine equiv DET start (2070, math SDP + deterministic, Audit (a'))
+2026-10-21 12:29:54 resume test cert DET start (3070, t2 group, math SDP)
