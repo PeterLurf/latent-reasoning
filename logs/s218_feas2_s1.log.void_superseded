@@ -1,0 +1,40 @@
+SETUP 249 s eps 6.8592303155613985
+S1 cexor t 0 x 1.5 None 250 0.528 273 s
+S1 cexor t 0 x 1.5 None 500 0.654 545 s
+S1 cexor t 0 x 1.5 None 750 0.722 817 s
+S1 cexor t 0 x 1.5 None 1000 0.756 1089 s
+S1 cexor t 0 x 1.5 None 1250 0.758 1361 s
+S1 cexor t 0 x 1.5 None 1500 0.75 1632 s
+S1 cexor t 0 x 1.5 None 1750 0.734 1902 s
+S1 cexor t 0 x 1.5 None 2000 0.76 2173 s
+WROTE feas2_S1_cexor_t0_x1.5
+S1 cexor t 0 x 10 None 250 0.917 271 s
+S1 cexor t 0 x 10 None 500 0.992 542 s
+S1 cexor t 0 x 10 None 750 1.0 814 s
+S1 cexor t 0 x 10 None 1000 1.0 1086 s
+S1 cexor t 0 x 10 None 1250 1.0 1357 s
+S1 cexor t 0 x 10 None 1500 1.0 1628 s
+S1 cexor t 0 x 10 None 1750 1.0 1898 s
+S1 cexor t 0 x 10 None 2000 1.0 2169 s
+WROTE feas2_S1_cexor_t0_x10
+S1 cexor t 1 x 1.5 None 250 0.499 303 s
+S1 cexor t 1 x 1.5 None 500 0.503 607 s
+S1 cexor t 1 x 1.5 None 750 0.561 911 s
+S1 cexor t 1 x 1.5 None 1000 0.733 1216 s
+S1 cexor t 1 x 1.5 None 1250 0.801 1519 s
+S1 cexor t 1 x 1.5 None 1500 0.909 1823 s
+S1 cexor t 1 x 1.5 None 1750 0.959 2126 s
+S1 cexor t 1 x 1.5 None 2000 0.96 2429 s
+WROTE feas2_S1_cexor_t1_x1.5
+S1 cexor t 1 x 10 None 250 0.999 304 s
+S1 cexor t 1 x 10 None 500 1.0 608 s
+S1 cexor t 1 x 10 None 750 1.0 913 s
+S1 cexor t 1 x 10 None 1000 0.999 1219 s
+S1 cexor t 1 x 10 None 1250 1.0 1524 s
+S1 cexor t 1 x 10 None 1500 1.0 1829 s
+S1 cexor t 1 x 10 None 1750 1.0 2134 s
+S1 cexor t 1 x 10 None 2000 0.999 2439 s
+WROTE feas2_S1_cexor_t1_x10
+S1 lin t 0 x 1.5 None 250 0.905 272 s
+S1 lin t 0 x 1.5 None 500 0.988 544 s
+S1 lin t 0 x 1.5 None 750 0.992 817 s
