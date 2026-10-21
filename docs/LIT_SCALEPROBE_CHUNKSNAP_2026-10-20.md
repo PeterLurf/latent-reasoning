@@ -40,7 +40,7 @@ Written 2026-10-20 ~22:50 EDT by the Literature session, for Theory and Audit.
   - On the CODI-1B checkpoint, averaging latents 3 / 5 over prompts with **different** intermediate values hurts; same-value averages don't.
   - Accuracy peaks at K 5 of 6.
   - This is the nearest to a donor swap.
-- **Gap:** no published full question-swap (latents from a different question) or donor-follow rate on a ≥1B model. Our 210-4 battery (donor follow 0.04 on GPT-2 CODI-20) would be **new at 1B**.
+- ~~**Gap:** no published question-swap / donor-follow at ≥1B; 210-4 would be new at 1B.~~ **CORRECTED 23:15 (missed by the subagent; found when checking SCIT for Theory):** see the SCIT section below. A latent-KV donor transplant at 1B **is published** (synthetic templates only).
 
 **Recommendation:** start with `zen-E/CODI-llama3.2-1b-Instruct`.
 - It is official and MIT-licensed, has a K flag, and four papers report on it.
@@ -72,3 +72,52 @@ Written 2026-10-20 ~22:50 EDT by the Literature session, for Theory and Audit.
 - **Expect an interior optimum in k.** Too-large chunks hurt: Thinking States beyond c 8, Coconut at c 3, CoLaR at c 5.
 - PENCIL's trace accuracy is 83 % at n 10 while its answers are 100 %, so not every decode error is fatal. Pre-state whether the re-root uses the decoded text exactly as decoded or after canonicalisation.
 - He 2512.02677 is the natural text-side comparator. It is already in LIT_DEPTH_RECURRENT_CHEN_HE_2026-10-11.
+
+## Addendum (23:15): SCIT 2608.27265 (Ding, Huang, Yang, "SCIT: Testing Causal Cache Carriers in Latent Chain-of-Thought Models"; verified; read in the arXiv HTML) [empirics]
+
+**Models**
+- CODI-GPT2 and Sim-CoT-GPT2: the authors' own reproductions (LoRA r128, 6 latents).
+- **CODI-LLaMA3-1B and Sim-CoT-LLaMA3-1B**: "public and matched" cells. The text does not give an HF id.
+- LLaMA3-8B (repair / carrier-split cells) and Qwen3-4B (a boundary cell).
+
+**Tasks**
+- Synthetic templated arithmetic: one two-hop program in three lexical variants (balls / books / coins), plus three-hop and conditional cells.
+- Entity / graph cells fail the competence gate.
+- **GSM8K is listed only as future work.**
+
+**Intervention**
+- The source's cache slice at latent step t (latent tail / prompt prefix / full cache) is written into the recipient.
+- Components: K-only, V-only or K/V, each crossed with cache-only, cache+h or h-only.
+- Layer groups and suffix windows k are swept.
+- Semantic controls: same-answer, same-intermediate, partial-variable and cross-template sources.
+- Matched random corruption tests necessity.
+
+**Metric**
+- Teacher-forced closed-set **target win** for the oracle counterfactual a_cf among {recipient, donor, oracle-cf, random}.
+- Also: a log-probability margin Δ_cf−rec and free-generation checks.
+- The candidate set lists donor and oracle-cf separately. Read §3 before equating target win with our donor-follow.
+
+**Positions**
+- Pairs share a template.
+- With unequal realised stops, latent positions are aligned by **reverse distance from the stop**, and unmatched recipient positions are kept.
+- **No RoPE or padding treatment is discussed.**
+
+**Key numbers**
+
+| model | hidden-only | latent cache only | step(s) |
+|---|---|---|---|
+| CODI-GPT2 (Table 49) | 0.246 / 0.000 | 0.704 / 1.000 | 5 / 6 |
+| CODI-LLaMA3-1B | 0.000 | 0.933 (two-hop), 0.950 (three-hop) | 6 |
+| Sim-CoT-LLaMA3-1B | 0.000 | 1.000 | 6 |
+
+- At 1B, last-latent-only cache+h is about 0.0.
+- At 8B, the carrier shifts to prompt-prefix / full-cache K/V, not the latent tail.
+- Full sufficiency plus necessity is claimed only for the CODI-GPT2 checkpoint (late-value block, layers 8–9).
+
+**For SCALE-PROBE**
+- A latent-position KV transplant at 1B is **not new**. Cite SCIT as the protocol and the synthetic 1B precedent.
+- Still new:
+  - natural GSM8K pairs;
+  - the re-run granularity: swap the latent input states and recompute the recipient's cache, which is our 210-4 design and which SCIT does not run;
+  - free-generation donor-follow between unequal-length natural prompts under RoPE.
+- Consistent with our 210-4 (GPT-2 CODI-20 donor follow 0.04): the vector alone does not port, and the cache does.
