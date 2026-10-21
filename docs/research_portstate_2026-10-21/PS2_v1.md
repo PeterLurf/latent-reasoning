@@ -5,12 +5,12 @@
 ## 0. Question, premise, honesty
 - **Premise (Note 221-2, floors cleared):** CODI-GPT2's GSM8K latents carry **intermediate values**, while the program and remaining operands are re-read from the question. A donor's latents therefore yield the counterfactual (0.33–0.54 vs floor ≤ 0.04), not the donor's answer (§221: 0.03).
 - **Question:** can a CODI-style latent carry the **remaining program and its operands** (the re-rooted problem R_t), so that a mid-chain swap makes the continuation finish the **donor's** problem while the recipient's conflicting question stays visible? Tested on a templated word task whose depth exceeds one forward pass.
-- **Novelty, pending Literature:**
-  - M1 is SIM-CoT's (2509.20317) step supervision with a **re-rooted-state** target, read **question-blind** from the swapped object.
-  - §175 ran a question-blind re-rooted-expression decoder on synthetic data.
-  - §211 / §213 showed portable states on synthetic data (VALUE-SWAP 1.000).
-  - §218's CONSUMPTION-FRONT is the mirror-image input switch.
-  - **The delta:** the CODI family on a word task; a trained answer bottleneck; a mid-chain graph-matched donor swap with the recipient's question visible; a decode-free BUDGET-FRONT.
+- **Novelty (Literature db7e503d; LITERATURE.md §13; the user's 10-21 rule):**
+  - **OK:** the **re-rooted remaining problem as a LATENT target**. Text-side priors exist: He 2512.02677 locate-and-replace, NRS 2402.17407, PENCIL 2503.14337.
+  - **OK:** the **combination** (latent re-rooted target + trained answer bottleneck + mid-chain whole-prefix donor swap with the recipient's conflicting question visible + decode-free BUDGET-FRONT).
+  - **Not claimed (withdrawn):** question-blind decoding of latents as such (SELR 2608.13570; PLaT 2601.21358; SIM-CoT 2509.20317's z_k decoder).
+  - **Narrowed:** the mid-chain donor reading (SCIT 2608.27265 patches at step t; Liang & Pan sweep the swap position).
+  - **Internal precedents, cited, so the target type is not called new against our own work:** §175 (question-blind re-rooted-expression decoder, synthetic), §211 / §213 (portable states on synthetic, VALUE-SWAP 1.000), §218 CONSUMPTION-FRONT (the mirror-image input switch).
 - **A null is the likeliest outcome** (prior ≈ 0.10, §6). Results are worded as "templated word task, one seed", never GSM8K, never C4.
 
 ## 1. Task: NESTED-WORDS v1 (REVIEW B3, M6)
