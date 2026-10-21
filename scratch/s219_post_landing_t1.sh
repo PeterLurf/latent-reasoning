@@ -8,13 +8,14 @@
 #   1 landing check (CPU): train_done steps 12000, self_reuse 0, model_sha256 == sha256(model.pt), log.jsonl last step 12000, draws_log 1..12000, init_from
 #     sha == V6, args.json present; G-T20 part: no eval*.json / *.void_unsealed in the cell dir; G-T6: strict load + one forward on synthetic ids (rng 21903,
 #     never a test item) -> scratch/gate_s219/t1_landing_check.json; any failure -> exit 3;
-#   2 retention (TS_v1 §8, "deleted at landing"): stop the 318 ckpt_mirror (exact pid match) and delete scratch/ckpt_mirror/s219_t1_s1 (KEEP_MIRROR=1 skips);
+#   2 retention (TS_v1 §8, "deleted at landing"): stop the 318 ckpt_mirror (exact pid match) and delete scratch/ckpt_mirror/s219_t1_s1 (KEEP_MIRROR=1 skips; Audit 10-21 (d): launch with
+#     KEEP_MIRROR=1 - the mirror is kept until score_s219 has run on T1, pending Theory's one-line Note);
 #   3 G-T19: s219_base_s1/eval_text.json exists and theory/score_s219.py carries BASE_NOTE (Note 219-5) -> else exit 3 (no T1 output is produced);
 #   4 wait until no python process holds the RTX 3070 (nvidia-smi), then T1 eval_text: python -m boxes.text_eval --run <cell> --part text --cot_eval_bs 32
 #     --device cuda:1 (the 3070, as scratch/s219_3070_base.sh; LATENT_MEM_CAP_GB 6.0); the meta card must read RTX 3070 / fp32 / tf32 false / bs 32;
 #     STAGE_BOUNDARY line: commit eval_text.json (G-T11);
 #   5 eval_textself CPU parts (LABEL-AUDIT-T, CONTAMINATED; registered; the round-2 condition reads them) on CPU;
-#   6 eval_textself GPU parts (MEMO-GAP-T, LABELLER-KEPT-T; descriptive; after eval_text, V3) on the 3070 (RUN_GPU_PARTS=0 skips: run them later in a gap).
+#   6 eval_textself GPU parts (MEMO-GAP-T, LABELLER-KEPT-T; descriptive; after eval_text, V3) on the 3070 (default HELD, Audit 10-21: RUN_GPU_PARTS=1 runs them; Theory's step-4 note first).
 # GATE-T2 / GATE-T1' / the T2 pool are NOT started here: they wait for Theory's step-4 note (T1 readings, Delta_1, the round-2 condition; G-T20).
 cd /d/Latent || exit 2
 RUN=boxes/runs_fsq/s219_t1_s1; TAG=gen_b318; OUT=logs/s219_post_landing.out; STOP=scratch/s219_post_landing.stop; DEV=${DEV:-cuda:1}
@@ -50,7 +51,8 @@ o['train_done'] = {k: td.get(k) for k in ('steps', 'train_sec', 'n_nonfinite', '
 o['checks'] = {'steps_12000': td.get('steps') == 12000, 'self_reuse_0': td.get('self_reuse') == 0, 'model_sha_matches': td.get('model_sha256') == ms,
                'log_last_step_12000': last == 12000, 'draws_log_1_12000': [d['step'] for d in dl] == list(range(1, 12001)), 'init_from_V6': ini.get('sha256') == '$V6',
                'args_json': os.path.exists(R + '/args.json'),
-               'no_eval_files (G-T20)': not [f for f in os.listdir(R) if f.startswith('eval') or f.endswith('.void_unsealed')]}
+               'no_eval_files (G-T20)': not [f for f in os.listdir(R) if f.startswith('eval') or f.endswith('.void_unsealed')],
+               'no_ckpt_weights_home (Audit 10-21, retention)': not [f for f in os.listdir(R) if f.startswith('ckpt_') and f.endswith('.pt')]}
 o['model_sha256'] = ms; o['n_self_steps_expected_5992'] = td.get('n_self_steps') == 5992
 g, s2 = TS.load_model(R + '/model.pt', 'cpu'); x = torch.tensor(np.random.default_rng(21903).integers(0, 50257, (2, 40)))
 with torch.no_grad():
@@ -107,7 +109,7 @@ run textself_cpu python -B -m boxes.text_eval --run "$RUN" --part textself --rou
 [ $rc -eq 0 ] || { say "ALERT eval_textself CPU parts failed (rc $rc; logs/s219_t1_post_textself_cpu.log) - held"; exit 3; }
 say "eval_textself CPU parts done ($RUN/eval_textself.json: label_audit, contamination); Theory's step-4 note (T1 readings, Delta_1, the round-2 condition) is next; STAGE_BOUNDARY: commit eval_textself.json"
 
-if [ "${RUN_GPU_PARTS:-1}" = 1 ]; then
+if [ "${RUN_GPU_PARTS:-0}" = 1 ]; then   # Audit 10-21 (c): default HOLD until Theory's step-4 note (or Theory confirms in writing it changes nothing these parts read)
   wait3070
   run textself_gpu python -B -m boxes.text_eval --run "$RUN" --part textself --round 1 --parts gpu --device "$DEV"; rc=$?
   [ $rc -eq 0 ] || { say "ALERT eval_textself GPU parts failed (rc $rc; logs/s219_t1_post_textself_gpu.log; descriptive) - held"; exit 3; }
