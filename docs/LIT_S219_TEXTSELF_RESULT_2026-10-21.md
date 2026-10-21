@@ -36,3 +36,23 @@ Written 2026-10-21 by the Literature session, for Theory and Audit.
 - An unindexed NeurIPS 2026 listing, "What Breaks Depth Extrapolation in Looped Language Models?", reports that reweighting ~25 % of the loss onto answer tokens restores depth extrapolation under fixed budgets.
 - It bears on §218's answer-vs-template-token imbalance and on §223's R_j-length risk (LIT_S218_CLOSE_S223_AUX_2026-10-21).
 - **Not yet verified:** I found no arXiv ID. Don't cite it until it is found and read.
+
+## Addendum (2026-10-21 ~15:30 EDT): the lead pinned down, partly
+**Citation**
+- Arun, Zhao & Arulkumaran, "What Breaks Depth Extrapolation in Looped Language Models?"
+- **NeurIPS 2026 Workshop on the Linguistic Principles for Foundation Models**, a workshop paper, not the main track.
+- OpenReview **IwMfUz9KNj**. No arXiv ID was found (export.arxiv.org author / abstract search).
+- The OpenReview PDF and API are behind a browser challenge, so **the full text was not read**.
+
+**Abstract (from the NeurIPS page, verbatim excerpts):**
+- "a task ladder that gradually moves from pure symbolic composition towards natural language by introducing complex grammatical form and paraphrasing through layout diversity".
+- "Grammatical form and length still allow for depth extrapolation, while layout diversity imposes a large convergence cost on learning, and per-example layouts prevent learning the task altogether".
+- "the standard next-token prediction training objective … creates a major optimization barrier to depth extrapolation under fixed budgets, while reweighting even 25% of the loss on answer tokens restores it".
+- The authors recommend controlling layout diversity and "focus[ing] the loss on task-important tokens".
+
+**Not available without the PDF:**
+- the exact meaning of "25 %" (most likely the share of total loss weight on answer tokens, but unconfirmed);
+- whether a curriculum is used;
+- model sizes, tasks and budget.
+
+**Use:** [empirics, abstract only, workshop]. Cite as "consistent with" for §218's diagnosis (template tokens absorbing the loss) and as a candidate remedy for §223. Don't quote a recipe until the PDF is read. A user with an OpenReview login could download it.
