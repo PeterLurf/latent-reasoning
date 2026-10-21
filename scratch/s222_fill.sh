@@ -130,7 +130,16 @@ for cell in $QS; do
         GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,6000,8000,10000,12000 nohup python scratch/cost_guard.py s222fam "$famcap" "$PSTEPS" $famc > logs/s222fam_guard.out 2>&1 &
         log "guard s222fam (\$$CAPF - refused / BAD \$$bt = \$$famcap, GUARD_STOP=1;$famc) started"
       fi
-      sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; break
+      sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"
+      if [ "$n" = 320 ]; then   # Audit 10-21: the registered-kernel envelope / resume verdict (b320 line 2) gates every later host's 10k-step group
+        ej=""; for i in $(seq 1 90); do ej=$(sq "$h" "$p" "cat /workspace/Latent/boxes/runs_fsq/s222_envelope_3090/envelope.json"); [ -n "$ej" ] && break; sleep 60; done
+        ev=$(echo "$ej" | python -c "import json, sys
+try: d = json.load(sys.stdin); print('PASS' if d.get('proposed_PASS') is True else 'FAIL', 'envelope', d.get('envelope_ce_max_abs'), 'pass_vs', d.get('pass_vs'), 'gpu', d.get('gpu'))
+except Exception: print('MISSING')" 2>/dev/null)
+        log "b320: envelope / resume verdict (Note 222-3 (b)): ${ev:-MISSING}"
+        echo "$ev" | grep -q "^PASS " || { log "ALERT b320 envelope.json ${ev:-missing after 90 min}: b320's group is gated off by s222_after_gate; NO further host is deployed - tell Theory / Audit"; exit 3; }
+      fi
+      break
     fi
     log "b$n: projection \$$proj NOT admitted on $h:$p (measured refusal $((tries + 1)) / $HOSTMAX) - destroying, next host"
     tries=$((tries + 1)); refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "projection"
