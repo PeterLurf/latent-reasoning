@@ -308,6 +308,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 218 | LANG-VB (user 'yes' to the design 12:02 10-18; Audit auto-approved under the $30 rule, cap $25): Stage A ProsQA-SYM v1 (DIRECT-SYM + A1 + A2 + A2-CTRL) -> B1 GSM8K strict DECOMP only if VB-C1-L; primaries VB-C1-L (incl. slot-local splice + CONSUMPTION-FRONT), SD-C2-L, VB-C1-GSM; LANG_v1.md at 83f2dea4; scorer score_s218 (to write) | registered | **Stage A LAUNCHED 10-18 (218-13); both cells HOST-LOST in the 10-18/20 outage, nothing read, $4.52 lost; RELAUNCH from step 0 Audit-approved 10-20 (218-15)** |
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **T1 SCORED 10-21 (219-8, Audit-reproduced): T-SELF, T-SHIFT/MIXED, n50 14.606 vs latent R1 15.460 (Delta1 -0.854, PARITY unreachable); round 2 cleared; ~$0.42 / $3.00** |
 | 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **CLOSED 10-21 at stage 0: UNREAD in both GPT-2 models (amended G-R: padded official semantics batch-dependent; pad-free bs-1 reproduces 0.379 / 0.4246 bitwise); stage 1 not triggered; arms SEALED (7c3822cf); successor to draft; $0** |
+| 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **scorer + G-D on the official runner, then G-FID; seal lifts after** |
 
 ## Live sections
 
@@ -18880,6 +18881,38 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 - G-S scorer fixtures.
 
 **Cost: $0** (local, about 3 h per model). Cards: after KL-DRIFT (216-10), one card per model, recorded. Realised at registration: $0.
+
+## 221. GSM-CACHE-SWAP-2: §220's battery behind a fidelity gate (successor to §220, which closed UNREAD at stage 0; **auto-approved by Audit under the user's $30 standing rule, cap $0**, on review of b7c66d8f; pre-registered 2026-10-21 04:58 EDT, after §220's GATE outcomes and before any swap-arm, descriptive or NECESSARY value of any model is read)
+
+**Registered text.** docs/research_scaleprobe_2026-10-20/GCS2_v1.md **at b7c66d8f** (frozen). It inherits GCS_v1.md at 3a88762e plus Addendum 1 and Notes 220-1 / 220-2 for every definition, arm, reading, label, OC, censoring rule and wording, except as below.
+
+**Honesty.**
+- Designed after seeing §220's gate outcomes only. No arm value has been read; all are sealed at sha 7c3822cf….
+- G-FID(b) is a recorded fact (the accuracies are in §220's gate blocks). The new evidence is G-FID(a) / (a′).
+- §220 stays UNREAD forever.
+
+**Change: G-R → G-FID.**
+- **(a) zen-gpt2:** the official zhenyi4/codi test.py at **bs 1** (no pads; repo pinned), all 1,319 items. Per-item agreement ≥ 0.97 with our port's bs-1 INTACT and |Δacc| ≤ 0.01.
+  - **CODI20:** a bitwise determinism check instead (no official path; the port is the training harness).
+  - **CODI-1B:** as zen, if stage 1 is triggered.
+- **(a′)** A bitwise re-run of **pairs[0:50]** of each pinned file: the INTACT, CACHE-SWAP and LEAK-SEG generated-token shas. Any mismatch voids the reuse and triggers the full battery re-run.
+- **(b)** Accuracy: 0.379 / 0.4246 ± 0.025; CODI-1B 0.556 ± 0.03 as a flag.
+- Padded official runs are descriptive only.
+
+**Data (reuse; pinned):**
+- CODI20 boxes/runs_fsq/gsm_codi_20ep_s1/eval_gcs.json, sha256 **82aa84138eea9a390d713cdb0f09c4f7e78deac295a09519ce2f8d716b6bef36** (7cf3913c; clean tree; 2070, fp32, bs 1).
+- zen scratch/s220/zen_codi_gpt2/eval_gcs.json, sha256 **fec1f9ec1bda121d33485b8a325fb92e963756b3b0ef1f1fd195ba6b512de769** (064fa9f7; clean tree; 3070, fp32, bs 1).
+
+**Order:**
+1. This registration.
+2. theory/score_s221.py + fixtures.
+3. Audit's G-D on the zen official-runner wrapper (pinned commit, same checkpoint sha, test.py's own decode settings: greedy, max tokens, stop, parser).
+4. G-FID runs.
+5. Unseal, then score_s221 runs once.
+
+**Reporting.** Each reading carries "generated under §220's run, sealed, unread until §221's freeze (sha …)".
+
+**Primary, labels, OC, stage-1 trigger:** as §220 (CACHE-CARRIER-GSM; PORTS / LEAK / SCAFFOLD / CONTEXT-BOUND / UNNECESSARY / MIXED; P(pass | no effect) ≈ 0). **Cost: $0.**
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
