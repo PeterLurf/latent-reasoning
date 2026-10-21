@@ -77,7 +77,7 @@ CARD_CLASS = "3070"        # T5. §2.7 fallback: Theory sets "4060" (and LATENT_
 CARD_BACKUP = "2070"       # usable for whole files only after CARD-GATE (G-T21) passes on the base
 CARDS = ("3070", "2070", "4060", "3090", "4090", "A100", "H100")
 HASH_MODELS = True         # FT cells: meta model_sha256 == sha256(model.pt) when model.pt is present
-BASE_NOTE = None           # G-T19: {"note": "219-x", "branch": "levels" | "gain"} once Theory records it; the scorer asserts its own branch matches
+BASE_NOTE = {"note": "219-5", "branch": "levels"}   # G-T19 (recorded 10-21): {"note": "219-x", "branch": "levels" | "gain"} once Theory records it; the scorer asserts its own branch matches
 NOT_ADMITTED, FINAL = set(), set()
 SMOKE = False               # --smoke (Audit G-T12, as score_s218): relax ONLY the dead / step-count / ARGS-DIFF / size / card / sha pre-checks of smoke cells,
 SMOKE_RELAXED = []          # each still computed and listed (smoke_relaxed); every label carries SMOKE_LABEL; refused at --final; never a registered reading
