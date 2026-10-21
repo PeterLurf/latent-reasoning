@@ -292,7 +292,7 @@ def probe2_hidden(m, pr, t, S, Vt, sp, dA, dB, lens, posA, posB):
     return out
 
 
-def probe2(m, pool, held, d1, dev, chunk, bs, kind, mult, steps=2000, every=250, pbs=64, control=None):
+def probe2(m, pool, held, d1, dev, chunk, bs, kind, mult, steps=2000, every=250, pbs=64, control=None, head_kind="full"):
     """PROBE2 feasibility (Theory 10-21 + Audit): untrained LangSLVA; kind 'lin' / 'xor' = PLANT at t 1 with the ANTISYMMETRIC plant at eps x mult (target
     index 0 iff option A = o1 is the planted-true one; lin: z1, xor: z1 xor z2); kind 'probe0' = PROBE(0): t 0, no plant, A / B = gold / other with the
     order RANDOMISED per item (train rng 22593, held-out 22594; target = which side is gold) - fixed order would let the head win by always answering 0.
@@ -300,10 +300,10 @@ def probe2(m, pool, held, d1, dev, chunk, bs, kind, mult, steps=2000, every=250,
     Recipe: the registered Probe (blocks 10-11 + beta / gam copy, step-0 init) AdamW lr 1e-4 wd 0.01 + the head AdamW lr 1e-3 wd 0.01; bs 64; batches
     rng 22501, z rng 22551 (zdraw); held-out 1,000 (z rng 22553) every 250."""
     t = 0 if kind == "probe0" else 1; d = {1: scaled(d1, mult)} if t == 1 else {}
-    pr = E.Probe(m, 1e-4); head = Probe2Head(m.D, dev); hopt = torch.optim.AdamW(head.parameters(), lr=1e-3, weight_decay=0.01)
-    rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); rsw = np.random.default_rng(22593); rperm = np.random.default_rng(22597); curve = []; t0 = time.time(); logged = []
+    pr = E.Probe(m, 1e-4); head = (AntiHead if head_kind == "anti" else Probe2Head)(m.D, dev); hopt = torch.optim.AdamW(head.parameters(), lr=1e-3, weight_decay=0.01)
+    rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); rsw = np.random.default_rng(22593); rperm = np.random.default_rng(22597); rc = np.random.default_rng(22601); rs_ = np.random.default_rng(22602); curve = []; t0 = time.time(); logged = []
 
-    def batch_logits(its, b, S, z1, z2, sw):
+    def batch_logits(its, b, S, z1, z2, sw, T=None, sg=None):
         x, pad, lens, si, sp, dR, dP = b
         if kind == "probe0":
             dA = torch.where(sw[:, None].bool(), dP, dR); dB = torch.where(sw[:, None].bool(), dR, dP); Vt = S[0]
@@ -313,10 +313,10 @@ def probe2(m, pool, held, d1, dev, chunk, bs, kind, mult, steps=2000, every=250,
             y = sw.long()                                                                         # target index = the side holding gold
         else:
             dA = torch.tensor([E.LV.dec_ids(it["o1"]) for it in its], device=dev); dB = torch.tensor([E.LV.dec_ids(it["o2"]) for it in its], device=dev)
-            Vt = (plant_V_anti(S[1], its, z1, d[1], kind == "xor", z2))
+            Vt = plant_V_cexor(S[1], its, d[1], T, sg) if kind == "cexor" else plant_V_anti(S[1], its, z1, d[1], kind == "xor", z2)
             posA = [name_positions(it["o1"]) for it in its]; posB = [name_positions(it["o2"]) for it in its]
             ztrue = (z1 ^ z2) if kind == "xor" else z1
-            y = (1 - ztrue).long()                                                                # index 0 iff A = o1 is the true option
+            y = T.long() if kind == "cexor" else (1 - ztrue).long()                              # index 0 iff A = o1 is the true (target) option
         hA, hB = probe2_hidden(m, pr, t, S, Vt, sp, dA, dB, lens, posA, posB)
         if not logged:
             logged.append({"head_inputs": {"hA": list(hA.shape), "hB": list(hB.shape)}, "head_input_def": "the ln_f hidden of the coda copy at each option's name-token decoder rows (mean); no label / gold token path", "posA_example": posA[0], "posB_example": posB[0]})
@@ -326,27 +326,97 @@ def probe2(m, pool, held, d1, dev, chunk, bs, kind, mult, steps=2000, every=250,
     K = max(t, 1) if t else 0
     for st in range(1, steps + 1):
         ix = rb.integers(0, len(pool), pbs); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, K, dev, chunk); z1, z2 = zd(rz, pbs, dev)
-        sw = torch.tensor(rsw.integers(0, 2, size=pbs), device=dev)
+        sw = torch.tensor(rsw.integers(0, 2, size=pbs), device=dev); T, sg = cexor_draw(rc, rs_, pbs, dev)
         pr.opt.zero_grad(set_to_none=True); hopt.zero_grad(set_to_none=True)
-        lg, y = batch_logits(sub, b, S, z1, z2, sw)
+        lg, y = batch_logits(sub, b, S, z1, z2, sw, T, sg)
         if control == "shuffled":                                           # Audit / Theory: training targets permuted per batch (rng 22597); held-out keeps the true targets
             y = y[torch.tensor(rperm.permutation(len(y)), device=dev)]
         F.cross_entropy(lg, y).backward(); pr.opt.step(); hopt.step(); del S
         if st % every == 0:
             zz = zd(np.random.default_rng(22553), len(held), dev); swh = torch.tensor(np.random.default_rng(22594).integers(0, 2, size=len(held)), device=dev)
+            TT, SG = cexor_draw(np.random.default_rng(22603), np.random.default_rng(22604), len(held), dev)
             ok = []
             for ch in E.chunks(range(len(held)), bs):
                 sub = [held[j] for j in ch]; b, S = E.stored(m, sub, K, dev, chunk)
                 with torch.no_grad():
-                    lg, y = batch_logits(sub, b, S, zz[0][ch], zz[1][ch], swh[ch]); ok += (lg.argmax(-1) == y).long().tolist()
+                    lg, y = batch_logits(sub, b, S, zz[0][ch], zz[1][ch], swh[ch], TT[ch], SG[ch]); ok += (lg.argmax(-1) == y).long().tolist()
                 del S
             curve.append((st, float(np.mean(ok)))); print("PROBE2", kind, mult, control, st, curve[-1][1], round(time.time() - t0), "s", flush=True)
     late = float(np.mean([a for _, a in curve[-3:]]))
-    return {"kind": kind, "mult": mult, "t": t, "control": control, "eps": d[1]["eps"] if d else None, "curve": curve, "LATE": late, "final": curve[-1][1],
+    return {"set": "S2 (PROBE2, %s head)" % head_kind, "head_kind": head_kind, "kind": kind, "mult": mult, "t": t, "control": control, "eps": d[1]["eps"] if d else None, "curve": curve, "LATE": late, "final": curve[-1][1],
             "recipe": probe2.__doc__, "sec": round(time.time() - t0), "head_log": logged[0] if logged else None, "probe_lr": 1e-4, "head_lr": 1e-3, "steps": steps,
             "seeds_consumed": {"pool_held_stream": 22500, "batches": 22501, "z_train": [22551, "zdraw pairs"], "z_held": 22553, "plant_dirs": 22550,
-                               "probe0_order_train": 22593, "probe0_order_held": 22594, "shuffle_perm": 22597 if control == "shuffled" else None,
+                               "probe0_order_train": 22593, "probe0_order_held": 22594, "shuffle_perm": 22597 if control == "shuffled" else None, "coin_train": 22601, "signs_train": 22602, "coin_held": 22603, "signs_held": 22604,
                                "note": "feasibility consumed these registered streams; the certification uses FRESH streams (Theory 10-21)"}}
+
+
+def cexor_draw(rc, rs, n, dev):
+    """Note 218-25 content-equivariant xor: a fair coin T (0 = o1 is the target row, 1 = o2), signs (s1, s2, s3, s4) with s1 s2 = +1 on the target row and
+    s3 s4 = -1 on the other, otherwise uniform. -> (T (n,), signs (n, 4)) on dev."""
+    T = rc.integers(0, 2, size=n); s1 = rs.choice([-1, 1], size=n); s3 = rs.choice([-1, 1], size=n)
+    sg = np.stack([s1, s1, s3, -s3], 1)
+    return torch.tensor(T, device=dev), torch.tensor(sg, device=dev, dtype=torch.float32)
+
+
+def plant_V_cexor(Vt, its, d, T, sg):
+    """target row += eps (s1 u + s2 u2); the other option row += eps (s3 u + s4 u2) (Note 218-25 / REVIEW_P2 section 2.4)."""
+    V = Vt.clone(); B = V.shape[0]; ar = torch.arange(B, device=V.device)
+    j1 = torch.tensor([it["o1_slot"] for it in its], device=V.device); j2 = torch.tensor([it["o2_slot"] for it in its], device=V.device)
+    tgt = torch.where(T == 0, j1, j2); oth = torch.where(T == 0, j2, j1)
+    u, u2 = d["u"][None], d["u2"][None]
+    add_t = d["eps"] * (sg[:, 0:1] * u + sg[:, 1:2] * u2); add_o = d["eps"] * (sg[:, 2:3] * u + sg[:, 3:4] * u2)
+    V[ar, tgt] = V[ar, tgt] + add_t.to(V.dtype); V[ar, oth] = V[ar, oth] + add_o.to(V.dtype)
+    return V
+
+
+def k3gen(m, pool, held, dirs, dev, chunk, bs, kind, t, mult, control=None, steps=2000, every=250, pbs=64):
+    """Note 218-25 revised feasibility S1: the REGISTERED probe read path (Probe(m, 1e-4), pr.scores: frozen-decoder sA - sB), PLANT at pass t with the
+    dirs of t: kind 'cexor' (content-equivariant xor; label = which option row is the target; coin / signs rng 22601 / 22602 train, 22603 / 22604 held,
+    restarted per read), 'cexor_noplant' (the same coin labels, NO plant - Audit: must read ~0.5), 'lin' (antisymmetric lin, z rng 22551 / 22553).
+    control 'shuffled': training targets permuted per batch (rng 22597), held-out on the true targets. bs 64, batches rng 22501, held-out 1,000 every 250."""
+    d = scaled(dirs[t], mult) if kind != "cexor_noplant" else dirs[t]; pr = E.Probe(m, 1e-4)
+    rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); rc = np.random.default_rng(22601); rs_ = np.random.default_rng(22602)
+    rperm = np.random.default_rng(22597); curve = []; t0 = time.time()
+
+    def fwd(sub, b, S, z1, T, sg):
+        x, pad, lens, si, sp, dR, dP = b
+        d1 = torch.tensor([E.LV.dec_ids(it["o1"]) for it in sub], device=dev); d2 = torch.tensor([E.LV.dec_ids(it["o2"]) for it in sub], device=dev)
+        if kind == "lin":
+            V = plant_V_anti(S[t], sub, z1, d); y = (1 - z1).long()
+        elif kind == "cexor":
+            V = plant_V_cexor(S[t], sub, d, T, sg); y = T.long()
+        else:
+            V = S[t]; y = T.long()
+        sA, sB = pr.scores(m, t, S, V, sp, d1, d2, lens); return sA, sB, y
+
+    for st in range(1, steps + 1):
+        ix = rb.integers(0, len(pool), pbs); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, t, dev, chunk)
+        z1, _ = zd(rz, pbs, dev); T, sg = cexor_draw(rc, rs_, pbs, dev)
+        pr.opt.zero_grad(set_to_none=True); sA, sB, y = fwd(sub, b, S, z1, T, sg)
+        if control == "shuffled":
+            y = y[torch.tensor(rperm.permutation(len(y)), device=dev)]
+        F.cross_entropy(torch.stack([sA, sB], 1), y).backward(); pr.opt.step(); del S
+        if st % every == 0:
+            zz = zd(np.random.default_rng(22553), len(held), dev); TT, SG = cexor_draw(np.random.default_rng(22603), np.random.default_rng(22604), len(held), dev); ok = []
+            for ch in E.chunks(range(len(held)), bs):
+                sub = [held[j] for j in ch]; b, S = E.stored(m, sub, t, dev, chunk)
+                with torch.no_grad():
+                    sA, sB, y = fwd(sub, b, S, zz[0][ch], TT[ch], SG[ch]); ok += ((sA > sB).long() == (1 - y)).long().tolist()
+                del S
+            curve.append((st, float(np.mean(ok)))); print("S1", kind, "t", t, "x", mult, control, st, curve[-1][1], round(time.time() - t0), "s", flush=True)
+    return {"set": "S1 (registered read path)", "kind": kind, "t": t, "mult": mult, "control": control, "eps": d["eps"], "curve": curve,
+            "LATE": float(np.mean([a for _, a in curve[-3:]])), "final": curve[-1][1], "def": k3gen.__doc__, "sec": round(time.time() - t0),
+            "seeds_consumed": {"batches": 22501, "z_train": 22551, "z_held": 22553, "coin_train": 22601, "signs_train": 22602, "coin_held": 22603, "signs_held": 22604,
+                               "shuffle_perm": 22597 if control else None, "plant_dirs": 22550, "pool_held_stream": 22500}}
+
+
+class AntiHead(torch.nn.Module):
+    """S2 antisymmetric head (Note 218-25): g = f(hA, hB) - f(hB, hA), f = MLP on [hA, hB] -> 256 ReLU -> 1; logits [g, -g] (index 0 = option A)."""
+    def __init__(self, D, dev):
+        super().__init__(); self.f = torch.nn.Sequential(torch.nn.Linear(2 * D, 256), torch.nn.ReLU(), torch.nn.Linear(256, 1)).to(dev)
+
+    def forward(self, hA, hB):
+        g = (self.f(torch.cat([hA, hB], -1)) - self.f(torch.cat([hB, hA], -1))).squeeze(-1); return torch.stack([g, -g], -1)
 
 
 def overfit32(m, pool, d1, dev, chunk, mult=10, steps=300, every=10):
@@ -504,6 +574,14 @@ def main():
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="lin"); save("k3_sym", {**meta, **r})
     if "k3symxor" in arms:
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="xor"); save("k3_sym_xor", {**meta, **r})
+    if "feas2" in arms:                                                   # Note 218-25 revised feasibility (Audit-approved): S1 then S2
+        S1 = [("cexor", 0, 1.5, None), ("cexor", 0, 10, None), ("cexor", 1, 1.5, None), ("cexor", 1, 10, None), ("lin", 0, 1.5, None),
+              ("cexor_noplant", 1, 0, None), ("cexor", 1, 10, "shuffled")]
+        for kind, t, mu, ctl in S1:
+            r = k3gen(m, pool, held, dirs, dev, a.chunk, a.bs, kind, t, mu, control=ctl, steps=a.k3_steps); save("feas2_S1_%s_t%d_x%s%s" % (kind, t, mu, ("_" + ctl) if ctl else ""), {**meta, **r})
+        S2 = [("cexor", 1.5, None), ("lin", 1.5, None), ("probe0", 0, None), ("cexor", 1.5, "shuffled")]
+        for kind, mu, ctl in S2:
+            r = probe2(m, pool, held, d1, dev, a.chunk, a.bs, kind, float(mu), steps=a.k3_steps, control=ctl, head_kind="anti"); save("feas2_S2_%s_x%s%s" % (kind, mu, ("_" + ctl) if ctl else ""), {**meta, **r})
     if "probe2" in arms:
         for spec in a.probe2_specs.split(";"):
             kind, mult, ctl = (spec.split(":") + ["", ""])[:3]; mu = float(mult) if mult else 0.0
