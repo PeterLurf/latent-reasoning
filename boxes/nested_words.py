@@ -1,14 +1,15 @@
 """§223 PORT-STATE F1: the NESTED-WORDS v1 generator (docs/research_portstate_2026-10-21/PS2_v1.md at 54f63381 §1; REVIEW B3 / M6; Theory 10-21 on
 ea7c1fbc: mul_s). NEW module, imported by nothing else yet. A program is a straight-line chain of d steps over named quantities with a forced
-dependency SPINE: step t defines spine quantity S_t from S_{t-1} and one more operand, so the DAG depth equals d.
+dependency SPINE: step t defines spine quantity S_t from S_{t-1} and one more operand, so the DAG depth equals d. (v1.2, Theory 10-21: the
+  forced product reads a COMPUTED S_j, j >= 1.)
   * ops: add_c / sub_c / mul_c (S_{t-1} with a constant), add_v / sub_v / mul_v (S_{t-1} with a GIVEN quantity G_t stated as a constant sentence), and
-    the cross-spine ops mul_s / add_s (S_{t-1} with an EARLIER spine quantity S_j, j <= t-2; S_0 counts). Every program of d >= 2 has exactly one
-    forced mul_s at a uniform t in 2..d (a product of two computed / spine quantities: no composition of affine maps x -> a x + b reproduces it, the
-    REVIEW B3(b) shortcut); add_s is a regular op; a d = 1 program is a single mul_v (no mul_s is possible; d 1-2 are not in the G-W0 gate range).
+    the cross-spine ops mul_s / add_s (S_{t-1} with an EARLIER spine quantity S_j, j <= t-2; S_0 counts for add_s). Every program of d >= 3 has exactly
+    one forced mul_s at a uniform t in 3..d with a COMPUTED partner j in 1..t-2 (v1.2) (a product of two computed / spine quantities: no composition of affine maps x -> a x + b reproduces it, the
+    REVIEW B3(b) shortcut); add_s is a regular op; d 1-2 programs have no forced mul_s (a d = 1 program is a single mul_v; d 1-2 are reported, not gated).
     Every quantity (given or computed) lies in 0..99; multiplicands are nonzero (mul_c constants 2..9, mul_v givens 2..9; both factors of mul_s >= 2, so the cross product is never a x1 no-op that
     an affine chain would reproduce - G-W0's affine rule).
     Construction: steps are drawn in order; a non-forced step whose value leaves 0..99 is redrawn (up to 50 tries); the forced mul_s picks j uniformly
-    among the j <= t-2 with S_j >= 2, S_{t-1} >= 2 and S_{t-1} x S_j <= 99; if a step cannot be placed the whole program restarts (counted: Stream.restarts).
+    among the 1 <= j <= t-2 with S_j >= 2, S_{t-1} >= 2 and S_{t-1} x S_j <= 99; if a step cannot be placed the whole program restarts (counted: Stream.restarts).
   * language: 8 paraphrase frames per op (mul_s uses mul_v's frames and add_s add_v's, with the partner's name; frames 6 and 7 are held out of
     training, FRAME_TRAIN = 0..5; test items draw from all 8 and record each op statement's frame); sampled single-token person names; one sampled
     unit noun per program; 0-2 numeric DISTRACTOR sentences (unused names, same unit); statements in a random topological order (a statement comes
@@ -74,11 +75,11 @@ def _draw_program(rng, d):
     """-> (ops, operands b_t, src_j (None unless *_s), S values, mul_s_t, restarts); every value in 0..99; one forced mul_s at t in 2..d (d >= 2)."""
     restarts = 0
     while True:
-        ts = int(rng.integers(2, d + 1)) if d >= 2 else None
+        ts = int(rng.integers(3, d + 1)) if d >= 3 else None             # Theory 10-21 (v1.2): the forced product needs a COMPUTED S_j (j >= 1), so t >= 3
         s = [int(rng.integers(1, 21))]; ops, bs, js = [], [], []; ok = True
         for t in range(1, d + 1):
             if t == ts:                                                     # the forced cross-spine product
-                cand = [j for j in range(0, t - 1) if s[j] >= 2 and s[t - 1] >= 2 and s[t - 1] * s[j] <= 99]   # both factors >= 2: never a x1 / x0 no-op
+                cand = [j for j in range(1, t - 1) if s[j] >= 2 and s[t - 1] >= 2 and s[t - 1] * s[j] <= 99]   # j >= 1 computed; both factors >= 2
                 if not cand:
                     ok = False; break
                 j = cand[int(rng.integers(0, len(cand)))]; ops.append("mul_s"); bs.append(s[j]); js.append(j); s.append(s[t - 1] * s[j]); continue
@@ -150,12 +151,25 @@ def make(rng, d, frames=FRAME_TRAIN, stats=None):
 
 
 def affine_solve(it):
-    """the affine-chain shortcut (Theory 10-21 G-W0 rule): S_0 pushed through every op with its stated operand, cross-spine (*_s) ops ignored."""
+    """the WEAK affine-chain rule (descriptive since v1.2): S_0 pushed through every op with its stated operand, cross-spine (*_s) ops ignored."""
     x = it["values"][0]
     for op, b in zip(it["ops"], it["operands"]):
         if not op.endswith("_s"):
             x = apply(op, x, b)
     return x
+
+
+def affine_strong(it):
+    """the STRONG affine solver (Theory 10-21, v1.2 G-W0 rule): every step whose operand is a STATED number (a constant, a given, S_0 - i.e. mul_s /
+    add_s with j = 0 too) is an affine map of the state with that coefficient, and an add_s with a computed j adds an earlier state (still affine in
+    the stated inputs); the composition is exact. The only step it cannot represent is a product with a COMPUTED spine quantity (mul_s, j >= 1).
+    -> (representable, prediction: the exact answer if representable, else None)."""
+    if any(op == "mul_s" and j is not None and j >= 1 for op, j in zip(it["ops"], it["src_j"])):
+        return False, None
+    x = [it["values"][0]]
+    for op, b, j in zip(it["ops"], it["operands"], it["src_j"]):
+        x.append(apply(op, x[-1], x[j] if op.endswith("_s") else b))
+    return True, x[-1]
 
 
 def topo_shuffle(rng, st):
@@ -229,7 +243,7 @@ def selfcheck(n=300):
             for t in range(1, d):
                 if solve(it["R"][t]) != it["answer"]:
                     bad.append(("R_t", d, t, it["R"][t]))
-            if (it["ops"].count("mul_s") != (1 if d >= 2 else 0)) or not all(0 <= v <= 99 for v in it["values"]):
+            if (it["ops"].count("mul_s") != (1 if d >= 3 else 0)) or not all(0 <= v <= 99 for v in it["values"]):
                 bad.append(("constraint", d))
     print("SELFCHECK", "PASS" if not bad else "FAIL", len(bad), bad[:3]); return not bad
 
