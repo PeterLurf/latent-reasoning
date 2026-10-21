@@ -419,6 +419,7 @@ def main():
     ap.add_argument("--max_new", type=int, default=256); ap.add_argument("--smoke_all_correct", action="store_true")
     ap.add_argument("--gate_m", action="store_true"); ap.add_argument("--load_only", action="store_true")
     ap.add_argument("--threads", type=int, default=int(os.environ.get("S220_THREADS", "2")))
+    ap.add_argument("--official_shuffle", type=int, default=None, help="Note 220-3: ONLY the official-semantics arm, item order shuffled with this rng seed before forming the 128-blocks -> scratch/s220/[zen_codi_gpt2/]official_shuffle_<seed>.json; no registered arm runs")
     a = ap.parse_args(); dev = a.device; torch.set_num_threads(a.threads)
     smoke = bool(a.limit or a.synthetic or a.model == "tiny" or a.max_new != 256 or a.smoke_all_correct)
     out_dir = os.path.abspath(a.out_dir or OUT_DEFAULT.get(a.model, ""))
@@ -453,6 +454,19 @@ def main():
     if a.gate_m:
         gate_m(R, items, out_dir, dev); return
     ids = [R.ids(it["q"]) for it in items]; L = [len(x) for x in ids]; gold = [it["gold"] for it in items]
+    if a.official_shuffle is not None:                                      # Note 220-3 (+ Audit addendum): official-vs-official self-consistency
+        fo2 = os.path.join(out_dir if smoke else os.path.join(ROOT, "scratch", "s220", *(() if a.model == "codi20" else ("zen_codi_gpt2",))),
+                           "official_shuffle_%d.json" % a.official_shuffle)
+        assert not os.path.exists(fo2), "refusing to overwrite %s" % fo2
+        order = np.random.default_rng(a.official_shuffle).permutation(N); preds = {}; npads = {}
+        for b in range(0, N, 128):
+            blk = [int(k) for k in order[b:b + 128]]; mx = max(L[k] for k in blk) + 1
+            for k in blk:
+                r = R.decode(R.prefix(ids[k], npad=mx - (L[k] + 1))); preds[str(items[k]["i"])] = r["pred"]; npads[str(items[k]["i"])] = mx - (L[k] + 1)
+        os.makedirs(os.path.dirname(fo2), exist_ok=True)
+        dump(fo2, {"meta": {**meta, "official_shuffle_seed": a.official_shuffle, "note": "Note 220-3: official-semantics arm only, order shuffled before the 128-blocks"},
+                   "pred": preds, "npad": npads, "acc": float(np.mean([preds[str(it["i"])] is not None and preds[str(it["i"])] == it["gold"] for it in items]))})   # = acc_of
+        print("OFFICIAL_SHUFFLE", a.official_shuffle, fo2, flush=True); return
     res = {"meta": meta, "golds": {str(it["i"]): it["gold"] for it in items}}
 
     def log(*x):
