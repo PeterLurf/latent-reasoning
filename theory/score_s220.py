@@ -147,15 +147,24 @@ def score_model(key, f):
     return o
 
 
+def _with_sidecar(p):
+    """eval_gcs.json + the Note 220-3 sidecar gate_official_self.json beside it ({"official_self": [A1, A2, A3]}), if present."""
+    f = jl(p)
+    sc = jl(os.path.join(os.path.dirname(p), "gate_official_self.json"))
+    if f is not None and sc is not None and sc.get("official_self") is not None:
+        f["gate"]["official_self"] = sc["official_self"]
+    return f
+
+
 def score(files=FILES):
     out = {"section": 220, "registered": "GCS_v1.md at 3a88762e", "models": {}}
     for k, p in files.items():
         if k == "s1_zen_1b":
             continue
-        out["models"][k] = score_model(k, jl(p))
+        out["models"][k] = score_model(k, _with_sidecar(p))
     trig = [out["models"][k].get("label") for k in ("s0_codi20", "s0_zen_gpt2")]
     if any(t == "CARRIER-PORTS" for t in trig):
-        out["stage1_trigger"] = "met"; out["models"]["s1_zen_1b"] = score_model("s1_zen_1b", jl(files["s1_zen_1b"]))
+        out["stage1_trigger"] = "met"; out["models"]["s1_zen_1b"] = score_model("s1_zen_1b", _with_sidecar(files["s1_zen_1b"]))
     elif all(t is not None for t in trig):
         out["stage1_trigger"] = "not met"; out["models"]["s1_zen_1b"] = {"status": "UNREAD (stage 1 not triggered; v1 §6: a new Note needed)", "label": "UNREAD"}
     else:
