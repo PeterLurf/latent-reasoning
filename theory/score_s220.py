@@ -18,6 +18,7 @@ import numpy as np
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 OUT = os.path.join(ROOT, "theory", "results", "score_s220.json")
+SEALED_OUT = os.path.join(ROOT, "scratch", "s220", "SEALED_score_s220_arms.json")   # uncommitted; never opened before the seal lifts
 FILES = {"s0_codi20": os.path.join(ROOT, "boxes", "runs_fsq", "gsm_codi_20ep_s1", "eval_gcs.json"),
          "s0_zen_gpt2": os.path.join(ROOT, "scratch", "s220", "zen_codi_gpt2", "eval_gcs.json"),
          "s1_zen_1b": os.path.join(ROOT, "scratch", "s220", "zen_codi_llama1b", "eval_gcs.json")}
@@ -240,4 +241,14 @@ if __name__ == "__main__":
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
     o = score(); print(json.dumps(o["primary"]), o["stage1_trigger"])
+    # Audit ruling (10-21): an UNREAD model's arms / descriptive values are SEALED - written only to an uncommitted sidecar (sha printed), never to OUT
+    sealed = {}
+    for k, m in o["models"].items():
+        if str(m.get("label", "")).startswith("UNREAD"):
+            sealed[k] = {x: m.pop(x) for x in ("arms", "GRANULARITY", "descriptive", "NECESSARY", "nec_gap") if x in m}
+            m["sealed"] = "arms / descriptive values sealed (Audit ruling 10-21; THEORY §220 notes): see SEALED_OUT sha"
     json.dump(o, open(OUT, "w", newline=chr(10)), indent=1, default=str)
+    if sealed:
+        import hashlib
+        b = json.dumps(sealed, indent=1, default=str).encode(); open(SEALED_OUT, "wb").write(b)
+        print("SEALED", os.path.relpath(SEALED_OUT, ROOT), hashlib.sha256(b).hexdigest())

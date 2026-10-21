@@ -1,0 +1,69 @@
+{
+ "section": 220,
+ "registered": "GCS_v1.md at 3a88762e",
+ "models": {
+  "s0_codi20": {
+   "meta": {
+    "model": "codi20",
+    "path": "boxes/runs_fsq/gsm_codi_20ep_s1/trainable.pt",
+    "model_sha256": "9b27c7c4d5bd6fe6c483949e21b6b82786bc1adb91a124b79b9597e4f6c8fa32",
+    "params_loaded": 102,
+    "stage": 0,
+    "card": "NVIDIA GeForce RTX 2070",
+    "device": "cuda:2",
+    "dtype": "fp32 (LoRA merged)",
+    "bs": 1,
+    "test_sha256": "3d497ddbd728358309e25046b47a383adf582428cd3b5574767a55376b291d8d",
+    "test_file": "prosqa/ckpt_ext/hf/data/gsm8k_test.json",
+    "transformers": "5.18.0",
+    "torch": "2.14.0+cu130",
+    "attn_implementation": "eager",
+    "tf32": false,
+    "max_new": 256,
+    "n_items": 1319,
+    "commit": "59a90e0777df03154e788c8ebbe0a1038a6b428f",
+    "script_sha256": "575d4cfb6997ce3910e0a7aea965608a4c9bfcfe0a517a81bce8fbe76172e8b1",
+    "script_git_status": "",
+    "codi_port_sha256": "5a04f7696dfb11b4f61888b7b408037308ae25c2f24f17065f787a463d121710",
+    "codi_port_git": "06da84e9e48f5bcf503a7f1fc59fda923679f496",
+    "registered": "docs/research_scaleprobe_2026-10-20/GCS_v1.md at 3a88762e",
+    "smoke": false,
+    "limit": null,
+    "synthetic": null,
+    "smoke_all_correct": false,
+    "rng": {
+     "pairs": 22020,
+     "graph": 22021,
+     "noise": 22022,
+     "scit_random": 22023
+    },
+    "sec": 8967
+   },
+   "status": "ok",
+   "G_R": {
+    "C": 0.866565579984837,
+    "official_self": [
+     0.8741470811220622,
+     0.8779378316906747,
+     0.866565579984837
+    ],
+    "rule": "amended (C < 0.97): agree >= C - 0.03"
+   },
+   "n_pairs": 483,
+   "max_reuse": 3,
+   "label": "UNREAD (G-R amended (agree 0.667 vs C - 0.03 = 0.837, |dacc| 0.021))",
+   "sealed": "arms / descriptive values sealed (Audit ruling 10-21; THEORY \u00a7220 notes): see SEALED_OUT sha"
+  },
+  "s0_zen_gpt2": {
+   "status": "pending (missing eval_gcs.json)"
+  },
+  "s1_zen_1b": {
+   "status": "pending (stage 0 incomplete)"
+  }
+ },
+ "stage1_trigger": "pending",
+ "primary": {
+  "0": "UNREAD (G-R amended (agree 0.667 vs C - 0.03 = 0.837, |dacc| 0.021))",
+  "1": "pending (stage 0 incomplete)"
+ }
+}
