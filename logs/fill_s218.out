@@ -1,0 +1,21 @@
+2026-10-18 18:23:31 b316: deploying lvb_sym_s1 on offer 54526951 (171.5.184.14, RTX_3090, $0.2014/h)
+2026-10-18 18:31:38 b316: 22:31:33 HOSTPROBE 0.6646 s/step (limit 0.854; b225 reference 0.657) on 171.5.184.14:45395
+2026-10-18 18:48:48 b316: G-TIME 2.995089698632558 s/step ({"micro":4,"peak_gib_by_micro":{"1":"OOM","2":"OOM","4":16.07},"mem_budget":21.0,"K":12}) -> cell projection $4.1 (cap $4.30); family so far $0.0 (admitted + BAD) of $25.00
+2026-10-18 18:48:49 b316: ADMIT lvb_sym_s1 on 171.5.184.14:45395 (instance 56627574): $4.1
+2026-10-18 18:48:49 b316: ckpt mirror (every 1.66 h ~ 2k steps; host boxes/runs_fsq/lvb_sym_s1/ckpt_last.pt -> scratch/ckpt_mirror/lvb_sym_s1/ckpt_last.pt; remote sha256 before / after + local sha256 + torch.load step check per copy) + cell guard ($4.70 - rejected-host $0 = $4.7, GUARD_STOP=1) started
+2026-10-18 18:49:57 b316: host ARGS-DIFF vs the frozen ref: ARGS-DIFF {"cuda_version": ["13.0", "12.4"], "cudnn_version": [92400, 90100], "deterministic": [null, false], "image_tag": [null, "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"], "python_version": ["3.14.7", "3.11.10"], "torch_version": ["2.14.0+cu130", "2.5.1+cu124"], "train_driver": ["591.86", "595.71.05"], "train_gpu": ["NVIDIA GeForce RTX 4060", "NVIDIA GeForce RTX 3090"]} -> non-META keys: deterministic
+2026-10-18 18:49:57 ALERT b316: ARGS-DIFF has non-META keys (deterministic) - Audit / Theory review (the cell keeps running under its guard)
+2026-10-18 18:49:57 guard s218fam ($25, GUARD_STOP=1; 316:lvb_sym_s1:4.70:24000 317:lvb_direct_s1:3.90:24000) started
+2026-10-18 18:57:01 b317: deploying lvb_direct_s1 on offer 45557886 (89.221.67.137, RTX_3090, $0.2437/h)
+2026-10-18 19:02:51 b317: 23:02:30 HOSTPROBE 0.5964 s/step (limit 0.854; b225 reference 0.657) on 89.221.67.137:15621
+2026-10-18 19:50:26 b317: no G-TIME timing.json after 45 min on 89.221.67.137:15621 () - refusing
+2026-10-18 19:50:28 b317: DESTROYED_VERIFIED 56631401
+2026-10-18 19:50:30 b317: deploying lvb_direct_s1 on offer 45558032 (89.221.67.136, RTX_3090, $0.2432/h)
+2026-10-18 19:55:31 b317: 23:55:16 HOSTPROBE 0.6206 s/step (limit 0.854; b225 reference 0.657) on 89.221.67.136:16456
+2026-10-18 20:01:48 b317: G-TIME 0.9793757764498393 s/step ({"micro":2,"peak_gib_by_micro":{"1":"OOM","2":15.3},"mem_budget":21.0,"K":12}) -> cell projection $1.69 (cap $3.60); family so far $4.3193 (admitted + BAD) of $25.00
+2026-10-18 20:01:48 b317: ADMIT lvb_direct_s1 on 89.221.67.136:16456 (instance 56637398): $1.69
+2026-10-18 20:01:48 b317: ckpt mirror (every 0.54 h ~ 2k steps; host boxes/runs_fsq/lvb_direct_s1/ckpt_last.pt -> scratch/ckpt_mirror/lvb_direct_s1/ckpt_last.pt; remote sha256 before / after + local sha256 + torch.load step check per copy) + cell guard ($3.90 - rejected-host $0.2193 = $3.6807, GUARD_STOP=1) started
+2026-10-18 20:01:51 b317: host ARGS-DIFF vs the frozen ref: ARGS-DIFF {"cuda_version": ["13.0", "12.4"], "cudnn_version": [92400, 90100], "deterministic": [null, false], "image_tag": [null, "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"], "python_version": ["3.14.7", "3.11.10"], "torch_version": ["2.14.0+cu130", "2.5.1+cu124"], "train_driver": ["591.86", "590.48.01"], "train_gpu": ["NVIDIA GeForce RTX 4060", "NVIDIA GeForce RTX 3090"]} -> non-META keys: deterministic
+2026-10-18 20:01:51 ALERT b317: ARGS-DIFF has non-META keys (deterministic) - Audit / Theory review (the cell keeps running under its guard)
+2026-10-18 20:08:51 §218 filler done: 316:lvb_sym_s1 171.5.184.14:45395 56627574 $0.2014/h sps 2.995089698632558 4.1;317:lvb_direct_s1 89.221.67.136:16456 56637398 $0.2432/h sps 0.9793757764498393 1.69;
+2026-10-20 22:26:02 §218 b316 / b317 HOST-LOST during the local outage (Note 218-15): invoices b316 $0.135, b317 BAD $0.066, b317 $4.319; family realised $4.52; relaunch from step 0 after Audit

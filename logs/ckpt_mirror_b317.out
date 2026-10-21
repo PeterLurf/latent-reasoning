@@ -1,0 +1,6 @@
+2026-10-18 20:01:48 start: cells [(317, 'lvb_direct_s1')] every 0.5 h
+20:01:52 lvb_direct_s1 no ckpt_last on host yet
+2026-10-18 20:48:21 MIRROR lvb_direct_s1 step 2000 (89.221.67.136:16456, 1.49 GB, sha 0ee73b6dabc3)
+20:48:21 lvb_direct_s1 ok
+2026-10-18 21:38:05 MIRROR lvb_direct_s1 step 5000 (89.221.67.136:16456, 1.49 GB, sha 17cd24ca3207)
+21:38:05 lvb_direct_s1 ok

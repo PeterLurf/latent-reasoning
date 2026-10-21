@@ -2238,3 +2238,151 @@ DESTROYED_VERIFIED 56200602
 01:08:26 fill_s211 b306: ADMIT s211_vb_pamct_s1 on 89.221.67.136:16521 (instance 56202519): $1.7
 01:08:26 fill_s211 b306: ckpt mirror + cost guard ($3, alert only) started
 01:15:26 fill_s211 all §211 cells admitted: 304:s211_vb_pa_s1 85.30.169.224:40210 56198062 $0.2014/h sps 0.4757997155189514 1.38;305:s211_vb_carry_s1 95.86.5.33:40496 56201193 $0.1619/h sps 0.4619620720545451 1.08;306:s211_vb_pamct_s1 89.221.67.136:16521 56202519 $0.2294/h sps 0.5175321618715922 1.7;
+15:25:07 fill_s213 b307: deploying s213_d3t_s1 on offer 36517136 (194.26.196.159, RTX_3090, $0.2032/h)
+15:27:13 gen host b307 offer 36517136: INSTANCE 56288517 194.26.196.159 17737 NVIDIA GeForce RTX 3090, 595.58.03, 2100 MHz STARTED 
+15:27:13 gen B DEPLOY_DONE
+15:30:22 fill_s213 b307: 19:30:04 HOSTPROBE 0.6203 s/step (limit 0.854; b225 reference 0.657) on 194.26.196.159:17737
+15:31:29 fill_s213 b307: G-TIME 0.461633296807607 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $1.35 (cap $2.50); family so far $0.0 (admitted + BAD) of $4.50
+15:31:29 fill_s213 b307: ADMIT s213_d3t_s1 on 194.26.196.159:17737 (instance 56288517): $1.35
+15:31:29 fill_s213 b307: ckpt mirror + cost guard ($2.5, alert only) started
+15:31:29 fill_s213 family guard s213fam ($4.5, GUARD_STOP=1; unstarted cells at $2.5) started
+15:38:31 fill_s213 b308: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+15:48:31 fill_s213 stopped (scratch/fill_s213.stop)
+15:49:48 fill_s213 b307: s213_d3t_s1 already admitted - next
+15:49:50 fill_s213 b308: deploying s213_d3f_s1 on offer 53259027 (107.205.138.127, RTX_3090, $0.1681/h)
+15:57:22 gen host b308 offer 53259027: STUCK_LOADING cur_state stopped, no pull progress for 6 min (actual_status loading) INSTANCE 56291056 107.205.138.127 none BAD HOST 
+DESTROYED_VERIFIED 56291056
+15:57:24 gen B DEPLOY_DONE
+15:57:24 fill_s213 b308: did not start (BAD HOST 1 / 4; billed ~$0.0224)
+15:57:26 fill_s213 b308: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+16:07:28 fill_s213 b308: deploying s213_d3f_s1 on offer 55432599 (31.37.212.237, RTX_3090, $0.2336/h)
+16:09:15 gen host b308 offer 55432599: INSTANCE 56292602 31.37.212.237 50034 NVIDIA GeForce RTX 3090, 595.84, 2130 MHz STARTED 
+16:09:15 gen B DEPLOY_DONE
+16:14:30 fill_s213 b308: HOSTPROBE 20:14:12 HOSTPROBE_SLOW rc 9 (1.1705 > 0.854 s/step) on 31.37.212.237:50034 - refusing
+16:14:32 fill_s213 b308: DESTROYED_VERIFIED 56292602
+16:14:34 fill_s213 b308: deploying s213_d3f_s1 on offer 23194086 (142.172.171.13, RTX_3090, $0.1481/h)
+16:16:37 gen host b308 offer 23194086: INSTANCE 56293426 142.172.171.13 45571 NVIDIA GeForce RTX 3090, 560.35.03, 2115 MHz STARTED 
+16:16:37 gen B DEPLOY_DONE
+16:22:45 fill_s213 b308: HOSTPROBE 20:21:50 HOSTPROBE_SLOW rc 9 (1.2799 > 0.854 s/step) on 142.172.171.13:45571 - refusing
+16:22:47 fill_s213 b308: DESTROYED_VERIFIED 56293426
+16:22:50 fill_s213 b308: deploying s213_d3f_s1 on offer 50704389 (218.150.198.117, RTX_3090, $0.2414/h)
+16:25:15 gen host b308 offer 50704389: INSTANCE 56294241 218.150.198.117 51993 NVIDIA GeForce RTX 3090, 570.172.08, 2100 MHz STARTED 
+16:25:16 gen B DEPLOY_DONE
+16:29:31 fill_s213 b308: 20:28:58 HOSTPROBE 0.79 s/step (limit 0.854; b225 reference 0.657) on 218.150.198.117:51993
+16:30:40 fill_s213 b308: G-TIME 0.5226629535357158 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $1.8 (cap $2.50); family so far $1.4257 (admitted + BAD) of $4.50
+16:30:40 fill_s213 b308: ADMIT s213_d3f_s1 on 218.150.198.117:51993 (instance 56294241): $1.8
+16:30:40 fill_s213 b308: ckpt mirror + cost guard ($2.5, alert only) started
+16:37:40 fill_s213 all §213 cells admitted: 307:s213_d3t_s1 194.26.196.159:17737 56288517 $0.2032/h sps 0.461633296807607 1.35;308:s213_d3f_s1 218.150.198.117:51993 56294241 $0.2414/h sps 0.5226629535357158 1.8;
+12:17:59 fill_s214 b309: deploying s214_pausea_s1 on offer 45557884 (89.221.67.137, RTX_3090, $0.2437/h)
+12:21:22 gen host b309 offer 45557884: INSTANCE 56417748 89.221.67.137 15907 NVIDIA GeForce RTX 3090, 570.172.08, 2115 MHz STARTED 
+12:21:22 gen B DEPLOY_DONE
+12:25:37 fill_s214 b309: 16:24:46 HOSTPROBE 0.6298 s/step (limit 0.854; b225 reference 0.657) on 89.221.67.137:15907
+12:26:45 fill_s214 b309: G-TIME 1.2167825897534688 s/step ({"auto_micro":2,"peak_gib_by_micro":{"1":"OOM","2":12.01},"mem_budget":21.0}) -> cell projection $4.08 (cap $2.50); family so far $0.0 (admitted + BAD) of $2.50
+12:26:45 fill_s214 b309: projection $4.08 (cell cap $2.50; family $0.0 + $4.08 vs $2.50) NOT admitted on 89.221.67.137:15907 - HOLD: no cell is dropped silently; tell Audit / the user
+12:26:47 fill_s214 b309: DESTROYED_VERIFIED 56417748
+12:51:24 fill_s214 b309: deploying s214_pausea_s1 on offer 45557884 (89.221.67.137, RTX_3090, $0.2437/h)
+12:55:04 gen host b309 offer 45557884: INSTANCE 56421921 89.221.67.137 16562 NVIDIA GeForce RTX 3090, 570.172.08, 2115 MHz STARTED 
+12:55:04 gen B DEPLOY_DONE
+12:59:15 fill_s214 b309: 16:58:15 HOSTPROBE 0.613 s/step (limit 0.854; b225 reference 0.657) on 89.221.67.137:16562
+13:00:21 fill_s214 b309: G-TIME 1.1885836799939473 s/step ({"auto_micro":2,"peak_gib_by_micro":{"1":"OOM","2":12.01},"mem_budget":21.0}) -> cell projection $3.98 (cap $4.50); family so far $0.0366 (admitted + BAD) of $4.50
+13:00:21 fill_s214 b309: ADMIT s214_pausea_s1 on 89.221.67.137:16562 (instance 56421921): $3.98
+13:00:21 fill_s214 b309: ckpt mirror + cost guard ($4.5, alert only) started
+13:00:21 fill_s214 guard s214fam ($4.5, GUARD_STOP=1) started
+13:07:22 fill_s214 all §214 cells admitted: 309:s214_pausea_s1 89.221.67.137:16562 56421921 $0.2437/h sps 1.1885836799939473 3.98;
+13:33:11 fill_s215 b310: deploying s215_ftself_s1 on offer 55991277 (38.145.234.214, RTX_3090, $0.2281/h)
+13:36:10 gen host b310 offer 55991277: INSTANCE 56426778 38.145.234.214 60931 NVIDIA GeForce RTX 3090, 595.91.07, 2100 MHz STARTED 
+13:36:10 gen B DEPLOY_DONE
+13:39:15 fill_s215 b310: 17:39:04 HOSTPROBE 0.6451 s/step (limit 0.854; b225 reference 0.657) on 38.145.234.214:60931
+14:14:18 fill_s215 b310: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+14:24:19 fill_s215 b310: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+14:34:21 fill_s215 b310: deploying s215_ftself_s1 on offer 48399578 (161.29.203.152, RTX_3090, $0.2395/h)
+14:38:21 gen host b310 offer 48399578: INSTANCE 56434308 161.29.203.152 51474 NVIDIA GeForce RTX 3090, 595.84, 2130 MHz STARTED 
+14:38:21 gen B DEPLOY_DONE
+14:41:34 fill_s215 b310: 18:40:44 HOSTPROBE 0.5206 s/step (limit 0.854; b225 reference 0.657) on 161.29.203.152:51474
+14:42:43 fill_s215 b310: G-TIME 0.6678851127624511 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $0.63 (cap $0.95); family so far $0.1179 (admitted + BAD) of $1.50
+14:42:43 fill_s215 b310: ADMIT s215_ftself_s1 on 161.29.203.152:51474 (instance 56434308): $0.63
+14:42:43 fill_s215 b310: ckpt mirror (every 0.37 h) + cell guard ($1.05 - rejected-host $0.1179 = $0.9321, GUARD_STOP=1) started
+14:42:43 fill_s215 guard s215fam ($1.50, GUARD_STOP=1) started
+14:49:45 fill_s215 b311: deploying s215_ftctrl_s1 on offer 54192332 (91.245.78.79, RTX_3090, $0.2014/h)
+14:54:43 gen host b311 offer 54192332: INSTANCE 56436128 91.245.78.79 16400 NVIDIA GeForce RTX 3090, 610.57.04, 2115 MHz STARTED 
+14:54:44 gen B DEPLOY_DONE
+14:58:59 fill_s215 b311: 18:58:49 HOSTPROBE 0.6589 s/step (limit 0.854; b225 reference 0.657) on 91.245.78.79:16400
+15:00:06 fill_s215 b311: G-TIME 0.4856576720873515 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $0.41 (cap $0.40); family so far $0.7479 (admitted + BAD) of $1.50
+15:00:06 fill_s215 b311: projection $0.41 (cell cap $0.40; pair $0.7479 + $0.41 vs $1.50) NOT admitted on 91.245.78.79:16400 (host 1 / 3) - destroying, next host
+15:00:09 fill_s215 b311: DESTROYED_VERIFIED 56436128
+15:00:11 fill_s215 b311: deploying s215_ftctrl_s1 on offer 53258810 (107.205.138.127, RTX_3090, $0.1681/h)
+15:07:16 gen host b311 offer 53258810: STUCK_LOADING cur_state stopped, no pull progress for 6 min (actual_status loading) INSTANCE 56437441 107.205.138.127 none BAD HOST 
+DESTROYED_VERIFIED 56437441
+15:07:19 gen B DEPLOY_DONE
+15:07:19 fill_s215 b311: did not start (BAD HOST 2 / 4; billed ~$0.0224)
+15:07:21 fill_s215 b311: deploying s215_ftctrl_s1 on offer 31458816 (151.237.25.16, RTX_3090, $0.2076/h)
+15:12:26 gen host b311 offer 31458816: INSTANCE 56438269 151.237.25.16 20328 NVIDIA GeForce RTX 3090, 570.211.01, 2100 MHz STARTED 
+15:12:26 gen B DEPLOY_DONE
+15:16:36 fill_s215 b311: 19:15:46 HOSTPROBE 0.6986 s/step (limit 0.854; b225 reference 0.657) on 151.237.25.16:20328
+15:16:41 fill_s215 b311: G-TIME 0.48456774950027465 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $0.42 (cap $0.40); family so far $0.8072 (admitted + BAD) of $1.50
+15:16:41 fill_s215 b311: projection $0.42 (cell cap $0.40; pair $0.8072 + $0.42 vs $1.50) NOT admitted on 151.237.25.16:20328 (host 3 / 3) - destroying, next host
+15:16:44 fill_s215 b311: DESTROYED_VERIFIED 56438269
+15:16:45 fill_s215 b311: s215_ftctrl_s1 NOT RUN - no admitting host in 3 tries (G-S10); tell Audit / the user
+15:16:45 fill_s215 §215 filler done: 310:s215_ftself_s1 161.29.203.152:51474 56434308 $0.2395/h sps 0.6678851127624511 0.63;
+15:17:51 fill_s215 b311: no RTX_3090 offer (non-580, <= $0.18); retry in 10 min
+15:27:53 fill_s215 b311: no RTX_3090 offer (non-580, <= $0.18); retry in 10 min
+15:37:56 fill_s215 b311: no RTX_3090 offer (non-580, <= $0.18); retry in 10 min
+15:47:57 fill_s215 b311: deploying s215_ftctrl_s1 on offer 56424178 (185.188.217.123, RTX_3090, $0.1747/h)
+15:51:31 gen host b311 offer 56424178: INSTANCE 56442938 185.188.217.123 50827 NVIDIA GeForce RTX 3090, 595.99.02, 2130 MHz STARTED 
+15:51:31 gen B DEPLOY_DONE
+15:54:40 fill_s215 b311: 19:53:54 HOSTPROBE 0.5177 s/step (limit 0.854; b225 reference 0.657) on 185.188.217.123:50827
+15:54:46 fill_s215 b311: G-TIME 0.45286688407262166 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $0.33 (cap $0.356); family so far $0.8418 (admitted + BAD) of $1.50
+15:54:46 fill_s215 b311: ADMIT s215_ftctrl_s1 on 185.188.217.123:50827 (instance 56442938): $0.33
+15:54:46 fill_s215 b311: ckpt mirror (every 0.25 h) + cell guard ($0.45 - rejected-host $0.0939 = $0.3561, GUARD_STOP=1) started
+16:01:47 fill_s215 §215 filler done: 310:s215_ftself_s1 161.29.203.152:51474 56434308 $0.2395/h sps 0.6678851127624511 0.63;311:s215_ftctrl_s1 185.188.217.123:50827 56442938 $0.1747/h sps 0.45286688407262166 0.33;
+01:37:04 fill_s216 b312: deploying s216_d3t_s2 on offer 55902615 (149.40.242.200, RTX_3090, $0.2014/h)
+01:40:40 gen host b312 offer 55902615: INSTANCE 56504853 149.40.242.200 20043 NVIDIA GeForce RTX 3090, 595.71.05, 2280 MHz STARTED 
+01:40:40 gen B DEPLOY_DONE
+01:43:56 fill_s216 b312: 05:43:39 HOSTPROBE 0.5696 s/step (limit 0.854; b225 reference 0.657) on 149.40.242.200:20043
+01:45:07 fill_s216 b312: G-TIME 0.4819732626279195 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $1.37 (cap $1.75); family so far $0.0 (admitted + BAD) of $6.50
+01:45:07 fill_s216 b312: ADMIT s216_d3t_s2 on 149.40.242.200:20043 (instance 56504853): $1.37
+01:45:07 fill_s216 b312: ckpt mirror (every 0.27 h) + cell guard ($2.00 - rejected-host $0 = $2.0, GUARD_STOP=1) started
+01:45:07 fill_s216 guard s216fam ($6.50, GUARD_STOP=1; 312:s216_d3t_s2:2.00:48000 313:s216_r2_s1:1.70:12000 314:s216_r1_s2:1.05:12000 315:s216_r2_s2:1.70:12000) started
+01:52:08 fill_s216 §216 filler done: 312:s216_d3t_s2 149.40.242.200:20043 56504853 $0.2014/h sps 0.4819732626279195 1.37;
+04:51:55 fill_s216 b313: deploying s216_r2_s1 on offer 54328025 (86.127.1.195, RTX_3090, $0.2327/h)
+05:08:31 gen host b313 offer 54328025: INSTANCE 56527165 86.127.1.195 56048 NVIDIA GeForce RTX 3090, 595.91.07, 2100 MHz STARTED 
+05:08:31 gen B DEPLOY_DONE
+05:11:42 fill_s216 b313: 09:11:14 HOSTPROBE 0.5333 s/step (limit 0.854; b225 reference 0.657) on 86.127.1.195:56048
+05:13:52 fill_s216 b313: G-TIME 1.173244825998942 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $1.0 (cap $1.45); family so far $1.37 (admitted + BAD) of $6.50
+05:13:52 fill_s216 b313: ADMIT s216_r2_s1 on 86.127.1.195:56048 (instance 56527165): $1.0
+05:13:52 fill_s216 b313: ckpt mirror (every 0.65 h) + cell guard ($1.70 - rejected-host $0 = $1.7, GUARD_STOP=1) started
+05:20:52 fill_s216 §216 filler done: 312:s216_d3t_s2 149.40.242.200:20043 56504853 $0.2014/h sps 0.4819732626279195 1.37;313:s216_r2_s1 86.127.1.195:56048 56527165 $0.2327/h sps 1.173244825998942 1.0;
+09:15:14 fill_s216 b314: deploying s216_r1_s2 on offer 54895038 (85.30.169.224, RTX_3090, $0.2281/h)
+09:20:05 gen host b314 offer 54895038: INSTANCE 56557144 85.30.169.224 40519 NVIDIA GeForce RTX 3090, 595.71.05, 2130 MHz STARTED 
+09:20:05 gen B DEPLOY_DONE
+09:23:12 fill_s216 b314: 13:22:19 HOSTPROBE 0.5025 s/step (limit 0.854; b225 reference 0.657) on 85.30.169.224:40519
+09:24:16 fill_s216 b314: G-TIME 0.6675969084103902 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $0.6 (cap $0.95); family so far $2.37 (admitted + BAD) of $6.50
+09:24:17 fill_s216 b314: ADMIT s216_r1_s2 on 85.30.169.224:40519 (instance 56557144): $0.6
+09:24:17 fill_s216 b314: ckpt mirror (every 0.37 h) + cell guard ($1.05 - rejected-host $0 = $1.05, GUARD_STOP=1) started
+09:31:17 fill_s216 §216 filler done: 312:s216_d3t_s2 149.40.242.200:20043 56504853 $0.2014/h sps 0.4819732626279195 1.37;313:s216_r2_s1 86.127.1.195:56048 56527165 $0.2327/h sps 1.173244825998942 1.0;314:s216_r1_s2 85.30.169.224:40519 56557144 $0.2281/h sps 0.6675969084103902 0.6;
+18:23:31 fill_s218 b316: deploying lvb_sym_s1 on offer 54526951 (171.5.184.14, RTX_3090, $0.2014/h)
+18:28:22 gen host b316 offer 54526951: INSTANCE 56627574 171.5.184.14 45395 NVIDIA GeForce RTX 3090, 595.71.05, 2100 MHz STARTED 
+18:28:23 gen B DEPLOY_DONE
+18:31:38 fill_s218 b316: 22:31:33 HOSTPROBE 0.6646 s/step (limit 0.854; b225 reference 0.657) on 171.5.184.14:45395
+18:48:48 fill_s218 b316: G-TIME 2.995089698632558 s/step ({"micro":4,"peak_gib_by_micro":{"1":"OOM","2":"OOM","4":16.07},"mem_budget":21.0,"K":12}) -> cell projection $4.1 (cap $4.30); family so far $0.0 (admitted + BAD) of $25.00
+18:48:49 fill_s218 b316: ADMIT lvb_sym_s1 on 171.5.184.14:45395 (instance 56627574): $4.1
+18:48:49 fill_s218 b316: ckpt mirror (every 1.66 h ~ 2k steps; host boxes/runs_fsq/lvb_sym_s1/ckpt_last.pt -> scratch/ckpt_mirror/lvb_sym_s1/ckpt_last.pt; remote sha256 before / after + local sha256 + torch.load step check per copy) + cell guard ($4.70 - rejected-host $0 = $4.7, GUARD_STOP=1) started
+18:49:57 fill_s218 b316: host ARGS-DIFF vs the frozen ref: ARGS-DIFF {"cuda_version": ["13.0", "12.4"], "cudnn_version": [92400, 90100], "deterministic": [null, false], "image_tag": [null, "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"], "python_version": ["3.14.7", "3.11.10"], "torch_version": ["2.14.0+cu130", "2.5.1+cu124"], "train_driver": ["591.86", "595.71.05"], "train_gpu": ["NVIDIA GeForce RTX 4060", "NVIDIA GeForce RTX 3090"]} -> non-META keys: deterministic
+18:49:57 fill_s218 ALERT b316: ARGS-DIFF has non-META keys (deterministic) - Audit / Theory review (the cell keeps running under its guard)
+18:49:57 fill_s218 guard s218fam ($25, GUARD_STOP=1; 316:lvb_sym_s1:4.70:24000 317:lvb_direct_s1:3.90:24000) started
+18:57:01 fill_s218 b317: deploying lvb_direct_s1 on offer 45557886 (89.221.67.137, RTX_3090, $0.2437/h)
+18:59:38 gen host b317 offer 45557886: INSTANCE 56631401 89.221.67.137 15621 NVIDIA GeForce RTX 3090, 570.172.08, 2115 MHz STARTED 
+18:59:39 gen B DEPLOY_DONE
+19:02:51 fill_s218 b317: 23:02:30 HOSTPROBE 0.5964 s/step (limit 0.854; b225 reference 0.657) on 89.221.67.137:15621
+19:50:26 fill_s218 b317: no G-TIME timing.json after 45 min on 89.221.67.137:15621 () - refusing
+19:50:28 fill_s218 b317: DESTROYED_VERIFIED 56631401
+19:50:30 fill_s218 b317: deploying lvb_direct_s1 on offer 45558032 (89.221.67.136, RTX_3090, $0.2432/h)
+19:52:21 gen host b317 offer 45558032: INSTANCE 56637398 89.221.67.136 16456 NVIDIA GeForce RTX 3090, 590.48.01, 2115 MHz STARTED 
+19:52:21 gen B DEPLOY_DONE
+19:55:31 fill_s218 b317: 23:55:16 HOSTPROBE 0.6206 s/step (limit 0.854; b225 reference 0.657) on 89.221.67.136:16456
+20:01:48 fill_s218 b317: G-TIME 0.9793757764498393 s/step ({"micro":2,"peak_gib_by_micro":{"1":"OOM","2":15.3},"mem_budget":21.0,"K":12}) -> cell projection $1.69 (cap $3.60); family so far $4.3193 (admitted + BAD) of $25.00
+20:01:48 fill_s218 b317: ADMIT lvb_direct_s1 on 89.221.67.136:16456 (instance 56637398): $1.69
+20:01:48 fill_s218 b317: ckpt mirror (every 0.54 h ~ 2k steps; host boxes/runs_fsq/lvb_direct_s1/ckpt_last.pt -> scratch/ckpt_mirror/lvb_direct_s1/ckpt_last.pt; remote sha256 before / after + local sha256 + torch.load step check per copy) + cell guard ($3.90 - rejected-host $0.2193 = $3.6807, GUARD_STOP=1) started
+20:01:51 fill_s218 b317: host ARGS-DIFF vs the frozen ref: ARGS-DIFF {"cuda_version": ["13.0", "12.4"], "cudnn_version": [92400, 90100], "deterministic": [null, false], "image_tag": [null, "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"], "python_version": ["3.14.7", "3.11.10"], "torch_version": ["2.14.0+cu130", "2.5.1+cu124"], "train_driver": ["591.86", "590.48.01"], "train_gpu": ["NVIDIA GeForce RTX 4060", "NVIDIA GeForce RTX 3090"]} -> non-META keys: deterministic
+20:01:51 fill_s218 ALERT b317: ARGS-DIFF has non-META keys (deterministic) - Audit / Theory review (the cell keeps running under its guard)
+20:08:51 fill_s218 §218 filler done: 316:lvb_sym_s1 171.5.184.14:45395 56627574 $0.2014/h sps 2.995089698632558 4.1;317:lvb_direct_s1 89.221.67.136:16456 56637398 $0.2432/h sps 0.9793757764498393 1.69;
