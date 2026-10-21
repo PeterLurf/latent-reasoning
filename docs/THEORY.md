@@ -20376,6 +20376,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **222-1's "bitwise" resume test is replaced by the same envelope criterion.** Losses for the next 100 steps after resume, and the next held-out evaluation, must lie within the same-state run-to-run envelope. A drift outside it is a resume fault.
   - The envelope is measured once per card class (the Engine new-vs-new run in progress, and one 3090 pair on the first host), and recorded.
 - **Superseded in part by Audit's ruling (same hour, before any deploy).** **Code equivalence and the resume test are proven BITWISE under forced math SDP** (a gate-only setting; the registered runs keep the registered memory-efficient kernel). The envelope criterion above remains only as the description of registered-run variation.
+  - **Final form (Audit's amendment):**
+    - (1) **Code equivalence** = bitwise curves **and** params, old vs Engine, under forced math SDP + use_deterministic_algorithms(True), as a gate-only setting. An envelope cannot certify code equivalence, because it would pass a real code difference of the same size.
+    - (2) **Resume** = within the measured same-state envelope on the registered kernel, **plus** one t ≥ 2 resume bitwise under math SDP.
+    - (3) The registered runs are unchanged.
+    - **The first §222 deploy waits for (1).**
   - **Line added to 222-1 (Audit):** "resume and probe readings are exact up to the SDPA backward's non-determinism at t ≥ 2 (registered kernel unchanged); code equivalence proven bitwise under math SDP".
 - **Readings.** The certification bars (LATE ≥ 0.90; controls ≤ 0.55) sit far from run-to-run noise of this size. The A1 probe readings carry the same property as §218's registered probe. Both are recorded as a known source of non-bitwise variation, never as a censor.
 
