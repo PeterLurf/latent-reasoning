@@ -1,0 +1,181 @@
+{
+ "def": "R3 draft $0 check 2 (CPU, read-only on committed log.jsonl + draws_log.json; writes only r3_logsplit.json beside this script).\nWhich batch type puts gradient into SLVA's addressing? Every log_every-th step logs slva_gn (pre-clip grad norm of slva_* params), gn_preclip\n(all params) and SLVA's off-newest mass on changed / copy slots (boxes/slva.mass_stats, on that step's own batch). draws_log.json gives the\ncoin per step (True = self batch), so each logged row is typed self / plain. Reported per run and per third of training (1-4k, 4-8k, 8-12k):\nmedian slva_gn, median gn_preclip, median slva_gn / gn_preclip, mean off-newest chg / copy, by batch type.\nFT-CTRL has no pool (every row plain). Usage: python -B r3_logsplit.py.",
+ "runs": {
+  "s215_ftctrl_s1": {
+   "1-4000_plain": {
+    "n_rows": 40,
+    "slva_gn_med": 0.0004997616197215393,
+    "gn_preclip_med": 0.01370026171207428,
+    "slva_share_med": 0.05014873300808001,
+    "offnewest_chg": 0.03483266399334909,
+    "offnewest_copy": 0.27458192986031776
+   },
+   "4001-8000_plain": {
+    "n_rows": 40,
+    "slva_gn_med": 0.00016491963469889015,
+    "gn_preclip_med": 0.0023044622503221035,
+    "slva_share_med": 0.06090383588832225,
+    "offnewest_chg": 0.03646270031059787,
+    "offnewest_copy": 0.27719801165190616
+   },
+   "8001-12000_plain": {
+    "n_rows": 40,
+    "slva_gn_med": 4.351717507233843e-05,
+    "gn_preclip_med": 0.0006916990969330072,
+    "slva_share_med": 0.06489439100828603,
+    "offnewest_chg": 0.03748628735447226,
+    "offnewest_copy": 0.2810636024561485
+   }
+  },
+  "s215_ftself_s1": {
+   "1-4000_self": {
+    "n_rows": 22,
+    "slva_gn_med": 0.1826300323009491,
+    "gn_preclip_med": 2.402932107448578,
+    "slva_share_med": 0.06473153145629115,
+    "offnewest_chg": 0.06638946909009331,
+    "offnewest_copy": 0.37042390045339224
+   },
+   "1-4000_plain": {
+    "n_rows": 18,
+    "slva_gn_med": 0.00047873923904262483,
+    "gn_preclip_med": 0.012807902414351702,
+    "slva_share_med": 0.043307711672703156,
+    "offnewest_chg": 0.03349597413406868,
+    "offnewest_copy": 0.26738202414392215
+   },
+   "4001-8000_self": {
+    "n_rows": 21,
+    "slva_gn_med": 0.004969096276909113,
+    "gn_preclip_med": 0.08896569907665253,
+    "slva_share_med": 0.06378933134871305,
+    "offnewest_chg": 0.06642841563081799,
+    "offnewest_copy": 0.3768581430828549
+   },
+   "4001-8000_plain": {
+    "n_rows": 19,
+    "slva_gn_med": 6.942113395780325e-05,
+    "gn_preclip_med": 0.0016908337129279971,
+    "slva_share_med": 0.040893506838142905,
+    "offnewest_chg": 0.034255474460350044,
+    "offnewest_copy": 0.26834387638820395
+   },
+   "8001-12000_self": {
+    "n_rows": 17,
+    "slva_gn_med": 0.0007677290705032647,
+    "gn_preclip_med": 0.014714143238961697,
+    "slva_share_med": 0.06135186110453158,
+    "offnewest_chg": 0.06369240234342433,
+    "offnewest_copy": 0.3818155176307578
+   },
+   "8001-12000_plain": {
+    "n_rows": 23,
+    "slva_gn_med": 4.1805589717114344e-05,
+    "gn_preclip_med": 0.0007112869643606246,
+    "slva_share_med": 0.06221997013190642,
+    "offnewest_chg": 0.034901849981059156,
+    "offnewest_copy": 0.2716221909020939
+   }
+  },
+  "s216_r2_s1": {
+   "1-4000_self": {
+    "n_rows": 22,
+    "slva_gn_med": 1.292963683605194,
+    "gn_preclip_med": 15.405156135559082,
+    "slva_share_med": 0.08405854483047856,
+    "offnewest_chg": 0.07447075166764383,
+    "offnewest_copy": 0.41729988515161687
+   },
+   "1-4000_plain": {
+    "n_rows": 18,
+    "slva_gn_med": 0.001204442756716162,
+    "gn_preclip_med": 0.023918522521853447,
+    "slva_share_med": 0.04184550033377603,
+    "offnewest_chg": 0.03612286256952171,
+    "offnewest_copy": 0.2718073793514391
+   },
+   "4001-8000_self": {
+    "n_rows": 21,
+    "slva_gn_med": 0.021450217813253403,
+    "gn_preclip_med": 0.33165591955184937,
+    "slva_share_med": 0.05942929796345343,
+    "offnewest_chg": 0.08561156826725512,
+    "offnewest_copy": 0.4500845117733895
+   },
+   "4001-8000_plain": {
+    "n_rows": 19,
+    "slva_gn_med": 0.00010307889169780537,
+    "gn_preclip_med": 0.002680132631212473,
+    "slva_share_med": 0.04975837665190592,
+    "offnewest_chg": 0.03805649899626822,
+    "offnewest_copy": 0.2750310301305574
+   },
+   "8001-12000_self": {
+    "n_rows": 17,
+    "slva_gn_med": 0.004132899455726147,
+    "gn_preclip_med": 0.06273543834686279,
+    "slva_share_med": 0.07495124759169026,
+    "offnewest_chg": 0.08482433985453576,
+    "offnewest_copy": 0.45533590244800165
+   },
+   "8001-12000_plain": {
+    "n_rows": 23,
+    "slva_gn_med": 7.728521450189874e-05,
+    "gn_preclip_med": 0.0010921716457232833,
+    "slva_share_med": 0.05650781109223689,
+    "offnewest_chg": 0.041475760006102515,
+    "offnewest_copy": 0.28271977361810424
+   }
+  },
+  "s216_r1_s2": {
+   "1-4000_self": {
+    "n_rows": 19,
+    "slva_gn_med": 0.16041091084480286,
+    "gn_preclip_med": 2.197934865951538,
+    "slva_share_med": 0.0541698166835354,
+    "offnewest_chg": 0.06281393807586282,
+    "offnewest_copy": 0.33420459801686403
+   },
+   "1-4000_plain": {
+    "n_rows": 21,
+    "slva_gn_med": 0.0009421853465028107,
+    "gn_preclip_med": 0.017714012414216995,
+    "slva_share_med": 0.06179268006558478,
+    "offnewest_chg": 0.03932915973744546,
+    "offnewest_copy": 0.2514249195714443
+   },
+   "4001-8000_self": {
+    "n_rows": 21,
+    "slva_gn_med": 0.009126345627009869,
+    "gn_preclip_med": 0.18289805948734283,
+    "slva_share_med": 0.06671161116357661,
+    "offnewest_chg": 0.07101290335066159,
+    "offnewest_copy": 0.3541651632214999
+   },
+   "4001-8000_plain": {
+    "n_rows": 19,
+    "slva_gn_med": 9.104439959628507e-05,
+    "gn_preclip_med": 0.0016777662094682455,
+    "slva_share_med": 0.04374052212513216,
+    "offnewest_chg": 0.04511098854926406,
+    "offnewest_copy": 0.2651065426228052
+   },
+   "8001-12000_self": {
+    "n_rows": 20,
+    "slva_gn_med": 0.0013313518138602376,
+    "gn_preclip_med": 0.02089704666286707,
+    "slva_share_med": 0.06487755968243997,
+    "offnewest_chg": 0.07273630339133813,
+    "offnewest_copy": 0.35833763648363065
+   },
+   "8001-12000_plain": {
+    "n_rows": 20,
+    "slva_gn_med": 3.846802610496525e-05,
+    "gn_preclip_med": 0.0007457419997081161,
+    "slva_share_med": 0.04947727148479053,
+    "offnewest_chg": 0.045792867338400635,
+    "offnewest_copy": 0.26728474997698
+   }
+  }
+ }
+}
