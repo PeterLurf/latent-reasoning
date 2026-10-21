@@ -19718,6 +19718,36 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - If the arm is not built by the time A1's evals run, it is not run, and that is recorded. It can never be run after A1's eval_lvb has been read.
 - **Audit's condition (approved 10-20): NON-INTERFERENCE gate.** Before the arms run on any real model, langvb_eval runs on one existing model with the arms ON and OFF, at the same --eval_bs / card / dtype. Every registered key must be bitwise identical. The noise draws from its own torch.Generator(21850), never from the global RNG. The gate JSON is committed.
 
+**Note 218-17 (2026-10-20 22:35 EDT; G-L5 PLANT diagnosis (Audit's item 1), a $0 known-answer test on the untrained LangSLVA; before any A1 / DIRECT-SYM output; no bar, rule or reading changes).**
+
+**Observation.** The outage-voided G-L5 run (scratch/gate_s218/g_l5.void_outage/run.log, the 2070) sits at chance on every PLANT arm at every 500-step row through 7,500 steps: lin / xor at t 0–2 reads 0.46–0.55, with no trend. The bar is ≥ 0.90 at the end.
+- A probe that is learning but bounded by a weak plant would still rise above chance. Flat chance points to the plant not reaching the probe's read path, or to a probe that cannot train, rather than to "expected late".
+
+**Arithmetic on the registered plant [DERIVED, to be checked by K2].**
+- The plant adds ±ε u with ε = √λ₅₀, and u is a random unit vector in PCs 40–60.
+- The noise std of V_t along u is √(uᵀCu), roughly the RMS of √λ over PCs 40–60. That is ≈ ε, so the per-row d′ ≈ 2.
+- Both option rows get the same add. The best linear accuracy is Φ(1) ≈ 0.84 with fully correlated row noise, and Φ(√2) ≈ 0.92 with independent noise.
+- So **the 0.90 bar sits at or above the linear Bayes ceiling of the registered plant**. This is LANG_v1 §9 item 5's open point ("PLANT strength uncalibrated"), now quantified.
+
+**Known-answer test (local RTX 4060, fp32; the untrained LangSLVA used by G-L5; t = 1, PLANT-lin only; G-L5's pool, held-out set and directions u / ε).**
+- **K1 PATH.** With the untrained probe (no training step), compute s_A − s_B on 512 held-out items with z = 1 and with z = 0, at ε × {1, 10, 100}.
+  - Report the mean |Δ(s_A − s_B)| between z states.
+  - Report the gradient norm of the probe's loss on the trainable probe parameters (gradflow rule).
+  - **K1 = 0 to float precision ⇒ the plant is not on the read path (a code fault).** Example: o1_slot / o2_slot index token positions while V_t rows are slots.
+- **K2 ORACLE.** Logistic regression on the two planted rows [V_1[o1_slot], V_1[o2_slot]] → z. Use 20,000 train / 2,000 test pool items, ε × {1, 3, 10}, L2 tuned on a split. This gives the linear ceiling of the plant itself.
+- **K3 PROBE-LEARN.** The registered probe recipe (AdamW 1e-4, bs 64, same init), PLANT-lin at t 1 only, ε × {1, 10, 100}. Run 2,000 steps each, with held-out accuracy every 250.
+
+**Classification (pre-stated; it answers Audit's (a) / (b) / (c)):**
+- **BUG:** K1 = 0. Fix the code before G-L5 is read. The G-L5 re-run then restarts and the current 2070 run is voided.
+- **(b) PROBE-CAN'T-TRAIN:** K1 > 0, K2 ≥ 0.95 at ε × 10, and K3 < 0.60 at ε × 100.
+- **(a) PLANT-TOO-WEAK:** K1 > 0, K3 ≥ 0.95 at ε × 10 or × 100, and K2 at ε × 1 < 0.93 (the bar is unreachable or at the ceiling).
+- **(c) EXPECTED-LATE:** K1 > 0, K2 at ε × 1 ≥ 0.95, and K3 at ε × 1 rising (last 750 steps > first 750 by ≥ 0.05).
+- Anything else is reported as found.
+
+**What follows.**
+- No bar changes here. If (a) holds, a plant-strength change (for example ε calibrated so that K2's linear ceiling is ≥ 0.99) needs its own Note, committed **before** G-L5 or any A1 probe output is read. It goes to Audit, since it changes how PROBE-VALID certifies.
+- K1–K3 outputs: scratch/gate_s218/g_l5_known/ (JSON per arm, committed). They touch only the untrained model.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
