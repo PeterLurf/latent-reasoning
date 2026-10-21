@@ -1,0 +1,1 @@
+{"step": 1, "loss": 8.207207679748535, "sec": 1, "answer_ce": 8.207207679748535, "rec_ce": 0.0, "plain_cand_ce": 0.9828565120697021, "D_max_train": 8, "cur_stage": 2, "lr": 9.999999957163176e-07, "c": null, "gn_preclip": 87.845947265625, "clip_frac_100": 1.0, "slva_gn": null, "stream_collisions": 0, "t_train_max": 0, "test_gate_sig_hits": 0}
