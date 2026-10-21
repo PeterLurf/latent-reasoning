@@ -1,0 +1,515 @@
+{
+ "def": "REVIEW_R3 check 1 ($0, CPU, read-only on committed eval_hist24.json / eval_vb.json; writes rv_hist24_recheck.json beside this script).\n(a) Recompute STAB_arm = mean_{n 3..6} [(acc_n2 - acc_k24)_arm - (acc_n2 - acc_k24)_intact] (score_s213.hist24's formula) for every arm.\n(b) Masked acc_k24 (self_ablate, bank_ablate_slva) per n 3..8 and its dependence on idle passes (24 - n): OLS slope per model.\n(c) eval_vb acc_k['24'] at n 1..8 and the K' keys present in eval_vb acc_k (is K' > 24 measured anywhere?).\nRuns: D3-T s1, FT-CTRL, FT-SELF, R2-s1, D3-T s2, R1-s2. Usage: python -B rv_hist24_recheck.py",
+ "runs": {
+  "s213_d3t_s1": {
+   "STAB": {
+    "bank_ablate_slva": 0.7957,
+    "self_ablate": 0.7818,
+    "other_ablate": 0.0,
+    "dup_newest": 0.8995,
+    "dup_foreign": 0.1193
+   },
+   "masked_acc_k24": {
+    "self_ablate": {
+     "3": 0.206,
+     "4": 0.206,
+     "5": 0.231,
+     "6": 0.23,
+     "7": 0.275,
+     "8": 0.244
+    },
+    "bank_ablate_slva": {
+     "3": 0.179,
+     "4": 0.191,
+     "5": 0.228,
+     "6": 0.219,
+     "7": 0.265,
+     "8": 0.232
+    }
+   },
+   "masked_mean_n3_6": {
+    "self_ablate": 0.2182,
+    "bank_ablate_slva": 0.2042
+   },
+   "slope_per_idle_pass": {
+    "self_ablate": -0.0113,
+    "bank_ablate_slva": -0.0137
+   },
+   "intact_k24_n3_8": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vb_acc_k24_n1_8": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vb_acc_n2_n9_16": [
+    0.923,
+    0.603,
+    0.266,
+    0.127,
+    0.141,
+    0.127,
+    0.135,
+    0.115
+   ],
+   "vb_acc_k_keys": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "hist24_card": "NVIDIA GeForce RTX 3070",
+   "vb_card": "NVIDIA GeForce RTX 3070"
+  },
+  "s215_ftctrl_s1": {
+   "STAB": {
+    "bank_ablate_slva": 0.7385,
+    "self_ablate": 0.6963,
+    "other_ablate": 0.0,
+    "dup_newest": 0.9028,
+    "dup_foreign": 0.1192
+   },
+   "masked_acc_k24": {
+    "self_ablate": {
+     "3": 0.317,
+     "4": 0.283,
+     "5": 0.292,
+     "6": 0.323,
+     "7": 0.327,
+     "8": 0.279
+    },
+    "bank_ablate_slva": {
+     "3": 0.223,
+     "4": 0.251,
+     "5": 0.266,
+     "6": 0.306,
+     "7": 0.318,
+     "8": 0.279
+    }
+   },
+   "masked_mean_n3_6": {
+    "self_ablate": 0.3037,
+    "bank_ablate_slva": 0.2615
+   },
+   "slope_per_idle_pass": {
+    "self_ablate": 0.0008,
+    "bank_ablate_slva": -0.0149
+   },
+   "intact_k24_n3_8": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vb_acc_k24_n1_8": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vb_acc_n2_n9_16": [
+    0.938,
+    0.582,
+    0.258,
+    0.157,
+    0.107,
+    0.108,
+    0.076,
+    0.089
+   ],
+   "vb_acc_k_keys": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "hist24_card": "NVIDIA GeForce RTX 3070",
+   "vb_card": "NVIDIA GeForce RTX 3070"
+  },
+  "s215_ftself_s1": {
+   "STAB": {
+    "bank_ablate_slva": 0.6482,
+    "self_ablate": 0.4892,
+    "other_ablate": 0.0003,
+    "dup_newest": 0.8768,
+    "dup_foreign": 0.1098
+   },
+   "masked_acc_k24": {
+    "self_ablate": {
+     "3": 0.429,
+     "4": 0.46,
+     "5": 0.552,
+     "6": 0.602,
+     "7": 0.645,
+     "8": 0.65
+    },
+    "bank_ablate_slva": {
+     "3": 0.275,
+     "4": 0.288,
+     "5": 0.38,
+     "6": 0.464,
+     "7": 0.515,
+     "8": 0.534
+    }
+   },
+   "masked_mean_n3_6": {
+    "self_ablate": 0.5108,
+    "bank_ablate_slva": 0.3518
+   },
+   "slope_per_idle_pass": {
+    "self_ablate": -0.0489,
+    "bank_ablate_slva": -0.0589
+   },
+   "intact_k24_n3_8": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vb_acc_k24_n1_8": [
+    0.99,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "vb_acc_n2_n9_16": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.999,
+    0.893,
+    0.633,
+    0.344
+   ],
+   "vb_acc_k_keys": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "hist24_card": "NVIDIA GeForce RTX 3070",
+   "vb_card": "NVIDIA GeForce RTX 3070"
+  },
+  "s216_r2_s1": {
+   "STAB": {
+    "bank_ablate_slva": 0.6145,
+    "self_ablate": 0.4372,
+    "other_ablate": 0.0028,
+    "dup_newest": 0.8355,
+    "dup_foreign": 0.102
+   },
+   "masked_acc_k24": {
+    "self_ablate": {
+     "3": 0.465,
+     "4": 0.516,
+     "5": 0.618,
+     "6": 0.644,
+     "7": 0.731,
+     "8": 0.753
+    },
+    "bank_ablate_slva": {
+     "3": 0.279,
+     "4": 0.316,
+     "5": 0.419,
+     "6": 0.52,
+     "7": 0.616,
+     "8": 0.666
+    }
+   },
+   "masked_mean_n3_6": {
+    "self_ablate": 0.5607,
+    "bank_ablate_slva": 0.3835
+   },
+   "slope_per_idle_pass": {
+    "self_ablate": -0.0603,
+    "bank_ablate_slva": -0.0839
+   },
+   "intact_k24_n3_8": [
+    0.997,
+    0.998,
+    0.998,
+    0.999,
+    0.999,
+    1.0
+   ],
+   "vb_acc_k24_n1_8": [
+    0.995,
+    1.0,
+    0.997,
+    0.998,
+    0.998,
+    0.999,
+    0.999,
+    1.0
+   ],
+   "vb_acc_n2_n9_16": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.997,
+    1.0
+   ],
+   "vb_acc_k_keys": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "hist24_card": "NVIDIA GeForce RTX 3070",
+   "vb_card": "NVIDIA GeForce RTX 3070"
+  },
+  "s216_d3t_s2": {
+   "STAB": {
+    "bank_ablate_slva": 0.7242,
+    "self_ablate": 0.684,
+    "other_ablate": 0.083,
+    "dup_newest": 0.867,
+    "dup_foreign": 0.0727
+   },
+   "masked_acc_k24": {
+    "self_ablate": {
+     "3": 0.307,
+     "4": 0.267,
+     "5": 0.307,
+     "6": 0.343,
+     "7": 0.44,
+     "8": 0.505
+    },
+    "bank_ablate_slva": {
+     "3": 0.23,
+     "4": 0.248,
+     "5": 0.281,
+     "6": 0.304,
+     "7": 0.362,
+     "8": 0.431
+    }
+   },
+   "masked_mean_n3_6": {
+    "self_ablate": 0.306,
+    "bank_ablate_slva": 0.2657
+   },
+   "slope_per_idle_pass": {
+    "self_ablate": -0.0441,
+    "bank_ablate_slva": -0.0391
+   },
+   "intact_k24_n3_8": [
+    0.972,
+    0.99,
+    0.999,
+    0.999,
+    1.0,
+    1.0
+   ],
+   "vb_acc_k24_n1_8": [
+    0.994,
+    0.987,
+    0.972,
+    0.99,
+    0.999,
+    0.999,
+    1.0,
+    1.0
+   ],
+   "vb_acc_n2_n9_16": [
+    0.991,
+    0.718,
+    0.288,
+    0.165,
+    0.119,
+    0.141,
+    0.13,
+    0.121
+   ],
+   "vb_acc_k_keys": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "hist24_card": "NVIDIA GeForce RTX 3070",
+   "vb_card": "NVIDIA GeForce RTX 3070"
+  },
+  "s216_r1_s2": {
+   "STAB": {
+    "bank_ablate_slva": 0.6835,
+    "self_ablate": 0.4892,
+    "other_ablate": 0.0607,
+    "dup_newest": 0.9018,
+    "dup_foreign": 0.0955
+   },
+   "masked_acc_k24": {
+    "self_ablate": {
+     "3": 0.412,
+     "4": 0.447,
+     "5": 0.543,
+     "6": 0.63,
+     "7": 0.666,
+     "8": 0.794
+    },
+    "bank_ablate_slva": {
+     "3": 0.21,
+     "4": 0.273,
+     "5": 0.352,
+     "6": 0.42,
+     "7": 0.41,
+     "8": 0.524
+    }
+   },
+   "masked_mean_n3_6": {
+    "self_ablate": 0.508,
+    "bank_ablate_slva": 0.3137
+   },
+   "slope_per_idle_pass": {
+    "self_ablate": -0.0758,
+    "bank_ablate_slva": -0.0585
+   },
+   "intact_k24_n3_8": [
+    0.995,
+    0.995,
+    1.0,
+    0.999,
+    1.0,
+    1.0
+   ],
+   "vb_acc_k24_n1_8": [
+    0.921,
+    0.973,
+    0.995,
+    0.995,
+    1.0,
+    0.999,
+    1.0,
+    1.0
+   ],
+   "vb_acc_n2_n9_16": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.992,
+    0.878,
+    0.612,
+    0.271
+   ],
+   "vb_acc_k_keys": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    24
+   ],
+   "hist24_card": "NVIDIA GeForce RTX 3070",
+   "vb_card": "NVIDIA GeForce RTX 3070"
+  }
+ }
+}

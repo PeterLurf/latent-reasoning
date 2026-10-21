@@ -1,0 +1,38 @@
+{
+ "def": "REVIEW_R3 check 3 ($0, CPU, read-only on s213_d3t_s1/model.pt): parameter count per group, with r3_param_drift.py's group() map\n(imported from the draft's script), to size a matched random-freeze control. Writes rv_group_sizes.json beside this script.",
+ "total": 125641988,
+ "groups": {
+  "prelude0-5": {
+   "n": 42527232,
+   "share": 0.33848
+  },
+  "embed/lnf/other": {
+   "n": 39385344,
+   "share": 0.31347
+  },
+  "core6-9": {
+   "n": 28351488,
+   "share": 0.22565
+  },
+  "coda10-11": {
+   "n": 14175744,
+   "share": 0.11283
+  },
+  "slva_addr (wq/wk/ln/beta0/gamma)": {
+   "n": 1184280,
+   "share": 0.00943
+  },
+  "rec_head": {
+   "n": 16916,
+   "share": 0.00013
+  },
+  "gain (N(V))": {
+   "n": 768,
+   "share": 1e-05
+  },
+  "bank_bias (beta/beta0/gam)": {
+   "n": 216,
+   "share": 0.0
+  }
+ }
+}

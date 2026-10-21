@@ -1,0 +1,94 @@
+{
+ "def": "REVIEW_R3 check 2 ($0, CPU, read-only on committed eval_hist24.json; writes rv_route_split.json beside this script).\nWhich holding route replaced SLVA's own-slot history? hist24 arms (vbank_diag.part_d3hist / part_hist24 docstrings; slva.py gather):\n  self_ablate      = SLVA own-slot versions 1..t-2 masked; core / coda bank reads intact\n  other_ablate     = core / coda bank versions 1..t-2 masked; SLVA intact\n  bank_ablate_slva = versions 1..t-2 masked in SLVA, core AND coda (V_0 and V_{t-1} kept everywhere)\nPer model, masked acc_k24 mean over n 3..6 (the STAB bins):\n  STATE  = acc(bank_ablate_slva)                     -> holding from {V_0, V_{t-1}} alone (no history reader)\n  BANK   = acc(self_ablate) - acc(bank_ablate_slva)   -> extra holding the core / coda bank history adds when SLVA's history is gone\n  1 - acc(self_ablate) = what STAB_self (registered) calls history reliance (intact ~1 at n 3..6 in s1; s2 base 0.972 at n 3)\nPer item (models whose eval_hist24 carries \u00a7216 E4 items): share of items with self_ablate right and bank_ablate_slva wrong (rescued by the bank route),\nand with bank_ablate_slva right (state route holds), n 3..6.\nUsage: python -B rv_route_split.py",
+ "runs": {
+  "s213_d3t_s1": {
+   "intact": 1.0,
+   "self_ablate": 0.2182,
+   "other_ablate": 1.0,
+   "bank_ablate_slva": 0.2042,
+   "STATE": 0.2042,
+   "BANK_backup": 0.014,
+   "nonadditivity": -0.014
+  },
+  "s215_ftctrl_s1": {
+   "intact": 1.0,
+   "self_ablate": 0.3037,
+   "other_ablate": 1.0,
+   "bank_ablate_slva": 0.2615,
+   "STATE": 0.2615,
+   "BANK_backup": 0.0422,
+   "nonadditivity": -0.0422
+  },
+  "s215_ftself_s1": {
+   "intact": 1.0,
+   "self_ablate": 0.5108,
+   "other_ablate": 0.9998,
+   "bank_ablate_slva": 0.3518,
+   "STATE": 0.3518,
+   "BANK_backup": 0.159,
+   "nonadditivity": -0.1588
+  },
+  "s216_r2_s1": {
+   "intact": 0.998,
+   "self_ablate": 0.5607,
+   "other_ablate": 0.9952,
+   "bank_ablate_slva": 0.3835,
+   "STATE": 0.3835,
+   "BANK_backup": 0.1772,
+   "nonadditivity": -0.1745,
+   "items_rescued_by_bank": 0.1777,
+   "items_state_ok": 0.3835,
+   "n_items": 4000
+  },
+  "s216_d3t_s2": {
+   "intact": 0.99,
+   "self_ablate": 0.306,
+   "other_ablate": 0.907,
+   "bank_ablate_slva": 0.2657,
+   "STATE": 0.2657,
+   "BANK_backup": 0.0403,
+   "nonadditivity": 0.0427,
+   "items_rescued_by_bank": 0.041,
+   "items_state_ok": 0.2657,
+   "n_items": 4000
+  },
+  "s216_r1_s2": {
+   "intact": 0.9972,
+   "self_ablate": 0.508,
+   "other_ablate": 0.9365,
+   "bank_ablate_slva": 0.3137,
+   "STATE": 0.3137,
+   "BANK_backup": 0.1943,
+   "nonadditivity": -0.1335,
+   "items_rescued_by_bank": 0.1975,
+   "items_state_ok": 0.3137,
+   "n_items": 4000
+  }
+ },
+ "deltas": {
+  "s215_ftself_s1 - s215_ftctrl_s1": {
+   "d_masked_self_ablate": 0.2071,
+   "d_STATE": 0.0903,
+   "d_BANK_backup": 0.1168,
+   "share_BANK": 0.564
+  },
+  "s216_r2_s1 - s215_ftself_s1": {
+   "d_masked_self_ablate": 0.0499,
+   "d_STATE": 0.0317,
+   "d_BANK_backup": 0.0182,
+   "share_BANK": 0.365
+  },
+  "s216_r1_s2 - s216_d3t_s2": {
+   "d_masked_self_ablate": 0.202,
+   "d_STATE": 0.048,
+   "d_BANK_backup": 0.154,
+   "share_BANK": 0.762
+  },
+  "s215_ftctrl_s1 - s213_d3t_s1": {
+   "d_masked_self_ablate": 0.0855,
+   "d_STATE": 0.0573,
+   "d_BANK_backup": 0.0282,
+   "share_BANK": 0.33
+  }
+ }
+}

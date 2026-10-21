@@ -20610,6 +20610,40 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
    - **Added guard (stricter, pre-output):** if DIRECT never entered (entry_step None, or its last num_ce 1k bin ≥ 0.5), the band is uninformative, since an untrained DIRECT gives n\* = 0 and a trivial band 3–8. G-W0 then reads UNREADABLE → no latent cell, and a redesign Note comes first.
    - **Addendum (14:45 EDT, Audit's tightening, before DIRECT deploys):** G-W0 also reads UNREADABLE if DIRECT's test acc at d = 1 is < 0.80, since a one-pass baseline must solve one-step problems. The rest of the rule is as above.
 
+**Note 216-14 (2026-10-21 14:48 EDT; IDLE-HORIZON, a $0 eval-only grid on the six closed §215 / §216 models, pre-stated before any output; it decides whether a round-3 lever is needed at all. Origin: the round-3 draft v0 (f2dabb1b) was red-teamed as REVISE (docs/research_round3_2026-10-21/REVIEW_R3.md); Literature d4a043ae. No §215 / §216 reading changes.)**
+- **Why.**
+  - The committed hist24 arms (REVIEW_R3 #1, rv_route_split.json) split the self-specific STAB_self loss (FT-SELF − FT-CTRL 0.207; R1-s2 − D3-T s2 0.202) into a grown backup route (BANK, `self_ablate − bank_ablate_slva`: 56 % s1 / 76 % s2) and the state hold (STATE, `bank_ablate_slva`). SLVA's history route alone still holds (`other_ablate` 0.995–1.000 in every s1 model).
+  - So "MEM-TRADED" is mostly redundancy, and raising STAB_self would be a one-sided target. The one output harm seen is at n 1–2, after 22–23 idle passes (R1-s2 acc_k['24'] n 1 0.921, n 2 0.973). No eval reads n ≤ 8 past K′ 24.
+- **Grid.**
+  - Models s213_d3t_s1, s215_ftctrl_s1, s215_ftself_s1, s216_r2_s1, s216_d3t_s2, s216_r1_s2.
+  - eval_vb's test set at n 1–8, all items (1,000 per n).
+  - Readouts at K′ ∈ {24, 32, 48, 64} from one K′ 64 rollout per chunk (part_hist24's method with extra coda_rows).
+  - Arms: intact / self_ablate / other_ablate / bank_ablate_slva, with part_hist24's per-mode mapping.
+  - fp32, tf32 off, one card class for all six, eval_bs as eval_vb's where memory allows (recorded). Per-item argmax answers stored.
+- **Gate G-IH0 (before any reading):**
+  - intact K′ 24 answers equal eval_vb's acc_k['24'] per n;
+  - for n 3–8, the 4 arms' K′ 24 answers equal the committed eval_hist24 items;
+  - both bitwise on eval_vb's card / bs, else ≥ 0.998 agreement with the card recorded.
+  - Failing → UNREADABLE, fix first.
+- **Readings (per lineage: s1 self = FT-SELF, R2-s1 vs control FT-CTRL; s2 self = R1-s2 vs control D3-T s2).** Δ(m, n) = intact a(n, K′ 24) − a(n, K′ 64).
+  - **H_RED** (benign redundancy): every self model has intact a(n, K′) ≥ 0.99 at every n 3–8 and K′ ≤ 64, and Δ(self, n) − Δ(ctrl, n) < 0.02 at every n 1–3.
+  - **H_DRIFT** (decaying hold): some self model has Δ(self, n) − Δ(ctrl, n) ≥ 0.02 at some n 1–3, with Δ(self, n) ≥ 2 × its binomial SE.
+  - **NEITHER:** otherwise (e.g. a level offset with no K′ trend). Reported as found, no lever.
+- **Descriptive:**
+  - the masked arms' a(n, K′) at fixed n across K′, which separates n from the idle count;
+  - R1-s2's n 1 errors at K′ 24 cross-tabbed with bank_ablate_slva correctness (state route wins or not);
+  - the K′ curve of BANK and STATE.
+- **Decisions.**
+  - H_RED: no lever. Round 3, if any, is R3-PLAIN alone as a depth test (the user's OK, MEM-TRADED-2 rule) with these K′-grid rows.
+  - H_DRIFT: the lever is designed against the failing route (the idle pass as a contraction / fixed point, a step-free C6 direction), after interpolation and patching attribution (REVIEW_R3 #3). It needs a sham-freeze or sham-lever cell and a size-matched control first.
+  - NEITHER: a descriptive Note; re-plan.
+- **Censoring.** If K′ 64 does not fit a model's memory, the largest feasible K′ ≥ 48 is used and recorded. H_RED needs K′ ≥ 48 in every self model, else UNREADABLE.
+- **OC.**
+  - At 1,000 items per n, SE ≈ 0.003 at a = 0.99 and ≈ 0.009 at 0.92.
+  - P(H_DRIFT | no K′ trend) ≈ P(a paired difference ≥ 0.02 at one of 3 n × 3 self models). That is small at n 3, but up to ≈ 0.1 at n 1 if a ≈ 0.92 (2.2 SE), so an n 1-only H_DRIFT is worded as tentative.
+  - P(H_DRIFT | a real 0.05 / 40-pass decay) ≈ 0.95.
+  - $0 (local), ≈ 6 × 4 arms × K′ 64 rollouts on 8,000 items.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
