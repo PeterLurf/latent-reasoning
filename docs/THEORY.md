@@ -19919,6 +19919,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **CARD-GATE** not run. The 2070 takes no §219 work, so every §219 eval is on the 3070.
 - score_s219 gets BASE_NOTE = {"note": "219-5", "branch": "levels"} and asserts that its own branch matches.
 
+**Note 219-6 (2026-10-21 00:25 EDT; §219 T1 args FREEZE, before any T1 launch or output; Experiments 07ad67b0).**
+- **Frozen:** scratch/s219_args_ref_t1.json.draft, to be renamed **scratch/s219_args_frozen_t1.json** (it is not the args_ref). **sha256 98af9b75246286b62ac54b552fdf7f814fb1accccbf8abefa346c6a0b33c3546** (1,853 bytes), re-hashed by Theory.
+  - It was written by textself_ft's own main() on the exact queue-line tokens, with make_opt replaced by a raising sentinel. score_s219.args_diff("s1", "t1", draft) → ok.
+- **Checked against TS_v1 §2.6 / §4.6.** The changed keys are exactly the registered ones: init_from (s170_cot_s1/model.pt), steps 12000, lr 3e-05, self_pool (s219_pool_t1_s1/pool_t1.jsonl), p_self 0.5, self_micro 2 (T1), no_final_eval true, draws_log_steps 12000, args_ref, out.
+  - mem_check_self false / mem_check_steps 2 / stop_at 0 are the T1 parser's default-valued test keys (TS_v1 §2.9).
+  - The 29 TEXT_NEUTRAL_NEW keys sit at their registered defaults. META_T holds the environment keys.
+  - **No trainer argument may be added after this freeze** (Experiments' rule after 218-14).
+- **(1) args_ref.** The queue lines keep `--args_ref boxes/runs_fsq/s170_cot_s1/args.json`. The 216-7 rule (score_s219.args_ref_check) requires the args_ref file to equal the base's args outside META_T, and pointing args_ref at the frozen T1 file reads ARGS_BAD, as reproduced. The frozen file is checked by the filler: every non-META_T key must equal the frozen value, before host-smoke spend and at the cell.
+- **(2) G-TIME.** --time_steps 200 is accepted: a META key, not fixed by TS_v1, and less warm-up bias than 60. SETUP_H 0.35 (TS_v1's upper end) is accepted.
+- **Guard.** cost_guard_s219.py, which parses JSON, replaces the stock regex, which never matches textself_ft's log lines. It must be run once on a real-format T1 log line (a G-T5 smoke log) and shown to project, and Audit reviews it before T1's launch. The same guard serves T2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
