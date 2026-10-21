@@ -20232,14 +20232,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 **Reading.**
 - On natural GSM8K, transplanting a donor's **latent-position K/V cache** (all layers, exact-length pairs) makes CODI-GPT2 output the donor's final answer **≈ 3 % of the time**, against a permutation floor of 0.8 %. Swapping the latent vectors alone gives the same.
 - The latents are **necessary** (+0.25 / +0.32 vs MEAN-Z), but a donor's latent computation, carried in either the vectors or the cache, mostly **breaks** the recipient's answer (neither 0.89 / 0.91) rather than redirecting it.
-- **SCIT's synthetic-template carrier (cache transplant target-win 0.70–1.00 on GPT-2) does not reproduce on natural GSM8K** at GPT-2 scale, under free-generation donor-final follow.
+- ~~SCIT's synthetic-template carrier does not reproduce~~ **[corrected, Note 221-3: different metrics]** SCIT's 0.70–1.00 is target-win for the *oracle counterfactual*, not donor-final follow. On natural GSM8K, **donor-final follow is ≈ 0.03**, while **SCIT's oracle-counterfactual transfer reproduces** (INT-FOLLOW 0.33–0.54 vs floor ≤ 0.04, Note 221-2). Donor-final portability, which SCIT did not claim, is absent. **Prior art:** Chang 2606.01243 (GSM8K whole latent-sequence transplant, 2.5 % flip; a 3–8B fed-back loop, not CODI).
 - The granularity difference is tiny: zen's cache beats state by 1.5 pt (p 0.02); CODI20's is 0.
 - LEAK-SEG: overwriting the donor's last 6 question rows rarely carries the donor's answer (≤ 0.9 %), but halves the recipient's own (own ≈ 0.5). The answer still depends on the question tokens.
 - This replicates 210-4's GPT-2 reading at the cache granularity: **necessary but context-bound**.
 
 **Wording (v1 §5):** *"on natural GSM8K, neither the latent vectors nor the latent positions' KV rows of CODI-GPT2 (two models: our 20-epoch port and the official checkpoint) carry a donor's answer into another question (follow 0.03 vs floor 0.008); the latents are necessary but context-bound at both granularities. One eval-only measurement per model; not serial C1, not C3 / C4."*
 
-**Action (v1 §6):** stage 0 is not CARRIER-PORTS in either GPT-2 model, so SCIT's carrier does not reproduce on natural GSM8K in our harness. **Stage 1 (CODI-1B) needs a new Note with a fresh justification.** §221 closes. For the north star, language C1 portability is not delivered by CODI-style distillation at GPT-2 scale, which supports §218's explicit state-target route as the language-C1 candidate.
+**Action (v1 §6):** stage 0 is not CARRIER-PORTS in either GPT-2 model, so **donor-final portability is absent** on natural GSM8K in our harness. (SCIT's oracle-counterfactual pattern does reproduce; Note 221-3.) **Stage 1 (CODI-1B) needs a new Note with a fresh justification.** §221 closes. For the north star, language C1 portability is not delivered by CODI-style distillation at GPT-2 scale, which supports §218's explicit state-target route as the language-C1 candidate.
 
 **Descriptive (Note 221-1 item 6):** zen official test.py at bs 1 in **bf16** (official_bf16/fid_official_bs1.json, 395ddd13) agrees with our fp32 port on 0.943 of items, acc 0.420 (fp32 both sides 1.000 / 0.4246). That is a dtype effect only, never a gate.
 
@@ -20345,7 +20345,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - CODI-GPT2's latents carry **intermediate values** of the solution, readable by logit lens in about half the items at alternate latent positions, but almost never the final answer.
 - The answer phase recombines them with numbers **re-read from the recipient's question**: QMASK collapses to about 0, and swapped latents yield the **counterfactual** (donor's intermediate + recipient's remaining steps) 0.33–0.54 of the time on structure-matched pairs, rather than the donor's final answer.
 - This explains §221's CONTEXT-BOUND reading: donor-final follow 0.03 because the program and the remaining operands come from the question.
-- It reproduces SCIT's oracle-counterfactual pattern on natural GSM8K, here at **both** granularities: the state swap carries intermediates too, unlike SCIT's h-only 0.
+- It reproduces SCIT's oracle-counterfactual pattern on natural GSM8K (INT-FOLLOW, first on natural GSM8K per Literature), here for both a cache transplant and a re-run state swap (unlike SCIT's h-only 0). The "intermediates at alternate latents" observation is a **quantitative replication** of CODI 2502.21074 §5.1, Cywiński and Dilgren 2604.04902, with a coincidence floor added; it is not new (Note 221-3).
 - **Caveats:**
   - INT-FOLLOW has no registered floor. Coincidence with the counterfactual value should be small, but is not measured.
   - Δ = 0 n is 33 / 26. The Δ ≠ 0 rows are position-confounded on GPT-2.
