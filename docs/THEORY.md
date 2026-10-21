@@ -19887,6 +19887,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
    - **U6:** the oracle-cf follows SCIT's analogue (the donor's first intermediate in the recipient's program). The step-(n−1) variant is stored. Both are descriptive.
    - **U8:** the test sha is the local json's; equality with HF openai/gsm8k is per the reviewer.
 
+**Note 220-2 (2026-10-20 23:25 EDT; Audit's G-D conditions on s220_gcs.py (G-D PASS, e5ea9325), before any zen-E output; supersedes 220-1 item 3's zen-E line).**
+- **(a)** REVIEW §8i's bitwise reproduction of 210-4's per-pair outputs is **stored descriptively and is not a gate** (220-1 item 2). 210-4 used bs 16, max 40 new tokens and a different parser, so bitwise agreement is impossible.
+- **(b) zen-E/CODI-gpt2 format gate.** zen's bs-1 INTACT accuracy must match the committed §209 G1′ accuracy of the same checkpoint on our harness, **0.4246** (scratch/gate_s209/gate.json g1.acc, boxes/codi_g1.py), within **±0.025**. Otherwise zen's battery is **UNREAD**.
+  - This plays the same role 0.379 plays for CODI20, and it closes the gap that G-R (same prompt on both sides) cannot catch a wrong prompt format.
+  - The published 43.7 is a reported flag only.
+  - score_s220 gets this gate and a fixture before zen's output.
+- **(c)** The Δ = 0 graph-matched set is ≈ 53 pairs, so INT-FOLLOW reports n and **"too few to read"** (220-1 item 1). No rule changes.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

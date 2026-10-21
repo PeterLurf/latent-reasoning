@@ -23,6 +23,7 @@ FILES = {"s0_codi20": os.path.join(ROOT, "boxes", "runs_fsq", "gsm_codi_20ep_s1"
          "s1_zen_1b": os.path.join(ROOT, "scratch", "s220", "zen_codi_llama1b", "eval_gcs.json")}
 PRIMARY = {0: "s0_codi20", 1: "s1_zen_1b"}
 ACC_CODI20 = 0.379                      # 210-4's committed INTACT (G-R extra check for CODI20)
+ACC_ZEN_G1P = 0.4245640636846095        # Note 220-2 (b): §209 G1' acc of zen-E/CODI-gpt2 on our harness (scratch/gate_s209/gate.json g1.acc)
 NPERM, SEED_PERM, NBOOT, SEED_BOOT, MAX_REUSE, MIN_PAIRS = 1000, 22024, 10000, 22025, 3, 300
 EPS = 1e-12
 
@@ -86,6 +87,8 @@ def score_model(key, f):
         why.append("G-R (agree %.3f, |dacc| %.3f)" % (g["agree"], abs(g["acc_bs1"] - g["acc_official"])))
     if key == "s0_codi20" and abs(g["acc_bs1"] - ACC_CODI20) > 0.025 + EPS:
         why.append("G-R CODI20 acc %.3f vs 0.379" % g["acc_bs1"])
+    if key == "s0_zen_gpt2" and abs(g["acc_bs1"] - ACC_ZEN_G1P) > 0.025 + EPS:     # Note 220-2 (b): format gate vs §209 G1'
+        why.append("G-R zen format acc %.3f vs G1' 0.4246" % g["acc_bs1"])
     if not f["asserts"].get("cache_rows_ok"):
         why.append("cache-row assertion")
     pairs = f["pairs"]; ish = f["intact_sha"]
@@ -153,7 +156,7 @@ def score(files=FILES):
 
 
 # ------------------------------------------------------------------ fixtures
-def _mk(cache_f, cache_o, state_f, leak_f, nec_gap=0.2, n=480, agree=0.99, rows_ok=True, self_bad=False, reuse=1, seed=0):
+def _mk(cache_f, cache_o, state_f, leak_f, nec_gap=0.2, n=480, agree=0.99, rows_ok=True, self_bad=False, reuse=1, seed=0, acc=0.38):
     rng = np.random.default_rng(seed); golds = {str(i): float(i % 300 + 1) for i in range(1319)}
     pairs = []; ish = {str(i): "s%d" % i for i in range(1319)}
     for k in range(n):
@@ -165,8 +168,8 @@ def _mk(cache_f, cache_o, state_f, leak_f, nec_gap=0.2, n=480, agree=0.99, rows_
             u = rng.random(); return gd if u < pf else (gr if u < pf + po else -1.0)
         pairs.append({"r": r, "d": d, "out": {"cache": pick(cache_f, cache_o), "state": pick(state_f, 0.5), "leak": pick(leak_f, 0.5)},
                       "sha": {"self_cache": "bad" if (self_bad and k == 0) else ish[str(r)], "self_state": ish[str(r)]}})
-    return {"meta": {"stage": 0}, "gate": {"agree": agree, "acc_bs1": 0.38, "acc_official": 0.38}, "asserts": {"cache_rows_ok": rows_ok},
-            "golds": golds, "acc": {"intact": 0.38, "mean_z": 0.38 - nec_gap}, "intact_sha": ish, "pairs": pairs}
+    return {"meta": {"stage": 0}, "gate": {"agree": agree, "acc_bs1": acc, "acc_official": acc}, "asserts": {"cache_rows_ok": rows_ok},
+            "golds": golds, "acc": {"intact": acc, "mean_z": acc - nec_gap}, "intact_sha": ish, "pairs": pairs}
 
 
 def fixtures():
@@ -185,12 +188,18 @@ def fixtures():
              ("donor reuse > 3", dict(cache_f=0.7, cache_o=0.1, state_f=0.04, leak_f=0.02, reuse=5), "UNREAD")]
     res = []
     for name, kw, exp in cases:
-        got = score_model("s0_zen_gpt2", _mk(**kw))["label"]; res.append((name, got.startswith(exp), got))
+        got = score_model("fixture", _mk(**kw))["label"]; res.append((name, got.startswith(exp), got))
+    z = _mk(0.6, 0.1, 0.04, 0.05); z["gate"]["acc_bs1"] = z["gate"]["acc_official"] = 0.38
+    res.append(("zen format gate fail -> UNREAD", score_model("s0_zen_gpt2", z)["label"].startswith("UNREAD (G-R zen"), score_model("s0_zen_gpt2", z)["label"]))
+    z["gate"]["acc_bs1"] = z["gate"]["acc_official"] = 0.43
+    res.append(("zen format gate pass", score_model("s0_zen_gpt2", z)["label"] == "CARRIER-PORTS", score_model("s0_zen_gpt2", z)["label"]))
+    c = _mk(0.6, 0.1, 0.04, 0.05); c["gate"]["acc_bs1"] = c["gate"]["acc_official"] = 0.43
+    res.append(("codi20 0.379 gate fail -> UNREAD", score_model("s0_codi20", c)["label"].startswith("UNREAD (G-R CODI20"), score_model("s0_codi20", c)["label"]))
     import tempfile
     tmp = tempfile.mkdtemp(); fs = {k: os.path.join(tmp, k + ".json") for k in FILES}
-    json.dump(_mk(0.03, 0.3, 0.04, 0.02), open(fs["s0_codi20"], "w")); json.dump(_mk(0.03, 0.3, 0.04, 0.02), open(fs["s0_zen_gpt2"], "w"))
+    json.dump(_mk(0.03, 0.3, 0.04, 0.02), open(fs["s0_codi20"], "w")); json.dump(_mk(0.03, 0.3, 0.04, 0.02, acc=0.43), open(fs["s0_zen_gpt2"], "w"))
     o = score(fs); res.append(("stage 1 not triggered -> UNREAD", o["models"]["s1_zen_1b"]["label"] == "UNREAD", o["stage1_trigger"]))
-    json.dump(_mk(0.6, 0.1, 0.04, 0.05), open(fs["s0_zen_gpt2"], "w"))
+    json.dump(_mk(0.6, 0.1, 0.04, 0.05, acc=0.43), open(fs["s0_zen_gpt2"], "w"))
     o = score(fs); res.append(("stage 1 triggered, missing -> pending", o["models"]["s1_zen_1b"]["status"].startswith("pending"), o["stage1_trigger"]))
     os.remove(fs["s0_codi20"]); o = score(fs)
     res.append(("stage 0 incomplete -> pending", o["models"]["s0_codi20"]["status"].startswith("pending") and o["stage1_trigger"] == "met", o["stage1_trigger"]))
