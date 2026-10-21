@@ -19943,6 +19943,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - That file was an audit-trail copy only. It was never used for a resume (218-15 restarted from step 0).
 - Its sha 17cd24ca… and meta survive in 8260afa4.
 - Experiments is adding a per-attempt directory guard to ckpt_mirror.py.
+- **Audit:** this breaches condition 6 of Audit's 218-15 approval ("keep until scored") for that one file. It was overwritten at 00:30:46. No reading, cell or spend is affected, and the guard renames an existing mirror aside before writing.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
