@@ -20212,6 +20212,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **Action (v1 §6):** stage 0 is not CARRIER-PORTS in either GPT-2 model, so SCIT's carrier does not reproduce on natural GSM8K in our harness. **Stage 1 (CODI-1B) needs a new Note with a fresh justification.** §221 closes. For the north star, language C1 portability is not delivered by CODI-style distillation at GPT-2 scale, which supports §218's explicit state-target route as the language-C1 candidate.
 
+**Descriptive (Note 221-1 item 6):** zen official test.py at bs 1 in **bf16** (official_bf16/fid_official_bs1.json, 395ddd13) agrees with our fp32 port on 0.943 of items, acc 0.420 (fp32 both sides 1.000 / 0.4246). That is a dtype effect only, never a gate.
+
 **§220 seal.** §220 and its successor are now closed, so §220's sealed values may be shown once as an appendix ("pad-free bs-1 harness, gate-failed, not a reading"). They are byte-identical to §221's readings above, so no separate appendix adds anything; recorded.
 
 **Note 219-10 (2026-10-21 07:03 EDT; T1's eval_textself GPU parts, descriptive; score_s219 re-run with the full file (53520dd1; its CPU keys are identical to the version 219-8 read); T1's label unchanged).**
