@@ -27,8 +27,11 @@ import boxes.langvb_eval as E  # noqa: E402
 OUT = "scratch/gate_s218/g_l5_known"
 
 
+TAG = ""
+
+
 def save(name, o):
-    os.makedirs(OUT, exist_ok=True); json.dump(o, open(os.path.join(OUT, name + ".json"), "w", newline="\n"), indent=1); print("WROTE", name, flush=True)
+    name = name + TAG if TAG and not name.endswith(TAG) else name; os.makedirs(OUT, exist_ok=True); json.dump(o, open(os.path.join(OUT, name + ".json"), "w", newline="\n"), indent=1); print("WROTE", name, flush=True)
 
 
 def scaled(d, mult):
@@ -227,6 +230,38 @@ def k2antixor(m, pool, d1, dev, chunk, bs, mults=(1, 1.5, 2)):
     return res
 
 
+def probe_forward_swap(m, pr, its, b, S, d, z1, sw, dev):
+    """(b) NAME-PRIOR-FREE (Theory 10-21): PLANT-lin t 1 with the ANTISYMMETRIC plant; per item, sw = 1 scores o2 as string A and o1 as B (target swapped
+    to match), so the o1 / o2 name prior enters the target with a random sign. -> (sA, sB, target index: 0 iff A is the planted-true option)."""
+    x, pad, lens, si, sp, dR, dP = b
+    o1 = [E.LV.dec_ids(it["o1"]) for it in its]; o2 = [E.LV.dec_ids(it["o2"]) for it in its]
+    swl = sw.tolist()
+    dA = torch.tensor([b_ if s_ else a_ for a_, b_, s_ in zip(o1, o2, swl)], device=dev); dB = torch.tensor([a_ if s_ else b_ for a_, b_, s_ in zip(o1, o2, swl)], device=dev)
+    V = plant_V_anti(S[1], its, z1, d[1]); sA, sB = pr.scores(m, 1, S, V, sp, dA, dB, lens)
+    tgt = torch.where(sw.bool(), z1, 1 - z1).long()                          # unswapped: A = o1 true iff z = 1 -> index 0; swapped: A = o2 true iff z = 0
+    return sA, sB, tgt
+
+
+def k3swap(m, pool, held, d1, dev, chunk, bs, mult=10, steps=2000, every=250, pbs=64):
+    """(b): the registered K3 recipe (Probe(m, 1e-4), bs 64, batches rng 22501, z rng 22551 via zdraw) at eps x10, antisymmetric plant, candidate order
+    swapped per item (train swap rng 22591 per step; held-out swap rng 22592 and z rng 22553, restarted per read); held-out every 250."""
+    d = {1: scaled(d1, mult)}; pr = E.Probe(m, 1e-4); rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); rs = np.random.default_rng(22591); curve = []; t0 = time.time()
+    for st in range(1, steps + 1):
+        ix = rb.integers(0, len(pool), pbs); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, 1, dev, chunk); zs = zd(rz, pbs, dev)
+        sw = torch.tensor(rs.integers(0, 2, size=pbs), device=dev)
+        pr.opt.zero_grad(set_to_none=True); sA, sB, y = probe_forward_swap(m, pr, sub, b, S, d, zs[0], sw, dev)
+        F.cross_entropy(torch.stack([sA, sB], 1), y).backward(); pr.opt.step(); del S
+        if st % every == 0:
+            zz = zd(np.random.default_rng(22553), len(held), dev); swh = torch.tensor(np.random.default_rng(22592).integers(0, 2, size=len(held)), device=dev); ok = []
+            for ch in E.chunks(range(len(held)), bs):
+                sub = [held[j] for j in ch]; b, S = E.stored(m, sub, 1, dev, chunk)
+                with torch.no_grad():
+                    sA, sB, y = probe_forward_swap(m, pr, sub, b, S, d, zz[0][ch], swh[ch], dev); ok += ((sA > sB).long() == (1 - y)).long().tolist()
+                del S
+            curve.append((st, float(np.mean(ok)))); print("K3SWAP", st, round(time.time() - t0), "s", flush=True)
+    return {"eps": d[1]["eps"], "mult": mult, "curve": curve, "final": curve[-1][1], "max": max(a for _, a in curve), "plant": "antisymmetric", "def": k3swap.__doc__}
+
+
 def overfit32(m, pool, d1, dev, chunk, mult=10, steps=300, every=10):
     """Theory / Audit 10-21 item 0: OVERFIT-32 - the registered probe (Probe(m, 1e-4)) trained on 32 FIXED items (pool[24000:24032], fixed z rng 22581)
     as one full batch per step, eps x10, train accuracy + CE every 10 steps; with the registered SYMMETRIC plant and the ANTISYMMETRIC plant (item 6).
@@ -354,15 +389,22 @@ def k3diag(m, pool, held, d1, dev, chunk, bs, steps=500, every=25, pbs=64, mult=
     return out
 
 
+def fl(x):
+    return tuple(float(v) if '.' in v else int(v) for v in x.split(',') if v)
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--arms", default="k1,k2,k3"); ap.add_argument("--bs", type=int, default=16)
-    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle")
-    a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
-    m, info = E.untrained(dev, 16)
+    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2")
+    a = ap.parse_args(); global TAG; TAG = a.tag; dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
+    if a.model_run:
+        m, info = E.load(a.model_run, dev); info = {"model_run": a.model_run, **{k: info.get(k) for k in ('arch', 'arch_class', 'source', 'items_sha', 'steps_run')}}
+    else:
+        m, info = E.untrained(dev, 16)
     excl = E.PS.exclusion_sigs(); s = E.PS.Stream(22500, excl); rng = np.random.default_rng(22500); Dseq = rng.integers(3, 9, size=1000 + a.pool_n)
     held = [E.ev(s.draw(int(D))) for D in Dseq[:1000]]; pool = [E.ev(s.draw(int(D))) for D in Dseq[1000:]]
     dirs = E.plant_dirs(m, pool, [0, 1, 2], dev, a.chunk); d1 = dirs[1]
-    meta = {"note": "Note 218-17", "model": "langvb_eval.untrained(cal_n 16)", "untrained_cal": info, "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
+    meta = {"note": "Note 218-17", "model": a.model_run or "langvb_eval.untrained(cal_n 16)", "untrained_cal": info, "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
             "dtype": "fp32", "tf32": False, "pool_n": len(pool), "held_n": len(held), "eps": d1["eps"], "eps_rel": d1["eps_rel"], "vnorm": d1["vnorm"],
             "eig_40_60": d1["eig"][39:60], "eig_50": d1["eig"][49], "setup_sec": round(time.time() - t0), "commit": os.popen("git rev-parse --short HEAD").read().strip()}
     print("SETUP", meta["setup_sec"], "s eps", d1["eps"], flush=True)
@@ -371,16 +413,22 @@ def main():
         r = k1(m, held, d1, dev, a.chunk, a.bs); save("k1_path", {**meta, **r, "rule": "K1 = 0 to float precision (mean |delta| <= 1e-6 at every eps) -> BUG"})
     if "k2" in arms:
         r = k2(m, pool, d1, dev, a.chunk, a.bs, tuple(float(v) for v in a.k2_mults.split(","))); save(a.k2_name, {**meta, **r})
+    if "k3sym" in arms:
+        r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="lin"); save("k3_sym", {**meta, **r})
+    if "k3symxor" in arms:
+        r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="xor"); save("k3_sym_xor", {**meta, **r})
+    if "k3swap" in arms:
+        r = k3swap(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_swap" + a.tag, {**meta, **r})
     if "overfit32" in arms:
         r = overfit32(m, pool, d1, dev, a.chunk); save("overfit32", {**meta, **r})
     if "k3anti" in arms:
-        r = k3anti(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_anti", {**meta, **r})
+        r = k3anti(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults)); save("k3_anti", {**meta, **r})
     if "k3antixor" in arms:
-        r = k3antixor(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_anti_xor", {**meta, **r})
+        r = k3antixor(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults)); save("k3_anti_xor", {**meta, **r})
     if "k2antixor" in arms:
         r = k2antixor(m, pool, d1, dev, a.chunk, a.bs); save("k2_anti_xor", {**meta, **r})
     if "k2anti" in arms:
-        r = k2anti(m, pool, d1, dev, a.chunk, a.bs); save("k2_anti", {**meta, **r})
+        r = k2anti(m, pool, d1, dev, a.chunk, a.bs, mults=fl(a.k2anti_mults)); save("k2_anti", {**meta, **r})
     if "k3diag" in arms:
         r = k3diag(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_diag", {**meta, **r})
     if "k3" in arms:
