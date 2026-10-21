@@ -22,6 +22,13 @@ s219_check_fetched() {
   for f in "$1"/eval*.json; do [ -e "$f" ] && m="$m $(basename "$f")(eval-file)"; done
   [ -z "$m" ] && echo OK || echo "MISSING$m"
 }
+# s219_resume_ckpt <run dir> -> the checkpoint a --resume uses: ckpt_last.pt, else ckpt_prev.pt (Audit G-T13 condition 2, 10-20: textself_ft replaces
+# ckpt_last -> ckpt_prev, then tmp -> ckpt_last; a crash between the two os.replace calls leaves only ckpt_prev, still covered by draws_log.json since
+# the resume keeps draws with step < step0), else nothing. Used by the partial-run drain (shipped to the host via declare -f) and any §219 relaunch.
+s219_resume_ckpt() {
+  if [ -s "$1/ckpt_last.pt" ]; then echo "$1/ckpt_last.pt"
+  elif [ -s "$1/ckpt_prev.pt" ]; then echo "$1/ckpt_prev.pt"; fi
+}
 # s219_seal_rename <run dir> -> renames any eval*.json to *.void_unsealed (kept and disclosed, TS_v1 §5.2) and prints SEAL_BREACH <file> per file
 s219_seal_rename() {
   local f
