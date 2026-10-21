@@ -1,6 +1,6 @@
 # PROBE-S v1 (§222 on registration): certified probe readings for §218's A1, with content-equivariant plants (2026-10-21)
 
-**Status:** v1 for Audit, cap $0, eval-only. Successor to §218's probe readings, which are structurally UNREADABLE (218-18 / 218-24 / 218-25). Draft: P2_draft.md (6bb096e8). Review: REVIEW_P2.md (Opus; the Frame Lemma).
+**Status:** v1 + REVIEW_PS edits E1–E6 (targeted Opus review: no blockers; no bar changed), cap $0, eval-only. Successor to §218's probe readings, which are structurally UNREADABLE (218-18 / 218-24 / 218-25). Draft: P2_draft.md (6bb096e8). Review: REVIEW_P2.md (Opus; the Frame Lemma).
 
 ## 0. Honesty lines
 - **§218's VB-C1-L stays NOT MET** whatever this design reads. The cause was a positive-control design flaw (218-25), found before any A1 output.
@@ -37,10 +37,23 @@
   - under S's recipe at the registered budget (10k steps, plus the extension rule if the last 2k gain > 0.02);
   - LATE = the last three held-out evaluations;
   - and the controls hold:
-    - cexor-NOPLANT (coin labels, no plant) LATE ≤ 0.55;
-    - shuffled-label cexor LATE ≤ 0.55;
+    - cexor-NOPLANT (coin labels, no plant) LATE ≤ 0.55. This is an exact null for any trained probe: labels are independent of every input, so P(LATE > 0.55) ≤ 0.003 per cell at n 1,000.
+    - shuffled-label cexor LATE ≤ 0.55. This is ½ only in expectation: a label-blind readout of planted rows can correlate with T through the plant axes (u + u2 vs u − u2). With per-batch permutation it is a plumbing smoke, not leak evidence.
     - PROBE(0) (no plant; S2 with randomised order) within 0.50 ± 0.015 on the SYM test set.
-- **Fresh streams for certification:** pool / held-out 22700, batches 22701, plant z / coins 22751–22758, PCs 22750. Never used in feasibility.
+- **Fresh streams for certification** (roles pinned; held-out / test generators restarted at every read; no stream serves two roles). None was used in feasibility.
+  - pool / held-out: PS.Stream 22700. This is also §216's pool_seed, under a different generator and data; recorded, harmless.
+  - batches: 22701.
+  - plant_dirs coefficient generator: 22750 (a parameter replacing the hard-coded 22550, for certification only).
+  - PLANT-lin-S z: train 22751, held-out / test 22752.
+  - PLANT-xor-S coin T: train 22753, held-out / test 22754.
+  - PLANT-xor-S signs: s1, then s3, as two sequential draws of one generator, with s2 = s1 and s4 = −s3. Train 22755, held-out / test 22756.
+  - cexor-NOPLANT coin: train 22757; held-out reads 22754's coins.
+  - shuffled-label control: a fresh permutation of each training batch's targets, generator 22758 (never a fixed permutation of the pool).
+- **A1's plant streams:**
+  - u, u2, ε: rng 22550 (§218's plant_dirs) on A1's own pool rows.
+  - PLANT-lin-S z: as §218 (22551 train / 22553 held-out and test).
+  - PLANT-xor-S: coin T = the first array and s1 = the second array (0 → −1, 1 → +1) of §218's xor draw (22552 train / 22554 held-out and test).
+  - s3: a new generator, 22558 train / 22559 held-out and test.
 - **Card / dtype:** the RTX 4060, fp32 eval (A1's probe-eval card and dtype), for every certification run.
 - **Choice rule (pre-stated): S1 if CERT(S1); else S2 if CERT(S2) (with S2's guards); else NO CERTIFIABLE PROBE.**
   - In the last case A1's probe readings stay §218's (UNREADABLE), and that is reported.
@@ -48,7 +61,16 @@
 ## 4. Readings on A1 (with the selected S; A1's registered files as §218's)
 - **PROBE-VALID-S(t)** on A1 itself:
   - PLANT-lin-S and PLANT-xor-S, with A1's own plant directions at m, both ≥ 0.90 at t ∈ {0, 1, 2};
-  - **and** K2-anti-lin ≥ 0.985 and K2-cexor ≥ 0.97 on A1's own planted rows at m. This guards against a bar at the ceiling on A1 (the 218-17 trap). Below either, the reading is "plant at ceiling on A1", which is PROBE-INVALID.
+  - **and**, at each t ∈ {0, 1, 2} paired with that t's plants, K2-anti-lin ≥ 0.985 and K2-cexor ≥ 0.97 on A1's own planted option rows at m.
+    - K2-cexor is the rule oracle, centred on A1's pooled unplanted option-row mean at that t from its K2 train split.
+    - K2 streams: coin / signs 22611 / 22612 train and 22613 / 22614 test; lin z 22571 / 22572. As in feasibility, no answer information is read.
+    - Below either bar at any t, that t reads "plant at ceiling on A1" = PROBE-INVALID(t). The K2 runs may run before A1's probe parts.
+- **DIAG-ALIGN** (descriptive, never gates; computed and read only with A1's probe parts). On A1's unplanted held-out option rows at t 0–2, centred as K2:
+  - d′ of (r_gold − r_other)·u and ·u2;
+  - the gold accuracy of sign((r_o1 − r_o2)·u) and of the cexor sign-agreement rule;
+  - cos²(u, ĝ_t) and cos²(u2, ĝ_t) for ĝ_t = mean(r_gold − r_other), against 1/768;
+  - var(option rows along u, u2) / λ50.
+  - At t = 0 the gold readings are ½ / 0 in expectation (LANG_v1 §3.5).
 - **PROBE-GAIN-S:** §218's PROBE-GAIN-L formula with PROBE-VALID-S(1) and the final-state check: pooled over §218's C1 band (DIRECT-SYM's), ACC(K′ D+2) − PROBE(1) ≥ 0.35.
 - **SERIAL-ONSET-S:** §218's ON(D) rule (slope ≥ 0.6, ON(8) − ON(4) ≥ 3) with PROBE-VALID-S(t), t 0–2.
 - **VB-C1-L-S** = DEEP-L ∧ PROBE-GAIN-S ∧ SERIAL-ONSET-S ∧ SERIAL-STEP-L ∧ CONSUMPTION-FRONT ∧ STALL / NO-CLOCK-L ∧ NO-PRECOMPUTE-L. The non-probe components are §218's registered readings, as score_s218 reads them.
@@ -57,7 +79,17 @@
 
 ## 5. Derivation summary [tags]
 - **Frame Lemma [PROVED at t = 0]** (218-25): order-dependent plants are unreadable by an order-blind readout.
-- **Content-equivariant plants are readable by it [DERIVED]:** the rule "the row with +u", or "the row whose u / u2 signs agree", is a function of row content. **[MEASURED in feasibility]** cexor at t 0 ×10 → 1.000.
+- **Content-equivariant plants are readable by it [DERIVED; construction in REVIEW_PS §1(b)].**
+  - Four ReLU units in block 10's MLP write φ(r_j) = |a_j + b_j| − |a_j − b_j| into each slot row (a = r·u, b = r·u2; φ > 0 iff the signs agree).
+  - A block-11 head at the shared "###" decoder row attends with logit ∝ φ_j and copies name(j). So Δ ∝ (κ_own − κ_cross)(φ(r_A) − φ(r_B)).
+  - **Assumption:** the per-name score is name-bound, κ_own > κ_cross. This is evidenced by anti-lin LATE 1.000 on both models (218-24), which would be ½ without such a binding.
+  - LayerNorm preserves signs relative to its β-offset exactly (positive homogeneity), and up to second order in ε_rel otherwise.
+  - **[MEASURED in feasibility]** cexor at t 0 ×10 → 1.000.
+- **Plant validity on A1 needs no orthogonality [PROVED].**
+  - The coin T and the signs (s1, s3) come from registered generators. They are independent of each other, of the item (text, display order, names, gold) and of A1. u, u2 and ε depend only on A1's unplanted pool rows.
+  - Hence every function of A1's unplanted inputs reads T at exactly ½, however u and u2 align with A1's own answer information. A PROBE-VALID-S pass requires reading the plant.
+  - A1's own signal along u and u2 is nuisance for the plant task. It can make the plant harder (the K2 guards at each t catch swamping, conservatively), and it can never produce a pass by itself.
+  - "Harder, never easier" is not claimed: it holds only for a nuisance independent of the rest of the base along u, and validity does not need it.
 - **D3 directions [DERIVED].**
   - Under S1 the probe is unchanged, so PROBE(t), PROBE-GAIN and ON(D) are §218's statistics exactly; no capacity change, no direction issue.
   - Only PROBE-VALID changes: it can now pass for a working probe. Before, it could not pass by construction.
@@ -66,7 +98,13 @@
 
 ## 6. OC
 - **P(VB-C1-L-S | no serial use) ≤ 0.004.** It is set by the non-probe components (CF-L, splices), as §218's v1_oc. Certification adds no false-pass route: it is checked on known plants and on separate models.
-- **Under S1,** P(VB-C1-L-S | serial use) equals §218's v1 conditional (0.398) times P(PROBE-VALID-S on A1 | working probe) ≈ 0.9 [ASSUMED], ≈ 0.36. P(VB-C1-L-S) ≈ 0.063 × 0.9 × P(CERT(S1)), with P(CERT(S1)) ≈ 0.6 [ASSUMED from feasibility], ≈ 0.034.
+- **Under S1** (corrected per REVIEW_PS §3):
+  - v1's 0.063 / 0.398 already price a PLANT certificate at ≈ 0.95 (LANG_v1 §6). So PROBE-VALID-S on A1 enters as × P(VALID-S_A1 | CERT) / 0.95 ≈ 0.9 / 0.95 [ASSUMED].
+  - P(CERT(S1)) ≈ 0.6 [ASSUMED from feasibility] is a new gate, independent of A1's mechanism. A failed certification counts as a fail (§7).
+  - **P(VB-C1-L-S | serial use) ≈ 0.398 × 0.947 × 0.6 ≈ 0.23** (0.38 given CERT).
+  - **P(VB-C1-L-S | no serial use) ≈ 0.0025 (≤ 0.004).**
+  - **P(VB-C1-L-S) ≈ 0.036** (0.018–0.048 for P(CERT) 0.3–0.8).
+  - The S2 branch (S1 not certified, S2 certified; P(CERT S2 | ¬CERT S1) ≈ 0.3 [ASSUMED]) adds ≈ 0.003, for a total ≈ 0.039. **A low-odds successor, worth running because it costs $0.**
 - **Under S2,** the review's numbers apply (0.043 / 0.027 / 0.016 for probe-component pass rates of 0.7 / 0.6 / 0.5).
 - A null is likely, as in §218. The design's value is that A1's probe readings become readable at all.
 - **Realised $: $0.**
