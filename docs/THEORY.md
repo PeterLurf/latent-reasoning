@@ -20276,6 +20276,37 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The T2 filler variant (s219_fill_t2.sh) goes to Audit's G-D. It must use T2's pins: the frozen sha above, BASE_SHA = T1's 65b020b0, the T2 pool_meta sha, and G-T9 at self_micro 4 at T2's deepest shape (TS_v1 §3.6: projected 12.8 GiB).
 - The family guard is seeded with T1's realised $0.415. The §219 family cap stays $3.00.
 
+**Note 222-1 (2026-10-21 10:14 EDT; §222 compute placement, committed before any CERT or A1 §222 probe output, with Audit's three additions; no reading, bar, plant, stream, m or choice-rule change; spend approved by Audit under the user's $30 rule once committed).**
+- **Why.** Measured at the real group shapes (pmicro 16, chunk 16, fp32):
+
+  | group | probes | Kmax | s/step | card |
+  |---|---|---|---|---|
+  | CERT g0 | 7 | 1 | 2.78 | 4060 |
+  | CERT g1 | 6 | 2 | 2.85 | 4060 |
+  | A1 g0 | 8 | 2 | 3.25 | 4060 |
+  | A1 g1 | 8 | 10 | 4.27 | 3070 G-TIME |
+  | A1 g2 | 1 | 12 | 2.52 | 3070 G-TIME |
+
+  - The A1 rows use the G-L1c reference as an architecture stand-in.
+  - 4060-serial CERT alone takes ≈ 31 h (≈ 50 h with extensions), past Audit's 24 h line. On one card the order cannot shorten the total, so parallelism is the only saving.
+- **Placement.** Every §222 CERT group (untrained ×2, reference ×2) and every A1 §222 probe group (g0 / g1 / g2) runs **one group per cloud RTX 3090 host**: fp32, tf32 off, one image / torch / code sha (the four modules plus script, recorded per host). That is seven hosts. Certification and readings share card class and dtype.
+  - Grouping is equivalent by construction (218-10) and chunk 16 is unchanged.
+  - **Full-state off-host checkpoint every 2k steps per host:** per-probe params + AdamW + generator states + curve + batch generator + torch / cuda RNG, as ckpt_last.pt + ckpt_fingerprint.json, sha-checked mirror. A **tested resume** (kill at 330, resume from 300, bitwise on the same card) is required before launch.
+- **Audit's additions.**
+  - (1) A1's groups may run on A1's own training host **only after A1's normal drain** (model.pt + logs home, sha-verified). Otherwise A1's model.pt is shipped sha-checked to fresh 3090s. A host is destroyed only after its outputs are fetched.
+  - (2) The driver is recorded per host, as a recorded difference (218-20).
+  - (3) **No module edits while any §222 deploy is in flight.** score_s222's card change is committed before the first deploy.
+- **ACC cross-card check (pre-stated).** A1's acc_d2 at D 3–12 is re-run on the A1 g0 host (`langvb_eval --parts acc`, §218's eval_bs, fp32, written to a copy via --out_dir).
+  - If max |Δ acc_d2| > 0.01 against A1's 4060 eval_lvb, PROBE-GAIN-S uses the 3090 ACC, and that is flagged.
+  - The choice is made by this check, never by the outcome.
+- **Cost.**
+  - Projection: ≈ 40 h of 3090 at ≈ $0.23 / h ≈ **$9.6** with no extensions (sum of s/step ≈ 21.3 local; 3090 assumed ≈ 1.5× faster). Worst case, every group extending to 20k: ≈ **$18**.
+  - **Family cap $20.** s222fam GUARD_STOP on realised spend.
+  - **Per-host admission:** G-TIME s/step × 20,000 / 3600 + 0.35 h, priced at the host's $/h, must not exceed the cell's share. **Per-host guard** = 1.3 × that projection.
+  - Drain waiters armed. Vast launches proceed under the user's standing OK (10-20). §222's filler starts only after §219 T2 admits.
+- **Unchanged:** plants, m = 3 (m_rule.json 8a3dca1b, untrained 4060), streams, bars, controls, the choice rule S1 > S2 > none, readings.
+- **score_s222** now requires card class **"3090"** across every §222 cert / A1 file, and accepts the ACC-check file. It is committed with a fixture before any deploy.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
