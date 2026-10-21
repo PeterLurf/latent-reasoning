@@ -20350,6 +20350,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Δ = 0 n is 33 / 26. The Δ ≠ 0 rows are position-confounded on GPT-2.
   - The lens labels are first-match (gold > intermediate > question number).
   - **Descriptive only.**
+- **Floors (Audit's request; descriptive; docs/research_scaleprobe_2026-10-20/floors221.py, rng 22140).**
+  - **Lens coincidence floor:** P(decoded number = an intermediate of a *random other* item's solution, same first-match rule), 100 draws per item. It is ≈ 0.03 at every j in both models.
+    - The observed intermediate rates at the active latents (h_2 / h_4 / h_6: 0.49 / 0.51 / 0.48 · 0.54 / 0.45 / 0.44; z_3 / z_5 CODI20 0.41 / 0.45; z_1 / z_3 zen 0.28 / 0.25) are **13–18× floor**.
+    - The inactive latents sit near floor (0.04–0.07).
+  - **INT-FOLLOW permuted-oracle floor:** P(output = the counterfactual of a random other pair), 1,000 permutations. It is ≤ 0.012 (95th percentile ≤ 0.038).
+  - **Observed with Wilson 95 %% CIs:**
+
+    | pairs | model | cache | state |
+    |---|---|---|---|
+    | Δ = 0 | CODI20 (n 33) | 13 / 33 = 0.39 [0.25, 0.56] | 15 / 33 = 0.45 [0.30, 0.62] |
+    | Δ = 0 | zen (n 26) | 0.50 [0.32, 0.68] | 0.54 [0.36, 0.71] |
+    | Δ ≠ 0 | CODI20 (n 202) | 0.34 [0.28, 0.40] | 0.34 [0.28, 0.40] |
+    | Δ ≠ 0 | zen (n 249) | 0.33 [0.27, 0.39] | 0.35 [0.30, 0.42] |
+
+  - Every lower bound is ≥ 0.25 against floors ≤ 0.04. **Both clear their floors well; the carriers read stands (descriptive).**
 - **For design:** a question-independent latent state on language must carry the **remaining program and its operands**, not just intermediate values. That is what §208's question-once bottleneck tried, and it collapsed to a pass-1 precompute. The next design starts from this constraint (Audit's item 2).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
