@@ -1,0 +1,6 @@
+2026-10-18 20:01:48 start: cap $3.68, cells {317: 'lvb_direct_s1'}
+2026-10-18 20:11:54 CHECK b317 @500: {317: {'step': 700, 's_per_step': 0.804, 'dph': 0.2594444444444445, 'proj_usd': 1.48}} | pair projection $1.48 (cells with data [317], others at HIGH {317: 1.69}; BAD HOSTs 0)
+2026-10-18 20:21:57 CHECK b317 @1000: {317: {'step': 1400, 's_per_step': 0.807, 'dph': 0.2594444444444445, 'proj_usd': 1.49}} | pair projection $1.49 (cells with data [317], others at HIGH {317: 1.69}; BAD HOSTs 0)
+2026-10-18 20:32:02 CHECK b317 @2000: {317: {'step': 2200, 's_per_step': 0.808, 'dph': 0.2594444444444445, 'proj_usd': 1.49}} | pair projection $1.49 (cells with data [317], others at HIGH {317: 1.69}; BAD HOSTs 0)
+2026-10-18 21:02:23 CHECK b317 @4000: {317: {'step': 4400, 's_per_step': 0.809, 'dph': 0.2594444444444445, 'proj_usd': 1.49}} | pair projection $1.49 (cells with data [317], others at HIGH {317: 1.69}; BAD HOSTs 0)
+2026-10-18 21:52:58 CHECK b317 @8000: {317: {'step': 8000, 's_per_step': 0.823, 'dph': 0.2594444444444445, 'proj_usd': 1.51}} | pair projection $1.51 (cells with data [317], others at HIGH {317: 1.69}; BAD HOSTs 0)

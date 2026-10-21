@@ -1,3 +1,3 @@
-# THEORY §135 student (f1899abd; notes 135-1..135-5): §128 S5 recipe (fsq120 FINAL, guard + probes, --micro 2 at L >= 32), NO restarts / plateau stop, --ckpt_every 2000; --tsd teacher (layer 10 = gate A2's chosen layer), InfoNCE w 1.0 tau 0.1, gold-state negative mask; RTX 3090; boxes.fsq120
+# THEORY §135 student TSD s1 (notes 135-1..135-5): §128 S5 recipe, no restarts, --tsd teacher layer 10; model.pt copied host-to-host, sha-verified by scratch.wait_then; RTX 3090; boxes.fsq120
 # P=1
-boxes/runs_fsq/s135_tsd_s5_s1 boxes.fsq120 --family s5 --arm final --seed 1 --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000 --tsd teacher --tsd_teacher boxes/runs_fsq/s135_teacher_s5 --tsd_layer 10 --tsd_w 1.0 --tsd_tau 0.1
+boxes/runs_fsq/s135_tsd_s5_s1 scratch.wait_then --wait boxes/runs_fsq/s135_teacher_s5/model.pt --sha cacfa3b3731c0a61c64c8476d7b98cc42bb07d4c85ae5566262c17b31c32270d --module boxes.fsq120 --family s5 --arm final --micro 2 --micro_from 32 --no_cert --probe127 --ckpt_every 2000 --tsd_teacher boxes/runs_fsq/s135_teacher_s5 --tsd_layer 10 --tsd_w 1.0 --tsd_tau 0.1 --seed 1 --tsd teacher
