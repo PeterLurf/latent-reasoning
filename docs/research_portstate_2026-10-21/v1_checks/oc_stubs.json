@@ -1,0 +1,18 @@
+{
+ "BUDGET-FRONT | serial": 1.0,
+ "BUDGET-FRONT | relay": 0.0,
+ "BUDGET-FRONT | precompute": 0.0,
+ "BUDGET-FRONT | partial": 0.0,
+ "ANSWER-ONSET | serial": 0.9475,
+ "ANSWER-ONSET | precompute": 0.0,
+ "PORT-FOLLOW | true 0.09": 0.0,
+ "PORT-FOLLOW | true 0.30": 0.0,
+ "PORT-FOLLOW | true 0.39": 0.5005,
+ "PORT-FOLLOW | true 0.42": 0.961,
+ "PORT-FOLLOW | true 0.45": 0.9995,
+ "PORT-FOLLOW | true 0.60": 1.0,
+ "JOINT | portable serial (follow 0.45)": 0.9470262500000001,
+ "JOINT | relay with high follow (0.60)": 0.0,
+ "JOINT | precompute with high follow (0.60)": 0.0,
+ "JOINT | no portability (follow = floor)": 0.0
+}
