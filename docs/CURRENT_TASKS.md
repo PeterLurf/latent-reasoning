@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-20 22:3x EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-21 04:5x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -24,7 +24,20 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (23:5x 2026-10-20; credit ~$89.2; 2 Vast instances ~$0.44/h)
+## Running now (04:5x 2026-10-21; credit ~$88; 2 Vast instances ~$0.44/h)
+
+* 04:5x 10-21 (Experiments):
+  - CLOUD: §218 b316 A1 (85.30.169.224:40503, ETA ~15:30) + b317 DIRECT (77.28.245.164:40420, ETA ~06:30); mirrors with companions on the attempt-aside
+    ckpt_mirror.py (ad3ee6e0); drain waiters re-armed every 2 h. §219 T1 b318 LANDED 02:19 ($0.415), destroyed; landing check PASS; eval_text (a1b8144f) +
+    eval_textself CPU keys (5089dfe8) committed; Note 219-8: T-SELF, round-2 condition TRUE. T1 mirror KEPT until Theory re-runs score_s219 with the GPU keys.
+  - 3070: scratch/s219_3070_queue_r2.sh (logs/s219_3070_queue.out): §219 round 2 GATE-T2 / GATE-T1' (+ base fallback per failed window) -> T2 pool ->
+    T1 eval_textself GPU parts -> §220 zen official_self (Note 220-3) -> 218-23 sweep R2 / R3 x1.5 (3070 files).
+  - 4060: scratch/s218_after_diag_4060b.sh: 218-22 (ii) reference chain on the re-run G-L1c (same-model gate SAME within 0.005, dd3749b2) ->
+    k3anti / k3antixor x10 (_ref) -> k2anti x1.5 / 2 / 3 -> descriptive -> KL-DRIFT s1 (216-10 / 216-12).
+  - 2070: scratch/s218_sweep_2070b.sh: 218-23 sweep R1 (lr 1e-4, 10k) lin (running) + xor x1.5, then R2 / R3 xor x10 extras.
+  - 218-22 so far: untrained route (i) FAILED (anti-lin x10 LATE 1.000, anti-xor x10 0.522); K3-DIAG: coda option readout is the obstacle (9e4c5eb2).
+  - §220: CODI20 + zen stage 0 committed (7cf3913c / 064fa9f7); score_s220 UNREAD on CODI20 (G-R agree 0.667); CODI20 official_self 0.874 / 0.878 / 0.867
+    (94550a08); swap arms UNREAD (Theory's hold).
 
 * 23:5x 10-20 (Experiments): §218 attempt 2 LIVE (user approved; Notes 218-15 / 218-19 A1 admission $4.60 / guard $5.10):
   - b316 A1 lvb_sym_s1: 85.30.169.224:40503 (56989850, $0.2281/h, driver 595.71.05), admitted 23:31 at $3.65 (G-TIME 2.339 s/step micro 4), ETA ~15:30 10-21.
