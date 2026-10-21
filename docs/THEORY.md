@@ -20594,6 +20594,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 - The 223-4 learning pilot runs on this module (2070, DIRECT then PS, the same card and kernel). Cloud cells still wait on its pass.
 
+**Note 223-6 (2026-10-21 14:44 EDT; §223 deploy terms for Audit's G-D'd filler, before any §223 cloud deploy or training output; no bar or label change).**
+1. **Args re-freeze:** done in Note 223-5 (bf16fd36). The module is codi_ps fa4e87ed (sha256 45baec0d…). The 4 files at scratch/s223_args_frozen_{direct,ps,m1,m2}.json differ from 223-3 in module_sha256 only.
+2. **Shares:** $5.00 per cell (DIRECT, PS, M1-only, M2-only), so 4 × $5 = the **$20 family cap** (CAPF=20).
+   - Per-host admission is by the filler's G-TIME projection against the cell's share.
+   - Guards are set at projection × 1.3, with marks to the final step.
+   - Off-host full-state mirrors and drain waiters are armed at launch.
+   - A cell refused at its share is not re-shared from another cell without a Note.
+3. **Sequence.**
+   - (i) The 223-4 pilot passes LP1–LP3. Until then nothing deploys.
+   - (ii) **DIRECT deploys alone.**
+   - (iii) When DIRECT's eval lands, Theory reads **G-W0 (ii) only** with score_s223.band_from_direct and commits a G-W0 Note **before any latent cell launches**. n\* = the largest d ≤ 8 with DIRECT acc > 0.50; band = {d in max(3, n\*+1)..8 : acc ≤ 0.50}.
+   - (iv) **Band ≥ 3 depths** → PS, M1-only and M2-only launch, PS first if hosts are short.
+   - **Band < 3 depths** → no latent cell. A redesign Note comes first (task change, e.g. depth range or step type), and DIRECT's spend is realised and reported.
+   - **Added guard (stricter, pre-output):** if DIRECT never entered (entry_step None, or its last num_ce 1k bin ≥ 0.5), the band is uninformative, since an untrained DIRECT gives n\* = 0 and a trivial band 3–8. G-W0 then reads UNREADABLE → no latent cell, and a redesign Note comes first.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
