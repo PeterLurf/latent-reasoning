@@ -133,3 +133,31 @@ Same seed, stream, curriculum and budget across cells. Single-change args diffs 
 - **Cost:** ≈ 0.8–2 s/step on a 3090 at bs 64, so ≈ $1.5–4 per cell; **4 cells ≈ $6–16.**
 - **Family cap $20** (Audit approves ≤ $30); per-cell guards; off-host full-state checkpoints with a tested resume; one 3090 class.
 - **DIRECT runs first:** it fixes n\* and the band, then PS / M1-only / M2-only.
+
+## Addendum A (2026-10-21; Audit's four requests, before approval; v1_checks/oc_stubs.py + .json, rng 22801)
+1. **BUDGET-FRONT rule corrected by the known-answer stub (v1.1).** As first written (per-d Spearman ≤ −0.6 at every d), the stub failed even a perfect serial model, because at shallow d there are only 2 values of t, plus chunking noise and naive tie-ranking. **Registered rule v1.1:**
+   - pooled over the C1 band with **depth fixed effects** (t and b\* centred within d);
+   - **tie-aware (average-rank) Spearman ≤ −0.6** and **within-d OLS slope ≤ −0.4**, over ≥ 1,000 clean pairs.
+2. **OC per co-primary and joint** (stub model: b\* = (d − t) + geometric chunking noise, p 0.3; band d 4–7; 2,000 reps):
+
+   | reading | under the effect | under the alternatives |
+   |---|---|---|
+   | BUDGET-FRONT | serial **1.00** | relay **0.00**; precompute **0.00**; half serial / half relay 0.00 |
+   | ANSWER-ONSET | not precomputed **0.95** (5 %% false-fail from binomial noise over the t cells) | precompute **0.00** |
+   | PORT-FOLLOW (floor 0.09, N 1,000, design effect 1.3) | true 0.42 / 0.45 / 0.60 → 0.96 / **1.00** / 1.00 | true = floor → **0.00**; true 0.30 → 0.00; true 0.39 → 0.50 |
+   | **PORT-STATE (joint)** | portable serial, follow 0.45: **0.95** | no portability: **0.00**; relay or precompute even with follow 0.60: **0.00** |
+
+   The prior stays at P(PORT-STATE) ≈ 0.08–0.10 [ASSUMED]. The stub shows that the guards remove the structural false positives.
+3. **Single-change args diffs.**
+   - PS vs M1-only must differ only in the answer-bottleneck flag(s).
+   - PS vs M2-only must differ only in the STATE-RECODE flag(s) and λ.
+   - DIRECT must differ only in the latent-loop flags (n_latent 0, no D head, no bottleneck).
+   - The diffs are produced from each cell's `--args_only` output after the build, committed with frozen-ref shas before any launch. Any extra key → ARGS-DIFF (rule b).
+4. **Gradient-flow plan** (gradflow rule; read from the decorators down):
+   - Before any spend, one CPU / GPU step per cell runs with every loss term computed separately. Each term must have **nonzero grad** on the parameters it should train:
+     - the answer CE → backbone + prj;
+     - the R_j CE → the D head **and** prj / backbone through z_j (z_j must not be detached);
+     - the bottleneck mask must give **zero** grad from answer CE into the question-content and `<bot>` positions' inputs, verified by a gradient probe on those embeddings.
+   - No `@torch.no_grad` / `.detach()` on z_j in the train path (grep plus an ast check of decorators).
+   - The plain-path smoke (construct the model + 1 step without the new flags) must reproduce the base CODI port.
+   - The check outputs gate JSONs, which Audit reads before the G-D.
