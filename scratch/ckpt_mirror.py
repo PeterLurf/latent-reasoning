@@ -4,7 +4,11 @@ Per fetch: remote sha256 + size -> scp to scratch/_tmp/ckmirror/<run>.part -> re
 the copy is a retry) -> local sha256 == the pre-copy sha (2026-10-16: s2 may differ when the trainer replaced the file mid-copy) -> torch.load check (step present) -> os.replace into the mirror (the previous copy replaced: one copy per
 run). A separate local dir: never the run dir a gen8 drain writes into (no-manual-fetch-during-drain lesson). Cells whose host is drained / destroyed are
 skipped; their mirror is deleted once <run>/eval.json exists locally (retention: delete after landing + drain). -> logs/ckpt_mirror.log
-    nohup python scratch/ckpt_mirror.py 296:s205_iit_s1 297:s205_iit_s2 303:gsm_codi_20ep_s1 [--every_h 2] > logs/ckpt_mirror.out 2>&1 &"""
+    nohup python scratch/ckpt_mirror.py 296:s205_iit_s1 297:s205_iit_s2 303:gsm_codi_20ep_s1 [--every_h 2] > logs/ckpt_mirror.out 2>&1 &
+--companions f1,f2 (Note 218-15, 10-20): files beside ckpt_last.pt copied WITH it (e.g. ckpt_fingerprint.json,log.jsonl). They are staged on the host first
+(cp into /workspace/_mirror_stage/<run>/, sha256 there), then scp'd and sha-checked locally; a companion with a "step" key (the fingerprint) must equal the
+ckpt's step, else the whole copy retries (the trainer checkpointed meanwhile). --optional f3: copied if present. All land in the mirror dir together.
+--local_host DIR (smokes only): DIR stands for the host's /workspace (commands run in local bash, cp instead of scp)."""
 import argparse
 import hashlib
 import json
@@ -15,6 +19,7 @@ import subprocess
 import time
 
 ROOT = "D:/Latent"; os.chdir(ROOT); KEY = os.path.expanduser("~/.ssh/runpod_ed25519"); MIR = "scratch/ckpt_mirror"; TMP = "scratch/_tmp/ckmirror"
+LOCAL = None; COMP = []; OPT = []                                       # set from the command line in main()
 
 
 def log(s):
@@ -22,6 +27,8 @@ def log(s):
 
 
 def host(n):
+    if LOCAL:
+        return ("local", "0")
     h = None
     for l in open("logs/gen_deploy.log", encoding="utf-8", errors="replace"):
         m_ = re.search(r"gen host b%d offer \d+: INSTANCE (\d+) (\S+) (\d+) .*STARTED" % n, l)
@@ -31,6 +38,8 @@ def host(n):
 
 
 def ssh(h, p, cmd, t=120):
+    if LOCAL:
+        return subprocess.run(["bash", "-c", cmd.replace("/workspace", LOCAL)], capture_output=True, text=True, timeout=t).stdout.strip()
     return subprocess.run(["ssh", "-o", "ConnectTimeout=15", "-i", KEY, "-p", p, "root@" + h, cmd], capture_output=True, text=True, timeout=t).stdout.strip()
 
 
@@ -40,6 +49,20 @@ def sha_local(f):
         for b in iter(lambda: fh.read(1 << 24), b""):
             h_.update(b)
     return h_.hexdigest()
+
+
+def fetch(h, p, rf, lp):
+    if LOCAL:
+        return subprocess.run(["cp", rf.replace("/workspace", LOCAL), lp], capture_output=True, text=True, timeout=7200)
+    return subprocess.run(["scp", "-q", "-i", KEY, "-P", p, "root@%s:%s" % (h, rf), lp], capture_output=True, text=True, timeout=7200)
+
+
+def stage(h, p, run):
+    """copy COMP (required) + OPT (if present) into /workspace/_mirror_stage/<run>/ on the host -> {file: sha256}, or None if a required one is missing."""
+    out = ssh(h, p, "d=/workspace/_mirror_stage/%s; rm -rf $d; mkdir -p $d; cd /workspace/Latent/boxes/runs_fsq/%s || exit 0; for f in %s; do [ -f $f ] && cp $f $d/; done; "
+                    "cd $d && sha256sum * 2>/dev/null" % (run, run, " ".join(COMP + OPT)), 600)
+    sh = {l.split()[1].lstrip("*"): l.split()[0] for l in out.splitlines() if len(l.split()) == 2}
+    return sh if all(f in sh for f in COMP) else None
 
 
 def mirror(n, run):
@@ -60,7 +83,10 @@ def mirror(n, run):
         if not s1:
             return "no ckpt_last on host yet"
         os.makedirs(TMP, exist_ok=True); part = os.path.join(TMP, run + ".part")
-        r = subprocess.run(["scp", "-q", "-i", KEY, "-P", p, "root@%s:%s" % (h, rf), part], capture_output=True, text=True, timeout=7200)
+        cs = stage(h, p, run) if (COMP or OPT) else {}                     # companions staged BEFORE the ckpt is read (fingerprint step checked below)
+        if cs is None:
+            log("MIRROR_RETRY %s companions missing on the host" % run); time.sleep(60); continue
+        r = fetch(h, p, rf, part)
         s2 = ssh(h, p, "sha256sum %s 2>/dev/null | cut -c1-64" % rf, 600)
         if r.returncode != 0 or not os.path.exists(part):
             log("MIRROR_RETRY %s scp rc %s" % (run, r.returncode)); continue
@@ -73,15 +99,32 @@ def mirror(n, run):
         ck = torch.load(part, map_location="cpu", weights_only=False); step = ck.get("step") if isinstance(ck, dict) else None; del ck
         if step is None:
             log("MIRROR_FAIL %s no step in the checkpoint" % run); os.remove(part); return "bad ckpt"
-        os.makedirs(md, exist_ok=True); os.replace(part, os.path.join(md, "ckpt_last.pt"))
-        json.dump({"run": run, "queue": n, "host": "%s:%s" % (h, p), "step": step, "sha256": sl, "bytes": os.path.getsize(os.path.join(md, "ckpt_last.pt")), "time": time.strftime("%Y-%m-%d %H:%M:%S")},
+        cl = {}
+        for f, sh in cs.items():
+            lp = os.path.join(TMP, run + "." + f); rr = fetch(h, p, "/workspace/_mirror_stage/%s/%s" % (run, f), lp)
+            if rr.returncode != 0 or not os.path.exists(lp) or sha_local(lp) != sh:
+                cl = None; break
+            cl[f] = lp
+        if cl is None:
+            log("MIRROR_RETRY %s companion copy / sha mismatch (attempt %d)" % (run, attempt + 1)); os.remove(part); continue
+        fsteps = {f: json.load(open(lp)).get("step") for f, lp in cl.items() if f.endswith(".json") and isinstance(json.load(open(lp)), dict)}
+        if any(v is not None and v != step for v in fsteps.values()):
+            log("MIRROR_RETRY %s companion step %s != ckpt step %s (attempt %d)" % (run, fsteps, step, attempt + 1)); os.remove(part); time.sleep(60); continue
+        os.makedirs(md, exist_ok=True)
+        for f, lp in cl.items():                                            # companions first, the ckpt last: a ckpt in the mirror always has its set
+            os.replace(lp, os.path.join(md, f))
+        os.replace(part, os.path.join(md, "ckpt_last.pt"))
+        json.dump({"run": run, "queue": n, "host": "%s:%s" % (h, p), "step": step, "sha256": sl, "companions": {f: sha_local(os.path.join(md, f)) for f in cl}, "bytes": os.path.getsize(os.path.join(md, "ckpt_last.pt")), "time": time.strftime("%Y-%m-%d %H:%M:%S")},
                   open(os.path.join(md, "meta.json"), "w", newline="\n"), indent=1)
         log("MIRROR %s step %s (%s:%s, %.2f GB, sha %s)" % (run, step, h, p, os.path.getsize(os.path.join(md, "ckpt_last.pt")) / 1e9, sl[:12])); return "ok"
     log("MIRROR_FAIL %s after 3 attempts" % run); return "fail"
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("cells", nargs="+"); ap.add_argument("--every_h", type=float, default=2.0); ap.add_argument("--once", action="store_true"); a = ap.parse_args()
+    global LOCAL, COMP, OPT
+    ap = argparse.ArgumentParser(); ap.add_argument("cells", nargs="+"); ap.add_argument("--every_h", type=float, default=2.0); ap.add_argument("--once", action="store_true")
+    ap.add_argument("--companions", default=""); ap.add_argument("--optional", default=""); ap.add_argument("--local_host", default=""); a = ap.parse_args()
+    LOCAL = a.local_host or None; COMP = [x for x in a.companions.split(",") if x]; OPT = [x for x in a.optional.split(",") if x]
     cells = [(int(c.split(":")[0]), c.split(":")[1]) for c in a.cells]; log("start: cells %s every %.1f h" % (cells, a.every_h))
     while True:
         for n, run in cells:

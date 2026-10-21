@@ -1,0 +1,2 @@
+EXCL {'test_n30': 29407, 'serial': 2200, 's213_37_n9_24': 16000, 'precond_23180': 2400, 'precond_23187': 2400, 'gt18_23195': 1000, 'gates:boxes/runs_fsq/s215_gate1/gate_items.json': 8000, 'gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json': 16000, 'pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl': 440000} union 525407 18 s
+GATE_ITEMS {'W1': 8000} {'W1_9': 0, 'W1_10': 0, 'W1_11': 0, 'W1_12': 0} 19 s
