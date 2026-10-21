@@ -1,0 +1,4 @@
+SETUP 89 s m 3 eps {'0': 11.623897070735415, '1': 20.632774760138766, '2': 24.62638082031204} groups [['cexor_t0', 'lin_t0', 'noplant_t0', 'probe0', 'shuffled_t0', 'cexor_t1', 'lin_t1'], ['noplant_t1', 'shuffled_t1', 'cexor_t2', 'lin_t2', 'noplant_t2', 'shuffled_t2']] run [0, 1]
+CERT group 0 ['cexor_t0', 'lin_t0', 'noplant_t0', 'probe0', 'shuffled_t0', 'cexor_t1', 'lin_t1']
+CERT step 30 {'cexor_t0': 0.547, 'lin_t0': 0.531, 'noplant_t0': 0.531, 'probe0': 0.547, 'shuffled_t0': 0.516, 'cexor_t1': 0.547, 'lin_t1': 0.531} 100 s
+CERT step 60 {'cexor_t0': 0.609, 'lin_t0': 0.5, 'noplant_t0': 0.531, 'probe0': 0.625, 'shuffled_t0': 0.594, 'cexor_t1': 0.578, 'lin_t1': 0.547} 202 s
