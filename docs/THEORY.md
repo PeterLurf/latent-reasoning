@@ -19748,6 +19748,42 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - No bar changes here. If (a) holds, a plant-strength change (for example ε calibrated so that K2's linear ceiling is ≥ 0.99) needs its own Note, committed **before** G-L5 or any A1 probe output is read. It goes to Audit, since it changes how PROBE-VALID certifies.
 - K1–K3 outputs: scratch/gate_s218/g_l5_known/ (JSON per arm, committed). They touch only the untrained model.
 
+**Note 216-10 (2026-10-20 22:41 EDT; KL-DRIFT, a $0 eval-only side row on the closed §215 / §216 models (Audit's request, after Literature 9663f6ad / LIT_MUX_FORGETTING_2026-10-20); pre-stated before any output; descriptive, no §215 / §216 reading changes).**
+
+**Question.** STAB_self fell D3-T 0.782 → FT-SELF 0.489 → R2-s1 0.437, while FT-CTRL stayed at 0.696 (s2: base 0.684 → R1-s2 0.489). STAB_self is score_s213.hist24, mean over n 3–6, from eval_hist24 (3070, fp32, bs 32). Is this forgetting visible in the models' **outputs** at small n, or only in their internals?
+- If visible in outputs, the evidenced levers apply: on-policy relabelling (Chen 2510.18874), forward-KL replay (2605.26097), restart from base (ReST-EM 2312.06585).
+- If not, the self items change how the slot history carries stability while keeping outputs unchanged. Literature found no prior work on that.
+
+**Measure.** For each model r and its lineage base b (s1: D3-T s1; s2: D3-T s2):
+- On every §170 test item at n 3–6 (4,000) and n 9–16 (8,000), take the answer distribution over the 11 value classes (softmax over NUM_IDS of answer_logits) at **K′ = n + 2** and at **K′ = 24**, from one K′ 24 rollout per chunk (part_hist24's method).
+- KL_r(bin, K′) = mean over items of KL(p_b ‖ p_r).
+- Also report per item the argmax agreement with b, accuracy, and both log-prob vectors (store-items rule).
+- **Models:** FT-CTRL, FT-SELF, R2-s1 (base D3-T s1); R1-s2 (base D3-T s2).
+- **Card:** local RTX 4060, fp32, tf32 off, **eval_bs 32** (the STAB evals' batch size).
+- **Gate:** the 4060 intact acc_n2 and acc_k['24'] at n 3–8 must equal each model's committed 3070 eval_vb within ±0.005. Else UNREADABLE on this card.
+- **Output:** <run>/eval_kl_base.json.
+
+**Reading** (s1, n 3–6, K′ = 24, where STAB lives; item bootstrap, 10,000 resamples, seed 21610):
+- **OUTPUT-DRIFT:** the ratio KL_FT-SELF / KL_FT-CTRL ≥ 2 with its 95% CI lower bound > 1, **and** KL_R2 ≥ KL_FT-SELF (point estimate). The self items move small-n outputs (FT-SELF vs FT-CTRL is the clean same-FT contrast), and the move compounds with the round. Then on-policy labels / KL replay are the indicated round-3 lever.
+- **INTERNAL-ONLY:** the ratio's 95% CI contains 1, or the point ratio < 1.25. STAB falls with outputs no further from the base than FT-CTRL's.
+- **MIXED:** otherwise.
+- **Descriptive:**
+  - the same at K′ = n + 2 and at n 9–16;
+  - R1-s2 vs D3-T s2;
+  - Spearman of ΔSTAB (0.086 / 0.293 / 0.345) vs KL across the three s1 models;
+  - an a_24(n) per-n table beside KL at n 1–2. The 216-8 small-n drop was at n 1, outside the STAB bins, so n 1–2 are reported but not read.
+
+**OC.**
+- At 4,000 items the item bootstrap CI on a KL mean is tight. The binding uncertainty is model-level: one FT pair, one seed.
+- So the label is "an instance". A pass is moderate evidence for output-level forgetting; a null is weak evidence for internal-only.
+- P(OUTPUT-DRIFT) ≈ 0.55 [ASSUMED]: Chen's Self-SFT arm forgot in outputs, but small-n accuracy here stayed ≥ 0.99 at K′ n + 2.
+
+**Censoring.**
+- A model failing its 4060 gate is UNREADABLE and its reading fails.
+- A missing file is pending (215-7). KL never reads below 0.
+
+**Cost:** $0. 4060, after the G-L5 known-answer test (218-17). Estimated < 30 min per model.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
