@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-10-21 11:2x EDT** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-10-21 13:3x EDT** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -27,6 +27,19 @@ so send to the pipe addresses their messages come from.
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
 * **11:24 10-21 REBOOT (Theory): the box rebooted at 10:34 EDT (LastBootUpTime); no python / bash process survived.** Cloud still live per `show instances`: b316 §218 A1 (56989850, ~20.2k/24k at 10:08, ETA ~12:20) and b319 §219 T2 (57065510, admitted 10:24, proj $0.49). Their drain waiters / ckpt mirrors / cost guards are DEAD and must be re-armed (Experiments; reboot-recovery practice: regenerate from show instances, gen8 drains, ckpt_mirror, guards with marks to the final step). §222 pre-deploy gates died unfinished, with no outputs: resume test (cert, 4060), resume test (A1 runner, 3070; started 10:19), engine equivalence (2070; started 10:19). They must be re-run before the first §222 deploy (Note 222-1 conditions). All three local cards idle. Audit has sent the recovery brief to claude-69 (Experiments?).
+* 13:3x 10-21 (Experiments): NO Vast instances (credit ~$84).
+  - §218 A1 LANDED 12:51 (24k; drain verified, host destroyed, mirror retention-deleted). NON-PROBE evals on the 4060 by hand (identical registered
+    command; the post-landing wrapper stalled on stray CUDA contexts, stopped by pid; Audit OK) -> lvb_sym_s1/eval_lvb.json. DISCLOSED: two A1 ACC
+    values seen in a log tail (D 8 / 9); Note 218-26 Option C: §222 CLOUD LAUNCH PAUSED until Theory reads DEEP-L from the acc part; then Audit decides.
+    Read A1 / §222 / §223 logs by grep markers only.
+  - §219 T2 LANDED 12:30 (landing check PASS, model 300c99ef); its chain (KEEP_MIRROR=1) runs eval_text on the 3070 after the det resume gate.
+  - §216 KL-DRIFT s1 done (219db32b). §218 DIRECT contamination re-run: SAME (0ed1ffcc).
+  - §222 gates: resume cert PASS (afc0abd2), resume a1 PASS (fde6f25e); engine equivalence FAIL as written = SDPA backward non-determinism ->
+    Note 222-3: det gates under math SDP (scratch/s222_det_wrap.py): equivalence on the 2070 (old done, new running), t2 resume on the 3070 (running);
+    envelope smoke armed after it; b320 queue + filler gated on envelope.json (scratch/s222_after_gate.py). Filler NOT started (pause).
+  - §223 PORT-STATE (registered 903096b6, PS2_v1 at 54f63381): F1 v1.2 generator boxes/nested_words.py + G-W0 (i) PASS (76eb41de; strong affine 0.0,
+    representable 0). Trainer design (new boxes/codi_ps.py) sent to Theory with 7 questions; code after the answers, then Audit G-D.
+
 * 11:2x 10-21 (Experiments): LOCAL REBOOT 10:34 (all local jobs died; cloud unaffected). Re-armed 11:23 from vast show instances: drains
   auto_drain_gen8.sh b316 (gen) / auto_drain_gen8_s219.sh b319, mirrors 316 (1.3 h) / 319 (0.35 h), guards s218a2_b316_late $4.97 / s219_b319 $1.70 /
   s219fam $3.00 (patched cost_guard), gpuwatch_autoadd 316 319, autoexclude_watch, drain waiters. §222 gates relaunched (equiv 2070, cert resume 4060,
