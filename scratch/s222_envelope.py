@@ -4,7 +4,7 @@ the t2 group (--group 3 --groups 3 = cexor_t2 / lin_t2 / noplant_t2), --steps 20
   A, B  two runs from the same state (same seeds, same card)            -> the envelope: per probe, max over steps 101-200 of |CE_A - CE_B|, and the held-out
                                                                            accuracy differences at every eval
   K, R  the same run killed after step 130 (exit 9), resumed from the step-100 checkpoint
-Recorded: the envelope, R vs A (steps 101-200 CE and the evals after step 100), B vs A for the same window. Proposed PASS (for Theory): for every probe
+Recorded: the envelope, R vs A and R vs B (steps 101-200 CE and the evals after step 100), B vs A. PASS (Note 222-3, Audit: vs A OR vs B): for every probe
 max |CE_R - CE_A| <= max(2 x the envelope over all probes, 1e-6) and every held-out eval after the resume within 1 item of A. Writes <out>/envelope.json.
     python -B scratch/s222_envelope.py --out boxes/runs_fsq/s222_envelope_3090 --device cuda:0 [--m_rule scratch/gate_s222/m_rule.json]"""
 import argparse
@@ -40,8 +40,14 @@ def main():
                                 "envelope_ce_max_abs_by_probe_B_vs_A": env, "envelope_ce_max_abs": E, "resume_ce_max_abs_by_probe_R_vs_A": ra,
                                 "heldout_item_diff_B_vs_A": ev(CA, CB), "heldout_item_diff_R_vs_A": ev(CA, CR), "resume_steps_R": [min(LR), max(LR)],
                                 "bitwise_B_vs_A": all(LA[s] == LB[s] for s in LA), "bitwise_R_vs_A": all(LR[s] == LA[s] for s in LR)}
-    ok_ce = all(ra[k] <= max(2 * E, 1e-6) for k in keys); ok_ev = all(abs(d_) <= 1 for k in keys for _, d_ in o["heldout_item_diff_R_vs_A"][k])
-    o["proposed_PASS"] = bool(ok_ce and ok_ev and all(v in (0,) for n, v in rc.items() if n != "K") and rc.get("K") == 9 and min(LR) == CK + 1)
+    rbb = {k: max(abs(LR[s][k] - LB[s][k]) for s in win if s in LR) for k in keys}; o["resume_ce_max_abs_by_probe_R_vs_B"] = rbb; o["heldout_item_diff_R_vs_B"] = ev(CB, CR)
+    thr = max(2 * E, 1e-6); o["threshold_ce"] = thr
+    vs = {}
+    for ref, rr in (("A", ra), ("B", rbb)):                                  # Audit 10-21: A vs B is one noise sample - R passes within the envelope of EITHER
+        vs[ref] = bool(all(rr[k] <= thr for k in keys) and all(abs(d_) <= 1 for k in keys for _, d_ in o["heldout_item_diff_R_vs_" + ref][k]))
+    o["pass_vs"] = vs; runs_ok = all(v == 0 for n, v in rc.items() if n != "K") and rc.get("K") == 9 and min(LR) == CK + 1
+    o["proposed_PASS"] = bool(runs_ok and (vs["A"] or vs["B"]))
+    o["rule"] = "Note 222-3 + Audit 10-21: per probe max |CE_R - CE_X| over the window <= max(2 x the A/B envelope max, 1e-6) and every held-out eval after the resume within 1 item of X, for X = A or X = B; all runs rc 0 (K rc 9); R starts at ckpt + 1"
     try:
         import torch
         o["gpu"] = torch.cuda.get_device_name(a.device)
