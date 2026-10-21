@@ -264,6 +264,91 @@ def k3swap(m, pool, held, d1, dev, chunk, bs, mult=10, steps=2000, every=250, pb
     return {"eps": d[1]["eps"], "mult": mult, "curve": curve, "final": curve[-1][1], "max": max(a for _, a in curve), "plant": "antisymmetric", "def": k3swap.__doc__}
 
 
+class Probe2Head(torch.nn.Module):
+    """PROBE2 head (Theory 10-21): concat [hA, hB, hA - hB, hA * hB] (4D) -> 256 ReLU -> 2 logits (index 0 = option A)."""
+    def __init__(self, D, dev):
+        super().__init__(); self.net = torch.nn.Sequential(torch.nn.Linear(4 * D, 256), torch.nn.ReLU(), torch.nn.Linear(256, 2)).to(dev)
+
+    def forward(self, hA, hB):
+        return self.net(torch.cat([hA, hB, hA - hB, hA * hB], -1))
+
+
+def name_positions(name):
+    """decoder positions of the option NAME tokens inside dec_ids(name) = "### <name>." (asserted: prefix "###" + " <name>" + ".")."""
+    pre, nm, dot = E.LV.ENC.encode("###"), E.LV.ENC.encode(" " + name.strip()), E.LV.ENC.encode(".")
+    assert E.LV.dec_ids(name) == pre + nm + dot, ("dec_ids layout", name)
+    return list(range(len(pre), len(pre) + len(nm)))
+
+
+def probe2_hidden(m, pr, t, S, Vt, sp, dA, dB, lens, posA, posB):
+    """the registered Probe's coda copy (blocks 10-11 + beta / gam), run as in pr.scores up to the ln_f hidden of the decoder rows; hA / hB = the mean over
+    each option's name-token positions. -> (hA, hB) (b, D)."""
+    kvs = {i: [(None, None)] + [E.VB.bank_kv(pr.src, i, S[s]) for s in range(1, t)] for i in E.LV.CODA}; bp = (pr.beta, pr.beta0, pr.gam); Sn = Vt.shape[1]
+    out = []
+    for d_, pos in ((dA, posA), (dB, posB)):
+        h = m.coda_ls(t, Vt, kvs, sp, d_, lens, src=pr.src, bp=bp)
+        idx = torch.tensor(pos, device=h.device) + Sn                       # (b, P) decoder-row indices of the name tokens
+        out.append(torch.gather(h, 1, idx[..., None].expand(-1, -1, h.shape[-1])).float().mean(1))
+    return out
+
+
+def probe2(m, pool, held, d1, dev, chunk, bs, kind, mult, steps=2000, every=250, pbs=64, control=None):
+    """PROBE2 feasibility (Theory 10-21 + Audit): untrained LangSLVA; kind 'lin' / 'xor' = PLANT at t 1 with the ANTISYMMETRIC plant at eps x mult (target
+    index 0 iff option A = o1 is the planted-true one; lin: z1, xor: z1 xor z2); kind 'probe0' = PROBE(0): t 0, no plant, A / B = gold / other with the
+    order RANDOMISED per item (train rng 22593, held-out 22594; target = which side is gold) - fixed order would let the head win by always answering 0.
+    control 'shuffled': (Theory / Audit) anti-xor x10 with the TRAINING targets permuted per batch (rng 22597); held-out scored on the true targets - expected 0.5.
+    Recipe: the registered Probe (blocks 10-11 + beta / gam copy, step-0 init) AdamW lr 1e-4 wd 0.01 + the head AdamW lr 1e-3 wd 0.01; bs 64; batches
+    rng 22501, z rng 22551 (zdraw); held-out 1,000 (z rng 22553) every 250."""
+    t = 0 if kind == "probe0" else 1; d = {1: scaled(d1, mult)} if t == 1 else {}
+    pr = E.Probe(m, 1e-4); head = Probe2Head(m.D, dev); hopt = torch.optim.AdamW(head.parameters(), lr=1e-3, weight_decay=0.01)
+    rb = np.random.default_rng(22501); rz = np.random.default_rng(22551); rsw = np.random.default_rng(22593); rperm = np.random.default_rng(22597); curve = []; t0 = time.time(); logged = []
+
+    def batch_logits(its, b, S, z1, z2, sw):
+        x, pad, lens, si, sp, dR, dP = b
+        if kind == "probe0":
+            dA = torch.where(sw[:, None].bool(), dP, dR); dB = torch.where(sw[:, None].bool(), dR, dP); Vt = S[0]
+            Lr = dR.shape[1]; hid, dot = E.LV.ENC.encode("###"), E.LV.ENC.encode(".")
+            assert len(hid) == 1 and len(dot) == 1 and bool((dR[:, 0] == hid[0]).all() and (dR[:, -1] == dot[0]).all() and (dP[:, 0] == hid[0]).all()), "decoder layout"
+            posA = [list(range(1, Lr - 1))] * len(its); posB = posA                               # PROBE(0): the name tokens of "### <name>." for both strings
+            y = sw.long()                                                                         # target index = the side holding gold
+        else:
+            dA = torch.tensor([E.LV.dec_ids(it["o1"]) for it in its], device=dev); dB = torch.tensor([E.LV.dec_ids(it["o2"]) for it in its], device=dev)
+            Vt = (plant_V_anti(S[1], its, z1, d[1], kind == "xor", z2))
+            posA = [name_positions(it["o1"]) for it in its]; posB = [name_positions(it["o2"]) for it in its]
+            ztrue = (z1 ^ z2) if kind == "xor" else z1
+            y = (1 - ztrue).long()                                                                # index 0 iff A = o1 is the true option
+        hA, hB = probe2_hidden(m, pr, t, S, Vt, sp, dA, dB, lens, posA, posB)
+        if not logged:
+            logged.append({"head_inputs": {"hA": list(hA.shape), "hB": list(hB.shape)}, "head_input_def": "the ln_f hidden of the coda copy at each option's name-token decoder rows (mean); no label / gold token path", "posA_example": posA[0], "posB_example": posB[0]})
+            print("PROBE2 head inputs ONLY hA", tuple(hA.shape), "hB", tuple(hB.shape), flush=True)
+        return head(hA, hB), y
+
+    K = max(t, 1) if t else 0
+    for st in range(1, steps + 1):
+        ix = rb.integers(0, len(pool), pbs); sub = [pool[j] for j in ix]; b, S = E.stored(m, sub, K, dev, chunk); z1, z2 = zd(rz, pbs, dev)
+        sw = torch.tensor(rsw.integers(0, 2, size=pbs), device=dev)
+        pr.opt.zero_grad(set_to_none=True); hopt.zero_grad(set_to_none=True)
+        lg, y = batch_logits(sub, b, S, z1, z2, sw)
+        if control == "shuffled":                                           # Audit / Theory: training targets permuted per batch (rng 22597); held-out keeps the true targets
+            y = y[torch.tensor(rperm.permutation(len(y)), device=dev)]
+        F.cross_entropy(lg, y).backward(); pr.opt.step(); hopt.step(); del S
+        if st % every == 0:
+            zz = zd(np.random.default_rng(22553), len(held), dev); swh = torch.tensor(np.random.default_rng(22594).integers(0, 2, size=len(held)), device=dev)
+            ok = []
+            for ch in E.chunks(range(len(held)), bs):
+                sub = [held[j] for j in ch]; b, S = E.stored(m, sub, K, dev, chunk)
+                with torch.no_grad():
+                    lg, y = batch_logits(sub, b, S, zz[0][ch], zz[1][ch], swh[ch]); ok += (lg.argmax(-1) == y).long().tolist()
+                del S
+            curve.append((st, float(np.mean(ok)))); print("PROBE2", kind, mult, control, st, curve[-1][1], round(time.time() - t0), "s", flush=True)
+    late = float(np.mean([a for _, a in curve[-3:]]))
+    return {"kind": kind, "mult": mult, "t": t, "control": control, "eps": d[1]["eps"] if d else None, "curve": curve, "LATE": late, "final": curve[-1][1],
+            "recipe": probe2.__doc__, "sec": round(time.time() - t0), "head_log": logged[0] if logged else None, "probe_lr": 1e-4, "head_lr": 1e-3, "steps": steps,
+            "seeds_consumed": {"pool_held_stream": 22500, "batches": 22501, "z_train": [22551, "zdraw pairs"], "z_held": 22553, "plant_dirs": 22550,
+                               "probe0_order_train": 22593, "probe0_order_held": 22594, "shuffle_perm": 22597 if control == "shuffled" else None,
+                               "note": "feasibility consumed these registered streams; the certification uses FRESH streams (Theory 10-21)"}}
+
+
 def overfit32(m, pool, d1, dev, chunk, mult=10, steps=300, every=10):
     """Theory / Audit 10-21 item 0: OVERFIT-32 - the registered probe (Probe(m, 1e-4)) trained on 32 FIXED items (pool[24000:24032], fixed z rng 22581)
     as one full batch per step, eps x10, train accuracy + CE every 10 steps; with the registered SYMMETRIC plant and the ANTISYMMETRIC plant (item 6).
@@ -397,7 +482,7 @@ def fl(x):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--arms", default="k1,k2,k3"); ap.add_argument("--bs", type=int, default=16)
-    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2"); ap.add_argument("--probe_lr", type=float, default=1e-4, help="descriptive arms only (registered: 1e-4)"); ap.add_argument("--out_name", default="", help="override the saved JSON name (one arm per call)")
+    ap.add_argument("--chunk", type=int, default=16); ap.add_argument("--k3_steps", type=int, default=2000); ap.add_argument("--pool_n", type=int, default=200000); ap.add_argument("--k2_mults", default="1,3,10"); ap.add_argument("--k2_name", default="k2_oracle"); ap.add_argument("--model_run", default="", help="218-17 (a): a trained LangSLVA run dir (langvb_eval.load) instead of the untrained model"); ap.add_argument("--tag", default=""); ap.add_argument("--k3_mults", default="1,10", help="k3anti / k3antixor / k3sym / k3symxor eps multipliers"); ap.add_argument("--k2anti_mults", default="1,1.5,2"); ap.add_argument("--probe_lr", type=float, default=1e-4, help="descriptive arms only (registered: 1e-4)"); ap.add_argument("--out_name", default="", help="override the saved JSON name (one arm per call)"); ap.add_argument("--probe2_specs", default="lin:1.5;xor:1.5;lin:10;xor:10;probe0:;xor:10:shuffled", help="PROBE2 runs kind:mult[:control];...")
     a = ap.parse_args(); global TAG, PROBE_LR, OUT_NAME; TAG = a.tag; PROBE_LR = a.probe_lr; OUT_NAME = a.out_name; dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; t0 = time.time()
     if a.model_run:
         m, info = E.load(a.model_run, dev); info = {"model_run": a.model_run, **{k: info.get(k) for k in ('arch', 'arch_class', 'source', 'items_sha', 'steps_run')}}
@@ -419,6 +504,11 @@ def main():
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="lin"); save("k3_sym", {**meta, **r})
     if "k3symxor" in arms:
         r = k3(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), kind="xor"); save("k3_sym_xor", {**meta, **r})
+    if "probe2" in arms:
+        for spec in a.probe2_specs.split(";"):
+            kind, mult, ctl = (spec.split(":") + ["", ""])[:3]; mu = float(mult) if mult else 0.0
+            r = probe2(m, pool, held, d1, dev, a.chunk, a.bs, kind, mu, steps=a.k3_steps, control=ctl or None)
+            save("probe2_feas_%s_x%s%s" % (kind, mult or "0", ("_" + ctl) if ctl else ""), {**meta, **r})
     if "k3swap" in arms:
         r = k3swap(m, pool, held, d1, dev, a.chunk, a.bs); save("k3_swap" + a.tag, {**meta, **r})
     if "overfit32" in arms:
