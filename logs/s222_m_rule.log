@@ -1,0 +1,8 @@
+SETUP 310 s; plant_dirs copy bitwise == langvb_eval.plant_dirs at 22550: True
+K2 t 0 m 1.5 anti_lin 0.9915 cexor_rule 0.881 659 s
+K2 t 0 m 2 anti_lin 0.9995 cexor_rule 0.958 666 s
+K2 t 0 m 3 anti_lin 1.0 cexor_rule 0.9905 670 s
+K2 t 1 m 1.5 anti_lin 0.989 cexor_rule 0.8808 676 s
+K2 t 1 m 2 anti_lin 0.999 cexor_rule 0.955 681 s
+K2 t 1 m 3 anti_lin 1.0 cexor_rule 0.9968 686 s
+WROTE scratch/gate_s222\m_rule.json
