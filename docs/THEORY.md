@@ -20254,6 +20254,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - T1's label stays T-SELF | T-SHIFT/MIXED, n50 14.606.
 - T1's off-host mirror may now be deleted (219-7).
 
+**Note 219-11 (2026-10-21 10:07 EDT; GATE-T2 / GATE-T1' and the T2 pool, read with score_s219.gate_t2 in-process before T2 launches; s219_gate_t2_s1/eval_gate.json + gate_labels_primary.json, pool_meta.json (5eb21224); RTX 3070, fp32, label_bs 128 primary, descriptive LABELLER-FULL at bs 64 (219-9 (b))).**
+- **Both windows are SELF-LABELLED by T1 (s219_t1_s1, 65b020b0); no base fallback.**
+  - **W2 (n 13–16): PASS**, π = π^E = 0.99987 pooled (CI [0.99929, 0.99998]), keep 0.999 / 0.995 / 0.994 / 0.981.
+  - **W1 (n 9–12): PASS**, π = π^E = 1.000, keep 1.000.
+- **Descriptive.**
+  - EQUIV passes in both windows (min share 1.000).
+  - LABELLER-FULL (no re-rooting) falls at n 14–16: keep 0.858 / 0.238 / 0.011.
+  - Kept items match drawn items on size and shape (kept vs drawn means equal to within 0.5 %).
+- **T2 pool:** 390,000 records (32.5k each n 9–12; 65k each n 13–16), sha 9461efb6, exclusion hits 0, duplicates 0.
+- **The round-2 path is clear for T2.** Its frozen args are drafted by Experiments on T1's pattern (textself_ft main on the queue line) and frozen by sha in a note before launch.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
