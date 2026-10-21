@@ -20699,6 +20699,35 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Lesson (registered practice from now on):** a language task's one-pass baseline must pass a **learnability pilot** (threshold-advance, entry) before latent cells spend; §223 adopted this (223-4).
 - **Spend:** §218 realised = the 10-18 lost hosts ($4.52) + the 10-20 relaunch (DIRECT + A1, per Experiments' invoices, filed in the index row). §222 $0.
 
+**Note 216-15 (2026-10-21 18:10 EDT; IDLE-HORIZON result (216-14 + amendments): six eval_khorizon.json (3070, fp32, bs 32, k_max 64 each; 02ee0243); `python -B theory/score_s216_ih.py`; $0).**
+- **G-IH0:**
+  - s216_r2_s1 / s216_d3t_s2 / s216_r1_s2 bitwise (min share 1.0);
+  - s213_d3t_s1 / s215_ftctrl_s1 / s215_ftself_s1 aggregate-level (amendment 2; 24 arm × n cells equal).
+  - All six READ.
+- **Registered verdict: H_DRIFT (tentative: n = 1 only).**
+  - The only qualifying cell is R1-s2 vs D3-T s2 at n 1: Δ(self) 0.513 (SE 0.016) vs Δ(ctrl) 0.433, excess +0.080.
+  - Every other self × n cell has excess ≤ −0.015.
+  - **In s1, the self rounds decay LESS than FT-CTRL:** excess −0.106 / −0.023 / −0.038 (FT-SELF) and −0.087 / −0.015 / −0.020 (R2-s1) at n 1–3.
+- **The main finding (descriptive, and larger than the registered contrast): every model loses its held answer past its training horizon, bases and controls included.** All models are trained at kmax 12 (self rounds to self_kmax 20).
+
+| model | intact mean a(n 1–8) at K′ 24 / 32 / 48 / 64 |
+|---|---|
+| D3-T s1 | 1.000 / 0.996 / 0.848 / 0.476 |
+| FT-CTRL | 1.000 / 0.993 / 0.870 / 0.590 |
+| FT-SELF | 0.999 / 0.996 / 0.908 / 0.693 |
+| R2-s1 | 0.998 / 0.984 / 0.845 / 0.608 |
+| D3-T s2 | 0.993 / 0.944 / 0.697 / 0.391 |
+| R1-s2 | 0.985 / 0.939 / 0.706 / 0.405 |
+
+  - The masked arms (self_ablate, bank_ablate_slva) fall to ≈ 0.09–0.29 by K′ 64.
+  - R1-s2's 79 n 1 errors at K′ 24 are all items where the state route (bank_ablate_slva) is also wrong (0 / 79 state-correct).
+- **Reading.**
+  - **(i)** The VERSION-BANK hold is not a fixed point. The answer survives roughly 2–3× the trained pass count and then decays, in every lineage. This is a C6 (step-free stability) failure of the base recipe, not a self-training cost. MEM-TRADED / STAB_self (216-x) measured history *dependence*; the output harm is lineage-independent.
+  - **(ii)** Self rounds with longer rollouts (self_kmax 20) hold slightly longer in s1. That is consistent with random / longer-depth training (Anil 2211.09961).
+  - **(iii)** The decision rule of 216-14 for H_DRIFT says the lever acts on the hold (the idle pass as a contraction / fixed point). Since the drift is not self-specific, the self-vs-ctrl attribution steps (interpolation, patching) are moot. **The lever belongs on the base recipe, as a C6 design, not as a round-3 patch.**
+- **Next (Theory):** a new design draft, FIXED-HOLD. An idle-pass fixed-point objective, tied to the held answer to avoid Goodhart, on the D3-T recipe vs the plain recipe, read at K′ 24–128. Literature prescout 8bb89d7a: Viakhirev 2608.18222's terminal fixed-point penalty settles at weight 0.005; Anil's random depth is the cheap rival. It needs a derivation, red team, OC and a $ estimate before registration.
+  - Round 3 as R3-PLAIN is not proposed now: the depth gain is moot while the hold fails at K′ ≥ 48.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
