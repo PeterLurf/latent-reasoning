@@ -20018,6 +20018,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Every CODI20 reading is not met (rule b). **No swap-arm value has been read.** score_s220.json is not committed and the arms stay unread, pending Audit's ruling on whether any descriptive row of a gate-failed cell may ever be shown.
   - The stage-1 trigger now rests on zen-gpt2 alone (220-3 addendum).
   - zen's own G-R needs its official-shuffle runs (3070, after zen and T1's evals).
+- **Seal (Audit's ruling, 10-21).** CODI20's swap arms, descriptive rows and NECESSARY value are SEALED.
+  - They stay unread through zen-gpt2's G-R, any stage-1 decision, and the registration and freeze of any §220 successor.
+  - They are written by score_s220 only to the uncommitted, git-ignored scratch/s220/SEALED_score_s220_arms.json, **sha256 ce504bdebfb6f9f433bad62d6e43f95bd087be89d6019643782c170e33079d30**. The committed theory/results/score_s220.json holds only the gate block and the label.
+  - After §220 and any successor are frozen or closed, the sealed values may be shown once as an appendix: "pad-free bs-1 harness, gate-failed, not a reading, no wording, never cited as justification".
+  - The raw eval_gcs.json, committed by Experiments, also contains them. The seal is a no-read commitment on that file too.
+  - If zen-gpt2 fails G-R on the same structural ground, a successor design (swap arms under the official padded semantics) is drafted rather than a second gate amendment.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
