@@ -424,7 +424,7 @@ def main():
     if "overfit32" in arms:
         r = overfit32(m, pool, d1, dev, a.chunk); save("overfit32", {**meta, **r})
     if "k3anti" in arms:
-        r = k3anti(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults)); save("k3_anti", {**meta, **r})
+        r = k3anti(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), steps=a.k3_steps); save("k3_anti", {**meta, **r, "probe_lr": PROBE_LR, "k3_steps": a.k3_steps})
     if "k3antixor" in arms:
         r = k3antixor(m, pool, held, d1, dev, a.chunk, a.bs, mults=fl(a.k3_mults), steps=a.k3_steps); save("k3_anti_xor", {**meta, **r, "probe_lr": PROBE_LR, "k3_steps": a.k3_steps})
     if "k2antixor" in arms:
