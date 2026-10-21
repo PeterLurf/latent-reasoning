@@ -1,0 +1,9 @@
+2026-10-21 00:27:46 s219_post_t1 armed (pid 11326): waiting for the gen_b318 drain + boxes/runs_fsq/s219_t1_s1/train_done.json + model.pt
+2026-10-21 02:27:47 s219_post_t1 LANDED: 2026-10-21 02:19:43 gen_b318 56997649 
+2026-10-21 02:27:51 s219_post_t1 landing rc 0
+2026-10-21 02:27:51 s219_post_t1 landing check PASS: model_sha256 65b020b053008f94 self steps 5992 train_sec 5557 nonfinite 0 5992: True
+2026-10-21 02:27:51 s219_post_t1 G-T19 ok (base eval_text.json + BASE_NOTE BASE_NOTE = {"note": "219-5", "branch": "levels"})
+2026-10-21 02:27:52 s219_post_t1 waiting for the 3070 (busy: GPU-bda2f3be-d9b5-46de-6b2a-97dcecfd5acb, 1988, C:\Users\peter\AppData\Local\Python\bin\python.exe;)
+2026-10-21 04:39:58 s219_post_t1 eval_text rc 0
+2026-10-21 04:39:59 s219_post_t1 T1 eval_text meta: OK NVIDIA GeForce RTX 3070 fp32 tf32 False bs 32 sec 4917 peak_gib 4.980096817016602
+2026-10-21 04:39:59 s219_post_t1 STAGE_BOUNDARY (G-T11): commit boxes/runs_fsq/s219_t1_s1/eval_text.json now (off the working card)
