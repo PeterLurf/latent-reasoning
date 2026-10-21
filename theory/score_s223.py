@@ -48,7 +48,8 @@ def log_info(path):
         if r.get("num_ce") is not None:                                   # the NUMBER-token CE (what CurGate reads; Experiments' trainer field)
             bins.setdefault(int(r["step"]) // 1000, []).append(float(r["num_ce"]))
     entry = next((1000 * (b + 1) for b in sorted(bins) if np.mean(bins[b]) < 0.5), None)
-    return {"last_step": last, "entry_step": entry}
+    last_bin = float(np.mean(bins[max(bins)])) if bins else None
+    return {"last_step": last, "entry_step": entry, "last_bin_num_ce": last_bin}
 
 
 def band_from_direct(ev):
@@ -56,6 +57,20 @@ def band_from_direct(ev):
     nstar = max((d for d in range(1, 9) if a.get(d, 0) > 0.50 + EPS), default=0)
     band = [d for d in range(max(3, nstar + 1), 9) if a.get(d) is not None and a[d] <= 0.50 + EPS]
     return nstar, band
+
+
+def gw0(ev, info):
+    """G-W0 (ii) with Note 223-6's guards: DIRECT NO-ENTRY (entry None or last num_ce 1k bin >= 0.5) or DIRECT acc(d = 1) < 0.80 -> UNREADABLE
+    (band []); else the band rule, which needs >= 3 depths."""
+    nstar, band = band_from_direct(ev); a1 = ev["acc"]["acc_by_d"].get("1")
+    why = []
+    if info is None or info.get("entry_step") is None or info.get("last_bin_num_ce") is None or info["last_bin_num_ce"] >= 0.5:
+        why.append("DIRECT NO-ENTRY")
+    if a1 is None or a1 < 0.80:
+        why.append("DIRECT acc(d=1) %s < 0.80" % a1)
+    if why:
+        return {"nstar": nstar, "band": [], "band_rule": band, "readable": False, "ok": False, "reason": "UNREADABLE: " + "; ".join(why)}
+    return {"nstar": nstar, "band": band, "readable": True, "ok": len(band) >= 3, "reason": "band %s" % band}
 
 
 def pooled(tab, band, tmin=2, w=None):
@@ -168,8 +183,9 @@ def score(runs=R):
     evd = jl(os.path.join(runs, CELLS["direct"], "eval_ps.json"))
     if evd is None:
         out["band"] = "pending (DIRECT eval_ps.json)"; return out
-    nstar, band = band_from_direct(evd); out["nstar"], out["band"] = nstar, band
-    out["G_W0_band_ok"] = len(band) >= 3
+    g = gw0(evd, log_info(os.path.join(runs, CELLS["direct"], "log.jsonl"))); out["G_W0"] = g    # Note 223-6 guards
+    nstar, band = g["nstar"], g["band"]; out["nstar"], out["band"] = nstar, band
+    out["G_W0_band_ok"] = g["ok"]
     cells = {}
     for k in ("ps", "m1", "m2"):
         cells[k] = score_cell(k, jl(os.path.join(runs, CELLS[k], "eval_ps.json")), log_info(os.path.join(runs, CELLS[k], "log.jsonl")), band)
@@ -243,6 +259,14 @@ def fixtures():
     o = score_cell("ps", _ev(), info, [7, 8]); res.append(("band < 3 -> UNREAD", o["label"].startswith("UNREAD (G-W0"), o["label"]))
     n, b = band_from_direct({"acc": {"acc_by_d": {"1": .9, "2": .8, "3": .6, "4": .45, "5": .3, "6": .2, "7": .15, "8": .1}}})
     res.append(("band from DIRECT", n == 3 and b == [4, 5, 6, 7, 8], (n, b)))
+    flat = {"acc": {"acc_by_d": {str(k): .1 for k in range(1, 9)}}}; ok_info = {"entry_step": 3000, "last_bin_num_ce": 0.2}
+    g = gw0(flat, ok_info); res.append(("223-6: chance DIRECT (n*=0) -> UNREADABLE, not band 3-8", not g["readable"] and g["band"] == [] and g["band_rule"] == [3, 4, 5, 6, 7, 8], g["reason"]))
+    good = {"acc": {"acc_by_d": {"1": .9, "2": .8, "3": .6, "4": .45, "5": .3, "6": .2, "7": .15, "8": .1}}}
+    g = gw0(good, {"entry_step": None, "last_bin_num_ce": 0.6}); res.append(("223-6: DIRECT NO-ENTRY -> UNREADABLE", not g["readable"] and "NO-ENTRY" in g["reason"], g["reason"]))
+    g = gw0(good, {"entry_step": 3000, "last_bin_num_ce": 0.55}); res.append(("223-6: last bin >= 0.5 -> UNREADABLE", not g["readable"], g["reason"]))
+    low1 = {"acc": {"acc_by_d": {"1": .7, "2": .6, "3": .45, "4": .4, "5": .3, "6": .2, "7": .15, "8": .1}}}
+    g = gw0(low1, ok_info); res.append(("223-6: acc(d=1) 0.70 -> UNREADABLE", not g["readable"] and "d=1" in g["reason"], g["reason"]))
+    g = gw0(good, ok_info); res.append(("223-6: good DIRECT -> band 4-8 ok", g["readable"] and g["ok"] and g["band"] == [4, 5, 6, 7, 8], g["reason"]))
     # end-to-end with confound
     d = tempfile.mkdtemp()
     def put(cell, ev, entry):
