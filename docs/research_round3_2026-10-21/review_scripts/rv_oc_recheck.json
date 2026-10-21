@@ -1,0 +1,80 @@
+{
+ "def": "REVIEW_R3 check 4 ($0, CPU): independent closed-form recompute of R3_draft \u00a75 Stage A OC, plus two nulls the draft omits.\n(i) draft null: delta = 0.  (ii) GENERIC-FREEZE null: any freeze (or any slowing of self-item learning) raises STAB by delta_g with no\nlocalisation; delta_g in {0.02, 0.04, 0.06} [ASSUMED; FT-CTRL - FT-SELF = 0.207 is the scale of 'less self learning'].\n(iii) P(Stage B launch | null) = P(both) + P(s1 pass, s2 fail) (draft \u00a76 launch rule: MECH-PARTIAL with s1's SEED-PASS also launches B).\nSEED-PASS = D in [0.08, base + 0.10 - twin] and ABSORB (p_abs 0.95 under nulls), D ~ N(delta, sqrt(2) s_rep). Writes rv_oc_recheck.json.",
+ "rows": {
+  "s_rep 0.02 | delta_g 0.00": {
+   "seed_s1": 0.0022,
+   "both": 0.0,
+   "B_launch": 0.0022
+  },
+  "s_rep 0.02 | delta_g 0.02": {
+   "seed_s1": 0.0161,
+   "both": 0.0003,
+   "B_launch": 0.0161
+  },
+  "s_rep 0.02 | delta_g 0.04": {
+   "seed_s1": 0.0747,
+   "both": 0.0056,
+   "B_launch": 0.0747
+  },
+  "s_rep 0.02 | delta_g 0.06": {
+   "seed_s1": 0.2278,
+   "both": 0.0519,
+   "B_launch": 0.2278
+  },
+  "s_rep 0.02 | full effect": {
+   "seed_s1": 0.85,
+   "seed_s2": 0.7203,
+   "both": 0.6122
+  },
+  "s_rep 0.04 | delta_g 0.00": {
+   "seed_s1": 0.0747,
+   "both": 0.0056,
+   "B_launch": 0.0747
+  },
+  "s_rep 0.04 | delta_g 0.02": {
+   "seed_s1": 0.1372,
+   "both": 0.0188,
+   "B_launch": 0.1372
+  },
+  "s_rep 0.04 | delta_g 0.04": {
+   "seed_s1": 0.2278,
+   "both": 0.0519,
+   "B_launch": 0.2278
+  },
+  "s_rep 0.04 | delta_g 0.06": {
+   "seed_s1": 0.3437,
+   "both": 0.1182,
+   "B_launch": 0.3437
+  },
+  "s_rep 0.04 | full effect": {
+   "seed_s1": 0.839,
+   "seed_s2": 0.5911,
+   "both": 0.496
+  },
+  "s_rep 0.06 | delta_g 0.00": {
+   "seed_s1": 0.1642,
+   "both": 0.0269,
+   "B_launch": 0.1642
+  },
+  "s_rep 0.06 | delta_g 0.02": {
+   "seed_s1": 0.2278,
+   "both": 0.0517,
+   "B_launch": 0.2278
+  },
+  "s_rep 0.06 | delta_g 0.04": {
+   "seed_s1": 0.3027,
+   "both": 0.0913,
+   "B_launch": 0.3027
+  },
+  "s_rep 0.06 | delta_g 0.06": {
+   "seed_s1": 0.3864,
+   "both": 0.1483,
+   "B_launch": 0.3864
+  },
+  "s_rep 0.06 | full effect": {
+   "seed_s1": 0.7808,
+   "seed_s2": 0.5266,
+   "both": 0.4112
+  }
+ }
+}
