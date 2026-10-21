@@ -20608,6 +20608,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
    - (iv) **Band ≥ 3 depths** → PS, M1-only and M2-only launch, PS first if hosts are short.
    - **Band < 3 depths** → no latent cell. A redesign Note comes first (task change, e.g. depth range or step type), and DIRECT's spend is realised and reported.
    - **Added guard (stricter, pre-output):** if DIRECT never entered (entry_step None, or its last num_ce 1k bin ≥ 0.5), the band is uninformative, since an untrained DIRECT gives n\* = 0 and a trivial band 3–8. G-W0 then reads UNREADABLE → no latent cell, and a redesign Note comes first.
+   - **Addendum (14:45 EDT, Audit's tightening, before DIRECT deploys):** G-W0 also reads UNREADABLE if DIRECT's test acc at d = 1 is < 0.80, since a one-pass baseline must solve one-step problems. The rest of the rule is as above.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
