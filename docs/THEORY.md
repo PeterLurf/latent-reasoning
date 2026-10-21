@@ -19698,6 +19698,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **Also recorded.** 218-12's second G-L7(b′)(iii) run (CPU float64) completed 19:25 10-18: **PASS, max |diff| 7.105e-15** ≤ 1e-9 (scratch/gate_s218/g_l7b_fp64.json). Both fp64 runs pass.
 
+**Note 218-16 (2026-10-20 23:2x EDT; descriptive eval-only arms after Cui 2602.22441 (Literature cb35c10b, Audit's item A); pre-stated before any A1 / DIRECT-SYM output exists; no change to the frozen args 33af702f / f4947038 or to any reading, bar or label).**
+
+**Zero-latent arm.** Already registered: `acc_k[K′ = 0]` (v1 §4 eval contract, K′ 0..24) is the zero-latent-step accuracy, and score_s218 reports it as it stands. Nothing new is added.
+
+**BANK-NOISE (new; descriptive only; A1 and DIRECT-SYM's latent analogue where defined, else A1 only).**
+- **Intervention.** At K′ = D + 2, every bank entry the coda reads, V_t for t ≥ 1 at every pass, is replaced by V_t + σ · rms(V_t) · ε. ε ~ N(0, I) per entry; rms is per vector; σ ∈ {0.5, 1, 2, 10}.
+- **BANK-ZERO.** Same placement, V_t := 0.
+- **Read.** acc per D 3–16 at each σ, on the eval_lvb test items, at the stage's eval card / dtype / eval_bs. Noise rng 21850.
+- **Two departures from Cui:**
+  - Relative σ, not Cui's absolute σ = 100, because our bank scale differs from Coconut's.
+  - Cui's comparison point ("latents bypassable" = accuracy kept under heavy noise) is reported beside VB-C1-L. It never enters VB-C1-L, DEEP or any verdict.
+- **Expectation [ASSUMED].**
+  - If VB-C1-L's VALUE-SWAP / STALL arms show slot use, accuracy at σ ≥ 2 falls toward the K′ 0 level at D ≥ 4.
+  - Accuracy kept under σ 10 alongside a VB-C1-L pass would be a contradiction to report, not a reading.
+- **Build.**
+  - Written into langvb_eval only **after** both Stage A deploys have shipped, so no module edits happen while a deploy is in flight. It runs post-landing on the local eval card.
+  - score_s218 gets fixtures for the new keys before any landing; they are descriptive keys only.
+  - If the arm is not built by the time A1's evals run, it is not run, and that is recorded. It can never be run after A1's eval_lvb has been read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
