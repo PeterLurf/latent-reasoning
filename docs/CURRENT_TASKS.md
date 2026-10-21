@@ -24,7 +24,19 @@ results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `do
 Messages go through SendMessage. The names "Theory" and "Audit" currently need an identity confirm, pending the user,
 so send to the pipe addresses their messages come from.
 
-## Running now (22:3x 2026-10-20; credit $89.49; NO Vast instances)
+## Running now (23:5x 2026-10-20; credit ~$89.2; 2 Vast instances ~$0.44/h)
+
+* 23:5x 10-20 (Experiments): §218 attempt 2 LIVE (user approved; Notes 218-15 / 218-19 A1 admission $4.60 / guard $5.10):
+  - b316 A1 lvb_sym_s1: 85.30.169.224:40503 (56989850, $0.2281/h, driver 595.71.05), admitted 23:31 at $3.65 (G-TIME 2.339 s/step micro 4), ETA ~15:30 10-21.
+    (1st host 82.178.70.10 BAD then refused at $4.38 under the old cap; old filler stopped by pid, scratch/s218_fill_a2b.sh adopted the 2nd host.)
+  - b317 DIRECT lvb_direct_s1: 77.28.245.164:40420 (56992503, $0.2014/h, driver 565.77), admitted 23:51 at $1.39 (0.976 s/step micro 2), ETA ~06:30 10-21.
+  - Mirrors with companions (fingerprint + log), guards s218a2_b316 $4.97 / s218a2_b317 $3.90 / s218fam2 $20.48 (GUARD_STOP), gen8 drains, gpuwatch_autoadd 316 317,
+    autoexclude_watch (relaunched 22:53). Family admitted + BAD $8.30 / $25 incl. the lost $4.52. Post-landing: langvb_eval locally (probe / PLANT after Note 218-18).
+  - 218-17 G-L5 known-answer: K1 NOT BUG (57ab3ab8), K2 ceiling 0.910 at eps x1 / 1.0 at x3 (0a3c2119); K3 on the 4060 (x1 ended 0.497 chance); then K2 x1.75 / x2.0
+    (218-18 m rule), then KL-DRIFT s1 trio (scratch/s218_k2bc_then_kl.sh). G-L5 eps x1 re-run aborted (00bba7d9). KL-DRIFT R1-s2 done on the 2070 (92036838).
+  - §220 GSM-CACHE-SWAP (registered 36d0cbf6; G-D PASS e5ea9325): 2070 G-M PASS, CODI20 stage 0 running, then zen (scratch/s220_zen_after_codi20.sh; Note 220-2).
+  - §219: G-T13 done (trainer cde2c604 applied, regate PASS d7c5c239); GATE-T1 PASS (6d488545); T1 pool building on the 3070.
+
 
 * 22:3x 10-20 (Experiments): RECOVERY after the LOCAL OUTAGE 10-18 ~22:10 -> 10-20 22:12 (every local job, watcher, guard and mirror died).
   - §218 attempt 1 HOST-LOST (Note 218-15, 9a6964ff): b316 A1 host vanished Vast-side 0.63 h after create (never checkpointed; $0.135); b317 DIRECT trained
