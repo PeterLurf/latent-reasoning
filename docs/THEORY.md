@@ -20510,6 +20510,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Q5, BUDGET-FRONT sampling:** every swap t ∈ 1..d−1 on every third kept pair. "≥ 1,000 clean pairs" (v1.1) is read as **≥ 1,000 (pair, t) observations from ≥ 300 distinct pairs** in the band. Fewer → UNREADABLE.
 - **Q6, card:** on-host RTX 3090, fp32, right after training, for all four cells. One card class for every §223 eval; card and driver recorded per file.
 
+**Note 223-3 (2026-10-21 14:16 EDT; §223 args FREEZE for all four cells, before any §223 launch or output; the trainer's own --args_only output on each cell's queue tokens; shas re-hashed by Theory).**
+
+| cell | frozen file (`.draft` → renamed without `.draft`) | sha256 |
+|---|---|---|
+| DIRECT | scratch/s223_args_frozen_direct.json | 3aa945706609d1515ebaeec77bc3c099f60a3902a4308f63d7060b1977feb42b |
+| PS | scratch/s223_args_frozen_ps.json | a225c57c3b15ac12a652c9cfc54b1fb61f88afb47944ffbb2aad868206c98114 |
+| M1-only | scratch/s223_args_frozen_m1.json | 6739af6ac5879153bdeac35403914da91b2a79739d434ec18d8cc12a39acaf86 |
+| M2-only | scratch/s223_args_frozen_m2.json | b8e8c89de29cee2c8deb4156d11c5b6184ca52eaf4f2103781f5c87eebb56235 |
+
+- **Single-change diffs** (re-checked by Theory, excluding host META keys and the derived `cell` label) match PS2_v1 Addendum A item 3:
+  - PS vs M1-only = {bottleneck};
+  - PS vs M2-only = {recode, lam};
+  - PS vs DIRECT = {direct, recode, lam, bottleneck}, all latent-loop flags.
+- Each file records the generator, module and codi_port shas, the test-items sha (652635f8…) and the pair-candidates sha.
+- No trainer argument may be added after this freeze.
+- **DIRECT launches first,** after F2 timing, Audit's G-D and the filler. It fixes n\* and the C1 band before any latent cell.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
