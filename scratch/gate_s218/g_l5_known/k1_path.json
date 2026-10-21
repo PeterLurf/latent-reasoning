@@ -1,0 +1,101 @@
+{
+ "note": "Note 218-17",
+ "model": "langvb_eval.untrained(cal_n 16)",
+ "untrained_cal": {
+  "arch": "lslva",
+  "untrained": true,
+  "cal_n": 16,
+  "cal_max_m99": 0.019807221367955208
+ },
+ "card": "NVIDIA GeForce RTX 4060",
+ "dtype": "fp32",
+ "tf32": false,
+ "pool_n": 200000,
+ "held_n": 1000,
+ "eps": 6.8592303155613985,
+ "eps_rel": 0.04483291826417333,
+ "vnorm": 152.99540117250663,
+ "eig_40_60": [
+  54.24106993903101,
+  53.27346971781912,
+  52.813195016154594,
+  52.20372558019796,
+  51.509775446801875,
+  50.23805569518391,
+  49.37710864795833,
+  48.28262823243893,
+  48.21143183532917,
+  47.458913878917215,
+  47.049040521916524,
+  46.40090395263939,
+  46.25500896513756,
+  45.27932007784128,
+  44.98759783008537,
+  43.58961222162943,
+  42.591830824942996,
+  41.72891197104366,
+  41.42850569475721,
+  41.17298598730672,
+  40.339046475954234
+ ],
+ "eig_50": 47.049040521916524,
+ "setup_sec": 246,
+ "commit": "3a32c94b",
+ "n_items": 512,
+ "eps_base": 6.8592303155613985,
+ "by_mult": {
+  "1": {
+   "mean_abs_delta": 0.01787387579679489,
+   "max_abs_delta": 0.15993499755859375,
+   "min_abs_delta": 8.392333984375e-05,
+   "loss": 3.196943521499634,
+   "grad_norm_total": 11.667696109405409,
+   "grad_none": 2,
+   "grad_zero": 0,
+   "n_param_tensors": 26,
+   "acc_untrained_z1_vs_z0_sign": 1.0
+  },
+  "10": {
+   "mean_abs_delta": 0.2195732444524765,
+   "max_abs_delta": 1.54541015625,
+   "min_abs_delta": 0.001041412353515625,
+   "loss": 3.2147555351257324,
+   "grad_norm_total": 11.621522032989935,
+   "grad_none": 2,
+   "grad_zero": 0,
+   "n_param_tensors": 26,
+   "acc_untrained_z1_vs_z0_sign": 1.0
+  },
+  "100": {
+   "mean_abs_delta": 5.445237874984741,
+   "max_abs_delta": 20.563270568847656,
+   "min_abs_delta": 0.00118255615234375,
+   "loss": 2.779263496398926,
+   "grad_norm_total": 8.363066741918987,
+   "grad_none": 2,
+   "grad_zero": 0,
+   "n_param_tensors": 26,
+   "acc_untrained_z1_vs_z0_sign": 1.0
+  }
+ },
+ "slot_check": {
+  "V_shape": [
+   16,
+   78,
+   768
+  ],
+  "spad_shape": [
+   16,
+   78
+  ],
+  "o1_real": true,
+  "o2_real": true,
+  "o1_ne_o2": true,
+  "only_option_rows_change": true,
+  "n_slots_real_mean": 54.625,
+  "o1_slot_max": 40,
+  "o2_slot_max": 55
+ },
+ "K1_zero": false,
+ "rule": "K1 = 0 to float precision (mean |delta| <= 1e-6 at every eps) -> BUG"
+}
