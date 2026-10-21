@@ -1,0 +1,3 @@
+LABEL_AUDIT {'n_audit': 5000, 'pi': 0.9994, 'pi_E': 0.9992, 'pi_ci95': [0.9982372939377985, 0.999795925347391], 'pi_E_ci95': [0.9979446733399142, 0.9996888530260581], 'kept_wrong_label': 3, 'kept_wrong_E': 4, 'seed': 23370, 'cursor': 383488, 'n_consumed': 383488, 'pool_sha256': '9461efb6ba6f595061e7bdff32755e0d5086c5e8f38a86126420d3b270318de7'}
+CONTAMINATION 0 0
+DONE boxes/runs_fsq/s219_t2_s1\eval_textself.json 36
