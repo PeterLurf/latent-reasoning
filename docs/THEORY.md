@@ -309,6 +309,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 219 | TEXT-SELF (Audit lead L1; auto-approved under the $30 rule, cap $3): text s1 (s170_cot_s1) -> T1 (n 9-12) -> T2 (2/3 n 13-16) matched to latent s1; REROOT TF-GREEDY; PARITY / TEXT-AHEAD / LATENT-AHEAD vs latent n50 10.306 / 15.460 / 20.539; TS_v1.md at 146a25d0; scorer score_s219 (to write) | registered | **T1 SCORED 10-21 (219-8, Audit-reproduced): T-SELF, T-SHIFT/MIXED, n50 14.606 vs latent R1 15.460 (Delta1 -0.854, PARITY unreachable); round 2 cleared; ~$0.42 / $3.00** |
 | 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **CLOSED 10-21 at stage 0: UNREAD in both GPT-2 models (amended G-R: padded official semantics batch-dependent; pad-free bs-1 reproduces 0.379 / 0.4246 bitwise); stage 1 not triggered; arms SEALED (7c3822cf); successor to draft; $0** |
 | 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **CLOSED 10-21 (Audit-reproduced): G-FID pass (zen agree 1.000; CODI20 bitwise); both GPT-2 CONTEXT-BOUND (cache-swap follow 0.033 / 0.029 vs floor 0.008; state-swap 0.033 / 0.015; NECESSARY +0.25 / +0.32); SCIT carrier not reproduced on natural GSM8K; stage 1 not triggered; $0** |
+| 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **scorer + certification before A1 probe parts** |
 
 ## Live sections
 
@@ -18913,6 +18914,34 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Reporting.** Each reading carries "generated under §220's run, sealed, unread until §221's freeze (sha …)".
 
 **Primary, labels, OC, stage-1 trigger:** as §220 (CACHE-CARRIER-GSM; PORTS / LEAK / SCAFFOLD / CONTEXT-BOUND / UNNECESSARY / MIXED; P(pass | no effect) ≈ 0). **Cost: $0.**
+
+## 222. PROBE-S: certified probe readings for §218's A1 with content-equivariant plants (successor to §218's probe readings, which are structurally UNREADABLE (218-18 / 218-24 / 218-25); **auto-approved by Audit under the user's $30 standing rule, cap $0**, after a targeted Opus review (REVIEW_PS, no blockers); pre-registered 2026-10-21 08:52 EDT, before any A1 output exists)
+
+**Registered text.** docs/research_probe2_2026-10-21/PS_v1.md **at 7174fc3b** (v1 plus REVIEW_PS edits E1–E6), frozen. Reviews: P2_draft → REVIEW_P2 (the Frame Lemma) → PS_v1 → REVIEW_PS.
+
+**Honesty.**
+- §218's VB-C1-L stays **NOT MET** (a positive-control design flaw, 218-25).
+- This design was made after that failure and after an untrained-only feasibility check, with ×10's 1.000 disclosed.
+- No A1 output has been read. There are no spend triggers.
+
+**Design.**
+- **S1:** §218's registered probe, unchanged in read path, recipe, budget and extension rule. Only the PLANT changes, to antisymmetric lin plus **content-equivariant xor**.
+- **S2 (fallback):** an antisymmetric-head PROBE2, with SERIAL-ORACLE / SELFCOMP guards.
+- **m:** the smallest of {1.5, 2, 3} with K2-anti-lin and K2-cexor ≥ 0.985 on the untrained model at t 0 and t 1. Oracle only.
+- **CERT(S):** on the untrained model and the G-L1c reference, LATE ≥ 0.90 on both plants at t 0 / 1 / 2, at the registered budget, on fresh pinned streams (22700–22758), on the 4060 in fp32. Controls: NOPLANT ≤ 0.55 (an exact null), shuffled ≤ 0.55 (a smoke), PROBE(0) 0.50 ± 0.015.
+- **Choice:** S1 > S2 > NO CERTIFIABLE PROBE.
+
+**Readings on A1.**
+- **PROBE-VALID-S(t):** A1's own plant directions, both plants ≥ 0.90 at t 0–2, plus the per-t K2 ceiling guard (K2-lin ≥ 0.985, K2-cexor ≥ 0.97).
+- PROBE-GAIN-S, SERIAL-ONSET-S.
+- **VB-C1-L-S** = DEEP-L ∧ PROBE-GAIN-S ∧ SERIAL-ONSET-S ∧ SERIAL-STEP-L ∧ CONSUMPTION-FRONT ∧ STALL ∧ NO-PRECOMPUTE-L, with the non-probe components as score_s218 reads them.
+- DIAG-ALIGN is descriptive.
+
+**OC.** P(pass | no serial use) ≈ 0.0025; P(pass | serial use) ≈ 0.23; **P(VB-C1-L-S) ≈ 0.036–0.039.** A low-odds successor, worth running because it costs $0.
+
+**Censoring.** No certifiable probe → UNREAD. PROBE-VALID-S failure or "plant at ceiling on A1" → UNREADABLE. Every §218 censor applies, and a missing file reads pending.
+
+**Order.** Registration → score_s222 + fixtures → certification (4060) → A1's probe parts under the selected S → score_s222. **Cost: $0.**
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
