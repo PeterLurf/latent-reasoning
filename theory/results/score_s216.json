@@ -3,8 +3,13 @@
  "R": "D:\\Latent\\boxes\\runs_fsq",
  "CARD_CLASS": "3070",
  "REF_EVAL_VB": "eval_vb.json",
- "final": [],
- "not_admitted": [],
+ "final": [
+  "s1",
+  "s2"
+ ],
+ "not_admitted": [
+  "s216_r2_s2"
+ ],
  "layouts_assumed": {
   "E1 eval_deep.json": "v1 \u00a74.2 exactly; items[n].idx may index test_set(1000, 24), its n 13..24 slice, or the item's n (detected per n; used for alignment only)",
   "E2 eval_selfdepth.json": "round 1's fields + label_audit.by_window {W1, W2: {n_audit, pi_label, pi_state, pi_label_ci95, pi_state_ci95}} (aliases WIN_ALIAS, LA); items_n2 / items_k24 {n 1..16: [0/1]}, T, idx {n: [...]}; memo {n 9..16}; contamination {pool_test_hits, pool_excl_hits}",
@@ -76,10 +81,7 @@
     "pool_test_hits": 0,
     "pool_excl_hits": 0,
     "self_reuse": 0,
-    "recheck": {
-     "consumed_read": 383488,
-     "test24_hits": 0
-    },
+    "recheck": null,
     "CONTAMINATED": false
    },
    "CONTAMINATED": false,
@@ -683,28 +685,23 @@
   "r2": {
    "cell": "s216_r2_s2",
    "lineage": "s2",
-   "status": "PENDING",
-   "missing": [
-    "bar inputs ['s216_r1_s2/eval_vb.json missing']",
-    "s216_gate2_s2/eval_gate.json",
-    "s216_pool_r2_s2/pool_meta.json",
-    "s216_r2_s2/args.json",
-    "s216_r2_s2/draws_log.json",
-    "s216_r2_s2/eval_deep.json",
-    "s216_r2_s2/eval_hist24.json",
-    "s216_r2_s2/eval_lfk.json",
-    "s216_r2_s2/eval_selfdepth.json",
-    "s216_r2_s2/eval_steppos.json",
-    "s216_r2_s2/eval_vb.json",
-    "s216_r2_s2/log.jsonl"
-   ],
-   "label": "pending (missing [\"bar inputs ['s216_r1_s2/eval_vb.json missing']\", 's216_gate2_s2/eval_gate.json', 's216_pool_r2_s2/pool_meta.json', 's216_r2_s2/args.json', 's216_r2_s2/draws_log.json', 's216_r2_s2/eval_deep.json', 's216_r2_s2/eval_hist24.json', 's216_r2_s2/eval_lfk.json', 's216_r2_s2/eval_selfdepth.json', 's216_r2_s2/eval_steppos.json', 's216_r2_s2/eval_vb.json', 's216_r2_s2/log.jsonl'])"
+   "status": "UNREAD",
+   "label": "UNREAD (not admitted; never a pass)"
   },
   "gate2": null,
   "bars_r2": {
-   "void": [
-    "s216_r1_s2/eval_vb.json missing"
-   ]
+   "M2_shift": 0.68825,
+   "M2_prop": 0.838125,
+   "M2_shrink": 0.5405,
+   "MARGIN_GROWS_2": 0.765,
+   "SHRINK_below": 0.615,
+   "FULL_M2": 0.8,
+   "FULL_M_far": 0.6,
+   "DBS_2": 0.8,
+   "LIT_C2_2": 0.1,
+   "Hprop_M_far_upper": 0.29231250000000003,
+   "FULL_not_separable_flag": false,
+   "degenerate_SH_ge_MG": false
   },
   "base": {
    "cell": "s216_d3t_s2",
@@ -761,18 +758,154 @@
   "r1": {
    "cell": "s216_r1_s2",
    "lineage": "s2",
-   "status": "PENDING",
-   "missing": [
-    "s216_r1_s2/args.json",
-    "s216_r1_s2/draws_log.json",
-    "s216_r1_s2/eval_hist24.json",
-    "s216_r1_s2/eval_lfk.json",
-    "s216_r1_s2/eval_selfdepth.json",
-    "s216_r1_s2/eval_steppos.json",
-    "s216_r1_s2/eval_vb.json",
-    "s216_r1_s2/log.jsonl"
-   ],
-   "label": "pending (missing ['s216_r1_s2/args.json', 's216_r1_s2/draws_log.json', 's216_r1_s2/eval_hist24.json', 's216_r1_s2/eval_lfk.json', 's216_r1_s2/eval_selfdepth.json', 's216_r1_s2/eval_steppos.json', 's216_r1_s2/eval_vb.json', 's216_r1_s2/log.jsonl'])"
+   "ARGS_DIFF": {
+    "ref": "s215_ftself_s1",
+    "shared_diffs": {},
+    "unexpected_new_keys": [],
+    "required_bad": {},
+    "pause_on": false,
+    "args_ref": {
+     "ok": true,
+     "why": "content equals the reference args",
+     "file": "scratch/s216_args_ref_ftself.json"
+    },
+    "ok": true
+   },
+   "GATE_1": {
+    "recomputed": true,
+    "file_flag": true,
+    "pooled_matches": true,
+    "consistent": true,
+    "PASS": true,
+    "pi_pool": 1.0,
+    "pi_E_pool": 1.0,
+    "problem": null,
+    "ci": {
+     "pi": [
+      0.9995078738273725,
+      0.9999999999999999
+     ],
+     "pi_E": [
+      0.9995078738273725,
+      0.9999999999999999
+     ]
+    },
+    "labeller": [
+     "boxes/runs_fsq/s216_d3t_s2"
+    ],
+    "GATE_1": true
+   },
+   "status": "FAIL",
+   "last_step": 12000,
+   "dead": false,
+   "nonfinite_steps": 0,
+   "FT_DIVERGED": true,
+   "LABEL_NOISY": false,
+   "LABEL_AUDIT": {
+    "pi": 1.0,
+    "pi_E": 1.0,
+    "ci_overlap_pi": true,
+    "ci_overlap_pi_E": true,
+    "ok": true
+   },
+   "CONTAMINATION": {
+    "pool_test_hits": 0,
+    "pool_excl_hits": 0,
+    "self_reuse": 0,
+    "recheck": {
+     "consumed_read": 388864,
+     "test24_hits": 0
+    },
+    "CONTAMINATED": false
+   },
+   "CONTAMINATED": false,
+   "ARGS_BAD": false,
+   "GATE_1_FAILED": false,
+   "censored": true,
+   "BARS": {
+    "M_shift": 0.5405,
+    "MARGIN_GROWS": 0.695,
+    "SHRINK_below": 0.465,
+    "DBS": 0.8,
+    "FULL_M": 0.8,
+    "K_BEYOND": 0.25
+   },
+   "ABSORB": false,
+   "M": 0.68825,
+   "DEPTH_GENERAL": true,
+   "DBS": false,
+   "MARGIN_GROWS": false,
+   "STOP_G": {
+    "9": 0.867,
+    "10": 0.8340000000000001,
+    "11": 0.7225,
+    "12": 0.53125,
+    "13": 0.327,
+    "14": 0.08899999999999998,
+    "15": 0.0
+   },
+   "STOP": 15,
+   "STOP_TO_SUPPORT": true,
+   "K_BEYOND": 0.08899999999999998,
+   "K_BEYOND_MET": false,
+   "RISE_PAST_K": -0.006500000000000006,
+   "gain_after10": 0.8340000000000001,
+   "STOP_MOVED": true,
+   "THINK_GAIN_BEYOND": 0.53125,
+   "C2_TAIL": true,
+   "THINK_NECESSARY_DEEP": true,
+   "MECHANISM": "UNLABELLED (censored)",
+   "GROW_REPLICATED": false,
+   "LENGTH_FREE": true,
+   "VB_C1": true,
+   "K24_STABLE": false,
+   "KEEPS": {
+    "hist24": {
+     "gate": true,
+     "STAB": {
+      "bank_ablate_slva": 0.6835,
+      "self_ablate": 0.48924999999999996,
+      "other_ablate": 0.06075,
+      "dup_newest": 0.90175,
+      "dup_foreign": 0.0955
+     },
+     "HISTORY_STABILISES": true,
+     "CONTENT": "CONTENT-STABILISES",
+     "omitted": [],
+     "label": "memory used causally for long-run stability (CONTENT-STABILISES)"
+    },
+    "items": {
+     "consistent": true,
+     "mismatch": [],
+     "STAB": {
+      "bank_ablate_slva": 0.6835,
+      "self_ablate": 0.48924999999999996,
+      "other_ablate": 0.06075,
+      "dup_newest": 0.90175,
+      "dup_foreign": 0.0955
+     }
+    },
+    "gate_with_items": true,
+    "STAB_self": 0.48924999999999996,
+    "KEEPS_SELF_STAB_2": false,
+    "MEM_TRADED_2": true,
+    "MEM_SUBLABEL_POST_HOC": "STAB_self low with dup_newest destabilising"
+   },
+   "KEEPS_SELF_STAB": false,
+   "SD_SELF": false,
+   "SD_C2": false,
+   "SD_C2_MEM": false,
+   "MEMO_GAP": {
+    "gap": {
+     "9": 0.0,
+     "10": 0.0,
+     "11": 0.0,
+     "12": -0.0010000000000000009
+    },
+    "ok": true
+   },
+   "ROUND2_CONDITION": false,
+   "label": "FAILURE (FT-DIVERGED; rule b) | UNLABELLED (censored) | M 0.688 | STOP 15 | K'-BEYOND 0.089 | round-2 condition False"
   },
   "bars_r1": {
    "M_shift": 0.5405,
@@ -783,9 +916,9 @@
    "K_BEYOND": 0.25
   },
   "row": {
-   "status": "PENDING",
+   "status": "FAIL",
    "stage": "r1",
-   "why": "s216_r1_s2: pending (missing ['s216_r1_s2/args.json', 's216_r1_s2/draws_log.json', 's216_r1_s2/eval_hist24.json', 's216_r1_s2/eval_lfk.json', 's216_r1_s2/eval_selfdepth.json', 's216_r1_s2/eval_steppos.json', 's216_r1_s2/eval_vb.json', 's216_r1_s2/log.jsonl'])",
+   "why": "s216_r1_s2: FAILURE (FT-DIVERGED; rule b) | UNLABELLED (censored) | M 0.688 | STOP 15 | K'-BEYOND 0.089 | round-2 condition False",
    "SD2_SELF": null,
    "SD2_C2": null,
    "LIT_C2_2": null,
@@ -794,16 +927,106 @@
    "n50": null,
    "MEM_HISTORY": {
     "base": 0.684,
-    "r1": null,
+    "r1": 0.48924999999999996,
     "r2": null,
     "MEM_ERODING": null
    }
   },
-  "panels": null
+  "panels": {
+   "source_past_16": "assumed extension (v1 \u00a73.4)",
+   "delta_m50": 0.8214690036145402,
+   "H_shift": {
+    "a": {
+     "13": 1.0,
+     "14": 1.0,
+     "15": 1.0,
+     "16": 1.0,
+     "17": 0.992,
+     "18": 0.878,
+     "19": 0.612,
+     "20": 0.271,
+     "21": 0.13533539599162753,
+     "22": 0.1119561816429913,
+     "23": 0.11,
+     "24": 0.11
+    },
+    "M2": 0.68825,
+    "M_far": 0.1168228944086547,
+    "n50": 19.328445747800586,
+    "n90": 17.80701754385965,
+    "WIDTH_2": 1.5214282039409355
+   },
+   "H_prop": {
+    "a": {
+     "13": 1.0,
+     "14": 1.0,
+     "15": 1.0,
+     "16": 1.0,
+     "17": 0.994,
+     "18": 0.935,
+     "19": 0.8115,
+     "20": 0.612,
+     "21": 0.35625,
+     "22": 0.20316769799581377,
+     "23": 0.12949059240446847,
+     "24": 0.1119561816429913
+    },
+    "M2": 0.838125,
+    "M_far": 0.2002161180108184,
+    "n50": 20.437927663734115,
+    "n90": 18.2834008097166,
+    "WIDTH_2": 2.154526854017515
+   },
+   "SHRINK": {
+    "a": {
+     "13": 1.0,
+     "14": 1.0,
+     "15": 1.0,
+     "16": 1.0,
+     "17": 0.991,
+     "18": 0.718,
+     "19": 0.288,
+     "20": 0.165,
+     "21": 0.119,
+     "22": 0.141,
+     "23": 0.13,
+     "24": 0.121
+    },
+    "M2": 0.5405,
+    "M_far": 0.12775,
+    "n50": 18.506976744186048,
+    "n90": 17.333333333333332,
+    "WIDTH_2": 1.1736434108527156
+   },
+   "H_add_constant_growth": {
+    "a": {
+     "13": 1.0,
+     "14": 1.0,
+     "15": 1.0,
+     "16": 1.0,
+     "17": 0.9985717520289163,
+     "18": 0.9716474664120576,
+     "19": 0.8305107549614676,
+     "20": 0.5511209302325583,
+     "21": 0.2467796630721462,
+     "22": 0.13116148155925622,
+     "23": 0.1116069425851571,
+     "24": 0.11000000000000001
+    },
+    "M2": 0.83796272590875,
+    "M_far": 0.14988702180413987,
+    "n50": 20.167972390696573,
+    "n90": 18.50764585397854,
+    "WIDTH_2": 1.6603265367180313
+   }
+  }
  },
  "X2": {
-  "outcome": "UNREAD",
-  "label": "UNREAD (pending; never a pass)"
+  "outcome": "FAIL",
+  "label": "FAIL: SD2-C2 in 1 of 2 lineages",
+  "failing": {
+   "s2": "r1: s216_r1_s2: FAILURE (FT-DIVERGED; rule b) | UNLABELLED (censored) | M 0.688 | STOP 15 | K'-BEYOND 0.089 | round-2 condition False"
+  }
  },
  "SD2_SELF_X2": null,
  "BASELINES": {
