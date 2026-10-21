@@ -1,0 +1,16 @@
+{
+ "official_self": [
+  0.8741470811220622,
+  0.8779378316906747,
+  0.866565579984837
+ ],
+ "n": 1319,
+ "def": "A1 = agree(off, off_22030), A2 = agree(off, off_22031), A3 = agree(off_22030, off_22031); agree = equal parsed predictions (None == None agrees), U10",
+ "sources": {
+  "eval_gcs": "boxes\\runs_fsq\\gsm_codi_20ep_s1\\eval_gcs.json",
+  "shuffles": [
+   "scratch\\s220\\official_shuffle_22030.json",
+   "scratch\\s220\\official_shuffle_22031.json"
+  ]
+ }
+}
