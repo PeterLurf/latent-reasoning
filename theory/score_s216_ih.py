@@ -6,6 +6,8 @@ File contract: boxes/runs_fsq/<run>/eval_khorizon.json (boxes/vbank_diag.part_kh
    "gate_IH0": {"intact_k24_vs_eval_vb": {n: {"equal": bool, "khorizon", "eval_vb"}}, "k24_vs_eval_hist24": {arm: {n: share}}, "bitwise": bool,
                 "min_share_vs_hist24": float}, "card": str, "eval_bs": int}
 G-IH0: bitwise, else (every |intact K' 24 - eval_vb acc_k['24']| <= 0.002 and min share vs eval_hist24 >= 0.998) with the card recorded; else UNREADABLE.
+Gate amendment (216-14, before output): on the reference card / bs (eval_vb's; RTX 3070, bs 32 for all six) G-IH0 is bitwise only.
+Delta of a self / ctrl pair is read at their common max K'.
 Censor: k_max < 48 in a self model -> UNREADABLE. Missing file -> pending (215-7).
 Reading (lineages: s1 self FT-SELF, R2-s1 vs ctrl FT-CTRL; s2 self R1-s2 vs ctrl D3-T s2). Delta(m, n) = intact a(n, 24) - a(n, Kmax), Kmax = the largest
 read K' (64 unless censored); SE(m, n) = the paired (McNemar) SE of that difference over the n's items.
@@ -34,10 +36,14 @@ def jl(p):
         return None
 
 
-def gate(ev):
+def gate(ev, ref=None):
+    """ref = (card, eval_bs) of the run's eval_vb.json. Note 216-14 amendment: on the reference card and bs the gate is BITWISE only; the agreement
+    tolerance binds only when the card or bs differs (all six references are RTX 3070, bs 32)."""
     g = ev.get("gate_IH0") or {}
     if g.get("bitwise") is True:
         return True, "bitwise"
+    if ref is None or (ev.get("card"), ev.get("eval_bs")) == tuple(ref):
+        return False, "G-IH0 failed (not bitwise on the reference card / bs %s)" % (ref,)
     vb = g.get("intact_k24_vs_eval_vb") or {}
     d = [abs(v["khorizon"] - v["eval_vb"]) for v in vb.values() if isinstance(v, dict) and v.get("eval_vb") is not None and v.get("khorizon") is not None]
     sh = g.get("min_share_vs_hist24")
@@ -50,8 +56,8 @@ def ok_vec(ev, arm, n, k):
     a = np.asarray(ev["items"][arm][str(n)][str(k)]); y = np.asarray(ev["items"]["y"][str(n)]); return (a == y).astype(np.int64)
 
 
-def delta(ev, n):
-    km = max(int(k) for k in ev["ks"]); o24, ok = ok_vec(ev, "intact", n, 24), ok_vec(ev, "intact", n, km); N = len(o24)
+def delta(ev, n, km=None):
+    km = km or max(int(k) for k in ev["ks"]); o24, ok = ok_vec(ev, "intact", n, 24), ok_vec(ev, "intact", n, km); N = len(o24)
     b = int(((o24 == 1) & (ok == 0)).sum()); c = int(((o24 == 0) & (ok == 1)).sum()); d = (b - c) / N
     se = math.sqrt(max(0.0, (b + c) - (b - c) ** 2 / N)) / N
     return d, se, km
@@ -73,7 +79,7 @@ def score(runs=RUNS):
         ev = jl(os.path.join(runs, r, "eval_khorizon.json"))
         if ev is None:
             out["models"][r] = {"status": "pending (eval_khorizon.json)"}; continue
-        okg, why = gate(ev)
+        vb = jl(os.path.join(runs, r, "eval_vb.json")); okg, why = gate(ev, (vb.get("card"), vb.get("eval_bs")) if vb else None)
         out["models"][r] = {"gate": why, **describe(ev)}
         if not okg:
             out["models"][r]["status"] = "UNREADABLE"; continue
@@ -91,7 +97,8 @@ def score(runs=RUNS):
         for s in L["self"]:
             e = E[s]
             for n in (1, 2, 3):
-                ds, ses, km = delta(e, n); dc, sec, _ = delta(c, n); exc = ds - dc
+                kc = min(max(e["ks"]), max(c["ks"]))                     # a common K' per compared pair (Audit's G-D condition)
+                ds, ses, km = delta(e, n, kc); dc, sec, _ = delta(c, n, kc); exc = ds - dc
                 hit = exc >= DRIFT and ds >= 2 * ses
                 rows.append({"lineage": l, "self": s, "n": n, "delta_self": ds, "se_self": ses, "delta_ctrl": dc, "excess": exc, "kmax": km, "drift": hit})
                 if hit:
@@ -155,6 +162,16 @@ def fixtures():
     o = run(e); res.append(("level offset < 0.99 at n 5, no trend -> NEITHER", o["verdict"] == "NEITHER", o["verdict"]))
     e = dict(base); e["s215_ftself_s1"] = _ev(flat, bitwise=False, seed=13)
     o = run(e); res.append(("G-IH0 fail -> UNREADABLE", o["verdict"].startswith("UNREADABLE (G-IH0"), o["verdict"]))
+    d_ = tempfile.mkdtemp(); _put(d_, base)
+    for r in ALL:
+        json.dump({"card": "fixture", "eval_bs": 32}, open(os.path.join(d_, r, "eval_vb.json"), "w"))
+    ev_ = _ev(flat, bitwise=False, seed=17); ev_["eval_bs"] = 32; ev_["gate_IH0"].update({"min_share_vs_hist24": 0.999, "intact_k24_vs_eval_vb": {"3": {"khorizon": .99, "eval_vb": .99}}})
+    json.dump(ev_, open(os.path.join(d_, "s215_ftself_s1", "eval_khorizon.json"), "w")); o = score(d_)
+    res.append(("same card / bs, not bitwise, 0.999 share -> UNREADABLE", o["verdict"].startswith("UNREADABLE (G-IH0"), o["verdict"]))
+    ev_["eval_bs"] = 16; json.dump(ev_, open(os.path.join(d_, "s215_ftself_s1", "eval_khorizon.json"), "w")); o = score(d_)
+    res.append(("other bs, 0.999 share -> tolerance admits", o["models"]["s215_ftself_s1"]["status"] == "READ", o["models"]["s215_ftself_s1"]["gate"]))
+    e = dict(base); e["s215_ftself_s1"] = _ev(decay(0.002), seed=18); e["s215_ftctrl_s1"] = _ev(flat, kmax=48, seed=19)
+    o = run(e); res.append(("common K' per pair (ctrl k_max 48)", all(r_["kmax"] == 48 for r_ in o["rows"] if r_["self"] == "s215_ftself_s1"), [r_["kmax"] for r_ in o["rows"]][:3]))
     e = dict(base); e["s216_r1_s2"] = _ev(flat, kmax=32, seed=14)
     o = run(e); res.append(("k_max 32 -> UNREADABLE", o["verdict"] == "UNREADABLE (k_max < 48)", o["verdict"]))
     e = dict(base); e["s216_r2_s1"] = None
