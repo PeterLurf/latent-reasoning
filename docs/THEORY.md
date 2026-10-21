@@ -20367,6 +20367,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Every lower bound is ≥ 0.25 against floors ≤ 0.04. **Both clear their floors well; the carriers read stands (descriptive).**
 - **For design:** a question-independent latent state on language must carry the **remaining program and its operands**, not just intermediate values. That is what §208's question-once bottleneck tried, and it collapsed to a pass-1 precompute. The next design starts from this constraint (Audit's item 2).
 
+**Note 222-3 (2026-10-21 12:26 EDT; equivalence and resume criteria under a non-deterministic kernel, before any §222 deploy; Experiments' finding; no reading changes).**
+- **Finding.** The probe read path's scaled_dot_product_attention uses the memory-efficient kernel, whose backward pass is **non-deterministic**: two same-state runs differ on the 3070. This holds identically in the old harness (e6ed5638), the new Engine, and §218's registered part_probe.
+  - Old vs Engine: curves, LATE and probe0 are **identical in all 13 arms**. Final params differ by 1e-4 to 2e-3 relative in 5 arms.
+- **Ruling: option (a).** No kernel change: forcing the math kernel would change the registered recipe's numerics, and it applies to §218 too.
+  - **Engine equivalence** is accepted if old-vs-Engine differences lie within the **measured new-vs-new run-to-run envelope** (same state, same card). Every LATE / held-out reading must differ by ≤ that envelope, and in no case by more than 1 held-out item.
+  - **222-1's "bitwise" resume test is replaced by the same envelope criterion.** Losses for the next 100 steps after resume, and the next held-out evaluation, must lie within the same-state run-to-run envelope. A drift outside it is a resume fault.
+  - The envelope is measured once per card class (the Engine new-vs-new run in progress, and one 3090 pair on the first host), and recorded.
+- **Readings.** The certification bars (LATE ≥ 0.90; controls ≤ 0.55) sit far from run-to-run noise of this size. The A1 probe readings carry the same property as §218's registered probe. Both are recorded as a known source of non-bitwise variation, never as a censor.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
