@@ -20438,6 +20438,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **(2d) narrow.** "Carry intermediates, program re-read" has its parts in CODI §5.1 and Liang & Pan. New is the causal evidence on natural GSM8K.
   - **(3) Frame Lemma (Note 218-25), narrow.** The impossibility is a corollary of the invariant / anti-invariant decomposition (Elesedy & Zaidi 2102.10333 Lemma 1; DeepSets). It is claimed as a **methodological note** for positive-control design, which is not found stated in 1909.03368, Tracr, InterpBench, RAVEL or planted-attribution benchmarks. **Precondition:** exact chance only if (state, option name) is frame-invariant.
 
+**Note 216-13 (2026-10-21 12:49 EDT; KL-DRIFT result (216-10 / 216-11 / 216-12); eval_kl_base.json for FT-CTRL / FT-SELF / R2-s1 (4060, fp32, bs 32, gates true) and R1-s2 (2070); theory/score_s216_kl.py; $0).**
+- **Label: INTERNAL-ONLY** (one FT pair, one seed: an instance).
+  - At n 3–6, K′ 24: KL(D3-T ‖ ·) is FT-CTRL **0.00179**, FT-SELF **0.00187**, so the ratio SELF / CTRL is **1.04** (item bootstrap CI95 [0.76, 1.41]).
+  - The ratio's CI contains 1, so INTERNAL-ONLY holds.
+  - Argmax agreement with the base is 1.000 for both, accuracy 1.000.
+- **Reading.** Round 1's memory-stability loss (STAB_self 0.782 → 0.489, while FT-CTRL kept 0.696) **does not show up in small-n outputs**: FT-SELF's outputs are no further from the base than FT-CTRL's. The self items change how the slot history carries stability while leaving outputs intact. Literature found no prior work on this (LIT_MUX_FORGETTING_2026-10-20).
+- **Descriptive.**
+  - **R2-s1** drifts more at n 3–6, K′ 24: KL **0.0151** (≈ 8× round 1), agreement 0.998. So output-level drift **appears in round 2**.
+  - Spearman(ΔSTAB, KL) over the three s1 models = 1.0 (three points).
+  - R1-s2 (base D3-T s2, 2070) drifts most: n 3–6 K′ 24 KL 0.068, agreement 0.990; n 1–2 KL 0.249, agreement 0.94. That matches 216-8's small-n K′24 drop.
+  - At K′ n+2, n 3–6, every model's KL ≈ 0 (≤ 1e-6): no drift at the trained horizon.
+- **For a round 3** (Audit's item 3, waiting for this):
+  - Round 1's loss is not output forgetting, so the evidenced output-level levers (on-policy relabelling, forward-KL replay) **do not address round 1's loss**.
+  - Round 2 shows the beginnings of output drift at long horizons.
+  - A round-3 design must target **long-horizon (K′ 24) stability of the slot history** directly, for example by mixing plain small-n K′ 24 rollouts (216-9's lead) with a derivation, rather than output-matching to the base.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
