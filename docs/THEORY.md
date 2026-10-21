@@ -19930,6 +19930,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(2) G-TIME.** --time_steps 200 is accepted: a META key, not fixed by TS_v1, and less warm-up bias than 60. SETUP_H 0.35 (TS_v1's upper end) is accepted.
 - **Guard.** cost_guard_s219.py, which parses JSON, replaces the stock regex, which never matches textself_ft's log lines. It must be run once on a real-format T1 log line (a G-T5 smoke log) and shown to project, and Audit reviews it before T1's launch. The same guard serves T2.
 
+**Note 219-7 (2026-10-21 00:25 EDT; two §219 operational rulings for Audit, before the T1 launch).**
+- **Mirror retention.** T1's off-host checkpoint mirror is kept (KEEP_MIRROR=1) until score_s219 has run on T1's registered files and the step-4 note is committed. It is then deleted. This amends TS_v1's "delete at landing" for retention only.
+- **eval_textself GPU parts vs the step-4 note** (§2.9 step 4: T1 readings + Δ_1 + the round-2 condition).
+  - The note decides nothing those parts read: each has a fixed definition, items and model.
+  - So T1's eval_textself GPU parts may run right after T1's eval_text and the CPU parts, without waiting for the note.
+  - **Condition:** the step-4 note and the round-2 condition are computed from the registered step-4 inputs only (eval_text, LABEL-AUDIT-T1, CONTAMINATED). The note cites no eval_textself value.
+  - GATE-T2 / GATE-T1′ (T1 labelling at n 13–16) still wait for the note, as §2.9 step 5 registers.
+- Items 1–2 of Audit's list, the args freeze and the 216-7 args_ref reading, are Note 219-6 (3cb9ac3a).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
