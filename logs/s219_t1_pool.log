@@ -1,0 +1,12 @@
+EXCL {'test_n30': 29407, 'serial': 2200, 's213_37_n9_24': 16000, 'precond_23180': 2400, 'precond_23187': 2400, 'gt18_23195': 1000, 'gates:boxes/runs_fsq/s215_gate1/gate_items.json': 8000, 'gates:boxes/runs_fsq/s215_gate1_rebuild/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate1_s2/gate_items.json': 8000, 'gates:boxes/runs_fsq/s216_gate2_s1/gate_items.json': 16000, 'gates:boxes/runs_fsq/s219_gate_t1_s1/gate_items.json': 8000, 'pool:boxes/runs_fsq/s216_pool_r1_s2/pool_r1.jsonl': 440000} union 533407 19 s
+WINDOW W1 labeller boxes/runs_fsq/s170_cot_s1 -> TF-GREEDY (G-T16 EQUIV PASS, primary labeller)
+[W1020 22:40:42.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 627048448 bytes (free: 0, total: 8589410304).
+POOL n 9 window W1 kept 97000 labelled 98304 keep 0.9998 draws 98304 excl_hits 0 dup 0 965 s
+[W1020 22:55:46.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 706740224 bytes (free: 0, total: 8589410304).
+POOL n 10 window W1 kept 97000 labelled 98304 keep 0.9980 draws 98304 excl_hits 0 dup 0 2065 s
+[W1020 23:14:08.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 788529152 bytes (free: 0, total: 8589410304).
+POOL n 11 window W1 kept 97000 labelled 98304 keep 0.9921 draws 98304 excl_hits 0 dup 0 3370 s
+[W1020 23:35:50.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 822083584 bytes (free: 0, total: 8589410304).
+[W1020 23:35:54.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 1 while trying to allocate 903872512 bytes (free: 52428800, total: 8589410304).
+POOL n 12 window W1 kept 97000 labelled 102400 keep 0.9754 draws 102400 excl_hits 0 dup 0 4947 s
+DONE 388000 b2cbc8a6acd4713d 4950
