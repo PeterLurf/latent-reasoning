@@ -20443,17 +20443,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - At n 3–6, K′ 24: KL(D3-T ‖ ·) is FT-CTRL **0.00179**, FT-SELF **0.00187**, so the ratio SELF / CTRL is **1.04** (item bootstrap CI95 [0.76, 1.41]).
   - The ratio's CI contains 1, so INTERNAL-ONLY holds.
   - Argmax agreement with the base is 1.000 for both, accuracy 1.000.
-- **Reading.** Round 1's memory-stability loss (STAB_self 0.782 → 0.489, while FT-CTRL kept 0.696) **does not show up in small-n outputs**: FT-SELF's outputs are no further from the base than FT-CTRL's. The self items change how the slot history carries stability while leaving outputs intact. Literature found no prior work on this (LIT_MUX_FORGETTING_2026-10-20).
+- **Reading.** Round 1's memory-stability loss (STAB_self 0.782 → 0.489, while FT-CTRL kept 0.696) **does not show up in small-n outputs**: FT-SELF's outputs are no further from the base than FT-CTRL's. The self items change how the slot history carries stability while leaving outputs intact. **[Narrowed per Literature 838991c2]** This is consistent with reports that fine-tuning or distillation restructures circuits while preserving behaviour (Haskins & Adams 2505.10822; Wang 2502.11812; Rojas Nunez 2605.28860). There is no prior report for self-generated labels or a memory / long-horizon mechanism with base-KL equal to a gold-only fine-tune (one seed, one pair).
 - **Descriptive.**
   - **R2-s1** drifts more at n 3–6, K′ 24: KL **0.0151** (≈ 8× round 1), agreement 0.998. So output-level drift **appears in round 2**.
   - Spearman(ΔSTAB, KL) over the three s1 models = 1.0 (three points).
   - R1-s2 (base D3-T s2, 2070) drifts most: n 3–6 K′ 24 KL 0.068, agreement 0.990; n 1–2 KL 0.249, agreement 0.94. That matches 216-8's small-n K′24 drop.
   - At K′ n+2 **within the trained range (n ≤ 8)** every model's KL ≈ 0 (max 2.3e-3; ≤ 1e-6 at n 3–6), so there is no drift at the trained horizon there. At n 9–16 the K′ n+2 KL is large (1.8–9.6), because the base fails there (corrected per Audit's reproduction).
 - **Audit-reproduced** from the four raw files (independent script).
+- **Caveats (Literature).**
+  - KL ≈ 0.002 with agreement and accuracy at 1.000 is at ceiling, so equal KL is weak evidence.
+  - Shenfeld's RL's-Razor predictor is KL on the new-task distribution (n 9–12 here), where SELF and CTRL differ in competence (acc 0.86 vs 0.28), so it is not comparable as a forgetting statistic. This is descriptive only.
 - **For a round 3** (Audit's item 3, waiting for this):
   - Round 1's loss is not output forgetting, so the evidenced output-level levers (on-policy relabelling, forward-KL replay) **do not address round 1's loss**.
   - Round 2 shows the beginnings of output drift at long horizons.
   - A round-3 design must target **long-horizon (K′ 24) stability of the slot history** directly, for example by mixing plain small-n K′ 24 rollouts (216-9's lead) with a derivation, rather than output-matching to the base.
+  - **Candidate levers** (Literature 838991c2, empirics):
+    - freeze the bank write / read parameters in the self round (Zheng 2501.13453);
+    - an LDIFS-style feature distance to the base on the slot-history states at K′ 24 on old depths (Mukhoti 2308.13320; needs a Goodhart analysis);
+    - W_V-only updates with key / query addressing fixed (Lee, Sohn & Lee 2602.23197, theorem + empirics).
+    - 216-9's small-n K′ 24 rollout mix has no direct prior.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
