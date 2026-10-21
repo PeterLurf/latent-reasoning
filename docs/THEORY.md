@@ -20491,6 +20491,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - G-W0 gated at d 3–8.
 - **Narrowing beyond §1's text, stated explicitly:** both mul_s factors are **≥ 2**. A factor of 1 is a no-op that an affine chain reproduces, and with factors ≥ 1 v1.1's affine solver still read 0.10–0.13 at d 3–6. §1 required only nonzero multiplicands, so this narrows the task distribution in order to close the shortcut §1 targets.
 - **G-W0 (i) adds a strong affine solver.** It treats every stated-operand step (including j = 0) as affine. Accuracy must be ≤ 0.10 at every d 3–8, and its representable share must be 0 by construction. The panel is re-run on v1.2 and the test sha re-pinned (v1.1 5f260b5a… is superseded) before DIRECT.
+- **v1.2 done (Experiments, committed).**
+  - The forced mul_s has j ∈ 1..t−2, t ∈ 3..d, factors ≥ 2.
+  - Strong affine solver: accuracy 0.0 and representable share 0.0 at every d 3–8, on train and test.
+  - G-W0 PASS: all other rules ≤ 0.05; solver invariants 0 over every R_t; collisions 0.
+  - j = 1 share ≤ 0.79 where j has a choice.
+  - **Test sha 652635f84ef07ad9…** (registered for §223).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
