@@ -84,7 +84,7 @@ def cert_model(c, m, s2=False):
     return not why, why, tab
 
 
-def score(gdir=G):
+def score(gdir=G, with_a1=True):
     out = {"section": 222, "registered": "PS_v1.md at 7174fc3b"}
     m, flag, mp = m_rule(jl(os.path.join(gdir, "m_rule.json")))
     out["m_rule"] = {"m": m, "flag": flag, "problems": mp}
@@ -109,7 +109,89 @@ def score(gdir=G):
     else:
         out["choice"] = "NO CERTIFIABLE PROBE (A1's probe readings stay §218's UNREADABLE)"
     out["flag"] = flag
+    if with_a1:
+        out["A1"] = score_a1(out["choice"]) if out["choice"] in ("S1", "S2") else {"status": "UNREAD / pending (%s)" % out["choice"]}
     return out
+
+
+# ------------------------------------------------------------------ part 2: A1 readings (PS_v1 §4, E2)
+def valid_s(ev):
+    """PROBE-VALID-S(t), t 0..2: plant_s lin and cexor acc >= 0.90 and the per-t K2 guard (anti_lin >= 0.985, cexor rule >= 0.97). -> {t: (bool, why)}"""
+    out = {}
+    for t in (0, 1, 2):
+        ps, kg, why = (ev.get("plant_s") or {}).get(str(t)), (ev.get("k2_guard") or {}).get(str(t)), []
+        if ps is None or kg is None:
+            out[t] = (False, "plant_s / k2_guard t%d missing" % t); continue
+        if not (ps["lin"]["acc"] >= 0.90 - EPS and ps["cexor"]["acc"] >= 0.90 - EPS):
+            why.append("PLANT-S lin %.3f / cexor %.3f < 0.90" % (ps["lin"]["acc"], ps["cexor"]["acc"]))
+        if not (kg["anti_lin"] >= 0.985 - EPS and kg["cexor"] >= 0.97 - EPS):
+            why.append("plant at ceiling on A1 (K2 lin %.4f / cexor %.4f)" % (kg["anti_lin"], kg["cexor"]))
+        out[t] = (not why, "; ".join(why) or None)
+    return out
+
+
+def readings_s(ev, P_acc, c1, l0, S):
+    """PROBE-GAIN-S and SERIAL-ONSET-S on A1 with the selected S (score_s218's formulas; PROBE(t) from the §222 file)."""
+    import score_s218 as s218
+    o = {}; pr = s218.p_probe(ev); vs = valid_s(ev)
+    wp = s218.bad_part(P_acc, "acc") or s218.bad_part(pr, "probe")
+    if (ev.get("meta") or {}).get("set") != S:
+        wp = "eval_lvb_s222 set %s != selected %s" % ((ev.get("meta") or {}).get("set"), S)
+    band = (c1 or {}).get("band") or []
+    w = ("C1 band unreadable: %s" % (c1 or {}).get("why") if not (c1 or {}).get("readable") else
+         "EMPTY-C1-BAND (band %s)" % band if len(band) < 2 else wp)
+    gain = accp = p1 = p12 = None
+    if w is None:
+        accp = s218.mean(s218.acc_items(P_acc, band)); p1 = s218.probe_pooled(pr, 1, band); p12 = s218.probe_pooled(pr, 12, band); gain = accp - p1
+        if not vs[1][0]:
+            w = "PROBE-INVALID-S(1) (%s)" % vs[1][1]
+        elif p12 < accp - 0.05 - EPS:
+            w = "PROBE-INVALID (final state on the band: PROBE(12) %.4f < ACC %.4f - 0.05)" % (p12, accp)
+    o["PROBE_GAIN_S"] = s218.rd(s218.ge(gain, 0.35), w, gain=gain, band=band, acc_band=accp, probe1_band=p1, probe12_band=p12)
+    ON, slope, never = {}, None, []
+    w = wp or ("G-L0-failed band %s" % s218.failed_in(l0, range(4, 9)) if s218.failed_in(l0, range(4, 9)) else None)
+    if w is None:
+        for D in range(4, 9):
+            vals = {t: pr["acc"].get(t, {}).get(D) for t in s218.PROBE_GRID}
+            ON[D] = next((t for i, t in enumerate(s218.PROBE_GRID) if all(s218.ge(vals[u], 0.90) for u in s218.PROBE_GRID[i:])), None)
+        never = [D for D in ON if ON[D] is None]
+        if not never:
+            slope = s218.ols(list(ON), [ON[D] for D in ON])
+        inv = [t for t in (0, 1, 2) if not vs[t][0]]
+        p12_48, acc48 = s218.probe_pooled(pr, 12, range(4, 9)), s218.mean(s218.acc_items(P_acc, range(4, 9)))
+        if inv:
+            w = "PROBE-INVALID-S(%s)" % inv
+        elif p12_48 < acc48 - 0.05 - EPS:
+            w = "PROBE-INVALID (final state D 4-8: PROBE(12) %.4f < ACC %.4f - 0.05)" % (p12_48, acc48)
+    o["SERIAL_ONSET_S"] = s218.rd(bool(ON) and not never and s218.ge(slope, 0.6) and ON[8] - ON[4] >= 3, w, ON=ON, slope=slope,
+                                  never_reached=never, span_8_4=(ON[8] - ON[4]) if ON and not never else None)
+    o["PROBE_VALID_S"] = {t: {"valid": v[0], "why": v[1]} for t, v in vs.items()}
+    o["DIAG_ALIGN"] = ev.get("diag_align")                                   # descriptive (read only with the probe parts)
+    return o
+
+
+NONPROBE = ("DEEP_L", "SERIAL_STEP_L", "CF_L", "NO_CLOCK_L", "NO_PRECOMPUTE_L")
+
+
+def score_a1(choice):
+    """VB-C1-L-S on A1: score_s218's non-probe components (as read) + PROBE-GAIN-S + SERIAL-ONSET-S."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import score_s218 as s218
+    ev = s218.jl(s218.CELL["a1"], "eval_lvb_s222.json")                  # checked FIRST: score_s218 (which reads DIRECT / A1) runs only once §222's A1 file exists
+    if ev is None:
+        return {"status": "pending (eval_lvb_s222.json missing)"}
+    out = s218.score(); a1 = out["cells"]["a1"]
+    if a1.get("status") not in ("SCORED", "FAIL"):
+        return {"status": "pending (score_s218 A1: %s)" % a1.get("status")}
+    P_acc = s218.p_acc(s218.jl(s218.CELL["a1"], "eval_lvb.json") or {})
+    rs = readings_s(ev, P_acc, a1.get("C1"), out.get("G_L0"), choice)
+    comp = {c: a1["READINGS"][c]["met"] for c in NONPROBE}
+    comp["PROBE_GAIN_S"] = rs["PROBE_GAIN_S"]["met"]; comp["SERIAL_ONSET_S"] = rs["SERIAL_ONSET_S"]["met"]
+    vb = all(comp.values()) and not a1.get("censored")
+    return {"status": "SCORED", "set": choice, "VB_C1_L_S": vb, "components": comp, "readings": rs, "censored": a1.get("censored"),
+            "provenance": "§218 non-probe readings as score_s218 reads them; PROBE(t) from eval_lvb_s222.json under %s" % choice,
+            "wording": ("under a certified probe (%s; lin and content-equivariant xor plants certified on two reference models and on A1; plant strength by an "
+                        "oracle rule), ... one seed; a successor reading to §218, whose VB-C1-L is not met by a control-design flaw; never C2 / C4" % choice) if vb else None}
 
 
 # ------------------------------------------------------------------ fixtures
@@ -145,7 +227,7 @@ def fixtures():
         d = tempfile.mkdtemp()
         for k, v in files.items():
             json.dump(v, open(os.path.join(d, k + ".json"), "w"))
-        return score(d)
+        return score(d, with_a1=False)
     mr = _mrule(good)
     res.append(("m rule picks 3 (cexor < 0.985 at 1.5 / 2)", mr["m"] == "3", mr["m"]))
     o = run({"m_rule": mr, "cert_untrained": _cert("3"), "cert_ref": _cert("3")}); res.append(("S1 certifies", o["choice"] == "S1", o["choice"]))
@@ -165,6 +247,29 @@ def fixtures():
     o = run({"m_rule": mr, "cert_untrained": _cert("3")}); res.append(("ref missing -> pending", o["choice"].startswith("pending (S1"), o["choice"]))
     o = run({}); res.append(("m_rule missing -> pending", o["choice"].startswith("pending (m_rule"), o["choice"]))
     o = run({"m_rule": mr, "cert_untrained": _cert("3", drop="shuffled_t2"), "cert_ref": _cert("3")}); res.append(("missing arm fails", o["cert"]["S1"]["CERT"] is False, o["cert"]["S1"]["untrained"]["why"]))
+    # part 2: readings_s on synthetic A1 inputs (score_s218 helpers only; no real file is read)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import score_s218 as s218
+    Ds = list(range(3, 13))
+    def ev222(prob, lin=0.95, cex=0.93, k2l=0.99, k2c=0.98, sset="S1"):
+        pr = {}
+        for t_ in s218.PROBE_GRID:
+            ab, it = {}, {}
+            for D in Ds:
+                k = int(round(prob(t_, D) * 100)); lst = [1] * k + [0] * (100 - k); ab[str(D)] = sum(lst) / 100; it[str(D)] = lst
+            pr[str(t_)] = {"acc_by_D": ab, "items": it, "steps_run": 10000, "curve": [[8000, 0.9], [10000, 0.9]]}
+        return {"meta": {"set": sset}, "probe": pr, "plant_s": {str(t_): {"lin": {"acc": lin}, "cexor": {"acc": cex}} for t_ in (0, 1, 2)},
+                "k2_guard": {str(t_): {"anti_lin": k2l, "cexor": k2c} for t_ in (0, 1, 2)}}
+    P_acc = {"void": None, "missing": [], "items": {str(D): {str(D + 2): [1] * 97 + [0] * 3} for D in Ds}}
+    c1 = {"readable": True, "band": [5, 6, 7, 8]}
+    serial = lambda t_, D: 0.97 if t_ >= D else 0.5
+    pre = lambda t_, D: 0.97 if t_ >= 1 else 0.5
+    r = readings_s(ev222(serial), P_acc, c1, None, "S1"); res.append(("serial model: GAIN-S + ONSET-S met", bool(r["PROBE_GAIN_S"]["met"] and r["SERIAL_ONSET_S"]["met"]), (r["PROBE_GAIN_S"]["status"], r["SERIAL_ONSET_S"]["status"])))
+    r = readings_s(ev222(pre), P_acc, c1, None, "S1"); res.append(("precompute model: GAIN-S not met", r["PROBE_GAIN_S"]["status"] == "NOT MET", r["PROBE_GAIN_S"]["status"]))
+    r = readings_s(ev222(serial, cex=0.85), P_acc, c1, None, "S1"); res.append(("PLANT-S cexor < 0.90 -> UNREADABLE", r["PROBE_GAIN_S"]["status"].startswith("UNREADABLE (PROBE-INVALID-S"), r["PROBE_GAIN_S"]["status"]))
+    r = readings_s(ev222(serial, k2c=0.95), P_acc, c1, None, "S1"); res.append(("K2 ceiling guard -> UNREADABLE", "plant at ceiling" in r["PROBE_GAIN_S"]["status"], r["PROBE_GAIN_S"]["status"]))
+    r = readings_s(ev222(serial, sset="S2"), P_acc, c1, None, "S1"); res.append(("file set != selected -> UNREADABLE", r["PROBE_GAIN_S"]["status"].startswith("UNREADABLE"), r["PROBE_GAIN_S"]["status"]))
+    r = readings_s(ev222(serial), P_acc, {"readable": True, "band": [8]}, None, "S1"); res.append(("C1 band < 2 depths -> UNREADABLE", r["PROBE_GAIN_S"]["status"].startswith("UNREADABLE (EMPTY-C1-BAND"), r["PROBE_GAIN_S"]["status"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(r[1] for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
