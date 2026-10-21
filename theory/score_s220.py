@@ -82,9 +82,18 @@ def score_model(key, f):
     if f is None:
         return {"status": "pending (missing eval_gcs.json)"}
     o = {"meta": f.get("meta"), "status": "ok"}; why = []
-    g = f["gate"]
-    if not (g["agree"] >= 0.97 - EPS and abs(g["acc_bs1"] - g["acc_official"]) <= 0.025 + EPS):
-        why.append("G-R (agree %.3f, |dacc| %.3f)" % (g["agree"], abs(g["acc_bs1"] - g["acc_official"])))
+    g = f["gate"]; oo = g.get("official_self")                            # Note 220-3 + addendum: [A1, A2, A3] official-vs-official agreements
+    C = min(oo) if oo else None; o_gate = {"C": C, "official_self": oo}
+    dacc_ok = abs(g["acc_bs1"] - g["acc_official"]) <= 0.025 + EPS
+    if C is not None and C < 0.97 - EPS:                                  # amended G-R (post-failure gate amendment, known-answer, no arm read)
+        o_gate["rule"] = "amended (C < 0.97): agree >= C - 0.03"
+        if not (dacc_ok and g["agree"] >= C - 0.03 - EPS):
+            why.append("G-R amended (agree %.3f vs C - 0.03 = %.3f, |dacc| %.3f)" % (g["agree"], C - 0.03, abs(g["acc_bs1"] - g["acc_official"])))
+    else:
+        o_gate["rule"] = "registered (agree >= 0.97)" + ("" if C is None else "; C %.3f >= 0.97" % C)
+        if not (g["agree"] >= 0.97 - EPS and dacc_ok):
+            why.append("G-R (agree %.3f, |dacc| %.3f)" % (g["agree"], abs(g["acc_bs1"] - g["acc_official"])))
+    o["G_R"] = o_gate
     if key == "s0_codi20" and abs(g["acc_bs1"] - ACC_CODI20) > 0.025 + EPS:
         why.append("G-R CODI20 acc %.3f vs 0.379" % g["acc_bs1"])
     if key == "s0_zen_gpt2" and abs(g["acc_bs1"] - ACC_ZEN_G1P) > 0.025 + EPS:     # Note 220-2 (b): format gate vs §209 G1'
@@ -189,6 +198,12 @@ def fixtures():
     res = []
     for name, kw, exp in cases:
         got = score_model("fixture", _mk(**kw))["label"]; res.append((name, got.startswith(exp), got))
+    a_ = _mk(0.6, 0.1, 0.04, 0.05, agree=0.667); a_["gate"]["official_self"] = [0.70, 0.68, 0.72]
+    res.append(("amended G-R pass (C 0.68, agree 0.667 >= 0.65)", score_model("fixture", a_)["label"] == "CARRIER-PORTS", score_model("fixture", a_)["label"]))
+    a_["gate"]["official_self"] = [0.80, 0.85, 0.82]
+    res.append(("amended G-R fail (C 0.80, agree 0.667 < 0.77)", score_model("fixture", a_)["label"].startswith("UNREAD (G-R amended"), score_model("fixture", a_)["label"]))
+    a_["gate"]["official_self"] = [0.98, 0.99, 0.975]
+    res.append(("C >= 0.97 -> registered rule, UNREAD", score_model("fixture", a_)["label"].startswith("UNREAD (G-R (agree"), score_model("fixture", a_)["label"]))
     z = _mk(0.6, 0.1, 0.04, 0.05); z["gate"]["acc_bs1"] = z["gate"]["acc_official"] = 0.38
     res.append(("zen format gate fail -> UNREAD", score_model("s0_zen_gpt2", z)["label"].startswith("UNREAD (G-R zen"), score_model("s0_zen_gpt2", z)["label"]))
     z["gate"]["acc_bs1"] = z["gate"]["acc_official"] = 0.43
