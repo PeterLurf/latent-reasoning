@@ -19945,6 +19945,40 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - Experiments is adding a per-attempt directory guard to ckpt_mirror.py.
 - **Audit:** this breaches condition 6 of Audit's 218-15 approval ("keep until scored") for that one file. It was overwritten at 00:30:46. No reading, cell or spend is affected, and the guard renames an existing mirror aside before writing.
 
+**Note 218-22 (2026-10-21 01:00 EDT; ROUTING PRE-NOTE for 218-18, the PLANT fix; mechanical; committed before any k3anti / k3antixor / k2anti / k2antixor / trained-coda / name-swap output is read (Audit). Known so far: K1 > 0; K2 symmetric 0.910 / 1.000; K3 symmetric chance at ×1 / ×10 / ×100; OVERFIT-32 shows sound wiring (train acc 1.0 in 10 steps, param identity true); the untrained per-item name prior |sA − sB| ≈ 5.4 against a planted shift of 0.22 at ×10).**
+
+**Definitions.**
+- **anti** = antisymmetric plant: o1 row += ε(2z−1)u, o2 row −= ε(2z−1)u. XOR form: ± [ε(2z1−1)u + ε(2z2−1)u2], target z1 ⊕ z2.
+- **LATE(arm)** = the mean of an arm's held-out accuracy at its last three evaluations (steps 1,500 / 1,750 / 2,000) under the registered recipe (AdamW 1e-4, bs 64, rng 22501 / 22551–22554).
+- **m-rule(model)** = the smallest m ∈ {1.5, 2.0, 3.0} with K2-anti-lin (logreg on [r1, r2], held-out) ≥ 0.985 on that model's V_1. If none qualifies, m = 3.0 and it is flagged.
+
+**Routing (the first branch that holds is taken):**
+- **(i) UNTRAINED-ANTI** iff LATE(k3anti-lin, ×10) ≥ 0.90 ∧ LATE(k3antixor, ×10) ≥ 0.90 on the untrained LangSLVA.
+  - The G-L5 PLANT re-run then uses the anti plant at m = m-rule(untrained), all of t 0–2, lin and xor.
+  - If that re-run **passes** (lin and xor ≥ 0.90 at every t, and PROBE(0) 0.50 ± 0.03), the certificate is (i).
+  - If it fails, routing moves to (ii).
+- **(ii) TRAINED-REFERENCE-ANTI** iff LATE(K3-anti-lin, ×10) ≥ 0.90 ∧ LATE(K3-antixor, ×10) ≥ 0.90 on the **reference model**.
+  - The reference model is the **re-run G-L1c OVERFIT-256 gate model only**: same recipe, items sha 7973da5b…, 200 steps, saved to scratch/gate_s218/g_l1c_model/. It is never A1, DIRECT or any registered cell.
+  - Its 256 training items must be disjoint from A1's eval items, the SYM test set (sha / signature check against excl_sigs, recorded).
+  - The G-L5 PLANT re-run then runs on the reference model with the anti plant at m = m-rule(reference).
+  - If that re-run passes (lin and xor ≥ 0.90 at every t), the certificate is (ii). If it fails, routing moves to (iii).
+- **(iii) NO-PLANT-CERTIFICATE.**
+  - No plant definition is changed: G-L5 reads as registered (symmetric, ×1) and fails.
+  - Any recipe change requires its own Note with a derivation and the OC pair, committed before any A1 probe output. Otherwise A1's PROBE-VALID(t) is read as registered.
+
+**What changes in (i) / (ii), and what never changes.**
+- **Changes, in (i) / (ii) only:** the PLANT *definition* (anti, with that branch's m) applies identically to the G-L5 re-run **and** to every per-model PLANT read, including A1's PROBE-VALID(t) on A1 itself.
+  - Reason: the registered symmetric plant is invisible to the option-choice readout by construction, so it cannot certify a probe of an option-asymmetric quantity (PROBE(t) reads "which option is reachable"). The anti plant matches that quantity.
+- **Never changes, in any branch:**
+  - the 0.90 bar and the rule (both lin and xor ≥ 0.90 at t);
+  - the probe recipe (lr, steps, items, extension rule);
+  - every registered PROBE / FD reading and label;
+  - A1's PROBE-VALID(t), read on A1 itself, never replaced by the gate.
+- **The non-interference check applies in every branch:** on one existing model, the registered PROBE / FD keys must be bitwise identical with the plant code on and off.
+- **Descriptive only:** the name-prior-free variant (b) and K3-diag items 1–5. No branch reads them.
+- **The OC pair** for PROBE-VALID under the chosen plant is computed from that branch's K2-anti / K3-anti data and stated in 218-18.
+- **Supersedes** the symmetric m rule pre-stated for 218-18 (1.75 / 2.0).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
