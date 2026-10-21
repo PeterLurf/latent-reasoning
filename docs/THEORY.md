@@ -310,6 +310,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **CLOSED 10-21 at stage 0: UNREAD in both GPT-2 models (amended G-R: padded official semantics batch-dependent; pad-free bs-1 reproduces 0.379 / 0.4246 bitwise); stage 1 not triggered; arms SEALED (7c3822cf); successor to draft; $0** |
 | 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **CLOSED 10-21 (Audit-reproduced): G-FID pass (zen agree 1.000; CODI20 bitwise); both GPT-2 CONTEXT-BOUND (cache-swap follow 0.033 / 0.029 vs floor 0.008; state-swap 0.033 / 0.015; NECESSARY +0.25 / +0.32); donor-final not carried; SCIT's oracle-cf pattern reproduces (221-2, 221-3); stage 1 not triggered; $0** |
 | 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **m = 3 (oracle); CERT + A1 probe groups on 7 cloud 3090s approved (222-1, cap $20, proj ~$9.6); launches after §219 T2 admits; score_s222 ready** |
+| 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **build + gates; DIRECT first** |
 
 ## Live sections
 
@@ -18942,6 +18943,42 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Censoring.** No certifiable probe → UNREAD. PROBE-VALID-S failure or "plant at ceiling on A1" → UNREADABLE. Every §218 censor applies, and a missing file reads pending.
 
 **Order.** Registration → score_s222 + fixtures → certification (4060) → A1's probe parts under the selected S → score_s222. **Cost: $0.**
+
+## 223. PORT-STATE: a portable re-rooted latent state on a templated word task (Audit's item 2 after the user's 10-21 go-ahead, C1 on language, small tasks first; **auto-approved by Audit under the user's $30 standing rule, cap $20**; pre-registered 2026-10-21 12:32 EDT, before any §223 code, data or output)
+
+**Registered text.**
+- docs/research_portstate_2026-10-21/PS2_v1.md **at 54f63381** (v1 + Addendum A + Addendum B), frozen.
+- Reviews: PS2_draft → REVIEW_PS2 (Opus; 3 BLOCKER / 8 MAJOR, all addressed); the Literature novelty check (db7e503d) applied; v1_checks/oc_stubs (reading-logic stubs).
+
+**Premise.** Note 221-2 (floors cleared): CODI-GPT2's GSM8K latents carry intermediate values, while the program and remaining operands are re-read from the question.
+
+**Question.** Can a CODI-style latent carry the **remaining program and its operands** (the re-rooted problem R_j), so that a mid-chain swap makes the continuation finish the donor's problem while the recipient's conflicting question stays visible?
+
+**Design.**
+- **Task: NESTED-WORDS v1.**
+  - A forced dependency spine; at least one two-variable multiplication per program; bounded integers.
+  - 8 frames per operation (2 held out); distractor sentences.
+  - **G-W0:** a shortcut panel, plus a C1 band of d ≥ n\*+1 with DIRECT ≤ 0.50, at least 3 depths. The band is fixed from the DIRECT cell before any latent output.
+- **Model:** GPT-2 CODI loop, z_j ≙ R_j.
+  - **(M1)** a ≤ 2-layer decoder reads z_j only and emits R_j (λ = 1).
+  - **(M2)** an explicit answer bottleneck masking question content and `<bot>`.
+- **Cells (one seed each, 3090, 24k, bs 64):** DIRECT (first) → PS (M1 + M2), M1-only, M2-only.
+- **CurGate** advances on plain answer CE only. Entry steps are logged; a gap of more than 5k makes that attribution CONFOUNDED.
+
+**Primary.** **PORT-STATE** = DECODE-VAL ∧ COPY-CONTROL ∧ **PORT-FOLLOW** ∧ **BUDGET-FRONT** ∧ **ANSWER-ONSET**.
+- **PORT-FOLLOW:** PREFIX-SWAP(⌈d/2⌉) donor-final follow ≥ floor + 0.30. Pairs: graph-matched, exact-length, same-name, outcome-distinct; N ≥ 1,000.
+- Controls: LEAK-SEG ≤ 0.25, MARKER-SWAP ≤ floor + 0.05, SELF-SWAP bitwise.
+- **BUDGET-FRONT v1.1:** within-d centred, tie-aware Spearman(t, b\*) ≤ −0.6 and within-d slope ≤ −0.4.
+- **Labels:** UNREAD > M1-NOT-MET > PORT-STATE > PORT-RELAY > PORT-PRECOMPUTE > CARRIER > CONTEXT-BOUND > MIXED.
+- **Wording:** one seed, templated word task, never GSM8K / C4. "Needs both" attribution is descriptive only.
+
+**OC.** Joint P(pass | portable serial) 0.95; P(pass | none / relay / precompute) 0.00 (stubs). Prior P(PORT-STATE) ≈ 0.08–0.10. **A null is the likeliest outcome.**
+
+**Censoring.** v1 §7 (rule b; never-reached b\* = maximum budget + 1).
+
+**Gates.** F1–F3; Audit's G-D on the codi_port changes; per-term gradflow incl. the zero-grad bottleneck probe; plain-path smoke; frozen args with single-change diffs; driver per cell; cost_guard with marks to the final step; off-host checkpoints with a tested resume.
+
+**Cost.** Projected $6–16. **Family cap $20.** Realised at registration: $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
