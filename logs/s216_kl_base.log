@@ -1,0 +1,71 @@
+KL boxes/runs_fsq/s213_d3t_s1 n 16 34 s
+KL boxes/runs_fsq/s213_d3t_s1 n 15 66 s
+KL boxes/runs_fsq/s213_d3t_s1 n 14 96 s
+KL boxes/runs_fsq/s213_d3t_s1 n 13 124 s
+KL boxes/runs_fsq/s213_d3t_s1 n 12 150 s
+KL boxes/runs_fsq/s213_d3t_s1 n 11 175 s
+KL boxes/runs_fsq/s213_d3t_s1 n 10 196 s
+KL boxes/runs_fsq/s213_d3t_s1 n 9 217 s
+KL boxes/runs_fsq/s213_d3t_s1 n 8 236 s
+KL boxes/runs_fsq/s213_d3t_s1 n 7 253 s
+KL boxes/runs_fsq/s213_d3t_s1 n 6 268 s
+KL boxes/runs_fsq/s213_d3t_s1 n 5 281 s
+KL boxes/runs_fsq/s213_d3t_s1 n 4 292 s
+KL boxes/runs_fsq/s213_d3t_s1 n 3 301 s
+KL boxes/runs_fsq/s213_d3t_s1 n 2 308 s
+KL boxes/runs_fsq/s213_d3t_s1 n 1 314 s
+GATE base s213_d3t_s1 True
+KL boxes/runs_fsq/s215_ftctrl_s1 n 16 34 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 15 66 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 14 96 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 13 124 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 12 150 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 11 175 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 10 196 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 9 217 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 8 236 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 7 254 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 6 269 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 5 282 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 4 293 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 3 302 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 2 310 s
+KL boxes/runs_fsq/s215_ftctrl_s1 n 1 316 s
+GATE s215_ftctrl_s1 True
+DONE boxes/runs_fsq/s215_ftctrl_s1/eval_kl_base.json gate True
+KL boxes/runs_fsq/s215_ftself_s1 n 16 34 s
+KL boxes/runs_fsq/s215_ftself_s1 n 15 66 s
+KL boxes/runs_fsq/s215_ftself_s1 n 14 96 s
+KL boxes/runs_fsq/s215_ftself_s1 n 13 124 s
+KL boxes/runs_fsq/s215_ftself_s1 n 12 150 s
+KL boxes/runs_fsq/s215_ftself_s1 n 11 175 s
+KL boxes/runs_fsq/s215_ftself_s1 n 10 197 s
+KL boxes/runs_fsq/s215_ftself_s1 n 9 217 s
+KL boxes/runs_fsq/s215_ftself_s1 n 8 237 s
+KL boxes/runs_fsq/s215_ftself_s1 n 7 254 s
+KL boxes/runs_fsq/s215_ftself_s1 n 6 270 s
+KL boxes/runs_fsq/s215_ftself_s1 n 5 284 s
+KL boxes/runs_fsq/s215_ftself_s1 n 4 295 s
+KL boxes/runs_fsq/s215_ftself_s1 n 3 305 s
+KL boxes/runs_fsq/s215_ftself_s1 n 2 312 s
+KL boxes/runs_fsq/s215_ftself_s1 n 1 319 s
+GATE s215_ftself_s1 True
+DONE boxes/runs_fsq/s215_ftself_s1/eval_kl_base.json gate True
+KL boxes/runs_fsq/s216_r2_s1 n 16 35 s
+KL boxes/runs_fsq/s216_r2_s1 n 15 67 s
+KL boxes/runs_fsq/s216_r2_s1 n 14 98 s
+KL boxes/runs_fsq/s216_r2_s1 n 13 127 s
+KL boxes/runs_fsq/s216_r2_s1 n 12 153 s
+KL boxes/runs_fsq/s216_r2_s1 n 11 179 s
+KL boxes/runs_fsq/s216_r2_s1 n 10 201 s
+KL boxes/runs_fsq/s216_r2_s1 n 9 223 s
+KL boxes/runs_fsq/s216_r2_s1 n 8 242 s
+KL boxes/runs_fsq/s216_r2_s1 n 7 260 s
+KL boxes/runs_fsq/s216_r2_s1 n 6 276 s
+KL boxes/runs_fsq/s216_r2_s1 n 5 289 s
+KL boxes/runs_fsq/s216_r2_s1 n 4 301 s
+KL boxes/runs_fsq/s216_r2_s1 n 3 311 s
+KL boxes/runs_fsq/s216_r2_s1 n 2 318 s
+KL boxes/runs_fsq/s216_r2_s1 n 1 324 s
+GATE s216_r2_s1 True
+DONE boxes/runs_fsq/s216_r2_s1/eval_kl_base.json gate True
