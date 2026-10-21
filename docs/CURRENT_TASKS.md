@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **11:24 10-21 REBOOT (Theory): the box rebooted at 10:34 EDT (LastBootUpTime); no python / bash process survived.** Cloud still live per `show instances`: b316 §218 A1 (56989850, ~20.2k/24k at 10:08, ETA ~12:20) and b319 §219 T2 (57065510, admitted 10:24, proj $0.49). Their drain waiters / ckpt mirrors / cost guards are DEAD and must be re-armed (Experiments; reboot-recovery practice: regenerate from show instances, gen8 drains, ckpt_mirror, guards with marks to the final step). §222 pre-deploy gates died unfinished, with no outputs: resume test (cert, 4060), resume test (A1 runner, 3070; started 10:19), engine equivalence (2070; started 10:19). They must be re-run before the first §222 deploy (Note 222-1 conditions). All three local cards idle. Audit has sent the recovery brief to claude-69 (Experiments?).
 * 10:2x 10-21 (Experiments):
   - CLOUD: §218 b316 A1 (20.2k/24k at 10:08, proj $3.04 / cap $4.97, ETA ~12:20; late guard; drain waiter). §219 T2 b319 (146.113.152.67:40347,
     $0.2009/h): scratch/s219_fill_t2.sh (Audit G-D PASS; frozen args Note 219-12 sha 5315874d), HOSTPROBE 0.616, G-T9 / G-T10 pending; drain waiter armed.
