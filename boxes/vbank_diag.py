@@ -954,6 +954,73 @@ def part_hist24(m, TE, dev, bs):
 
 
 @torch.no_grad()
+def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64)):
+    """Note 216-14 IDLE-HORIZON ($0): eval_hist24's arms WITHOUT the dup arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode
+    mapping: CARRY omits self_ablate and its other_ablate = ablate_keep), n 1..8 (every eval_vb test item), ONE K' = max(ks) rollout per chunk with
+    coda_rows {24, 32, 48, 64} (vbank_eval.part_acc's chunks: test order within n, bs = eval_bs) -> items {arm: {n: {K': [argmax answer]}}}, y {n},
+    idx {n} (as §216 E4) + acc {arm: {K': {n}}}. Memory: K' 64 is tried first on the deepest shape (n 8, the longest chunk); an OOM falls back to the
+    largest K' >= 48 that fits (k_max recorded; ks above it dropped). G-IH0 (Theory reads it before anything else; computed here from the run dir's
+    committed files): intact K' 24 acc per n == eval_vb.json acc_k['24'] (|diff| < 1e-9), and for n 3..8 each arm's K' 24 answers == eval_hist24.json
+    items[arm][n]['ans_k24'] per item (share equal; bitwise = 1.0 on the same card / bs)."""
+    num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {"omitted": [], "k_tried": []}
+    arms = (("intact", None), ("bank_ablate_slva", "keep"), ("self_ablate", "self"), ("other_ablate", "bank"))
+    if m.mode == "carry":
+        arms = (("intact", None), ("bank_ablate_slva", "keep"), ("other_ablate", "keep")); res["omitted"].append("self_ablate")
+    ns = [n for n in range(1, 9) if (Nn == n).any()]
+    deep = max(VE.chunks(np.nonzero(Nn == max(ns))[0], bs), key=lambda ch: max(len(TE[j]["syms"]) for j in ch))
+    kmax = None
+    for kk in [k for k in sorted(ks, reverse=True) if k >= 48]:            # memory check at the deepest shape, intact arm
+        try:
+            torch.cuda.empty_cache() if str(dev).startswith("cuda") else None
+            its = [TE[j] for j in deep]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+            r_ = m.rollout(x, pad, kk, coda_rows={k: rows for k in ks if k <= kk}); del r_; res["k_tried"].append([kk, "ok"]); kmax = kk; break
+        except torch.OutOfMemoryError:
+            res["k_tried"].append([kk, "OOM"]); torch.cuda.empty_cache()
+    assert kmax is not None, "no K' >= 48 fits: %s" % res["k_tried"]
+    KS = [k for k in ks if k <= kmax]; res["k_max"] = kmax; res["ks"] = KS; res["acc"] = {}; res["items"] = {}
+    for arm, how in arms:
+        A = {k: np.full(len(TE), -1) for k in KS}
+        try:
+            if how in ("keep", "bank"):
+                m.ver_keep = VE.ablate_keep; m.keep_bank_only = how == "bank"
+            elif how == "self":
+                m.gather_hist_ablate = "self"
+            for n in ns:
+                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
+                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+                    r_ = m.rollout(x, pad, kmax, coda_rows={k: rows for k in KS})
+                    for k in KS:
+                        A[k][ch] = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
+                    del r_
+        finally:
+            m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None
+        res["acc"][arm] = {str(k): {str(n): float((A[k] == Y)[Nn == n].mean()) for n in ns} for k in KS}
+        res["items"][arm] = {str(n): {str(k): [int(v) for v in A[k][Nn == n]] for k in KS} for n in ns}
+        print("KHORIZON", arm, {k: res["acc"][arm][k] for k in ("24", str(kmax))}, flush=True)
+    res["items"]["y"] = {str(n): [int(v) for v in Y[Nn == n]] for n in ns}; res["items"]["idx"] = {str(n): [int(j) for j in np.nonzero(Nn == n)[0]] for n in ns}
+    g = {"intact_k24_vs_eval_vb": {}, "k24_vs_eval_hist24": {}}                 # G-IH0
+    try:
+        vb = json.load(open(os.path.join(run, "eval_vb.json")))["acc_k"]["24"]
+        g["intact_k24_vs_eval_vb"] = {str(n): {"khorizon": res["acc"]["intact"]["24"][str(n)], "eval_vb": vb.get(str(n)),
+                                              "equal": vb.get(str(n)) is not None and abs(res["acc"]["intact"]["24"][str(n)] - vb[str(n)]) < 1e-9} for n in ns}
+    except (OSError, KeyError) as e:
+        g["intact_k24_vs_eval_vb"] = {"error": str(e)}
+    try:
+        h = json.load(open(os.path.join(run, "eval_hist24.json")))["items"]
+        for arm, _ in arms:
+            if arm in h:
+                g["k24_vs_eval_hist24"][arm] = {str(n): float(np.mean([int(a == b) for a, b in zip(res["items"][arm][str(n)]["24"], h[arm][str(n)]["ans_k24"])]))
+                                                for n in range(3, 9) if str(n) in h[arm] and str(n) in res["items"][arm]}
+    except (OSError, KeyError) as e:
+        g["k24_vs_eval_hist24"] = {"error": str(e)}
+    eq = [v.get("equal") for v in g["intact_k24_vs_eval_vb"].values() if isinstance(v, dict)]
+    sh = [s for a_ in g["k24_vs_eval_hist24"].values() if isinstance(a_, dict) for s in a_.values()]
+    g["bitwise"] = bool(eq and all(eq) and sh and min(sh) == 1.0); g["min_share_vs_hist24"] = min(sh) if sh else None; res["gate_IH0"] = g
+    print("G-IH0 bitwise", g["bitwise"], "min share vs hist24", g["min_share_vs_hist24"], flush=True)
+    res["def"] = part_khorizon.__doc__; return res
+
+
+@torch.no_grad()
 def part_ageproj(m, TE, dev, bs):
     """note 213-27 AGE-PROJ ($0; D3-T). FIT: §170 train-distribution items n 3..8, 300 per n (np rng 21327, N.generate with exactly n operators; test set +
     SERIAL pool excluded as in the trainer), rolled out to K' 20 with input_edit recording the pass input U_t (after SLVA / the carry's N(.), before block 6)
@@ -1555,13 +1622,13 @@ def part_deep(m, TE_unused, dev, bs, run):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth", "deep"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth", "deep", "khorizon"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     ap.add_argument("--lineage", default="s1", choices=["s1", "s2"]); ap.add_argument("--round", type=int, default=1, choices=[1, 2], help="§216 E2: part selfdepth's pool / gate paths")
     ap.add_argument("--out_dir", default="", help="§216 G-S16 / G-S19: write eval_<part>.json here instead of the run dir (smokes)")
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run, a.lineage, a.round) if a.part == "selfdepth" else part_deep(m, TE, dev, a.eval_bs, a.run) if a.part == "deep" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run, a.lineage, a.round) if a.part == "selfdepth" else part_deep(m, TE, dev, a.eval_bs, a.run) if a.part == "deep" else part_khorizon(m, TE, dev, a.eval_bs, a.run) if a.part == "khorizon" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
