@@ -1,0 +1,99 @@
+{
+ "note": "Note 218-17",
+ "model": "langvb_eval.untrained(cal_n 16)",
+ "untrained_cal": {
+  "arch": "lslva",
+  "untrained": true,
+  "cal_n": 16,
+  "cal_max_m99": 0.019807221367955208
+ },
+ "card": "NVIDIA GeForce RTX 4060",
+ "dtype": "fp32",
+ "tf32": false,
+ "pool_n": 200000,
+ "held_n": 1000,
+ "eps": 68.59230315561399,
+ "eps_rel": 0.04483291826417333,
+ "vnorm": 152.99540117250663,
+ "eig_40_60": [
+  54.24106993903101,
+  53.27346971781912,
+  52.813195016154594,
+  52.20372558019796,
+  51.509775446801875,
+  50.23805569518391,
+  49.37710864795833,
+  48.28262823243893,
+  48.21143183532917,
+  47.458913878917215,
+  47.049040521916524,
+  46.40090395263939,
+  46.25500896513756,
+  45.27932007784128,
+  44.98759783008537,
+  43.58961222162943,
+  42.591830824942996,
+  41.72891197104366,
+  41.42850569475721,
+  41.17298598730672,
+  40.339046475954234
+ ],
+ "eig_50": 47.049040521916524,
+ "setup_sec": 249,
+ "commit": "271d6bf3",
+ "set": "S1 (registered read path)",
+ "kind": "cexor",
+ "t": 1,
+ "mult": 10,
+ "control": null,
+ "curve": [
+  [
+   250,
+   0.999
+  ],
+  [
+   500,
+   1.0
+  ],
+  [
+   750,
+   1.0
+  ],
+  [
+   1000,
+   0.999
+  ],
+  [
+   1250,
+   1.0
+  ],
+  [
+   1500,
+   1.0
+  ],
+  [
+   1750,
+   1.0
+  ],
+  [
+   2000,
+   0.999
+  ]
+ ],
+ "LATE": 0.9996666666666667,
+ "final": 0.999,
+ "def": "Note 218-25 revised feasibility S1: the REGISTERED probe read path (Probe(m, 1e-4), pr.scores: frozen-decoder sA - sB), PLANT at pass t with the\ndirs of t: kind 'cexor' (content-equivariant xor; label = which option row is the target; coin / signs rng 22601 / 22602 train, 22603 / 22604 held,\nrestarted per read), 'cexor_noplant' (the same coin labels, NO plant - Audit: must read ~0.5), 'lin' (antisymmetric lin, z rng 22551 / 22553).\ncontrol 'shuffled': training targets permuted per batch (rng 22597), held-out on the true targets. bs 64, batches rng 22501, held-out 1,000 every 250.",
+ "sec": 2439,
+ "seeds_consumed": {
+  "batches": 22501,
+  "z_train": 22551,
+  "z_held": 22553,
+  "coin_train": 22601,
+  "signs_train": 22602,
+  "coin_held": 22603,
+  "signs_held": 22604,
+  "shuffle_perm": null,
+  "plant_dirs": 22550,
+  "pool_held_stream": 22500
+ }
+}
