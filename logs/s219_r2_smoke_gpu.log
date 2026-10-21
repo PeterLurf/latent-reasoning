@@ -1,0 +1,11 @@
+MEMO n 13 {'window': 'W2', 'acc_pool': 1.0, 'acc_gate': 1.0, 'items': [4, 4], 'gap': 0.0, 'FLAG_gt_0.02': False}
+MEMO n 14 {'window': 'W2', 'acc_pool': 0.75, 'acc_gate': 1.0, 'items': [4, 4], 'gap': 0.25, 'FLAG_gt_0.02': True}
+MEMO n 15 {'window': 'W2', 'acc_pool': 0.5, 'acc_gate': 0.25, 'items': [4, 4], 'gap': 0.25, 'FLAG_gt_0.02': True}
+MEMO n 16 {'window': 'W2', 'acc_pool': 0.0, 'acc_gate': 0.25, 'items': [4, 4], 'gap': 0.25, 'FLAG_gt_0.02': True}
+MEMO n 9 {'window': 'W1', 'acc_pool': 1.0, 'acc_gate': 1.0, 'items': [4, 4], 'gap': 0.0, 'FLAG_gt_0.02': False}
+MEMO n 10 {'window': 'W1', 'acc_pool': 1.0, 'acc_gate': 1.0, 'items': [4, 4], 'gap': 0.0, 'FLAG_gt_0.02': False}
+MEMO n 11 {'window': 'W1', 'acc_pool': 1.0, 'acc_gate': 1.0, 'items': [4, 4], 'gap': 0.0, 'FLAG_gt_0.02': False}
+MEMO n 12 {'window': 'W1', 'acc_pool': 1.0, 'acc_gate': 1.0, 'items': [4, 4], 'gap': 0.0, 'FLAG_gt_0.02': False}
+LABELLER_KEPT n 13 {'items': 4, 'n_kept': 4, 'keep': 1.0, 'pi': 1.0, 'pi_E': 1.0, 'fail_step_hist': {}}
+LABELLER_KEPT n 16 {'items': 4, 'n_kept': 4, 'keep': 1.0, 'pi': 1.0, 'pi_E': 1.0, 'fail_step_hist': {}}
+DONE scratch/_tmp/s219_r2_smoke_1202\eval_textself.json 152

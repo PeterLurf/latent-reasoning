@@ -1,0 +1,3 @@
+LABEL_AUDIT {'n_audit': 5000, 'pi': 0.9996, 'pi_E': 0.9996, 'pi_ci95': [0.9985426134854988, 0.9998902987189081], 'pi_E_ci95': [0.9985426134854988, 0.9998902987189081], 'kept_wrong_label': 2, 'kept_wrong_E': 2, 'seed': 123370, 'cursor': 383488, 'n_consumed': 383488, 'pool_sha256': '9461efb6ba6f595061e7bdff32755e0d5086c5e8f38a86126420d3b270318de7'}
+CONTAMINATION 0 0
+DONE scratch/_tmp/s219_r2_smoke_1202\eval_textself.json 33
