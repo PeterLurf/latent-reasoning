@@ -20833,8 +20833,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **Note 224-2 (2026-10-22 09:03 EDT; G-FH-EQ v2 and the FT-CTRL s1 status, Audit's ruling, before the Stage-1 relaunch; no reading, bar or arm change).**
 - **Why.**
-  - b331's G-FH-EQ (FH_v1 §6 K5, Stage-1 form) failed on the default kernel's nondeterministic SDPA backward, not on code: two identical plain default-kernel runs already diverge by step 10 (2070). Under the det wrapper, eqA == eqB bitwise.
-  - Spend so far is $0.25 (b331), counted in Stage 1.
+  - b331's G-FH-EQ (FH_v1 §6 K5, Stage-1 form) failed on the default kernel's nondeterministic SDPA backward, not on code: two identical plain default-kernel runs already diverge by step 10 (2070; a2593c22, scratch/gate_s224/eq_diag/). Under the det wrapper, eqA == eqB bitwise.
+  - Spend so far is $0.25 (b331), counted against Stage 1's $6.50 cap (Stage-1 projection ≈ $5.68 at $0.20 / h).
 - **G-FH-EQ v2 (replaces the Stage-1 form; Stage 2 uses the same form):** on each RD / FH host before its cell, two 1,200-step lines of the cell's recipe, run under the det wrapper (math SDP, strict deterministic algorithms, fp32, micro 2):
   - (A) the cell's flags with --far --far_w 0 (FH: and λ 0);
   - (B) the same without --far.
