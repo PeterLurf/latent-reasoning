@@ -1,0 +1,34 @@
+{
+ "support": [
+  13,
+  48,
+  36
+ ],
+ "chi2": 60.4132,
+ "chi2_crit_df35_p001": 66.62,
+ "logged_t_far": [
+  45.0,
+  22.0,
+  36.0
+ ],
+ "expected": [
+  45,
+  22,
+  36
+ ],
+ "far_fields": [
+  "far_ce",
+  "far_nonfinite",
+  "far_t_mean",
+  "fh_gate_share",
+  "fh_gnorm_fp1",
+  "fh_gnorm_rest",
+  "fh_gratio1",
+  "fh_lambda",
+  "fh_lfp1",
+  "fh_r_far",
+  "fh_r_far_g"
+ ],
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/fh224_tree"
+}

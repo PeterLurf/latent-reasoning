@@ -1,0 +1,26 @@
+{
+ "share_far_branch": 1.0,
+ "share_separate": 1.0,
+ "per_item_far": [
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "per_item_separate": [
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/fh224_tree"
+}
