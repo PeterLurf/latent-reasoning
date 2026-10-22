@@ -9,8 +9,11 @@
 - **Text, s219_t2_s1:** eval_text.json per item: P (prompt tokens), ntok (generated tokens), answer, y, overflow; n 1–24, the same test_set(1000, 24) items.
 - **Disclosure: the direction is partly known.** 219-13's descriptive TOKEN-COST (n 17–20) showed:
   - sequential steps per correct answer, text vs latent: 438–1,115 vs 19–33;
-  - token-positions per correct answer: 491–1,227 vs 1,012–2,072, so latent uses ≈ 1.7–2.1× MORE.
-  - This draft pre-states readings on both axes knowing those numbers. The registered value is the full budget curve and its labels, not discovery of the direction.
+  - "token-positions" per correct answer: 491–1,227 vs 1,012–2,072.
+- **Correction (10-22):** that position count treated every latent pass as a full 12-block forward.
+  - In VB only the 4 core blocks (6–9) loop per pass (boxes/vbank.py:117, CORE = (6, 7, 8, 9)). The prelude (0–5) runs once, and the coda (10–11) once at readout.
+  - Counting in block-positions, a rough check at n 17 gives latent T·(8 + 4K′) ≈ 53 × 84 ≈ 4.5k vs text 12 × 491 ≈ 5.9k per correct answer, so latent ≈ 0.76× text, not 2× more.
+  - This rough number (one n, mean T) was seen before registration and is disclosed.
 - **Nothing new is computed:** every reading below is a function of the stored per-item files. There is no new GPU eval.
 
 ## 1. Two compute axes (both registered; neither is privileged without the other)
@@ -18,10 +21,11 @@
   - latent: K′ passes;
   - text: generated tokens (each one decode forward).
   - The prompt prefill counts as 1 step in each arm (one parallel forward).
-- **(F) Token-position compute** (a FLOPs proxy):
-  - latent: K′ × T_item (each pass re-processes all T_item = len(syms) + 2 slots; no cache);
-  - text: P + ntok (prefill once plus one cached position per generated token).
-  - For GPT-2 small at T ≤ 1,024 the per-position MLP + projection FLOPs dominate attention. Attention-inclusive FLOPs are reported descriptively with the exact formula for both arms (VB's extra bank / SLVA attention included).
+- **(F) Block-position compute** (a FLOPs proxy; every GPT-2 block has the same per-position dense cost):
+  - latent: T_item · (6 + 4·K′ + 2) (prelude once, 4 core blocks per pass, coda once), T_item = len(syms) + 2;
+  - text: 12 · (P + ntok) (prefill plus one cached position per generated token).
+  - **Assumption, stated (Audit):** no latent cache is possible. Every pass rewrites every slot's state, so recomputing all T slots in the core blocks IS the computation (as in any depth-recurrent model). This is a property of the method, not an implementation shortcut. Text reuses its KV cache because earlier tokens never change.
+  - VB's extras (bank attention over up to K′ versions per slot, SLVA, gather) are not in the dense proxy. They are reported in an exact attention-inclusive FLOPs row for both arms, per n, descriptively. If they change any (F) label, that is stated.
 - **Truncation (censoring rule):** an item is correct at budget B only if it is correct and its own cost is ≤ B.
   - Latent: K′ ≤ B_S (or K′ · T ≤ B_F), at the smallest such K′ whose coda answer is correct and stays correct at every larger read K′ ≤ the cap. A late-flipping answer counts only from the K′ where it becomes and stays right.
   - Text: free-generation answer correct and the item's cost ≤ B.
@@ -35,14 +39,14 @@
   - **C3-MATCHED-X:** latent acc ≥ text acc − 0.02 at every B on the grid, at every n 13–20 where either arm reaches 0.5 by the largest B.
   - **TEXT-AHEAD-X:** text acc ≥ latent acc + 0.05 at some B for ≥ 3 of the n 13–20.
   - **MIXED-X:** otherwise. The crossing budget is reported per n.
-  - **Prediction (from §0's known rows):** C3-MATCHED-S, and TEXT-AHEAD-F or MIXED-F.
+  - **Prediction:** C3-MATCHED-S (P ≈ 0.95); (F) open, with a rough lean to latent ≤ text (the n 17 check), so C3-MATCHED-F has P ≈ 0.5.
 - **Registered C3 statement:** worded per axis, e.g. "latent matches or beats text-CoT at matched sequential steps; at matched token-position compute text is ahead by ≈ 2× at n 17–20". There is no single "C3 met" claim unless both axes read MATCHED.
 - **Scope:** one lineage each, GPT-2 small, Arithmetic(n, 11), round-2 models, a proxy compute measure (F). Never "compute-matched" without the axis named.
 
 ## 3. OC
 - Per-n accuracies come from 1,000 items. At p ≈ 0.5 the SE is ≈ 0.016, so a paired difference has SE ≤ 0.022. The 0.02 / 0.05 margins are about 1 and 2.3 SE.
 - Over 8 n × ~40 grid points, multiplicity makes C3-MATCHED (a dominance claim over all points) conservative. Under exact equality of the arms, P(C3-MATCHED) is small (one point a > 0.02 deficit breaks it). TEXT-AHEAD needs ≥ 3 n at +0.05.
-- Under a true 20× step advantage (§0), C3-MATCHED-S passes with P ≈ 1. Under a true 2× compute disadvantage, TEXT-AHEAD-F passes with P ≈ 1.
+- Under a true 20× step advantage (§0), C3-MATCHED-S passes with P ≈ 1. (F) is closer: about 0.76× at n 17 by the rough check, so its label carries real uncertainty, and B\* is the informative reading.
 - The readings are near-deterministic given the known direction. The design's value is the registered budget curves and B\*, and the honest two-axis statement.
 
 ## 4. Cost and checks
