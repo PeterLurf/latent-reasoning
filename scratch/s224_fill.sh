@@ -15,6 +15,7 @@
 #   CAPF=6 QS="331:s224_fhft_s1:1.60:2.10:12000:1:1 ..." nohup bash scratch/s224_fill.sh >> logs/fill_s224.out 2>&1 &
 cd "$(dirname "$0")/.."
 PMAX=${PMAX:-0.25}; CAPF=${CAPF:-}; SETUP_H=0.4; EVAL_H=${EVAL_H:-1.3}; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s224_bad_cost.log; ADMLOG=logs/s224_admitted.log
+FAMGUARD_LOG=${FAMGUARD_LOG:-logs/s224fam_guard.out}; EST_FAR=${EST_FAR:-1.13}; EST_CTRL=${EST_CTRL:-0.91}   # Audit 10-22 (s224fam false stop): HIGH = estimates
 QS="${QS:-}"
 cell_extra() {   # per-cell shipped files beside the queue's auto-shipped modules / tokens (init_from model.pt and the args ref are named in the queue)
   case "$1" in
@@ -26,6 +27,15 @@ cell_extra() {   # per-cell shipped files beside the queue's auto-shipped module
 nevals() { [ "$1" = 335 ] && echo 2 || echo 1; }
 log() { echo "$(date +%T) fill_s224 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 sq() { timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "$3" 2>/dev/null; }
+famcheck() {   # Audit 10-22: exit when the family guard has fired (ALERT / STOP in its log); $1 = where (loop top / after ADMIT)
+  if grep -qE "ALERT|STOP" "$FAMGUARD_LOG" 2>/dev/null; then log "HOLD: s224fam fired ($(grep -E "ALERT|STOP" "$FAMGUARD_LOG" | tail -1 | cut -c1-160)) - filler exits at $1; tell Audit"; exit 3; fi
+}
+outside() { python -c "s = 0.0                                             # realised spend outside the guarded cells: realised: / gatehold: ledger lines + BAD
+for l in open('$ADMLOG'):
+    if l.strip() and not l.startswith('#') and l.startswith(('realised:', 'gatehold:')): s += float(l.split()[-1])
+for l in open('$BADLOG'):
+    if l.strip() and not l.startswith('#'): s += float(l.split()[-1])
+print(round(s, 4))"; }
 fam() { python -c "import sys; s = 0.0
 for f in ('$ADMLOG', '$BADLOG'):
     try: s += sum(float(l.split()[-1]) for l in open(f) if l.strip() and not l.startswith('#'))
@@ -49,11 +59,12 @@ others=$(ps -ef | awk '$6 ~ /bash(\.exe)?$/ && $7 ~ /s2[0-9]+_fill[a-z0-9_]*\.sh
 for cell in $QS; do IFS=: read -r n_ r_ a_ g_ s_ f_ sd_ <<<"$cell"
   for x_ in scratch/s224_args_frozen_$r_.json; do git ls-files --error-unmatch "$x_" > /dev/null 2>&1 || { echo "$(date '+%F %T') fill_s224 REFUSED: $x_ is not committed"; exit 2; }; done; done
 dirty=$( { git status --porcelain boxes/ | grep -v "^??" | grep -v "boxes/runs"; git status --porcelain scratch/s224_*.json scratch/s224_*.py scratch/s224_*.sh scratch/drain_gen_partial_s224.sh scratch/auto_drain_gen8_s224.sh scratch/gen_deploy_120_s224.sh | grep -v "^??"; } )
+grep -qE "ALERT|STOP" "$FAMGUARD_LOG" 2>/dev/null && { echo "$(date '+%F %T') fill_s224 REFUSED: $FAMGUARD_LOG holds an ALERT / STOP (rotate it after Audit's ruling)"; exit 2; }
 [ -n "$dirty" ] && { echo "$(date '+%F %T') fill_s224 REFUSED: uncommitted module / frozen-ref / script edits (deploys ship the working tree): $dirty"; exit 2; }
 grep -q "def far_branch" boxes/vbank.py || { echo "$(date '+%F %T') fill_s224 REFUSED: boxes/vbank.py has no far branch (the §224 build is not committed)"; exit 2; }
 log "start: QS $QS; family \$$CAPF; SETUP_H $SETUP_H; EVAL_H $EVAL_H; vbank sha $(sha256sum boxes/vbank.py | cut -c1-12); vbank_diag sha $(sha256sum boxes/vbank_diag.py | cut -c1-12); vbank_eval sha $(sha256sum boxes/vbank_eval.py | cut -c1-12)"
 
-FAMC=""; for c_ in $QS; do IFS=: read -r n_ r_ a_ g_ s_ f_ sd_ <<<"$c_"; FAMC="$FAMC $n_:$r_:$g_:$s_"; done   # unstarted cells project at their guard
+FAMC=""; for c_ in $QS; do IFS=: read -r n_ r_ a_ g_ s_ f_ sd_ <<<"$c_"; e_=$EST_CTRL; [ "$f_" = 1 ] && e_=$EST_FAR; FAMC="$FAMC $n_:$r_:$e_:$s_"; done   # Audit 10-22: unstarted cells project at their ESTIMATE (not the guard ceiling)
 for cell in $QS; do
   IFS=: read -r n run CAPC GSTOP STEPS FAR SEED <<<"$cell"; tries=0; export EXTRA_120="$(cell_extra "$n")"; EQ=0; [ "$FAR" = 1 ] && EQ=4800;   # v2: 2 x 1,200 det-wrapped fp32 steps, projected at 2x the cell s/step
   NE=$(nevals "$n")
@@ -62,6 +73,7 @@ for cell in $QS; do
   for f_ in $EXTRA_120; do [ -s "$f_" ] || { log "b$n: shipped file $f_ missing - not starting"; exit 2; }; done
   while true; do
     [ -f scratch/fill_s224.stop ] && { log "stopped (scratch/fill_s224.stop)"; exit 0; }
+    famcheck "the loop top (b$n)"
     bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
     bt=$(awk '!/^#/ {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0)
     if python -c "import sys; sys.exit(0 if $bt > 0.50 else 1)"; then log "CAP: §224 BAD-host spend \$$bt > \$0.50 - held; tell Audit"; exit 3; fi
@@ -96,12 +108,13 @@ for cell in $QS; do
       GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,12000 nohup python scratch/cost_guard.py "s224_b$n" "$gl" "$STEPS" "$n:$run:$proj:$STEPS" > "logs/s224_guard_b$n.out" 2>&1 &
       log "b$n: ckpt mirror (every $evh h) + cell guard (\$$GSTOP - rejected-host \$$cb = \$$gl, GUARD_STOP=1) started"
       if ! ps -ef | grep "cost_guard.py s224fam " | grep -v grep > /dev/null; then   # the Stage-1 FAMILY guard, GUARD_STOP=1 (BAD hosts included)
-        GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,12000 nohup python scratch/cost_guard.py s224fam "$CAPF" 12000 $FAMC > logs/s224fam_guard.out 2>&1 &
-        log "guard s224fam (\$$CAPF, GUARD_STOP=1;$FAMC) started"
+        fcap=$(python -c "print(round($CAPF - $(outside), 4))")   # Audit 10-22: CAPF minus the realised spend outside the guarded cells
+        GUARD_STOP=1 GUARD_MARKS=500,1000,2000,4000,8000,12000 nohup python scratch/cost_guard.py s224fam "$fcap" 12000 $FAMC > "$FAMGUARD_LOG" 2>&1 &
+        log "guard s224fam (\$$fcap = \$$CAPF - outside \$$(outside), GUARD_STOP=1;$FAMC) started"
       fi
       nohup bash scratch/s224_post_admit.sh "$n" "$run" "$h" "$p" "$iid" "$FAR" "$SEED" > "logs/s224_post_b$n.out" 2>&1 &
       log "b$n: post-admit checks started (G-FH-EQ: $FAR; args vs scratch/s224_args_frozen_$run.json)"
-      sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; break
+      sleep 420; mv "scratch/gen_q_b$n.txt.norequeue" "scratch/gen_q_b$n.txt"; famcheck "after ADMIT (b$n)"; break
     fi
     log "b$n: projection \$$proj (cell cap \$$CAPC; family \$$fs + \$$proj vs \$$CAPF) NOT admitted on $h:$p (measured refusal $((tries + 1)) / $HOSTMAX) - destroying, next host"
     tries=$((tries + 1)); refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "projection"

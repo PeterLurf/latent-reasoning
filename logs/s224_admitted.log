@@ -1,3 +1,6 @@
 # HELD 08:45 (G-FH-EQ ALERT; moved to s224_bad_cost.log) 331:s224_fhft_s1 186.128.151.58:50181 57207132 $0.2014/h sps 0.8353503266970317 1.02
-gatehold:b333 # Audit 10-22: G-FH-EQ gate hold, not a host fault (family yes, BAD cap no) 0.085
-gatehold:b331 # Audit 10-22: G-FH-EQ gate hold, not a host fault (family yes, BAD cap no) 0.1376
+# PRE-RELAUNCH 10-22 12:5x (in realised:) gatehold:b333 # Audit 10-22: G-FH-EQ gate hold, not a host fault (family yes, BAD cap no) 0.085
+# PRE-RELAUNCH 10-22 12:5x (in realised:) gatehold:b331 # Audit 10-22: G-FH-EQ gate hold, not a host fault (family yes, BAD cap no) 0.1376
+# PRE-RELAUNCH 10-22 12:5x (in realised:) 331:s224_fhft_s1 186.128.151.58:50098 57230869 $0.2014/h sps 0.8189892689387004 1.11
+# PRE-RELAUNCH 10-22 12:5x (in realised:) 333:s224_fhft_s2 161.29.203.152:51093 57238108 $0.2395/h sps 0.6702791094779968 1.16
+realised:pre-relaunch-nonBAD # Audit 10-22: invoices $1.015 for 7 instances minus BAD-ledger $0.3800 (gate hold + s224fam false stop + partial runs) 0.6350
