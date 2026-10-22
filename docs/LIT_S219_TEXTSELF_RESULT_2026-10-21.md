@@ -56,3 +56,12 @@ Written 2026-10-21 by the Literature session, for Theory and Audit.
 - model sizes, tasks and budget.
 
 **Use:** [empirics, abstract only, workshop]. Cite as "consistent with" for §218's diagnosis (template tokens absorbing the loss) and as a candidate remedy for §223. Don't quote a recipe until the PDF is read. A user with an OpenReview login could download it.
+
+## Addendum (2026-10-22): MB_draft N1 (matched-budget text-CoT vs latent self-training)
+- **Verdict on N1** ("a registered matched-budget comparison (sequential steps and token-position compute, both reported) between matched text-CoT and latent-recurrent self-training lineages"): **OK**, scoped to GPT-2, a synthetic task and our lineages.
+- **No compute-matched latent-vs-CoT comparison was found:**
+  - Prior efficiency claims are generated-token counts (Coconut 2412.06769, CODI 2502.21074) or **latency** (LOTUS 2606.31779: matches explicit CoT at 3B with 2.5–6.9× lower thought-phase latency).
+  - Ouro 2510.25741 and iso-depth 2604.21106 scale recurrence against parameters or depth, **not against CoT**.
+  - Our own 10-01 check (LIT_PERM_TRACKING_CHECK: compute-matched CoT vs latent on state tracking) found none either.
+  - One web search (2026-10-22) found none.
+- **Cite LOTUS** as the nearest efficiency comparison, but it is latency-framed and not budget-matched.
