@@ -20831,6 +20831,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - LP0–LP3 fail → recipe fault: a Note, no cloud.
     - LP4 fails with LP0–LP3 passing → the M2 premise is unlearnable at this scale: §223 closes descriptively, no cloud spend.
 
+**Note 224-2 (2026-10-22 09:03 EDT; G-FH-EQ v2 and the FT-CTRL s1 status, Audit's ruling, before the Stage-1 relaunch; no reading, bar or arm change).**
+- **Why.**
+  - b331's G-FH-EQ (FH_v1 §6 K5, Stage-1 form) failed on the default kernel's nondeterministic SDPA backward, not on code: two identical plain default-kernel runs already diverge by step 10 (2070). Under the det wrapper, eqA == eqB bitwise.
+  - Spend so far is $0.25 (b331), counted in Stage 1.
+- **G-FH-EQ v2 (replaces the Stage-1 form; Stage 2 uses the same form):** on each RD / FH host before its cell, two 1,200-step lines of the cell's recipe, run under the det wrapper (math SDP, strict deterministic algorithms, fp32, micro 2):
+  - (A) the cell's flags with --far --far_w 0 (FH: and λ 0);
+  - (B) the same without --far.
+  - Log records 100..1200 must be bitwise (sec and far_* excluded). The s215_ftctrl_s1 log comparison is dropped.
+  - The cells themselves run with the registered (default) kernel.
+- **FT-CTRL s1 = s215_ftctrl_s1 stands as the s1 comparator** under FH_v1 §6's "host-caused → the control stands with a note" clause:
+  - its args equal the FT recipe (args diff = the far / fh flags and run identity only);
+  - bitwise re-creation is impossible on the default kernel by construction (above), so the control is an independent same-recipe run, as REVIEW_FH fix 7 already holds for every comparator: the same seed is not a pairing;
+  - it is re-evaluated on the 3090 (s224_ftctrl_s1_re), so all Stage-1 readings share one card class.
+- **Readings unaffected.**
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
