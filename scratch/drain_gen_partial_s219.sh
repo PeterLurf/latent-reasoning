@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# RECORD (Audit 10-21, §224 G-D): the BADM branch's $(s219_resume_ckpt $j) is unescaped inside the double-quoted ssh command, so it expands locally (the dir
+# does not exist there) and a partial-run tarball never carried ckpt_last.pt. No §219 partial run occurred, so no data was lost; fixed in the §223 / §224 copies.
 # §219 copy of scratch/drain_gen_partial.sh (Note 219-3 item 1; Audit G-T13 item 6). Changes ONLY:
 #   (1) the done marker is scratch/s219_done_marker.sh's s219_mark (train_done.json | mem_check_self.json | timing.json), never eval.json; the
 #       same file is sent to the host for the status and sourced locally for the post-fetch check (s219_check_fetched: the §219 file list present,

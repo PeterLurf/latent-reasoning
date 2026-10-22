@@ -6,6 +6,8 @@
 #   (2) no seal rename and no separate model pass: trainable.pt (LoRA + prj (+ D), ~0.15 GB) travels in the run-dir tarball;
 #   (3) a FINISHED run's ckpt_last.pt is not fetched (retention: trainable.pt holds the result); a partial run (BADM) keeps its full-state
 #       ckpt_last.pt + ckpt_fingerprint.json + log.jsonl + args.json + stages.jsonl as <dir>.void_partial (sha-verified), so a crashed cell resumes exactly (--resume).
+#   (Audit 10-21, §224 G-D: s223_resume_ckpt is now expanded ON THE HOST - \$(...); unescaped it ran locally, where the dir does not exist, so a
+#   partial tarball never carried ckpt_last.pt.)
 #   Everything else is the original: status / NOT_FINISHED, sha-verified 3-try fetch, destroy only after the fetch.  bash scratch/drain_gen_partial_s223.sh <host> <port> <tag> <id>
 set -u
 H=$1; P=$2; TAG=$3; ID=$4
@@ -39,7 +41,7 @@ for j in $runs; do r_=$(s223_check_fetched $j); [ "$r_" = OK ] || { echo "FETCH_
 vp=""; for j in $bad; do
   n=$(echo $j | tr '/' '_')_vp; ok=0
   for try in 1 2 3; do
-    rs=$($S "$(declare -f s223_resume_ckpt); cd /workspace/Latent && tar -czf /tmp/f_$n.tgz --ignore-failed-read $j/log.jsonl $j/ckpt_fingerprint.json $j/args.json $j/stages.jsonl $(s223_resume_ckpt $j) 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
+    rs=$($S "$(declare -f s223_resume_ckpt); cd /workspace/Latent && tar -czf /tmp/f_$n.tgz --ignore-failed-read $j/log.jsonl $j/ckpt_fingerprint.json $j/args.json $j/stages.jsonl \$(s223_resume_ckpt $j) 2>/dev/null; sha256sum /tmp/f_$n.tgz" 2>/dev/null | grep -o '^[0-9a-f]\{64\}')
     scp -q -o ServerAliveInterval=15 -i ~/.ssh/runpod_ed25519 -P $P root@$H:/tmp/f_$n.tgz /d/drain_tmp/f_${H}_$n.tgz 2>/dev/null
     [ -n "$rs" ] && [ "$rs" = "$(sha256sum /d/drain_tmp/f_${H}_$n.tgz | cut -c1-64)" ] && { ok=1; break; }; sleep 10
   done
