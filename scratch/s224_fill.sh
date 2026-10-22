@@ -15,6 +15,7 @@
 #   CAPF=6 QS="331:s224_fhft_s1:1.60:2.10:12000:1:1 ..." nohup bash scratch/s224_fill.sh >> logs/fill_s224.out 2>&1 &
 cd "$(dirname "$0")/.."
 PMAX=${PMAX:-0.25}; CAPF=${CAPF:-}; SETUP_H=0.4; EVAL_H=${EVAL_H:-1.3}; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s224_bad_cost.log; ADMLOG=logs/s224_admitted.log
+BADSPENDMAX=${BADSPENDMAX:-1.00}; VAST=${VAST:-C:/Users/peter/.local/vastai/vast.sh}   # Audit 10-22: BAD cap $1.00 (host-quality brake)
 FAMGUARD_LOG=${FAMGUARD_LOG:-logs/s224fam_guard.out}; EST_FAR=${EST_FAR:-1.13}; EST_CTRL=${EST_CTRL:-0.91}   # Audit 10-22 (s224fam false stop): HIGH = estimates
 QS="${QS:-}"
 cell_extra() {   # per-cell shipped files beside the queue's auto-shipped modules / tokens (init_from model.pt and the args ref are named in the queue)
@@ -27,6 +28,15 @@ cell_extra() {   # per-cell shipped files beside the queue's auto-shipped module
 nevals() { [ "$1" = 335 ] && echo 2 || echo 1; }
 log() { echo "$(date +%T) fill_s224 $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') $*"; }
 sq() { timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$2" "root@$1" "$3" 2>/dev/null; }
+inst_state() {   # Audit 10-22 (b333 vanished Vast-side): $1 = instance id -> 0 present, 1 absent, 2 unknown (CLI failure / unparsable)
+  timeout 60 bash "$VAST" show instances --raw 2>/dev/null | python -c "import json, sys
+try: ids = {int(x['id']) for x in json.load(sys.stdin)}
+except Exception: sys.exit(2)
+sys.exit(0 if int(sys.argv[1]) in ids else 1)" "$1"; }
+vanished() {   # in a wait loop: $1 = instance id; counts consecutive ABSENT polls in VMISS; returns 0 once absent on 2 consecutive polls
+  inst_state "$1"; local r=$?
+  if [ $r = 1 ]; then VMISS=$((VMISS + 1)); elif [ $r = 0 ]; then VMISS=0; fi
+  [ "$VMISS" -ge 2 ]; }
 famcheck() {   # Audit 10-22: exit when the family guard has fired (ALERT / STOP in its log); $1 = where (loop top / after ADMIT)
   if grep -qE "ALERT|STOP" "$FAMGUARD_LOG" 2>/dev/null; then log "HOLD: s224fam fired ($(grep -E "ALERT|STOP" "$FAMGUARD_LOG" | tail -1 | cut -c1-160)) - filler exits at $1; tell Audit"; exit 3; fi
 }
@@ -76,7 +86,7 @@ for cell in $QS; do
     famcheck "the loop top (b$n)"
     bash scratch/rebuild_live_hosts.sh > /dev/null 2>&1
     bt=$(awk '!/^#/ {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0)
-    if python -c "import sys; sys.exit(0 if $bt > 0.50 else 1)"; then log "CAP: §224 BAD-host spend \$$bt > \$0.50 - held; tell Audit"; exit 3; fi
+    if python -c "import sys; sys.exit(0 if $bt > $BADSPENDMAX else 1)"; then log "CAP: §224 BAD-host spend \$$bt > \$$BADSPENDMAX - held; tell Audit"; exit 3; fi
     [ "$tries" -ge "$HOSTMAX" ] && { log "b$n: $run NOT RUN - no admitting host in $HOSTMAX tries; tell Audit / Theory"; continue 2; }
     r_=$(GPU_NAME=RTX_3090 python scratch/offer_pick.py - "$PMAX"); o=""; ip=""; dph=""; read -r o ip dph <<<"$r_"
     if [ -z "${o:-}" ]; then log "b$n: no RTX_3090 offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
@@ -90,11 +100,15 @@ for cell in $QS; do
     fi
     mv "scratch/gen_q_b$n.txt" "scratch/gen_q_b$n.txt.norequeue"
     read -r h p iid <<<"$(echo "$line" | awk '{for(i=1;i<=NF;i++) if($i=="INSTANCE") print $(i+2)" "$(i+3)" "$(i+1)}')"
-    pr=""; for i in $(seq 1 40); do pr=$(sq "$h" "$p" "grep -h 'HOSTPROBE' /workspace/Latent/logs/queue_gen_b$n.out | tail -n 1"); echo "$pr" | grep -q "s/step" && break; pr=""; sleep 60; done
+    pr=""; VMISS=0; VAN=""; for i in $(seq 1 40); do pr=$(sq "$h" "$p" "grep -h 'HOSTPROBE' /workspace/Latent/logs/queue_gen_b$n.out | tail -n 1"); echo "$pr" | grep -q "s/step" && break; pr=""
+      vanished "$iid" && { VAN=1; break; }; sleep 60; done
+    if [ -n "$VAN" ]; then log "b$n: VANISHED instance $iid ($ip) during HOSTPROBE (absent from show instances on 2 consecutive polls) - BAD, excluded"; echo "oid:$o # §224 vanished $(date '+%F %T')" >> scratch/vast_exclude_ips.txt; refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "vanished"; continue; fi
     if [ -z "$pr" ] || echo "$pr" | grep -q HOSTPROBE_SLOW; then log "b$n: HOSTPROBE ${pr:-none after 40 min} on $h:$p - refusing"; refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "hostprobe"; continue; fi
     log "b$n: $pr on $h:$p"
     mc=$(sq "$h" "$p" "cat /workspace/Latent/boxes/runs_fsq/${run}_mem/mem_check.json" | tr -d '\n ')
-    gt=""; for i in $(seq 1 45); do gt=$(sq "$h" "$p" "cat /workspace/Latent/boxes/runs_fsq/${run}_gtime/timing.json"); [ -n "$gt" ] && break; sleep 60; done
+    gt=""; VMISS=0; VAN=""; for i in $(seq 1 45); do gt=$(sq "$h" "$p" "cat /workspace/Latent/boxes/runs_fsq/${run}_gtime/timing.json"); [ -n "$gt" ] && break
+      vanished "$iid" && { VAN=1; break; }; sleep 60; done
+    if [ -n "$VAN" ]; then log "b$n: VANISHED instance $iid ($ip) during G-TIME (absent from show instances on 2 consecutive polls) - BAD, excluded"; echo "oid:$o # §224 vanished $(date '+%F %T')" >> scratch/vast_exclude_ips.txt; refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "vanished"; continue; fi
     sps=$(echo "$gt" | python -c "import json,sys; print(json.load(sys.stdin)['sec_per_step'])" 2>/dev/null)
     am=$(sq "$h" "$p" "cat /workspace/Latent/boxes/runs_fsq/${run}_gtime/auto_micro.json" | tr -d '\n ')
     if [ -z "$sps" ]; then log "b$n: no G-TIME timing.json after 45 min on $h:$p ($(sq "$h" "$p" "tail -n 3 /workspace/Latent/logs/gen_${run}_gtime.log" | tr '\n' ' ' | cut -c1-300)) - refusing"; refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "no-gtime"; continue; fi
