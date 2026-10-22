@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# RECORD (Audit 10-21, §224 G-D): the BADM branch's $(s222_resume_ckpt $j) is unescaped inside the double-quoted ssh command, so it expands locally (the dir
+# does not exist there) and a partial-run tarball never carried ckpt_last.pt. No §222 partial run occurred, so no data was lost; fixed in the §223 / §224 copies.
 # §222 copy of scratch/drain_gen_partial_s219.sh (Note 222-1). Changes ONLY:
 #   (1) the done marker is scratch/s222_done_marker.sh's s222_mark (a finished group file cert_<model>.g<i>.json / eval_lvb_s222.g<i>.json, A1's
 #       eval_lvb_s222_pre.json, G-TIME timing.json, or the ACC cross-card eval_lvb.json), sent to the host for the status and sourced locally for the
