@@ -1,0 +1,8 @@
+{
+ "max_abs_m0": 0.0,
+ "max_abs_m1": 0.0,
+ "dtype": "torch.float64",
+ "m0_vs_m1_differ": 214.12247896602187,
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/p2_tree"
+}

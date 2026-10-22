@@ -1,0 +1,68 @@
+{
+ "DIRECT": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "err": [
+   "",
+   ""
+  ]
+ },
+ "M1": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "err": [
+   "",
+   ""
+  ]
+ },
+ "M2": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "err": [
+   "",
+   ""
+  ]
+ },
+ "PS": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "err": [
+   "",
+   ""
+  ]
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/p2_tree"
+}

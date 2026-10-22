@@ -1,0 +1,175 @@
+--- a/boxes/codi_ps.py	2026-10-21 14:22:25.044826700 -0400
++++ b/boxes/codi_ps.py	2026-10-22 07:04:01.532993700 -0400
+@@ -26,6 +26,12 @@
+     optimiser, scheduler, CurGate, the item stream and the step-draw generator states, torch / cuda RNG, elapsed), trainable.pt + train_done.json
+     at the end. --time_steps N -> timing.json; --mem_check -> mem_check.json (the deepest shape: d 8, K 10, the longest R). No eval here (a separate
+     eval module).
++  * (Note 223-8 R3, Audit amendment 11a4b858; Theory 10-22) --m2_stage (needs --bottleneck; default off): the M2 mask is staged in MASS space.
++    m = 0 while CurGate stage < 2; from the first step at stage >= 2 (m2_start, checkpointed) m = (step - m2_start) / --m2_ramp (2,000), capped
++    at 1; the training decoder call is soft_decoder (a self-contained GPT-2 forward from the cache through the model's own modules) with
++    + log(max(1 - m, 1e-6)) on the question-content + <bot> keys for m < 1 and the registered key mask for m >= 1. It is used for EVERY m (the
++    cell never switches implementation mid-run); forward() without m2 (flags off, ps_eval) is the HF call, unchanged. Implementation difference
++    of the PS cell only: soft_decoder's dropout RNG draws differ from the HF call's order (same distribution). m2_m / m2_start are logged.
+     python -m boxes.codi_ps --out boxes/runs_fsq/s223_ps_s1 --recode --lam 1 --bottleneck [--device cuda:0 ...]"""
+ import argparse
+ import copy
+@@ -151,9 +157,50 @@
+     return torch.ones(B, n, dtype=torch.long, device=dev)
+ 
+ 
+-def forward(m, prj, D, b, a, probe=None):
++def _past_kv(pkv):
++    """the cached per-layer (K, V) (B, H, L, 64) across transformers versions (5.x Cache.layers[i].keys / .values; 4.4x DynamicCache key_cache /
++    value_cache; legacy tuples), as _leaf_cache reads them."""
++    return [(l.keys, l.values) for l in pkv.layers] if hasattr(pkv, "layers") else (list(zip(pkv.key_cache, pkv.value_cache)) if hasattr(pkv, "key_cache") else list(pkv))
++
++
++def soft_decoder(m, pkv, x, vis, qf, mval, capture=None):
++    """§223 Note 223-8 R3 (--m2_stage; Theory 10-22 conditions a-d): the decoder call as a self-contained GPT-2 forward from the cached K / V
++    (transformers 4.46 reshapes any attention_mask to 2-D, so an additive soft mask cannot go through the HF call). It runs the model's OWN modules
++    (the LoRA-wrapped c_attn / c_proj / c_fc, ln_1 / ln_2 / ln_f, wpe, the tied lm_head) so LoRA and prj train through it, with GPT-2's train-mode
++    dropouts (embd: transformer.drop; attention probabilities: attn.attn_dropout.p inside SDPA; resid: attn.resid_dropout; the MLP's own dropout)
++    and HF's default positions (past length .. past length + L - 1). Implementation difference (PS cell only): the dropout RNG draws differ from
++    the HF call's order (same distribution, not bitwise).
++    x (B, Ld, 768) decoder input embeddings; vis (B, Lp) 1 = a visible cached key (padding 0); qf (B, Lp) 1 = question content + <bot> keys;
++    mval: m < 1 -> + log(max(1 - m, 1e-6)) on the qf keys' logits (each question key's unnormalised weight x (1 - m)); m >= 1 -> qf keys masked (the
++    registered M2 key mask). Own tokens: causal. capture (gates only): a list -> per layer the attention probabilities (B, H, Ld, Lp + Ld), computed
++    explicitly in fp32 (fp64 in fp64 gates). -> logits (B, Ld, V)."""
++    tr = m.transformer; B, Ld, _ = x.shape; PK = _past_kv(pkv); Lp = PK[0][0].shape[2]; dev = x.device
++    h = tr.drop(x + tr.wpe(torch.arange(Lp, Lp + Ld, device=dev))[None])
++    vis_ = vis.bool() & ~(qf.bool() if mval >= 1 else torch.zeros_like(qf, dtype=torch.bool))
++    bias_fn = None
++    for i, blk in enumerate(tr.h):
++        a = blk.ln_1(h); q, k, v = blk.attn.c_attn(a).split(768, dim=2)
++        sh = lambda t: t.view(B, Ld, 12, 64).transpose(1, 2)  # noqa: E731
++        q, k, v = sh(q), sh(k), sh(v); K_ = torch.cat([PK[i][0].to(k.dtype), k], 2); V_ = torch.cat([PK[i][1].to(v.dtype), v], 2)
++        if bias_fn is None:                                                 # one additive bias for every layer, in the attention dtype
++            mn = torch.finfo(q.dtype).min; pb = torch.zeros(B, Lp, dtype=torch.float64, device=dev)
++            if mval < 1:
++                pb = pb + qf.to(torch.float64) * math.log(max(1.0 - mval, 1e-6))   # 0 exactly at m = 0; the 1e-6 floor only near m = 1
++            pb = pb.masked_fill(~vis_, mn); own = torch.zeros(Ld, Ld, dtype=torch.float64, device=dev).masked_fill(torch.ones(Ld, Ld, dtype=torch.bool, device=dev).triu(1), mn)
++            bias_fn = torch.cat([pb[:, None, None, :].expand(B, 1, Ld, Lp), own[None, None].expand(B, 1, Ld, Ld)], -1).to(q.dtype)
++        o = F.scaled_dot_product_attention(q, K_, V_, attn_mask=bias_fn, dropout_p=blk.attn.attn_dropout.p if m.training else 0.0)
++        if capture is not None:
++            cd = torch.float64 if q.dtype == torch.float64 else torch.float32
++            capture.append(torch.softmax((q.to(cd) @ K_.to(cd).transpose(-1, -2)) / 8.0 + bias_fn.to(cd), -1).detach())
++        h = h + blk.attn.resid_dropout(blk.attn.c_proj(o.transpose(1, 2).reshape(B, Ld, 768)))
++        h = h + blk.mlp(blk.ln_2(h))
++    return m.lm_head(tr.ln_f(h))
++
++
++def forward(m, prj, D, b, a, probe=None, m2=None, capture=None):
+     """the student path -> (loss, parts dict, extras). probe (gradflow only): {"enc_kv": True} makes the decoder call's encoder-position past K/V
+-    leaf tensors (and the latent rows' K/V) so their grads can be read."""
++    leaf tensors (and the latent rows' K/V) so their grads can be read. m2 (the trainer with --m2_stage only): the staged-M2 value m -> the
++    decoder call is soft_decoder (capture: its per-layer attention probabilities, gates only); None = the HF decoder call (unchanged)."""
+     dev = b["enc"].device; B = b["enc"].shape[0]; compat = a.codi_compat; K = 0 if a.direct else b["K"]
+     am_enc = b["em"]                                                      # codi_port masks the encoder call too
+     o = m(input_ids=b["enc"], attention_mask=am_enc, use_cache=True, output_hidden_states=True); pkv = o.past_key_values
+@@ -168,9 +215,14 @@
+     ex = {}
+     if probe:
+         pkv, ex = _leaf_cache(pkv, b["em"].shape[1])
+-    dmf = torch.cat([dm, _ones(B, b["dec"].shape[1], dev)], 1)
+-    so = m(inputs_embeds=m.transformer.wte(b["dec"]), attention_mask=None if (compat and not a.bottleneck) else dmf, use_cache=True, past_key_values=pkv)
+-    lg = so.logits[:, :-1]; tg = b["dl"][:, 1:]; lgc = lg if compat else lg.float()                 # compat: codi_port's CE dtype (plain-path smoke)
++    if m2 is not None and a.bottleneck and not a.direct:                 # §223 R3 (--m2_stage): the staged mask through soft_decoder
++        qf = torch.zeros_like(am); qf[:, :b["em"].shape[1]] = b["qm"]
++        logits = soft_decoder(m, pkv, m.transformer.wte(b["dec"]), am, qf, float(m2), capture)
++    else:
++        dmf = torch.cat([dm, _ones(B, b["dec"].shape[1], dev)], 1)
++        so = m(inputs_embeds=m.transformer.wte(b["dec"]), attention_mask=None if (compat and not a.bottleneck) else dmf, use_cache=True, past_key_values=pkv)
++        logits = so.logits
++    lg = logits[:, :-1]; tg = b["dl"][:, 1:]; lgc = lg if compat else lg.float()                 # compat: codi_port's CE dtype (plain-path smoke)
+     ce = F.cross_entropy(lgc.reshape(-1, lg.size(-1)), tg.reshape(-1), ignore_index=-100)
+     nl = lg.gather(1, b["npos"][:, None, None].expand(-1, 1, lg.size(-1))).squeeze(1).float(); nt = b["dec"].gather(1, (b["npos"] + 1)[:, None]).squeeze(1)
+     nce = F.cross_entropy(nl, nt); parts = {"ans_ce": float(ce.detach()), "num_ce": float(nce.detach()), "num_acc": float((nl.argmax(-1) == nt).float().mean())}
+@@ -178,7 +230,7 @@
+     if a.recode and not a.direct:
+         rce, rv, nv = recode_ce(m, D, zs, b, dev); loss = loss + a.lam * rce; ex["rce"] = rce
+         parts.update({"recode_ce": float(rce.detach()), "recode_val_ce": rv, "recode_val_n": nv})
+-    ex.update({"zs": zs, "nce": nce, "ce": ce}); return loss, parts, ex
++    ex.update({"zs": zs, "nce": nce, "ce": ce, "logits": logits}); return loss, parts, ex
+ 
+ 
+ def recode_ce(m, D, zs, b, dev):
+@@ -266,8 +318,9 @@
+     ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default=""); ap.add_argument("--time_steps", type=int, default=0)
+     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
+     ap.add_argument("--stop_at", type=int, default=0, help="resume test only: exit 9 after this step")
++    ap.add_argument("--m2_stage", action="store_true", help="Note 223-8 R3: staged M2 (needs --bottleneck)"); ap.add_argument("--m2_ramp", type=int, default=2000)
+     a = ap.parse_args(argv); os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed)
+-    assert not (a.direct and (a.recode or a.bottleneck)), "DIRECT has no latent flags"; assert a.recode == (a.lam > 0), "--recode needs --lam > 0 (and only then)"
++    assert a.bottleneck or not a.m2_stage, "--m2_stage needs --bottleneck"; assert not (a.direct and (a.recode or a.bottleneck)), "DIRECT has no latent flags"; assert a.recode == (a.lam > 0), "--recode needs --lam > 0 (and only then)"
+     import tiktoken
+     enc = tiktoken.get_encoding("gpt2"); VALUE_TOKS.update(value_tokens(enc))
+     TE = NW.test_set(); PC = NW.pair_candidates(); excl = {it["sig"] for d, its in TE.items() for it in its}
+@@ -301,7 +354,7 @@
+             torch.cuda.reset_peak_memory_stats(dev)
+             try:
+                 with torch.autocast("cuda", dtype=torch.bfloat16):
+-                    l_, _, _ = forward(m, prj, D, collate(deep * a.micro, 0 if a.direct else a.k_cap, dev), a)
++                    l_, _, _ = forward(m, prj, D, collate(deep * a.micro, 0 if a.direct else a.k_cap, dev), a, m2=0.5 if a.m2_stage else None)
+                 l_.backward(); pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 3 * sum(p_.numel() * 4 for _, p_ in TP) / 2 ** 30
+             except torch.OutOfMemoryError:
+                 pk = float("inf")
+@@ -317,7 +370,7 @@
+             return
+         info["micro"] = a.micro; info["accumulation"] = a.eff_bs // a.micro; json.dump(info, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
+     acc_steps = a.eff_bs // a.micro; assert a.eff_bs % a.micro == 0
+-    opt, sch, warm = make_opt(a, TP, a.steps); step = 0; t0 = time.time(); entry = None; ck = os.path.join(a.out, "ckpt_last.pt")
++    opt, sch, warm = make_opt(a, TP, a.steps); step = 0; t0 = time.time(); entry = None; ck = os.path.join(a.out, "ckpt_last.pt"); m2_start = None
+     SH = [p_ for n, p_ in TP if ".lora_" in n or n.startswith("prj.")]      # the params both loss terms train
+     if a.resume and os.path.exists(ck):
+         c_ = torch.load(ck, map_location=dev, weights_only=False)
+@@ -326,17 +379,21 @@
+         opt.load_state_dict(c_["opt"]); sch.load_state_dict(c_["sched"]); step = c_["step"]; cg.load(c_["cg"]); entry = c_["entry"]
+         rng.bit_generator.state = c_["rng"]; stream.rng.bit_generator.state = c_["stream_rng"]; stream.stats = c_["stream_stats"]
+         torch.set_rng_state(c_["torch_rng"].cpu()); torch.cuda.set_rng_state(c_["cuda_rng"].cpu(), dev) if dev.startswith("cuda") else None
+-        t0 = time.time() - c_["elapsed"]; print("RESUME from step", step, flush=True)
++        t0 = time.time() - c_["elapsed"]; m2_start = c_.get("m2_start"); print("RESUME from step", step, flush=True)
+     log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); hist = []; m.train(); prj.train(); tl = []
+     if D is not None:
+         D.train()
+     total = a.time_steps or a.steps
+     while step < total:
+-        d, K, its = draw_step(); opt.zero_grad(set_to_none=True); P = []; t1 = time.time()
++        d, K, its = draw_step(); opt.zero_grad(set_to_none=True); P = []; t1 = time.time(); mv = None
++        if a.m2_stage:                                                      # R3: m for this step (step + 1) from the stage the step trains at
++            if m2_start is None and cg.stage >= 2:
++                m2_start = step + 1
++            mv = 0.0 if m2_start is None else min(1.0, (step + 1 - m2_start) / a.m2_ramp)
+         for q0 in range(0, a.eff_bs, a.micro):
+             b = collate(its[q0:q0 + a.micro], K, dev, a.codi_compat)
+             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=dev.startswith("cuda")):
+-                l_, pt, ex = forward(m, prj, D, b, a)
++                l_, pt, ex = forward(m, prj, D, b, a, m2=mv)
+             if q0 == 0 and (step + 1) % a.log_every == 0:                    # Audit 10-21: per-term grad norms on the SHARED params (LoRA + prj), logged only:
+                 pt.update(term_grad_norms(SH, ex, a))                       # autograd.grad reads gradients without touching .grad, so the update is unchanged
+             (l_ / acc_steps).backward(); P.append((float(l_.detach()), pt))
+@@ -353,11 +410,14 @@
+             rec = {"step": step, "loss": float(np.mean([h[0] for h in hist])), "sec": round(time.time() - t0), **pm, "gn_preclip": float(np.mean([h[2] for h in hist])),
+                    "lr": sch.get_last_lr()[0], "d_max": cg.n_max(), "stage": cg.stage, "d_hist": np.bincount([h[3] for h in hist], minlength=13).tolist(),
+                    "K_mean": float(np.mean([h[4] for h in hist])), "entry_step": entry, "stream_restarts": stream.stats.get("restarts", 0)}
++            if a.m2_stage:
++                rec.update(m2_m=mv, m2_start=m2_start)
+             hist = []; log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+         if a.ckpt_every and step % a.ckpt_every == 0 and step < total and not a.time_steps:
+             torch.save({"tp": {n: p_.detach() for n, p_ in TP}, "opt": opt.state_dict(), "sched": sch.state_dict(), "step": step, "cg": cg.state(), "entry": entry,
+                         "rng": rng.bit_generator.state, "stream_rng": stream.rng.bit_generator.state, "stream_stats": dict(stream.stats), "torch_rng": torch.get_rng_state(),
+-                        "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else torch.zeros(1), "elapsed": time.time() - t0}, ck + ".tmp")
++                        "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else torch.zeros(1), "elapsed": time.time() - t0,
++                        **({"m2_start": m2_start} if a.m2_stage else {})}, ck + ".tmp")
+             os.replace(ck + ".tmp", ck)
+             json.dump({"step": step, "stage": cg.stage, "entry": entry}, open(os.path.join(a.out, "ckpt_fingerprint.json"), "w", newline="\n"))
+         if a.stop_at and step >= a.stop_at:
+@@ -369,7 +429,8 @@
+         print("TIMING", float(np.mean(w)), flush=True); return
+     torch.save({n: p_.detach().cpu() for n, p_ in TP}, os.path.join(a.out, "trainable.pt"))
+     json.dump({"steps": step, "train_sec": round(time.time() - t0), "entry_step": entry, "stages": cg.hist, "final_d_max": cg.n_max(), "trainable_sha256": sha_file(os.path.join(a.out, "trainable.pt")),
+-               "stream_restarts": stream.stats.get("restarts", 0), "stream_items": stream.stats.get("items", 0)}, open(os.path.join(a.out, "train_done.json"), "w", newline="\n"), indent=1)
++               "stream_restarts": stream.stats.get("restarts", 0), "stream_items": stream.stats.get("items", 0), **({"m2_start": m2_start} if a.m2_stage else {})},
++              open(os.path.join(a.out, "train_done.json"), "w", newline="\n"), indent=1)
+     if os.path.exists(ck):
+         os.remove(ck)
+     print("DONE", a.out, flush=True)
