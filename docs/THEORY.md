@@ -20814,6 +20814,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The ramp now works in **mass space**: bias = log(1 − m + 1e-6) on the question-content keys, with m linear 0 → 1 over the 2,000 steps. Each question key's unnormalised weight is scaled by (1 − m), so the question's attention mass falls gradually and monotonically. At the ramp's end the registered full mask applies.
   - **P2 gate added ($0):** the question-content attention-mass share (mean over decoder queries and heads) on a fixed batch, logged at m = 0, 0.25, 0.5, 0.75 and 1. It must decrease monotonically, with the m = 0.5 share ≥ 0.25 × the m = 0 share (not a step).
   - Everything else is approved as written. The m2_stage flag goes to G-D with the flags-off equivalence gate.
+- **Amendment 2 (07:06 EDT): P2's pass rule, pre-stated before P2 starts (Audit). Build 1ef25d3d (G-D PASS).**
+  - **Run:** 4060, registered kernel; DIRECT → M1-only → PS(+m2_stage); lr 3e-4, cg_thr 0.45; frozen flags otherwise; steps 24000.
+    - **--stop_at 7600, replacing 6600.** m2_stage's ramp starts at PS's stage 1 → 2 advance (d ≤ 2 learned): at the latest stage 1 starts at 2,500 (cap) and stage 2 at 5,000 (cap), so the ramp ends ≤ 7,000, leaving ≥ 500 post-ramp steps.
+  - **LP0, stability:** no cell logs a non-finite or > 1e3 gn_preclip, or a nonfinite record. A blow-up fails that cell.
+  - **LP1:** DIRECT's stage 1 → 2 advance is by threshold (stages.jsonl reason starts "threshold").
+  - **LP2:** M1-only's and PS's stage 1 → 2 advances are by threshold.
+  - **LP3:** M1-only's and PS's entry_step ≤ DIRECT's + 1,500. PS sees the question until its ramp, so its entry is comparable.
+  - **LP4, after the ramp:** PS's mean num_acc over steps 7,100–7,600 ≥ M1-only's mean num_acc over the same steps − 0.15, and ≥ 0.50.
+    - Both cells' CurGate stage over 7,100–7,600 is recorded. If they differ, LP4 is read with the flag STAGE-MISMATCH (descriptive), not voided.
+    - PS's ramp not complete by 7,100 → LP4 UNREAD (cannot happen under the caps above; a crash is re-run).
+  - **LP5:** the attention-mass gate of amendment 1 (monotone; m = 0.5 share ≥ 0.25 × the m = 0 share).
+  - **Outcome:**
+    - All pass → a §223 args re-freeze Note (lr, cg_thr, m2_stage on PS and M2-only), then DIRECT deploys under 223-6.
+    - LP0–LP3 fail → recipe fault: a Note, no cloud.
+    - LP4 fails with LP0–LP3 passing → the M2 premise is unlearnable at this scale: §223 closes descriptively, no cloud spend.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
