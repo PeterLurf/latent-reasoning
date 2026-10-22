@@ -20784,6 +20784,31 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Each change is checked by a new $0 pilot with the same LP gates. The PS2_v1 readings stay as registered.
   - No cloud spend until a pilot passes.
 
+**Note 223-8 (2026-10-22 00:41 EDT; §223 REDESIGN, proposed for Audit's ruling, before any new pilot; per 223-7. The PS2_v1 readings, bars and labels are unchanged; only the training recipe changes, behind a new $0 pilot P2 with the 223-4 LP gates.)**
+- **R1, stability (engineering).** lr 3e-3 → **3e-4**, everything else frozen (bf16 autocast, clip 2.0, warm-up 3 %, cosine over 24k).
+  - [MEASURED, 223-7] lr 3e-3 blew up within ≈ 1k steps of the d = 2 shift on both cards.
+  - [ASSUMED] 10× lower keeps the LoRA r128 update scale below that edge. CODI's 3e-3 was tuned for GSM8K-Aug with 6 fixed latents, not a d-curriculum.
+  - No sweep: one value, fixed now.
+- **R2, threshold (engineering).** cg_thr 0.30 → **0.45**, cap and need unchanged.
+  - [MEASURED, 223-7] a non-diverged DIRECT plateaued at 1k-bin num_ce ≈ 0.35–0.39 with num_acc 0.91 at d = 1, so 0.30 is below the learnable plateau and every advance comes on the cap.
+  - 0.45 is set from that DIRECT plateau only (not from any latent cell) and applies to all cells.
+- **R3, M2 staging (method change; derivation sketch below; Audit or a proof pass may require more).** The bottleneck mask is applied with weight m(step) on the question-content keys' attention logits.
+  - m = 0 while CurGate stage < 2 (d ≤ 2 not yet learned).
+  - Then m ramps linearly to a full mask over 2,000 steps, implemented as an additive −20·m logit bias, not −∞, so the gradient flows during the ramp (the logit-penalty-anneal lesson: anneal from ≈ 20, never from 1e4).
+  - From the end of the ramp, M2 is exactly as registered (full mask).
+  - **Derivation:**
+    - **D-R3a [MEASURED, 223-7]:** with the full mask from step 0, the answer never learned even at d = 1 (num_acc ≈ 0.03), while recode_ce fell (1.81 → 1.27).
+      - The latents carry R_j-decodable content, but the answer head finds no gradient signal early: the answer CE is flat at chance, and its gradient through the latents is too weak to bootstrap.
+    - **D-R3b [DERIVED]:** with m = 0 early, PS ≡ M1-only, which learned (223-7). Once the answer is read correctly with the question visible, ramping the mask gives the answer head a graded incentive to shift its reads to the latents (the D-head has already made them R_j-informative).
+    - **D-R3c [DERIVED]:** the registered readings (PORT-FOLLOW, DECODE-VAL, COPY-CONTROL, BUDGET-FRONT, ANSWER-ONSET) are taken on the final model, where M2 is the full registered mask, so their meaning is unchanged. Staging changes only the optimisation path.
+    - **Goodhart:** m is a schedule, not a learned target. A model that ignores the latents after the ramp fails the answer CE (the question is invisible) and shows up as PS NO-ENTRY / UNREAD, never as a pass.
+    - **Risk:** the ramp may leave a question shortcut through BOS / markers. This is covered by the registered QMASK leak test.
+- **Pilot P2 ($0, local; one card for all cells, the 4060 with the registered kernel):** DIRECT, M1-only and PS (R1 + R2 + R3), with the frozen flags otherwise, --stop_at 6600 (stage 2's ramp completes by ≈ 6.5k if stage 1 advances by threshold at 2k), steps 24000.
+  - Gates: LP1 / LP2 / LP3 as 223-4, with LP2 / LP3 read on PS's num_acc after the ramp. PS-after-ramp mean num_acc over the last 500 steps ≥ 0.5 × DIRECT's at the same d_max.
+  - PS failing after the ramp → PORT-STATE's M2 premise is unlearnable at this scale: a descriptive close of §223, no cloud spend.
+- **Args:** a new freeze after P2 passes (lr, cg_thr, and the new default-off flag m2_stage). Single-change diffs: PS vs M1-only = {bottleneck, m2_stage}; DIRECT / M2-only analogous. The trainer edit needs G-D and the equivalence gate (flags off ⇒ bitwise 45baec0d behaviour).
+- **Cost:** P2 $0. The cloud family cap ($20) is unchanged; nothing deploys until P2 passes and a G-W0 / launch Note is in.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
