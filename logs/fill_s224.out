@@ -18,3 +18,33 @@
 2026-10-22 08:20:24 b331: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_fhft_s1.json)
 2026-10-22 08:27:26 b333: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
 2026-10-22 08:37:28 b333: deploying s224_fhft_s2 on offer 32750800 (77.29.9.173, RTX_3090, $0.2014/h)
+2026-10-22 09:03:50 start: QS 331:s224_fhft_s1:1.60:2.10:12000:1:1 333:s224_fhft_s2:1.60:2.10:12000:1:2 335:s224_ftctrl_s2:1.40:1.80:12000:0:2 332:s224_rdft_s1:1.60:2.10:12000:1:1 334:s224_rdft_s2:1.60:2.10:12000:1:2; family $6.50; SETUP_H 0.4; EVAL_H 1.3; vbank sha 0634fdc03816; vbank_diag sha a602c4075b71; vbank_eval sha dd5752b8ae10
+2026-10-22 09:03:52 b331: deploying s224_fhft_s1 on offer 32750800 (77.29.9.173, RTX_3090, $0.2014/h)
+2026-10-22 10:05:36 b331: did not start (BAD HOST 1 / 4; billed ~$0.2081)
+2026-10-22 10:05:39 b331: deploying s224_fhft_s1 on offer 32750800 (77.29.9.173, RTX_3090, $0.2014/h)
+2026-10-22 10:45:08 b331: did not start (BAD HOST 2 / 4; billed ~$0.1343)
+2026-10-22 10:45:09 CAP: §224 BAD-host spend $0.5952 > $0.50 - held; tell Audit
+2026-10-22 10:52:11 start: QS 331:s224_fhft_s1:1.60:2.10:12000:1:1 333:s224_fhft_s2:1.60:2.10:12000:1:2 335:s224_ftctrl_s2:1.40:1.80:12000:0:2 332:s224_rdft_s1:1.60:2.10:12000:1:1 334:s224_rdft_s2:1.60:2.10:12000:1:2; family $6.50; SETUP_H 0.4; EVAL_H 1.3; vbank sha 0634fdc03816; vbank_diag sha a602c4075b71; vbank_eval sha dd5752b8ae10
+2026-10-22 10:52:14 b331: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 11:02:17 b331: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 11:12:21 b331: deploying s224_fhft_s1 on offer 57229536 (85.90.17.171, RTX_3090, $0.2228/h)
+2026-10-22 11:13:49 b331: did not start (BAD HOST 1 / 4; billed ~$0.0074)
+2026-10-22 11:13:52 b331: deploying s224_fhft_s1 on offer 28824264 (186.128.151.58, RTX_3090, $0.2014/h)
+2026-10-22 11:24:21 b331: 15:23:31 HOSTPROBE 0.6401 s/step (limit 0.854; b225 reference 0.657) on 186.128.151.58:50098
+2026-10-22 11:25:30 b331: K7 mem_check {"peak_gib_train_step":12.645822048187256,"peak_gib_eval_n16_k24":10.339753150939941,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.8189892689387004 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $1.11 (12000 + EQ 4800 steps, 1 eval set(s) x 1.3 h; cap $1.60); family so far $0.6026 (admitted + BAD) of $6.50
+2026-10-22 11:25:31 b331: ADMIT s224_fhft_s1 on 186.128.151.58:50098 (instance 57230869): $1.11
+2026-10-22 11:25:31 b331: ckpt mirror (every 0.45 h) + cell guard ($2.10 - rejected-host $0.3800 = $1.72, GUARD_STOP=1) started
+2026-10-22 11:25:31 guard s224fam ($6.50, GUARD_STOP=1; 331:s224_fhft_s1:2.10:12000 333:s224_fhft_s2:2.10:12000 335:s224_ftctrl_s2:1.80:12000 332:s224_rdft_s1:2.10:12000 334:s224_rdft_s2:2.10:12000) started
+2026-10-22 11:25:31 b331: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_fhft_s1.json)
+2026-10-22 11:32:34 b333: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 11:42:38 b333: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 11:52:43 b333: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 12:02:48 b333: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 12:12:53 b333: deploying s224_fhft_s2 on offer 48399575 (161.29.203.152, RTX_3090, $0.2395/h)
+2026-10-22 12:22:00 b333: 16:21:14 HOSTPROBE 0.5043 s/step (limit 0.854; b225 reference 0.657) on 161.29.203.152:51093
+2026-10-22 12:22:10 b333: K7 mem_check {"peak_gib_train_step":12.645822048187256,"peak_gib_eval_n16_k24":10.339753150939941,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.6702791094779968 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $1.16 (12000 + EQ 4800 steps, 1 eval set(s) x 1.3 h; cap $1.60); family so far $1.7126 (admitted + BAD) of $6.50
+2026-10-22 12:22:10 b333: ADMIT s224_fhft_s2 on 161.29.203.152:51093 (instance 57238108): $1.16
+2026-10-22 12:22:10 b333: ckpt mirror (every 0.37 h) + cell guard ($2.10 - rejected-host $0.0000 = $2.1, GUARD_STOP=1) started
+2026-10-22 12:22:10 b333: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_fhft_s2.json)
+2026-10-22 12:29:14 b335: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 12:39:19 b335: deploying s224_ftctrl_s2 on offer 28824264 (186.128.151.58, RTX_3090, $0.2014/h)
