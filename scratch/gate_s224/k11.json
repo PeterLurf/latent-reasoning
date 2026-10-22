@@ -1,0 +1,84 @@
+{
+ "n_ref_after": 11,
+ "n_resumed": 11,
+ "records_bitwise": false,
+ "lambda_ref": [
+  {
+   "step": 250,
+   "fh_lambda_set": 0.5896394013893295,
+   "fh_ratio_median": 0.33919035859671665,
+   "fh_n_ratios": 101,
+   "fh_capped": false
+  }
+ ],
+ "lambda_resumed": [
+  {
+   "step": 250,
+   "fh_lambda_set": 0.5896394013893295,
+   "fh_ratio_median": 0.33919035859671665,
+   "fh_n_ratios": 101,
+   "fh_capped": false
+  }
+ ],
+ "first_diff": [
+  {
+   "step": 210,
+   "loss": 0.000609162394903251,
+   "answer_ce": 0.00019312095613486236,
+   "rec_ce": 0.000416041437711101,
+   "n_max_train": 8,
+   "cur_stage": 0,
+   "lr": 2.997733646175807e-05,
+   "c": 0.0,
+   "gn_preclip": 0.00882098451256752,
+   "clip_frac_100": 0.12,
+   "slva_offnewest_chg": 0.02681785452273465,
+   "slva_offnewest_copy": 0.2520991032240821,
+   "slva_gn": 0.0005625027697533369,
+   "far_ce": 7.603708313581592e-05,
+   "fh_r_far": 0.026897103898227213,
+   "fh_r_far_g": 0.026897103898227213,
+   "fh_gate_share": 1.0,
+   "far_t_mean": 36.0,
+   "fh_lfp1": 0.026897103898227213,
+   "fh_lambda": null,
+   "fh_gratio1": 3.0029797864819754,
+   "fh_gnorm_fp1": 0.026489238435934617,
+   "fh_gnorm_rest": 0.008820984595093482,
+   "far_nonfinite": 0
+  },
+  {
+   "step": 210,
+   "loss": 0.000609162394903251,
+   "answer_ce": 0.00019312095613486236,
+   "rec_ce": 0.000416041437711101,
+   "n_max_train": 8,
+   "cur_stage": 0,
+   "lr": 2.997733646175807e-05,
+   "c": 0.0,
+   "gn_preclip": 0.00882098451256752,
+   "clip_frac_100": 0.0,
+   "slva_offnewest_chg": 0.02681785452273465,
+   "slva_offnewest_copy": 0.2520991032240821,
+   "slva_gn": 0.0005625027697533369,
+   "far_ce": 7.603708313581592e-05,
+   "fh_r_far": 0.026897103898227213,
+   "fh_r_far_g": 0.026897103898227213,
+   "fh_gate_share": 1.0,
+   "far_t_mean": 36.0,
+   "fh_lfp1": 0.026897103898227213,
+   "fh_lambda": null,
+   "fh_gratio1": 3.0029797864819754,
+   "fh_gnorm_fp1": 0.026489238435934617,
+   "fh_gnorm_rest": 0.008820984595093482,
+   "far_nonfinite": 0
+  }
+ ],
+ "pass": false,
+ "excluding_clip_frac_100": {
+  "records_bitwise": true,
+  "lambda_line_equal": true,
+  "n": 11,
+  "note": "clip_frac_100 = share of clipped steps over the last 100 logged gn values (gn_log); gn_log is not in the vbank checkpoint (pre-\u00a7224 behaviour), so a resumed run's window restarts empty; equal again at step 300. Every training field bitwise. The registered verdict above stays FAIL as written; Audit rules."
+ }
+}
