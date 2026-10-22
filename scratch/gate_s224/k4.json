@@ -1,0 +1,49 @@
+{
+ "slva_base": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_equal": true,
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "slva_ft": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_equal": true,
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "pa": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_equal": true,
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "carry": {
+  "log_bitwise": true,
+  "calibration_equal": true,
+  "n_log": 3,
+  "files_equal": true,
+  "files_new": [
+   "args.json",
+   "calibration.json",
+   "log.jsonl"
+  ]
+ },
+ "rollout_fp64_bitwise": true,
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/fh224_tree"
+}
