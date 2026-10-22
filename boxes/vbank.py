@@ -259,7 +259,7 @@ class VBankN(torch.nn.Module):
                 h = block_bank(src, i, h, bk, bv, bb, km)
         return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
 
-    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None, v0=None, pause=None):
+    def rollout(self, x, pad, K, coda_rows=None, edit=None, v0_off_after=None, sg_input=False, prefix=None, ver_sub=None, v0=None, pause=None, grad_from=None):
         """x (B, T) token ids [EOT, expr, ' ='] right-padded; pad (B, T) real-slot mask; K passes.
         coda_rows {t: LongTensor rows}: the coda after pass t (t = 0: on V_0) on those rows -> out["coda"][t] = (rows, h (b, T, D)).
         edit(t, V_t) -> the stored entry V_t' (bank, and the carry), or (bank_t, carry_t) under CARRY (VALUE-SWAP iii); None = V_t (interventions, MCT).
@@ -271,8 +271,13 @@ class VBankN(torch.nn.Module):
         Eval-only (212-15): v0 = a given V_0 (GAPPED's interior-masked prelude); self.slot_mask (see __init__). None = unchanged.
         §214 (D4, training + eval_pause only): pause = (B, K + 1) bool -> at pass t, U_t += pause_vec at every real slot of the items with pause[:, t]
         (after the input read and sg_input, before block 6); the computed V_t is stored and carried as at any pass. None = unchanged.
+        §224 (FH_v1 §1, the far branch): grad_from = T -> the prelude and passes 0..T-1 (their bank K / V, gather keys, stored entries and codas) run
+        with autograd off; passes >= T as the caller's grad mode. None = unchanged (the context is the caller's own grad mode: a no-op).
         -> {"V": computed V_0..V_K, "S": stored entries, "coda": {...}, "kv": the bank K / V}."""
-        g = self.g; B, T = x.shape; V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]) if v0 is None else v0; rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
+        gon = torch.is_grad_enabled(); gctx = lambda t_: torch.set_grad_enabled(gon and (grad_from is None or t_ >= grad_from))   # noqa: E731  §224
+        g = self.g; B, T = x.shape
+        with gctx(0):
+            V0 = DM_().gpt_lower(g, g.embed(x), CORE[0]) if v0 is None else v0; rms0 = V0.pow(2).mean(-1, keepdim=True).sqrt()
         M = None if self.slot_mask is None else self.slot_mask(0, V0).bool() & pad     # removed slots so far (212-15); None = the default path
         pd = pad if M is None else pad & ~M
         Vc, St, kv, gk, NV, out = [V0], [V0], {i: [] for i in LAYERS}, [], [], {}
@@ -312,36 +317,38 @@ class VBankN(torch.nn.Module):
             if self.ver_sub_from is None:
                 return [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr > s_ + 1 else lst[s_] for s_ in range(len(lst))]
             return [flst[s_ - 1] if 1 <= s_ <= len(flst) and tr >= self.ver_sub_from else lst[s_] for s_ in range(len(lst))]
-        coda_at(0, V0); push(V0); carry = V0
-        for F_ in (prefix or []):                                           # INSERT: foreign versions after V_0
-            Vc.append(F_); St.append(F_); push(F_)
+        with gctx(0):
+            coda_at(0, V0); push(V0); carry = V0
+            for F_ in (prefix or []):                                       # INSERT: foreign versions after V_0
+                Vc.append(F_); St.append(F_); push(F_)
         for t in range(1 + len(prefix or []), K + 1):
-            off_ = v0_off_after is not None and t > v0_off_after
-            kp_ = self.ver_keep(t, t) if self.ver_keep else None
-            h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, dup(view(t, gk, fgk), t, "gk"), dup(view(t, NV, fNV), t, "NV"), pd, off_, kp_)
-            h = h.detach() if sg_input else h
-            if pause is not None:                                           # §214 computed PAUSE pass
-                h = h + ((pause[:, t][:, None] & pad).to(h.dtype)[..., None] * self.pause_vec.to(h.dtype))
-            if self.input_edit is not None:                                 # eval-only (213-1 LFK FAULT): the pass input U_t -> input_edit(t, U_t)
-                h = self.input_edit(t, h)
-            for li, i in enumerate(CORE):
-                kvi = dup(view(t, kv[i], fkv[i] if fkv else None), t, ("kv", i)); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
-                bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pd, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
-                if self.cap is not None:
-                    self.cap[("core", i, t)] = h.detach()
-                h = block_bank(g, i, h, bk, bv, bb, M)
-            Vc.append(h)
-            if M is not None:                                               # 212-15: slots removed after this pass (the coda after pass t already drops them)
-                M = M | (self.slot_mask(t, h).bool() & pad); pd = pad & ~M
-            coda_at(t, h)
-            st = edit(t, h) if edit is not None else None
-            st = h if st is None else st
-            if isinstance(st, tuple):
-                assert self.mode == "carry", "a separate carry exists under CARRY only"
-                st, carry = st
-            else:
-                carry = st
-            St.append(st); push(st)
+            with gctx(t):
+                off_ = v0_off_after is not None and t > v0_off_after
+                kp_ = self.ver_keep(t, t) if self.ver_keep else None
+                h = self.nrm(carry, rms0) if self.mode == "carry" else self.gather(t, dup(view(t, gk, fgk), t, "gk"), dup(view(t, NV, fNV), t, "NV"), pd, off_, kp_)
+                h = h.detach() if sg_input else h
+                if pause is not None:                                           # §214 computed PAUSE pass
+                    h = h + ((pause[:, t][:, None] & pad).to(h.dtype)[..., None] * self.pause_vec.to(h.dtype))
+                if self.input_edit is not None:                                 # eval-only (213-1 LFK FAULT): the pass input U_t -> input_edit(t, U_t)
+                    h = self.input_edit(t, h)
+                for li, i in enumerate(CORE):
+                    kvi = dup(view(t, kv[i], fkv[i] if fkv else None), t, ("kv", i)); bk = torch.cat([k for k, _ in kvi], 2); bv = torch.cat([v for _, v in kvi], 2)
+                    bb = bias_row(self.beta[li], self.beta0[li], self.gam[li], t, t, pd, off_, self.bank_off, kp_, self.age_floor).expand(-1, -1, T, -1)
+                    if self.cap is not None:
+                        self.cap[("core", i, t)] = h.detach()
+                    h = block_bank(g, i, h, bk, bv, bb, M)
+                Vc.append(h)
+                if M is not None:                                               # 212-15: slots removed after this pass (the coda after pass t already drops them)
+                    M = M | (self.slot_mask(t, h).bool() & pad); pd = pad & ~M
+                coda_at(t, h)
+                st = edit(t, h) if edit is not None else None
+                st = h if st is None else st
+                if isinstance(st, tuple):
+                    assert self.mode == "carry", "a separate carry exists under CARRY only"
+                    st, carry = st
+                else:
+                    carry = st
+                St.append(st); push(st)
         return {"V": Vc, "S": St, "coda": out, "kv": kv}
 
     def answer_logits(self, h, lens):
@@ -542,6 +549,32 @@ def vb_loss(m, items, Ks, dev, ac, rec_w=1.0, tf_p=0.0, tf_rng=None, mu=1.0, sg_
     return L_ans + rec_w * L_rec, st, (r if keep else None)
 
 
+def far_branch(m, items, T_far, dev, ac):
+    """§224 FH_v1 §1 far branch on `items` (the step's first far_n plain items), one T_far for all: the prelude and passes 1..T_far - 1 run without
+    autograd (bank K / V detached; rollout grad_from), pass T_far and its coda with the caller's grad mode. Every item needs n_i + 2 < T_far.
+    L_far = the answer CE (full vocabulary, the ' %d' target, as R1) of the coda at T_far, mean over items.
+    r_anchor_i = ||V_T_far - sg V_{n_i+2}||^2 / ||sg V_{n_i+2}||^2, sums over the item's real slots (pad) and D, fp32 (fp64 in the gates); V_{n_i+2} from the same no-grad prefix.
+    g_i = 1[the coda answer at T_far - 1 (argmax over the 11 value tokens, no grad) == the gold value]. L_fp1 = mean_i g_i r_anchor_i (lambda 1; g = 0 items
+    count as 0). -> (L_far, L_fp1, stats {far_ce, fh_r_far (mean r over items), fh_r_far_g (mean r over g = 1 items; None if none), fh_gate_share,
+    t_far}, the rollout). The caller weights / backprops; nothing here touches an rng."""
+    x, pad, lens = batch_x(items, dev); B = x.shape[0]; n_ = [int(it["n"]) for it in items]
+    assert all(n + 2 < T_far for n in n_), ("far branch: n + 2 >= T_far", max(n_), T_far)
+    rows = torch.arange(B, device=dev)
+    with ac():
+        r = m.rollout(x, pad, T_far, coda_rows={T_far - 1: rows, T_far: rows}, grad_from=T_far)
+    yv = torch.tensor([it["t"] for it in items], device=dev); y = torch.tensor(N.NUM_IDS[[it["t"] for it in items]], device=dev)
+    with torch.no_grad():
+        gt = (m.answer_logits(r["coda"][T_far - 1][1], lens)[:, torch.tensor(N.NUM_IDS, device=dev)].argmax(-1) == yv).float()
+    L_far = F.cross_entropy(m.answer_logits(r["coda"][T_far][1], lens), y, reduction="none").float().mean()
+    fd = torch.float64 if r["V"][T_far].dtype == torch.float64 else torch.float32           # fp32 (fp64 in the gates)
+    A = torch.stack([r["V"][n + 2][b] for b, n in enumerate(n_)]).to(fd).detach(); VT = r["V"][T_far].to(fd); pm = pad[..., None].to(fd)
+    rr = (((VT - A) ** 2) * pm).sum((1, 2)) / ((A ** 2) * pm).sum((1, 2))
+    L_fp1 = (gt.to(fd) * rr).mean(); rd = rr.detach()
+    st = {"far_ce": float(L_far.detach()), "fh_r_far": float(rd.mean()), "fh_r_far_g": float(rd[gt > 0].mean()) if bool((gt > 0).any()) else None,
+          "fh_gate_share": float(gt.mean()), "t_far": int(T_far)}
+    return L_far, L_fp1, st, r
+
+
 class CurGate:
     """R4 (draft §4; REDTEAM F9b; pin (d)): stages n_max = ns[0] -> ... -> ns[-1]. A stage advances when `need` consecutive completed 1k-step bins
     (counted from the stage's first step) of the per-step readiness-window answer CE (not the total loss) average < thr, or after `cap` steps in the
@@ -622,6 +655,13 @@ def main():
     ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--stop_at", type=int, default=0, help="smokes (G1b): stop after this step, schedules unchanged (no final eval)")
     ap.add_argument("--keep_ckpt_steps", default="", help="comma steps (0 = after calibration) at which a model-only copy ckpt_model_<step>.pt is kept (G1b smoke)")
+    ap.add_argument("--far", action="store_true", help="§224 FH_v1 §1: the far branch (RD; FH = --far --fh)")
+    ap.add_argument("--fh", action="store_true", help="§224: + the anchored L_FP at the dose-rule lambda (needs --far)")
+    ap.add_argument("--far_n", type=int, default=16, help="§224: far items = the step's first far_n plain items")
+    ap.add_argument("--far_t", default="13,48", help="§224: T_far ~ U{lo..hi}, one per step (rng_far = seed + 7100)")
+    ap.add_argument("--far_w", type=float, default=1.0, help="§224: L_far weight (G-FH-EQ: 0)")
+    ap.add_argument("--fh_dose", default="250,500", help="§224 dose window lo,hi (inclusive; Stage 2: 7500,8000)")
+    ap.add_argument("--fh_target", type=float, default=0.2); ap.add_argument("--fh_lam_cap", type=float, default=10.0)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device
     from boxes import s5
@@ -638,6 +678,10 @@ def main():
     assert DMm.POS_OFFSET == 0 and not DMm.POS_KEEP0, "training needs the plain position table (POS_OFFSET 0)"   # §213 G-D7
     m = make_model(s5.load_gpt2(dev), a.mode, a.table, a.pause).to(dev); a.arch = type(m).__name__
     rng_p = np.random.default_rng(a.seed + 21300) if a.pause != "none" else None   # §214: the coin, P, D and positions only (G-P12); rng / rng_k untouched
+    assert a.far or not a.fh, "--fh needs --far"; assert not a.far or (a.pause == "none" and not a.self_pool), "§224: the far branch is plain-only"
+    rng_far = np.random.default_rng(a.seed + 7100) if a.far else None   # §224: T_far only; every other rng untouched
+    far_lo, far_hi = (int(v) for v in a.far_t.split(",")); fh_d0, fh_d1 = (int(v) for v in a.fh_dose.split(","))
+    fhs = {"lam": None, "lam_step": None, "ratio_median": None, "ratios": [], "far_nonfinite": 0}   # §224 dose-rule state (checkpointed)
     pool, rng_s, selfst = None, None, {"cursor": 0, "n_self_steps": 0, "self_reuse": 0}   # not "sd" (init_from binds and dels sd)
     if a.self_pool:                                                         # §215: the pool (sha + key-set checked); rng_s = seed + 21800 (coin + self U only)
         import boxes.selfdepth as SD
@@ -657,6 +701,8 @@ def main():
             rng_p.bit_generator.state = ck["rng_p"]
         if rng_s is not None:                                               # §215: cursor, rng_s and self counters
             rng_s.bit_generator.state = ck["rng_s"]; selfst.update(ck["self_state"])
+        if rng_far is not None:                                             # §224: T_far stream + dose state (K11)
+            rng_far.bit_generator.state = ck["rng_far"]; fhs.update(ck["fh_state"])
         GATE.load(ck["gate"]); step0 = ck["step"] + 1; t_prev = ck["elapsed"]; n_nonfinite = ck["n_nonfinite"]; cal = ck["calibration"]
         print("RESUME", a.resume, "step", ck["step"], flush=True); del ck
     else:                                                                   # pin 3: beta0 / beta calibrated at step 0 (CARRY rollout, bank masked; fp32)
@@ -690,6 +736,8 @@ def main():
                     (L_ / mic).backward(); del L_
                     if a.mct:                                               # the MCT path's extra memory (p_TF 1) on the same chunk
                         L_, _, _ = vb_loss(m, sub, [a.kmax] * len(sub), dev, ac, a.rec_w, 1.0, np.random.default_rng(0)); (L_ / mic).backward(); del L_
+                if a.far:                                                   # §224 K7: + the far branch at its largest shape (T_far hi, L_far + L_FP)
+                    Lf_, Lp_, _, _ = far_branch(m, big[:a.far_n], far_hi, dev, ac); (a.far_w * Lf_ + Lp_).backward(); del Lf_, Lp_
             except torch.OutOfMemoryError:
                 ok = False
             m.zero_grad(set_to_none=True); pk = torch.cuda.max_memory_allocated(dev) / 2 ** 30; am[str(mic)] = round(pk, 2) if ok else "OOM"
@@ -725,7 +773,7 @@ def main():
     forced = bool(a.mem_check or a.time_steps)
     if forced:
         GATE.stage = len(ns) - 1
-    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []; tt0 = time.time()
+    log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); t0 = time.time() - t_prev; acc = []; gn_log = []; facc = []; tt0 = time.time()
 
     def draw(nmax):
         if a.mem_check:                                                     # the longest items of the final stage
@@ -779,6 +827,7 @@ def main():
         m.c_anneal.fill_(c_at(step, ch0, ch1) if m.anneals else 1e4); tfp = tf_at(step, tf0, tf1) if a.mct else 0.0   # §213 G-D4: the capability flag
         ts0 = time.time(); m.train(); its, Ks, pz, is_self, dl = draw_step(GATE.n_max(), step); opt.zero_grad(set_to_none=True); tot = 0.0
         mic = a.self_micro if is_self else a.micro; ch = len(its) // mic; sts = []
+        T_far = (far_hi if forced else int(rng_far.integers(far_lo, far_hi + 1))) if rng_far is not None else None   # §224: one per step
         if dl is not None:
             draws_log.append(dl)
         m.gather_log = [] if (a.mode == "pa" and step % a.log_every == 0) else None
@@ -799,9 +848,31 @@ def main():
         if a.mode == "pa" and step % a.log_every == 0:                    # note 211-3 gate: the gather's parameter gradient norm (pre-clip)
             gg_ = [p_.grad for n_, p_ in m.named_parameters() if n_ in ("gq_w", "gq_b", "gk_w", "gk_b", "gln_w", "gln_b", "gamma_q") and p_.grad is not None]
             gather_gn = float(torch.stack([g_.float().pow(2).sum() for g_ in gg_]).sum().sqrt()) if gg_ else 0.0
+        fst = None; far_bad = False
+        if rng_far is not None and not is_self:                             # §224 FH_v1 §1: after the plain micro-batches (slva_gn / gather_gn above = plain only)
+            lam = fhs["lam"] if (a.fh and fhs["lam"] is not None) else 0.0
+            Lf_, Lp_, fst, rfar_ = far_branch(m, its[:a.far_n], T_far, dev, ac); fin = bool(torch.isfinite(Lf_)) and bool(torch.isfinite(Lp_))
+            in_win = a.fh and fhs["lam"] is None and fh_d0 <= step <= fh_d1; gfp = None
+            if fin and a.fh and (in_win or step % a.log_every == 0):     # the dose ratio: ||grad L_FP(lambda 1)|| / ||grad (L_ans + L_rec + L_far)||
+                TPf = [p_ for p_ in m.parameters() if p_.requires_grad]; gfp = torch.autograd.grad(Lp_, TPf, retain_graph=True, allow_unused=True)
+            if fin:
+                (a.far_w * Lf_ + lam * Lp_).backward()                        # far_w 0 / lam 0: the weight-0 terms still run backward (G-FH-EQ)
+            else:                                                       # 0 x non-finite guard: a non-finite far term is never multiplied in
+                fhs["far_nonfinite"] += 1; fst["far_nonfinite_step"] = 1; far_bad = a.far_w != 0 or lam != 0
+            if gfp is not None:
+                n_fp = math.sqrt(sum(float(g_.float().pow(2).sum()) for g_ in gfp if g_ is not None))
+                n_rest = math.sqrt(sum(float((p_.grad.float() - lam * g_.float()).pow(2).sum()) if g_ is not None else float(p_.grad.float().pow(2).sum())
+                                       for p_, g_ in zip(TPf, gfp) if p_.grad is not None)); del gfp
+                fst.update(fh_gnorm_fp1=n_fp, fh_gnorm_rest=n_rest, fh_gratio1=n_fp / n_rest if n_rest > 0 else None)
+                if in_win and n_rest > 0:
+                    fhs["ratios"].append(n_fp / n_rest)
+            if a.fh and fhs["lam"] is None and step >= fh_d1 and fhs["ratios"]:   # lambda set once at the window end, fixed afterwards
+                med = float(np.median(fhs["ratios"])); fhs.update(lam=min(a.fh_lam_cap, a.fh_target / med) if med > 0 else a.fh_lam_cap, lam_step=step, ratio_median=med)
+                log.write(json.dumps({"step": step, "fh_lambda_set": fhs["lam"], "fh_ratio_median": med, "fh_n_ratios": len(fhs["ratios"]), "fh_capped": fhs["lam"] >= a.fh_lam_cap}) + "\n"); log.flush()
+            fst.update(fh_lambda=lam, fh_lfp1=float(Lp_.detach())); facc.append(fst); del Lf_, Lp_, rfar_
         gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); gn_log.append(float(gn))
         ans = float(np.mean([s_["answer_ce"] for s_ in sts])); rec = float(np.mean([s_["rec_ce"] for s_ in sts]))
-        if not (math.isfinite(tot) and bool(torch.isfinite(gn))):
+        if far_bad or not (math.isfinite(tot) and bool(torch.isfinite(gn))):
             n_nonfinite += 1; opt.zero_grad(set_to_none=True); log.write(json.dumps({"step": step, "nonfinite": 1}) + "\n"); log.flush(); ans_g = None
         else:
             opt.step(); acc.append((tot, ans, rec, sts)); ans_g = ans
@@ -833,7 +904,13 @@ def main():
                              "slva_offnewest_copy": sm_["copy"][0] / sm_["copy"][1] if sm_["copy"][1] else None, "slva_gn": slva_gn})
             if m.gather_log:
                 rec_["carry_mass"] = float(torch.cat([v_ for _, v_ in m.gather_log]).mean()); rec_["gather_offself"] = 1.0 - rec_["carry_mass"]; rec_["gather_gn"] = gather_gn
-            log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []
+            if rng_far is not None:                                         # §224 fields (far_ce apart from answer_ce: CurGate reads the plain batch only)
+                mean_ = lambda k: (float(np.mean([f_[k] for f_ in facc if f_.get(k) is not None])) if any(f_.get(k) is not None for f_ in facc) else None)  # noqa: E731
+                rec_.update({"far_ce": mean_("far_ce"), "fh_r_far": mean_("fh_r_far"), "fh_r_far_g": mean_("fh_r_far_g"), "fh_gate_share": mean_("fh_gate_share"),
+                             "far_t_mean": mean_("t_far"), "fh_lfp1": mean_("fh_lfp1"), "fh_lambda": fhs["lam"] if a.fh else 0.0,
+                             "fh_gratio1": facc[-1].get("fh_gratio1") if facc else None, "fh_gnorm_fp1": facc[-1].get("fh_gnorm_fp1") if facc else None,
+                             "fh_gnorm_rest": facc[-1].get("fh_gnorm_rest") if facc else None, "far_nonfinite": fhs["far_nonfinite"]})
+            log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []; facc = []
         m.gather_log = None
         if step in KEEP:
             torch.save({"model": m.state_dict(), "step": step}, os.path.join(a.out, "ckpt_model_%d.pt" % step))
@@ -847,7 +924,8 @@ def main():
             torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "np_rng": rng.bit_generator.state, "rng_k": rng_k.bit_generator.state, "rng_tf": rng_tf.bit_generator.state,
                         "torch_rng": torch.get_rng_state(), "gate": GATE.state(), "step": step, "elapsed": time.time() - t0, "n_nonfinite": n_nonfinite, "calibration": cal,
                         **({"rng_p": rng_p.bit_generator.state} if rng_p is not None else {}),
-                        **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {})}, cp)
+                        **({"rng_s": rng_s.bit_generator.state, "self_state": dict(selfst)} if rng_s is not None else {}),
+                        **({"rng_far": rng_far.bit_generator.state, "fh_state": {**fhs, "ratios": list(fhs["ratios"])}} if rng_far is not None else {})}, cp)
             if draws_log:
                 json.dump(draws_log, open(os.path.join(a.out, "draws_log.json"), "w", newline="\n"))
     if a.mem_check:
@@ -894,7 +972,8 @@ def main():
         assert wpe_sha(m) == wpe0, "D3-F: the frozen table changed"
     res = {"task": "nested", "arm": "vbank", "mode": a.mode, "arch": a.arch, "table": a.table, "wpe_frozen_ok": (wpe0 is not None) or None, "mct": a.mct, "seed": a.seed, "acc_n2_host": {str(n): float((A == Y)[Nn == n].mean()) for n in range(1, 17)},
            "train_sec": train_sec, "n_nonfinite": n_nonfinite, "gate_hist": GATE.hist, "eval_dtype": str(amp), **info, "eval_sec": round(time.time() - t1),
-           "note": "descriptive host eval; the registered readings come from the local fp32 eval_vb.json (note 211-1)"}
+           "note": "descriptive host eval; the registered readings come from the local fp32 eval_vb.json (note 211-1)",
+           **({"fh_state": {k: v for k, v in fhs.items() if k != "ratios"}, "fh_n_ratios": len(fhs["ratios"])} if rng_far is not None else {})}
     json.dump(res, open(os.path.join(a.out, "eval.json"), "w", newline="\n"), indent=1)
     print("EVAL", json.dumps(res["acc_n2_host"]), flush=True); print("DONE", a.out, flush=True)
 

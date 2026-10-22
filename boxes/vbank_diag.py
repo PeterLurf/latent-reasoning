@@ -954,12 +954,14 @@ def part_hist24(m, TE, dev, bs):
 
 
 @torch.no_grad()
-def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64)):
+def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64, 96, 128), mem_frac=0.85):
     """Note 216-14 IDLE-HORIZON ($0): eval_hist24's arms WITHOUT the dup arms (intact / bank_ablate_slva / self_ablate / other_ablate, the same per-mode
     mapping: CARRY omits self_ablate and its other_ablate = ablate_keep), n 1..8 (every eval_vb test item), ONE K' = max(ks) rollout per chunk with
-    coda_rows {24, 32, 48, 64} (vbank_eval.part_acc's chunks: test order within n, bs = eval_bs) -> items {arm: {n: {K': [argmax answer]}}}, y {n},
-    idx {n} (as §216 E4) + acc {arm: {K': {n}}}. Memory: K' 64 is tried first on the deepest shape (n 8, the longest chunk); an OOM falls back to the
-    largest K' >= 48 that fits (k_max recorded; ks above it dropped). G-IH0 (Theory reads it before anything else; computed here from the run dir's
+    coda_rows = ks (vbank_eval.part_acc's chunks: test order within n, bs = eval_bs) -> items {arm: {n: {K': [argmax answer]}}}, y {n},
+    idx {n} (as §216 E4) + acc {arm: {K': {n}}}. Memory (§224 FH_v1 fix 9: no K' is ever dropped): max(ks) at eval_bs is tried on the deepest chunk
+    (n max, the longest items; OOM or peak > mem_frac of the card = no fit); if it does not fit, K' <= k_lo (the largest K' that fits at eval_bs) run
+    at eval_bs (the same chunks / rollout as a K' <= k_lo run: bitwise) and the other K' at the largest halved eval_bs that fits max(ks); plan,
+    eval_bs_by_k and k_tried [eval_bs, K', outcome] are recorded. §224 default ks {24, 32, 48, 64, 96, 128} (the 216-14 files used {24, 32, 48, 64}). G-IH0 (Theory reads it before anything else; computed here from the run dir's
     committed files): intact K' 24 acc per n == eval_vb.json acc_k['24'] (|diff| < 1e-9), and for n 3..8 each arm's K' 24 answers == eval_hist24.json
     items[arm][n]['ans_k24'] per item (share equal; bitwise = 1.0 on the same card / bs)."""
     num = torch.tensor(N.NUM_IDS, device=dev); Nn = np.array([it["n"] for it in TE]); Y = np.array([it["t"] for it in TE]); res = {"omitted": [], "k_tried": []}
@@ -967,21 +969,31 @@ def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64)):
     if m.mode == "carry":
         arms = (("intact", None), ("bank_ablate_slva", "keep"), ("other_ablate", "keep")); res["omitted"].append("self_ablate")
     ns = [n for n in range(1, 9) if (Nn == n).any()]
-    deep = max(VE.chunks(np.nonzero(Nn == max(ns))[0], bs), key=lambda ch: max(len(TE[j]["syms"]) for j in ch))
-    kmax = None
-    for kk in [k for k in sorted(ks, reverse=True) if k >= 48]:            # memory check at the deepest shape, intact arm
+    cuda = str(dev).startswith("cuda"); KS = sorted(ks); kmax = KS[-1]
+
+    def fits(b_, kk):                                                       # memory check at the deepest chunk of size b_ (n max, longest items), intact arm
+        if not cuda:
+            return True
+        deep = max(VE.chunks(np.nonzero(Nn == max(ns))[0], b_), key=lambda ch: max(len(TE[j]["syms"]) for j in ch))
         try:
-            torch.cuda.empty_cache() if str(dev).startswith("cuda") else None
+            torch.cuda.empty_cache()
             its = [TE[j] for j in deep]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
-            torch.cuda.reset_peak_memory_stats(dev); r_ = m.rollout(x, pad, kk, coda_rows={k: rows for k in ks if k <= kk}); del r_
+            torch.cuda.reset_peak_memory_stats(dev); r_ = m.rollout(x, pad, kk, coda_rows={k: rows for k in KS if k <= kk}); del r_
             pk = torch.cuda.max_memory_allocated(dev) / torch.cuda.get_device_properties(dev).total_memory   # 216-14 run 1: a bare fit OOMed later (fragmentation)
-            if pk > 0.85:
-                res["k_tried"].append([kk, "peak %.3f of the card > 0.85" % pk]); continue
-            res["k_tried"].append([kk, "ok, peak %.3f of the card" % pk]); kmax = kk; break
+            ok = pk <= mem_frac; res["k_tried"].append([b_, kk, ("ok, " if ok else "over %.2f, " % mem_frac) + "peak %.3f of the card" % pk]); return ok
         except torch.OutOfMemoryError:
-            res["k_tried"].append([kk, "OOM"]); torch.cuda.empty_cache()
-    assert kmax is not None, "no K' >= 48 fits: %s" % res["k_tried"]
-    KS = [k for k in ks if k <= kmax]; res["k_max"] = kmax; res["ks"] = KS; res["acc"] = {}; res["items"] = {}
+            res["k_tried"].append([b_, kk, "OOM"]); torch.cuda.empty_cache(); return False
+    if fits(bs, kmax):                                                      # §224 fix 9: no K' is ever dropped
+        plan = [(bs, KS)]
+    else:                                                                   # K' <= k_lo at eval_bs (the same chunks / rollout as before: bitwise), the rest at a halved eval_bs
+        k_lo = next((k for k in sorted(KS[:-1], reverse=True) if fits(bs, k)), None); ks_lo = [k for k in KS if k_lo is not None and k <= k_lo]
+        b2 = bs // 2
+        while b2 >= 1 and not fits(b2, kmax):
+            b2 //= 2
+        assert b2 >= 1, "no eval_bs fits K' %d: %s" % (kmax, res["k_tried"])
+        plan = ([(bs, ks_lo)] if ks_lo else []) + [(b2, [k for k in KS if k not in ks_lo])]
+    res["k_max"] = kmax; res["ks"] = KS; res["plan"] = [{"eval_bs": b_, "ks": ks_} for b_, ks_ in plan]; res["eval_bs_by_k"] = {str(k): b_ for b_, ks_ in plan for k in ks_}
+    res["acc"] = {}; res["items"] = {}
     for arm, how in arms:
         A = {k: np.full(len(TE), -1) for k in KS}
         try:
@@ -989,20 +1001,21 @@ def part_khorizon(m, TE, dev, bs, run, ks=(24, 32, 48, 64)):
                 m.ver_keep = VE.ablate_keep; m.keep_bank_only = how == "bank"
             elif how == "self":
                 m.gather_hist_ablate = "self"
-            for n in ns:
-                for ch in VE.chunks(np.nonzero(Nn == n)[0], bs):
-                    its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
-                    if str(dev).startswith("cuda"):
-                        torch.cuda.empty_cache()                            # 216-14 run 1: per-chunk release (allocator only; no numeric change)
-                    r_ = m.rollout(x, pad, kmax, coda_rows={k: rows for k in KS})
-                    for k in KS:
-                        A[k][ch] = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
-                    del r_
+            for b_, ks_ in plan:
+                for n in ns:
+                    for ch in VE.chunks(np.nonzero(Nn == n)[0], b_):
+                        its = [TE[j] for j in ch]; x, pad, lens = VB.batch_x(its, dev); rows = torch.arange(len(its), device=dev)
+                        if cuda:
+                            torch.cuda.empty_cache()                        # 216-14 run 1: per-chunk release (allocator only; no numeric change)
+                        r_ = m.rollout(x, pad, max(ks_), coda_rows={k: rows for k in ks_})
+                        for k in ks_:
+                            A[k][ch] = m.answer_logits(r_["coda"][k][1], lens)[:, num].argmax(-1).cpu().numpy()
+                        del r_
         finally:
             m.ver_keep = None; m.keep_bank_only = False; m.gather_hist_ablate = None
         res["acc"][arm] = {str(k): {str(n): float((A[k] == Y)[Nn == n].mean()) for n in ns} for k in KS}
         res["items"][arm] = {str(n): {str(k): [int(v) for v in A[k][Nn == n]] for k in KS} for n in ns}
-        print("KHORIZON", arm, {k: res["acc"][arm][k] for k in ("24", str(kmax))}, flush=True)
+        print("KHORIZON", arm, "done", flush=True)
     res["items"]["y"] = {str(n): [int(v) for v in Y[Nn == n]] for n in ns}; res["items"]["idx"] = {str(n): [int(j) for j in np.nonzero(Nn == n)[0]] for n in ns}
     g = {"intact_k24_vs_eval_vb": {}, "k24_vs_eval_hist24": {}}                 # G-IH0
     try:
