@@ -1,0 +1,15 @@
+{
+ "lora_nonzero": 96,
+ "lora_total": 96,
+ "lora_zero_or_none": [],
+ "prj": {
+  "1.weight": 145.8111825801547,
+  "1.bias": 3.562498722205083,
+  "3.weight": 136.69520159909817,
+  "3.bias": 9.59770910619572,
+  "ln.weight": 3.0142053445535026,
+  "ln.bias": 3.272058258257627
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/p2_tree"
+}

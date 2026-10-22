@@ -1,0 +1,22 @@
+{
+ "rc": [
+  9,
+  9,
+  9
+ ],
+ "ckpt": true,
+ "n": [
+  20,
+  20
+ ],
+ "bitwise": true,
+ "m2_start": [
+  9,
+  9
+ ],
+ "m2_m_last": 1.0,
+ "first_diff": null,
+ "err": "",
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/p2_tree"
+}
