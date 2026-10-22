@@ -347,6 +347,7 @@ def part_tf(m, TE, dev, bs):
 def main():
     global NUM, DEV
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32)
+    ap.add_argument("--out", default="", help="§224: queue runners append --out <run dir>; ignored (the output is <run>/eval_vb.json)")
     ap.add_argument("--parts", default="acc,probe,vswap,stall,tf"); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--probe_ts", default=",".join(map(str, T_SET))); ap.add_argument("--probe_steps", type=int, default=2000, help="smokes only")
     a = ap.parse_args(); dev = a.device; DEV = dev; NUM = torch.tensor(N.NUM_IDS, device=dev); torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = load(a.run, dev); TE = N.test_set(a.per_n); fo = os.path.join(a.run, "eval_vb.json")
