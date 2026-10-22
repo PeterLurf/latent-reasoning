@@ -436,5 +436,272 @@
   "sec": 36,
   "pool": "boxes/runs_fsq/s219_pool_t2_s1\\pool_t2.jsonl"
  },
- "def": "\u00a7219 TEXT-SELF evals (TS_v1.md at 146a25d0: \u00a72.7 E1 / E2, \u00a72.8, G-T18; Addendum 2 item 1). Local RTX 3070, fp32, tf32 off. Gold only here.\n  --part text  -> <run>/eval_text.json (E1): test_set(1000, n_max 24), n 1..24 (24,000 items, test seed 17100) in test order. Free greedy generation, KV cache,\n     nested170.cot_answers' loop semantics (batches of equal prompt length in item order, cot_eval_bs 32, ASSERTED), fp32, tf32 off. Budget per batch\n     min(max C_struct + 50, 1025 - P), C_struct = the shape-only chain length (textself.c_struct; cot_ids is never called); the loop breaks before feeding\n     row 1,024. CTX-OVERFLOW: P + C_struct > 1025 -> not generated, a failure. Non-termination (no EOT within the budget, or a tail that is not one number)\n     -> answer -1. Per-item store {idx, n, y, P, C_struct, overflow, answer, ntok, eot, form_valid, strict, first_bad_step, first_bad_pos}; aggregates by n;\n     meta {run, model, model_sha256, card, dtype, tf32, cot_eval_bs, test_seed, test_n_max, n_items, items_sha256, budget_rule, commit, sec, peak_gib}.\n     items_sha256 = sha256 of json.dumps([[syms, int(t)] ...], separators=(\",\", \":\"), ensure_ascii=True) over the 24,000 items (SD2_v1 \u00a74.2).\n  --part textself -> <run>/eval_textself.json (E2; only after <run>/eval_text.json exists, V3): CPU parts (--parts cpu: label_audit, contamination; the\n     round-2 condition reads these, V4) and GPU parts (--parts gpu: memo, labeller_kept; descriptive), each its own key, merged into the file.\n  --part smoke -> G-T18 on fresh n-24 shapes (textself.gt18_items, rng 23195; never test items), written under --out_dir (never a cell dir).\nDefinitions / ambiguities resolved here (TS_v1 silent; nearest precedent followed):\n  A1 overflow items are dropped BEFORE batching (they are \"not generated\"), so a batch never carries an overflow row; batches are otherwise\n     cot_answers' (dict of len(syms) in first-seen item order, chunks of cot_eval_bs).\n  A2 first_bad_pos = P + j + 1, j = the index (0-based, among the generated tokens) of the first token that leaves every CV-T continuation (the\n     candidate test of textself.chain_form; a chain valid up to the budget without its final EOT is bad at j = the number generated); i.e. the 1-based\n     sequence row of that token, comparable to T_train = max(P + C) (score_s219 LAYOUTS). first_bad_step is 1-based. Both null for form-valid chains and overflow items.\n  A3 form_valid = the whole generation is a CV-T chain with exactly n steps ending in EOT (gold-free); strict = form_valid and answer == y.\n  A4 LABEL-AUDIT-T kept-wrong record = {syms, n, step (first wrong step, 1-based), op, a, b (the handle's operands at that step; earlier steps are gold\n     there), value (the labeller's), gold (apply(op, a, b)), wrong_steps (all), label, gold_label, pattern (label / values / both)}; consumed =\n     pool[:cursor], cursor = the run's last logged pool_cursor (no fallback).\n  A5 CONTAMINATED is read on the WHOLE pool file (TS_v1 \u00a72.4 item 8) against textself.exclusion_sets(own pool excluded, every gate included); the consumed\n     share's hits are reported beside; self_reuse = the max logged; the flag is any hit or reuse > 0.\n  A6 LABELLER-KEPT-T fresh items: one stream default_rng(kept seed), n 9..24 in order, 500 per n, redrawn on a hit against the full exclusion set (every\n     pool and gate incl. the round's own); labelled by TF-GREEDY REROOT at label batch 128. They are not added to later exclusion sets (TS_v1 lists only\n     gates and pools); the redraw rule keeps them disjoint from every pool built before them.\n  A7 MEMO-GAP-T: per window n, free generation (the eval settings) on the first 2,000 consumed pool records of n (pool order) vs the round's 2,000 gate\n     items of n; gold y = the gold value of the syms; flag |gap| > 0.02.\n    python -m boxes.text_eval --run boxes/runs_fsq/s219_base_s1 --part text --cot_eval_bs 32 --device cuda:1"
+ "def": "\u00a7219 TEXT-SELF evals (TS_v1.md at 146a25d0: \u00a72.7 E1 / E2, \u00a72.8, G-T18; Addendum 2 item 1). Local RTX 3070, fp32, tf32 off. Gold only here.\n  --part text  -> <run>/eval_text.json (E1): test_set(1000, n_max 24), n 1..24 (24,000 items, test seed 17100) in test order. Free greedy generation, KV cache,\n     nested170.cot_answers' loop semantics (batches of equal prompt length in item order, cot_eval_bs 32, ASSERTED), fp32, tf32 off. Budget per batch\n     min(max C_struct + 50, 1025 - P), C_struct = the shape-only chain length (textself.c_struct; cot_ids is never called); the loop breaks before feeding\n     row 1,024. CTX-OVERFLOW: P + C_struct > 1025 -> not generated, a failure. Non-termination (no EOT within the budget, or a tail that is not one number)\n     -> answer -1. Per-item store {idx, n, y, P, C_struct, overflow, answer, ntok, eot, form_valid, strict, first_bad_step, first_bad_pos}; aggregates by n;\n     meta {run, model, model_sha256, card, dtype, tf32, cot_eval_bs, test_seed, test_n_max, n_items, items_sha256, budget_rule, commit, sec, peak_gib}.\n     items_sha256 = sha256 of json.dumps([[syms, int(t)] ...], separators=(\",\", \":\"), ensure_ascii=True) over the 24,000 items (SD2_v1 \u00a74.2).\n  --part textself -> <run>/eval_textself.json (E2; only after <run>/eval_text.json exists, V3): CPU parts (--parts cpu: label_audit, contamination; the\n     round-2 condition reads these, V4) and GPU parts (--parts gpu: memo, labeller_kept; descriptive), each its own key, merged into the file.\n  --part smoke -> G-T18 on fresh n-24 shapes (textself.gt18_items, rng 23195; never test items), written under --out_dir (never a cell dir).\nDefinitions / ambiguities resolved here (TS_v1 silent; nearest precedent followed):\n  A1 overflow items are dropped BEFORE batching (they are \"not generated\"), so a batch never carries an overflow row; batches are otherwise\n     cot_answers' (dict of len(syms) in first-seen item order, chunks of cot_eval_bs).\n  A2 first_bad_pos = P + j + 1, j = the index (0-based, among the generated tokens) of the first token that leaves every CV-T continuation (the\n     candidate test of textself.chain_form; a chain valid up to the budget without its final EOT is bad at j = the number generated); i.e. the 1-based\n     sequence row of that token, comparable to T_train = max(P + C) (score_s219 LAYOUTS). first_bad_step is 1-based. Both null for form-valid chains and overflow items.\n  A3 form_valid = the whole generation is a CV-T chain with exactly n steps ending in EOT (gold-free); strict = form_valid and answer == y.\n  A4 LABEL-AUDIT-T kept-wrong record = {syms, n, step (first wrong step, 1-based), op, a, b (the handle's operands at that step; earlier steps are gold\n     there), value (the labeller's), gold (apply(op, a, b)), wrong_steps (all), label, gold_label, pattern (label / values / both)}; consumed =\n     pool[:cursor], cursor = the run's last logged pool_cursor (no fallback).\n  A5 CONTAMINATED is read on the WHOLE pool file (TS_v1 \u00a72.4 item 8) against textself.exclusion_sets(own pool excluded, every gate included); the consumed\n     share's hits are reported beside; self_reuse = the max logged; the flag is any hit or reuse > 0.\n  A6 LABELLER-KEPT-T fresh items: one stream default_rng(kept seed), n 9..24 in order, 500 per n, redrawn on a hit against the full exclusion set (every\n     pool and gate incl. the round's own); labelled by TF-GREEDY REROOT at label batch 128. They are not added to later exclusion sets (TS_v1 lists only\n     gates and pools); the redraw rule keeps them disjoint from every pool built before them.\n  A7 MEMO-GAP-T: per window n, free generation (the eval settings) on the first 2,000 consumed pool records of n (pool order) vs the round's 2,000 gate\n     items of n; gold y = the gold value of the syms; flag |gap| > 0.02.\n    python -m boxes.text_eval --run boxes/runs_fsq/s219_base_s1 --part text --cot_eval_bs 32 --device cuda:1",
+ "memo": {
+  "13": {
+   "window": "W2",
+   "acc_pool": 1.0,
+   "acc_gate": 0.999,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0010000000000000009,
+   "FLAG_gt_0.02": false
+  },
+  "14": {
+   "window": "W2",
+   "acc_pool": 1.0,
+   "acc_gate": 0.9995,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0004999999999999449,
+   "FLAG_gt_0.02": false
+  },
+  "15": {
+   "window": "W2",
+   "acc_pool": 0.9995,
+   "acc_gate": 0.999,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.000500000000000056,
+   "FLAG_gt_0.02": false
+  },
+  "16": {
+   "window": "W2",
+   "acc_pool": 0.9995,
+   "acc_gate": 0.998,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0015000000000000568,
+   "FLAG_gt_0.02": false
+  },
+  "9": {
+   "window": "W1",
+   "acc_pool": 1.0,
+   "acc_gate": 1.0,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0,
+   "FLAG_gt_0.02": false
+  },
+  "10": {
+   "window": "W1",
+   "acc_pool": 1.0,
+   "acc_gate": 1.0,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0,
+   "FLAG_gt_0.02": false
+  },
+  "11": {
+   "window": "W1",
+   "acc_pool": 1.0,
+   "acc_gate": 1.0,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0,
+   "FLAG_gt_0.02": false
+  },
+  "12": {
+   "window": "W1",
+   "acc_pool": 0.9995,
+   "acc_gate": 1.0,
+   "items": [
+    2000,
+    2000
+   ],
+   "gap": 0.0004999999999999449,
+   "FLAG_gt_0.02": false
+  }
+ },
+ "labeller_kept": {
+  "9": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "10": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "11": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "12": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "13": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "14": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "15": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "16": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "17": {
+   "items": 500,
+   "n_kept": 500,
+   "keep": 1.0,
+   "pi": 1.0,
+   "pi_E": 1.0,
+   "fail_step_hist": {}
+  },
+  "18": {
+   "items": 500,
+   "n_kept": 499,
+   "keep": 0.998,
+   "pi": 0.9979959919839679,
+   "pi_E": 0.9979959919839679,
+   "fail_step_hist": {
+    "1": 1
+   }
+  },
+  "19": {
+   "items": 500,
+   "n_kept": 499,
+   "keep": 0.998,
+   "pi": 0.9959919839679359,
+   "pi_E": 0.9959919839679359,
+   "fail_step_hist": {
+    "1": 1
+   }
+  },
+  "20": {
+   "items": 500,
+   "n_kept": 492,
+   "keep": 0.984,
+   "pi": 0.9979674796747967,
+   "pi_E": 0.9979674796747967,
+   "fail_step_hist": {
+    "1": 8
+   }
+  },
+  "21": {
+   "items": 500,
+   "n_kept": 492,
+   "keep": 0.984,
+   "pi": 0.9979674796747967,
+   "pi_E": 0.9979674796747967,
+   "fail_step_hist": {
+    "1": 8
+   }
+  },
+  "22": {
+   "items": 500,
+   "n_kept": 484,
+   "keep": 0.968,
+   "pi": 0.9917355371900827,
+   "pi_E": 0.9917355371900827,
+   "fail_step_hist": {
+    "1": 11,
+    "2": 1,
+    "3": 1,
+    "5": 1,
+    "7": 1,
+    "8": 1
+   }
+  },
+  "23": {
+   "items": 500,
+   "n_kept": 471,
+   "keep": 0.942,
+   "pi": 0.9957537154989384,
+   "pi_E": 0.9957537154989384,
+   "fail_step_hist": {
+    "1": 20,
+    "2": 2,
+    "3": 2,
+    "6": 1,
+    "7": 1,
+    "8": 1,
+    "12": 1,
+    "14": 1
+   }
+  },
+  "24": {
+   "items": 500,
+   "n_kept": 457,
+   "keep": 0.914,
+   "pi": 1.0,
+   "pi_E": 0.9956236323851203,
+   "fail_step_hist": {
+    "1": 37,
+    "2": 2,
+    "5": 1,
+    "12": 1,
+    "13": 1,
+    "17": 1
+   }
+  }
+ },
+ "labeller_kept_meta": {
+  "seed": 23380,
+  "per_n": 500,
+  "label_bs": 128,
+  "t_start": "2026-10-22T14:09:38+00:00"
+ },
+ "meta_gpu": {
+  "model": "boxes/runs_fsq/s219_t2_s1\\model.pt",
+  "model_sha256": "300c99ef847ae16fafeea57dfe58d21085cdc59cda1e9931d49497cb965a2a5b",
+  "card": "NVIDIA GeForce RTX 4060",
+  "dtype": "fp32",
+  "tf32": false,
+  "cot_eval_bs": 32,
+  "commit": "0dca2981",
+  "sec": 4143
+ }
 }
