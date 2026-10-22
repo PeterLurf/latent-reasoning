@@ -1,0 +1,194 @@
+{
+ "take": 3,
+ "a": {
+  "ns": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "new_meta": {
+   "plan": [
+    {
+     "eval_bs": 32,
+     "ks": [
+      24,
+      32,
+      48,
+      64,
+      96,
+      128
+     ]
+    }
+   ],
+   "k_tried": [
+    [
+     32,
+     128,
+     "ok, peak 0.849 of the card"
+    ]
+   ],
+   "ks": [
+    24,
+    32,
+    48,
+    64,
+    96,
+    128
+   ],
+   "k_max": 128,
+   "eval_bs_by_k": {
+    "24": 32,
+    "32": 32,
+    "48": 32,
+    "64": 32,
+    "96": 32,
+    "128": 32
+   }
+  },
+  "old_meta": {
+   "plan": null,
+   "k_tried": [
+    [
+     64,
+     "ok, peak 0.457 of the card"
+    ]
+   ],
+   "ks": [
+    24,
+    32,
+    48,
+    64
+   ],
+   "k_max": 64,
+   "eval_bs_by_k": null
+  },
+  "sec": {
+   "old": 594,
+   "new": 2839
+  },
+  "card": "NVIDIA GeForce RTX 4060",
+  "files": {
+   "old": "D:\\Latent/scratch/_tmp/pre224_tree\\boxes\\vbank_diag.py",
+   "new": "D:\\Latent\\boxes\\vbank_diag.py"
+  },
+  "n_bitwise_compared": 64,
+  "n_bitwise_equal": 64,
+  "unequal": [],
+  "share_equal_at_other_bs": {},
+  "y_equal": true,
+  "idx_equal": true,
+  "alloc_conf": null,
+  "pass": true
+ },
+ "b": {
+  "pass": false,
+  "error": {
+   "new": {
+    "rc": 4294967295,
+    "stderr": "location failed with OOM on device 0 while trying to allocate 144703488 bytes (free: 0, total: 8585216000).\n[W1022 09:05:29.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).\n[W1022 09:05:29.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 146800640 bytes (free: 0, total: 8585216000).\n[W1022 09:05:36.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 148897792 bytes (free: 0, total: 8585216000).\n[W1022 09:05:36.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 148897792 bytes (free: 0, total: 8585216000).\n[W1022 09:05:43.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 150994944 bytes (free: 0, total: 8585216000).\n[W1022 09:05:43.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 150994944 bytes (free: 0, total: 8585216000).\n[W1022 09:05:46.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 153092096 bytes (free: 0, total: 8585216000).\n[W1022 09:05:47.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 153092096 bytes (free: 0, total: 8585216000).\n"
+   }
+  },
+  "note": "take 3 b STOPPED by Experiments at 7.1 h (09:05 10-22): the launch-bound small-bs K' 128 fallback on all 2000 n 7..8 items; replaced by b64 (first 64 items per n) on the 2070; not a code result"
+ },
+ "pass": true,
+ "b64": {
+  "ns": [
+   7,
+   8
+  ],
+  "new_meta": {
+   "plan": [
+    {
+     "eval_bs": 32,
+     "ks": [
+      24,
+      32,
+      48,
+      64
+     ]
+    },
+    {
+     "eval_bs": 16,
+     "ks": [
+      96,
+      128
+     ]
+    }
+   ],
+   "k_tried": [
+    [
+     32,
+     128,
+     "OOM"
+    ],
+    [
+     32,
+     96,
+     "OOM"
+    ],
+    [
+     32,
+     64,
+     "ok, peak 0.741 of the card"
+    ],
+    [
+     16,
+     128,
+     "ok, peak 0.740 of the card"
+    ]
+   ],
+   "ks": [
+    24,
+    32,
+    48,
+    64,
+    96,
+    128
+   ],
+   "k_max": 128,
+   "eval_bs_by_k": {
+    "24": 32,
+    "32": 32,
+    "48": 32,
+    "64": 32,
+    "96": 16,
+    "128": 16
+   }
+  },
+  "old_meta": {
+   "plan": null,
+   "k_tried": [
+    [
+     64,
+     "ok, peak 0.741 of the card"
+    ]
+   ],
+   "ks": [
+    24,
+    32,
+    48,
+    64
+   ],
+   "k_max": 64,
+   "eval_bs_by_k": null
+  },
+  "sec": {
+   "old": 47,
+   "new": 212
+  },
+  "card": "NVIDIA GeForce RTX 2070",
+  "files": {
+   "old": "D:\\Latent/scratch/_tmp/pre224_tree\\boxes\\vbank_diag.py",
+   "new": "D:\\Latent\\boxes\\vbank_diag.py"
+  },
+  "n_bitwise_compared": 32,
+  "n_bitwise_equal": 32,
+  "unequal": [],
+  "share_equal_at_other_bs": {},
+  "y_equal": true,
+  "idx_equal": true,
+  "alloc_conf": "max_split_size_mb:128",
+  "pass": true
+ }
+}

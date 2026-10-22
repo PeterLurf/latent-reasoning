@@ -6,15 +6,15 @@ on the same test-item subset; chunks are formed per n in test order, so they are
   b  n 7..8 (deepest): NEW must split [(32, K' <= k_lo), (b2 < 32, the rest)], no K' dropped; K' <= k_lo answers == OLD's (bitwise); K' <= 64 run at
      b2 reported as a share. Both processes with PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128 (allocator only; take 1 OOMed by fragmentation).
 Take 1 (3070, full n 1..8) OOMed; take 2 (3070, committed-file reference) was stopped by Theory's hold. Accuracies are never printed.
-    python -B scratch/s224_k9.py a|b      (driver)      python -B scratch/s224_k9.py run <tree> <part> <out.json>   (worker)"""
+    python -B scratch/s224_k9.py a|b|b64  (driver; K9_DEV=cuda:N picks the card)      python -B scratch/s224_k9.py run <tree> <part> <out.json>   (worker)"""
 import json
 import os
 import subprocess
 import sys
 import time
 
-RUN = "D:/Latent/boxes/runs_fsq/s216_r2_s1"; DEV = "cuda:0"; OUT = "D:/Latent/scratch/gate_s224/k9.json"; TMP = "D:/Latent/scratch/_tmp/s224_k9"
-NS = {"a": (1, 2, 3, 4), "b": (7, 8)}; TREES = {"old": "D:/Latent/scratch/_tmp/pre224_tree", "new": "D:/Latent"}
+RUN = "D:/Latent/boxes/runs_fsq/s216_r2_s1"; DEV = os.environ.get("K9_DEV", "cuda:0"); OUT = "D:/Latent/scratch/gate_s224/k9.json"; TMP = "D:/Latent/scratch/_tmp/s224_k9"
+NS = {"a": (1, 2, 3, 4), "b": (7, 8), "b64": (7, 8)}; LIM = {"b64": 64}; TREES = {"old": "D:/Latent/scratch/_tmp/pre224_tree", "new": "D:/Latent"}
 
 
 def worker(tree, part, out):
@@ -24,8 +24,9 @@ def worker(tree, part, out):
     import boxes.vbank_diag as VD
     import boxes.vbank_eval as VE
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
-    assert "4060" in torch.cuda.get_device_name(DEV), torch.cuda.get_device_name(DEV)
     m, _ = VE.load(RUN, DEV); TE = [it for it in N.test_set(1000) if it["n"] in NS[part]]; t0 = time.time()
+    if part in LIM:                                                       # b64: the first LIM items per n in test order (= the full run's first chunks)
+        cnt = {}; TE = [it for it in TE if cnt.__setitem__(it["n"], cnt.get(it["n"], 0) + 1) or cnt[it["n"]] <= LIM[part]]
     R = VD.part_khorizon(m, TE, DEV, 32, RUN)
     keep = {k: R.get(k) for k in ("plan", "k_tried", "ks", "k_max", "eval_bs_by_k")}
     json.dump({"tree": tree, "file": VD.__file__, "items": R["items"], "meta": keep, "sec": round(time.time() - t0), "card": torch.cuda.get_device_name(DEV)},
@@ -34,7 +35,7 @@ def worker(tree, part, out):
 
 def driver(part):
     os.makedirs(TMP, exist_ok=True); env = {**os.environ, "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2"}
-    if part == "b":
+    if part in ("b", "b64"):
         env["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128"
     res = {}
     for tag, tree in TREES.items():
@@ -66,8 +67,8 @@ def driver(part):
                    "y_equal": O["items"]["y"] == W["items"]["y"], "idx_equal": O["items"]["idx"] == W["items"]["idx"], "alloc_conf": env.get("PYTORCH_CUDA_ALLOC_CONF")}
         o[part]["pass"] = bool((single if part == "a" else split) and W["meta"]["ks"] == [24, 32, 48, 64, 96, 128] and len(eq) > 0 and all(eq.values())
                                and o[part]["y_equal"] and o[part]["idx_equal"])
-    if "a" in o and "b" in o:
-        o["pass"] = o["a"]["pass"] and o["b"]["pass"]
+    if "a" in o and ("b" in o or "b64" in o):                            # take 3b (10-22): b was stopped at 7.1 h (launch-bound bs fallback); b64 replaces it
+        o["pass"] = o["a"]["pass"] and (o.get("b64", {}).get("pass") or o.get("b", {}).get("pass", False))
     json.dump(o, open(OUT, "w", newline="\n"), indent=1); print("K9", part, "pass", o[part]["pass"], flush=True)
 
 
