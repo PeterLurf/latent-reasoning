@@ -312,6 +312,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **CLOSED 10-21 without cloud spend (222-4, Audit ruling): UNREAD (A1 at chance, DEEP-L not met (218-27) -> VB-C1-L-S unreachable; CERT not run, no registered consumer); harness/scorer kept for a ~$10 CERT if ever registered; $0** |
 | 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **PILOT FAILED 10-22 (223-7): LP1 (DIRECT advanced on the cap; lr 3e-3 / bf16 blow-ups on both cards); PS never learned (M2 bottleneck); M1 tracks DIRECT (no recode starvation); no cloud cell, redesign Note first; $0** |
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
+| 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **approved ($0); scoring after fixtures** |
 
 ## Live sections
 
@@ -19009,6 +19010,31 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Cost.** Stage 1 ≈ $2.5 (cap $4); Stage 2 ≈ $13.5 incl. contingent s3 (cap $16); family cap $20. Realised at registration $0.
 
 **Before launch:** K1–K11 (Experiments implements; Audit G-D), incl. G-FH-EQ steps 1–1200 bitwise, the K′ 128 eval extension with no dropped K′, and the gtime-measured cost. Scorer theory/score_s224.py (to write, fixtures per verdict branch).
+
+## 225. MATCHED-BUDGET: C3 at matched compute, text-CoT vs latent self-training lineages (Audit's north-star lead; **approved by Audit, $0, eval-only on existing files**; pre-registered 2026-10-22 19:29 EDT, before any MATCHED-BUDGET computation)
+
+**Registered text.** docs/research_matchedbudget_2026-10-22/MB_v1.md **at e9096291**, frozen. Draft 42b17829; the proxy correction 2256a04e; Literature f55c7e5c (N1 OK, scoped).
+
+**Inputs (already stored).** s216_r2_s1/eval_deep.json (per-item answers at K′ 0..28, n 13–24); s219_t2_s1/eval_text.json (per-item P / ntok / answer / overflow). No new eval.
+
+**Axes.**
+- (S) Sequential steps: latent K′; text generated tokens.
+- (F) Block-position compute: latent T·(6 + 4K′ + 2); text 12·(P + ntok). No latent cache is possible, since every pass rewrites every slot.
+- An exact attention-inclusive FLOPs row is descriptive.
+
+**Censoring.** Unparseable / non-terminating / overflow text = wrong. A latent item counts from the K′ where it becomes and stays correct (to the cap K′ 28). No extrapolation past K′ 28.
+
+**Readings, per axis:**
+- curves acc(n, B), n 13–24;
+- B\*(n, 0.5 / 0.9);
+- labels C3-MATCHED-X (latent ≥ text − 0.02 at every grid B, at every n 13–20 where either arm reaches 0.5) / TEXT-AHEAD-X (text ≥ latent + 0.05 at some B for ≥ 3 n) / MIXED-X.
+- No single "C3 met" unless both axes read MATCHED and the exact-FLOPs row does not reverse (F).
+
+**Disclosure.** 219-13's TOKEN-COST rows (n 17–20) and one rough n 17 block-position estimate (latent ≈ 0.76× text) were seen before registration.
+
+**OC.** Paired SE ≤ 0.022 at 1,000 items. Predictions: C3-MATCHED-S P ≈ 0.95; C3-MATCHED-F P ≈ 0.5.
+
+**Cost.** $0. Scorer theory/score_mb.py (to write, fixtures first; scoring blind until this registration is committed).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
