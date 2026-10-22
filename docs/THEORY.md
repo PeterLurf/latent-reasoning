@@ -20808,6 +20808,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - PS failing after the ramp → PORT-STATE's M2 premise is unlearnable at this scale: a descriptive close of §223, no cloud spend.
 - **Args:** a new freeze after P2 passes (lr, cg_thr, and the new default-off flag m2_stage). Single-change diffs: PS vs M1-only = {bottleneck, m2_stage}; DIRECT / M2-only analogous. The trainer edit needs G-D and the equivalence gate (flags off ⇒ bitwise 45baec0d behaviour).
 - **Cost:** P2 $0. The cloud family cap ($20) is unchanged; nothing deploys until P2 passes and a G-W0 / launch Note is in.
+- **Amendment (00:42 EDT, Audit's ruling on 223-8).** R1 and R2 are approved.
+  - R2 is a training-recipe parameter, not a reading bar, and was set from the **failed** pilot's DIRECT plateau (223-7), disclosed.
+  - **R3's ramp is replaced.** A linear −20·m logit bias is effectively a step: the question's mass ∝ e^{−20m} is ×0.05 by m = 0.15.
+  - The ramp now works in **mass space**: bias = log(1 − m + 1e-6) on the question-content keys, with m linear 0 → 1 over the 2,000 steps. Each question key's unnormalised weight is scaled by (1 − m), so the question's attention mass falls gradually and monotonically. At the ramp's end the registered full mask applies.
+  - **P2 gate added ($0):** the question-content attention-mass share (mean over decoder queries and heads) on a fixed batch, logged at m = 0, 0.25, 0.5, 0.75 and 1. It must decrease monotonically, with the m = 0.5 share ≥ 0.25 × the m = 0 share (not a step).
+  - Everything else is approved as written. The m2_stage flag goes to G-D with the flags-off equivalence gate.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
