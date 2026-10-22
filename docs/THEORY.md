@@ -311,6 +311,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **CLOSED 10-21 (Audit-reproduced): G-FID pass (zen agree 1.000; CODI20 bitwise); both GPT-2 CONTEXT-BOUND (cache-swap follow 0.033 / 0.029 vs floor 0.008; state-swap 0.033 / 0.015; NECESSARY +0.25 / +0.32); donor-final not carried; SCIT's oracle-cf pattern reproduces (221-2, 221-3); stage 1 not triggered; $0** |
 | 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **CLOSED 10-21 without cloud spend (222-4, Audit ruling): UNREAD (A1 at chance, DEEP-L not met (218-27) -> VB-C1-L-S unreachable; CERT not run, no registered consumer); harness/scorer kept for a ~$10 CERT if ever registered; $0** |
 | 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **build + gates; DIRECT first** |
+| 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **for Audit’s ruling; K1-K11 before launch** |
 
 ## Live sections
 
@@ -18979,6 +18980,35 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Gates.** F1–F3; Audit's G-D on the codi_port changes; per-term gradflow incl. the zero-grad bottleneck probe; plain-path smoke; frozen args with single-change diffs; driver per cell; cost_guard with marks to the final step; off-host checkpoints with a tested resume.
 
 **Cost.** Projected $6–16. **Family cap $20.** Realised at registration: $0.
+
+## 224. FIXED-HOLD: an anchored far-pass fixed-point lever for the C6 hold failure (from Note 216-15; **for Audit's ruling under the user's $30 standing rule, family cap $20**; pre-registered 2026-10-21 20:31 EDT, before any §224 code or output)
+
+**Registered text.**
+- docs/research_fixedhold_2026-10-21/FH_v1.md **at 232e84ab** (sha256 bbd41f26…), frozen.
+- Draft v0 1314f24c; REVIEW_FH (Opus red team, GO with fixes 1–13, all adopted); Literature ed051765 (S1 OK, S2 / S4 narrow, S3 reworded).
+
+**Premise.**
+- Every VB model (trained kmax 12) loses its held answer past ≈ 2–3× its trained passes: intact H(64) 0.39–0.69 (216-15).
+- $0 diagnosis: coherent idle drift of the current state, fed back through the bank (H-COHERENT-DRIFT).
+- An oracle freeze of the stored state at V_{n+2} holds 48 / 48 to K′ 128 in both lineages (REVIEW_FH §0).
+
+**Design.**
+- One far pass per step (T_far ~ U{13..48}, no-grad prefix) with answer CE: arm **RD**.
+- **FH** = RD + λ·g·‖V_{T_far} − sg V_{n+2}‖² / ‖sg V_{n+2}‖², with λ set by a registered gradient-ratio dose rule (0.2) and g the correctness gate. No in-range terms.
+- **Stage 1:** a 12k fine-tune pilot (FH-FT, RD-FT × s1 / s2 vs FT-CTRL). **Stage 2:** 48k from scratch, only on Stage-1 TRIGGER (H_FH-FT(128) − H_FT-CTRL(128) ≥ 0.30 in both seeds ∧ FT-NOLOSS), with a contingent s3.
+
+**Readings.**
+- Stage 2 primary R-HOLD: H(K′) ≥ 0.95 at K′ 24–128.
+- R-NOLOSS: acc_n2, STALL, PROBE(4), early-finish, C1 floor.
+- R-DEPTH: n 9–11 ≥ base − 0.10, WARN at −0.05.
+- R-MECH: ω_FH ≤ ω_base / 2.7.
+- Verdicts: FH-RECIPE; PENALTY NEEDED (vs RD, ≥ 0.15 both seeds ∧ r_FH ≤ r_RD / 3); RD SUFFICES; PARTIAL; UNEXPOSED; UNDERDOSED (stops the design).
+
+**OC.** P(TRIGGER | no effect) 1.6e-5 / | effect ≈ 0.4–0.5. P(FH-RECIPE | no effect) < 1e-3 / | effect, no harm ≈ 0.46. P(PENALTY NEEDED | FH ≡ RD) ≈ 3e-4. Censoring per FH_v1 §5.
+
+**Cost.** Stage 1 ≈ $2.5 (cap $4); Stage 2 ≈ $13.5 incl. contingent s3 (cap $16); family cap $20. Realised at registration $0.
+
+**Before launch:** K1–K11 (Experiments implements; Audit G-D), incl. G-FH-EQ steps 1–1200 bitwise, the K′ 128 eval extension with no dropped K′, and the gtime-measured cost. Scorer theory/score_s224.py (to write, fixtures per verdict branch).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
