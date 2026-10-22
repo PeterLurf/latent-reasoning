@@ -1,1 +1,3 @@
 # HELD 08:45 (G-FH-EQ ALERT; moved to s224_bad_cost.log) 331:s224_fhft_s1 186.128.151.58:50181 57207132 $0.2014/h sps 0.8353503266970317 1.02
+gatehold:b333 # Audit 10-22: G-FH-EQ gate hold, not a host fault (family yes, BAD cap no) 0.085
+gatehold:b331 # Audit 10-22: G-FH-EQ gate hold, not a host fault (family yes, BAD cap no) 0.1376

@@ -1,4 +1,4 @@
-"""Auto-exclude failed Vast hosts (Audit 2026-10-10): follows logs/gen_deploy.log and appends the IP of every BAD HOST / CREATE FAILED deploy to
+"""Auto-exclude failed Vast hosts (Audit 2026-10-10): follows logs/gen_deploy.log and appends the IP of every BAD HOST / CREATE FAILED / FAILED upload (Audit 10-22) deploy to
 scratch/vast_exclude_ips.txt as "<ip> # auto <epoch> <reason>", so fill_generic (which re-reads the file at each offer search) skips it. Auto lines
 expire after 24 h; hand-written lines are never touched. Heartbeat: logs/autoexclude.hb (epoch).
 2026-10-12 (Audit; offer 32750800 was BAD HOST for b265 at 77.28.255.194 and again for b274 at 77.28.206.92): each failure also excludes
@@ -15,6 +15,7 @@ LOG, EX, HB, TTL = "logs/gen_deploy.log", "scratch/vast_exclude_ips.txt", "logs/
 V = "C:/Users/peter/.local/vastai/vast.sh"
 BAD = re.compile(r"gen host (b\d+) offer (\d+): INSTANCE \d+ (\d+\.\d+\.\d+\.\d+) \S+ BAD HOST")
 CF = re.compile(r"gen host (b\d+) offer (\d+): CREATE FAILED")
+FU = re.compile(r"gen host (b\d+) offer (\d+): INSTANCE \d+ (\d+\.\d+\.\d+\.\d+) .*FAILED upload")   # Audit 10-22 (§224 b331 x2)
 AUTO = re.compile(r"#\s*auto\s+(\d+)")
 
 
@@ -61,6 +62,9 @@ def main():
                 m = BAD.search(l_)
                 if m:
                     exclude_all(m.group(3), m.group(2), "BAD_HOST %s offer %s" % (m.group(1), m.group(2))); continue
+                m = FU.search(l_)
+                if m:
+                    exclude_all(m.group(3), m.group(2), "FAILED_UPLOAD %s offer %s" % (m.group(1), m.group(2))); continue
                 m = CF.search(l_)
                 if m:
                     exclude_all(offer_info(m.group(2))[0], m.group(2), "CREATE_FAILED %s offer %s" % (m.group(1), m.group(2)))
