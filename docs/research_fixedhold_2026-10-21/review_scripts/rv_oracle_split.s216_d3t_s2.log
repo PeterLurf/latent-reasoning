@@ -1,0 +1,12 @@
+boxes/runs_fsq/s216_d3t_s2 n 1 chunk 0 cur_freeze sec 14
+boxes/runs_fsq/s216_d3t_s2 n 1 chunk 0 bank_freeze sec 25
+boxes/runs_fsq/s216_d3t_s2 n 1 chunk 0 freeze32 sec 36
+boxes/runs_fsq/s216_d3t_s2 n 1 chunk 8 cur_freeze sec 48
+boxes/runs_fsq/s216_d3t_s2 n 1 chunk 8 bank_freeze sec 60
+boxes/runs_fsq/s216_d3t_s2 n 1 chunk 8 freeze32 sec 71
+boxes/runs_fsq/s216_d3t_s2 n 4 chunk 0 cur_freeze sec 99
+boxes/runs_fsq/s216_d3t_s2 n 4 chunk 0 bank_freeze sec 125
+boxes/runs_fsq/s216_d3t_s2 n 4 chunk 0 freeze32 sec 153
+boxes/runs_fsq/s216_d3t_s2 n 4 chunk 8 cur_freeze sec 182
+boxes/runs_fsq/s216_d3t_s2 n 4 chunk 8 bank_freeze sec 211
+boxes/runs_fsq/s216_d3t_s2 n 4 chunk 8 freeze32 sec 240
