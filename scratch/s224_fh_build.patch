@@ -1,5 +1,5 @@
 --- a/boxes/vbank.py	2026-10-18 03:16:20.552137100 -0400
-+++ b/boxes/vbank.py	2026-10-21 21:22:31.935677300 -0400
++++ b/boxes/vbank.py	2026-10-21 21:43:13.490442800 -0400
 @@ -259,7 +259,7 @@
                  h = block_bank(src, i, h, bk, bv, bb, km)
          return F.layer_norm(h, (D,), src.w("ln_f.weight"), src.w("ln_f.bias"))
@@ -254,7 +254,7 @@
      print("EVAL", json.dumps(res["acc_n2_host"]), flush=True); print("DONE", a.out, flush=True)
  
 --- a/boxes/vbank_diag.py	2026-10-21 15:24:23.030841800 -0400
-+++ b/boxes/vbank_diag.py	2026-10-21 21:22:31.935677300 -0400
++++ b/boxes/vbank_diag.py	2026-10-21 21:43:13.497459000 -0400
 @@ -954,12 +954,14 @@
  
  
@@ -349,3 +349,13 @@
      res["items"]["y"] = {str(n): [int(v) for v in Y[Nn == n]] for n in ns}; res["items"]["idx"] = {str(n): [int(j) for j in np.nonzero(Nn == n)[0]] for n in ns}
      g = {"intact_k24_vs_eval_vb": {}, "k24_vs_eval_hist24": {}}                 # G-IH0
      try:
+--- a/boxes/vbank_eval.py	2026-10-17 12:02:30.273520000 -0400
++++ b/boxes/vbank_eval.py	2026-10-21 21:43:13.499463000 -0400
+@@ -347,6 +347,7 @@
+ def main():
+     global NUM, DEV
+     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32)
++    ap.add_argument("--out", default="", help="§224: queue runners append --out <run dir>; ignored (the output is <run>/eval_vb.json)")
+     ap.add_argument("--parts", default="acc,probe,vswap,stall,tf"); ap.add_argument("--per_n", type=int, default=1000); ap.add_argument("--probe_ts", default=",".join(map(str, T_SET))); ap.add_argument("--probe_steps", type=int, default=2000, help="smokes only")
+     a = ap.parse_args(); dev = a.device; DEV = dev; NUM = torch.tensor(N.NUM_IDS, device=dev); torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
+     m, args = load(a.run, dev); TE = N.test_set(a.per_n); fo = os.path.join(a.run, "eval_vb.json")
