@@ -1,0 +1,117 @@
+{
+ "FH_vs_RD_s1": {
+  "diff": {
+   "fh": [
+    false,
+    true
+   ]
+  },
+  "pass": true,
+  "extra": {}
+ },
+ "FH_vs_RD_s2": {
+  "diff": {
+   "fh": [
+    false,
+    true
+   ]
+  },
+  "pass": true,
+  "extra": {}
+ },
+ "RD_vs_FTCTRL_s1(s215)": {
+  "diff": {
+   "far": [
+    null,
+    true
+   ],
+   "far_n": [
+    null,
+    16
+   ],
+   "far_t": [
+    null,
+    "13,48"
+   ],
+   "far_w": [
+    null,
+    1.0
+   ],
+   "fh": [
+    null,
+    false
+   ],
+   "fh_dose": [
+    null,
+    "250,500"
+   ],
+   "fh_lam_cap": [
+    null,
+    10.0
+   ],
+   "fh_target": [
+    null,
+    0.2
+   ]
+  },
+  "pass": true,
+  "extra": {}
+ },
+ "RD_vs_FTCTRL_s2": {
+  "diff": {
+   "far": [
+    false,
+    true
+   ]
+  },
+  "pass": true,
+  "extra": {}
+ },
+ "FTCTRL_s2_vs_s215": {
+  "diff": {
+   "far": [
+    null,
+    false
+   ],
+   "far_n": [
+    null,
+    16
+   ],
+   "far_t": [
+    null,
+    "13,48"
+   ],
+   "far_w": [
+    null,
+    1.0
+   ],
+   "fh": [
+    null,
+    false
+   ],
+   "fh_dose": [
+    null,
+    "250,500"
+   ],
+   "fh_lam_cap": [
+    null,
+    10.0
+   ],
+   "fh_target": [
+    null,
+    0.2
+   ],
+   "init_from": [
+    "boxes/runs_fsq/s213_d3t_s1/model.pt",
+    "boxes/runs_fsq/s216_d3t_s2/model.pt"
+   ],
+   "seed": [
+    1,
+    2
+   ]
+  },
+  "pass": true,
+  "extra": {}
+ },
+ "pass": true
+}
