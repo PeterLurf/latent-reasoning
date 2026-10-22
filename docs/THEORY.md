@@ -312,7 +312,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **CLOSED 10-21 without cloud spend (222-4, Audit ruling): UNREAD (A1 at chance, DEEP-L not met (218-27) -> VB-C1-L-S unreachable; CERT not run, no registered consumer); harness/scorer kept for a ~$10 CERT if ever registered; $0** |
 | 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **PILOT FAILED 10-22 (223-7): LP1 (DIRECT advanced on the cap; lr 3e-3 / bf16 blow-ups on both cards); PS never learned (M2 bottleneck); M1 tracks DIRECT (no recode starvation); no cloud cell, redesign Note first; $0** |
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
-| 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **approved ($0); scoring after fixtures** |
+| 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1): C3-MATCHED-S and -F ("C3 met", scoped): latent >= text - 0.02 at every budget n 13-20; ~20-50x fewer sequential steps, ~0.65x FLOPs per correct; reverses 219-13 TOKEN-COST impression; $0** |
 
 ## Live sections
 
@@ -20878,6 +20878,24 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The s224fam family guard stopped Stage 1 falsely: unstarted cells were projected at their guard ceilings. Realised so far $1.015; b331 / b333 restart from step 0.
 - **Fixes (Audit-approved):** the s224fam HIGH projection uses admission projections, and the filler exits on any s224fam ALERT / STOP.
 - **Caps:** Stage 1 **$7.50 all-in** (incl. the $1.015 spent); Stage 2 keeps $16; **§224 family $23.50** (≤ $30).
+
+**Note 225-1 (2026-10-22 19:31 EDT; §225 MATCHED-BUDGET result: `python -B theory/score_mb.py` (9cab1137) on s216_r2_s1/eval_deep.json and s219_t2_s1/eval_text.json; gates clean (12,000 matched items, y agree, text acc == acc_by_n, latent stay-acc == acc_k['28']); $0).**
+- **Verdict: C3-MATCHED-S and C3-MATCHED-F → "C3 met" in the registered, scoped sense** (one lineage each, GPT-2 small, Arithmetic(n, 11), round-2 models, block-position proxy).
+  - Over n 13–20 (all reach 0.5), latent ≥ text − 0.02 at every grid budget on both axes. The worst cell is −0.015 (n 19, the largest budgets: text's asymptotic accuracy is marginally higher). No n is TEXT-AHEAD.
+- **(S) sequential steps, B\*(0.5):**
+  - latent 14 / 17 / 19 / 21 at n 13 / 16 / 18 / 20;
+  - text 257 / 513 / 513 / 1,025 (grid);
+  - ≈ 18–50× fewer steps.
+- **(F) block-position compute, B\*(0.5), on a factor-2 grid:**
+  - latent 4,096 / 4,096 / 8,192 / 8,192;
+  - text 4,096 / 8,192 / 8,192 / 16,384;
+  - equal or one grid step cheaper. **The (F) advantage is modest, about ≤ 2×.**
+  - Descriptive attention-inclusive FLOPs per correct answer (ATT_DEF, an approximation): latent / text = 0.66 / 0.65 / 0.63 / 0.68 at n 13 / 17 / 20 / 24. This does not reverse (F).
+- n 22–24: neither arm reaches 0.5 within its budget (latent capped at K′ 28; text CTX-bound).
+- **Reading.** At matched compute, the latent self-training lineage matches text-CoT's accuracy everywhere it is defined. It uses ≈ 20–50× fewer sequential steps and ≈ 0.65× the FLOPs per correct answer.
+  - This **reverses 219-13's descriptive TOKEN-COST impression** ("latent uses ≈ 2× more positions"), which counted each pass as a full 12-block forward (corrected 2256a04e).
+  - Caveats: one seed each; F is a proxy, with the exact FLOPs row an approximation; the S grid is fine but the F grid is factor-2; models are those of §216 / §219.
+- **Wording:** "C3 at matched compute (sequential steps and block-position FLOPs proxy), one lineage each on Arithmetic(n, 11): latent matches text-CoT accuracy at n 13–20 with ~20–50× fewer sequential steps and ~0.65× the FLOPs per correct answer." Never GSM8K, never "compute-matched" without the axis.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
