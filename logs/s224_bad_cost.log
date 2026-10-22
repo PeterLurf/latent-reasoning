@@ -1,0 +1,3 @@
+2026-10-22 07:14:49 b331 offer 54107526 171.5.182.162 9min $0.2014/h (hostprobe) 0.0302
+2026-10-22 09:00:42 b333 offer 32750800 77.29.9.173 ~25min $0.2014/h (stopped mid-deploy: G-FH-EQ hold, Experiments) 0.085
+2026-10-22 08:45:48 b331 offer 28824264 186.128.151.58 41min $0.2014/h (admitted, G-FH-EQ hold: default-kernel nondeterminism) 0.1376

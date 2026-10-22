@@ -1,13 +1,14 @@
 # THEORY §224 FIXED-HOLD Stage 1 (FH_v1.md at 232e84ab; registered 6d3ba5cf; Audit approval 4e56c8ca, family cap $20; Theory's Stage-1 decisions 10-21;
 # scorer theory/score_s224 at a3c26fab). FH-FT s224_fhft_s2: FT from s216_d3t_s2/model.pt (init_from strict, calibrate() NOT called), FT-CTRL s1's recipe (lr 3e-5, 12k,
 # cur 8, c 0, draws_log 20000) + --far --fh. RTX 3090 via scratch/s224_fill.sh: HOSTPROBE; K7 mem_check (2 steps, forced T_far 48); G-TIME (60 forced steps);
-# G-FH-EQ (1,200 steps each, micro 1: eqB = no far branch, eqA = --far --far_w 0; records 100..1200 bitwise; s1 also vs s215_ftctrl_s1); the cell (ckpt every 2k, ARGS-DIFF vs s215_ftctrl_s1's args); host evals fp32 eval_bs 32: vbank_eval acc,stall + vbank_diag khorizon (K' to 128).
+# G-FH-EQ v2 (10-22, after b331's default-kernel ALERT: 1,200 steps each under scratch/s222_det_wrap.py = math SDP + deterministic, fp32, micro 2;
+# eqB = no far branch, eqA = --far --far_w 0; records 100..1200 bitwise; no s215 comparison: the default kernels are not run-to-run bitwise); the cell (ckpt every 2k, ARGS-DIFF vs s215_ftctrl_s1's args); host evals fp32 eval_bs 32: vbank_eval acc,stall + vbank_diag khorizon (K' to 128).
 # HOSTPROBE
 # P=1
 boxes/runs_fsq/s224_fhft_s2_mem boxes.vbank --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --far --fh --mem_check --mem_check_steps 2 --auto_micro
 boxes/runs_fsq/s224_fhft_s2_gtime boxes.vbank --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --far --fh --time_steps 60 --auto_micro
-boxes/runs_fsq/s224_fhft_s2_eqB boxes.vbank --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --micro 1 --stop_at 1200
-boxes/runs_fsq/s224_fhft_s2_eqA boxes.vbank --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --far --far_w 0 --micro 1 --stop_at 1200
+boxes/runs_fsq/s224_fhft_s2_eqB scratch.s222_det_wrap boxes/vbank.py --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --micro 2 --fp32 --stop_at 1200
+boxes/runs_fsq/s224_fhft_s2_eqA scratch.s222_det_wrap boxes/vbank.py --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --far --far_w 0 --micro 2 --fp32 --stop_at 1200
 boxes/runs_fsq/s224_fhft_s2 boxes.vbank --mode slva --table train --seed 2 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s216_d3t_s2/model.pt --draws_log_steps 20000 --far --fh --auto_micro --ckpt_every 2000 --args_ref scratch/s224_args_ref_ftctrl_s1.json
 boxes/runs_fsq/s224_fhft_s2 boxes.vbank_eval --run boxes/runs_fsq/s224_fhft_s2 --parts acc,stall --eval_bs 32
 boxes/runs_fsq/s224_fhft_s2 boxes.vbank_diag --run boxes/runs_fsq/s224_fhft_s2 --part khorizon --eval_bs 32

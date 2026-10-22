@@ -55,7 +55,8 @@ log "start: QS $QS; family \$$CAPF; SETUP_H $SETUP_H; EVAL_H $EVAL_H; vbank sha 
 
 FAMC=""; for c_ in $QS; do IFS=: read -r n_ r_ a_ g_ s_ f_ sd_ <<<"$c_"; FAMC="$FAMC $n_:$r_:$g_:$s_"; done   # unstarted cells project at their guard
 for cell in $QS; do
-  IFS=: read -r n run CAPC GSTOP STEPS FAR SEED <<<"$cell"; tries=0; export EXTRA_120="$(cell_extra "$n")"; EQ=0; [ "$FAR" = 1 ] && EQ=2400; NE=$(nevals "$n")
+  IFS=: read -r n run CAPC GSTOP STEPS FAR SEED <<<"$cell"; tries=0; export EXTRA_120="$(cell_extra "$n")"; EQ=0; [ "$FAR" = 1 ] && EQ=4800;   # v2: 2 x 1,200 det-wrapped fp32 steps, projected at 2x the cell s/step
+  NE=$(nevals "$n")
   grep -q "^$n:$run " "$ADMLOG" 2>/dev/null && { log "b$n: $run already admitted - next"; continue; }
   [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
   for f_ in $EXTRA_120; do [ -s "$f_" ] || { log "b$n: shipped file $f_ missing - not starting"; exit 2; }; done
