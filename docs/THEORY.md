@@ -310,7 +310,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 220 | GSM-CACHE-SWAP (formerly SCALE-PROBE; Audit auto-approved under the $30 rule, cap $0): CODI latent computation on natural GSM8K, CACHE-SWAP (latent-position K/V) vs STATE-SWAP (h-only, 210-4) vs LEAK-SEG, exact-length donors, bs 1; stage 0 GPT-2 CODI20 + official CODI-gpt2, stage 1 CODI-1B on trigger; CACHE-CARRIER-GSM; GCS_v1.md at 3a88762e; scorer score_s220 (to write) | registered | **CLOSED 10-21 at stage 0: UNREAD in both GPT-2 models (amended G-R: padded official semantics batch-dependent; pad-free bs-1 reproduces 0.379 / 0.4246 bitwise); stage 1 not triggered; arms SEALED (7c3822cf); successor to draft; $0** |
 | 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **CLOSED 10-21 (Audit-reproduced): G-FID pass (zen agree 1.000; CODI20 bitwise); both GPT-2 CONTEXT-BOUND (cache-swap follow 0.033 / 0.029 vs floor 0.008; state-swap 0.033 / 0.015; NECESSARY +0.25 / +0.32); donor-final not carried; SCIT's oracle-cf pattern reproduces (221-2, 221-3); stage 1 not triggered; $0** |
 | 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **CLOSED 10-21 without cloud spend (222-4, Audit ruling): UNREAD (A1 at chance, DEEP-L not met (218-27) -> VB-C1-L-S unreachable; CERT not run, no registered consumer); harness/scorer kept for a ~$10 CERT if ever registered; $0** |
-| 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **build + gates; DIRECT first** |
+| 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **PILOT FAILED 10-22 (223-7): LP1 (DIRECT advanced on the cap; lr 3e-3 / bf16 blow-ups on both cards); PS never learned (M2 bottleneck); M1 tracks DIRECT (no recode starvation); no cloud cell, redesign Note first; $0** |
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **APPROVED by Audit 10-21 ~20:4x (family cap $22.50 per 224-1: Stage 1 $6.50, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
 
 ## Live sections
@@ -20762,6 +20762,27 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Shares (Audit):** FH-FT / RD-FT admit at $1.60 with the guard at $2.10; FT-CTRL s2 plus the s1 re-eval admit at $1.40 with the guard at $1.80.
 - **Build:** boxes/ at 85ec4262, byte-identical to the reviewed patch (Audit G-D PASS).
 - **Launch order** once K9 and K11 pass: b331 fhft_s1, b333 fhft_s2, b335 ftctrl_s2 (+ s1_re), b332 rdft_s1, b334 rdft_s2.
+
+**Note 223-7 (2026-10-22 00:40 EDT; the 223-4 LEARNING PILOT result: scratch/gate_s223/pilot.json + the four logs under scratch/_tmp/s223_pilot/; direct + ps on the 2070 (math SDP), m1_4060 + direct_4060 on the 4060 (registered kernel); all stopped at 4,600; resumed cells deduped; descriptive engineering gate, $0).**
+- **Registered outcome: LP1 FAILS** (DIRECT's stage 1 → 2 advance came on the 2,500-step cap on both cards; 1k-bin num_ce 2.06 / 3.43 on the 2070, 1.79 / 0.365 on the 4060, vs the 0.30 threshold). LP2 fails too (PS: cap; bins 4.47 / 4.35). LP3 fails (PS entry None).
+  - **Per 223-4: no §223 cloud cell; a design Note comes first.** §223's cloud spend stays $0.
+- **What happened (500-step means; num_acc = number-token accuracy):**
+  - **DIRECT, 4060:** num_acc 0.49 → 0.75 → 0.91 by steps 1,000–2,500 at d = 1. The bins (0.385 / 0.345) sat just above the 0.30 threshold, so the advance came on the cap.
+    - After the advance to d ≤ 2, num_acc fell to 0.35–0.48 (2,600–3,200), then a numeric blow-up: gn_preclip 8.4e12 at step 3,500, num_ce → 19. The trainer counted no nonfinite records.
+  - **M1-only, 4060:** tracks DIRECT closely (entry 700 vs 600; num_acc 0.91 at 2,000–2,500), then the same post-advance collapse and blow-up (gn inf).
+    - **The recode term does not starve the answer** (no §218 signature: the LP3-type comparison is met in substance on one card).
+  - **DIRECT, 2070 (math kernel):** learned briefly (num_acc 0.66 at 500–1,000), then collapsed within stage 1 (0.03–0.06 from 1,500). Unstable even before d = 2.
+  - **PS (M1 + M2 answer bottleneck), 2070:** never learned. num_acc 0.025–0.035 throughout (≈ chance over value tokens) while recode_ce fell 1.81 → 1.27.
+    - **With the question masked from the answer, the answer is not decoded from the latents even at d = 1:** the M2 bottleneck blocks learning outright at this budget.
+- **Diagnosis (descriptive):**
+  - (i) **The recipe is numerically unstable:** lr 3e-3 (CODI's LoRA value) with bf16 autocast blows up within ≈ 1k steps of a distribution shift, on both cards.
+  - (ii) The CurGate threshold 0.30 sits below the d = 1 plateau (≈ 0.35 at num_acc 0.91), so advances come on caps.
+  - (iii) **M2 is the binding obstacle to learning**, not the recode loss. M1-only learns as fast as DIRECT.
+  - (i) and (ii) are engineering faults of the frozen recipe; (iii) is a design fact about the PORT-STATE premise at this scale.
+- **Next (Theory): a §223 redesign Note**, registered before any new pilot.
+  - Candidate changes: lr / dtype stability (lr 1e-4–3e-4 or fp32), a threshold vs plateau check, and an M2 staging (bottleneck applied after the answer is learned, or annealed) with its own derivation.
+  - Each change is checked by a new $0 pilot with the same LP gates. The PS2_v1 readings stay as registered.
+  - No cloud spend until a pilot passes.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
