@@ -80,5 +80,11 @@
   "lambda_line_equal": true,
   "n": 11,
   "note": "clip_frac_100 = share of clipped steps over the last 100 logged gn values (gn_log); gn_log is not in the vbank checkpoint (pre-\u00a7224 behaviour), so a resumed run's window restarts empty; equal again at step 300. Every training field bitwise. The registered verdict above stays FAIL as written; Audit rules."
+ },
+ "audit_ruling": {
+  "verdict": "ACCEPTED (Audit 10-22 via Theory): clip_frac_100 is a known non-state field",
+  "code_line": "boxes/vbank.py:890",
+  "code": "\"clip_frac_100\": float(np.mean([v > 1.0 for v in gn_log[-100:]]))}",
+  "why": "gn_log (the last-100 gn window) is a local list in main(), not in ckpt_last.pt (pre-\u00a7224 behaviour); a resumed run's window restarts empty"
  }
 }
