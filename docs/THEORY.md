@@ -20818,6 +20818,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Run:** 4060, registered kernel; DIRECT → M1-only → PS(+m2_stage); lr 3e-4, cg_thr 0.45; frozen flags otherwise; steps 24000.
     - **--stop_at 7600, replacing 6600.** m2_stage's ramp starts at PS's stage 1 → 2 advance (d ≤ 2 learned): at the latest stage 1 starts at 2,500 (cap) and stage 2 at 5,000 (cap), so the ramp ends ≤ 7,000, leaving ≥ 500 post-ramp steps.
   - **LP0, stability:** no cell logs a non-finite or > 1e3 gn_preclip, or a nonfinite record. A blow-up fails that cell.
+    - **Operationalised (before P2 starts):** codi_ps logs 100-step MEAN gn_preclip only, so LP0 fails if any logged mean is > 10 or non-finite. A single step > 1e3 forces its 100-step mean > 10. Normal means are 0.1–3. No code change.
   - **LP1:** DIRECT's stage 1 → 2 advance is by threshold (stages.jsonl reason starts "threshold").
   - **LP2:** M1-only's and PS's stage 1 → 2 advances are by threshold.
   - **LP3:** M1-only's and PS's entry_step ≤ DIRECT's + 1,500. PS sees the question until its ramp, so its entry is comparable.
