@@ -20759,6 +20759,9 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Round 3 as R3-PLAIN is not proposed now: the depth gain is moot while the hold fails at K′ ≥ 48.
 
 **Note 224-1 (2026-10-21 21:44 EDT; §224 Stage-1 cap, Audit's ruling before any §224 deploy or output; no reading, bar or arm change).** Experiments' Stage-1 projection is ≈ $6.0, not FH_v1 §5's $2.5: host-side 3090 evals take ≈ 1.3 h per model (khorizon to K′ 128 + acc + stall, for 6 models incl. the FT-CTRL s1 re-eval), plus G-FH-EQ per host. **Stage-1 cap $6.50; Stage 2 keeps $16; §224 family cap $22.50** (≤ $30, Audit-approved). Per-host guards and a family GUARD_STOP use these caps.
+- **Shares (Audit):** FH-FT / RD-FT admit at $1.60 with the guard at $2.10; FT-CTRL s2 plus the s1 re-eval admit at $1.40 with the guard at $1.80.
+- **Build:** boxes/ at 85ec4262, byte-identical to the reviewed patch (Audit G-D PASS).
+- **Launch order** once K9 and K11 pass: b331 fhft_s1, b333 fhft_s2, b335 ftctrl_s2 (+ s1_re), b332 rdft_s1, b334 rdft_s2.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
