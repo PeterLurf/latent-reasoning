@@ -23,3 +23,6 @@
 2026-10-21 15:18:22 s219_post_t2 textself_cpu rc 0
 2026-10-21 15:18:22 s219_post_t2 eval_textself CPU parts done (boxes/runs_fsq/s219_t2_s1/eval_textself.json: label_audit, contamination); Theory's T2 readings note is next; STAGE_BOUNDARY: commit eval_textself.json
 2026-10-21 15:18:22 s219_post_t2 T2 post-landing chain DONE
+2026-10-21 18:05:48 s219_post_t2 textself GPU parts start (3070, after khorizon; Audit 10-21: descriptive)
+2026-10-22 09:05:49 s219_post_t2 textself GPU parts start (4060; Theory 10-22)
+2026-10-22 10:14:58 s219_post_t2 textself_gpu rc 0 (4060; descriptive)
