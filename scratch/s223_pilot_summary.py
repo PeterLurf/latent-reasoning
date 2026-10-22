@@ -16,6 +16,8 @@ def cell(c):
     d = os.path.join(T, c); rows = [json.loads(l) for l in open(os.path.join(d, "log.jsonl")) if l.strip()] if os.path.exists(os.path.join(d, "log.jsonl")) else []
     st = [json.loads(l) for l in open(os.path.join(d, "stages.jsonl"))] if os.path.exists(os.path.join(d, "stages.jsonl")) else []
     args = json.load(open(os.path.join(d, "args.json"))) if os.path.exists(os.path.join(d, "args.json")) else {}
+    rows = sorted({r["step"]: r for r in rows}.values(), key=lambda r: r["step"])     # a --resume re-runs steps after the ckpt: last record per step
+    st = sorted({(r.get("step"), r.get("from"), r.get("to")): r for r in st}.values(), key=lambda r: r.get("step") or 0)
     bins = {}
     for r in rows:
         bins.setdefault(str((r["step"] - 1) // 1000), []).append(r.get("num_ce"))
