@@ -13,6 +13,7 @@ Written 2026-10-21 by the Literature session, for Theory and Audit.
 - **Text-only self-improvement:** Lee 2502.01612, Huang 2511.07378 [theorem], Liu 2602.10014 [theorem], STaR 2203.14465, ReST^EM 2312.06585.
 - **Latent-side items are not round-for-round self-training:** Abstract-CoT 2604.22709 (self-distillation warm-up, then RL), C-MTP 2607.16972, Latent-GRPO 2604.27998 (RL).
 - **Required scope in the wording:** one lineage per arm, GPT-2 small, Arithmetic(n, 11), two rounds, and train tokens not compute-matched (text 1.19e8 vs latent 2.99e8 in r2). Note 219-13's §5.1 wording already carries this.
+- **Updated 2026-10-22 (§225, Note 225-1, 189cd6c2):** 219-13's TOKEN-COST overcounted latent steps by 3×. At matched compute on both axes, latent matches text-CoT with ~20–50× fewer sequential steps and ~0.65× FLOPs per correct answer (n 13–20; one lineage each, GPT-2, Arithmetic(n, 11)).
 - The "~20–35× fewer sequential steps" point is the familiar latent-efficiency argument (Coconut 2412.06769, CODI 2502.21074 report fewer generated tokens). Cite it as consistent with them, not as a new kind of claim.
 
 ## (b) Where our numbers bear on cited claims [descriptive; two rounds, one lineage, so weak]
