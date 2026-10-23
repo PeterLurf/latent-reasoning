@@ -21065,7 +21065,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (ii) **The forward layout HURTS even d = 1** (0.66 plateau in OW and CHAIN vs 0.96 in TOPO). The cause is not identified (a frame / layout interaction or a forward-mode generator artefact; ow_gen_check found no solver mismatch or shortcut). It is reported, not chased (no-loop rule).
   - (iii) **No LoRA cell in either section composes two steps one-pass,** under any of the four task variants.
 - **Pre-stated mapping (226 §):** P0-OW fails and P0c fails → **P0d-FULLFT**, the single remaining step.
-  - P0d = full fine-tuning (lr 1e-4, fp32 master weights; §170's one-pass recipe) with the identical gates. It runs on **TOPO's generator** if forward-mode d = 1 stays at the 0.66 plateau in a $0 sanity check of P0d's first 3k steps. Otherwise on OW as registered.
+  - P0d = full fine-tuning (lr 1e-4, fp32 master weights; §170's one-pass recipe) with the identical gates (G1–G3, binding G2), proposed on **TOPO's generator** (see the amendment).
   - **Amendment (disclosed, decided after this panel):** the generator choice for P0d is the one deviation. Running full FT on a layout where even d = 1 plateaus at 0.66 under LoRA would not test the recipe question. TOPO is the variant whose d = 1 is learned, so P0d on TOPO isolates "recipe enables composition". Audit to rule.
   - **P0d failing G2 → §226 closes descriptively:** no one-pass d = 2 on English-templated word programs at GPT-2 small under either recipe.
 - **Build for P0d:** a full-FT path in codi_ps (default off): G-D, the flags-off equivalence gate, gradflow and a plain-path smoke. $0.
