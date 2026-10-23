@@ -16,7 +16,7 @@ TREE = "D:/Latent/scratch/_tmp/s226_tree"
 for i, v in enumerate(sys.argv):
     if v == "--tree":
         TREE = sys.argv[i + 1]
-OUT = "D:/Latent/scratch/gate_s226"; PROTO = "D:/Latent/docs/research_ordered_words_2026-10-23/ow_words.py"
+OUT = os.environ.get("S226_GATE_OUT", "D:/Latent/scratch/gate_s226"); PROTO = "D:/Latent/docs/research_ordered_words_2026-10-23/ow_words.py"
 
 
 def load(path, name):

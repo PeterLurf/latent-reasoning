@@ -1,0 +1,62 @@
+{
+ "by_d": {
+  "1": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "2": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "3": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "4": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "5": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "6": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "7": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  },
+  "8": {
+   "encode": 0,
+   "vidx": 0,
+   "nidx": 0,
+   "ans_parse": 0,
+   "step_parse": 0
+  }
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s227_tree"
+}

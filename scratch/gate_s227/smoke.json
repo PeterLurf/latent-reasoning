@@ -1,0 +1,64 @@
+{
+ "rc": 9,
+ "n_log": 12,
+ "svce_logged": true,
+ "decode_records": [
+  [
+   6,
+   1,
+   [
+    "1",
+    "2"
+   ],
+   [
+    "acc",
+    "acc_nowrap",
+    "acc_wrap",
+    "n",
+    "n_wrap",
+    "parsed",
+    "per_step_value_acc",
+    "terminated"
+   ]
+  ],
+  [
+   12,
+   1,
+   [
+    "1",
+    "2"
+   ],
+   [
+    "acc",
+    "acc_nowrap",
+    "acc_wrap",
+    "n",
+    "n_wrap",
+    "parsed",
+    "per_step_value_acc",
+    "terminated"
+   ]
+  ]
+ ],
+ "cg_signal": "step_value_ce",
+ "text_eval_sha": "62470881321854492848f1147a89e878314c19ef121290d00fdccb6ee00d0a50",
+ "micro": 16,
+ "mem_checks": [
+  {
+   "micro": 64,
+   "peak_gib": Infinity
+  },
+  {
+   "micro": 32,
+   "peak_gib": 8.362579345703125
+  },
+  {
+   "micro": 16,
+   "peak_gib": 5.254777908325195
+  }
+ ],
+ "sec_per_step": 0.8333333333333334,
+ "err": "",
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s227_tree"
+}
