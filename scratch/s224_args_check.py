@@ -5,7 +5,8 @@
   diffs:  the single-change diffs over the frozen files -> scratch/gate_s224/args_diffs.json: FH vs RD (same seed) = {fh}; RD vs FT-CTRL (s1: vs
           s215_ftctrl_s1's args; s2: vs s224_ftctrl_s2's frozen) = {far} plus, against the pre-§224 s215 file only, the §224 keys absent there at their
           defaults; FT-CTRL s2 vs s215_ftctrl_s1 = {seed, init_from} (+ the same default keys). CONTROL keys are ignored throughout.
-          python scratch/s224_args_check.py diffs"""
+          python scratch/s224_args_check.py diffs
+  diffs2: Stage 2 (Note 224-6), see diffs2()."""
 import json
 import sys
 
@@ -48,5 +49,39 @@ def diffs():
     json.dump(o, open("scratch/gate_s224/args_diffs.json", "w", newline="\n"), indent=1); print("ARGS-DIFFS pass", o["pass"])
 
 
+def trainer_defaults():
+    """the boxes/vbank.py argparse defaults (ast: every ap.add_argument("--x", ...) -> default=literal, store_true -> False)."""
+    import ast
+    t = ast.parse(open("boxes/vbank.py", encoding="utf-8").read()); d = {}
+    for nd in ast.walk(t):
+        if isinstance(nd, ast.Call) and getattr(nd.func, "attr", None) == "add_argument" and nd.args and isinstance(nd.args[0], ast.Constant):
+            k = nd.args[0].value.lstrip("-").replace("-", "_"); kw = {x.arg: x.value for x in nd.keywords}
+            if "default" in kw:
+                try:
+                    d[k] = ast.literal_eval(kw["default"])
+                except ValueError:
+                    d[k] = "<expr>"
+            elif isinstance(kw.get("action"), ast.Constant) and kw["action"].value == "store_true":
+                d[k] = False
+            else:
+                d[k] = None
+    return d
+
+
+def diffs2():
+    """Stage 2 (Note 224-6): FH vs RD (same seed) = {fh, fh_dose} exactly; RD vs its D3-T ref (s213_d3t_s1 / s216_d3t_s2 args) = {far}, plus only keys the
+    older ref lacks (None there) whose cell value is the trainer's current default. CONTROL keys ignored. -> scratch/gate_s224/args_diffs_s2.json"""
+    ld = lambda r: json.load(open(FZ % r))  # noqa: E731
+    D = trainer_defaults(); o = {"trainer_defaults_n": len(D)}
+    for sd in ("s1", "s2"):
+        rd, fh = ld("s224_rd_" + sd), ld("s224_fh_" + sd); d = diff(rd, fh)
+        o["FH_vs_RD_" + sd] = {"diff": d, "pass": set(d) == {"fh", "fh_dose"} and d["fh"] == [False, True] and d["fh_dose"] == ["250,500", "7500,8000"]}
+        ref = json.load(open("scratch/s224_args_ref_d3t_%s.json" % sd)); d = diff(ref, rd)
+        extra = {k: v for k, v in d.items() if k != "far" and not (v[0] in (None, "") and k in D and v[1] == D[k])}
+        o["RD_vs_D3T_" + sd] = {"diff_keys": sorted(d), "far": d.get("far"), "extra": extra, "pass": d.get("far") in ([None, True], [False, True]) and not extra}
+    o["pass"] = all(v["pass"] for v in o.values() if isinstance(v, dict))
+    json.dump(o, open("scratch/gate_s224/args_diffs_s2.json", "w", newline="\n"), indent=1); print("ARGS-DIFFS-S2 pass", o["pass"])
+
+
 if __name__ == "__main__":
-    check(sys.argv[2], sys.argv[3]) if sys.argv[1] == "check" else diffs()
+    {"check": lambda: check(sys.argv[2], sys.argv[3]), "diffs": diffs, "diffs2": diffs2}[sys.argv[1]]()
