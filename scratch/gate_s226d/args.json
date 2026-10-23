@@ -1,0 +1,25 @@
+{
+ "diff": [
+  "codi_port_sha256",
+  "full_ft",
+  "lr",
+  "module_sha256",
+  "ow_words_sha256"
+ ],
+ "nonhash": [
+  "full_ft",
+  "lr"
+ ],
+ "values": {
+  "full_ft": [
+   null,
+   true
+  ],
+  "lr": [
+   0.0003,
+   0.0001
+  ]
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226d_tree"
+}

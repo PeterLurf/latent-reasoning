@@ -1,0 +1,12 @@
+{
+ "rc": 9,
+ "n": 12,
+ "finite": true,
+ "wrap": true,
+ "micro": 32,
+ "full_ft": true,
+ "sec_per_step": 0.3333333333333333,
+ "err": "",
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226d_tree"
+}

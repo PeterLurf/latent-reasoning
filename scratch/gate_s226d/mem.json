@@ -1,0 +1,63 @@
+{
+ "rc": 0,
+ "mem_check": {
+  "checks": [
+   {
+    "micro": 64,
+    "peak_gib": Infinity
+   }
+  ],
+  "micro": 64,
+  "accumulation": 1,
+  "shape": {
+   "d": 8,
+   "K": 10,
+   "q_tokens": 142,
+   "R_tokens": [
+    134,
+    128,
+    114,
+    95,
+    76,
+    58,
+    42,
+    6
+   ]
+  },
+  "gpu": "NVIDIA GeForce RTX 4060"
+ },
+ "err": "",
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226d_tree",
+ "v1_note": "v1 ran --mem_check, which in codi_ps probes the GIVEN micro once and stops (no halving): micro 64 OOM -> 'fail' by gate design, not a code fault",
+ "v2_from_auto_micro": {
+  "checks": [
+   {
+    "micro": 64,
+    "peak_gib": Infinity
+   },
+   {
+    "micro": 32,
+    "peak_gib": 6.615242958068848
+   }
+  ],
+  "micro": 32,
+  "accumulation": 2,
+  "shape": {
+   "d": 8,
+   "K": 10,
+   "q_tokens": 142,
+   "R_tokens": [
+    134,
+    128,
+    114,
+    95,
+    76,
+    58,
+    42,
+    6
+   ]
+  },
+  "gpu": "NVIDIA GeForce RTX 4060"
+ }
+}

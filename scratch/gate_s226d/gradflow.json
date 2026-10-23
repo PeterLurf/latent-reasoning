@@ -1,0 +1,31 @@
+{
+ "direct": {
+  "n_gpt2": 148,
+  "nonzero_gpt2": 148,
+  "zero_or_none": [
+   "prj.1.weight",
+   "prj.1.bias",
+   "prj.3.weight",
+   "prj.3.bias",
+   "prj.ln.weight",
+   "prj.ln.bias"
+  ],
+  "note": "prj is unused in DIRECT (no latent steps): no grad by construction"
+ },
+ "parts": {
+  "ans_ce": 7.728628635406494,
+  "num_ce": 7.892583847045898,
+  "num_acc": 0.0,
+  "num_ok_wrap": 0.0,
+  "n_wrap": 3.0,
+  "num_ok_nowrap": 0.0,
+  "n_nowrap": 1.0
+ },
+ "m1": {
+  "n": 154,
+  "nonzero": 154,
+  "zero_or_none": []
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226d_tree"
+}

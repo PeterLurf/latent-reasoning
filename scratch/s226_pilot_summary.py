@@ -6,10 +6,12 @@ per-d training exposure (the summed d_hist over all rows = steps per d; items = 
 import json
 import math
 import os
+import sys
 
 import numpy as np
 
-T = "scratch/_tmp/s226_p0"; CELLS = ("P0-OW", "P0b-TOPO", "P0c-CHAIN")
+P0D = "--p0d" in sys.argv                                                 # §226 P0d (Note 226-1): its own dir and output, the same fields
+T = "scratch/_tmp/s226_p0d" if P0D else "scratch/_tmp/s226_p0"; CELLS = ("P0d-FULLFT",) if P0D else ("P0-OW", "P0b-TOPO", "P0c-CHAIN")
 
 
 def cell(c):
@@ -39,13 +41,14 @@ def cell(c):
                            "by_1k_bin": {k: {"wrap": pooled(v, "num_ok_wrap", "n_wrap"), "nowrap": pooled(v, "num_ok_nowrap", "n_nowrap")} for k, v in bins.items()}},
             "exposure_by_d": {"steps": {str(i): int(x) for i, x in enumerate(dh) if x}, "items": {str(i): int(x * eff) for i, x in enumerate(dh) if x}},
             "last_step": rows[-1]["step"] if rows else None, "sec": rows[-1]["sec"] if rows else None, "micro": args.get("micro"), "card_meta": meta,
-            "args": {k: args.get(k) for k in ("task", "order_mode", "dag", "stream_seed", "lr", "cg_thr", "cg_cap", "steps", "direct", "train_gpu", "module_sha256", "ow_words_sha256")}}
+            "args": {k: args.get(k) for k in ("task", "order_mode", "dag", "stream_seed", "lr", "cg_thr", "cg_cap", "steps", "direct", "full_ft", "train_gpu", "module_sha256", "ow_words_sha256")}}
 
 
 def main():
-    out = {"note": "§226 ORDERED-WORDS stage 0 (registered 09368b14): one-pass learnability attribution panel; gates LP0 / G1 / G2 / G3 / THRESHOLD-MISSET read by Theory",
+    out = {"note": ("§226 P0d-FULLFT (Note 226-1): full fine-tuning, TOPO generator; gates G1 / G2 / G3 / LP0 read by Theory" if P0D else
+                     "§226 ORDERED-WORDS stage 0 (registered 09368b14): one-pass learnability attribution panel; gates LP0 / G1 / G2 / G3 / THRESHOLD-MISSET read by Theory"),
            "cells": {c: cell(c) for c in CELLS if os.path.isdir(os.path.join(T, c))}}
-    os.makedirs("scratch/gate_s226", exist_ok=True); json.dump(out, open("scratch/gate_s226/pilot_ow.json", "w", newline="\n"), indent=1)
+    os.makedirs("scratch/gate_s226", exist_ok=True); json.dump(out, open("scratch/gate_s226/pilot_p0d.json" if P0D else "scratch/gate_s226/pilot_ow.json", "w", newline="\n"), indent=1)
     print("PILOT-OW", {c: (v["last_step"], len(v["stages"])) for c, v in out["cells"].items()})
 
 
