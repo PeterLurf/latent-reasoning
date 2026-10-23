@@ -150,7 +150,8 @@ def score_pilot(runs, dir_run, lat_run, mode):
     lp0 = all(np.isfinite(x) and x <= 10 for x in g)
     k1 = [r for r in lg if isinstance(r.get("by_d"), dict)]
     lp1 = bool(k1) and k1[-1]["by_d"]["1"]["acc"] >= 0.90
-    lp2 = bool(k1) and (k1[-1].get("aux_vacc_by_pass") or [0])[0] >= 0.80
+    av = k1[-1].get("aux_vacc_by_pass") if k1 else None                    # inject_ow: {pass: value-token acc}, keyed "1", "2", ...
+    lp2 = bool(av) and float(av.get("1", 0.0)) >= 0.80
     a = lambda X, d: float(np.mean(main_acc(X["eval_acc.json"], d)))  # noqa: E731
     o = {"LP0": lp0, "LP1": lp1, "LP2": lp2}
     if mode == 2:
