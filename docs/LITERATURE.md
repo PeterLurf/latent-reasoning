@@ -190,6 +190,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - §219 result vs self-improvement (docs/LIT_S219_TEXTSELF_RESULT_2026-10-21.md): our matched text-CoT vs latent self-training (Note 219-13, CROSSED; n50 20.16 vs 20.54 at round 2) bears on Lee [2502.01612](https://arxiv.org/abs/2502.01612) (margin form) and Huang [2511.07378](https://arxiv.org/abs/2511.07378) (proportional margin); STaR [2203.14465](https://arxiv.org/abs/2203.14465), ReST^EM [2312.06585](https://arxiv.org/abs/2312.06585). C3 efficiency (§225, Note 225-1): at matched compute, latent ≈ text-CoT with ~20–50× fewer sequential steps and ~0.65× FLOPs per correct answer (scope as above). No compute-matched prior was found; LOTUS [2606.31779](https://arxiv.org/abs/2606.31779) is latency-framed.
 
+- One-pass depth thresholds (docs/LIT_ONEPASS_DEPTH_THRESHOLD_2026-10-23.md): Lin et al. [2503.07604](https://arxiv.org/abs/2503.07604) (implicit multi-step only with fixed premise order); Physics of LMs 2.1 [2407.20311](https://arxiv.org/abs/2407.20311) (depth > width); Balesni et al. [2411.16353](https://arxiv.org/abs/2411.16353); Dziri et al. [2305.18654](https://arxiv.org/abs/2305.18654).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
