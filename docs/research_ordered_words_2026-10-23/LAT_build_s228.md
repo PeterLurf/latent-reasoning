@@ -61,7 +61,7 @@ nested170 / deltamem / deltas5 / fsq120 are imported read-only. No existing modu
 Files are in `<run>/`. `eval.json` is a summary (parts present + train summary; no accuracies). Field paths:
 
 - **`eval_acc.json`** (TEST2) and **`eval_transfer.json`** (frames 6–7):
-  - `by_d[d].acc` (K′ = think_k);
+  - `by_d[d].acc` (K′ = think_k) and `by_d[d].k_main` (that K′; 0 for direct);
   - `by_d[d].acc_kprime["0".."14", "d+2"]`;
   - `items[d] = {sig, ans, pred, L, s}`. `pred[i]` is a list over K′ 0..14 (inject) or an int (direct). L = think tokens, s = decoder suffix tokens.
   - `kprime0_nobias[d] = {acc, pred}`; `wo_bias_norm`.

@@ -66,7 +66,7 @@ def part_acc(m, g, sets, a, dev, bs, key="test2"):
     T = tokd(sets, key, IO.TEST_DS); K = a["think_k"]; out = {"set": key, "by_d": {}, "items": {}}
     for d in IO.TEST_DS:
         P = answers_by_kprime(m, g, T[d], KMAX if m is not None else 0, dev, bs); y = np.array([it["ans"] for it in T[d]])
-        rec = {"acc": float((P[:, K if m is not None else 0] == y).mean())}
+        rec = {"acc": float((P[:, K if m is not None else 0] == y).mean()), "k_main": K if m is not None else 0}
         if m is not None:
             rec["acc_kprime"] = {str(k): float((P[:, k] == y).mean()) for k in range(KMAX + 1)}; rec["acc_kprime"]["d+2"] = float((P[:, d + 2] == y).mean())
         out["by_d"][str(d)] = rec
