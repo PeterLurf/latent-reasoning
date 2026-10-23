@@ -1,0 +1,97 @@
+{
+ "ref": "scratch/s224_args_ref_d3t_s1.json",
+ "diff": {
+  "ckpt_every": [
+   1000,
+   2000
+  ],
+  "draws_log_steps": [
+   null,
+   0
+  ],
+  "far": [
+   null,
+   true
+  ],
+  "far_n": [
+   null,
+   16
+  ],
+  "far_t": [
+   null,
+   "13,48"
+  ],
+  "far_w": [
+   null,
+   1.0
+  ],
+  "fh": [
+   null,
+   true
+  ],
+  "fh_dose": [
+   null,
+   "7500,8000"
+  ],
+  "fh_lam_cap": [
+   null,
+   10.0
+  ],
+  "fh_target": [
+   null,
+   0.2
+  ],
+  "init_from": [
+   null,
+   ""
+  ],
+  "mem_check_self": [
+   null,
+   false
+  ],
+  "mem_check_steps": [
+   null,
+   1
+  ],
+  "out": [
+   "boxes/runs_fsq/s213_d3t_s1",
+   "boxes/runs_fsq/s224_fh_s1"
+  ],
+  "p_self": [
+   null,
+   0.0
+  ],
+  "pause": [
+   null,
+   "none"
+  ],
+  "pause_max": [
+   null,
+   8
+  ],
+  "pause_p": [
+   null,
+   0.5
+  ],
+  "self_kextra": [
+   null,
+   4
+  ],
+  "self_kmax": [
+   null,
+   16
+  ],
+  "self_micro": [
+   null,
+   2
+  ],
+  "self_pool": [
+   null,
+   ""
+  ],
+  "train_driver": [
+   "595.58.03",
+   "595.91.07"
+  ]
+ }
+}
