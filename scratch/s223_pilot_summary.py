@@ -10,8 +10,9 @@ import sys
 
 import numpy as np
 
+P3A = "--p3a" in sys.argv                                                 # Note 223-10 pilot P3a (DIRECT only)
 P2 = "--p2" in sys.argv                                                   # Note 223-8 pilot P2: its dir, cells and output
-T = "scratch/_tmp/s223_p2" if P2 else "scratch/_tmp/s223_pilot"
+T = "scratch/_tmp/s223_p3a" if P3A else "scratch/_tmp/s223_p2" if P2 else "scratch/_tmp/s223_pilot"
 
 
 def cell(c):
@@ -34,6 +35,8 @@ def cell(c):
             "last500": {"num_acc": float(np.mean([r["num_acc"] for r in l5])) if l5 else None, "num_ce": float(np.mean([r["num_ce"] for r in l5])) if l5 else None,
                         "d_max": l5[-1].get("d_max") if l5 else None},
             "m2_rows": [[r["step"], r.get("m2_m"), r.get("m2_start")] for r in rows if "m2_m" in r],
+            "gn_preclip_rows": [[r["step"], r.get("gn_preclip")] for r in rows],
+            "gn_first_window_flag": "the first 100-step window includes the warm-up (3% of --steps); flagged, not excluded (Note 223-10)",
             "lp4_window_7100_7600": {"n_rows": len(w), "num_acc": float(np.mean([r["num_acc"] for r in w])) if w else None,
                                      "num_ce": float(np.mean([r["num_ce"] for r in w])) if w else None, "d_max": [r.get("d_max") for r in w]},
             "lp0": {"gn_preclip_max_of_100step_means": max((r["gn_preclip"] for r in rows if isinstance(r.get("gn_preclip"), float) and math.isfinite(r["gn_preclip"])), default=None),
@@ -42,11 +45,11 @@ def cell(c):
 
 
 def main():
-    out = {"lp5_mass_share_gate": json.load(open("scratch/gate_s223p2/iii.json")) if P2 and os.path.exists("scratch/gate_s223p2/iii.json") else None,
-           "note": "§223 Note 223-8 pilot P2 (descriptive; LP1-LP3 read by Theory)" if P2 else "§223 Note 223-4 learning pilot (descriptive; LP1-LP3 read by Theory)", "card_device": sys.argv[1], "kernel": sys.argv[2],
-           "cells": ({c: cell(c) for c in ("direct", "m1", "ps")} if P2 else
+    out = {"lp5_mass_share_gate": json.load(open("scratch/gate_s223p2/iii.json")) if P2 and not P3A and os.path.exists("scratch/gate_s223p2/iii.json") else None,
+           "note": "§223 Note 223-10 pilot P3a (DIRECT only; read by Theory)" if P3A else "§223 Note 223-8 pilot P2 (descriptive; LP1-LP3 read by Theory)" if P2 else "§223 Note 223-4 learning pilot (descriptive; LP1-LP3 read by Theory)", "card_device": sys.argv[1], "kernel": sys.argv[2],
+           "cells": ({c: cell(c) for c in ("direct",)} if P3A else {c: cell(c) for c in ("direct", "m1", "ps")} if P2 else
                      {c: cell(c) for c in ("direct", "ps", "m1_4060", "direct_4060") if c in ("direct", "ps") or os.path.isdir(os.path.join(T, c))})}
-    os.makedirs("scratch/gate_s223", exist_ok=True); json.dump(out, open("scratch/gate_s223/pilot2.json" if P2 else "scratch/gate_s223/pilot.json", "w", newline="\n"), indent=1)
+    os.makedirs("scratch/gate_s223", exist_ok=True); json.dump(out, open("scratch/gate_s223/pilot3a.json" if P3A else "scratch/gate_s223/pilot2.json" if P2 else "scratch/gate_s223/pilot.json", "w", newline="\n"), indent=1)
     print("PILOT-SUMMARY", {c: {k: v[k] for k in ("first_advance", "entry_step", "last_step")} for c, v in out["cells"].items()})
 
 
