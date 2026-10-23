@@ -21185,6 +21185,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (ii) Both levers cost depth at n 9–11. The penalty costs more (≈ −0.17 vs ≈ −0.11 mean). That is a C1 > C6 trade-off, so no recipe claim carries into C1 work without a depth re-test (the registered WARN).
 - **s3 (contingent, needs Audit's cap ruling).** Registered: FH and RD s3 (≈ $5.8). Since FH-RECIPE and PENALTY are already decided, an FH s3 cannot change any registered verdict. **Theory proposes RD-s3 only (≈ $2.9)**, which decides RD SUFFICES (2/3). This is disclosed as decided after seeing s1 / s2. The s3 base comparator is the mean of the s1 / s2 bases, as pre-stated in score_s224_s2.
 
+**Note 224-8 (2026-10-23 10:09 EDT; Audit's s3 ruling on 224-7, before any s3 output).** Note 224-7 is reproduced. **Contingent s3 = RD only** (s224_rd_s3, seed 3, the D3-T recipe + --far; ≈ $2.9; admit / guard as 224-6). This was decided after seeing s1 / s2, and it decides only RD SUFFICES (2/3).
+- An FH s3 could not change any registered verdict (FH-RECIPE fails in both seeds; PENALTY NEEDED is impossible), so it is not run.
+- Stage 2 stays within its $16 cap ($10.53 + ≈ $2.9).
+- The s3 comparator is the mean of the s1 / s2 base re-evals, as pre-stated.
+- score_s224_s2 now treats s3 as RD-only (S3_RD_ONLY; fixtures 18/18), changed before any s3 output.
+- **Headline wording (Audit):** "a trained far pass (RD) fixes the C6 hold fully; the anchor penalty adds nothing; both cost depth (DEPTH-WARN)". The depth cost is the open C6 question for the next design.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
