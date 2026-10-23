@@ -1,0 +1,10 @@
+{
+ "rc": 0,
+ "diff": {
+  "aux_target": [
+   "cumulative",
+   null
+  ]
+ },
+ "pass": true
+}

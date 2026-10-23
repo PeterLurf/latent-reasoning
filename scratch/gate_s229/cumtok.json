@@ -1,0 +1,61 @@
+{
+ "by_d": {
+  "1": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 6.0,
+   "value_tokens_mean": 6.0
+  },
+  "2": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 19.12375,
+   "value_tokens_mean": 6.0
+  },
+  "3": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 28.762166666666666,
+   "value_tokens_mean": 6.0
+  },
+  "4": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 36.54475,
+   "value_tokens_mean": 6.0
+  },
+  "5": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 44.0983,
+   "value_tokens_mean": 6.0
+  },
+  "6": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 51.504083333333334,
+   "value_tokens_mean": 6.0
+  },
+  "7": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 58.659214285714285,
+   "value_tokens_mean": 6.0
+  },
+  "8": {
+   "text": 0,
+   "vidx": 0,
+   "len": 0,
+   "aux_tokens_mean": 65.891,
+   "value_tokens_mean": 6.0
+  }
+ },
+ "pass": true
+}

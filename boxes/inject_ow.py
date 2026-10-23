@@ -48,9 +48,23 @@ OWKW = {"order_mode": "topo", "dag": True}
 PAIR_DS = range(3, 9); PAIR_TRIES = 3000; PAIR_CAP = 1000; FLOOR_K = 3; TEST_DS = range(1, 13); TEST_N = 1000
 
 
-def tok_ow(it):
-    th = [EOT] + ENC.encode(" " + it["text"]); aux = [ENC.encode(" " + r) + [EOT] for r in it["R_step"]]
-    return {"think": th, "dec": th + SFX, "ans": int(it["answer"]), "aux": aux, "vidx": [q.index(HAS_TOK) + 1 for q in aux], "d": it["d"], "sig": it["sig"]}
+def cum_vidx(q, it, t):
+    """§229: the index in q = enc(" " + R_t) + EOT of S_t's value token: S_t's given sentence " <spine_t> has <v_t> <u>." (GIVEN; a frame "B has c
+    more u than A" can repeat " <name> has <c>", so the whole sentence is matched, asserted unique); the value is the token after " has"."""
+    A = it["names"]["spine"][t]; pat = ENC.encode(" " + OW.GIVEN.format(A=A, v=it["values"][t], u=it["unit"])); L = len(pat)
+    hit = [i for i in range(len(q) - L + 1) if q[i:i + L] == pat]; assert len(hit) == 1, ("§229: S_t's given sentence not unique in R_t", t, len(hit))
+    return hit[0] + len(ENC.encode(" " + A)) + 1
+
+
+def tok_ow(it, aux_target="value"):
+    """aux_target 'value' (§228): aux_t = enc(" " + R_step[t]) + EOT; 'cumulative' (§229): aux_t = enc(" " + R[t]) + EOT, the re-rooted program after t
+    steps (the generator's R field; R[0] is the question), vidx = S_t's value token in it."""
+    th = [EOT] + ENC.encode(" " + it["text"])
+    if aux_target == "cumulative":
+        aux = [ENC.encode(" " + it["R"][t]) + [EOT] for t in range(1, it["d"] + 1)]; vidx = [cum_vidx(q, it, t) for t, q in enumerate(aux, 1)]
+    else:
+        aux = [ENC.encode(" " + r) + [EOT] for r in it["R_step"]]; vidx = [q.index(HAS_TOK) + 1 for q in aux]
+    return {"think": th, "dec": th + SFX, "ans": int(it["answer"]), "aux": aux, "vidx": vidx, "d": it["d"], "sig": it["sig"]}
 
 
 def tok_nested(it):
@@ -166,6 +180,7 @@ def main(argv=None):
     ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true"); ap.add_argument("--mem_write", default="top", choices=["top"])
     ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000); ap.add_argument("--cache_lower", action="store_true")
     ap.add_argument("--aux_step", type=float, default=0.0); ap.add_argument("--aux_fade", default="48000,48000"); ap.add_argument("--aux_reweight", action="store_true")
+    ap.add_argument("--aux_target", default="value", choices=["value", "cumulative"], help="§229: cumulative = the re-rooted program R_t per pass (default value = §228)")
     ap.add_argument("--fast_add", action="store_true"); ap.add_argument("--fp32", action="store_true"); ap.add_argument("--sched_scale", type=float, default=1.0, help="smokes / gates only")
     ap.add_argument("--src", default="ow", choices=["ow", "nested"], help="nested = GATE ONLY (port-kernel identity vs nested170)"); ap.add_argument("--n_max_train", type=int, default=8, help="--src nested only")
     ap.add_argument("--futility", default="", help="LAT_v1 §4: 'step1,step2' (24000,32000): stop if the d = 2 train acc of the last 1k bin < 0.50 and the OLS slope of the "
@@ -181,7 +196,7 @@ def main(argv=None):
     from boxes.deltas5 import write_grad_norm
     DM_.FAST_ADD = bool(a.fast_add); os.makedirs(a.out, exist_ok=True); dev = a.device; sc = a.sched_scale
     if a.arm == "direct":
-        assert not (a.think_k or a.aux_step or a.aux_reweight or a.cache_lower or a.fast_add or a.futility), "DIRECT has no latent flags"
+        assert not (a.think_k or a.aux_step or a.aux_reweight or a.cache_lower or a.fast_add or a.futility or a.aux_target != "value"), "DIRECT has no latent flags"
         a.mem_write = a.write_mix_start = a.write_mix_end = None
     else:
         assert a.think_k >= 1 and a.aux_step > 0, "§228 inject: K >= 1 with the step aux"
@@ -212,7 +227,7 @@ def main(argv=None):
     def draw_items(d):
         if a.src == "nested":
             return [tok_nested(it) for it in N7.train_items(rng, a.bs, a.n_max_train, EXCL)]
-        return [tok_ow(stream.draw(d)) for _ in range(a.bs)]
+        return [tok_ow(stream.draw(d), a.aux_target) for _ in range(a.bs)]
 
     def loss_items(items, stat=None):
         """nested170.loss_items (direct; inject with the aux on) on token-list items; stat (dict) collects the log fields (no effect on the graph)."""
@@ -248,7 +263,7 @@ def main(argv=None):
         return loss
 
     s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, **OWKW) if a.src == "ow" else None
-    MC_TR = sorted([tok_ow(s_mc.draw(a.d_max)) for _ in range(256)], key=lambda it: -len(it["dec"])) if s_mc else None
+    MC_TR = sorted([tok_ow(s_mc.draw(a.d_max), a.aux_target) for _ in range(256)], key=lambda it: -len(it["dec"])) if s_mc else None
     MC_EV = sorted([tok_ow(s_mc.draw(12)) for _ in range(256)], key=lambda it: -len(it["dec"]))[:1] if s_mc else None
 
     def mem_train(micro):
@@ -319,7 +334,7 @@ def main(argv=None):
         if a.src == "nested":
             its = [tok_nested(it) for it in N7.train_items(np.random.default_rng(17001), 64, a.n_max_train, set())]
         else:
-            s_ = OW.Stream(SEED_CAL, frames=OW.FRAME_TRAIN, **OWKW); its = [tok_ow(s_.draw(1 + i % a.d_max)) for i in range(64)]
+            s_ = OW.Stream(SEED_CAL, frames=OW.FRAME_TRAIN, **OWKW); its = [tok_ow(s_.draw(1 + i % a.d_max), a.aux_target) for i in range(64)]
         x, msk = m.think_inputs(its, dev); m.mem.norms = []
         with torch.no_grad(), ac():
             m.think(m.mem.zero_state(64, dev), x, msk, min(K, 4))

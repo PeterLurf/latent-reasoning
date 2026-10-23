@@ -1,0 +1,33 @@
+{
+ "answer_ce": {
+  "value": 19.77889917550427,
+  "gpt2_nonzero": 148,
+  "n_gpt2": 148,
+  "mem_nonzero": 12,
+  "n_mem": 12,
+  "zero_or_none": []
+ },
+ "aux_ce": {
+  "value": 9.579120538260899,
+  "gpt2_nonzero": 148,
+  "n_gpt2": 148,
+  "mem_nonzero": 12,
+  "n_mem": 12,
+  "zero_or_none": []
+ },
+ "aux_weights": [
+  [
+   1,
+   0.368
+  ],
+  [
+   2,
+   0.582
+  ]
+ ],
+ "aux_tokens": [
+  31,
+  6
+ ],
+ "pass": true
+}
