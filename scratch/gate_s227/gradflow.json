@@ -1,0 +1,10 @@
+{
+ "n_gpt2": 148,
+ "nonzero": 148,
+ "zero_or_none": [],
+ "step_value_ce": 7.599687576293945,
+ "step_value_acc": 0.0,
+ "num_ce": 7.081103324890137,
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s227_tree"
+}

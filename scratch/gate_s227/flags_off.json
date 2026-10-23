@@ -1,0 +1,90 @@
+{
+ "DIRECT": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "new_keys": [],
+  "err": []
+ },
+ "M1": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "new_keys": [],
+  "err": []
+ },
+ "M2": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "new_keys": [],
+  "err": []
+ },
+ "PS": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "new_keys": [],
+  "err": []
+ },
+ "PS_m2": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "new_keys": [],
+  "err": []
+ },
+ "OW_DIRECT": {
+  "rc": [
+   9,
+   9
+  ],
+  "n": [
+   12,
+   12
+  ],
+  "bitwise": true,
+  "stage_max": 2,
+  "new_keys": [],
+  "err": []
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s227_tree",
+ "via": "scratch/gate_s226.py flags_off --tree D:/Latent/scratch/_tmp/s227_tree",
+ "stderr": ""
+}

@@ -1,0 +1,44 @@
+{
+ "diff": [
+  "cg_signal",
+  "codi_port_sha256",
+  "decode_every",
+  "excl_n",
+  "module_sha256",
+  "ow_words_sha256",
+  "text_cot",
+  "text_eval_n_per_d",
+  "text_eval_sha"
+ ],
+ "nonhash": [
+  "cg_signal",
+  "decode_every",
+  "excl_n",
+  "text_cot",
+  "text_eval_n_per_d"
+ ],
+ "values": {
+  "cg_signal": [
+   null,
+   "step_value_ce"
+  ],
+  "decode_every": [
+   null,
+   1000
+  ],
+  "excl_n": [
+   84000,
+   85600
+  ],
+  "text_cot": [
+   null,
+   true
+  ],
+  "text_eval_n_per_d": [
+   null,
+   200
+  ]
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s227_tree"
+}
