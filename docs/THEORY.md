@@ -20977,6 +20977,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - P3 failing LP1 for DIRECT (d ≥ 2 still unlearned) → **§223 closes descriptively:** NESTED-WORDS d ≥ 2 is not learned by GPT-2 + LoRA at this budget, so PORT-STATE is untestable at this scale.
   - The cloud cost would roughly double (48k), within the $20 cap only if G-TIME allows. Otherwise the close.
 
+**Note 223-10 (2026-10-23 00:20 EDT; §223's FINAL iteration under the no-loop rule (Audit's ruling on 223-9): pilot P3a (DIRECT learnability) → P3b only on pass; pre-stated before P3a starts; $0.)**
+- **The binding question:** can plain GPT-2 small with this recipe learn d ≥ 2 on NESTED-WORDS at all? (The §218 task × recipe pattern.)
+- **P3a run:** DIRECT only, on the 4060 (registered kernel), with checkpoints / resume (the box is unstable).
+  - Frozen DIRECT flags except: lr 3e-4; cg_thr 0.45; **cg_cap 6000** (need 2 × 1k bins unchanged, so a threshold advance can come at bins 2–3 once the from-scratch first bin is out of the last-2 window); steps 48,000 (schedule), --stop_at 12000.
+  - It stops early at the advance into stage 2 (d ≤ 3).
+- **Pre-stated pass (P3a):**
+  - (1) DIRECT's stage 0 → 1 AND stage 1 → 2 advances are both by threshold (stages.jsonl reason "threshold…") by step 12,000;
+  - (2) the pooled num_acc over the last completed 1k bin before the stage 1 → 2 advance (d_max = 2, d drawn U{1, 2}; pooled, disclosed) ≥ **0.80**;
+  - (3) LP0 with the first logged window excluded: no later 100-step mean gn_preclip > 10, no non-finite rows.
+- **Outcomes:**
+  - **Pass →** P3b: M1-only and PS (+m2_stage) as P2, with the same CurGate fix, lr and stop rule extended to complete PS's ramp (stop_at = PS's ramp end + 600, read at the last 500 steps). P2's LP3–LP5 gates apply as in 223-8 amendment 2, and then the re-freeze / launch Notes.
+  - **Fail →** §223 **CLOSES descriptively:** "NESTED-WORDS d ≥ 2 is not learnable one-pass by GPT-2 small under this recipe" (a G-W0-type outcome). No further pilots, and the readings stay unread.
+  - A crash is resumed from the checkpoint, not re-pre-stated.
+- Realised cloud for §223 stays $0.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
