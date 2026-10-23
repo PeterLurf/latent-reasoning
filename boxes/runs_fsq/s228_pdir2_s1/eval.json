@@ -1,0 +1,32 @@
+{
+ "arm": "direct",
+ "think_k": 0,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 43,
+   "n_items": 12000
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 4060",
+ "eval_bs": 125,
+ "module_sha256": "36bdd8f1cce743a53c04840d843153e484a3a2d86e86e1bd363e5c2b05676163",
+ "train": {
+  "train_sec": 1487,
+  "last_step": 8000,
+  "n_nonfinite": 0,
+  "entry_d1": null,
+  "futility": null,
+  "clip_rate": 1.0,
+  "grad_norm_preclip": {
+   "median": 11.039813041687012,
+   "p90": 19.243855476379398
+  },
+  "write_grad_spikes_floor": [],
+  "micro": 1,
+  "train_gpu": "NVIDIA GeForce RTX 4060"
+ }
+}
