@@ -20924,7 +20924,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Before any Stage-2 output: Stage-2 cost / gtime (projection > $2.4 per run → STOPPED-COST Note), G-FH-EQ v2, off-host mirrors + resume, and score_s224 Stage-2 readings with fixtures (Theory).
   - Stage-2 cap $16.
 
-**Note 224-5 (2026-10-22 22:02 EDT; §224 Stage-2 operational definitions, before any Stage-2 code launch or output; no bar change; plus the Stage-1 mechanism row, descriptive).**
+**Note 224-5 (2026-10-22 22:02 EDT; §224 Stage-2 operational definitions, written AFTER Stage-1 data was seen (224-4) and BEFORE any Stage-2 output; no bar change; plus the Stage-1 mechanism row, descriptive).**
 - **Which r each Stage-2 rule reads** (FH_v1 §4 left this implicit; fixed now):
   - **UNEXPOSED** reads the TRAINING log: the mean of the last 10 logged `fh_r_far` values, FH vs RD (FH must be ≥ 3× below RD, else UNEXPOSED).
   - **R-MECH, PENALTY NEEDED's r condition and UNDERDOSED** read the EVAL drift: r = 2 × mean `step_ang_v` over t 24–64, all items, n ∈ {1, 4, 8} of fh_check_cpu.<run>.json (K10; 16 items per n). ω-thresholds use r ≈ ω².
@@ -20935,6 +20935,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - FH / RD = 0.71 (s1) / 0.38 (s2). FH / base = 0.33 / 0.12.
   - **So the registered step-based conditions are not met by Stage-1's FH in s1 (and PENALTY's r_FH ≤ r_RD / 3 in neither seed), although FH holds clearly longer than RD** (H(128) +0.15 / +0.25).
   - Reading: the anchor may hold by restoring toward V_{n+2} (bounded cumulative drift) rather than by shrinking each step.
+  - Scorer: theory/score_s224_s2.py (fixtures 15/15), written before any Stage-2 output. Base CurGate advances come from the original D3-T logs. With a contingent s3, each per-seed criterion needs ≥ 2 of 3 seeds, labelled "(2/3)". An UNEXPOSED seed cannot trigger a SPLIT on PENALTY.
   - **The registered criteria are NOT changed:** this was seen on Stage-1 data, and a change now would be outcome-informed. Stage 2 also reports, descriptively, cumulative drift (drift_ang_v at t 64 and its slope over t 24–64) for every model, so a "restoring vs slowing" reading is available beside the registered labels.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
