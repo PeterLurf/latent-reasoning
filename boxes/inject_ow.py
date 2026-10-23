@@ -247,38 +247,45 @@ def main(argv=None):
             stat["la"] = stat.get("la", 0.0) + float(la.detach()) * len(items); stat["n"] = stat.get("n", 0) + len(items)
         return loss
 
-    def mem_check(micro):
-        torch.cuda.reset_peak_memory_stats(dev); s_ = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, **OWKW)
-        its = sorted([tok_ow(s_.draw(a.d_max)) for _ in range(256)], key=lambda it: -len(it["dec"]))[:a.bs // micro]
-        lam_now[0] = a.aux_step; l_ = loss_items(its); l_.backward(); params.zero_grad(set_to_none=True)
+    s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, **OWKW) if a.src == "ow" else None
+    MC_TR = sorted([tok_ow(s_mc.draw(a.d_max)) for _ in range(256)], key=lambda it: -len(it["dec"])) if s_mc else None
+    MC_EV = sorted([tok_ow(s_mc.draw(12)) for _ in range(256)], key=lambda it: -len(it["dec"]))[:1] if s_mc else None
+
+    def mem_train(micro):
+        """the training step's peak at bs / micro of the longest d_max items + AdamW's two fp32 states (nested170's rule)."""
+        torch.cuda.reset_peak_memory_stats(dev); lam_now[0] = a.aux_step; l_ = loss_items(MC_TR[:a.bs // micro]); l_.backward(); params.zero_grad(set_to_none=True)
+        return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 2 * sum(p_.numel() * 4 for p_ in params.parameters() if p_.requires_grad) / 2 ** 30
+
+    def mem_eval(ebs):
+        """the eval's peak (the optimiser state is cleared before the in-process eval): the longest d 12 item x ebs at K' 0..14, fp32."""
         from boxes import inject_ow_eval as EV
-        ev = sorted([tok_ow(s_.draw(12)) for _ in range(256)], key=lambda it: -len(it["dec"]))[:1] * a.eval_bs
-        EV.answers_by_kprime(m, g, ev, 14 if K else 0, dev, a.eval_bs, None)
+        torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); EV.answers_by_kprime(m, g, MC_EV * ebs, 14 if K else 0, dev, ebs, None)
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30
     if a.src == "ow" and not a.args_only and (a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume)):
         mc = []
-        while True:
-            try:
-                pk = mem_check(a.micro)
-            except torch.OutOfMemoryError:
-                pk = float("inf")
-            if pk != float("inf"):                                          # + AdamW's two fp32 states per parameter (nested170's rule)
-                pk += 2 * sum(p_.numel() * 4 for p_ in params.parameters() if p_.requires_grad) / 2 ** 30
-            params.zero_grad(set_to_none=True); torch.cuda.empty_cache()
-            mc.append({"micro": a.micro, "eval_bs": a.eval_bs, "peak_gib": pk}); print("MEM", a.micro, a.eval_bs, pk, flush=True)
-            if pk <= a.mem_budget or a.mem_check:
-                break
-            if a.micro < a.bs:
-                a.micro *= 2
-            elif a.eval_bs > 25:
-                a.eval_bs //= 2
-            else:
-                break
-        json.dump({"checks": mc, "micro": a.micro, "eval_bs": a.eval_bs, "peak_gib": mc[-1]["peak_gib"], "train": "the longest bs / micro of 256 d = %d items (SEED_MEMCHECK) at K = %d" % (a.d_max, K),
-                   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
+        for kind, fn in (("train", mem_train), ("eval", mem_eval)):         # micro from the training peak, then eval_bs from the eval peak (separately)
+            while True:
+                try:
+                    pk = fn(a.micro if kind == "train" else a.eval_bs)
+                except torch.OutOfMemoryError:
+                    pk = float("inf")
+                params.zero_grad(set_to_none=True); torch.cuda.empty_cache()
+                mc.append({"kind": kind, "micro": a.micro, "eval_bs": a.eval_bs, "peak_gib": pk}); print("MEM", kind, a.micro, a.eval_bs, pk, flush=True)
+                if pk <= a.mem_budget or a.mem_check:
+                    break
+                if kind == "train" and a.micro < a.bs:
+                    a.micro *= 2
+                elif kind == "eval" and a.eval_bs > 10:
+                    a.eval_bs //= 2
+                else:
+                    break
+        json.dump({"checks": mc, "micro": a.micro, "eval_bs": a.eval_bs, "peak_gib_train": [c for c in mc if c["kind"] == "train"][-1]["peak_gib"],
+                   "peak_gib_eval": [c for c in mc if c["kind"] == "eval"][-1]["peak_gib"],
+                   "train": "the longest bs / micro of 256 d = %d items (SEED_MEMCHECK) at K = %d, + AdamW states" % (a.d_max, K),
+                   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"}, open(os.path.join(a.out, "mem_check.json"), "w", newline="\n"), indent=1)
         if a.mem_check:
             return 0
-        assert mc[-1]["peak_gib"] <= a.mem_budget, mc[-1]
+        assert all(c["peak_gib"] <= a.mem_budget for c in mc[-1:]) and [c for c in mc if c["kind"] == "train"][-1]["peak_gib"] <= a.mem_budget, mc
     info = {**vars(a), "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "train_driver": driver_version(), **env_info(),
             "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"), "module_sha256": sha_file(os.path.abspath(__file__)),
             "eval_module_sha256": sha_file(os.path.join(ROOT, "boxes", "inject_ow_eval.py")), "nested170_sha256": sha_file(os.path.join(ROOT, "boxes", "nested170.py")),

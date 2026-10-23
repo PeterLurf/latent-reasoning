@@ -1,0 +1,97 @@
+{
+ "train_rc": [
+  0,
+  0
+ ],
+ "files_lat": [
+  "eval.json",
+  "eval_acc.json",
+  "eval_decode.json",
+  "eval_mean_s.json",
+  "eval_swaps.json",
+  "eval_transfer.json"
+ ],
+ "files_dir": [
+  "eval.json",
+  "eval_acc.json",
+  "eval_transfer.json"
+ ],
+ "self_bitwise": {
+  "state": true,
+  "cache": true,
+  "leak": true
+ },
+ "leak_rows_differ_all": true,
+ "last7_same_share": {
+  "3": null,
+  "4": 1.0,
+  "5": 1.0,
+  "6": 1.0,
+  "7": 1.0,
+  "8": 1.0
+ },
+ "pairs_n": {
+  "3": 0,
+  "4": 12,
+  "5": 12,
+  "6": 12,
+  "7": 12,
+  "8": 12
+ },
+ "floor_missing": 0,
+ "state_swap_ts": {
+  "4": [
+   "1",
+   "2",
+   "3"
+  ],
+  "5": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "6": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "7": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "8": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7"
+  ]
+ },
+ "budget_front_len": {
+  "4": 7,
+  "5": 6,
+  "6": 6,
+  "7": 5,
+  "8": 5
+ },
+ "lat_pred_len": 15,
+ "dir_pred_type": "int",
+ "wo_bias_norm": 0.0012273482279852033,
+ "sec": {
+  "acc": 25,
+  "mean_s": 36,
+  "swaps": 33,
+  "decode": 4,
+  "transfer": 23
+ },
+ "pass": true
+}

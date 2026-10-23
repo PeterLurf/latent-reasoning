@@ -1,0 +1,189 @@
+{
+ "lat_d2": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 2,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 4,
+     "eval_bs": 250,
+     "peak_gib": 6.2320209592580795
+    },
+    {
+     "kind": "eval",
+     "micro": 4,
+     "eval_bs": 250,
+     "peak_gib": 3.17213773727417
+    }
+   ],
+   "micro": 4,
+   "eval_bs": 250,
+   "peak_gib_train": 6.2320209592580795,
+   "peak_gib_eval": 3.17213773727417,
+   "train": "the longest bs / micro of 256 d = 2 items (SEED_MEMCHECK) at K = 8, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  },
+  "timing": {
+   "arm": "inject",
+   "think_k": 8,
+   "d_max": 2,
+   "steps_timed": 30,
+   "sec_per_step": 3.8587011337280273,
+   "est_hours_steps": 8.574891408284506,
+   "gpu": "NVIDIA GeForce RTX 4060",
+   "micro": 4,
+   "peak_gib": 6.638388633728027
+  }
+ },
+ "lat_d4": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 2,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 4,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 5.229349240660667
+    },
+    {
+     "kind": "eval",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 3.2964844703674316
+    }
+   ],
+   "micro": 8,
+   "eval_bs": 250,
+   "peak_gib_train": 5.229349240660667,
+   "peak_gib_eval": 3.2964844703674316,
+   "train": "the longest bs / micro of 256 d = 4 items (SEED_MEMCHECK) at K = 8, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  },
+  "timing": {
+   "arm": "inject",
+   "think_k": 8,
+   "d_max": 4,
+   "steps_timed": 30,
+   "sec_per_step": 9.299320125579834,
+   "est_hours_steps": 41.330311669243706,
+   "gpu": "NVIDIA GeForce RTX 4060",
+   "micro": 8,
+   "peak_gib": 5.909313678741455
+  }
+ },
+ "dir_d2": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": 3.739734649658203
+    },
+    {
+     "kind": "eval",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "eval",
+     "micro": 1,
+     "eval_bs": 125,
+     "peak_gib": 4.517138481140137
+    }
+   ],
+   "micro": 1,
+   "eval_bs": 125,
+   "peak_gib_train": 3.739734649658203,
+   "peak_gib_eval": 4.517138481140137,
+   "train": "the longest bs / micro of 256 d = 2 items (SEED_MEMCHECK) at K = 0, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  },
+  "timing": {
+   "arm": "direct",
+   "think_k": 0,
+   "d_max": 2,
+   "steps_timed": 30,
+   "sec_per_step": 0.19304633935292562,
+   "est_hours_steps": 0.4289918652287236,
+   "gpu": "NVIDIA GeForce RTX 4060",
+   "micro": 1,
+   "peak_gib": 4.517138481140137
+  }
+ },
+ "dir_d4": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": 4.584661483764648
+    },
+    {
+     "kind": "eval",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "eval",
+     "micro": 1,
+     "eval_bs": 125,
+     "peak_gib": 4.704730987548828
+    }
+   ],
+   "micro": 1,
+   "eval_bs": 125,
+   "peak_gib_train": 4.584661483764648,
+   "peak_gib_eval": 4.704730987548828,
+   "train": "the longest bs / micro of 256 d = 4 items (SEED_MEMCHECK) at K = 0, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  },
+  "timing": {
+   "arm": "direct",
+   "think_k": 0,
+   "d_max": 4,
+   "steps_timed": 30,
+   "sec_per_step": 0.2306009292602539,
+   "est_hours_steps": 1.0248930189344618,
+   "gpu": "NVIDIA GeForce RTX 4060",
+   "micro": 1,
+   "peak_gib": 4.822535514831543
+  }
+ },
+ "pass": true
+}
