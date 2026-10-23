@@ -74,3 +74,10 @@
 2026-10-23 01:09:34 s223 P3a EARLY STOP: advance into stage 2 (d 3) at step 9000; log at 9000; stopping pid 12652
 2026-10-23 01:10:05 s223 P3a direct ended (early stop at the stage-2 advance1)
 2026-10-23 01:10:05 s223 P3a summary rc 0 -> scratch/gate_s223/pilot3a.json
+2026-10-23 02:00:49 s226 P0 P0-OW start (cuda:0, kernel registered)
+2026-10-23 03:03:55 s226 P0 P0-OW rc 9 (9 = stopped at 12000 as registered)
+2026-10-23 03:03:55 s226 P0 P0b-TOPO start (cuda:0, kernel registered)
+2026-10-23 04:06:56 s226 P0 P0b-TOPO rc 9 (9 = stopped at 12000 as registered)
+2026-10-23 04:06:56 s226 P0 P0c-CHAIN start (cuda:0, kernel registered)
+2026-10-23 05:10:07 s226 P0 P0c-CHAIN rc 9 (9 = stopped at 12000 as registered)
+2026-10-23 05:10:07 s226 P0 summary rc 0 -> scratch/gate_s226/pilot_ow.json
