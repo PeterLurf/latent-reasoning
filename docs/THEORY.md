@@ -19106,7 +19106,9 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 
 **Cost.** $0. Code: codi_ps --text_cot (default off; flags-off bitwise; gradflow; plain-path smoke; memory check at d 3 sequence length) + a periodic greedy-decode eval; Audit G-D. 4060, registered kernel, checkpoints / resume. Output scratch/gate_s227/pilot_text.json.
 
-**Novelty.** None claimed: it is a control. A Literature line is requested only for the wording "text-CoT learns what one-pass cannot on templated word programs at GPT-2 small" (expected: known, cf. Lin 2503.07604 / Physics of LMs).
+**Novelty.** None claimed: it is a control. Literature: the effect is established, so a result is worded as a replication.
+- Theory: Feng 2305.15408; Merrill & Sabharwal 2310.07923; Li et al. 2402.12875.
+- Empirics: Lin 2503.07604; Deng iCoT 2405.14838; Physics of LMs 2.1 2407.20311.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
