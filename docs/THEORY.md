@@ -311,7 +311,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 221 | GSM-CACHE-SWAP-2 (successor to §220; Audit auto-approved under the $30 rule, cap $0): §220 battery behind G-FID (official test.py at bs 1 / CODI20 determinism; bitwise re-run of pairs[0:50]; accuracy facts); reuses the sealed unread §220 bs-1 data (pinned 82aa8413 / fec1f9ec); GCS2_v1.md at b7c66d8f; scorer score_s221 (to write) | registered | **CLOSED 10-21 (Audit-reproduced): G-FID pass (zen agree 1.000; CODI20 bitwise); both GPT-2 CONTEXT-BOUND (cache-swap follow 0.033 / 0.029 vs floor 0.008; state-swap 0.033 / 0.015; NECESSARY +0.25 / +0.32); donor-final not carried; SCIT's oracle-cf pattern reproduces (221-2, 221-3); stage 1 not triggered; $0** |
 | 222 | PROBE-S (successor to §218 probe readings; Audit auto-approved under the $30 rule, cap $0): §218 probe unchanged + content-equivariant xor / anti-lin plants (S1), antisymmetric-head fallback (S2); m from oracle; CERT on untrained + G-L1c ref, fresh streams, 4060; VB-C1-L-S on A1; P(pass) ~0.036-0.039 (low-odds, $0); PS_v1.md at 7174fc3b; scorer score_s222 (to write) | registered | **CLOSED 10-21 without cloud spend (222-4, Audit ruling): UNREAD (A1 at chance, DEEP-L not met (218-27) -> VB-C1-L-S unreachable; CERT not run, no registered consumer); harness/scorer kept for a ~$10 CERT if ever registered; $0** |
 | 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | registered | **PILOT FAILED 10-22 (223-7): LP1 (DIRECT advanced on the cap; lr 3e-3 / bf16 blow-ups on both cards); PS never learned (M2 bottleneck); M1 tracks DIRECT (no recode starvation); no cloud cell, redesign Note first; $0** |
-| 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
+| 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **STAGE 1 TRIGGER 10-22 (224-4): H(128) FH-FT 0.818 / 0.990 vs FT-CTRL 0.116 / 0.096, RD-FT 0.664 / 0.740; no loss; $5.73 -> Stage 2 (48k) next.** APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
 | 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1, Audit-reproduced): on the synthetic nested-arithmetic task (s216 R2 vs s219 T2), latent equals matched text-CoT self-training in accuracy within 0.02 while using ~20-50x fewer sequential steps and ~0.65x FLOPs per correct; one seed each; not language (a synthetic-line C3, not the north star’s language C3); $0** |
 
 ## Live sections
@@ -20896,6 +20896,33 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - This **reverses 219-13's descriptive TOKEN-COST impression** ("latent uses ≈ 2× more positions"), which counted each pass as a full 12-block forward (corrected 2256a04e).
   - Caveats: one seed each; F is a proxy, with the exact FLOPs row an approximation; the S grid is fine but the F grid is factor-2; models are those of §216 / §219.
 - **Wording:** "C3 at matched compute (sequential steps and block-position FLOPs proxy), one lineage each on Arithmetic(n, 11): latent matches text-CoT accuracy at n 13–20 with ~20–50× fewer sequential steps and ~0.65× the FLOPs per correct answer." Never GSM8K, never "compute-matched" without the axis.
+
+**Note 224-4 (2026-10-22 22:01 EDT; §224 Stage-1 result: `python -B theory/score_s224.py --final` on the five Stage-1 cells + s224_ftctrl_s1_re, all evals on RTX 3090, fp32, bs 32 (one class); every run 12,000 steps, 0 non-finite; G-FH-EQ v2 bitwise on all four far cells; args OK. Realised Stage 1 $5.73 of $7.50.)**
+- **Verdict: TRIGGER → Stage 2 runs as registered** (FH_v1 §2).
+- **H(K′), mean intact acc over n 1–8, at K′ 24 / 32 / 48 / 64 / 96 / 128:**
+
+| seed | cell | H(K′) | λ |
+|---|---|---|---|
+| s1 | FH-FT | 1.000 / 1.000 / 1.000 / 1.000 / 0.971 / **0.818** | 0.035 |
+| s1 | RD-FT | 1.000 / 1.000 / 0.999 / 0.997 / 0.928 / 0.664 | – |
+| s1 | FT-CTRL | 1.000 / 0.993 / 0.870 / 0.590 / 0.218 / 0.116 | – |
+| s2 | FH-FT | 0.999 / 0.999 / 0.997 / 0.997 / 0.993 / **0.990** | 1.618 |
+| s2 | RD-FT | 1.000 / 1.000 / 0.999 / 0.997 / 0.920 / 0.740 | – |
+| s2 | FT-CTRL | 0.991 / 0.955 / 0.673 / 0.386 / 0.163 / 0.096 | – |
+
+  - TRIGGER gain H_FH(128) − H_CTRL(128) = **0.701 / 0.894** (≥ 0.30 both).
+  - FT-NOLOSS met in both: acc_n2 n 1–8 ≥ 0.999; stall 1.0; DEPTH n 9–11 0.615 vs 0.593 (s1) and 0.685 vs 0.636 (s2).
+- **Descriptive:**
+  - RD-FT gain 0.548 / 0.644. **The far pass alone extends the hold a lot:** RD holds to K′ 64 at ≥ 0.997 in both seeds.
+  - FH − RD at 128: +0.153 / +0.250. r ratio fh_r_far(FH) / (RD) = 0.53 / 0.26.
+  - The dose rule gave a 46× different λ per seed (median grad ratio at λ = 1 differed). The higher-λ seed (s2) holds 0.99 to K′ 128; s1 decays past K′ 96.
+  - These are trained readings to K′ 48 (T_far ≤ 48); K′ 64–128 are beyond any trained pass.
+- **Implications for Stage 2** (pre-stated readings unchanged): PENALTY NEEDED requires FH − RD ≥ 0.15 in both seeds and r_FH ≤ r_RD / 3. Stage 1 is near that line in s1 (0.153, r 0.53), clear in s2.
+- **Stage 2 next, all as FH_v1 §2 / §5 + 224-1..3:**
+  - FH and RD × s1 / s2, the s213 D3-T args, 48k on one 3090 class. Contingent s3 only on a seed split.
+  - The D3-T s1 / s2 bases are re-evaluated on the 3090 (khorizon to 128, acc, stall, probe, early-finish).
+  - Before any Stage-2 output: Stage-2 cost / gtime (projection > $2.4 per run → STOPPED-COST Note), G-FH-EQ v2, off-host mirrors + resume, and score_s224 Stage-2 readings with fixtures (Theory).
+  - Stage-2 cap $16.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
