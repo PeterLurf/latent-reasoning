@@ -21073,6 +21073,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - same G2 bar;
     - P0d failing G2 closes §226 with no further cells;
     - the full-FT path gets G-D, a flags-off bitwise gate and a memory check (micro-batching on 8 GB).
+  - **lr provenance (Audit):** P0d's lr 1e-4 is §170's established full-FT one-pass recipe. It was first stated in this Note before P0d's build, and not tuned on any §226 data. Build 8e4528a3 (G-D PASS); P0d started 10-23 05:33 on the 4060 (micro 32, 6.62 GiB).
 - **Build for P0d:** a full-FT path in codi_ps (default off): G-D, the flags-off equivalence gate, gradflow and a plain-path smoke. $0.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
