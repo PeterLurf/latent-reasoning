@@ -21220,6 +21220,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The pilot line is ≈ $2, within the $20 family.
 - The 3090's F2 rate gates Stage-1 admission. If LAT's $9 share does not fit, a cost Note goes to Audit before any Stage-1 deploy.
 - Launch only after §224 RD-s3's filler has finished admitting (one filler at a time).
+- **Binding DIRECT reference for LP3 (set before any pilot output):** s228_pdir2c_s1, P-DIR2 on the SAME cloud 3090 as P-LAT2 (the one-GPU-class rule). The local 4060 P-DIR2 (s228_pdir2_s1) is descriptive. Queue b341: F2 → s228_plat2_s1 → s228_pdir2c_s1; admit $1.50, guard $1.80.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
