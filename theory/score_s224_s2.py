@@ -31,6 +31,7 @@ OUT = os.path.join(_HR, "theory", "results", "score_s224_s2.json")
 KS = [24, 32, 48, 64, 96, 128]
 BASE_RUN = {"s1": "s213_d3t_s1", "s2": "s216_d3t_s2"}
 STEPS2 = 48000
+S3_RD_ONLY = True        # Note 224-8 (Audit ruling after s1 / s2): the contingent s3 runs RD only
 
 
 def jl(p):
@@ -130,6 +131,15 @@ def score(runs=R, k10dir=K10, final=False):
     for s in seeds:
         fh, rd = cell(runs, k10dir, "s224_fh_%s" % s, True), cell(runs, k10dir, "s224_rd_%s" % s, True)
         B = base[s] if s in base else base_mean(base["s1"], base["s2"])
+        if s == "s3" and S3_RD_ONLY:                                        # Note 224-8: s3 is RD only (FH-RECIPE / PENALTY already decided)
+            cards += rd["cards"]; miss = [(c["name"], m) for c in (rd, B) for m in c["missing"]]
+            if miss:
+                per[s] = {"status": ("FAIL (rule b: missing %s)" if final else "pending (missing %s)") % miss[:6]}; continue
+            jr = judge(rd, B) if not rd.get("dead") else None
+            per[s] = {"status": "SCORED (RD only, 224-8)" + (" (dead: s224_rd_s3)" if rd.get("dead") else ""), "fh": None, "rd": jr, "UNEXPOSED": False,
+                      "fh_minus_rd_128": None, "r_eval": {"rd": rd["r_eval"], "base": B["r_eval"]}, "H": {"rd": rd["H"], "base": B["H"]},
+                      "FH_RECIPE": False, "RD_SUFFICES": bool(jr and jr["OK"]), "PENALTY": False, "PARTIAL_seed": False, "UNDERDOSED_seed": False}
+            continue
         cards += fh["cards"] + rd["cards"]
         miss = [(c["name"], m) for c in (fh, rd, B) for m in c["missing"]]
         if miss:
@@ -237,8 +247,14 @@ def fixtures():
     o = run({("fh", "s1"): {"adv": (6000, 12000)}}); res.append(("advance 3k later -> CONFOUNDED flag", o["seeds"]["s1"]["fh"]["CONFOUNDED"] is True, o["seeds"]["s1"]["fh"]["CONFOUNDED"]))
     o = run({("fh", "s1"): {"card": "NVIDIA GeForce RTX 4090"}}); res.append(("other card -> VOID", o["verdict"].startswith("VOID"), o["verdict"]))
     d, k = _world(); os.remove(os.path.join(d, "s224_rd_s2", "eval_vb.json")); o = score(d, k); res.append(("missing -> pending", o["verdict"] == "pending", o["verdict"]))
-    o = run({"seeds": ("s1", "s2", "s3"), ("fh", "s2"): {"H128": 0.8}}); res.append(("s3 run, FH holds 2/3 -> FH-RECIPE (2/3)", "FH-RECIPE (2/3)" in o["verdict"], o["verdict"]))
+    o = run({"seeds": ("s1", "s2", "s3"), ("fh", "s2"): {"H128": 0.8}}); res.append(("224-8: an FH s3 is ignored (RD-only s3) -> FH 1/3, no FH-RECIPE", "FH-RECIPE" not in o["verdict"], o["verdict"]))
     o = run({("fh", "s1"): {"last": 30000}}); res.append(("dead FH s1 -> no FH-RECIPE", "FH-RECIPE" not in o["verdict"], o["verdict"]))
+    d, k = _world({("rd", "s1"): {"H128": 1.0}, ("rd", "s2"): {"H128": 1.0, "depth": 0.45}})   # the real pattern: RD s1 ok, s2 depth fail -> SPLIT
+    o = score(d, k); res.append(("RD depth split -> SPLIT", o["verdict"].startswith("SPLIT"), o["verdict"]))
+    for h, dep, want in ((1.0, 0.6, True), (1.0, 0.45, False)):
+        d3, k3 = _world({("rd", "s1"): {"H128": 1.0}, ("rd", "s2"): {"H128": 1.0, "depth": 0.45}})
+        _cell(d3, k3, "s224_rd_s3", h, depth=dep, r_log=1e-3, step=3e-4)
+        o = score(d3, k3); res.append(("RD-only s3 %s -> RD SUFFICES (2/3) %s" % ("passes" if want else "fails depth", want), ("RD SUFFICES (2/3)" in o["verdict"]) == want, o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
