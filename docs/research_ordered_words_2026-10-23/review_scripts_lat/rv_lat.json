@@ -1,0 +1,346 @@
+{
+ "A_exposure": {
+  "E_48k_U1..8": {
+   "mean": 6000,
+   "sd": 72.4568837309472,
+   "lb_0.1pct": 5776.108229271374
+  },
+  "E_24k_U1..8": {
+   "mean": 3000,
+   "lb_0.1pct": 2841.684610665924
+  },
+  "E_8k_U1,2": {
+   "mean": 4000,
+   "lb_0.1pct": 3861.810998990513
+  },
+  "E_12k_U1..4": {
+   "mean": 3000,
+   "lb_0.1pct": 2853.4284304511957
+  },
+  "band_rule_2x2508": 5016,
+  "p0d_dle2_pooled_bins_5k_to_11k": [
+   0.532,
+   0.525,
+   0.552,
+   0.541,
+   0.571,
+   0.53
+  ],
+  "p0d_implied_d2_acc_bins (pooled*2 - d1 0.998)": [
+   0.065,
+   0.052,
+   0.107,
+   0.084,
+   0.144,
+   0.062
+  ],
+  "text_d2_decode_by_step": [
+   [
+    1000,
+    0.055
+   ],
+   [
+    2000,
+    0.085
+   ],
+   [
+    3000,
+    0.1
+   ],
+   [
+    4000,
+    0.09
+   ],
+   [
+    5000,
+    0.09
+   ],
+   [
+    6000,
+    0.1
+   ],
+   [
+    7000,
+    0.29
+   ],
+   [
+    8000,
+    0.465
+   ],
+   [
+    9000,
+    0.51
+   ],
+   [
+    10000,
+    0.81
+   ],
+   [
+    11000,
+    0.95
+   ],
+   [
+    12000,
+    0.97
+   ],
+   [
+    13000,
+    1.0
+   ],
+   [
+    14000,
+    1.0
+   ],
+   [
+    15000,
+    0.995
+   ],
+   [
+    16000,
+    1.0
+   ],
+   [
+    17000,
+    1.0
+   ],
+   [
+    18000,
+    1.0
+   ]
+  ],
+  "text_d1_decode_by_step": [
+   [
+    1000,
+    0.345
+   ],
+   [
+    2000,
+    0.7
+   ],
+   [
+    3000,
+    0.725
+   ],
+   [
+    4000,
+    0.695
+   ],
+   [
+    5000,
+    0.675
+   ],
+   [
+    6000,
+    0.675
+   ],
+   [
+    7000,
+    0.66
+   ],
+   [
+    8000,
+    0.695
+   ],
+   [
+    9000,
+    0.695
+   ],
+   [
+    10000,
+    0.915
+   ],
+   [
+    11000,
+    1.0
+   ],
+   [
+    12000,
+    1.0
+   ],
+   [
+    13000,
+    1.0
+   ],
+   [
+    14000,
+    1.0
+   ],
+   [
+    15000,
+    0.995
+   ],
+   [
+    16000,
+    1.0
+   ],
+   [
+    17000,
+    1.0
+   ],
+   [
+    18000,
+    1.0
+   ]
+  ]
+ },
+ "B_back_refs": {
+  "1": {
+   "share_any_back_ref": 0.0,
+   "share_ref_to_computed_state_j>=1": 0.0,
+   "share_with_mul_s": 0.0
+  },
+  "2": {
+   "share_any_back_ref": 0.1545,
+   "share_ref_to_computed_state_j>=1": 0.0,
+   "share_with_mul_s": 0.0
+  },
+  "3": {
+   "share_any_back_ref": 1.0,
+   "share_ref_to_computed_state_j>=1": 1.0,
+   "share_with_mul_s": 1.0
+  },
+  "4": {
+   "share_any_back_ref": 1.0,
+   "share_ref_to_computed_state_j>=1": 1.0,
+   "share_with_mul_s": 1.0
+  },
+  "5": {
+   "share_any_back_ref": 1.0,
+   "share_ref_to_computed_state_j>=1": 1.0,
+   "share_with_mul_s": 1.0
+  },
+  "6": {
+   "share_any_back_ref": 1.0,
+   "share_ref_to_computed_state_j>=1": 1.0,
+   "share_with_mul_s": 1.0
+  },
+  "7": {
+   "share_any_back_ref": 1.0,
+   "share_ref_to_computed_state_j>=1": 1.0,
+   "share_with_mul_s": 1.0
+  },
+  "8": {
+   "share_any_back_ref": 1.0,
+   "share_ref_to_computed_state_j>=1": 1.0,
+   "share_with_mul_s": 1.0
+  }
+ },
+ "C_R2_k1": {
+  "hop-per-pass serial (K'0 = DIRECT; K'1 solves d = 2 only: 1 think pass + the decoder pass)": {
+   "E[pooled K'1]": 0.22999450120750511,
+   "E[pooled DIRECT]": 0.11997327698309496,
+   "P(R2) draft (pooled B)": 0.04805,
+   "P(R2) fixed (K'0 on B, K'1 on B with d >= 3, each vs DIRECT on the same depths)": 1.0
+  },
+  "two-hops-per-pass serial (K'1 solves d <= 3 or 4)": {
+   "E[pooled K'1]": 0.4057605610254505,
+   "E[pooled DIRECT]": 0.11996876277168865,
+   "P(R2) draft (pooled B)": 0.0,
+   "P(R2) fixed (K'0 on B, K'1 on B with d >= 3, each vs DIRECT on the same depths)": 0.0
+  },
+  "ideal (K'0 = K'1 = DIRECT at every d)": {
+   "E[pooled K'1]": 0.12002740107746608,
+   "E[pooled DIRECT]": 0.1199918632732677,
+   "P(R2) draft (pooled B)": 1.0,
+   "P(R2) fixed (K'0 on B, K'1 on B with d >= 3, each vs DIRECT on the same depths)": 1.0
+  },
+  "_note": "B = {2..8} (n* = 1, as P0d implies); 1,000 items per depth; design effect 1.3; LAT 0.85 at every depth"
+ },
+ "D_R3_mixture_leak": {
+  "mixture": {
+   "f=0.25": {
+    "follow": 0.25,
+    "floor": 0.0425,
+    "own_share": 0.75,
+    "P(R3 follow bar)": 0.0,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.30": {
+    "follow": 0.3,
+    "floor": 0.051000000000000004,
+    "own_share": 0.7,
+    "P(R3 follow bar)": 0.0,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.35": {
+    "follow": 0.35,
+    "floor": 0.0595,
+    "own_share": 0.65,
+    "P(R3 follow bar)": 0.22285,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.36": {
+    "follow": 0.36,
+    "floor": 0.061200000000000004,
+    "own_share": 0.64,
+    "P(R3 follow bar)": 0.4552,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.38": {
+    "follow": 0.38,
+    "floor": 0.0646,
+    "own_share": 0.62,
+    "P(R3 follow bar)": 0.88315,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.40": {
+    "follow": 0.4,
+    "floor": 0.068,
+    "own_share": 0.6,
+    "P(R3 follow bar)": 0.99245,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.45": {
+    "follow": 0.45,
+    "floor": 0.07650000000000001,
+    "own_share": 0.55,
+    "P(R3 follow bar)": 1.0,
+    "P(R3) + follow_U >= 0.50": 0.0
+   },
+   "f=0.50": {
+    "follow": 0.5,
+    "floor": 0.085,
+    "own_share": 0.5,
+    "P(R3 follow bar)": 1.0,
+    "P(R3) + follow_U >= 0.50": 0.51465
+   },
+   "f=0.60": {
+    "follow": 0.6,
+    "floor": 0.10200000000000001,
+    "own_share": 0.4,
+    "P(R3 follow bar)": 1.0,
+    "P(R3) + follow_U >= 0.50": 1.0
+   }
+  },
+  "mixture_note": "items: fraction f behave as an ideal carrier (output in U; matched floor 0.17 on them), the rest keep their own answer (own is outside U and outside every floor target), so follow = f, floor = 0.17 f; R3's bar 0.83 f >= 0.30 -> f >= 0.36",
+  "leakseg_false_fail_strong_carrier_leak=0.20": 1.0,
+  "leakseg_false_fail_strong_carrier_leak=0.25": 0.503,
+  "leakseg_false_fail_strong_carrier_leak=0.30": 0.0,
+  "leakseg_false_fail_strong_carrier_leak=0.40": 0.0
+ },
+ "E_d3_t1": {
+  "d3_t1": {
+   "kept": 1642,
+   "of": 3000,
+   "share": 0.5473333333333333
+  },
+  "d3_t2": {
+   "kept": 0,
+   "of": 3000,
+   "share": 0.0
+  }
+ },
+ "F_flops": {
+  "tokparam_nested_uncached": 27021500000.0,
+  "tokparam_ow_uncached": 66340375000.0,
+  "tokparam_ow_cached": 42756062500.0,
+  "ratio_uncached": 2.4550959421201637,
+  "s_per_step_from_s2_uncached": 1.791862002922827,
+  "s_per_step_from_s1_uncached": 2.1825802925448254,
+  "ratio_cached": 1.5822978924189997,
+  "s_per_step_from_s2_cached": 1.154846709689892,
+  "s_per_step_from_s1_cached": 1.4066628263604908,
+  "effective_TFLOPs_implied_by_s184_s2": 14.21688944709274,
+  "LAT_48k_hours_cached_s1_host": 18.75550435147321
+ }
+}
