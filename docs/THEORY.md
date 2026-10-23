@@ -19162,7 +19162,9 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 
 **Build.** inject_ow --aux_target {value, cumulative} (default value ⇒ bitwise §228); per-term gradflow nonzero; plain-path smoke; mem_check at the pilot shape (R_j targets are longer); Audit G-D. score_lat.score_pilot reads it unchanged except the LP0 constant (a scorer change with a fixture, before output).
 
-**Novelty.** None claimed before Literature's check of cumulative / partial-program per-step targets (cf. §175, §184, SIM-CoT 2509.20317, CODI's teacher hidden states).
+**Novelty (Literature, addendum in LIT_NOVELTY_221_222_PS2_2026-10-21.md).**
+- External: OK. No latent-CoT method targets the partially reduced problem (SIM-CoT / MUX / PMPS / PLaT target step text; CODI a teacher hidden state; Coconut none). Re-rooting appears only as explicit text (NRS, PENCIL, He 2512.02677).
+- Internal: NARROW. §175's re-rooted-expression decoder and §223 PORT-STATE (CODI + R_j) used it already and are cited. The delta is the recurrent-memory loop on word programs.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
