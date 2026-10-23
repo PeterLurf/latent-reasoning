@@ -1,0 +1,45 @@
+{
+ "ref": "scratch/s224_args_ref_d3t_s2.json",
+ "diff": {
+  "ckpt_every": [
+   1000,
+   2000
+  ],
+  "far": [
+   null,
+   true
+  ],
+  "far_n": [
+   null,
+   16
+  ],
+  "far_t": [
+   null,
+   "13,48"
+  ],
+  "far_w": [
+   null,
+   1.0
+  ],
+  "fh": [
+   null,
+   false
+  ],
+  "fh_dose": [
+   null,
+   "250,500"
+  ],
+  "fh_lam_cap": [
+   null,
+   10.0
+  ],
+  "fh_target": [
+   null,
+   0.2
+  ],
+  "out": [
+   "boxes/runs_fsq/s216_d3t_s2",
+   "boxes/runs_fsq/s224_rd_s2"
+  ]
+ }
+}
