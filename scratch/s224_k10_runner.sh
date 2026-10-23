@@ -3,8 +3,8 @@
 # (model.pt + eval_khorizon.json present), CPU, 2 torch threads (the script's own), Idle priority, one at a time. Outputs stay UNCOMMITTED and UNREAD
 # until all five cells have landed (Theory); stdout goes to logs/s224_k10_<run>.log (not read; completion judged by the output file).
 #   nohup bash scratch/s224_k10_runner.sh > /dev/null 2>&1 &
-cd /d/Latent; L=logs/s224_k10.out; F=docs/research_fixedhold_2026-10-21
-RUNS="s224_fhft_s1 s224_fhft_s2 s224_rdft_s1 s224_rdft_s2 s224_ftctrl_s2"
+cd /d/Latent; L=${K10LOG:-logs/s224_k10.out}; F=docs/research_fixedhold_2026-10-21
+RUNS=${RUNS:-"s224_fhft_s1 s224_fhft_s2 s224_rdft_s1 s224_rdft_s2 s224_ftctrl_s2"}   # Stage 2: RUNS="s224_fh_s1 s224_rd_s1 s224_fh_s2 s224_rd_s2"
 for r in $RUNS; do
   until [ -s boxes/runs_fsq/$r/model.pt ] && [ -s boxes/runs_fsq/$r/eval_khorizon.json ]; do sleep 600; done
   [ -s $F/fh_check_cpu.$r.json ] && { echo "$(date '+%F %T') $r already done" >> $L; continue; }
