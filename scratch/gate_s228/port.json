@@ -1,0 +1,39 @@
+{
+ "uncached": {
+  "rc": [
+   0,
+   0
+  ],
+  "step": [
+   50,
+   50
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0,
+  "g_add_init": [
+   0.0004166435683146119,
+   0.0004166435683146119
+  ],
+  "pass": true
+ },
+ "cached": {
+  "rc": [
+   0,
+   0
+  ],
+  "step": [
+   50,
+   50
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0,
+  "g_add_init": [
+   0.0004166435683146119,
+   0.0004166435683146119
+  ],
+  "pass": true
+ },
+ "pass": true
+}

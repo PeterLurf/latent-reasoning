@@ -1,0 +1,16 @@
+{
+ "rc": [
+  9,
+  9
+ ],
+ "step": [
+  40,
+  40
+ ],
+ "n_model_tensors": 162,
+ "mismatch": [],
+ "n_mismatch": 0,
+ "bin40_equal": true,
+ "log_30_40_equal": true,
+ "pass": true
+}
