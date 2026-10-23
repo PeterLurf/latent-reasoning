@@ -88,3 +88,24 @@ Written 2026-10-23 by the Literature session, for Theory and Audit. Kept light u
   - Deng 2405.14838 (GPT-2 small: no-CoT fails multi-digit multiplication where CoT succeeds);
   - Physics of LMs 2.1 2407.20311 (with traces; depth > width).
 - IDs re-checked 2026-10-23.
+
+## Addendum (LAT v1 draft, ad2a3be4, §9)
+**N1 (latent-recipe C1 test on English-templated word programs: exposure-matched one-pass vs latent, removal, mid-chain counterfactual swap): NARROW.** As OW N1.
+- Parts:
+  - the one-pass boundary (Lin 2503.07604; Feng 2305.15408 [theorem]; Deng 2405.14838);
+  - latent CoT on word problems (CODI, Coconut, SIM-CoT);
+  - counterfactual swap (SCIT 2608.27265, synthetic; our §221, natural GSM8K).
+- New only as the combination on a templated natural-language task, past a measured one-pass boundary, at matched exposure.
+
+**N2 (union counterfactual target {cf(a), cf_b} with a skeleton-matched redraw floor): NARROW.** It is an extension of SCIT's oracle counterfactual. Permutation / redraw floors are standard (our §221 floors). The union target and skeleton matching are our own refinements: call them design choices, not contributions.
+
+**N3 (fact check)**
+- **(a) Exposure-matched one-pass vs serial: not in the parts read.**
+  - Lin trains one-pass only (order arms, no CoT arm).
+  - Physics of LMs 2.1 trains with solution traces only (no no-CoT arm in what we read).
+  - Deng 2405.14838 compares No-CoT / CoT / iCoT under different regimes, not per-depth exposure-matched.
+  - So call matched exposure a design property, without claiming it is new.
+- **(b) Recurrent-memory (delta-rule-style) latent loop tested for causal serial use on templated word problems: not found.**
+  - The 10-21 §218 check found no delta-rule / fast-weight latent-CoT paper (δ-mem 2605.12357 is long-context recall).
+  - The nearest memory-augmented Coconut, AGCLR 2606.07720, has one gated vector, one seed and no memory ablation (ProsQA / GSM8K).
+  - **OK as "not found"**, scoped to our search.
