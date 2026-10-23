@@ -20938,6 +20938,24 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Scorer: theory/score_s224_s2.py (fixtures 15/15), written before any Stage-2 output. Base CurGate advances come from the original D3-T logs. With a contingent s3, each per-seed criterion needs ≥ 2 of 3 seeds, labelled "(2/3)". An UNEXPOSED seed cannot trigger a SPLIT on PENALTY.
   - **The registered criteria are NOT changed:** this was seen on Stage-1 data, and a change now would be outcome-informed. Stage 2 also reports, descriptively, cumulative drift (drift_ang_v at t 64 and its slope over t 24–64) for every model, so a "restoring vs slowing" reading is available beside the registered labels.
 
+**Note 224-6 (2026-10-22 22:05 EDT; §224 Stage-2 launch terms, before any Stage-2 deploy or output; no reading change).**
+- **Cells (queues b336–b339):** s224_fh_s1, s224_rd_s1, s224_fh_s2, s224_rd_s2.
+  - Args are the D3-T refs (s213_d3t_s1 seed 1; s216_d3t_s2 seed 2: slva, 48k, lr 1e-4, cur 3,5,8, c_sched 1000,8000, kmax 12, kextra 4).
+  - RD = ref + --far; FH = RD + --fh --fh_dose 7500,8000.
+  - Single-change diffs: FH vs RD = {fh, fh_dose}; RD vs D3-T = {far} plus the §224 default-off keys.
+- **G-FH-EQ v2** (224-2 form) on every far host: det-wrapped eqA (--far --far_w 0) vs eqB (plain), 1,200 steps crossing the c hold at 1,000, bitwise.
+  - The plain controls are the existing D3-T s1 / s2. They stand under FH_v1 §6's host-caused clause (bitwise vs D3-T is impossible on default kernels, 224-2), as FT-CTRL s1 did.
+- **Evals (host-side, one 3090 class, fp32, bs 32):**
+  - vbank_eval acc, stall, probe: acc_n2, acc_k K′ 0..16 (C1 floor, DEPTH, and early-finish = mean_{n 2..8} acc_k[n−1][n] all from acc), stall, PROBE(4);
+  - vbank_diag khorizon to K′ 128;
+  - K10 fh_check_cpu on each new model.
+  - Base re-evals as eval-only dirs **s224_base_s1_re / s224_base_s2_re** (the names score_s224_s2 reads), riding on two hosts.
+- **Cost:**
+  - Experiments' estimate is ≈ $2.9 per trained cell (≈ 10 h train + EQ + setup + evals incl. probe) and ≈ $0.6 per base re-eval, so ≈ $12.8 for Stage 2's 4 cells + 2 re-evals.
+  - This exceeds FH_v1 §5's $2.4-per-run launch line, so **this Note replaces that line:** admit at a G-TIME projection ≤ $3.10 per trained cell (guard $3.70); base re-eval admit $0.70 (guard $0.90).
+  - **Stage-2 cap stays $16** (family $23.50).
+  - **The contingent s3** (2 cells ≈ $5.8) would exceed $16. If the scorer reads SPLIT, s3 launches only after Audit's cap ruling at that time (family ≤ $30).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
