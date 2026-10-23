@@ -76,3 +76,15 @@ Written 2026-10-23 by the Literature session, for Theory and Audit. Kept light u
 | N2 (counterfactual-follow as the serial-vs-relay guard) | **NARROW** | It is SCIT's oracle-counterfactual target. Our §221 INT-FOLLOW applied it to natural GSM8K. Cite SCIT as the protocol. |
 | N3 (premise-order shuffle as a separate axis for **latent** reasoning) | **OK** | Order sensitivity is known one-pass (Lin) and in CoT LLMs (Chen et al. 2402.08939, "Premise Order Matters": best when premise order matches the proof order). For latent CoT on shuffled-premise arithmetic: not found. ProsQA lists facts in shuffled order, but has no order ablation. |
 | N4 | fact check | answered above |
+
+## Addendum (§227 wording check)
+- **"Serial text-CoT learns what one-pass cannot on such tasks at small scale" is established.** Cite it as a replication, not a finding.
+- **Theory** [theorems; bounded-depth / log-precision assumptions]:
+  - Feng 2305.15408: constant-size transformers with CoT solve arithmetic expressions and DP that bounded-depth one-pass models cannot, with small-model empirics;
+  - Merrill & Sabharwal 2310.07923;
+  - Li, Liu, Zhou & Ma 2402.12875 (CoT for inherently serial problems).
+- **Empirics:**
+  - Lin 2503.07604 (one-pass multi-step only under narrow layout conditions);
+  - Deng 2405.14838 (GPT-2 small: no-CoT fails multi-digit multiplication where CoT succeeds);
+  - Physics of LMs 2.1 2407.20311 (with traces; depth > width).
+- IDs re-checked 2026-10-23.
