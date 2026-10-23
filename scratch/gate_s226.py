@@ -100,7 +100,7 @@ def flags_off():
     """flags off == HEAD bitwise (det wrapper, DEV): DIRECT / M1 / M2 / PS / PS+m2_stage, eff_bs 8, 12 steps, d_stages 1,2,3 (cg_bin 3, cg_cap 4)."""
     o = {}; small = ["--device", DEV, "--eff_bs", "8", "--micro", "8", "--d_stages", "1,2,3", "--cg_bin", "3", "--cg_cap", "4", "--log_every", "1", "--steps", "24000", "--stop_at", "12"]
     cells = {"DIRECT": ["--direct"], "M1": ["--recode", "--lam", "1"], "M2": ["--bottleneck"], "PS": ["--recode", "--lam", "1", "--bottleneck"],
-             "PS_m2": ["--recode", "--lam", "1", "--bottleneck", "--m2_stage", "--m2_ramp", "4"]}
+             "PS_m2": ["--recode", "--lam", "1", "--bottleneck", "--m2_stage", "--m2_ramp", "4"], "OW_DIRECT": ["--direct", "--task", "ow"]}
     strip = lambda lg: [{k: v for k, v in x.items() if k != "sec"} for x in lg]  # noqa: E731
     for c, fl in cells.items():
         rh = run("D:/Latent", "%s/off_%s_head" % (TMP, c), fl + small); rt = run(TREE, "%s/off_%s_tree" % (TMP, c), fl + small)

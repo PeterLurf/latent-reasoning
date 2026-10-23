@@ -1,0 +1,12 @@
+{
+ "keys_equal": true,
+ "missing": [],
+ "n_tensors": 148,
+ "bf16_equal": 148,
+ "unequal": [],
+ "prj_equal": true,
+ "all_trainable_fp32": true,
+ "n_params": 124442112,
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226d_tree"
+}
