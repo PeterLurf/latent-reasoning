@@ -32,6 +32,11 @@ boxes/nested_words.py (NESTED-WORDS v1.2). Cells by flags (single-change diffs, 
     + log(max(1 - m, 1e-6)) on the question-content + <bot> keys for m < 1 and the registered key mask for m >= 1. It is used for EVERY m (the
     cell never switches implementation mid-run); forward() without m2 (flags off, ps_eval) is the HF call, unchanged. Implementation difference
     of the PS cell only: soft_decoder's dropout RNG draws differ from the HF call's order (same distribution). m2_m / m2_start are logged.
+  * (§226 ORDERED-WORDS stage 0, registered 09368b14; Theory 10-23) --task ow (default nested): items from boxes/ow_words.py (forward / topo layout
+    --order_mode, mod 11; --dag on | off: off = a strict previous-state chain), its own test set / pair candidates (excluded from the stream) and
+    stream seed (--stream_seed default: 22330 nested, ow_words.SEED_TRAIN 22930 ow). OW items carry wrap_final, so each step also logs the counts
+    num_ok_wrap / n_wrap / num_ok_nowrap / n_nowrap (the number token correct, split by whether the final step wrapped mod 11); a nested run logs
+    nothing new. args.json gains ow_words_sha256 for --task ow only.
     python -m boxes.codi_ps --out boxes/runs_fsq/s223_ps_s1 --recode --lam 1 --bottleneck [--device cuda:0 ...]"""
 import argparse
 import copy
@@ -51,6 +56,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 import boxes.codi_port as CP  # noqa: E402
 import boxes.nested_words as NW  # noqa: E402
+import boxes.ow_words as OW  # noqa: E402
 
 PAD, BOT, EOT, EOS = CP.PAD, CP.BOT, CP.EOT, CP.EOS; BOS = EOS; ANS_PROMPT = CP.ANS_PROMPT
 SEED_TRAIN = 22330
@@ -133,7 +139,7 @@ def tok_item(it, enc):
     """-> {q (BOS + question tokens), dec, R (list of token lists, R_1..R_d each + EOS), d, ans}."""
     q = [BOS] + enc.encode(it["text"]); dec = [EOT] + enc.encode("The answer is: %d" % it["answer"]) + [EOS]
     assert dec[1:5] == ANS_PROMPT and len(enc.encode(" %d" % it["answer"])) == 1, (dec, it["answer"])
-    return {"q": q, "dec": dec, "R": [enc.encode(r) + [EOS] for r in it["R"][1:]], "d": it["d"], "ans": it["answer"]}
+    return {"q": q, "dec": dec, "R": [enc.encode(r) + [EOS] for r in it["R"][1:]], "d": it["d"], "ans": it["answer"], **({"wrap": it["wrap_final"]} if "wrap_final" in it else {})}
 
 
 def collate(its, K, dev, compat=False):
@@ -149,8 +155,11 @@ def collate(its, K, dev, compat=False):
     for j in range(1, K + 1):                                               # z_j's target: R_j (j <= d) or the HOLD target R_d (j > d)
         R.append([it["R"][min(j, d) - 1] for it in its])
     t = lambda x: x.to(dev)  # noqa: E731
-    return {"enc": t(enc), "em": t(em), "qm": t(qm), "dec": t(dec), "dl": t(dl), "npos": t(torch.tensor(npos)), "R": R, "K": K, "d": d,
+    out = {"enc": t(enc), "em": t(em), "qm": t(qm), "dec": t(dec), "dl": t(dl), "npos": t(torch.tensor(npos)), "R": R, "K": K, "d": d,
             "holds": [j for j in range(1, K + 1) if j > d]}
+    if "wrap" in its[0]:                                                    # §226: OW items only
+        out["wrapf"] = t(torch.tensor([bool(it["wrap"]) for it in its]))
+    return out
 
 
 def _ones(B, n, dev):
@@ -226,6 +235,9 @@ def forward(m, prj, D, b, a, probe=None, m2=None, capture=None):
     ce = F.cross_entropy(lgc.reshape(-1, lg.size(-1)), tg.reshape(-1), ignore_index=-100)
     nl = lg.gather(1, b["npos"][:, None, None].expand(-1, 1, lg.size(-1))).squeeze(1).float(); nt = b["dec"].gather(1, (b["npos"] + 1)[:, None]).squeeze(1)
     nce = F.cross_entropy(nl, nt); parts = {"ans_ce": float(ce.detach()), "num_ce": float(nce.detach()), "num_acc": float((nl.argmax(-1) == nt).float().mean())}
+    if "wrapf" in b:                                                        # §226: the wrap split as counts (window means of counts -> pooled accuracy)
+        ok_ = nl.argmax(-1) == nt; w_ = b["wrapf"]
+        parts.update(num_ok_wrap=float((ok_ & w_).sum()), n_wrap=float(w_.sum()), num_ok_nowrap=float((ok_ & ~w_).sum()), n_nowrap=float((~w_).sum()))
     loss = ce
     if a.recode and not a.direct:
         rce, rv, nv = recode_ce(m, D, zs, b, dev); loss = loss + a.lam * rce; ex["rce"] = rce
@@ -313,17 +325,27 @@ def main(argv=None):
     ap.add_argument("--recode", action="store_true"); ap.add_argument("--lam", type=float, default=0.0); ap.add_argument("--bottleneck", action="store_true")
     ap.add_argument("--direct", action="store_true"); ap.add_argument("--codi_compat", action="store_true", help="smokes only (plain-path comparison with codi_port)")
     ap.add_argument("--d_stages", default="1,2,3,4,5,6,7,8"); ap.add_argument("--cg_thr", type=float, default=0.3); ap.add_argument("--cg_need", type=int, default=2)
-    ap.add_argument("--cg_cap", type=int, default=2500); ap.add_argument("--cg_bin", type=int, default=1000); ap.add_argument("--stream_seed", type=int, default=SEED_TRAIN)
+    ap.add_argument("--cg_cap", type=int, default=2500); ap.add_argument("--cg_bin", type=int, default=1000)
+    ap.add_argument("--stream_seed", type=int, default=None, help="default: 22330 (nested) / ow_words.SEED_TRAIN 22930 (ow)")
+    ap.add_argument("--task", default="nested", choices=["nested", "ow"], help="§226: ow = boxes/ow_words.py items")
+    ap.add_argument("--order_mode", default="forward", choices=["forward", "topo"], help="§226 (ow): premise layout")
+    ap.add_argument("--dag", default="on", choices=["on", "off"], help="§226 (ow): off = a strict previous-state chain (no add_s, no forced mul_s)")
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", action="store_true")
     ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default=""); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--stop_at", type=int, default=0, help="resume test only: exit 9 after this step")
     ap.add_argument("--m2_stage", action="store_true", help="Note 223-8 R3: staged M2 (needs --bottleneck)"); ap.add_argument("--m2_ramp", type=int, default=2000)
     a = ap.parse_args(argv); os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed)
+    if a.stream_seed is None:                                               # §226: per-task default (nested unchanged: 22330)
+        a.stream_seed = OW.SEED_TRAIN if a.task == "ow" else SEED_TRAIN
     assert a.bottleneck or not a.m2_stage, "--m2_stage needs --bottleneck"; assert not (a.direct and (a.recode or a.bottleneck)), "DIRECT has no latent flags"; assert a.recode == (a.lam > 0), "--recode needs --lam > 0 (and only then)"
     import tiktoken
     enc = tiktoken.get_encoding("gpt2"); VALUE_TOKS.update(value_tokens(enc))
-    TE = NW.test_set(); PC = NW.pair_candidates(); excl = {it["sig"] for d, its in TE.items() for it in its}
+    if a.task == "ow":                                                      # §226: OW test set / pair candidates (same layout / dag as the stream)
+        okw = {"order_mode": a.order_mode, "dag": a.dag == "on"}; TE = OW.test_set(**okw); PC = OW.pair_candidates(**okw); D_ = OW
+    else:
+        TE = NW.test_set(); PC = NW.pair_candidates(); D_ = NW
+    excl = {it["sig"] for d, its in TE.items() for it in its}
     excl |= {x["sig"] for d, ps in PC.items() for pr in ps for x in pr}  # the pair candidates (recipient + donor; a superset of the eval's pairs)
     info = {**vars(a), "cell": "DIRECT" if a.direct else ("PS" if a.recode and a.bottleneck else "M1-only" if a.recode else "M2-only" if a.bottleneck else "PLAIN"),
             "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
@@ -331,7 +353,8 @@ def main(argv=None):
             "torch_version": torch.__version__, "transformers_version": __import__("transformers").__version__, "python_version": sys.version.split()[0],
             "cuda_version": torch.version.cuda, "generator_sha256": sha_file(os.path.join(ROOT, "boxes", "nested_words.py")),
             "module_sha256": sha_file(os.path.abspath(__file__)), "codi_port_sha256": sha_file(os.path.join(ROOT, "boxes", "codi_port.py")),
-            "test_items_sha": NW.set_sha([it for d in sorted(TE) for it in TE[d]]), "pair_candidates_sha": NW.set_sha([x for d in sorted(PC) for pr in PC[d] for x in pr]), "excl_n": len(excl)}
+            "test_items_sha": D_.set_sha([it for d in sorted(TE) for it in TE[d]]), "pair_candidates_sha": D_.set_sha([x for d in sorted(PC) for pr in PC[d] for x in pr]), "excl_n": len(excl),
+            **({"ow_words_sha256": sha_file(os.path.join(ROOT, "boxes", "ow_words.py"))} if a.task == "ow" else {})}
     info["accumulation"] = a.eff_bs // a.micro
     if a.args_only or a.args_ref:
         ref = json.load(open(a.args_ref)) if a.args_ref else None
@@ -341,7 +364,8 @@ def main(argv=None):
     json.dump(info, open(os.path.join(a.out, "args.json"), "w", newline="\n"), indent=1)
     if a.args_only:
         print("ARGS_ONLY", a.out, flush=True); return
-    m, prj, D, TP = build_all(a, dev); stream = NW.Stream(a.stream_seed, excl); rng = np.random.default_rng(a.seed + 22331)
+    m, prj, D, TP = build_all(a, dev); rng = np.random.default_rng(a.seed + 22331)
+    stream = OW.Stream(a.stream_seed, excl, order_mode=a.order_mode, dag=a.dag == "on") if a.task == "ow" else NW.Stream(a.stream_seed, excl)
     cg = CurGate([int(x) for x in a.d_stages.split(",")], a.cg_thr, a.cg_need, a.cg_cap, a.cg_bin)
 
     def draw_step():
