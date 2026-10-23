@@ -140,14 +140,19 @@ def score(runs=R, final=False):
     return out
 
 
-def score_pilot(runs, dir_run, lat_run, mode):
+def score_pilot(runs, dir_run, lat_run, mode, lp0_max=10.0, lp0_skip=1):
+    """lp0_max / lp0_skip: §228 used 10 / skip 1; §229 (INJECT scale, pre-registered) uses 38.1 / skip 2."""
+    return _score_pilot(runs, dir_run, lat_run, mode, lp0_max, lp0_skip)
+
+
+def _score_pilot(runs, dir_run, lat_run, mode, lp0_max, lp0_skip):
     """LP0-LP3 (mode 2) / LP4 (mode 4), LAT_v1 sec. 5 + draft sec. 7."""
     D = {f: (rows if f.endswith(".jsonl") else jl)(os.path.join(runs, dir_run, f)) for f in ("eval_acc.json", "log.jsonl")}
     L = {f: (rows if f.endswith(".jsonl") else jl)(os.path.join(runs, lat_run, f)) for f in ("eval_acc.json", "log.jsonl")}
     if any(v is None for v in list(D.values()) + list(L.values())):
         return {"verdict": "pending"}
-    lg = L["log.jsonl"]; g = [r["gn_preclip_mean100"] for r in lg if r.get("gn_preclip_mean100") is not None][1:]
-    lp0 = all(np.isfinite(x) and x <= 10 for x in g)
+    lg = L["log.jsonl"]; g = [r["gn_preclip_mean100"] for r in lg if r.get("gn_preclip_mean100") is not None][lp0_skip:]
+    lp0 = all(np.isfinite(x) and x <= lp0_max for x in g)
     k1 = [r for r in lg if isinstance(r.get("by_d"), dict)]
     lp1 = bool(k1) and k1[-1]["by_d"]["1"]["acc"] >= 0.90
     av = k1[-1].get("aux_vacc_by_pass") if k1 else None                    # inject_ow: {pass: value-token acc}, keyed "1", "2", ...
