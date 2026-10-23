@@ -21131,6 +21131,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - TEXT passing d ≤ 2 (and ideally more depths) while P0d's DIRECT stays at ≈ 0.2 for d = 2 → the task has a band from d = 2, and a latent arm (C1) is worth registering, with REVIEW_OW's latent-design fixes.
   - TEXT failing too → the task is not learnable at this scale; that language line stops at GPT-2 small, and a larger base model is the next lever (user's call: no 1B runs without the user).
 
+**Note 227-1 (2026-10-23 09:03 EDT; §227 TEXT crash at step 16,000, before any decode reading; no rule change).**
+- **What happened:** the decode eval ran out of memory. greedy_decode ran the full LM head on the 200-item prompt batch, building full-vocab logits for every prompt position (≈ 2.4 GB at d 6–7).
+  - The eval runs before the checkpoint save, so the last checkpoint is step 14,000.
+  - The crashed run's pilot_text.json is VOID (renamed pilot_text.json.void_crash_16000; unread).
+- **Disclosure (Experiments):** one STAGE line was seen while diagnosing: the 4 → 5 advance at 16,000 came by threshold on the teacher-forced step_value_ce. No decode_evals value has been seen. The CurGate reason text says "number-token CE", but the gated signal is step_value_ce (a hard-coded label, not a signal fault).
+- **Fix:** the prompt pass uses m.transformer (no logits; the first generated token is taken as before), on the same 200-item batches.
+  - **Condition before resume:** on a batch that fits the old path (d ≤ 3, 50 items, the 14k checkpoint), old and new decode outputs (token ids and parsed answers) must be bitwise identical. Plus Audit's G-D.
+- **Resume:** --resume from the 14k checkpoint to 18,000. Post-14k stages / decode records from the crashed run are kept as *.precrash and never read. The summary uses only the resumed run's records after 14k.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
