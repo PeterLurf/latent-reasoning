@@ -1,0 +1,24 @@
+{
+ "test_set_forward": {
+  "n": 2400,
+  "equal": 2400
+ },
+ "stream_forward": {
+  "n": 3000,
+  "equal": 3000
+ },
+ "test_set_topo": {
+  "n": 2400,
+  "equal": 2400
+ },
+ "stream_topo": {
+  "n": 3000,
+  "equal": 3000
+ },
+ "pair_candidates": {
+  "n": 360,
+  "equal": 360
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226_tree"
+}
