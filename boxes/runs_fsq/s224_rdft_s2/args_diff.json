@@ -1,0 +1,53 @@
+{
+ "ref": "scratch/s224_args_ref_ftctrl_s1.json",
+ "diff": {
+  "far": [
+   null,
+   true
+  ],
+  "far_n": [
+   null,
+   16
+  ],
+  "far_t": [
+   null,
+   "13,48"
+  ],
+  "far_w": [
+   null,
+   1.0
+  ],
+  "fh": [
+   null,
+   false
+  ],
+  "fh_dose": [
+   null,
+   "250,500"
+  ],
+  "fh_lam_cap": [
+   null,
+   10.0
+  ],
+  "fh_target": [
+   null,
+   0.2
+  ],
+  "init_from": [
+   "boxes/runs_fsq/s213_d3t_s1/model.pt",
+   "boxes/runs_fsq/s216_d3t_s2/model.pt"
+  ],
+  "out": [
+   "boxes/runs_fsq/s215_ftctrl_s1",
+   "boxes/runs_fsq/s224_rdft_s2"
+  ],
+  "seed": [
+   1,
+   2
+  ],
+  "train_driver": [
+   "595.99.02",
+   "570.211.01"
+  ]
+ }
+}
