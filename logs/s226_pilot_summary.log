@@ -1,1 +1,2 @@
 PILOT-OW {'P0-OW': (12000, 2), 'P0b-TOPO': (12000, 2), 'P0c-CHAIN': (12000, 2)}
+PILOT-OW {'P0d-FULLFT': (12000, 2)}
