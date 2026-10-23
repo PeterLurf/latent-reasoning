@@ -70,3 +70,7 @@
 2026-10-22 17:43:43 s223 P2 ps start (cuda:0, kernel registered)
 2026-10-23 00:16:38 s223 P2 ps rc 9 (9 = stopped at 7600 as registered)
 2026-10-23 00:16:38 s223 P2 summary rc 0 -> scratch/gate_s223/pilot2.json
+2026-10-23 00:21:29 s223 P3a direct start (cuda:0, kernel registered)
+2026-10-23 01:09:34 s223 P3a EARLY STOP: advance into stage 2 (d 3) at step 9000; log at 9000; stopping pid 12652
+2026-10-23 01:10:05 s223 P3a direct ended (early stop at the stage-2 advance1)
+2026-10-23 01:10:05 s223 P3a summary rc 0 -> scratch/gate_s223/pilot3a.json
