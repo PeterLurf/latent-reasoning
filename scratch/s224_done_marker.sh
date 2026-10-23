@@ -16,7 +16,7 @@ s224_need() {
   case "$1" in
     *_re) echo "eval_vb.json eval_khorizon.json" ;;
     *_gtime) echo "timing.json args.json" ;;
-    *_mem) echo "mem_check.json args.json" ;;
+    *_mem) echo "mem_check.json" ;;   # §228 (10-23): inject_ow --mem_check exits before args.json (b341 FETCH_INCOMPLETE)
     *_eqA|*_eqB) echo "log.jsonl args.json" ;;
     *) echo "eval.json model.pt log.jsonl args.json" ;;
   esac
