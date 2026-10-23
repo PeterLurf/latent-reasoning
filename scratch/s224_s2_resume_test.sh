@@ -16,8 +16,8 @@ python - "$T" >> "$L" 2>&1 <<'EOF'
 import json, sys
 T = sys.argv[1]; rd = lambda p: [json.loads(l) for l in open(p) if l.strip()]  # noqa: E731
 ref = rd(T + "/ref/log.jsonl"); res = rd(T + "/res/log.jsonl")
-i2 = [i for i, r in enumerate(res) if r.get("step") == 1150 and "loss" in r][1]
-rsm = res[i2:]; strip = lambda r: {k: v for k, v in r.items() if k not in ("sec", "clip_frac_100")}  # noqa: E731
+ik = [i for i, r in enumerate(res) if r.get("step") == 1250 and "loss" in r][0]   # v2: the resumed segment starts after the KILL run's last record
+rsm = [r for r in res[ik + 1:] if r.get("step", 0) >= 1150]; strip = lambda r: {k: v for k, v in r.items() if k not in ("sec", "clip_frac_100")}  # noqa: E731
 refm = [r for r in ref if r.get("step", 0) >= 1150]
 lam_ref = [r for r in ref if "fh_lambda_set" in r]; lam_res = [r for r in rsm if "fh_lambda_set" in r]
 c = [r.get("c") for r in refm if "c" in r]
