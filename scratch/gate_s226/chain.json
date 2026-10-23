@@ -1,0 +1,50 @@
+{
+ "n": 3000,
+ "ops_seen": [
+  [
+   "add_c",
+   2777
+  ],
+  [
+   "add_v",
+   2830
+  ],
+  [
+   "mul_c",
+   2553
+  ],
+  [
+   "mul_v",
+   2854
+  ],
+  [
+   "sub_c",
+   2725
+  ],
+  [
+   "sub_v",
+   2761
+  ]
+ ],
+ "bad_ops": 0,
+ "src_j_not_none": 0,
+ "mul_s_t_set": 0,
+ "solver_agree": 3000,
+ "answer_max_share_by_d": {
+  "1": 0.13,
+  "2": 0.14,
+  "3": 0.16,
+  "4": 0.15,
+  "5": 0.13,
+  "6": 0.15,
+  "7": 0.14,
+  "8": 0.14,
+  "9": 0.15,
+  "10": 0.12
+ },
+ "dag_key": [
+  false
+ ],
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226_tree"
+}

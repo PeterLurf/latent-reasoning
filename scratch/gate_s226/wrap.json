@@ -1,0 +1,14 @@
+{
+ "n": 6000,
+ "mismatches": 0,
+ "wrap_final_counts": {
+  "{} True": 1406,
+  "{} False": 594,
+  "{'dag': False} True": 1237,
+  "{'dag': False} False": 763,
+  "{'order_mode': 'topo'} True": 1362,
+  "{'order_mode': 'topo'} False": 638
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226_tree"
+}

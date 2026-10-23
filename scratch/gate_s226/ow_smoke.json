@@ -1,0 +1,31 @@
+{
+ "P0-OW": {
+  "rc": 9,
+  "n": 12,
+  "wrap_fields": true,
+  "per_step_items": [
+   8.0
+  ],
+  "err": ""
+ },
+ "P0b-TOPO": {
+  "rc": 9,
+  "n": 12,
+  "wrap_fields": true,
+  "per_step_items": [
+   8.0
+  ],
+  "err": ""
+ },
+ "P0c-CHAIN": {
+  "rc": 9,
+  "n": 12,
+  "wrap_fields": true,
+  "per_step_items": [
+   8.0
+  ],
+  "err": ""
+ },
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226_tree"
+}

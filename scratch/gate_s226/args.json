@@ -1,0 +1,70 @@
+{
+ "P0_vs_P3a": [
+  "codi_port_sha256",
+  "dag",
+  "module_sha256",
+  "order_mode",
+  "ow_words_sha256",
+  "pair_candidates_sha",
+  "stream_seed",
+  "task",
+  "test_items_sha"
+ ],
+ "P0_vs_P3a_nonhash": [
+  "dag",
+  "order_mode",
+  "stream_seed",
+  "task"
+ ],
+ "P0b_vs_P0": [
+  "order_mode",
+  "pair_candidates_sha",
+  "test_items_sha"
+ ],
+ "P0c_vs_P0": [
+  "dag",
+  "pair_candidates_sha",
+  "test_items_sha"
+ ],
+ "values": {
+  "P0-OW": {
+   "task": "ow",
+   "order_mode": "forward",
+   "dag": "on",
+   "stream_seed": 22930,
+   "lr": 0.0003,
+   "cg_thr": 0.45,
+   "cg_cap": 6000,
+   "steps": 48000
+  },
+  "P0b-TOPO": {
+   "task": "ow",
+   "order_mode": "topo",
+   "dag": "on",
+   "stream_seed": 22930,
+   "lr": 0.0003,
+   "cg_thr": 0.45,
+   "cg_cap": 6000,
+   "steps": 48000
+  },
+  "P0c-CHAIN": {
+   "task": "ow",
+   "order_mode": "forward",
+   "dag": "off",
+   "stream_seed": 22930,
+   "lr": 0.0003,
+   "cg_thr": 0.45,
+   "cg_cap": 6000,
+   "steps": 48000
+  }
+ },
+ "P0b_vs_P0_nonhash": [
+  "order_mode"
+ ],
+ "P0c_vs_P0_nonhash": [
+  "dag"
+ ],
+ "note": "hash keys (*_sha / *_sha256) differ by construction (task / layout / code); dag and order_mode are new keys, at their defaults (on / forward) in P0-OW; codi_port_sha256 differs only in the sandbox (its ROOT line is edited there; the committed codi_port is unchanged)",
+ "pass": true,
+ "tree": "D:/Latent/scratch/_tmp/s226_tree"
+}
