@@ -215,7 +215,7 @@ def part_swaps(m, g, sets, a, dev, bs):
 def part_decode(m, g, sets, a, dev, bs, n_per_d=200):
     K = a["think_k"]; out = {"by_d": {}, "items": {}}
     for d in range(1, 9):
-        T = [IO.tok_ow(it) for it in sets["test2"][d][:n_per_d]]; ex = {t: [] for t in range(1, d + 1)}; vv = {t: [] for t in range(1, d + 1)}; gen_all = {t: [] for t in range(1, d + 1)}
+        T = [IO.tok_ow(it, a.get("aux_target", "value")) for it in sets["test2"][d][:n_per_d]]; ex = {t: [] for t in range(1, d + 1)}; vv = {t: [] for t in range(1, d + 1)}; gen_all = {t: [] for t in range(1, d + 1)}
         for i in range(0, len(T), bs):
             ch = T[i:i + bs]; x, msk = m.think_inputs(ch, dev); hl = m.lower(x); S = m.mem.zero_state(len(ch), dev)
             for t in range(1, min(d, K) + 1):

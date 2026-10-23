@@ -1,0 +1,8 @@
+# THEORY §229 LAT-OW-CUM (b8ef3778; Audit-approved): s229_plat2c_s1 = s228_plat2_s1's frozen args + --aux_target cumulative (the re-rooted program R_t per
+# pass), d ~ U{1,2}, 8k, one non-580 RTX 3090: F2 (K7 mem_check + G-TIME at the pilot shape) -> the cell (ckpt every 1k, eval acc,decode). DIRECT
+# reference reused: s228_pdir2c_s1 (no new DIRECT). Frozen args scratch/s228_args_frozen_s229_plat2c_s1.json.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s229_plat2c_s1_mem boxes.inject_ow --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 2 --steps 8000 --aux_target cumulative --mem_check
+boxes/runs_fsq/s229_plat2c_s1_gtime boxes.inject_ow --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 2 --steps 8000 --aux_target cumulative --time_steps 60 --auto_micro
+boxes/runs_fsq/s229_plat2c_s1 boxes.inject_ow --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 2 --steps 8000 --aux_target cumulative --auto_micro --ckpt_every 1000 --eval_parts acc,decode --args_ref scratch/s228_args_frozen_s229_plat2c_s1.json
