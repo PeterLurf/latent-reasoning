@@ -340,9 +340,10 @@ STEP_RE = re.compile(r"\b(\w+) has (\d+) ")
 @torch.no_grad()
 def greedy_decode(m, its, dev, max_new):
     """§227: batched greedy decoding after [question | <bot>] (the training encoder call) from <eot>, max_new tokens, stop at EOS. -> per item
-    (generated token list without EOS, terminated, overflow)."""
+    (generated token list without EOS, terminated, overflow). The prompt call is m.transformer (hidden states + cache only): the full-vocab logits of
+    every prompt position are never used (the first token is predicted from <eot>) and OOMed the 4060 at d 6-7 (10-23, step 16,000)."""
     b = collate(its, 0, dev); B = len(its); Tq = b["enc"].shape[1]; npos_max = m.config.n_positions
-    o = m(input_ids=b["enc"], attention_mask=b["em"], use_cache=True); pkv = o.past_key_values; am = b["em"]
+    o = m.transformer(input_ids=b["enc"], attention_mask=b["em"], use_cache=True); pkv = o.past_key_values; am = b["em"]   # 10-23 fix: no prompt logits (OOM at d 6-7)
     cur = torch.full((B, 1), EOT, device=dev); gen = [[] for _ in range(B)]; done = torch.zeros(B, dtype=torch.bool, device=dev)
     steps = min(max_new, npos_max - Tq - 1)
     for _ in range(steps):
@@ -364,6 +365,8 @@ def decode_eval(m, prj, ED, enc, dev, d_max, step):
     """§227 primary reading: greedy free decoding on the held-out set for d 1..min(d_max + 1, 8) -> one record (acc, terminated, parsed, per-step value
     acc by step index, wrap split). Unparseable / non-terminating / context overflow = wrong."""
     was = m.training; m.eval(); prj.eval(); rec = {"step": step, "d_max": d_max, "by_d": {}}
+    if str(dev).startswith("cuda"):
+        torch.cuda.empty_cache()                                            # allocator only (no numeric change)
     for d in range(1, min(d_max + 1, 8) + 1):
         its = ED[d]
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=str(dev).startswith("cuda")):
