@@ -315,6 +315,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1, Audit-reproduced): on the synthetic nested-arithmetic task (s216 R2 vs s219 T2), latent equals matched text-CoT self-training in accuracy within 0.02 while using ~20-50x fewer sequential steps and ~0.65x FLOPs per correct; one seed each; not language (a synthetic-line C3, not the north star’s language C3); $0** |
 | 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | CLOSED | **CLOSED 10-23 (226-2): P0d full-FT learns d=1 (0.998) but not d<=2 (0.53) -> no one-pass 2-step composition under LoRA or full FT; G2 conflated recipe-learnability with one-pass composition (hindsight; next: TEXT-CoT learnability pilot as the serial control, new registration); $0.** PANEL 10-23 (226-1, Audit-reproduced; P0d-on-TOPO approved): P0-OW and P0c-CHAIN fail (d=1 plateaus 0.66 in forward layout); TOPO learns d=1 (0.96); no cell composes d=2 (pooled <= 0.57); -> P0d full-FT (on TOPO, amendment for Audit), else close.** APPROVED by Audit 10-23 ($0): build generator flags (default off, flags-off bitwise) -> G-D -> resumable runs on the 4060** |
 | 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **PASSED 10-23 (227-2, Audit-reproduced; first language task with an established C1 band): free-decode acc d2 1.000, d3 1.000, d4 1.000, d5 0.97 (DIRECT one-pass d2 ~0.2) -> one-pass gap from d=2 crossed serially; next: latent C1 registration (exposure-matched G-W0); $0.** APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
+| 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | registered | **for Audit’s ruling** |
 
 ## Live sections
 
@@ -19109,6 +19110,27 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Novelty.** None claimed: it is a control. Literature: the effect is established, so a result is worded as a replication.
 - Theory: Feng 2305.15408; Merrill & Sabharwal 2310.07923; Li et al. 2402.12875.
 - Empirics: Lin 2503.07604; Deng iCoT 2405.14838; Physics of LMs 2.1 2407.20311.
+
+## 228. LAT-OW: a C1 test of the §184 latent recipe on English-templated word programs (the band from §226 / §227; **for Audit's ruling under the $30 rule, family cap $20**; pre-registered 2026-10-23 10:21 EDT, before any §228 code or output)
+
+**Registered text.** docs/research_ordered_words_2026-10-23/LAT_v1.md **at e78d7211** (v1 = LAT_v1_draft.md ad2a3be4 + REVIEW_LAT fixes 1–10), frozen. Literature: N1 / N2 narrow; N3 "not found".
+
+**Premise.** On the TOPO word programs, one-pass GPT-2 small learns d = 1 but not d = 2 (§226). Serial text-CoT reaches 1.000 at d 2–4 (§227). Does the §184 latent recipe (INJECT, the project's only C1 record) cross that gap with a causally used serial state?
+
+**Cells.** DIRECT and LAT (INJECT-OW, a new inject_ow module, §184 args; deviations (a)–(g) listed), identical d-sequences (exposure-matched, ≈ 6k steps per depth), one RTX 3090 class, one seed (a second only on a pass). TEXT moves to Stage 2 as the C3 comparator.
+
+**Readings.**
+- G-W0 band B: DIRECT ≤ 0.50 and not still rising; ≥ 3 depths, ≥ 2 of them ≥ 4; 223-6 guards.
+- **R1** LAT − DIRECT ≥ 0.30 and LAT ≥ 0.60.
+- **R2** mean-state ablation: drop ≥ 0.30, to ≤ DIRECT + 0.10; K′1 read on d ≥ 3 only.
+- **R3** STATE-SWAP after ⌈d/2⌉ on cf(a) ∪ cf_b, d ≥ 4, N ≥ 2,000, beyond max(redraw, permutation) floor + 0.30, follow_U ≥ 0.50, SELF-SWAP bitwise; LEAK-SEG descriptive.
+- C1-LANG = R1 ∧ R2 ∧ R3; DEEP-NOT-SERIAL otherwise.
+
+**Pilots before Stage 1.** P-DIR2 / P-LAT2 (local, $0; LP0–LP3) and P-DIR4 / P-LAT4 (d ≤ 4, 16k, one cloud 3090 ≈ $1.0–1.3; LP4: LAT d 3 ≥ 0.60, d 4 ≥ 0.50, each ≥ DIRECT + 0.25). Failing → the pre-named cumulative-target fallback (separate registration) or stop.
+
+**OC.** P(C1-LANG | no effect) ≈ 0, and ≈ 0 under the mechanism nulls (pause, relay, recompute, floor collapse, leak). A hop-per-pass serial model passes R2 with P ≈ 0.9. Prior ≈ 0.08.
+
+**Cost.** Stage 1 ≤ $12 incl. the cloud pilot (LAT share $9, guard $11; DIRECT share $3, guard $3.60); family cap $20. Realised at registration $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
