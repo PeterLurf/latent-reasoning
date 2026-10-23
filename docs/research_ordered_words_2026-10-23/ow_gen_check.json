@@ -1,0 +1,503 @@
+{
+ "note": "OW_draft.md \u00a73 F1-diff ($0 CPU)",
+ "nested_words_sha256": "cd659df8c07818abd28b5eca557288c5ff704821412fe6c658e270b91ad2170e",
+ "ow_words_sha256": "5c0c9c089f6f2fd665b5afc21b935f1cc2e39b4dd15c22511ff72fe695afa49b",
+ "identity": {
+  "shared_by_reference": {
+   "FRAMES": true,
+   "NAMES": true,
+   "UNITS": true,
+   "GIVEN": true,
+   "QUESTION": true,
+   "FRAME_TRAIN": true,
+   "FRAME_ALL": true,
+   "OPS": true,
+   "OPS_REG": true,
+   "BASE": true
+  },
+  "all_shared": true,
+  "reused_functions": [
+   "_statements",
+   "_finish",
+   "topo_shuffle",
+   "solve (wrapped: apply -> mod 11)",
+   "apply (wrapped: % 11)"
+  ],
+  "reimplemented": {
+   "_operand": {
+    "nw_lines": 2,
+    "ow_lines": 2
+   },
+   "_draw_program": {
+    "nw_lines": 31,
+    "ow_lines": 29
+   },
+   "make": {
+    "nw_lines": 12,
+    "ow_lines": 15
+   },
+   "redraw": {
+    "nw_lines": 25,
+    "ow_lines": 20
+   }
+  },
+  "added_item_keys": [
+   "R_step",
+   "cot",
+   "mod",
+   "order_mode"
+  ],
+  "missing_item_keys": []
+ },
+ "restarts_per_item": {
+  "ow": 0.225,
+  "topo": 0.223,
+  "nw": 5.7496
+ },
+ "values": {
+  "ow": {
+   "1": {
+    "min": 1,
+    "max": 10,
+    "n_answer_values": 10,
+    "answer_max_share": 0.1115,
+    "final_op_lookup_acc": 0.108,
+    "chance": 0.1
+   },
+   "2": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.104,
+    "final_op_lookup_acc": 0.1,
+    "chance": 0.09090909090909091
+   },
+   "3": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 10,
+    "answer_max_share": 0.1145,
+    "final_op_lookup_acc": 0.109,
+    "chance": 0.1
+   },
+   "4": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.103,
+    "final_op_lookup_acc": 0.09,
+    "chance": 0.09090909090909091
+   },
+   "5": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.1045,
+    "final_op_lookup_acc": 0.096,
+    "chance": 0.09090909090909091
+   },
+   "6": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.1095,
+    "final_op_lookup_acc": 0.112,
+    "chance": 0.09090909090909091
+   },
+   "7": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.108,
+    "final_op_lookup_acc": 0.099,
+    "chance": 0.09090909090909091
+   },
+   "8": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.102,
+    "final_op_lookup_acc": 0.098,
+    "chance": 0.09090909090909091
+   },
+   "9": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.1045,
+    "final_op_lookup_acc": 0.101,
+    "chance": 0.09090909090909091
+   },
+   "10": {
+    "min": 0,
+    "max": 10,
+    "n_answer_values": 11,
+    "answer_max_share": 0.103,
+    "final_op_lookup_acc": 0.096,
+    "chance": 0.09090909090909091
+   }
+  },
+  "nw": {
+   "1": {
+    "min": 1,
+    "max": 99,
+    "n_answer_values": 66,
+    "answer_max_share": 0.047,
+    "final_op_lookup_acc": 0.053,
+    "chance": 0.015151515151515152
+   },
+   "2": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 100,
+    "answer_max_share": 0.0375,
+    "final_op_lookup_acc": 0.028,
+    "chance": 0.01
+   },
+   "3": {
+    "min": 1,
+    "max": 99,
+    "n_answer_values": 60,
+    "answer_max_share": 0.0475,
+    "final_op_lookup_acc": 0.04,
+    "chance": 0.016666666666666666
+   },
+   "4": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 100,
+    "answer_max_share": 0.0335,
+    "final_op_lookup_acc": 0.024,
+    "chance": 0.01
+   },
+   "5": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 100,
+    "answer_max_share": 0.0285,
+    "final_op_lookup_acc": 0.02,
+    "chance": 0.01
+   },
+   "6": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 100,
+    "answer_max_share": 0.0255,
+    "final_op_lookup_acc": 0.014,
+    "chance": 0.01
+   },
+   "7": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 100,
+    "answer_max_share": 0.025,
+    "final_op_lookup_acc": 0.026,
+    "chance": 0.01
+   },
+   "8": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 100,
+    "answer_max_share": 0.023,
+    "final_op_lookup_acc": 0.021,
+    "chance": 0.01
+   },
+   "9": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 98,
+    "answer_max_share": 0.0225,
+    "final_op_lookup_acc": 0.028,
+    "chance": 0.01020408163265306
+   },
+   "10": {
+    "min": 0,
+    "max": 99,
+    "n_answer_values": 98,
+    "answer_max_share": 0.0265,
+    "final_op_lookup_acc": 0.024,
+    "chance": 0.01020408163265306
+   }
+  }
+ },
+ "values_ok": true,
+ "order": {
+  "ow": {
+   "items_with_dependency_violation": 0,
+   "n_items": 20000,
+   "share_program_layout_canonical": 1.0,
+   "given_to_use_gap_mean_sentences": 0.09645863706908715,
+   "given_to_use_gap_max": 2,
+   "mean_distinct_program_layouts_per_op_sequence": {
+    "3": 1.0,
+    "6": 1.0
+   }
+  },
+  "topo": {
+   "items_with_dependency_violation": 0,
+   "n_items": 20000,
+   "share_program_layout_canonical": 0.22,
+   "given_to_use_gap_mean_sentences": 4.416752698263726,
+   "given_to_use_gap_max": 18,
+   "mean_distinct_program_layouts_per_op_sequence": {
+    "3": 3.1666666666666665,
+    "6": 1.011681056373794
+   }
+  },
+  "nw": {
+   "items_with_dependency_violation": 0,
+   "n_items": 20000,
+   "share_program_layout_canonical": 0.22135,
+   "given_to_use_gap_mean_sentences": 4.434788775679062,
+   "given_to_use_gap_max": 18,
+   "mean_distinct_program_layouts_per_op_sequence": {
+    "3": 3.0714285714285716,
+    "6": 1.0432033719704952
+   }
+  }
+ },
+ "order_ok": true,
+ "solver": {
+  "mismatches": 0,
+  "first": [],
+  "numbers_single_token": true
+ },
+ "frames": {
+  "add_c": {
+   "n": 13875,
+   "chi2_vs_uniform": 4.376144144144144,
+   "df": 7
+  },
+  "sub_c": {
+   "n": 13751,
+   "chi2_vs_uniform": 4.7873609192058755,
+   "df": 7
+  },
+  "mul_c": {
+   "n": 13151,
+   "chi2_vs_uniform": 9.981826477073987,
+   "df": 7
+  },
+  "add_v": {
+   "n": 13784,
+   "chi2_vs_uniform": 9.434706906558329,
+   "df": 7
+  },
+  "sub_v": {
+   "n": 13734,
+   "chi2_vs_uniform": 9.890490752876074,
+   "df": 7
+  },
+  "mul_v": {
+   "n": 15008,
+   "chi2_vs_uniform": 12.557569296375267,
+   "df": 7
+  },
+  "add_s": {
+   "n": 10697,
+   "chi2_vs_uniform": 4.326353183135459,
+   "df": 7
+  },
+  "mul_s": {
+   "n": 16000,
+   "chi2_vs_uniform": 2.726,
+   "df": 7
+  }
+ },
+ "shortcuts": {
+  "1": {
+   "majority": 0.105,
+   "first_number": 0.021,
+   "last_number": 0.101,
+   "sum_mod11": 0.086,
+   "product_mod11": 0.398,
+   "affine_drop_cross_spine": 1.0,
+   "affine_representable_share": 1.0
+  },
+  "2": {
+   "majority": 0.084,
+   "first_number": 0.0915,
+   "last_number": 0.092,
+   "sum_mod11": 0.11,
+   "product_mod11": 0.135,
+   "affine_drop_cross_spine": 0.8505,
+   "affine_representable_share": 1.0
+  },
+  "3": {
+   "majority": 0.1145,
+   "first_number": 0.095,
+   "last_number": 0.111,
+   "sum_mod11": 0.084,
+   "product_mod11": 0.09,
+   "affine_drop_cross_spine": 0.0,
+   "affine_representable_share": 0.0
+  },
+  "4": {
+   "majority": 0.0915,
+   "first_number": 0.0905,
+   "last_number": 0.0835,
+   "sum_mod11": 0.096,
+   "product_mod11": 0.099,
+   "affine_drop_cross_spine": 0.014,
+   "affine_representable_share": 0.0
+  },
+  "5": {
+   "majority": 0.0965,
+   "first_number": 0.082,
+   "last_number": 0.084,
+   "sum_mod11": 0.0995,
+   "product_mod11": 0.096,
+   "affine_drop_cross_spine": 0.02,
+   "affine_representable_share": 0.0
+  },
+  "6": {
+   "majority": 0.1095,
+   "first_number": 0.0825,
+   "last_number": 0.0875,
+   "sum_mod11": 0.0815,
+   "product_mod11": 0.0965,
+   "affine_drop_cross_spine": 0.0305,
+   "affine_representable_share": 0.0
+  },
+  "7": {
+   "majority": 0.0955,
+   "first_number": 0.0935,
+   "last_number": 0.0945,
+   "sum_mod11": 0.091,
+   "product_mod11": 0.0945,
+   "affine_drop_cross_spine": 0.0475,
+   "affine_representable_share": 0.0
+  },
+  "8": {
+   "majority": 0.095,
+   "first_number": 0.0915,
+   "last_number": 0.092,
+   "sum_mod11": 0.094,
+   "product_mod11": 0.0935,
+   "affine_drop_cross_spine": 0.053,
+   "affine_representable_share": 0.0
+  },
+  "9": {
+   "majority": 0.103,
+   "first_number": 0.1015,
+   "last_number": 0.0915,
+   "sum_mod11": 0.092,
+   "product_mod11": 0.0985,
+   "affine_drop_cross_spine": 0.0515,
+   "affine_representable_share": 0.0
+  },
+  "10": {
+   "majority": 0.096,
+   "first_number": 0.091,
+   "last_number": 0.0865,
+   "sum_mod11": 0.0835,
+   "product_mod11": 0.098,
+   "affine_drop_cross_spine": 0.061,
+   "affine_representable_share": 0.0
+  }
+ },
+ "shortcuts_ok": true,
+ "shortcuts_note": "affine_drop_cross_spine is the exact solver for d 1-2 (no cross-spine product) and is descriptive, as v1.2",
+ "pairs": {
+  "per_d": {
+   "3": {
+    "t": 2,
+    "kept_share": 0.0,
+    "cf_floor_ideal_carrier": NaN,
+    "donor_final_eq_cf_excluded": true
+   },
+   "4": {
+    "t": 2,
+    "kept_share": 0.594,
+    "cf_floor_ideal_carrier": 0.13973063973063973,
+    "donor_final_eq_cf_excluded": true
+   },
+   "5": {
+    "t": 3,
+    "kept_share": 0.646,
+    "cf_floor_ideal_carrier": 0.09442724458204334,
+    "donor_final_eq_cf_excluded": true
+   },
+   "6": {
+    "t": 3,
+    "kept_share": 0.709,
+    "cf_floor_ideal_carrier": 0.11847672778561354,
+    "donor_final_eq_cf_excluded": true
+   },
+   "7": {
+    "t": 4,
+    "kept_share": 0.72,
+    "cf_floor_ideal_carrier": 0.08888888888888889,
+    "donor_final_eq_cf_excluded": true
+   },
+   "8": {
+    "t": 4,
+    "kept_share": 0.719,
+    "cf_floor_ideal_carrier": 0.10292072322670376,
+    "donor_final_eq_cf_excluded": true
+   },
+   "9": {
+    "t": 5,
+    "kept_share": 0.714,
+    "cf_floor_ideal_carrier": 0.12324929971988796,
+    "donor_final_eq_cf_excluded": true
+   },
+   "10": {
+    "t": 5,
+    "kept_share": 0.737,
+    "cf_floor_ideal_carrier": 0.12075983717774763,
+    "donor_final_eq_cf_excluded": true
+   }
+  },
+  "token_length_mismatches_in_sample": 0,
+  "note": "d = 3: t = 2 and the forced mul_s sits at t = 3 with j = 1, so cf(a) = donor S_2 x donor S_1 = donor-final for every pair (structurally degenerate; kept share 0, as in v1.2 / ps_eval); the serial reading pools d >= 4"
+ },
+ "pairs_ok": true,
+ "exclusion": {
+  "train_draws_hitting_test_sig_share": {
+   "1": 0.0,
+   "2": 0.0
+  },
+  "test_dups_within": {
+   "1": 0,
+   "2": 0
+  }
+ },
+ "question_tokens_mean": {
+  "ow": {
+   "1": 35.07,
+   "3": 57.67666666666667,
+   "6": 96.95,
+   "10": 150.8
+  },
+  "nw": {
+   "1": 35.05,
+   "3": 56.99666666666667,
+   "6": 96.5,
+   "10": 150.42
+  }
+ },
+ "variant_B_bounded_0_10": {
+  "2": {
+   "restarts_per_item": 0.0,
+   "failed": 0,
+   "answer_max_share": 0.12
+  },
+  "3": {
+   "restarts_per_item": 21.23,
+   "failed": 0,
+   "answer_max_share": 0.375
+  },
+  "4": {
+   "restarts_per_item": 12.09,
+   "failed": 0,
+   "answer_max_share": 0.2375
+  },
+  "6": {
+   "restarts_per_item": 7.44,
+   "failed": 0,
+   "answer_max_share": 0.175
+  }
+ },
+ "PASS": true
+}
