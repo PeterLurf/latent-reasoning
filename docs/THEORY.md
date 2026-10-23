@@ -314,6 +314,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **STAGE 1 TRIGGER 10-22 (224-4): H(128) FH-FT 0.818 / 0.990 vs FT-CTRL 0.116 / 0.096, RD-FT 0.664 / 0.740; no loss; $5.73 -> Stage 2 (48k) next.** APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
 | 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1, Audit-reproduced): on the synthetic nested-arithmetic task (s216 R2 vs s219 T2), latent equals matched text-CoT self-training in accuracy within 0.02 while using ~20-50x fewer sequential steps and ~0.65x FLOPs per correct; one seed each; not language (a synthetic-line C3, not the north star’s language C3); $0** |
 | 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | CLOSED | **CLOSED 10-23 (226-2): P0d full-FT learns d=1 (0.998) but not d<=2 (0.53) -> no one-pass 2-step composition under LoRA or full FT; G2 conflated recipe-learnability with one-pass composition (hindsight; next: TEXT-CoT learnability pilot as the serial control, new registration); $0.** PANEL 10-23 (226-1, Audit-reproduced; P0d-on-TOPO approved): P0-OW and P0c-CHAIN fail (d=1 plateaus 0.66 in forward layout); TOPO learns d=1 (0.96); no cell composes d=2 (pooled <= 0.57); -> P0d full-FT (on TOPO, amendment for Audit), else close.** APPROVED by Audit 10-23 ($0): build generator flags (default off, flags-off bitwise) -> G-D -> resumable runs on the 4060** |
+| 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **for Audit; build --text_cot + decode eval** |
 
 ## Live sections
 
@@ -19070,6 +19071,42 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 - P0b / P0c are attribution only and never change a gate.
 
 **Cost.** $0 (≈ 72 min per cell on the 4060). Code: generator flags --task ow / --order_mode / --dag in codi_ps (default off) → Audit G-D, flags-off bitwise vs 45baec0d, plain-path smoke. Reading by Theory from pilot_ow.json (stages, entry, 1k bins, LP0 fields, wrap split).
+
+## 227. TEXT-SERIAL control: can serial text-CoT learn d ≥ 2 on the TOPO word programs where one-pass DIRECT cannot? (Audit's ruling on 226-2; **$0, local, pre-stated 2026-10-23 06:42 EDT, before any §227 code or output**)
+
+**Why.** §226 closed with one-pass DIRECT learning d = 1 (0.998, full FT) but not d = 2 (pooled d ≤ 2 0.53). That is a C1 band only if serial computation can do d ≥ 2 on the same task. §227 is that serial control. It is not a latent claim.
+
+**Task / recipe.**
+- §226 TOPO generator (boxes/ow_words.py, --task ow --order_mode topo, mod 11, v1.2 layout); train frames 0–5; P0d's full-FT recipe (lr 1e-4, fp32 master, bf16 autocast, AdamW as P0d, clip 2.0, cosine over 48k).
+- CurGate d-stages 1..8, cg_thr 0.45, cg_cap 6000, need 2 × 1k bins.
+- **--stop_at 18000** (stage 2, d ≤ 3, gets ≥ 6k steps even if both earlier stages end on the cap).
+- One cell: TEXT. The P0d DIRECT log is the one-pass reference (same generator, recipe, card class).
+
+**Text target.** The question, then the step sentences R_step, one per computed quantity ("<name> has <v> <unit>."), then " The answer is <v_d>." + EOS. Teacher-forced CE on all target tokens.
+- Choice: step sentences, not the full re-rooted problems R_t. Each step sentence is exactly the new information that R_t adds, at ≈ 1/10 the length (R_t restates the whole remaining problem at every step).
+- Disclosed for Audit: if R_t is required instead, it is a one-flag change before launch.
+
+**CurGate signal (stated so it is not a copy reading):** the teacher-forced CE of the VALUE tokens in the step sentences, i.e. each step's one-operation prediction given the correct previous text. The final-answer token under teacher forcing would merely copy the last step value, so it is never used for gating or reading.
+
+**Primary reading: free decoding.**
+- Every 1k steps and at stop: greedy, max_new_tokens = 24·d + 16, stop at EOS.
+- 200 held-out items per d in 1..min(d_max + 1, 8) (test frames 0–5, sha-pinned set, disjoint from training by rendered match).
+- The final answer is parsed from " The answer is N." (the first such match). **Unparseable, missing, non-terminating or context overflow = wrong.**
+
+**Pass (TEXT-SERIAL), at stop:** free-decode final-answer acc **d = 2 ≥ 0.80 AND d = 3 ≥ 0.70**, plus LP0 (after the first window: no 100-step mean gn_preclip > 10, no non-finite rows).
+- d = 3 is read even if stage 2 was reached late (it is trained there by ≥ 6k steps under the stop rule).
+- Descriptive: d = 1 and d = 4; per-step value accuracy in the decoded chain; advance reasons and steps; the DIRECT reference (P0d bins); wrap vs no-wrap.
+
+**Outcomes:**
+- **TEXT-SERIAL passes →** the TOPO task has a one-pass band from d = 2 that serial computation crosses. A latent C1 registration (REVIEW_OW's latent-design fixes: R3 on cf(a) ∪ cf_b, frames 0–5 primary, C1 not C4, exposure check) is drafted next, on this task and recipe.
+- **TEXT fails d = 2 →** the task is not learnable at GPT-2 small even serially. The language line stops at this scale. **The base-model decision (e.g. a larger pretrained LM; a C4-relevant spend choice) goes to the user**; no 1B run without the user's go-ahead.
+- **TEXT passes d = 2 but fails d = 3 →** reported as TEXT-SHALLOW. The latent draft's band is then d = 2 only, which is too thin (G-W0 needs ≥ 3 depths), so it goes to the user with the base-model question.
+
+**OC.** At 200 items per d, SE ≈ 0.028 at p 0.8. Under "TEXT ≈ DIRECT" (d = 2 ≈ 0.2), P(pass) ≈ 0. Under a working serial learner (d = 2 ≥ 0.95, as text-CoT reached on §219's synthetic line), P(pass) ≈ 0.95. Prior P(pass) ≈ 0.6 [ASSUMED].
+
+**Cost.** $0. Code: codi_ps --text_cot (default off; flags-off bitwise; gradflow; plain-path smoke; memory check at d 3 sequence length) + a periodic greedy-decode eval; Audit G-D. 4060, registered kernel, checkpoints / resume. Output scratch/gate_s227/pilot_text.json.
+
+**Novelty.** None claimed: it is a control. A Literature line is requested only for the wording "text-CoT learns what one-pass cannot on templated word programs at GPT-2 small" (expected: known, cf. Lin 2503.07604 / Physics of LMs).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
