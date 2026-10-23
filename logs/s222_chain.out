@@ -31,3 +31,42 @@
 2026-10-21 13:43:56 engine equiv new det rc 0
 2026-10-21 13:43:59 DET ENGINE-EQUIV PASS {'curve_diff': [], 'field_diff': [], 'param_diff': [], 'extended_arms': ['cexor_t0', 'lin_t0', 'lin_t1', 'noplant_t2', 'shuffled_t0']}
 2026-10-21 13:50:55 envelope smoke rc 0 ENVELOPE {"envelope_ce_max_abs": 2.86102294921875e-06, "resume_ce_max_abs_by_probe_R_vs_A": {"cexor_t2": 1.5497207641601562e-06, "lin_t2": 3.129243850708008e-06, "noplant_t2": 4.082918167114258e-06}, "bitwise_B_vs_A": false, "bitwise_R_vs_A": false, "proposed_PASS": true, "gpu": "NVIDIA GeForce RTX 
+2026-10-21 13:59:21 s223 resume test start (2070, PS cell, det wrapper)
+2026-10-21 14:03:36 s223 RESUME-TEST s223 PASS
+2026-10-21 14:22:43 s223 resume test (grad-norm logging) start (2070)
+2026-10-21 14:27:56 s223 gn RESUME-TEST s223 PASS
+2026-10-21 14:28:02 s223 gn bitwise start (2070)
+2026-10-21 14:31:25 GN-BITWISE PASS
+2026-10-21 14:37:56 s223 gradflow (grad-norm logging) GRADFLOW PASS {"plain_vs_codi_port": {"codi_ps_ans_ce": 6.689549922943115, "codi_port_ce": 6.689549922943115, "bitwise_e
+2026-10-21 14:38:14 s223 pilot direct start (cuda:2, kernel math)
+2026-10-21 15:57:28 s223 pilot direct rc 9 (9 = stopped at 4600 as registered)
+2026-10-21 15:57:28 s223 pilot ps start (cuda:2, kernel math)
+2026-10-21 16:24:22 s223 pilot m1_4060 start (cuda:0, kernel registered)
+2026-10-21 20:31:16 s223 pilot ps RESUME from ckpt (cuda:2, kernel math, micro 8)
+2026-10-21 20:31:18 s223 pilot m1_4060 RESUME from ckpt (cuda:0, kernel registered, micro 8)
+2026-10-21 22:38:38 s223 pilot m1_4060 rc 9 (9 = stopped at 4600 as registered)
+2026-10-21 22:38:38 s223 pilot direct_4060 start (cuda:0, kernel registered)
+2026-10-21 23:08:46 s223 pilot direct_4060 rc 9 (9 = stopped at 4600 as registered)
+2026-10-21 23:08:47 s223 pilot summary (4060 cells) rc 0 -> scratch/gate_s223/pilot.json
+2026-10-21 23:14:15 s224 K11 resume test start (4060)
+2026-10-21 23:28:47 s224 K11 done: K11 pass False
+2026-10-21 23:33:17 s223 pilot ps rc 9 (9 = stopped at 4600 as registered)
+2026-10-21 23:33:17 s223 pilot summary rc 0 -> scratch/gate_s223/pilot.json
+2026-10-21 23:34:48 s224 K9 start (3070)
+2026-10-22 00:31:45 s224 K9 rc 1: 
+2026-10-22 00:38:07 s224 K9a start (3070, n 1..4)
+2026-10-22 00:40:46 s224 K9a rc 127: 
+2026-10-22 00:40:46 s224 K9b start (3070, n 7..8, max_split_size_mb:128)
+2026-10-22 00:40:49 s224 K9 take 2 STOPPED on the 3070 (Theory 10-22: keep the 3070 held until the hardware is checked); redone on the 4060 as old-vs-new code
+2026-10-22 00:41:04 s224 K9b also stopped (runner + python by pid)
+2026-10-22 00:42:16 s224 K9a take 3 start (4060, old vs new)
+2026-10-22 01:39:39 s224 K9a take 3 rc 0: K9 a pass True
+2026-10-22 01:39:39 s224 K9b take 3 start (4060, old vs new)
+2026-10-22 09:05:49 s224 K9b take 3 rc 0: K9 b pass False
+2026-10-22 10:15:29 s223 P2 direct start (cuda:0, kernel registered)
+2026-10-22 11:02:08 s223 P2 direct rc 9 (9 = stopped at 7600 as registered)
+2026-10-22 11:02:08 s223 P2 m1 start (cuda:0, kernel registered)
+2026-10-22 17:43:43 s223 P2 m1 rc 9 (9 = stopped at 7600 as registered)
+2026-10-22 17:43:43 s223 P2 ps start (cuda:0, kernel registered)
+2026-10-23 00:16:38 s223 P2 ps rc 9 (9 = stopped at 7600 as registered)
+2026-10-23 00:16:38 s223 P2 summary rc 0 -> scratch/gate_s223/pilot2.json
