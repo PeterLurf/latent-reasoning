@@ -316,6 +316,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | CLOSED | **CLOSED 10-23 (226-2): P0d full-FT learns d=1 (0.998) but not d<=2 (0.53) -> no one-pass 2-step composition under LoRA or full FT; G2 conflated recipe-learnability with one-pass composition (hindsight; next: TEXT-CoT learnability pilot as the serial control, new registration); $0.** PANEL 10-23 (226-1, Audit-reproduced; P0d-on-TOPO approved): P0-OW and P0c-CHAIN fail (d=1 plateaus 0.66 in forward layout); TOPO learns d=1 (0.96); no cell composes d=2 (pooled <= 0.57); -> P0d full-FT (on TOPO, amendment for Audit), else close.** APPROVED by Audit 10-23 ($0): build generator flags (default off, flags-off bitwise) -> G-D -> resumable runs on the 4060** |
 | 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **PASSED 10-23 (227-2, Audit-reproduced; first language task with an established C1 band): free-decode acc d2 1.000, d3 1.000, d4 1.000, d5 0.97 (DIRECT one-pass d2 ~0.2) -> one-pass gap from d=2 crossed serially; next: latent C1 registration (exposure-matched G-W0); $0.** APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
 | 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | registered | **PILOT FAIL 10-23 (228-2): P-LAT2 d=2 0.087 = DIRECT 0.093 (chance), pass-1 aux 0.51 -> LAT-NOT-LEARNABLE-D2; pre-named cumulative-target fallback proposed (~$0.7), else close; $0.58.** APPROVED by Audit 10-23 (cap $20): build inject_ow (deviations (a)-(g) with §184 line refs) + score_lat (hop-per-pass / relay stubs) -> G-D -> local pilots -> d<=4 cloud pilot -> Stage 1** |
+| 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | registered | **build --aux_target cumulative -> G-D -> pilot** |
 
 ## Live sections
 
@@ -19131,6 +19132,37 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **OC.** P(C1-LANG | no effect) ≈ 0, and ≈ 0 under the mechanism nulls (pause, relay, recompute, floor collapse, leak). A hop-per-pass serial model passes R2 with P ≈ 0.9. Prior ≈ 0.08.
 
 **Cost.** Stage 1 ≤ $12 incl. the cloud pilot (LAT share $9, guard $11; DIRECT share $3, guard $3.60); family cap $20. Realised at registration $0.
+
+## 229. LAT-OW-CUM: §228's pre-named single fallback, a cumulative per-pass target (Audit-approved, ≈ $0.7, under the $30 rule; pre-registered 2026-10-23 16:15 EDT, before any §229 code or output)
+
+**What changes (one change).** The INJECT per-pass aux target at pass j becomes the **re-rooted program R_j** (the problem after j steps, the generator's "R" field; §184's whole-reduced-expression analogue) instead of the single step value (§228 deviation (a)).
+- Everything else is s228_plat2_s1's frozen args. The args diff must be {aux_target}, plus run identity / hashes.
+- **Cell:** s229_plat2c_s1, LAT, d ~ U{1, 2}, 8k steps, one cloud **RTX 3090** (non-580), the same queue form as §228's pilot.
+- **DIRECT reference reused:** s228_pdir2c_s1 (same 3090 class, same d-sequence seed; same-host is not required by the one-class rule). This is said here.
+
+**Derivation.**
+- [MEASURED, 228-2] With the single-value target, pass-1 aux value acc is 0.51 while d = 1 answers are 1.000, so the answer is produced without the state.
+- [DERIVED] The single-value target supervises only the number. The pass must first resolve WHICH quantity is computed (name lookup among distractors, deviation (b)), and the value target gives that binding only an indirect gradient through a 1-of-11 output.
+  - R_j's tokens include the names, units and remaining structure, so the target supervises the binding directly: each name / value pair is a target token.
+  - In §184 the whole reduced expression played this role, with no name lookup.
+- [ASSUMED] A denser binding signal lets the state carry step 1, which is the precondition for composing at d = 2.
+- **Goodhart:** R_j is a decodability target read from S by the aux head only. The answer path is unchanged, and LP3 is read on the answer, never on the aux.
+- **Predictions:** pass-1 aux value acc ≥ 0.80 with P ≈ 0.45; LP3 pass (d = 2 ≥ 0.70 and ≥ DIRECT + 0.30) with P ≈ 0.25.
+
+**Gates (as §228 LP0–LP3, with LP0 re-calibrated before any §229 output, condition 1).**
+- P-LAT2's 100-step mean gn_preclip after the first window: max 19.05, p95 15.78, median 10.20, min 7.12 (79 windows).
+- **LP0 (INJECT scale):** fail if any window after the first two has a mean > **38.1** (= 2 × P-LAT2's max), or any value is non-finite.
+- LP1 d = 1 ≥ 0.90; LP2 pass-1 aux value acc ≥ 0.80 (the aux "value" accuracy is read on R_j's value tokens); **LP3 (binding)** TEST2 d = 2 ≥ 0.70 and ≥ s228_pdir2c_s1's d = 2 + 0.30.
+
+**Pre-committed outcomes.**
+- LP3 passes → §228's d ≤ 4 cloud pilot runs with this target (a §228 amendment Note), then Stage 1 as §228.
+- **LP3 fails → §228's language line CLOSES.** "Latent C1 on language at GPT-2 small" goes to the user with the base-model question. No further fallback.
+
+**OC.** At 1,000 TEST2 items per d, SE ≈ 0.015. Under no effect (LAT ≈ DIRECT ≈ chance) P(LP3) ≈ 0; under a working serial state (d = 2 ≥ 0.9, §184-like) P ≈ 0.95. Prior 0.25.
+
+**Build.** inject_ow --aux_target {value, cumulative} (default value ⇒ bitwise §228); per-term gradflow nonzero; plain-path smoke; mem_check at the pilot shape (R_j targets are longer); Audit G-D. score_lat.score_pilot reads it unchanged except the LP0 constant (a scorer change with a fixture, before output).
+
+**Novelty.** None claimed before Literature's check of cumulative / partial-program per-step targets (cf. §175, §184, SIM-CoT 2509.20317, CODI's teacher hidden states).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
