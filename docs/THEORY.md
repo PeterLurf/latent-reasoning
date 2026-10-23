@@ -21214,6 +21214,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - score_s224_s2 now treats s3 as RD-only (S3_RD_ONLY; fixtures 18/18), changed before any s3 output.
 - **Headline wording (Audit):** "a trained far pass (RD) fixes the C6 hold fully; the anchor penalty adds nothing; both cost depth (DEPTH-WARN)". The depth cost is the open C6 question for the next design.
 
+**Note 228-1 (2026-10-23 11:49 EDT; §228 pilot placement, Audit-approved, before any LAT pilot output).**
+- **Why:** F2 on the 4060 (scratch/gate_s228/f2.json) shows LAT is memory-bound (micro 4, 3.86 s/step at d ≤ 2), so a local P-LAT2 would take ≈ 8.6 h on the crash-prone box (the user's local-short / cloud-long rule).
+- **P-LAT2 moves to one cloud RTX 3090** (same args, run dir s228_plat2_s1); P-DIR2 stays local.
+- The pilot line is ≈ $2, within the $20 family.
+- The 3090's F2 rate gates Stage-1 admission. If LAT's $9 share does not fit, a cost Note goes to Audit before any Stage-1 deploy.
+- Launch only after §224 RD-s3's filler has finished admitting (one filler at a time).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
