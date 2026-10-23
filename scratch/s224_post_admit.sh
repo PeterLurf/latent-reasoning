@@ -7,13 +7,14 @@
 #   HOLD = ALERT line (logs/s224_alerts.log + gen_deploy.log), the host's gen8 drain watcher killed, the instance destroyed (vdestroy), the filler stopped
 #   (scratch/fill_s224.stop). Read-only ssh otherwise.   bash scratch/s224_post_admit.sh <n> <run> <host> <port> <instance> <far 0|1> <seed>
 cd "$(dirname "$0")/.." || exit 2
+STOPF=${STOPF:-scratch/fill_s224.stop}; ALERTS=${ALERTS:-logs/s224_alerts.log}; PALOG=${PALOG:-logs/s224_post_admit.log}   # Stage 2 passes its own
 n=$1; run=$2; h=$3; p=$4; iid=$5; far=$6; seed=$7; W=/workspace/Latent/boxes/runs_fsq; T=scratch/_tmp/s224_eq/$run; mkdir -p "$T"
-log() { echo "$(date +%T) s224_post b$n $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') b$n $run $*" >> logs/s224_post_admit.log; }
+log() { echo "$(date +%T) s224_post b$n $*" >> logs/gen_deploy.log; echo "$(date '+%F %T') b$n $run $*" >> "$PALOG"; }
 sq() { timeout 40 ssh -o ConnectTimeout=15 -i "$HOME/.ssh/runpod_ed25519" -p "$p" "root@$h" "$1" 2>/dev/null; }
 hold() {
-  echo "$(date '+%F %T') ALERT b$n $run: $* - HOLD (instance $iid destroyed, filler stopped); tell Audit / Theory" >> logs/s224_alerts.log; log "ALERT $* - HOLD"
+  echo "$(date '+%F %T') ALERT b$n $run: $* - HOLD (instance $iid destroyed, filler stopped); tell Audit / Theory" >> "$ALERTS"; log "ALERT $* - HOLD"
   for dp in $(ps -ef | grep "auto_drain_gen8_s224.sh $h $p gen_b$n $iid" | grep -v grep | awk '{print $2}'); do kill "$dp"; done
-  touch scratch/fill_s224.stop; log "$(bash scratch/vdestroy.sh "$iid" | tail -1)"; exit 3
+  touch "$STOPF"; log "$(bash scratch/vdestroy.sh "$iid" | tail -1)"; exit 3
 }
 if [ "$far" = 1 ]; then
   ok=""; for i in $(seq 1 48); do

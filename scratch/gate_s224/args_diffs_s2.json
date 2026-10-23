@@ -1,0 +1,77 @@
+{
+ "trainer_defaults_n": 51,
+ "FH_vs_RD_s1": {
+  "diff": {
+   "fh": [
+    false,
+    true
+   ],
+   "fh_dose": [
+    "250,500",
+    "7500,8000"
+   ]
+  },
+  "pass": true
+ },
+ "RD_vs_D3T_s1": {
+  "diff_keys": [
+   "draws_log_steps",
+   "far",
+   "far_n",
+   "far_t",
+   "far_w",
+   "fh",
+   "fh_dose",
+   "fh_lam_cap",
+   "fh_target",
+   "init_from",
+   "mem_check_self",
+   "p_self",
+   "pause",
+   "pause_max",
+   "pause_p",
+   "self_kextra",
+   "self_kmax",
+   "self_micro",
+   "self_pool"
+  ],
+  "far": [
+   null,
+   true
+  ],
+  "extra": {},
+  "pass": true
+ },
+ "FH_vs_RD_s2": {
+  "diff": {
+   "fh": [
+    false,
+    true
+   ],
+   "fh_dose": [
+    "250,500",
+    "7500,8000"
+   ]
+  },
+  "pass": true
+ },
+ "RD_vs_D3T_s2": {
+  "diff_keys": [
+   "far",
+   "far_n",
+   "far_t",
+   "far_w",
+   "fh",
+   "fh_dose",
+   "fh_lam_cap",
+   "fh_target"
+  ],
+  "far": [
+   null,
+   true
+  ],
+  "extra": {},
+  "pass": true
+ },
+ "pass": true
+}
