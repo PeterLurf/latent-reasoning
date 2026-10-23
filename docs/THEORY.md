@@ -313,7 +313,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | CLOSED | **CLOSED 10-23 (223-11, Audit-reproduced): P3a DIRECT failed d>=2 (stage 1->2 on the cap; pooled d<=2 acc 0.57 < 0.80) -> task not learnable one-pass under this recipe (likely order / value size, Lin 2503.07604); staged M2 learnable vs M1; $0; next: new language task under Lin conditions.** PAUSED 10-23 (223-9): P2 also fails LP0-LP3 (cap advances, structurally unreachable CurGate; d>=2 unlearned by all arms incl. DIRECT); staged M2 learnable (PS 0.44 vs M1 0.48); one last $0 P3 proposed, else close.** PILOT FAILED 10-22 (223-7): LP1 (DIRECT advanced on the cap; lr 3e-3 / bf16 blow-ups on both cards); PS never learned (M2 bottleneck); M1 tracks DIRECT (no recode starvation); no cloud cell, redesign Note first; $0** |
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **STAGE 1 TRIGGER 10-22 (224-4): H(128) FH-FT 0.818 / 0.990 vs FT-CTRL 0.116 / 0.096, RD-FT 0.664 / 0.740; no loss; $5.73 -> Stage 2 (48k) next.** APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
 | 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1, Audit-reproduced): on the synthetic nested-arithmetic task (s216 R2 vs s219 T2), latent equals matched text-CoT self-training in accuracy within 0.02 while using ~20-50x fewer sequential steps and ~0.65x FLOPs per correct; one seed each; not language (a synthetic-line C3, not the north star’s language C3); $0** |
-| 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | registered | **APPROVED by Audit 10-23 ($0): build generator flags (default off, flags-off bitwise) -> G-D -> resumable runs on the 4060** |
+| 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | registered | **PANEL 10-23 (226-1): P0-OW and P0c-CHAIN fail (d=1 plateaus 0.66 in forward layout); TOPO learns d=1 (0.96); no cell composes d=2 (pooled <= 0.57); -> P0d full-FT (on TOPO, amendment for Audit), else close.** APPROVED by Audit 10-23 ($0): build generator flags (default off, flags-off bitwise) -> G-D -> resumable runs on the 4060** |
 
 ## Live sections
 
@@ -21046,6 +21046,29 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (iii) A from-step-0 answer bottleneck blocks learning, but a staged mass-space ramp makes it learnable relative to M1 (PS 0.44 vs M1 0.48, P2).
   - (iv) The registered CurGate (need 2 × 1k, cap 2,500) could not advance by threshold from scratch (Theory's error, 223-9).
 - **Next (Audit 10-23):** a NEW language task registration. It keeps NESTED-WORDS's paraphrase frames, names and distractors, but fixes premise order (dependency order) and the value range (mod 11) at first; it states its C1 / C4 claim up front; and it re-introduces order shuffling later as its own registered axis. Derivation, OC, Literature novelty and a $0 DIRECT learnability pilot come before any spend.
+
+**Note 226-1 (2026-10-23 05:14 EDT; §226 stage-0 panel result: scratch/gate_s226/pilot_ow.json (ab0bd708); three cells on the RTX 4060 (registered kernel), P3a's recipe, each stopped at 12k; $0.)**
+- **P0-OW (binding) FAILS G1, G2 and G3:**
+  - stage 0 → 1 came on the 6k cap (bins 1.25 / 0.89 / 0.79 / 0.75);
+  - **d = 1 pooled num_acc plateaued at 0.66** (bins 0.575 / 0.655 / 0.663 / 0.666);
+  - d ≤ 2 pooled 0.37–0.39 (G2 needs 0.80);
+  - stage 1 → 2 also on the cap;
+  - LP0 passes (max later mean gn 1.13).
+  - THRESHOLD-MISSET does not apply: (b) needs d = 1 ≥ 0.85.
+- **P0c-CHAIN FAILS the same way:** d = 1 plateaus at 0.665; d ≤ 2 pooled 0.37 → 0.57.
+- **P0b-TOPO (descriptive):**
+  - d = 1 reaches **0.959** (last two bins 0.469 / 0.123, so the cap advance missed the threshold by one bin);
+  - d ≤ 2 pooled 0.52–0.57.
+- **The four corners at d ≤ 2 (last bins, pooled):** P3a (v1.2 layout, 0–99) 0.574; TOPO (v1.2 layout, mod 11) 0.53; CHAIN (forward, strict chain, mod 11) 0.53; OW (forward, DAG, mod 11) 0.37.
+- **Readings (descriptive):**
+  - (i) **The value change does not help composition:** TOPO ≈ P3a at d ≤ 2 (d = 2 alone ≈ 0.1–0.2 in both).
+  - (ii) **The forward layout HURTS even d = 1** (0.66 plateau in OW and CHAIN vs 0.96 in TOPO). The cause is not identified (a frame / layout interaction or a forward-mode generator artefact; ow_gen_check found no solver mismatch or shortcut). It is reported, not chased (no-loop rule).
+  - (iii) **No LoRA cell in either section composes two steps one-pass,** under any of the four task variants.
+- **Pre-stated mapping (226 §):** P0-OW fails and P0c fails → **P0d-FULLFT**, the single remaining step.
+  - P0d = full fine-tuning (lr 1e-4, fp32 master weights; §170's one-pass recipe) with the identical gates. It runs on **TOPO's generator** if forward-mode d = 1 stays at the 0.66 plateau in a $0 sanity check of P0d's first 3k steps. Otherwise on OW as registered.
+  - **Amendment (disclosed, decided after this panel):** the generator choice for P0d is the one deviation. Running full FT on a layout where even d = 1 plateaus at 0.66 under LoRA would not test the recipe question. TOPO is the variant whose d = 1 is learned, so P0d on TOPO isolates "recipe enables composition". Audit to rule.
+  - **P0d failing G2 → §226 closes descriptively:** no one-pass d = 2 on English-templated word programs at GPT-2 small under either recipe.
+- **Build for P0d:** a full-FT path in codi_ps (default off): G-D, the flags-off equivalence gate, gradflow and a plain-path smoke. $0.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
