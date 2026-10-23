@@ -1,0 +1,17 @@
+2026-10-23 11:54:25 start: QS 341:s228_plat2_s1:1.50:1.80:8000:1.20; family $20; SETUP_H 0.4; EVAL_H 1.0; inject_ow sha 249c737651fc; inject_ow_eval sha 36bdd8f1cce7
+2026-10-23 11:54:27 b341: deploying s228_plat2_s1 on offer 57391773 (85.90.17.171, RTX_3090, $0.2188/h)
+2026-10-23 12:01:51 b341: did not start (BAD HOST 1 / 4; billed ~$0.0292)
+2026-10-23 12:01:54 b341: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 12:11:56 b341: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 12:21:59 b341: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 12:32:01 b341: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 12:42:03 b341: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 12:52:06 b341: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 13:02:08 b341: deploying s228_plat2_s1 on offer 54895038 (85.30.169.224, RTX_3090, $0.2281/h)
+2026-10-23 13:07:10 b341: 17:06:17 HOSTPROBE 0.5042 s/step (limit 0.854; b225 reference 0.657) on 85.30.169.224:40568
+2026-10-23 13:09:18 b341: K7 mem_check {"checks":[{"kind":"train","micro":1,"eval_bs":250,"peak_gib":18.75764237344265},{"kind":"eval","micro":1,"eval_bs":250,"peak_gib":3.17213773727417}],"micro":1,"eval_bs":250,"peak_gib_train":18.75764237344265,"peak_gib_eval":3.17213773727417,"train":"thelongestbs/microof256d=2items(SEED_MEMCHECK)atK=8,+AdamWstates","eval":"thelongestof256d=12itemsxeval_bsatK'0..14(fp32,nooptimiserstate)"}; G-TIME 0.7293010552724203 s/step (micro 1) -> cell projection $0.69 (8000 steps, 1 x 1.0 h eval / tail; cap $1.50); family so far $0.0292 (admitted + BAD) of $20
+2026-10-23 13:09:18 b341: ADMIT s228_plat2_s1 on 85.30.169.224:40568 (instance 57399891): $0.69
+2026-10-23 13:09:18 b341: ckpt mirror (every 0.25 h) + cell guard ($1.80 - rejected-host $0.0292 = $1.7708, GUARD_STOP=1, marks 500,1000,2000,4000,7900) started
+2026-10-23 13:09:19 guard s228fam ($19.9708 = $20 - outside $0.0292, GUARD_STOP=1; 341:s228_plat2_s1:1.20:8000) started
+2026-10-23 13:09:19 b341: post-admit checks started (args + shas vs scratch/s228_args_frozen_s228_plat2_s1.json)
+2026-10-23 13:16:19 §228 filler done: 341:s228_plat2_s1 85.30.169.224:40568 57399891 $0.2281/h sps 0.7293010552724203 0.69;
