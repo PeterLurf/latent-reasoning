@@ -1,0 +1,84 @@
+{
+ "n_ref_after": 5,
+ "n_resumed": 4,
+ "records_bitwise": false,
+ "lambda_ref": [
+  {
+   "step": 1150,
+   "fh_lambda_set": 10.0,
+   "fh_ratio_median": 0.00019021962294590657,
+   "fh_n_ratios": 101,
+   "fh_capped": true
+  }
+ ],
+ "lambda_resumed": [],
+ "c_range_after_resume": [
+  19.14285659790039,
+  19.571428298950195
+ ],
+ "first_diff": [
+  {
+   "step": 1150,
+   "fh_lambda_set": 10.0,
+   "fh_ratio_median": 0.00019021962294590657,
+   "fh_n_ratios": 101,
+   "fh_capped": true
+  },
+  {
+   "step": 1150,
+   "loss": 2.7534660053253175,
+   "answer_ce": 2.2323400139808656,
+   "rec_ce": 0.5211259788274765,
+   "n_max_train": 3,
+   "cur_stage": 0,
+   "lr": 9.985843759866739e-05,
+   "c": 19.571428298950195,
+   "gn_preclip": 71.84575653076172,
+   "slva_offnewest_chg": 0.0,
+   "slva_offnewest_copy": 0.0,
+   "slva_gn": 2.6270322805999058e-08,
+   "far_ce": 2.33689341545105,
+   "fh_r_far": 0.7436315222084522,
+   "fh_r_far_g": 0.7090604402298151,
+   "fh_gate_share": 0.12875,
+   "far_t_mean": 30.26,
+   "fh_lfp1": 0.10402982684783638,
+   "fh_lambda": 10.0,
+   "fh_gratio1": 0.00043153379044445306,
+   "fh_gnorm_fp1": 0.03100387208683076,
+   "fh_gnorm_rest": 71.84575755909796,
+   "far_nonfinite": 0
+  }
+ ],
+ "pass": true,
+ "harness_v1_note": "v1 split at the 2nd step-1150 loss record; the resumed run writes its lambda-set line (step 1150) BEFORE that record and the KILL run (stopped at 1250) also passed 1150, so v1 cut the resumed lambda line. v2 splits after the KILL run's last record (step 1250).",
+ "v2": {
+  "n_ref_after": 5,
+  "n_resumed": 5,
+  "records_bitwise": true,
+  "lambda_ref": [
+   {
+    "step": 1150,
+    "fh_lambda_set": 10.0,
+    "fh_ratio_median": 0.00019021962294590657,
+    "fh_n_ratios": 101,
+    "fh_capped": true
+   }
+  ],
+  "lambda_resumed": [
+   {
+    "step": 1150,
+    "fh_lambda_set": 10.0,
+    "fh_ratio_median": 0.00019021962294590657,
+    "fh_n_ratios": 101,
+    "fh_capped": true
+   }
+  ],
+  "c_range_after_resume": [
+   19.14285659790039,
+   19.571428298950195
+  ],
+  "first_diff": null,
+  "pass": true
+ }
+}
