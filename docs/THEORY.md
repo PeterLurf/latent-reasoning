@@ -314,7 +314,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **STAGE 1 TRIGGER 10-22 (224-4): H(128) FH-FT 0.818 / 0.990 vs FT-CTRL 0.116 / 0.096, RD-FT 0.664 / 0.740; no loss; $5.73 -> Stage 2 (48k) next.** APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
 | 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1, Audit-reproduced): on the synthetic nested-arithmetic task (s216 R2 vs s219 T2), latent equals matched text-CoT self-training in accuracy within 0.02 while using ~20-50x fewer sequential steps and ~0.65x FLOPs per correct; one seed each; not language (a synthetic-line C3, not the north star’s language C3); $0** |
 | 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | CLOSED | **CLOSED 10-23 (226-2): P0d full-FT learns d=1 (0.998) but not d<=2 (0.53) -> no one-pass 2-step composition under LoRA or full FT; G2 conflated recipe-learnability with one-pass composition (hindsight; next: TEXT-CoT learnability pilot as the serial control, new registration); $0.** PANEL 10-23 (226-1, Audit-reproduced; P0d-on-TOPO approved): P0-OW and P0c-CHAIN fail (d=1 plateaus 0.66 in forward layout); TOPO learns d=1 (0.96); no cell composes d=2 (pooled <= 0.57); -> P0d full-FT (on TOPO, amendment for Audit), else close.** APPROVED by Audit 10-23 ($0): build generator flags (default off, flags-off bitwise) -> G-D -> resumable runs on the 4060** |
-| 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
+| 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **PASSED 10-23 (227-2): free-decode acc d2 1.000, d3 1.000, d4 1.000, d5 0.97 (DIRECT one-pass d2 ~0.2) -> one-pass gap from d=2 crossed serially; next: latent C1 registration (exposure-matched G-W0); $0.** APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
 
 ## Live sections
 
@@ -21139,6 +21139,28 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Fix:** the prompt pass uses m.transformer (no logits; the first generated token is taken as before), on the same 200-item batches.
   - **Condition before resume:** on a batch that fits the old path (d ≤ 3, 50 items, the 14k checkpoint), old and new decode outputs (token ids and parsed answers) must be bitwise identical. Plus Audit's G-D.
 - **Resume:** --resume from the 14k checkpoint to 18,000. Post-14k stages / decode records from the crashed run are kept as *.precrash and never read. The summary uses only the resumed run's records after 14k.
+
+**Note 227-2 (2026-10-23 09:49 EDT; §227 TEXT-SERIAL result: scratch/gate_s227/pilot_text.json (f42a12ba); RTX 4060, full FT, cg_signal step_value_ce; resumed from 14k after the approved decode fix (227-1); stopped at 18k; $0.)**
+- **TEXT-SERIAL PASSES.** Free greedy decode at stop (200 held-out items per d, frames 0–5):
+
+| d | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---|---|---|---|---|---|---|---|
+| final-answer acc | 1.000 | **1.000** | **1.000** | 1.000 | 0.970 | 0.110 | 0.115 |
+
+  - terminated = parsed = 1.0 at every d. d 6 was only introduced at the 18k advance, and d 7 never trained.
+  - LP0 passes (max later mean gn 5.79; no non-finite rows).
+- **Curriculum:** stage 1 → 2 on the 6k cap; then 2 → 3 (12k), 3 → 4 (14k), 4 → 5 (16k) and 5 → 6 (18k) all by threshold on step_value_ce.
+  - d = 2 decode rose 0.10 (6k) → 0.29 (7k) → 0.47 (8k) → 1.0 by ≈ 12k. **Serial composition of d = 2 needed ≈ 6k steps past its introduction, even for text.**
+- **Band (descriptive, with P0d's one-pass reference on the same generator / recipe / card):** one-pass DIRECT learns d = 1 (0.998) but not d = 2 (pooled d ≤ 2 0.53, d = 2 ≈ 0.1–0.2). Serial text-CoT reaches 1.0 at d 2–4 and 0.97 at d 5. **The TOPO word-program task has a one-pass gap from d = 2 that serial computation crosses at GPT-2 small,** worded as a replication (Feng 2305.15408; Merrill & Sabharwal 2310.07923; Li 2402.12875; Lin 2503.07604; Deng 2405.14838).
+- **Caveat for the next design:** DIRECT's d = 2 "fail" was read at 12k steps under its own curriculum (P0d), while TEXT needed ≈ 6k steps past d = 2's introduction. A latent registration must give DIRECT the same post-introduction exposure per d before G-W0 calls a depth one-pass-infeasible (exposure-matched G-W0).
+- **Next (per §227's outcome map):** a latent C1 registration on this task and recipe, drafted with REVIEW_OW's latent-design fixes:
+  - R3 scored on cf(a) ∪ cf_b;
+  - test frames 0–5 primary;
+  - C1 only, not C4;
+  - an exposure check;
+  - TEXT as the C3 comparator at matched compute (the §225 method);
+  - an exposure-matched G-W0.
+  - It needs a derivation, red team, OC, Literature novelty and a $0 learnability pilot before cloud.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
