@@ -37,6 +37,9 @@ boxes/nested_words.py (NESTED-WORDS v1.2). Cells by flags (single-change diffs, 
     stream seed (--stream_seed default: 22330 nested, ow_words.SEED_TRAIN 22930 ow). OW items carry wrap_final, so each step also logs the counts
     num_ok_wrap / n_wrap / num_ok_nowrap / n_nowrap (the number token correct, split by whether the final step wrapped mod 11); a nested run logs
     nothing new. args.json gains ow_words_sha256 for --task ow only.
+  * (§226 P0d, Note 226-1 + Audit) --full_ft (default off): no LoRA; every GPT-2 parameter trainable in fp32 (master weights) under the same bf16
+    autocast, AdamW / wd / clip / warm-up / cosine and no-decay rule; the base is codi_port.build's without its bf16 cast and adapters (build_full:
+    the same pretrained load and seed + 2090 embedding resize; prj after the same seed + 2091 reseed). The lr is the cell's --lr (P0d: 1e-4).
     python -m boxes.codi_ps --out boxes/runs_fsq/s223_ps_s1 --recode --lam 1 --bottleneck [--device cuda:0 ...]"""
 import argparse
 import copy
@@ -296,8 +299,29 @@ def term_grad_norms(SH, ex, a):
     return out
 
 
+def build_full(dev, seed=1):
+    """§226 P0d (--full_ft): codi_port.build's base WITHOUT the bf16 cast and WITHOUT LoRA (fp32 master weights, every GPT-2 parameter trainable):
+    the same pretrained load, the same seed + 2090 draws for the 3 new token embeddings (transformers' mean resizing), the tied lm_head, and prj after
+    torch.manual_seed(seed + 2091) as in codi_port.build (identical init; LoRA's init there uses its own generator, not the global rng)."""
+    from transformers import GPT2Config, GPT2LMHeadModel
+    cfg = GPT2Config(); m = GPT2LMHeadModel(cfg)
+    sd = torch.load(os.path.join(CP.ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin"), map_location="cpu", weights_only=True)
+    sd = {k: v for k, v in sd.items() if not k.endswith(("attn.bias", "masked_bias"))}
+    miss, unexp = m.transformer.load_state_dict(sd, strict=False); assert not unexp and all(k.endswith(("attn.bias", "masked_bias")) for k in miss), (miss, unexp)
+    E = m.transformer.wte.weight.data; mu = E.mean(0); Ec = E - mu; cov = Ec.T @ Ec / E.shape[0]
+    gen = torch.Generator().manual_seed(seed + 2090); L_ = torch.linalg.cholesky(1e-9 * cov.double() + 1e-30 * torch.eye(768, dtype=torch.double))
+    new = (mu.double() + torch.randn(3, 768, generator=gen, dtype=torch.double) @ L_.T).float()
+    W = torch.cat([E, new]); m.transformer.wte = nn.Embedding(CP.V0 + 3, 768); m.transformer.wte.weight.data.copy_(W); m.config.vocab_size = CP.V0 + 3
+    m.lm_head = nn.Linear(768, CP.V0 + 3, bias=False); m.tie_weights(); assert m.lm_head.weight.data_ptr() == m.transformer.wte.weight.data_ptr()
+    for p_ in m.parameters():
+        p_.requires_grad_(True)
+    torch.manual_seed(seed + 2091)
+    prj = nn.Sequential(nn.Dropout(0.0), nn.Linear(768, 768), nn.GELU(), nn.Linear(768, 768)); prj.add_module("ln", nn.LayerNorm(768))
+    return m.to(dev), prj.to(dev)
+
+
 def build_all(a, dev):
-    m, prj = CP.build(dev, a.seed); D = DHead(m).to(dev) if (a.recode and not a.direct) else None
+    m, prj = build_full(dev, a.seed) if a.full_ft else CP.build(dev, a.seed); D = DHead(m).to(dev) if (a.recode and not a.direct) else None
     TP = CP.trainable(m, prj) + ([("D." + n, p_) for n, p_ in D.named_parameters()] if D is not None else []); return m, prj, D, TP
 
 
@@ -330,6 +354,7 @@ def main(argv=None):
     ap.add_argument("--task", default="nested", choices=["nested", "ow"], help="§226: ow = boxes/ow_words.py items")
     ap.add_argument("--order_mode", default="forward", choices=["forward", "topo"], help="§226 (ow): premise layout")
     ap.add_argument("--dag", default="on", choices=["on", "off"], help="§226 (ow): off = a strict previous-state chain (no add_s, no forced mul_s)")
+    ap.add_argument("--full_ft", action="store_true", help="§226 P0d: no LoRA, every GPT-2 parameter trainable (fp32 master weights)")
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", action="store_true")
     ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default=""); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
