@@ -313,6 +313,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 223 | PORT-STATE (Audit item 2, user go-ahead 10-21; auto-approved under the $30 rule, cap $20): NESTED-WORDS word programs; CODI GPT-2 latents + question-blind re-rooted-state decoder (M1) + answer bottleneck (M2); cells DIRECT -> PS / M1-only / M2-only; PORT-STATE = DECODE-VAL & COPY-CONTROL & PORT-FOLLOW (mid-chain donor-final) & BUDGET-FRONT & ANSWER-ONSET; prior ~0.08-0.10; PS2_v1.md at 54f63381; scorer score_s223 (to write) | CLOSED | **CLOSED 10-23 (223-11, Audit-reproduced): P3a DIRECT failed d>=2 (stage 1->2 on the cap; pooled d<=2 acc 0.57 < 0.80) -> task not learnable one-pass under this recipe (likely order / value size, Lin 2503.07604); staged M2 learnable vs M1; $0; next: new language task under Lin conditions.** PAUSED 10-23 (223-9): P2 also fails LP0-LP3 (cap advances, structurally unreachable CurGate; d>=2 unlearned by all arms incl. DIRECT); staged M2 learnable (PS 0.44 vs M1 0.48); one last $0 P3 proposed, else close.** PILOT FAILED 10-22 (223-7): LP1 (DIRECT advanced on the cap; lr 3e-3 / bf16 blow-ups on both cards); PS never learned (M2 bottleneck); M1 tracks DIRECT (no recode starvation); no cloud cell, redesign Note first; $0** |
 | 224 | FIXED-HOLD (from 216-15; for Audit under the $30 rule, family cap $20): anchored far-pass fixed-point penalty (FH) vs random-depth far pass (RD); Stage 1 12k FT pilot vs FT-CTRL -> Stage 2 48k scratch on TRIGGER; R-HOLD H(K′ 24-128) >= 0.95, NOLOSS, DEPTH, PENALTY NEEDED vs RD; FH_v1.md at 232e84ab; scorer score_s224 (to write) | registered | **STAGE 1 TRIGGER 10-22 (224-4): H(128) FH-FT 0.818 / 0.990 vs FT-CTRL 0.116 / 0.096, RD-FT 0.664 / 0.740; no loss; $5.73 -> Stage 2 (48k) next.** APPROVED by Audit 10-21 ~20:4x (family cap $23.50 per 224-3: Stage 1 $7.50 all-in, Stage 2 $16); build: K1-K11 + Audit G-D (K1 zero grad on computing-pass activations from L_FP), plain-path bitwise, single-change args diffs, one 3090 class, guards to final step, off-host ckpts + resume (Stage 2)** |
 | 225 | MATCHED-BUDGET (Audit north-star lead, C3; $0, eval-only): text-CoT T2 vs latent R2-s1 at matched sequential steps (S) and block-position compute (F); B*(n), C3-MATCHED / TEXT-AHEAD / MIXED per axis; MB_v1.md at e9096291; scorer score_mb (to write) | registered | **SCORED 10-22 (225-1, Audit-reproduced): on the synthetic nested-arithmetic task (s216 R2 vs s219 T2), latent equals matched text-CoT self-training in accuracy within 0.02 while using ~20-50x fewer sequential steps and ~0.65x FLOPs per correct; one seed each; not language (a synthetic-line C3, not the north star’s language C3); $0** |
+| 226 | ORDERED-WORDS stage 0 (successor to §223; $0): one-pass learnability attribution panel (P0-OW forward+mod11 binding; P0b-TOPO; P0c-CHAIN; P3a corner; P0d-FULLFT conditional); G1-G3 + symmetric THRESHOLD-MISSET; latent/text design after G-W0 | registered | **panel pre-stated; build generator flags -> G-D -> run** |
 
 ## Live sections
 
@@ -19035,6 +19036,40 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **OC.** Paired SE ≤ 0.022 at 1,000 items. Predictions: C3-MATCHED-S P ≈ 0.95; C3-MATCHED-F P ≈ 0.5.
 
 **Cost.** $0. Scorer theory/score_mb.py (to write, fixtures first; scoring blind until this registration is committed).
+
+## 226. ORDERED-WORDS (OW) stage 0: a one-pass learnability ATTRIBUTION PANEL on English-templated modular word programs (successor to §223 under Audit's 10-23 conditions; **$0, local; pre-stated 2026-10-23 01:40 EDT, before any OW output**; the latent / text design (draft OW_draft.md ef5740c7; REVIEW_OW REVISE) is registered later, only after this panel and a G-W0 Note)
+
+**Why.** §223 closed because DIRECT could not learn d ≥ 2 (223-11). The $0 check (ow_gen_check.json) showed NESTED-WORDS v1.2 was already in dependency order (0 / 20,000 violations).
+- It differed from Lin 2503.07604's learnable regime (Literature bfd11fca) in: (1) givens far from their use (gap 4.43 sentences) and varied layouts; (2) values 0–99 with a leaky range rejection; (3) NL frames; (4) DAG back-reads vs a strict chain; (5) pretrained absolute-PE + LoRA.
+- The panel attributes one-pass learnability at d ≤ 2 to these levers before any latent design.
+
+**Cells** (RTX 4060, registered kernel; each with the §223 P3a recipe exactly: lr 3e-4, cg_thr 0.45, cg_cap 6000, steps 48k (schedule), stop 12k, DIRECT flags; outputs under scratch/_tmp/s226_p0/<cell>):
+- **P0-OW:** forward layout, mod 11 (binding).
+- **P0b-TOPO:** v1.2 layout, mod 11 (mandatory, descriptive).
+- **P0c-CHAIN:** forward, mod 11, strict previous-state chain (no add_s, no forced mul_s) (recommended, descriptive).
+- **§223 P3a** (v1.2 layout, 0–99; same recipe and card) is the existing fourth corner.
+- **P0d-FULLFT:** P0-OW with full fine-tuning, conditional (below).
+- Args diffs: P0-OW vs P3a's args = {task, order_mode, stream_seed, hashes}; P0b vs P0 = {order_mode}; P0c vs P0 = {dag}.
+- Wording everywhere: "English-templated modular arithmetic". The mod-11 wrap makes many "more / fewer" statements false in English (REVIEW_OW #7).
+
+**Gates (per cell; binding on P0-OW only):**
+- **LP0:** after the first logged window, no 100-step mean gn_preclip > 10, no non-finite rows.
+- **G1:** stage 0 → 1 advance by threshold.
+- **G2 (binding):** pooled num_acc in the last completed 1k bin at d_max 2 ≥ 0.80.
+- **G3:** stage 1 → 2 advance by threshold by 12k.
+- **THRESHOLD-MISSET (symmetric, REVIEW_OW #8):**
+  - (a) G2 passes but G3 fails; or (b) G1 fails on the cap while the d = 1 pooled num_acc in the last pre-advance bin is ≥ 0.85.
+  - Either case → cg_thr := the num_ce of P0-OW's first 1k bin with pooled num_acc ≥ 0.85 (rounded up to 0.05), recorded in a Note, with no new pilot.
+- **Descriptive per cell:** num_acc on wrapped vs non-wrapped final steps; per-d training exposure.
+
+**Pre-stated mapping (no-loop rule; one fallback only):**
+- P0-OW passes → cloud DIRECT (G-W0, with the 223-6 guards and test frames 0–5 primary, REVIEW_OW #2) → G-W0 Note → only then the latent / text v1 design.
+  - If DIRECT advances by threshold through d_max 5 at bin acc ≥ 0.85 before its 24k mark → **ONE-PASS-LIKELY** flagged before any LAT build.
+- P0-OW fails and P0c passes → OW-CHAIN becomes the stage-1 task (a dated Note).
+- P0-OW and P0c both fail → P0d-FULLFT (needs a full-FT path: G-D, equivalence, gradflow). P0d failing → OW closes descriptively.
+- P0b / P0c are attribution only and never change a gate.
+
+**Cost.** $0 (≈ 72 min per cell on the 4060). Code: generator flags --task ow / --order_mode / --dag in codi_ps (default off) → Audit G-D, flags-off bitwise vs 45baec0d, plain-path smoke. Reading by Theory from pilot_ow.json (stages, entry, 1k bins, LP0 fields, wrap split).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
