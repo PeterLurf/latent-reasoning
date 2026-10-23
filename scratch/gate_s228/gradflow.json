@@ -1,0 +1,92 @@
+{
+ "perturbed": {
+  "answer_ce": {
+   "value": 22.929717144325007,
+   "n_gpt2": 148,
+   "gpt2_nonzero": 148,
+   "n_mem": 12,
+   "mem_nonzero": 12,
+   "zero_or_none": []
+  },
+  "aux_ce": {
+   "value": 12.705520710602901,
+   "n_gpt2": 148,
+   "gpt2_nonzero": 148,
+   "n_mem": 12,
+   "mem_nonzero": 12,
+   "zero_or_none": []
+  },
+  "aux_weights": [
+   [
+    1,
+    0.368
+   ],
+   [
+    2,
+    0.582
+   ],
+   [
+    3,
+    0.821
+   ]
+  ],
+  "aux_weights_ok": true
+ },
+ "init": {
+  "answer_ce": {
+   "value": 2.983297022643657,
+   "n_gpt2": 148,
+   "gpt2_nonzero": 148,
+   "n_mem": 12,
+   "mem_nonzero": 2,
+   "zero_or_none": [
+    "mem.gate.bias",
+    "mem.gate.weight",
+    "mem.ln.bias",
+    "mem.ln.weight",
+    "mem.ln_w.bias",
+    "mem.ln_w.weight",
+    "mem.qkv.bias",
+    "mem.qkv.weight",
+    "mem.s_add",
+    "mem.s_del"
+   ]
+  },
+  "aux_ce": {
+   "value": 4.195098913738797,
+   "n_gpt2": 148,
+   "gpt2_nonzero": 148,
+   "n_mem": 12,
+   "mem_nonzero": 2,
+   "zero_or_none": [
+    "mem.gate.bias",
+    "mem.gate.weight",
+    "mem.ln.bias",
+    "mem.ln.weight",
+    "mem.ln_w.bias",
+    "mem.ln_w.weight",
+    "mem.qkv.bias",
+    "mem.qkv.weight",
+    "mem.s_add",
+    "mem.s_del"
+   ]
+  },
+  "aux_weights": [
+   [
+    1,
+    0.368
+   ],
+   [
+    2,
+    0.582
+   ],
+   [
+    3,
+    0.821
+   ]
+  ],
+  "aux_weights_ok": true
+ },
+ "pass": true,
+ "note": "at the true init wo = 0: the read adds wo's zero map, so the answer CE gives no gradient to the write path (expected; nested170's init)"
+}

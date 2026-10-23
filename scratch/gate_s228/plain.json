@@ -1,0 +1,16 @@
+{
+ "rc": 9,
+ "n_log": 2,
+ "first": {
+  "step": 1,
+  "loss": 3.3118090629577637,
+  "sec": 1,
+  "aux_lambda": 0.0,
+  "answer_ce": 3.3118090629577637,
+  "gn_preclip": 64.14012908935547,
+  "gn_preclip_mean100": 64.14012908935547,
+  "clip_frac_100": 1.0
+ },
+ "args": true,
+ "pass": true
+}

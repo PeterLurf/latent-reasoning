@@ -1,0 +1,47 @@
+{
+ "by_d": {
+  "1": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "aux_logit_rel_max": 0.0,
+   "dec_logit_rel": 0.0,
+   "grad_rel_max": 7.107729687073168e-15,
+   "n_grads": 160,
+   "same_grad_keys": true,
+   "think_len": [
+    35,
+    39
+   ],
+   "pass": true
+  },
+  "4": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "aux_logit_rel_max": 0.0,
+   "dec_logit_rel": 0.0,
+   "grad_rel_max": 5.580905667538325e-15,
+   "n_grads": 160,
+   "same_grad_keys": true,
+   "think_len": [
+    79,
+    67
+   ],
+   "pass": true
+  },
+  "8": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "aux_logit_rel_max": 0.0,
+   "dec_logit_rel": 0.0,
+   "grad_rel_max": 8.905389574395016e-15,
+   "n_grads": 160,
+   "same_grad_keys": true,
+   "think_len": [
+    112,
+    99
+   ],
+   "pass": true
+  }
+ },
+ "pass": true
+}
