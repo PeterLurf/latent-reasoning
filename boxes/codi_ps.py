@@ -40,6 +40,12 @@ boxes/nested_words.py (NESTED-WORDS v1.2). Cells by flags (single-change diffs, 
   * (§226 P0d, Note 226-1 + Audit) --full_ft (default off): no LoRA; every GPT-2 parameter trainable in fp32 (master weights) under the same bf16
     autocast, AdamW / wd / clip / warm-up / cosine and no-decay rule; the base is codi_port.build's without its bf16 cast and adapters (build_full:
     the same pretrained load and seed + 2090 embedding resize; prj after the same seed + 2091 reseed). The lr is the cell's --lr (P0d: 1e-4).
+  * (§227 TEXT-SERIAL, registered f69fd658) --text_cot (needs --direct; default off): the decoder target is the step sentences R_step then
+    " The answer is <v_d>." + EOS (after <eot>, the question in the encoder prompt as DIRECT); teacher-forced CE on every target token. CurGate reads
+    step_value_ce (the teacher-forced CE of each step sentence's VALUE token; args cg_signal), never num_ce (the final answer copies the last step).
+    entry_step on step_value_ce. Greedy free decoding every --decode_every (1,000) steps and at stop on a sha-pinned held-out set (200 items per d,
+    train frames 0-5, seed 22950, excluded from the stream by rendered match) for d 1..min(d_max + 1, 8): max_new 24 d + 16, stop at EOS; the first
+    " The answer is N." is parsed; unparseable / non-terminating / context overflow = wrong -> decode_evals.jsonl (acc, per-step value acc, wrap split).
     python -m boxes.codi_ps --out boxes/runs_fsq/s223_ps_s1 --recode --lam 1 --bottleneck [--device cuda:0 ...]"""
 import argparse
 import copy
@@ -47,6 +53,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 import time
 
@@ -138,9 +145,28 @@ def _block_fwd(blk, h, bias):
     h = h + blk.attn.c_proj(o); return h + blk.mlp(blk.ln_2(h))
 
 
-def tok_item(it, enc):
-    """-> {q (BOS + question tokens), dec, R (list of token lists, R_1..R_d each + EOS), d, ans}."""
-    q = [BOS] + enc.encode(it["text"]); dec = [EOT] + enc.encode("The answer is: %d" % it["answer"]) + [EOS]
+HAS_TOK = 468                                                               # " has" (GPT-2); a step sentence is "<name> has <v> <unit>."
+
+
+def text_target(it, enc):
+    """§227: the decoder tokens [EOT] + tok(" " + R_step[0]) + ... + tok(" " + R_step[-1]) + tok(" The answer is <v_d>.") + [EOS] (piecewise encode ==
+    the whole-string encode: every piece starts with a space), the value-token indices (one per step: the token after the first " has") and the
+    answer-number index. -> (dec, vidx, nidx)."""
+    dec = [EOT]; vidx = []
+    for r in it["R_step"]:
+        tk = enc.encode(" " + r); h = tk.index(HAS_TOK); vidx.append(len(dec) + h + 1); dec += tk
+    tk = enc.encode(" The answer is %d." % it["answer"]); nidx = len(dec) + 3; dec += tk + [EOS]
+    return dec, vidx, nidx
+
+
+def tok_item(it, enc, text=False):
+    """-> {q (BOS + question tokens), dec, R (list of token lists, R_1..R_d each + EOS), d, ans}; text (§227): dec = text_target + "vidx" / "nidx"."""
+    q = [BOS] + enc.encode(it["text"])
+    if text:
+        dec, vidx, nidx = text_target(it, enc)
+        return {"q": q, "dec": dec, "vidx": vidx, "nidx": nidx, "vals": it["values"][1:], "R": [enc.encode(r) + [EOS] for r in it["R"][1:]], "d": it["d"], "ans": it["answer"],
+                **({"wrap": it["wrap_final"]} if "wrap_final" in it else {})}
+    dec = [EOT] + enc.encode("The answer is: %d" % it["answer"]) + [EOS]
     assert dec[1:5] == ANS_PROMPT and len(enc.encode(" %d" % it["answer"])) == 1, (dec, it["answer"])
     return {"q": q, "dec": dec, "R": [enc.encode(r) + [EOS] for r in it["R"][1:]], "d": it["d"], "ans": it["answer"], **({"wrap": it["wrap_final"]} if "wrap_final" in it else {})}
 
@@ -153,7 +179,7 @@ def collate(its, K, dev, compat=False):
     for b, (it, q) in enumerate(zip(its, qs)):
         s = q + [BOT]; enc[b, Tq - len(s):] = torch.tensor(s); em[b, Tq - len(s):] = 1
         qm[b, Tq - len(s) + (0 if compat else 1):] = 1                    # every position after BOS (question content and <bot>)
-        dec[b, :len(it["dec"])] = torch.tensor(it["dec"]); dl[b, :len(it["dec"])] = torch.tensor(it["dec"]); npos.append(CP.ans_pos(it["dec"]) - 1)
+        dec[b, :len(it["dec"])] = torch.tensor(it["dec"]); dl[b, :len(it["dec"])] = torch.tensor(it["dec"]); npos.append(it["nidx"] - 1 if "nidx" in it else CP.ans_pos(it["dec"]) - 1)
     d = its[0]["d"]; R = []
     for j in range(1, K + 1):                                               # z_j's target: R_j (j <= d) or the HOLD target R_d (j > d)
         R.append([it["R"][min(j, d) - 1] for it in its])
@@ -162,6 +188,11 @@ def collate(its, K, dev, compat=False):
             "holds": [j for j in range(1, K + 1) if j > d]}
     if "wrap" in its[0]:                                                    # §226: OW items only
         out["wrapf"] = t(torch.tensor([bool(it["wrap"]) for it in its]))
+    if "vidx" in its[0]:                                                    # §227: the step value positions (predicting position = index - 1), padded
+        nv = max(len(it["vidx"]) for it in its); vp = torch.zeros(B, nv, dtype=torch.long); vm = torch.zeros(B, nv, dtype=torch.bool)
+        for b, it in enumerate(its):
+            vp[b, :len(it["vidx"])] = torch.tensor(it["vidx"]) - 1; vm[b, :len(it["vidx"])] = True
+        out["vpos"] = t(vp); out["vmask"] = t(vm)
     return out
 
 
@@ -238,6 +269,9 @@ def forward(m, prj, D, b, a, probe=None, m2=None, capture=None):
     ce = F.cross_entropy(lgc.reshape(-1, lg.size(-1)), tg.reshape(-1), ignore_index=-100)
     nl = lg.gather(1, b["npos"][:, None, None].expand(-1, 1, lg.size(-1))).squeeze(1).float(); nt = b["dec"].gather(1, (b["npos"] + 1)[:, None]).squeeze(1)
     nce = F.cross_entropy(nl, nt); parts = {"ans_ce": float(ce.detach()), "num_ce": float(nce.detach()), "num_acc": float((nl.argmax(-1) == nt).float().mean())}
+    if "vpos" in b:                                                         # §227: the step-value CE / acc (teacher forced; the CurGate signal)
+        vl = lg.gather(1, b["vpos"][:, :, None].expand(-1, -1, lg.size(-1))).float(); vt = b["dec"].gather(1, b["vpos"] + 1); vm_ = b["vmask"]
+        vce = F.cross_entropy(vl[vm_], vt[vm_]); parts.update(step_value_ce=float(vce.detach()), step_value_acc=float((vl[vm_].argmax(-1) == vt[vm_]).float().mean()))
     if "wrapf" in b:                                                        # §226: the wrap split as counts (window means of counts -> pooled accuracy)
         ok_ = nl.argmax(-1) == nt; w_ = b["wrapf"]
         parts.update(num_ok_wrap=float((ok_ & w_).sum()), n_wrap=float(w_.sum()), num_ok_nowrap=float((ok_ & ~w_).sum()), n_nowrap=float((~w_).sum()))
@@ -299,6 +333,57 @@ def term_grad_norms(SH, ex, a):
     return out
 
 
+ANS_RE = re.compile(r" The answer is (\d+)\.")
+STEP_RE = re.compile(r"\b(\w+) has (\d+) ")
+
+
+@torch.no_grad()
+def greedy_decode(m, its, dev, max_new):
+    """§227: batched greedy decoding after [question | <bot>] (the training encoder call) from <eot>, max_new tokens, stop at EOS. -> per item
+    (generated token list without EOS, terminated, overflow)."""
+    b = collate(its, 0, dev); B = len(its); Tq = b["enc"].shape[1]; npos_max = m.config.n_positions
+    o = m(input_ids=b["enc"], attention_mask=b["em"], use_cache=True); pkv = o.past_key_values; am = b["em"]
+    cur = torch.full((B, 1), EOT, device=dev); gen = [[] for _ in range(B)]; done = torch.zeros(B, dtype=torch.bool, device=dev)
+    steps = min(max_new, npos_max - Tq - 1)
+    for _ in range(steps):
+        am = torch.cat([am, _ones(B, 1, dev)], 1); o = m(inputs_embeds=m.transformer.wte(cur), attention_mask=am, use_cache=True, past_key_values=pkv); pkv = o.past_key_values
+        nxt = o.logits[:, -1].float().argmax(-1)
+        for i in range(B):
+            if not bool(done[i]):
+                if int(nxt[i]) == EOS:
+                    done[i] = True
+                else:
+                    gen[i].append(int(nxt[i]))
+        if bool(done.all()):
+            break
+        cur = nxt[:, None]
+    return [(gen[i], bool(done[i]), steps < max_new) for i in range(B)]
+
+
+def decode_eval(m, prj, ED, enc, dev, d_max, step):
+    """§227 primary reading: greedy free decoding on the held-out set for d 1..min(d_max + 1, 8) -> one record (acc, terminated, parsed, per-step value
+    acc by step index, wrap split). Unparseable / non-terminating / context overflow = wrong."""
+    was = m.training; m.eval(); prj.eval(); rec = {"step": step, "d_max": d_max, "by_d": {}}
+    for d in range(1, min(d_max + 1, 8) + 1):
+        its = ED[d]
+        with torch.autocast("cuda", dtype=torch.bfloat16, enabled=str(dev).startswith("cuda")):
+            res = greedy_decode(m, its, dev, 24 * d + 16)
+        ok, term, parsed, ps, wr = [], [], [], np.zeros(d), {"w": [0, 0], "n": [0, 0]}
+        for it, (g, t_, ovf) in zip(its, res):
+            txt = enc.decode(g); ma = ANS_RE.search(txt); val = int(ma.group(1)) if ma else None
+            c = bool(t_ and not ovf and val is not None and val == it["ans"]); ok.append(c); term.append(t_); parsed.append(val is not None)
+            sv = [int(v) for _, v in STEP_RE.findall(txt[:ma.start()] if ma else txt)]
+            for k in range(d):
+                ps[k] += int(k < len(sv) and sv[k] == it["vals"][k])
+            key = "w" if it.get("wrap") else "n"; wr[key][0] += int(c); wr[key][1] += 1
+        n = len(its)
+        rec["by_d"][str(d)] = {"n": n, "acc": float(np.mean(ok)), "terminated": float(np.mean(term)), "parsed": float(np.mean(parsed)), "per_step_value_acc": (ps / n).tolist(),
+                               "acc_wrap": wr["w"][0] / wr["w"][1] if wr["w"][1] else None, "n_wrap": wr["w"][1], "acc_nowrap": wr["n"][0] / wr["n"][1] if wr["n"][1] else None}
+    if was:
+        m.train(); prj.train()
+    return rec
+
+
 def build_full(dev, seed=1):
     """§226 P0d (--full_ft): codi_port.build's base WITHOUT the bf16 cast and WITHOUT LoRA (fp32 master weights, every GPT-2 parameter trainable):
     the same pretrained load, the same seed + 2090 draws for the 3 new token embeddings (transformers' mean resizing), the tied lm_head, and prj after
@@ -355,6 +440,7 @@ def main(argv=None):
     ap.add_argument("--order_mode", default="forward", choices=["forward", "topo"], help="§226 (ow): premise layout")
     ap.add_argument("--dag", default="on", choices=["on", "off"], help="§226 (ow): off = a strict previous-state chain (no add_s, no forced mul_s)")
     ap.add_argument("--full_ft", action="store_true", help="§226 P0d: no LoRA, every GPT-2 parameter trainable (fp32 master weights)")
+    ap.add_argument("--text_cot", action="store_true", help="§227: serial text CoT target (needs --direct)"); ap.add_argument("--decode_every", type=int, default=1000)
     ap.add_argument("--log_every", type=int, default=100); ap.add_argument("--ckpt_every", type=int, default=2000); ap.add_argument("--resume", action="store_true")
     ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default=""); ap.add_argument("--time_steps", type=int, default=0)
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
@@ -363,7 +449,7 @@ def main(argv=None):
     a = ap.parse_args(argv); os.makedirs(a.out, exist_ok=True); dev = a.device; torch.manual_seed(a.seed)
     if a.stream_seed is None:                                               # §226: per-task default (nested unchanged: 22330)
         a.stream_seed = OW.SEED_TRAIN if a.task == "ow" else SEED_TRAIN
-    assert a.bottleneck or not a.m2_stage, "--m2_stage needs --bottleneck"; assert not (a.direct and (a.recode or a.bottleneck)), "DIRECT has no latent flags"; assert a.recode == (a.lam > 0), "--recode needs --lam > 0 (and only then)"
+    assert a.direct or not a.text_cot, "--text_cot needs --direct"; assert a.task == "ow" or not a.text_cot, "--text_cot needs --task ow (R_step)"; assert a.bottleneck or not a.m2_stage, "--m2_stage needs --bottleneck"; assert not (a.direct and (a.recode or a.bottleneck)), "DIRECT has no latent flags"; assert a.recode == (a.lam > 0), "--recode needs --lam > 0 (and only then)"
     import tiktoken
     enc = tiktoken.get_encoding("gpt2"); VALUE_TOKS.update(value_tokens(enc))
     if a.task == "ow":                                                      # §226: OW test set / pair candidates (same layout / dag as the stream)
@@ -371,6 +457,10 @@ def main(argv=None):
     else:
         TE = NW.test_set(); PC = NW.pair_candidates(); D_ = NW
     excl = {it["sig"] for d, its in TE.items() for it in its}
+    EDraw = None
+    if a.text_cot:                                                          # §227: the sha-pinned held-out decode set (train frames 0-5), excluded from the stream
+        es = (OW.Stream(22950, excl, frames=NW.FRAME_TRAIN, order_mode=a.order_mode, dag=a.dag == "on") if a.task == "ow" else NW.Stream(22950, excl, frames=NW.FRAME_TRAIN))
+        EDraw = {d: [es.draw(d) for _ in range(200)] for d in range(1, 9)}; excl |= {it["sig"] for d in EDraw for it in EDraw[d]}
     excl |= {x["sig"] for d, ps in PC.items() for pr in ps for x in pr}  # the pair candidates (recipient + donor; a superset of the eval's pairs)
     info = {**vars(a), "cell": "DIRECT" if a.direct else ("PS" if a.recode and a.bottleneck else "M1-only" if a.recode else "M2-only" if a.bottleneck else "PLAIN"),
             "train_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu",
@@ -379,7 +469,8 @@ def main(argv=None):
             "cuda_version": torch.version.cuda, "generator_sha256": sha_file(os.path.join(ROOT, "boxes", "nested_words.py")),
             "module_sha256": sha_file(os.path.abspath(__file__)), "codi_port_sha256": sha_file(os.path.join(ROOT, "boxes", "codi_port.py")),
             "test_items_sha": D_.set_sha([it for d in sorted(TE) for it in TE[d]]), "pair_candidates_sha": D_.set_sha([x for d in sorted(PC) for pr in PC[d] for x in pr]), "excl_n": len(excl),
-            **({"ow_words_sha256": sha_file(os.path.join(ROOT, "boxes", "ow_words.py"))} if a.task == "ow" else {})}
+            **({"ow_words_sha256": sha_file(os.path.join(ROOT, "boxes", "ow_words.py"))} if a.task == "ow" else {}),
+            **({"cg_signal": "step_value_ce", "text_eval_sha": D_.set_sha([it for d in sorted(EDraw) for it in EDraw[d]]), "text_eval_n_per_d": 200} if a.text_cot else {})}
     info["accumulation"] = a.eff_bs // a.micro
     if a.args_only or a.args_ref:
         ref = json.load(open(a.args_ref)) if a.args_ref else None
@@ -395,9 +486,9 @@ def main(argv=None):
 
     def draw_step():
         d = int(rng.integers(1, cg.n_max() + 1)); K = 0 if a.direct else min(a.k_cap, d + int(rng.integers(0, a.k_extra + 1)))
-        return d, K, [tok_item(stream.draw(d), enc) for _ in range(a.eff_bs)]
+        return d, K, [tok_item(stream.draw(d), enc, a.text_cot) for _ in range(a.eff_bs)]
     if a.mem_check or (a.auto_micro and dev.startswith("cuda") and not a.resume):
-        deep = [tok_item(stream.draw(8), enc) for _ in range(256)]; deep = sorted(deep, key=lambda it: -(len(it["q"]) + sum(len(r) for r in it["R"])))[:1]
+        deep = [tok_item(stream.draw(8), enc, a.text_cot) for _ in range(256)]; deep = sorted(deep, key=lambda it: -(len(it["q"]) + sum(len(r) for r in it["R"])))[:1]
         mc = []
         while True:
             torch.cuda.reset_peak_memory_stats(dev)
@@ -429,6 +520,7 @@ def main(argv=None):
         rng.bit_generator.state = c_["rng"]; stream.rng.bit_generator.state = c_["stream_rng"]; stream.stats = c_["stream_stats"]
         torch.set_rng_state(c_["torch_rng"].cpu()); torch.cuda.set_rng_state(c_["cuda_rng"].cpu(), dev) if dev.startswith("cuda") else None
         t0 = time.time() - c_["elapsed"]; m2_start = c_.get("m2_start"); print("RESUME from step", step, flush=True)
+    ED = {d: [tok_item(it, enc, True) for it in EDraw[d]] for d in EDraw} if a.text_cot else None
     log = open(os.path.join(a.out, "log.jsonl"), "a", newline="\n"); hist = []; m.train(); prj.train(); tl = []
     if D is not None:
         D.train()
@@ -449,12 +541,13 @@ def main(argv=None):
         gn = torch.nn.utils.clip_grad_norm_([p_ for _, p_ in TP], a.clip); opt.step(); sch.step(); step += 1; tl.append(time.time() - t1)
         num = float(np.mean([p["num_ce"] for _, p in P])); hist.append((float(np.mean([x for x, _ in P])), {k: float(np.mean([p[k] for _, p in P if p.get(k) is not None]))
                                                                                                       for k in P[0][1] if k != "recode_val_n" and P[0][1][k] is not None}, float(gn), d, K))
-        adv = cg.update(step, num)
+        sig = float(np.mean([p["step_value_ce"] for _, p in P])) if a.text_cot else num   # §227: CurGate on step_value_ce, never num_ce
+        adv = cg.update(step, sig)
         if adv:
             adv["entry_step_so_far"] = entry; open(os.path.join(a.out, "stages.jsonl"), "a", newline="\n").write(json.dumps(adv) + "\n"); print("STAGE", json.dumps(adv), flush=True)
         if step % a.log_every == 0 or step == total:
             pm = {k: float(np.mean([h[1][k] for h in hist if k in h[1]])) for k in hist[-1][1]}
-            if entry is None and pm.get("num_ce", 9) < 0.5:
+            if entry is None and pm.get("step_value_ce" if a.text_cot else "num_ce", 9) < 0.5:
                 entry = step
             rec = {"step": step, "loss": float(np.mean([h[0] for h in hist])), "sec": round(time.time() - t0), **pm, "gn_preclip": float(np.mean([h[2] for h in hist])),
                    "lr": sch.get_last_lr()[0], "d_max": cg.n_max(), "stage": cg.stage, "d_hist": np.bincount([h[3] for h in hist], minlength=13).tolist(),
@@ -462,6 +555,9 @@ def main(argv=None):
             if a.m2_stage:
                 rec.update(m2_m=mv, m2_start=m2_start)
             hist = []; log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
+        if a.text_cot and not a.time_steps and (step % a.decode_every == 0 or (a.stop_at and step >= a.stop_at) or step == total):   # §227 free decoding
+            de = decode_eval(m, prj, ED, enc, dev, cg.n_max(), step); open(os.path.join(a.out, "decode_evals.jsonl"), "a", newline="\n").write(json.dumps(de) + "\n")
+            print("DECODE", step, "done (ds %s)" % sorted(de["by_d"]), flush=True)       # no values printed (read from decode_evals.jsonl by Theory)
         if a.ckpt_every and step % a.ckpt_every == 0 and step < total and not a.time_steps:
             torch.save({"tp": {n: p_.detach() for n, p_ in TP}, "opt": opt.state_dict(), "sched": sch.state_dict(), "step": step, "cg": cg.state(), "entry": entry,
                         "rng": rng.bit_generator.state, "stream_rng": stream.rng.bit_generator.state, "stream_stats": dict(stream.stats), "torch_rng": torch.get_rng_state(),
