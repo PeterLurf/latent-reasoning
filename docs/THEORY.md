@@ -21001,6 +21001,10 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Likely cause (Literature 14b519cb):** Lin 2503.07604. One-pass multi-step reasoning in GPT-2 generalises only with fixed premise order and small values; with shuffled order, steps 2–6 decay 1.00 / 0.87 / 0.57 / 0.43 / 0.23.
   - NESTED-WORDS samples sentence order and uses values 0–99, both flagged there. Arun IwMfUz9KNj (abstract only) agrees on layout diversity.
   - Depth / width is not the stated limit: 12 layers ≥ the ≈ 20-layer regime only for much harder tasks (Physics of LMs 2.1).
+  - **Correction (10-23 01:28 EDT, from the OW draft's $0 generator check, docs/research_ordered_words_2026-10-23/ow_gen_check.json):** NESTED-WORDS v1.2 already states premises in dependency order: 0 / 20,000 items state a premise before its dependency (items_with_dependency_violation).
+    - What v1.2 varies is layout: givens placed far from their use (given_to_use_gap_mean_sentences 4.43) and non-canonical layouts per program (share_program_layout_canonical 0.22).
+    - Its range rejection (values 0–99) also leaked the last operation into the answer: final_op_lookup_acc 0.014–0.053, vs chance ≈ 0.01.
+    - So "premise order" in Lin's sense is not established as the cause. The value range, and layout distance, are the more likely factors. The OW draft's VAL-only arm separates them.
 - **What §223 did establish (descriptive, $0):**
   - (i) CODI-port training at lr 3e-3 / bf16 is unstable under a curriculum shift; 3e-4 is stable.
   - (ii) The per-latent re-rooted-state recode loss does not starve the answer (M1 ≈ DIRECT in P1 and P2).
