@@ -61,7 +61,8 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 225 | MATCHED-BUDGET | C3 at matched compute on the synthetic lineage | MET in registered scoped sense | within 0.02 at n 13-20; ~20-50x fewer steps; ~0.65x FLOPs | Synthetic nested arithmetic only, one seed each; not language. | C3 |
 | 226 | ORDERED-WORDS stage 0 | Is the word task one-pass learnable? | FAILED / CLOSED | P0d full-FT d=1 0.998 but d<=2 0.53; $0 | Gate conflated recipe-learnability with one-pass composition. | C1 |
 | 227 | TEXT-SERIAL control | Can serial text-CoT learn d>=2 where DIRECT cannot? | MET (PASSED) | d2/3/4 1.000, d5 0.97 | First language task with an established C1 band; $0. | C1 |
-| 228 | LAT-OW | C1 test of §184 recipe on English word programs | running | approved cap $20; local pilots + cloud d<=4 pilot pending | Exposure-matched DIRECT reference binds. | C1 |
+| 228 | LAT-OW | C1 test of §184 recipe on English word programs | FAILED (LAT-NOT-LEARNABLE-D2, Note 228-2) | d2 0.087 vs DIRECT 0.093; pass-1 aux 0.51 | INJECT learns d=1 only; state does not carry step 1 at GPT-2 small. | C1 |
+| 229 | LAT-OW-CUM | Does a cumulative re-rooted per-pass target rescue §228? | FAILED; §228 language line CLOSED (Note 229-1) | d2 0.083 vs 0.093; pass-1 aux 0.55; §228+§229 ≈ $1.19 | Recipe negative at this scale; user 10-23: synthetic C6 first, then a ~0.5–1B base. | C1 |
 
 ## What worked
 
@@ -109,7 +110,7 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 - Depth beyond training remains count/context-limited (C2 not met): §216 boundary still binds (STOP 21, LIT-C2-2 0.018); §187 token effect, if re-tested with entry control.
 - C6 vs C1 trade: RD/FH cost depth at n 9-11 (§224); needs depth re-test; seed-3 RD pending.
 - Memory erosion from self items (MEM-TRADED, STAB_self 0.782 -> 0.437, §215-§216); IDLE-HORIZON/FIXED-HOLD design.
-- Language C1: §227 established a band; §228 LAT-OW is the live test (exposure-matched DIRECT, C3 at matched compute via §225 method).
+- Language C1: §227 band; §228/§229 failed at GPT-2 small; next is a ~0.5–1B base (user 10-23), after the C6 depth-cost design.
 - GSM8K: CODI-style depth weakness (m>=3 0.265, §210); latents recompute from input (§207).
 - C5 (learned halt) is size-free on RMS (§201) but premature at the edge; parked behind COUNT-OOD.
 - C4 stays unmet (strict); self-labelled chains (§215-§219) are the nearest candidate.
