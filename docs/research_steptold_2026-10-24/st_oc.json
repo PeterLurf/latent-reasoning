@@ -1,0 +1,136 @@
+{
+ "reps": 20000,
+ "majority": 0.11,
+ "P1_ASK": {
+  "told_learned (d1 0.95, d2 0.92)": 1.0,
+  "no_told (d1 0.95, d2 0.15)": 0.0,
+  "partial (d1 0.95, d2 0.60)": 0.0,
+  "at_bar (d1 0.85, d2 0.70)": 0.51825,
+  "distractor_cost (d1 0.98, d2 0.80)": 1.0
+ },
+ "P2_pilot": {
+  "no_effect (LAT = CD = 0.10; aux 0.25; drop 0)": {
+   "LP2": 0.0,
+   "LP3": 0.0,
+   "LP5": 0.0,
+   "PASS": 0.0
+  },
+  "strong_serial (LAT 0.90, CD 0.12; aux 0.90; drop 0.75)": {
+   "LP2": 1.0,
+   "LP3": 1.0,
+   "LP5": 1.0,
+   "PASS": 1.0
+  },
+  "marginal (LAT 0.75, CD 0.40; aux 0.82; drop 0.35)": {
+   "LP2": 0.8857,
+   "LP3": 0.9905,
+   "LP5": 0.99975,
+   "PASS": 0.87705
+  },
+  "at_bars (LAT 0.70, CD 0.40; aux 0.80; drop 0.30)": {
+   "LP2": 0.5332,
+   "LP3": 0.3815,
+   "LP5": 0.5031,
+   "PASS": 0.10405
+  },
+  "recompute (LAT 0.85, CD 0.12; aux 0.90; drop 0.02)": {
+   "LP2": 1.0,
+   "LP3": 1.0,
+   "LP5": 0.0,
+   "PASS": 0.0
+  },
+  "cue_solves_one_pass (LAT 0.90, CD 0.70)": {
+   "LP2": 1.0,
+   "LP3": 0.0,
+   "LP5": 1.0,
+   "PASS": 0.0
+  },
+  "pass1_only (aux 0.90; LAT 0.15, CD 0.12)": {
+   "LP2": 1.0,
+   "LP3": 0.0,
+   "LP5": 0.0,
+   "PASS": 0.0
+  }
+ },
+ "LEAK_false_alarm_at_majority": 0.0,
+ "LEAK_power_at_0.25": 1.0,
+ "P4_LP4": {
+  "no_effect": 0.0,
+  "strong (0.85 / 0.75 vs 0.12)": 1.0,
+  "at_bars (0.60 / 0.50 vs 0.35 / 0.25)": 0.15745
+ },
+ "S1_R2prime": {
+  "serial (LAT 0.75, drop 0.55)": 1.0,
+  "recompute (drop 0.03)": 0.0,
+  "at_bar (drop 0.30)": 0.50565
+ },
+ "cost": {
+  "factors": {
+   "lat_st_vs_s228_lat_d2": 1.1763028695148356,
+   "lat_st_d4": 1.6364264731294285,
+   "lat_st_d8": 2.760626505656696,
+   "cued_direct_d2": 1.2362470469119136,
+   "cued_direct_d8": 2.576122173472832,
+   "direct_d8": 1.867381032737091
+  },
+  "measured_train_sec": {
+   "s228_pdir2c_s1": 617,
+   "s228_plat2_s1": 5740,
+   "s229_plat2c_s1": 7398
+  },
+  "measured_eval_acc_sec": {
+   "s228_pdir2c_s1": 16,
+   "s228_plat2_s1": 411,
+   "s229_plat2c_s1": 596
+  },
+  "rate_usd_per_h": [
+   0.2,
+   0.27
+  ],
+  "P2_pilot": {
+   "host_h": [
+    2.58,
+    3.13
+   ],
+   "usd_low_high": [
+    0.52,
+    0.84
+   ]
+  },
+  "P2_fresh_plain_direct_if_not_3090": 0.05,
+  "P4_pilot": {
+   "host_h": [
+    6.53,
+    8.04
+   ],
+   "usd_low_high": [
+    1.31,
+    2.17
+   ]
+  },
+  "Stage1": {
+   "host_h": [
+    34.5,
+    42.1
+   ],
+   "usd_low_high": [
+    6.9,
+    11.37
+   ]
+  },
+  "guard_x1.3": {
+   "P2": 1.16,
+   "P4": 2.82,
+   "Stage1": 14.78
+  },
+  "family_cap_guard": 18.76,
+  "priors_ASSUMED": {
+   "P1_ASK": 0.5,
+   "P2_given_ASK": 0.35,
+   "P4_given_P2": 0.6,
+   "C1_TOLD_given_P4": 0.4
+  },
+  "expected_spend_high_rate": 1.99,
+  "P_C1_TOLD_overall": 0.042
+ }
+}
