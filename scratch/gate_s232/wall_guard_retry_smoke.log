@@ -1,0 +1,7 @@
+2026-10-24 11:50:20 start: cap $0.00, instance 99999999 (127.0.0.1:1) $0.2500/h since 10:50, 18 queue lines, estimate $1.00, destroy at cap: on
+2026-10-24 11:50:22 CHECK spent $0.250, lines None / 18, projection $1.250 (cap $0.00)
+2026-10-24 11:50:22 STOP spent $0.250 >= cap $0.00: vdestroy rc 1 STILL_LIVE 99999999
+2026-10-24 11:50:22 STOP retry in 3 s (vdestroy not verified)
+2026-10-24 11:50:26 STOP spent $0.250 >= cap $0.00: vdestroy rc 1 STILL_LIVE 99999999
+2026-10-24 11:50:26 STOP retry in 3 s (vdestroy not verified)
+2026-10-24 11:50:29 STOP spent $0.250 >= cap $0.00: vdestroy rc 0 DESTROYED_VERIFIED 99999999

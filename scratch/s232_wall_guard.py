@@ -12,6 +12,8 @@ import time
 
 TAG, CAP, IID, H, P, DPH, T0, QT, NL, EST = sys.argv[1], float(sys.argv[2]), sys.argv[3], sys.argv[4], sys.argv[5], float(sys.argv[6]), float(sys.argv[7]), sys.argv[8], int(sys.argv[9]), float(sys.argv[10])
 STOP = os.environ.get("GUARD_STOP") == "1"; KEY = os.path.expanduser("~/.ssh/runpod_ed25519"); os.chdir("D:/Latent")
+VDESTROY = os.environ.get("GUARD_VDESTROY", "scratch/vdestroy.sh"); VASTCLI = os.environ.get("GUARD_VASTCLI", "C:/Users/peter/.local/vastai/vast.sh")   # stubs: the retry smoke only
+RETRY_S = int(os.environ.get("GUARD_RETRY_S", "60"))
 
 
 def log(s):
@@ -21,7 +23,7 @@ def log(s):
 def present():
     try:
         import json
-        r = subprocess.run(["bash", "C:/Users/peter/.local/vastai/vast.sh", "show", "instances", "--raw"], capture_output=True, text=True, timeout=90)
+        r = subprocess.run(["bash", VASTCLI, "show", "instances", "--raw"], capture_output=True, text=True, timeout=90)
         return int(IID) in {int(x["id"]) for x in json.loads(r.stdout)}
     except Exception:
         return None                                                         # unknown (CLI failure): keep guarding
@@ -49,8 +51,13 @@ while True:
     proj = (spent / (d / NL)) if d else spent + EST
     log("CHECK spent $%.3f, lines %s / %d, projection $%.3f (cap $%.2f)" % (spent, d, NL, proj, CAP))
     if spent >= CAP:
-        if STOP:
-            r = subprocess.run(["bash", "scratch/vdestroy.sh", IID], capture_output=True, text=True); log("STOP spent $%.3f >= cap $%.2f: %s" % (spent, CAP, r.stdout.strip()[-200:]))
+        if STOP:                                                            # Audit 10-24: retry until DESTROYED_VERIFIED or the instance is gone (never exit on STILL_LIVE / UNKNOWN)
+            while True:
+                r = subprocess.run(["bash", VDESTROY, IID], capture_output=True, text=True); ok = r.returncode == 0 and "DESTROYED_VERIFIED" in r.stdout
+                log("STOP spent $%.3f >= cap $%.2f: vdestroy rc %d %s" % (spent, CAP, r.returncode, r.stdout.strip()[-200:]))
+                if ok or present() is False:
+                    break
+                log("STOP retry in %d s (vdestroy not verified)" % RETRY_S); time.sleep(RETRY_S)
         else:
             log("ALERT spent $%.3f >= cap $%.2f (destroy at cap: off)" % (spent, CAP))
         break
