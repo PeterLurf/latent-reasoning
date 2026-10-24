@@ -11,7 +11,7 @@ Each digest was condensed from section headers, result blocks and Notes, not fro
 
 | C | status | best evidence | what blocks it |
 |---|---|---|---|
-| C1 latents do the work | MET on synthetic; language open | §184 (nested arithmetic, 2/2), §211 VERSION-BANK, §217 causal use preserved; §227 sets a language band | GSM8K latents recompute from input (§207, §208); word tasks not one-pass learnable (§223, §226); §228 LAT-OW running |
+| C1 latents do the work | MET on synthetic; language open | §184 (nested arithmetic, 2/2), §211 VERSION-BANK, §217 causal use preserved; §227 sets a language band | GSM8K latents recompute from input (§207, §208); word tasks not one-pass learnable (§223, §226); §228/§229 failed at GPT-2 small (d2 at chance); larger base next |
 | C6 stable | MET in scope, with a cost | §193 RMS×WINDOW 2/2 to K'32; §224 trained far pass holds to K'128 | seed-3 failures (§192, §205); the hold costs depth at n 9–11 (§224) |
 | C4 scalable supervision on a pretrained LM | not met (strict) | self-labelled chains (§215–§219); short-label foothold (§96, §112) | strict C4 barrier from final answers alone (§103–§117); CoT warm start forgotten (§202) |
 | C2 more thinking helps past training | not met | written-state / restart length generalisation in toys (§26, §71, §92); in-support self-depth (§215, §216) | boundary still binds (§216 LIT-C2-2 0.018); depth limited by pass count / basin entry |
@@ -51,7 +51,7 @@ Each digest was condensed from section headers, result blocks and Notes, not fro
 ## Open threads with the most promise
 
 - **C2 past the boundary**: self-depth lineage plus a hold that costs no depth (§216, §224 RD); F3 self-synthesis of deeper data and F5 verify-then-extend (§52), mostly untried.
-- **Language C1**: §228 LAT-OW against §227's band; fresh procedurally generated data (§168 ProsQA-FRESH lead).
+- **Language C1**: §227's band on a ~0.5–1B base (§228/§229 failed at GPT-2 small); fresh procedurally generated data (§168 ProsQA-FRESH lead).
 - **GSM8K depth**: CODI's m ≥ 3 weakness (0.265, §210); latents that carry state instead of recomputing it (§207).
 - **C4**: short-label teacher (p ≤ 0.05) plus final-answer self-training (§96).
 - **C7**: function-vector / mid-layer readouts (§79-6); readout of restart latents.
