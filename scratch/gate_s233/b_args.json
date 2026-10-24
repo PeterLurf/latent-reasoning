@@ -1,0 +1,58 @@
+{
+ "lat_st": {
+  "rc": 0,
+  "diff_keys": [
+   "aux_target",
+   "cue",
+   "eval_parts",
+   "format",
+   "steps"
+  ],
+  "diff": {
+   "aux_target": [
+    null,
+    "value"
+   ],
+   "cue": [
+    null,
+    "step"
+   ],
+   "eval_parts": [
+    "acc,decode",
+    "acc,lp5,mean_s,cue_only,cue_wrong"
+   ],
+   "steps": [
+    8000,
+    12000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s233b/args_lat_st/args.json",
+  "pass": true
+ },
+ "cd": {
+  "rc": 0,
+  "diff_keys": [
+   "aux_target",
+   "cue",
+   "format",
+   "steps"
+  ],
+  "diff": {
+   "aux_target": [
+    null,
+    "value"
+   ],
+   "cue": [
+    null,
+    "all"
+   ],
+   "steps": [
+    8000,
+    12000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s233b/args_cd/args.json",
+  "pass": true
+ },
+ "pass": true
+}

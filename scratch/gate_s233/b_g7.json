@@ -1,0 +1,8 @@
+{
+ "answer_acc": 0.11,
+ "aux_vacc_pass1": 0.0,
+ "aux_vacc_pass2": 0.0,
+ "majority": 0.14,
+ "pass": true,
+ "note": "untrained model: memory wo = 0 at init, so the decoder reads the text alone (no memory signal)"
+}

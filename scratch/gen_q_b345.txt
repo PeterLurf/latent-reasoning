@@ -1,0 +1,9 @@
+# THEORY §233 STEP-TOLD P-2 (ST_v1 §3; Note 233-2; guard $1.16): one non-580 RTX 3090, d ~ U{1,2}, 12k. F2 (K7 mem_check + G-TIME at the LAT-ST shape) ->
+# LAT-ST st_plst2_s1 (§228 LAT + --cue step; evals acc, lp5, mean_s, cue_only, cue_wrong) -> CUED-DIRECT st_pcd2_s1 on the SAME host (--cue all; eval acc).
+# Plain DIRECT reference = s228_pdir2c_s1 (3090). Frozen args scratch/s233_args_frozen_<run>.json.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/st_plst2_s1_mem boxes.inject_st --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 2 --steps 12000 --cue step --mem_check
+boxes/runs_fsq/st_plst2_s1_gtime boxes.inject_st --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 2 --steps 12000 --cue step --time_steps 60 --auto_micro
+boxes/runs_fsq/st_plst2_s1 boxes.inject_st --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 2 --steps 12000 --cue step --auto_micro --ckpt_every 1000 --eval_parts acc,lp5,mean_s,cue_only,cue_wrong --args_ref scratch/s233_args_frozen_st_plst2_s1.json
+boxes/runs_fsq/st_pcd2_s1 boxes.inject_st --arm direct --d_max 2 --steps 12000 --cue all --auto_micro --ckpt_every 1000 --eval_parts acc --args_ref scratch/s233_args_frozen_st_pcd2_s1.json
