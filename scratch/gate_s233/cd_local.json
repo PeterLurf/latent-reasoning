@@ -1,0 +1,18 @@
+{
+ "by_d": {
+  "1": {
+   "acc": 0.789,
+   "k_main": 0
+  },
+  "2": {
+   "acc": 0.089,
+   "k_main": 0
+  }
+ },
+ "n": {
+  "1": 1000,
+  "2": 1000
+ },
+ "rule": "CUED-DIRECT d = 2 >= 0.80 -> ST stops (ST_v1 \u00a72)",
+ "run": "boxes/runs_fsq/s233_cdloc_s1"
+}

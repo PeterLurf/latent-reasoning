@@ -1,0 +1,5 @@
+{
+ "check": "STEP-TOLD CD-local (ST_v1 \u00a72)",
+ "wrapper_sha256": "4a14c9f5545bded6172b50461aa25ed8f4319a61539e774c3f63847619d5266d",
+ "input": "dec = [EOT] + enc(' ' + text + sum_t ' ' + QUESTION(u, S_t), t = 1..d) + ' The answer is:'; target v_d"
+}
