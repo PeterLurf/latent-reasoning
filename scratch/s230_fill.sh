@@ -62,6 +62,7 @@ dirty=$( { git status --porcelain boxes/ | grep -v "^??" | grep -v "boxes/runs";
 grep -qE "ALERT|STOP" "$FAMGUARD_LOG" 2>/dev/null && { echo "$(date '+%F %T') fill_s230 REFUSED: $FAMGUARD_LOG holds an ALERT / STOP (rotate it after Audit's ruling)"; exit 2; }
 [ -n "$dirty" ] && { echo "$(date '+%F %T') fill_s230 REFUSED: uncommitted module / frozen-ref / script edits (deploys ship the working tree): $dirty"; exit 2; }
 grep -q "fh_lambda_fixed" boxes/vbank.py || { echo "$(date '+%F %T') fill_s230 REFUSED: boxes/vbank.py has no --fh_lambda_fixed (the §230 build is not committed)"; exit 2; }
+for f_ in "$ADMLOG" "$BADLOG"; do [ -f "$f_" ] || echo "# §230 ledger (fill_s230); last field = \$" > "$f_"; done   # 10-24: outside() needs both (b343 started s230fam with an empty cap)
 log "start: QS $QS; family \$$CAPF; SETUP_H $SETUP_H; EVAL_H $EVAL_H; vbank sha $(sha256sum boxes/vbank.py | cut -c1-12); vbank_diag sha $(sha256sum boxes/vbank_diag.py | cut -c1-12); vbank_eval sha $(sha256sum boxes/vbank_eval.py | cut -c1-12)"
 
 FAMC=""; for c_ in $QS; do IFS=: read -r n_ r_ a_ g_ s_ f_ sd_ <<<"$c_"; e_=$(python -c "print(round($EST_FAR + $EST_RE * ($(nevals $n_) - 1), 2))"); FAMC="$FAMC $n_:$r_:$e_:$s_"; done   # Audit 10-22: unstarted cells project at their ESTIMATE (not the guard ceiling)
