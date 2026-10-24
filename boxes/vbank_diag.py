@@ -1641,7 +1641,7 @@ def part_deep(m, TE_unused, dev, bs, run):
 
 
 @torch.no_grad()
-def part_c1hold(m, TE, dev, bs, run, kh=128, mem_frac=0.85, hold_bs=None):
+def part_c1hold(m, TE, dev, bs, run, kh=128, mem_frac=0.70, hold_bs=None):
     """§232 HOLD-C1 (HC_v1 §3 / §4, Note 232-1; REVIEW_HC fix 6) -> eval_c1hold.json under the single top-level key "c1hold". VALUE-SWAP class A pairs
     (vbank_eval.make_pairs, rng 21120), grouped by (n, t) and chunked at eval_bs exactly as vbank_eval.vswap_class; per chunk the recipient / donor K = n + 2
     rollouts are held (clean = both correct at K' = n + 2, as vswap). Arms (edit / ver_sub / v0_off_after hooks only, no new rollout code):
@@ -1654,7 +1654,9 @@ def part_c1hold(m, TE, dev, bs, run, kh=128, mem_frac=0.85, hold_bs=None):
     <run>/eval_vb.json vswap (same card / bs; exact float equality); (c) V0-ONLY: v0off_K's logits == v_K run with ver_keep(t', nver) = (version != 0) or
     t' <= t (a mask that drops version 0 only) bitwise per chunk, and the changed-answer share v0off vs v (exposure). Memory: the deepest pair chunk
     (n max, longest recipient) with the held K rollouts + the K' 128 spliced rollout; peak > mem_frac of the card or OOM halves hold_bs.
-    Per pair (store-items rule): i, n, t, clean, y, yd and every arm's answer; ii's donor log-prob margin (logit_yd - max other number logit) at n + 2 / 128."""
+    Per pair (store-items rule): i, n, t, clean, y, yd and every arm's answer; ii's donor log-prob margin (logit_yd - max other number logit) at n + 2 / 128.
+    10-24 (b344: every model OOMed in the K' 128 rollout with 10 GiB allocated of 23.5 reserved - allocator fragmentation across chunk shapes): the cache is
+    released before every chunk (as part_khorizon) and fits() keeps 0.30 of the card free (mem_frac 0.70); no numeric change at a given hold_bs."""
     num = torch.tensor(N.NUM_IDS, device=dev); pairs, qual = VE.make_pairs(TE, cls="A"); cuda = str(dev).startswith("cuda")
     groups = [(key, [p_ for p_ in pairs if (p_["n"], p_["t"]) == key]) for key in sorted({(p_["n"], p_["t"]) for p_ in pairs})]
     res = {"k_hold": kh, "eval_bs": bs, "mem_tried": [], "candidates": len(pairs), "qualifying_share_by_n": qual}
@@ -1694,6 +1696,8 @@ def part_c1hold(m, TE, dev, bs, run, kh=128, mem_frac=0.85, hold_bs=None):
     for (n, t), grp in groups:
         K = n + 2
         for ch in VE.chunks(list(range(len(grp))), bs):
+            if cuda:
+                torch.cuda.empty_cache()                                    # 10-24: per-chunk release (allocator only; no numeric change)
             ps = [grp[j] for j in ch]; B = len(ps); rec, don, x, pad, lens, xd, pdd, ld = held(ps); rows = torch.arange(B, device=dev)
             rr = m.rollout(x, pad, K, coda_rows={K: rows}); rd = m.rollout(xd, pdd, K, coda_rows={K: rows}); Vd = rd["V"][t]
             y = torch.tensor([it["t"] for it in rec], device=dev); yd = torch.tensor([it["t"] for it in don], device=dev)
