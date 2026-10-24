@@ -1,0 +1,50 @@
+{
+ "A_cue_len": {
+  "distinct_lengths": [
+   7
+  ],
+  "names": 40,
+  "units": 10,
+  "every_name_one_token": true
+ },
+ "B_shortcut": {
+  "items": 4000,
+  "step1_inputs_all_given": 4000,
+  "d2_items": 2000,
+  "S2_reads_S1": 2000,
+  "reading": "target v_1 = the unique computed entity with all-given inputs in every P1-ASK item: the name is redundant with structure"
+ },
+ "C_stage1": {
+  "lat_st_train_h": [
+   26.4,
+   34.0
+  ],
+  "cd_h": 2.65,
+  "direct_h": 1.92,
+  "serial_one_host_h": [
+   34.5,
+   42.1
+  ],
+  "two_hosts_wall_h": [
+   28.9,
+   36.5
+  ],
+  "side_host_h": 5.6,
+  "host_h_two_hosts": [
+   34.5,
+   42.1
+  ],
+  "usd_two_hosts_high": 11.37,
+  "usd_serial_high": 11.37,
+  "host_speed_x2_wall_h": [
+   57.8,
+   73.1
+  ]
+ },
+ "D_cueonly_pooled_false_alarm": {
+  "d1_answer_from_text": 1.0,
+  "d2": 0.11,
+  "P_LEAK_pooled": 1.0,
+  "P_LEAK_d2_only": 0.0
+ }
+}
