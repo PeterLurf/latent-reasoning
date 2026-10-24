@@ -320,6 +320,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2, Audit-reproduced; depth parity, not gain): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
+| 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | registered | **for Audit’s ruling** |
 
 ## Live sections
 
@@ -19242,6 +19243,21 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **OC.** C1-KEPT | no harm = 0.954; COEXIST | no C1 harm ≈ 0.66; prior ≈ 0.25–0.30.
 
 **Cost.** Family cap $7 (Stage A cap $2.5; s3 cap $4). Realised $0.
+
+## 233. STEP-TOLD: a step-cued latent loop on the TOPO word programs, GPT-2 small (the user's 10-24 order: after §232's start; **for Audit's ruling, family cap $19**; pre-registered 2026-10-24 12:33 EDT, before any §233 output)
+
+**Registered text.** docs/research_steptold_2026-10-24/ST_v1.md **at da924dca** (v1 = ST_draft.md ec88980f + REVIEW_ST fixes 1–11), frozen. Literature: LIT_STEPTOLD_2026-10-24.md (N1 OK, narrow; N2 / N3 narrow).
+
+**Premise.** The §228 / §231 failure: the think pass never computes the unrequested intermediate (REVIEW_LB #1, 231-3). ST tells each pass which quantity to compute ("How many <u> does <S_t> have?"); values stay in the loop. Claim: "C1, scaffolded (plan given)", which adds nothing to C4.
+
+**Gates.**
+- **$0 local:** P1-ASK+NAME (asked entity ∈ {S_1, S_0, distractor, S_2 with S_1 given}; ≥ 0.80 one-hop, ≥ 0.90 given; a fail stops at $0) and CD-local (CUED-DIRECT d = 2 ≥ 0.80 → the plan alone suffices → stop).
+- **P-2 (one 3090, d ≤ 2, 12k):** LP0 self-calibrated; LP2 on d = 2; LP3 binding vs CUED-DIRECT (≥ 0.70 and ≥ CD + 0.30); LP5 binding (mean pass-1 state, cue kept, drop ≥ 0.30); pooled MEAN-STATE ≤ CD + 0.10; CUE-ONLY guard on d ≥ 2; CUE-WRONG labels C1-TOLD vs plain C1.
+- **Then** P-4 (d ≤ 4) and Stage 1 (two 3090 hosts; R3 swap with the cue kept; TOLD-RECOMPUTE).
+
+**OC.** P(pass) ≈ 0 under no effect, recompute, cue-solves-one-pass or pass-1-only; P(C1-TOLD) ≈ 0.04.
+
+**Cost.** Guards $1.16 / $2.82 / $14.78; family cap $19; expected ≈ $2.0. Realised $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
