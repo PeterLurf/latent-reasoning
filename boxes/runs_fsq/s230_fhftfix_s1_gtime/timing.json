@@ -1,0 +1,10 @@
+{
+ "mode": "slva",
+ "mct": false,
+ "steps_timed": 60,
+ "sec_per_step": 0.7990610758463542,
+ "est_hours": 2.6635369194878473,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "micro": 1,
+ "forced": "final stage n <= 8, K = 12 every item"
+}
