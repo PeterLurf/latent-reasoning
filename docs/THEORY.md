@@ -319,6 +319,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2, Audit-reproduced; depth parity, not gain): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
+| 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **for Audit’s ruling** |
 
 ## Live sections
 
@@ -19226,6 +19227,21 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **OC.** P(C1) ≈ 0.04; ≈ 0 under no effect.
 
 **Cost.** $18.79 point / $24.42 guard; cap $25; expected ≈ $5.7–7.4. Realised at registration $0.
+
+## 232. HOLD-C1: do C1 serial use and the §230 long-horizon hold coexist? (the user's 10-24 decision "hold fix into C1 first"; **for Audit's ruling, family cap $7**; pre-registered 2026-10-24 11:40 EDT, before any §232 output)
+
+**Registered text.** docs/research_holdc1_2026-10-24/HC_v1.md **at ee6828ac** (v1 = HC_draft.md 43cce7d8 + REVIEW_HC fixes), frozen.
+
+**Design.**
+- VERSION-BANK D3-T s1 / s2: BASE vs FT-CTRL vs HC (s230_fhftfix_s1, s224_fhft_s2).
+- The VB-C1 battery plus OLD-SWAP and a new c1hold part (SWAP-HOLD; arm (v) with a V_0-masked variant), all on one cloud RTX 3090 (Stage A ≈ $0.90).
+- A blind s3 (base + FT-CTRL + HC, ≈ $3.3) is pre-registered, triggered by s1 / s2 both passing or splitting.
+
+**Readings.** COEXIST = HOLD (≥ 0.95 to K′ 128) ∧ VB-C1 ∧ C1-KEPT (pre-registered margins vs BASE and FT-CTRL; PROBE(3–6) and a mean-onset slope now decisive) ∧ DEPTH ∧ NOLOSS. COEXIST-SHIFTED = the same with a pre-registered read-policy shift (counts as COEXIST). Also C1-HARMED, HOLD-FAIL, FAR-CHANGED.
+
+**OC.** C1-KEPT | no harm = 0.954; COEXIST | no C1 harm ≈ 0.66; prior ≈ 0.25–0.30.
+
+**Cost.** Family cap $7 (Stage A cap $2.5; s3 cap $4). Realised $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
