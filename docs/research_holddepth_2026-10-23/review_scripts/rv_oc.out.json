@@ -1,0 +1,151 @@
+{
+ "rms_5_pairs": 0.020391174561559713,
+ "base_s1_s2_diff": 0.06900000000000006,
+ "sigma_run_from_bases": 0.04879036790187182,
+ "rd_delta_mean": -0.11499999999999999,
+ "eval_binomial_se_diff": 0.01072380529476361,
+ "sigma=0.02": {
+  "full (mu 0)": {
+   "p_seed": 0.933,
+   "both_of_2": 0.871,
+   "2_of_3": 0.987,
+   "mean_of_2>=bar": 0.983,
+   "mean_of_2 & each>=-0.08": 0.983,
+   "mean_of_3>=bar": 0.995
+  },
+  "half (mu -0.057)": {
+   "p_seed": 0.089,
+   "both_of_2": 0.008,
+   "2_of_3": 0.022,
+   "mean_of_2>=bar": 0.028,
+   "mean_of_2 & each>=-0.08": 0.022,
+   "mean_of_3>=bar": 0.01
+  },
+  "none (mu -0.115, RD s1/s2 mean)": {
+   "p_seed": 0.0,
+   "both_of_2": 0.0,
+   "2_of_3": 0.0,
+   "mean_of_2>=bar": 0.0,
+   "mean_of_2 & each>=-0.08": 0.0,
+   "mean_of_3>=bar": 0.0
+  },
+  "none, s1-like (mu -0.076)": {
+   "p_seed": 0.011,
+   "both_of_2": 0.0,
+   "2_of_3": 0.0,
+   "mean_of_2>=bar": 0.001,
+   "mean_of_2 & each>=-0.08": 0.0,
+   "mean_of_3>=bar": 0.0
+  }
+ },
+ "sigma=0.03": {
+  "full (mu 0)": {
+   "p_seed": 0.841,
+   "both_of_2": 0.708,
+   "2_of_3": 0.932,
+   "mean_of_2>=bar": 0.921,
+   "mean_of_2 & each>=-0.08": 0.914,
+   "mean_of_3>=bar": 0.958
+  },
+  "half (mu -0.057)": {
+   "p_seed": 0.184,
+   "both_of_2": 0.034,
+   "2_of_3": 0.089,
+   "mean_of_2>=bar": 0.102,
+   "mean_of_2 & each>=-0.08": 0.062,
+   "mean_of_3>=bar": 0.06
+  },
+  "none (mu -0.115, RD s1/s2 mean)": {
+   "p_seed": 0.002,
+   "both_of_2": 0.0,
+   "2_of_3": 0.0,
+   "mean_of_2>=bar": 0.0,
+   "mean_of_2 & each>=-0.08": 0.0,
+   "mean_of_3>=bar": 0.0
+  },
+  "none, s1-like (mu -0.076)": {
+   "p_seed": 0.063,
+   "both_of_2": 0.004,
+   "2_of_3": 0.011,
+   "mean_of_2>=bar": 0.015,
+   "mean_of_2 & each>=-0.08": 0.005,
+   "mean_of_3>=bar": 0.004
+  }
+ },
+ "sigma=0.05": {
+  "full (mu 0)": {
+   "p_seed": 0.726,
+   "both_of_2": 0.527,
+   "2_of_3": 0.816,
+   "mean_of_2>=bar": 0.802,
+   "mean_of_2 & each>=-0.08": 0.716,
+   "mean_of_3>=bar": 0.851
+  },
+  "half (mu -0.057)": {
+   "p_seed": 0.295,
+   "both_of_2": 0.087,
+   "2_of_3": 0.209,
+   "mean_of_2>=bar": 0.223,
+   "mean_of_2 & each>=-0.08": 0.102,
+   "mean_of_3>=bar": 0.175
+  },
+  "none (mu -0.115, RD s1/s2 mean)": {
+   "p_seed": 0.045,
+   "both_of_2": 0.002,
+   "2_of_3": 0.006,
+   "mean_of_2>=bar": 0.008,
+   "mean_of_2 & each>=-0.08": 0.0,
+   "mean_of_3>=bar": 0.002
+  },
+  "none, s1-like (mu -0.076)": {
+   "p_seed": 0.179,
+   "both_of_2": 0.032,
+   "2_of_3": 0.084,
+   "mean_of_2>=bar": 0.097,
+   "mean_of_2 & each>=-0.08": 0.027,
+   "mean_of_3>=bar": 0.056
+  }
+ },
+ "sigma=0.07": {
+  "full (mu 0)": {
+   "p_seed": 0.666,
+   "both_of_2": 0.443,
+   "2_of_3": 0.74,
+   "mean_of_2>=bar": 0.728,
+   "mean_of_2 & each>=-0.08": 0.555,
+   "mean_of_3>=bar": 0.771
+  },
+  "half (mu -0.057)": {
+   "p_seed": 0.35,
+   "both_of_2": 0.122,
+   "2_of_3": 0.282,
+   "mean_of_2>=bar": 0.293,
+   "mean_of_2 & each>=-0.08": 0.116,
+   "mean_of_3>=bar": 0.252
+  },
+  "none (mu -0.115, RD s1/s2 mean)": {
+   "p_seed": 0.112,
+   "both_of_2": 0.013,
+   "2_of_3": 0.035,
+   "mean_of_2>=bar": 0.043,
+   "mean_of_2 & each>=-0.08": 0.004,
+   "mean_of_3>=bar": 0.018
+  },
+  "none, s1-like (mu -0.076)": {
+   "p_seed": 0.256,
+   "both_of_2": 0.065,
+   "2_of_3": 0.163,
+   "mean_of_2>=bar": 0.176,
+   "mean_of_2 & each>=-0.08": 0.048,
+   "mean_of_3>=bar": 0.128
+  }
+ },
+ "P_lever_full": {
+  "sig 0.03, P(HOLD both) 0.85": 0.584,
+  "sig 0.03, P(HOLD both) 0.50": 0.343,
+  "sig 0.05, P(HOLD both) 0.85": 0.434,
+  "sig 0.05, P(HOLD both) 0.50": 0.255,
+  "sig 0.07, P(HOLD both) 0.85": 0.366,
+  "sig 0.07, P(HOLD both) 0.50": 0.215
+ }
+}
