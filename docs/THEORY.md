@@ -317,6 +317,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **PASSED 10-23 (227-2, Audit-reproduced; first language task with an established C1 band): free-decode acc d2 1.000, d3 1.000, d4 1.000, d5 0.97 (DIRECT one-pass d2 ~0.2) -> one-pass gap from d=2 crossed serially; next: latent C1 registration (exposure-matched G-W0); $0.** APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
 | 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | CLOSED | **CLOSED 10-23 (229-1): language line closed after the §229 fallback also failed; $1.19 total.** PILOT FAIL 10-23 (228-2): P-LAT2 d=2 0.087 = DIRECT 0.093 (chance), pass-1 aux 0.51 -> LAT-NOT-LEARNABLE-D2; pre-named cumulative-target fallback proposed (~$0.7), else close; $0.58.** APPROVED by Audit 10-23 (cap $20): build inject_ow (deviations (a)-(g) with §184 line refs) + score_lat (hop-per-pass / relay stubs) -> G-D -> local pilots -> d<=4 cloud pilot -> Stage 1** |
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
+| 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **for Audit’s ruling** |
 
 ## Live sections
 
@@ -19166,6 +19167,45 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 - External: OK. No latent-CoT method targets the partially reduced problem (SIM-CoT / MUX / PMPS / PLaT target step text; CODI a teacher hidden state; Coconut none). Re-rooting appears only as explicit text (NRS, PENCIL, He 2512.02677).
 - Internal: NARROW. §175's re-rooted-expression decoder and §223 PORT-STATE (CODI + R_j) used it already and are cited. The delta is the recurrent-memory loop on word programs.
 
+## 230. FH-FT-FIX: the hold without the depth cost, via a post-formation anchored far fine-tune at fixed λ (HOLD-DEPTH, from REVIEW_HD; **for Audit's ruling, cap $4**; pre-registered 2026-10-23 23:57 EDT, before any §230 code or output)
+
+**Premise (descriptive, already seen; disclosed).**
+- REVIEW_HD found the far loss acting DURING formation costs depth by removing the base's two-reductions-in-one-pass shortcut (n = 10 items finished at pass 9: base 57 / 78 and 76 / 95 vs RD 20 / 52 and 40 / 57). Applied AFTER formation it does not.
+- The §224 Stage-1 cells, s224 FT recipe (12k from D3-T, lr 3e-5), H(128) and DEPTH = mean acc_n2 n 9–11, vs FT-CTRL:
+
+| seed | cell | λ | H(128) | DEPTH (vs FT-CTRL) |
+|---|---|---|---|---|
+| s2 | FH-FT | 1.618 | 0.990 | 0.685 (0.636) |
+| s1 | FH-FT | 0.035 (dose rule) | 0.818 | 0.615 (0.593) |
+| s1 / s2 | RD-FT | – | 0.664 / 0.740 | – |
+
+  - FH-FT s2 also shows no ahead-of-schedule loss (p = 1.0).
+- **Hypothesis:** at a sufficient fixed λ, the anchored far fine-tune holds to K′ 128 with no depth cost. s1's partial hold reflects its small dose-rule λ.
+- **Confirmatory test on s1 only** (s2's result motivated the hypothesis and is not re-counted).
+
+**Cell (one change vs FH-FT s1).** s230_fhftfix_s1: the s224 FH-FT s1 args with **λ fixed at 1.6** (a new default-off flag --fh_lambda_fixed, replacing the dose rule; 1.6 ≈ s2's dose-rule value), 12k from s213_d3t_s1, lr 3e-5, one cloud RTX 3090.
+- Args diff vs s224_fhft_s1 = {fh_lambda_fixed} + identity. Evals on the 3090 as §224 Stage 1 (khorizon to K′ 128, acc, stall).
+- **Comparator:** s224_ftctrl_s1_re (FT-CTRL s1, 3090 evals: DEPTH 0.593, H(128) 0.117).
+
+**Pass (FH-FT-FIX):**
+- H(K′) ≥ 0.95 at every K′ 24–128;
+- DEPTH ≥ FT-CTRL s1 − 0.03 (≥ 0.563);
+- NOLOSS: acc_n2 n 1–8 ≥ 0.99, stall ≥ ctrl − 0.02, C1 floor (K′ 0 / 1 ≤ ctrl + 0.05).
+- Descriptive: the ahead-of-schedule shortcut count at n = 10 (REVIEW_HD's check) and r / drift.
+
+**Outcomes.**
+- Pass → the recipe "train the base, then a short anchored far fine-tune at λ 1.6" is the hold fix without depth cost (2 seeds: s2 motivating, s1 confirming). It may be carried into C1 work with that scope.
+- **Fail → the HOLD-DEPTH line closes:** RD's hold is accepted with the reworded depth caveat (the cost is extrapolation shortcutting, not the in-range C1 floor), and no further lever.
+
+**OC (σ_Δ 0.05 for DEPTH).**
+- If the s2 effect is real (DEPTH +0.05, H 0.99): P(DEPTH ≥ −0.03) ≈ 0.95 and P(HOLD) ≈ 0.8, so ≈ 0.75.
+- If the effect is not real (FH-FT behaves like RD-FT, H(128) 0.66–0.74): P(HOLD) ≈ 0.02, so ≈ 0.
+- Prior ≈ 0.5.
+
+**Cost.** ≈ $1.2 (12k fine-tune + 3090 evals, as Stage-1 cells); cap $4; realised at registration $0.
+
+**Build.** vbank --fh_lambda_fixed (default None ⇒ bitwise §224); gradflow; a flags-off bitwise gate; Audit G-D; G-FH-EQ v2 on the host.
+
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
 - **What 20k draws gave:** a 0.524 augmented share, failing I(t; M) alone (0.0514).
@@ -21327,6 +21367,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (i) Idling on computing passes is not supported (d_idle_pre ≈ 0; no SETTLE).
   - (ii) **The predicted repair signature is ABSENT in both RD seeds.** The formation-time-repair premise of G-FAR is weakened.
   - (iii) The consistent signature is the loss of items the base finishes ahead of schedule (PAR_SIG in 4 / 4 trained cells; d_ahead −0.13 to −0.21). The far pass costs the model's ability to finish deep items early within the computing budget. That is a capacity / value effect, not idling.
+  - **Correction (REVIEW_HD, 3c8a8610):** PAR_SIG's fixed 0.60 line ignores the base rate (chance PAR share 0.61 / 0.55). An exact 2×2 test makes the ahead-of-schedule loss real in **3 of 4** trained cells (RD s2 marginal, p = 0.054).
   - The red team must weigh (ii) against G-FAR's premise before any spend.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
