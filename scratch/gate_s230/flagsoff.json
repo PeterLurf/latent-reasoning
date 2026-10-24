@@ -1,0 +1,51 @@
+{
+ "fh_dose": {
+  "rc": [
+   0,
+   0
+  ],
+  "n_log": [
+   13,
+   13
+  ],
+  "log_equal": true,
+  "lambda_set": [
+   {
+    "step": 6,
+    "fh_lambda_set": 0.006440781481910139,
+    "fh_ratio_median": 31.052132503133166,
+    "fh_n_ratios": 4,
+    "fh_capped": false
+   }
+  ],
+  "step": [
+   12,
+   12
+  ],
+  "n_model_tensors": 167,
+  "mismatch": [],
+  "n_mismatch": 0,
+  "pass": true
+ },
+ "plain": {
+  "rc": [
+   0,
+   0
+  ],
+  "n_log": [
+   6,
+   6
+  ],
+  "log_equal": true,
+  "lambda_set": [],
+  "step": [
+   6,
+   6
+  ],
+  "n_model_tensors": 167,
+  "mismatch": [],
+  "n_mismatch": 0,
+  "pass": true
+ },
+ "pass": true
+}

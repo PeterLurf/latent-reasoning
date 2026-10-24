@@ -1,0 +1,66 @@
+{
+ "stats": {
+  "far_ce": 7.059543349896558e-06,
+  "fh_r_far": 0.01201449180533342,
+  "fh_r_far_g": 0.01201449180533342,
+  "fh_gate_share": 1.0,
+  "t_far": 13
+ },
+ "grad_L_far": {
+  "g.p.h_6_attn_c_attn_weight": 1.7110847125983236e-05,
+  "g.p.h_9_mlp_c_fc_weight": 1.2647822030785463e-05,
+  "g.p.h_10_attn_c_attn_weight": 1.716797311612501e-05,
+  "gain": null,
+  "slva_wq": 3.834809581735397e-06,
+  "slva_wk": null,
+  "beta": 2.0598957641865882e-07,
+  "rec.weight": null
+ },
+ "grad_L_FP": {
+  "g.p.h_6_attn_c_attn_weight": 0.01317545954630552,
+  "g.p.h_9_mlp_c_fc_weight": 0.005908787563836055,
+  "g.p.h_10_attn_c_attn_weight": null,
+  "gain": null,
+  "slva_wq": 0.002478155259944008,
+  "slva_wk": null,
+  "beta": 5.633420160196196e-06,
+  "rec.weight": null
+ },
+ "prefix_requires_grad": [
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "V_T_requires_grad": true,
+ "prefix_bitwise_vs_plain": true,
+ "plain_V_grad_from_L_FP": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "decorators": {
+  "vb_loss": [],
+  "far_branch": [],
+  "main": [],
+  "rollout": []
+ },
+ "pass": true
+}
