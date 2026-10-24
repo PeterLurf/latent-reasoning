@@ -319,7 +319,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2, Audit-reproduced; depth parity, not gain): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
-| 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
+| 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **STAGE A 10-24 (232-3): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | registered | **LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 
 ## Live sections
@@ -21540,6 +21540,31 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (a) raising mem_budget to 23 GiB risks a late OOM on a 24 GB card;
   - (c) cutting to 8k changes the registered pilot length;
   - (d) activation checkpointing needs a new build and G-D.
+
+**Note 232-2 (2026-10-24 18:12 EDT; §232 Stage A failure + fix record (Audit's request), before scoring.)** c1hold OOMed on all 6 models in the queue run: CUDA allocator fragmentation in the K′ 128 rollout (10 GiB allocated of 23.5 GiB reserved).
+- **Fix 56c88f8e (Audit G-D'd):** the cache is released per chunk; fits() checks at 0.70 of the card.
+- c1hold was re-run on the SAME host, so each identity gate reads that host's queue-run eval_vb (vbank_eval was not re-run). Host shas logged: vbank_diag 1a27f3f6 = the commit.
+- All 6 c1hold gates pass (per-pair 1.0, pooled_equal, v0-only 1.0). hold_bs stayed 32 (fit peak 0.594 of the card).
+- The fetch was manual (a sha-checked tar via scratch/_tmp); the host is destroyed and verified. Realised ≈ $1.28 of the $2.50 Stage-A cap.
+- **Lesson:** fits() at a fresh peak does not bound fragmentation across varying chunk shapes; release the cache per chunk.
+
+**Note 232-3 (2026-10-24 18:12 EDT; §232 Stage-A result: `python -B theory/score_s232.py` (da545274) on the six <m>_c1 dirs (5d749c4c; one RTX 3090, fp32, bs 32; all c1hold gates pass) + the HC models' eval_khorizon.)**
+- **Verdict: COEXIST (2/2), both seeds COEXIST-SHIFTED** → the pre-registered blind s3 is triggered (HC_v1 §1).
+- **Per seed (HC vs BASE / FT-CTRL; all decisive statistics within the pre-registered margins vs both references; VB-C1 holds in all six models):**
+
+| seed | PROBE-GAIN | PROBE(2 / 3 / 4 / 6) | follow_ii / own_ii | STALL | mean-onset slope | mean onset |
+|---|---|---|---|---|---|---|
+| s1 | 0.871 / 0.870 / 0.867 | 0.264 / 0.407 / 0.557 / 0.834 vs ctrl 0.270 / 0.408 / 0.558 / 0.837 | 1.000 / 0.000 (all three) | 1.0 | 1.114 vs 1.131 | 4.59 vs 4.57 |
+| s2 | 0.872 / 0.881 / 0.880 | 0.231 / 0.372 / 0.520 / 0.811 vs ctrl 0.232 / 0.383 / 0.518 / 0.816 | 1.000 / 0.000 | 1.0 | 1.124 vs 1.117 | 4.79 vs 4.76 |
+
+  - HOLD (H ≥ 0.95 to K′ 128), DEPTH (0.615 vs 0.593; 0.685 vs 0.636) and NOLOSS pass in both.
+- **The shift is newest-version read share only:** carry_likeness HC 0.602 vs CTRL 0.825 (s1); 0.694 vs 0.833 (s2).
+  - **OLD-SWAP old_follow = 0.000 in all six models**, so the hold models do not read content from older versions.
+  - The V_0-masked arm (v0off follow) is kept: 0.766 vs 0.783 (s1, inside the 0.02 margin by 0.003); 0.696 vs 0.698 (s2).
+  - So C1 is kept with a shifted read policy, not with history-content use. Note 232-1's s2 path difference (dose-rule λ) made no difference here.
+- **Status (scoped):** "C1 (VB-C1) and the long-horizon hold coexist after the post-formation anchored far fine-tune: 2 / 2 seeds, C1 kept with a shifted read policy". The blind s3 (§230's exact recipe) decides 2 / 3 or 3 / 3.
+- **Next:** s3 cells (D3-T s3 base 48k, FT-CTRL s3, HC s3 with --fh_lambda_fixed 1.6; cap $4), then their Stage-A evals on one 3090.
+- **Realised:** Stage A ≈ $1.28.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
