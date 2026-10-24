@@ -1,0 +1,143 @@
+{
+ "1": [
+  {
+   "decoded_dec": " Ray has 2 apples. Joy has 3 apples. Dan has 10 apples. Dan's apples times Joy's apples make Val's apples. How many apples does Val have? How many apples does Val have? The answer is:",
+   "target": 8,
+   "spine": [
+    "Dan",
+    "Val"
+   ]
+  },
+  {
+   "decoded_dec": " Zoe has 7 cups. Mia has 10 cups. Ron has 4 cups. Hal has 4 cups. Jim holds Mia's cups multiplied by Ron's cups. How many cups does Jim have? How many cups does Jim have? The answer is:",
+   "target": 7,
+   "spine": [
+    "Mia",
+    "Jim"
+   ]
+  },
+  {
+   "decoded_dec": " Nan has 10 books. Sam has 4 books. Cal has 5 books. Multiply Nan's books by Sam's books to get Joe's books. How many books does Joe have? How many books does Joe have? The answer is:",
+   "target": 7,
+   "spine": [
+    "Nan",
+    "Joe"
+   ]
+  },
+  {
+   "decoded_dec": " Ivy has 5 books. Val has 10 books. Dee has as many books as Val's books times Ivy's. Eve has 10 books. How many books does Dee have? How many books does Dee have? The answer is:",
+   "target": 6,
+   "spine": [
+    "Val",
+    "Dee"
+   ]
+  },
+  {
+   "decoded_dec": " Pat has 7 apples. Zoe has 10 apples. Zoe's apples times Pat's apples make Ray's apples. How many apples does Ray have? How many apples does Ray have? The answer is:",
+   "target": 4,
+   "spine": [
+    "Zoe",
+    "Ray"
+   ]
+  }
+ ],
+ "2": [
+  {
+   "decoded_dec": " Kate has 3 apples. Pam owns 6 apples more than Kate does. Max has 8 apples. Kim has 4 apples. Dan has 6 apples. Pam's apples times Dan's apples make Leo's apples. How many apples does Leo have? How many apples does Pam have? How many apples does Leo have? The answer is:",
+   "target": 10,
+   "spine": [
+    "Kate",
+    "Pam",
+    "Leo"
+   ]
+  },
+  {
+   "decoded_dec": " Ian has 8 shells. Bob has 9 shells. Hal has 3 shells. Take Hal's shells from Bob's shells to get Ben's shells. Pam has the number of shells Ben has, minus 3. How many shells does Pam have? How many shells does Ben have? How many shells does Pam have? The answer is:",
+   "target": 3,
+   "spine": [
+    "Bob",
+    "Ben",
+    "Pam"
+   ]
+  },
+  {
+   "decoded_dec": " Lou has 9 books. Gil has 4 books. Joe has 9 books. Dee has 6 books. Jon has 4 fewer books than Dee. Take Gil's books from Jon's books to get Ann's books. How many books does Ann have? How many books does Jon have? How many books does Ann have? The answer is:",
+   "target": 9,
+   "spine": [
+    "Dee",
+    "Jon",
+    "Ann"
+   ]
+  },
+  {
+   "decoded_dec": " Dee has 5 eggs. Gus has 2 eggs. Mia has 6 eggs. Ted has the number of eggs Gus has, minus 2. Sue has 5 eggs. Add Sue's eggs to Ted's eggs to get Lou's eggs. How many eggs does Lou have? How many eggs does Ted have? How many eggs does Lou have? The answer is:",
+   "target": 5,
+   "spine": [
+    "Gus",
+    "Ted",
+    "Lou"
+   ]
+  },
+  {
+   "decoded_dec": " Ian has 5 keys. Mia has 4 keys. Finn has 9 keys. Sue owns 5 keys more than Finn does. If you add 7 to Sue's keys, you get Ben's keys. How many keys does Ben have? How many keys does Sue have? How many keys does Ben have? The answer is:",
+   "target": 10,
+   "spine": [
+    "Finn",
+    "Sue",
+    "Ben"
+   ]
+  }
+ ],
+ "3": [
+  {
+   "decoded_dec": " Joe has 3 cups. Pam has 5 cups. Multiply Joe's cups by Pam's cups to get Gus's cups. If you add 6 to Gus's cups, you get Ray's cups. Ray's cups times Gus's cups make Eve's cups. How many cups does Eve have? How many cups does Gus have? How many cups does Ray have? How many cups does Eve have? The answer is:",
+   "target": 7,
+   "spine": [
+    "Joe",
+    "Gus",
+    "Ray",
+    "Eve"
+   ]
+  },
+  {
+   "decoded_dec": " Ted has 6 keys. Kim has 4 keys. Dan has 9 keys. Leo has the keys Ted has beyond Dan's. Finn holds Leo's keys multiplied by Kim's keys. Tom's keys equal Finn's multiplied by Leo's. How many keys does Tom have? How many keys does Leo have? How many keys does Finn have? How many keys does Tom have? The answer is:",
+   "target": 3,
+   "spine": [
+    "Ted",
+    "Leo",
+    "Finn",
+    "Tom"
+   ]
+  },
+  {
+   "decoded_dec": " Wes has 0 coins. Pat owns 7 coins more than Wes does. Joe has the number of coins Pat has, plus 6. Multiply Joe's coins by Pat's coins to get Tom's coins. How many coins does Tom have? How many coins does Pat have? How many coins does Joe have? How many coins does Tom have? The answer is:",
+   "target": 3,
+   "spine": [
+    "Wes",
+    "Pat",
+    "Joe",
+    "Tom"
+   ]
+  },
+  {
+   "decoded_dec": " Pat has 7 shells. Max has 9 shells. Pam has 2 shells. Leo has 6 shells. Nan has as many shells as Pat and Pam together. Jon owns 7 shells more than Nan does. Jim's shells equal Jon's multiplied by Nan's. How many shells does Jim have? How many shells does Nan have? How many shells does Jon have? How many shells does Jim have? The answer is:",
+   "target": 1,
+   "spine": [
+    "Pat",
+    "Nan",
+    "Jon",
+    "Jim"
+   ]
+  },
+  {
+   "decoded_dec": " Joy has 3 cups. Dee has 9 cups. Gus owns 4 cups less than Dee does. Eve has 6 fewer cups than Gus. Kim's cups equal Eve's multiplied by Gus's. How many cups does Kim have? How many cups does Gus have? How many cups does Eve have? How many cups does Kim have? The answer is:",
+   "target": 6,
+   "spine": [
+    "Dee",
+    "Gus",
+    "Eve",
+    "Kim"
+   ]
+  }
+ ]
+}
