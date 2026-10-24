@@ -15,3 +15,22 @@
 2026-10-23 13:09:19 guard s228fam ($19.9708 = $20 - outside $0.0292, GUARD_STOP=1; 341:s228_plat2_s1:1.20:8000) started
 2026-10-23 13:09:19 b341: post-admit checks started (args + shas vs scratch/s228_args_frozen_s228_plat2_s1.json)
 2026-10-23 13:16:19 §228 filler done: 341:s228_plat2_s1 85.30.169.224:40568 57399891 $0.2281/h sps 0.7293010552724203 0.69;
+2026-10-23 16:38:03 start: QS 342:s229_plat2c_s1:1.50:1.80:8000:0.80; family $20; SETUP_H 0.4; EVAL_H 1.0; inject_ow sha 0695c354cc72; inject_ow_eval sha e6fe0079b0c2
+2026-10-23 16:38:05 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 16:48:08 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 16:58:11 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 17:08:14 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 17:18:16 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 17:28:20 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 17:38:22 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 17:48:25 b342: deploying s229_plat2c_s1 on offer 43731727 (77.48.24.203, RTX_3090, $0.1636/h)
+2026-10-23 17:55:40 b342: did not start (BAD HOST 1 / 4; billed ~$0.0218)
+2026-10-23 17:55:42 b342: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 18:05:45 b342: deploying s229_plat2c_s1 on offer 55351991 (37.191.136.34, RTX_3090, $0.2009/h)
+2026-10-23 18:12:40 b342: 22:12:04 HOSTPROBE 0.5673 s/step (limit 0.854; b225 reference 0.657) on 37.191.136.34:17042
+2026-10-23 18:14:51 b342: K7 mem_check ; G-TIME 0.9240675250689189 s/step (micro 1) -> cell projection $0.69 (8000 steps, 1 x 1.0 h eval / tail; cap $1.50); family so far $0.5986 (admitted + BAD) of $20
+2026-10-23 18:14:52 b342: ADMIT s229_plat2c_s1 on 37.191.136.34:17042 (instance 57429968): $0.69
+2026-10-23 18:14:52 b342: ckpt mirror (every 0.26 h) + cell guard ($1.80 - rejected-host $0.0218 = $1.7782, GUARD_STOP=1, marks 500,1000,2000,4000,7900) started
+2026-10-23 18:14:52 guard s228fam ($19.4014 = $20 - outside $0.5986, GUARD_STOP=1; 342:s229_plat2c_s1:0.80:8000) started
+2026-10-23 18:14:52 b342: post-admit checks started (args + shas vs scratch/s228_args_frozen_s229_plat2c_s1.json)
+2026-10-23 18:21:52 §228 filler done: realised:b341 # 57399891 13:02-15:22 2.33 h x $0.235/h (P-LAT2 + P-DIR2c, drained 15:22) 0.5476;342:s229_plat2c_s1 37.191.136.34:17042 57429968 $0.2009/h sps 0.9240675250689189 0.69;

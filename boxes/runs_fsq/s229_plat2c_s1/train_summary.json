@@ -1,0 +1,23 @@
+{
+ "train_sec": 7398,
+ "last_step": 8000,
+ "n_nonfinite": 0,
+ "entry_d1": 1658,
+ "futility": null,
+ "clip_rate": 0.63775,
+ "grad_norm_preclip": {
+  "median": 6.482354402542114,
+  "p90": 12.971242046356203
+ },
+ "write_grad_spikes_floor": [
+  {
+   "step": 3500,
+   "mean": 0.0958433079207316,
+   "max": 3.734602451324463,
+   "median_prev_1k": 0.03302088379859924,
+   "spike_100x_floor": true
+  }
+ ],
+ "micro": 1,
+ "train_gpu": "NVIDIA GeForce RTX 3090"
+}
