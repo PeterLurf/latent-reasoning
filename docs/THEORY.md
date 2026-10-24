@@ -21416,6 +21416,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Predictions unchanged:** P1′ ≈ 0.45; P(C1) ≈ 0.04.
 - **Build packet before any spend:** G-B8b; G-B9; the two-group optimiser flags-off bitwise gate; per-term gradflow; plain path; mem_check at the Stage-B shape; args diffs. boxes/deltamem.py stays untouched.
 
+**Note 231-2 (2026-10-24 01:56 EDT; §231 P1′ result: docs/research_largebase_2026-10-23/lb_p1_eager.json (3994059f; script 4a50470b), per 231-1; $0.)**
+- **P1′ reads FAIL under the 231-1 rule:** EAGER_Qwen (d = 2, v_1, test N 596) = max(Q_RMS12 0.112, Q_H24 0.094) = 0.112 ≤ 0.30. The layer-0 control is 0.116; the test majority share is 0.116.
+  - GPT-2 small: G_LN6 0.106, G_HTOP 0.102.
+  - d = 3 (descriptive): every probe 0.085–0.145, with majority shares 0.142–0.152.
+  - **No feature decodes any computed value above chance**, in either model, at any write source.
+- **Validity caveat (Theory, pre-stated before closing):** P1′ had no positive control. A uniform chance-level result across all features, the layer-0 control included, is also the signature of a probe-position or label bug.
+  - Before §231 is closed as "the 0.5B base does not compute the intermediate eagerly", one $0 positive control runs with the same script and split: the probe for **v_0**, the GIVEN value of S_0, at the end of S_0's own sentence, where it is written as a number token.
+  - **Pre-stated rule:** if the positive control's test acc ≥ 0.80 on Q_L0 or Q_RMS12, the pipeline is valid and P1′ stands as FAIL → **§231 closes at $0**. If it is < 0.80, P1′ is UNREADABLE (pipeline fault): fix once, re-run P1′, and that is the only re-run.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
