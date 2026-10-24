@@ -1,0 +1,9 @@
+2026-10-23 18:14:52 start: cap $1.78, cells {342: 's229_plat2c_s1'}, marks {342: (500, 1000, 2000, 4000, 6000, 7200, 7900)}, recent-rate polls 5
+2026-10-23 18:24:57 CHECK b342 @500: {342: {'step': 600, 's_per_step': 0.925, 's_per_step_avg': 0.925, 'dph': 0.20555555555555555, 'proj_usd': 0.49}} | pair projection $0.49 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 18:35:00 CHECK b342 @1000: {342: {'step': 1200, 's_per_step': 0.912, 's_per_step_avg': 0.918, 'dph': 0.20555555555555555, 'proj_usd': 0.49}} | pair projection $0.49 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 18:55:09 CHECK b342 @2000: {342: {'step': 2500, 's_per_step': 0.925, 's_per_step_avg': 0.925, 'dph': 0.20555555555555555, 'proj_usd': 0.49}} | pair projection $0.49 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 19:25:20 CHECK b342 @4000: {342: {'step': 4500, 's_per_step': 0.927, 's_per_step_avg': 0.926, 'dph': 0.20555555555555555, 'proj_usd': 0.5}} | pair projection $0.50 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 19:55:34 CHECK b342 @6000: {342: {'step': 6400, 's_per_step': 0.922, 's_per_step_avg': 0.925, 'dph': 0.20555555555555555, 'proj_usd': 0.49}} | pair projection $0.49 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 20:15:41 CHECK b342 @7200: {342: {'step': 7700, 's_per_step': 0.927, 's_per_step_avg': 0.925, 'dph': 0.20555555555555555, 'proj_usd': 0.49}} | pair projection $0.49 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 20:25:46 CHECK b342 @7900: {342: {'step': 8000, 's_per_step': 0.924, 's_per_step_avg': 0.925, 'dph': 0.20555555555555555, 'proj_usd': 0.49}} | pair projection $0.49 (cells with data [342], others at HIGH {342: 0.69}; BAD HOSTs 0)
+2026-10-23 20:25:46 guard done: every cell past its last mark (its final step); last pair projection $0.49
