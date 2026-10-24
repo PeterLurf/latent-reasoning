@@ -1,0 +1,118 @@
+{
+ "C1_no_number": {
+  "items": 4000,
+  "cues_with_digit": 0,
+  "cues_with_answer_token": 0,
+  "pass": true
+ },
+ "C2_skeleton_only": {
+  "pairs": 2000,
+  "pairs_values_differ": 1992,
+  "pairs_cue_differs": 0,
+  "pass": true
+ },
+ "C3_cue_lookup": {
+  "n_fit": 9000,
+  "n_test": 9000,
+  "majority_test": 0.09455555555555556,
+  "name_t": 0.09677777777777778,
+  "unit_t": 0.1068888888888889,
+  "name_unit_t": 0.09533333333333334,
+  "best": 0.1068888888888889,
+  "pass": true
+ },
+ "C4_lengths": {
+  "1": {
+   "think_plain_mean": 35.474,
+   "think_plain_max": 44,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 42.474,
+   "cued_direct_dec_mean": 46.474,
+   "cued_direct_dec_max": 55,
+   "plain_dec_mean": 39.474
+  },
+  "2": {
+   "think_plain_mean": 45.416,
+   "think_plain_max": 63,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 52.416,
+   "cued_direct_dec_mean": 63.416,
+   "cued_direct_dec_max": 81,
+   "plain_dec_mean": 49.416
+  },
+  "3": {
+   "think_plain_mean": 58.206,
+   "think_plain_max": 74,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 65.206,
+   "cued_direct_dec_mean": 83.206,
+   "cued_direct_dec_max": 99,
+   "plain_dec_mean": 62.206
+  },
+  "4": {
+   "think_plain_mean": 71.608,
+   "think_plain_max": 90,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 78.608,
+   "cued_direct_dec_mean": 103.608,
+   "cued_direct_dec_max": 122,
+   "plain_dec_mean": 75.608
+  },
+  "5": {
+   "think_plain_mean": 85.084,
+   "think_plain_max": 115,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 92.084,
+   "cued_direct_dec_mean": 124.084,
+   "cued_direct_dec_max": 154,
+   "plain_dec_mean": 89.084
+  },
+  "6": {
+   "think_plain_mean": 98.966,
+   "think_plain_max": 127,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 105.966,
+   "cued_direct_dec_mean": 144.966,
+   "cued_direct_dec_max": 173,
+   "plain_dec_mean": 102.966
+  },
+  "7": {
+   "think_plain_mean": 111.836,
+   "think_plain_max": 146,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 118.836,
+   "cued_direct_dec_mean": 164.836,
+   "cued_direct_dec_max": 199,
+   "plain_dec_mean": 115.836
+  },
+  "8": {
+   "think_plain_mean": 125.376,
+   "think_plain_max": 156,
+   "cue_tokens_mean": 7.0,
+   "think_st_mean": 132.376,
+   "cued_direct_dec_mean": 185.376,
+   "cued_direct_dec_max": 216,
+   "plain_dec_mean": 129.376
+  }
+ },
+ "C5_d2_pairs": {
+  "t": 1,
+  "candidates": 2997,
+  "kept": 1879,
+  "kept_share": 0.6269602936269603,
+  "len_mismatch_dropped": 0,
+  "cfa_ne_cfb_in_kept": 0,
+  "add_s_share_step2": 0.1488154821488155,
+  "collision_draws": 200000,
+  "duplicate_sigs": 0
+ },
+ "C6_chain": {
+  "steps_checked": 14000,
+  "S_t_sentence_names_S_t-1": 14000,
+  "question_is_S_d": 3500,
+  "items_d2_8": 3500,
+  "pass": true
+ },
+ "sec": 23.7,
+ "all_pass": true
+}

@@ -1,0 +1,49 @@
+{
+ "seed": 23241,
+ "n_per_d": 1000,
+ "majority": {
+  "d1_v1": 0.113,
+  "d2_v0": 0.11,
+  "d2_v1": 0.109,
+  "d2_v2": 0.107
+ },
+ "direct": {
+  "D1": {
+   "v1": 0.648,
+   "pred_share_max": 0.13
+  },
+  "ORIG": {
+   "v2": 0.094,
+   "v1": 0.086,
+   "pred_share_max": 0.352
+  },
+  "REPL": {
+   "v1": 0.087,
+   "v2": 0.093,
+   "pred_share_max": 0.347
+  },
+  "APP": {
+   "v1": 0.085,
+   "v2": 0.092,
+   "pred_share_max": 0.366
+  },
+  "ASK0": {
+   "v0": 0.084,
+   "pred_share_max": 0.352
+  }
+ },
+ "lat": {
+  "aux_pass1_D1": 0.753,
+  "aux_pass1_ORIG": 0.242,
+  "aux_pass1_REPL": 0.239,
+  "aux_pass1_APP": 0.228,
+  "chain_d2": {
+   "acc_K2": 0.098,
+   "acc_K8": 0.102
+  },
+  "gamma": 1.0
+ },
+ "sec": 1843.4,
+ "reading": "WEAK",
+ "format": "APP"
+}
