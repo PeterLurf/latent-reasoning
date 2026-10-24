@@ -320,7 +320,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2, Audit-reproduced; depth parity, not gain): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
-| 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | registered | **APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
+| 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | registered | **LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 
 ## Live sections
 
@@ -21517,6 +21517,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - overall d = 1 (all classes): ≥ 0.80.
   - All four must hold. Per class × d is reported.
 - **CD-local:** CUED-DIRECT d = 2 test accuracy ≥ 0.80 → ST stops ("the plan alone solves d = 2 one-pass").
+
+**Note 233-2 (2026-10-24 13:40 EDT; §233 $0 local gates, read by Note 233-1's rule: scratch/gate_s233/p1_ask_name.json and cd_local.json (RTX 4060, P-DIR2 recipe, 8k); $0.)**
+- **P1-ASK+NAME PASSES** (A1 holds): test accuracy 1.000 in every class at d = 1 and d = 2.
+  - (i) S_1 at d = 2: 1.000 (n 259).
+  - (iv) S_2 with S_1 given: 1.000 (n 257).
+  - (ii) given: 1.000 / 1.000. (iii) distractor: 1.000 / 1.000.
+  - Overall d = 1: 1.000.
+  - **One pass learns to compute whichever quantity it is asked for, including the one-hop intermediate S_1 at d = 2.**
+- **CD-local does NOT stop §233:** CUED-DIRECT (one pass with all cues S_1..S_d) is 0.089 at d = 2, at chance (< 0.80), and 0.789 at d = 1.
+  - **The plan alone does not make d = 2 one-pass solvable.** Computing S_1 when asked is easy; composing S_1 → S_2 within one pass is not.
+  - Deviation, disclosed: CD-local's in-process TEST2 eval ran out of memory (OOM) on the 8 GB card. It was re-run eval-only from the saved model.pt with the same committed tokeniser path at eval_bs 50; training is unchanged.
+- **So the step-told latent loop has its premise:** asked per pass, a pass can compute v_t (P1-ASK+NAME); one pass cannot chain them (CD-local).
+- **Next:** the P-2 cloud pilot (one RTX 3090, d ≤ 2, 12k; LAT-ST vs CUED-DIRECT; LP0 / LP2 on d = 2 / LP3 / LP5 / MEAN-STATE / CUE-ONLY / CUE-WRONG), after the G-D packet (flags-off bitwise vs HEAD inject_ow, per-term gradflow, a no-digit cue fixture, args diff, mem_check). Guard $1.16.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
