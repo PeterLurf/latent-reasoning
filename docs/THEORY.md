@@ -21531,6 +21531,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **So the step-told latent loop has its premise:** asked per pass, a pass can compute v_t (P1-ASK+NAME); one pass cannot chain them (CD-local).
 - **Next:** the P-2 cloud pilot (one RTX 3090, d ≤ 2, 12k; LAT-ST vs CUED-DIRECT; LP0 / LP2 on d = 2 / LP3 / LP5 / MEAN-STATE / CUE-ONLY / CUE-WRONG), after the G-D packet (flags-off bitwise vs HEAD inject_ow, per-term gradflow, a no-digit cue fixture, args diff, mem_check). Guard $1.16.
 
+**Note 233-3 (2026-10-24 16:23 EDT; §233 P-2 cost amendment, proposed for Audit's ruling, before any P-2 output; no gate or reading change).**
+- **Why:** P-2 was refused at admission. On the one HOSTPROBE-passing 3090, LAT-ST's G-TIME was 2.03 s/step at micro 2: 12k → $1.45, over the $1.00 admit bound.
+  - The cause is structural: the +7-token cued think inputs and the lower caches push the micro-1 train peak over the 21 GiB budget (§228 P-LAT2: 18.8 GiB at micro 1). micro 2 is gradient accumulation, the same per-step batch.
+  - BAD spend so far $0.24 (3 hosts failed HOSTPROBE).
+- **Proposal (option b):** keep 12k steps and the micro the memory check picks. P-2 admit $1.55 / guard $1.85 (was $1.00 / $1.16). The §233 family cap stays $19.
+- Rejected:
+  - (a) raising mem_budget to 23 GiB risks a late OOM on a 24 GB card;
+  - (c) cutting to 8k changes the registered pilot length;
+  - (d) activation checkpointing needs a new build and G-D.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
