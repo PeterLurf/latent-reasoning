@@ -317,7 +317,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **PASSED 10-23 (227-2, Audit-reproduced; first language task with an established C1 band): free-decode acc d2 1.000, d3 1.000, d4 1.000, d5 0.97 (DIRECT one-pass d2 ~0.2) -> one-pass gap from d=2 crossed serially; next: latent C1 registration (exposure-matched G-W0); $0.** APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
 | 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | CLOSED | **CLOSED 10-23 (229-1): language line closed after the §229 fallback also failed; $1.19 total.** PILOT FAIL 10-23 (228-2): P-LAT2 d=2 0.087 = DIRECT 0.093 (chance), pass-1 aux 0.51 -> LAT-NOT-LEARNABLE-D2; pre-named cumulative-target fallback proposed (~$0.7), else close; $0.58.** APPROVED by Audit 10-23 (cap $20): build inject_ow (deviations (a)-(g) with §184 line refs) + score_lat (hop-per-pass / relay stubs) -> G-D -> local pilots -> d<=4 cloud pilot -> Stage 1** |
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
-| 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **for Audit’s ruling** |
+| 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 
 ## Live sections
 
@@ -21369,6 +21369,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (iii) The consistent signature is the loss of items the base finishes ahead of schedule (PAR_SIG in 4 / 4 trained cells; d_ahead −0.13 to −0.21). The far pass costs the model's ability to finish deep items early within the computing budget. That is a capacity / value effect, not idling.
   - **Correction (REVIEW_HD, 3c8a8610):** PAR_SIG's fixed 0.60 line ignores the base rate (chance PAR share 0.61 / 0.55). An exact 2×2 test makes the ahead-of-schedule loss real in **3 of 4** trained cells (RD s2 marginal, p = 0.054).
   - The red team must weigh (ii) against G-FAR's premise before any spend.
+
+**Note 230-1 (2026-10-23 23:57 EDT; Audit's approval conditions for §230, before any output; no pass-rule change).**
+- **(1) Dose scale, descriptive:** the dose rule picked λ 0.035 (s1) vs 1.618 (s2), ≈ 46× apart, so the far-loss scale differs by seed.
+  - Log, per 100-step window: λ·L_FP / answer_ce and λ·L_FP / (L_ans + L_rec + L_far); also the step-0 L_FP value.
+  - Report the same ratios for s224_fhft_s2 from its log.
+  - If DEPTH fails, the report shows the ratio beside it, so that "over-dosed on s1" stays distinguishable from "no fix". The pass rule is unchanged.
+- **(2) Fail-branch wording:** "the cost is extrapolation shortcutting, not the in-range C1 floor" is tagged **[DESCRIPTIVE, REVIEW_HD]**, an interpretation, not a finding. The C6 status line on a fail reads: "hold fixed by RD; depth cost at n 9–11 −0.08 / −0.15 / −0.26 unresolved".
+- **(3) Pass scope:** "hold without depth cost: 1 confirmed (s1) + 1 motivating (s2) seed, 12k post-formation anchored far fine-tune at λ 1.6".
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
