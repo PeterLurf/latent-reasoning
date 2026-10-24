@@ -317,7 +317,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 227 | TEXT-SERIAL control (Audit ruling on 226-2; $0): text-CoT (step sentences) with full FT on the TOPO word programs; free-decode final-answer acc d=2 >= 0.80 and d=3 >= 0.70 at stop 18k; pass -> latent C1 draft; fail -> base-model decision to the user | registered | **PASSED 10-23 (227-2, Audit-reproduced; first language task with an established C1 band): free-decode acc d2 1.000, d3 1.000, d4 1.000, d5 0.97 (DIRECT one-pass d2 ~0.2) -> one-pass gap from d=2 crossed serially; next: latent C1 registration (exposure-matched G-W0); $0.** APPROVED by Audit 10-23 ($0; R_step kept): build --text_cot + decode eval; G-D incl. flags-off bitwise for all cells, decode known-answer smoke (gold steps parse 100%), CurGate signal named in args.json** |
 | 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | CLOSED | **CLOSED 10-23 (229-1): language line closed after the §229 fallback also failed; $1.19 total.** PILOT FAIL 10-23 (228-2): P-LAT2 d=2 0.087 = DIRECT 0.093 (chance), pass-1 aux 0.51 -> LAT-NOT-LEARNABLE-D2; pre-named cumulative-target fallback proposed (~$0.7), else close; $0.58.** APPROVED by Audit 10-23 (cap $20): build inject_ow (deviations (a)-(g) with §184 line refs) + score_lat (hop-per-pass / relay stubs) -> G-D -> local pilots -> d<=4 cloud pilot -> Stage 1** |
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
-| 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
+| 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 
 ## Live sections
@@ -21441,6 +21441,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **The 0.5B base does not compute the intermediate eagerly at the write sources**, the same failure mode as GPT-2 small's trained §228 model (REVIEW_LB #1).
   - Scale to 0.5B does not supply the missing ingredient for the §228-style INJECT arm.
 - **Implication (descriptive):** the latent route on this word-program band needs an arm that is TOLD what to compute at each pass, rather than relying on eager intermediates. That is the pre-named next design (LB_v1 §2: a step-told arm, or a Shapiro-style loop retrofit), tested first on GPT-2 small. A new registration needs the user's direction (the language line).
+
+**Note 230-2 (2026-10-24 05:19 EDT; §230 result: s230_fhftfix_s1 (9f40a4b6; K10 3ad0ad6a; RTX 3090 evals, fp32, bs 32; G-FH-EQ v2 and args OK; 12k) vs s224_ftctrl_s1_re (same card class); read by the pre-stated §230 rule; realised ≈ $1.00 of $4.)**
+- **FH-FT-FIX PASSES:**
+  - **HOLD:** H(K′) = 1.000 / 0.999 / 0.999 / 0.999 / 0.998 / **0.994** at K′ 24 / 32 / 48 / 64 / 96 / 128, ≥ 0.95 at every K′. FT-CTRL s1's H(128) is 0.117.
+  - **DEPTH:** mean acc_n2 n 9–11 = 0.615 vs FT-CTRL 0.593, **Δ +0.022** (bar ≥ −0.03).
+  - **NOLOSS:** acc_n2 n 1–8 min 0.999; stall.recovery 1.000 vs 1.000; C1 floor (K′ 0 / 1 ≤ ctrl + 0.05 at every n) met.
+- **Dose (230-1 (1), descriptive):**
+  - λ fixed at 1.6; step-0 L_FP 0.039;
+  - λ·L_FP / (L_ans + L_rec + L_far): median 5.9 per window, 29.3 in the last window;
+  - λ·L_FP / answer_ce: median 14.
+  - So the penalty dominated the loss late in the fine-tune, with no measured cost.
+- **Status (scoped per 230-1 (3)):** **hold without depth cost: 1 confirmed (s1) + 1 motivating (s2) seed, 12k post-formation anchored far fine-tune at λ 1.6,** on the synthetic VERSION-BANK nested-arithmetic recipe.
+  - Together with §224: training the far loss from scratch costs depth (RD −0.08 / −0.15 / −0.26), while applying it after formation does not.
+  - This recipe may be carried into C1 work on the synthetic line, with that scope.
+- **Realised:** §230 ≈ $1.00; the HOLD-DEPTH line (§224 + §230) = $18.87.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
