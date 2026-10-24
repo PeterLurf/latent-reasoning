@@ -1,0 +1,72 @@
+{
+ "task": "nested",
+ "arm": "vbank",
+ "mode": "slva",
+ "arch": "SLVA",
+ "table": "train",
+ "wpe_frozen_ok": null,
+ "mct": false,
+ "seed": 3,
+ "acc_n2_host": {
+  "1": 1.0,
+  "2": 1.0,
+  "3": 1.0,
+  "4": 1.0,
+  "5": 1.0,
+  "6": 1.0,
+  "7": 1.0,
+  "8": 0.999,
+  "9": 0.666,
+  "10": 0.282,
+  "11": 0.178,
+  "12": 0.138,
+  "13": 0.101,
+  "14": 0.114,
+  "15": 0.088,
+  "16": 0.095
+ },
+ "train_sec": 26313,
+ "n_nonfinite": 0,
+ "gate_hist": [
+  {
+   "step": 6000,
+   "from": 3,
+   "to": 5,
+   "reason": "answer_ce < 0.30 for 2 bins",
+   "bins": [
+    1.392223740518093,
+    0.5264928273782135,
+    0.2030959600508213,
+    0.07535781011874497
+   ]
+  },
+  {
+   "step": 9000,
+   "from": 5,
+   "to": 8,
+   "reason": "answer_ce < 0.30 for 2 bins",
+   "bins": [
+    0.47256256148405373,
+    0.18015284633403644,
+    0.10278753665386467
+   ]
+  }
+ ],
+ "eval_dtype": "torch.bfloat16",
+ "train_gpu": "NVIDIA GeForce RTX 3090",
+ "train_driver": "575.64.03",
+ "torch_version": "2.5.1+cu124",
+ "cuda_version": "12.4",
+ "cudnn_version": 90100,
+ "python_version": "3.11.10",
+ "image_tag": "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel",
+ "eval_sec": 39,
+ "note": "descriptive host eval; the registered readings come from the local fp32 eval_vb.json (note 211-1)",
+ "fh_state": {
+  "lam": null,
+  "lam_step": null,
+  "ratio_median": null,
+  "far_nonfinite": 0
+ },
+ "fh_n_ratios": 0
+}

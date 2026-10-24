@@ -1,0 +1,60 @@
+2026-10-22 22:50:15 start: QS 336:s224_fh_s1:3.10:3.70:48000:1:1 337:s224_rd_s1:3.80:4.60:48000:1:1 338:s224_fh_s2:3.10:3.70:48000:1:2 339:s224_rd_s2:3.80:4.60:48000:1:2; family $16; SETUP_H 0.4; EVAL_H 2.0; vbank sha 0634fdc03816; vbank_diag sha a602c4075b71; vbank_eval sha dd5752b8ae10
+2026-10-22 22:50:19 b336: deploying s224_fh_s1 on offer 56400878 (50.40.161.201, RTX_3090, $0.2428/h)
+2026-10-22 22:56:39 b336: 02:55:47 HOSTPROBE 0.5184 s/step (limit 0.854; b225 reference 0.657) on 50.40.161.201:60538
+2026-10-22 22:57:43 b336: K7 mem_check {"peak_gib_train_step":12.651230335235596,"peak_gib_eval_n16_k24":10.336616516113281,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.7183212161064148 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $3.14 (48000 + EQ 4800 steps, 1 eval set(s) x 2.0 h; cap $3.10); family so far $0.0 (admitted + BAD) of $16
+2026-10-22 22:57:43 b336: projection $3.14 (cell cap $3.10; family $0.0 + $3.14 vs $16) NOT admitted on 50.40.161.201:60538 (measured refusal 1 / 3) - destroying, next host
+2026-10-22 22:57:47 b336: DESTROYED_VERIFIED 57311055
+2026-10-22 22:57:50 b336: deploying s224_fh_s1 on offer 54328025 (86.127.1.195, RTX_3090, $0.2327/h)
+2026-10-22 23:03:41 b336: 03:03:15 HOSTPROBE 0.5332 s/step (limit 0.854; b225 reference 0.657) on 86.127.1.195:56745
+2026-10-22 23:04:49 b336: K7 mem_check {"peak_gib_train_step":12.651230335235596,"peak_gib_eval_n16_k24":10.336616516113281,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.7333270311355591 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $3.06 (48000 + EQ 4800 steps, 1 eval set(s) x 2.0 h; cap $3.10); family so far $0.0324 (admitted + BAD) of $16
+2026-10-22 23:04:50 b336: ADMIT s224_fh_s1 on 86.127.1.195:56745 (instance 57311788): $3.06
+2026-10-22 23:04:50 b336: ckpt mirror (every 0.41 h) + cell guard ($3.70 - rejected-host $0.0324 = $3.6676, GUARD_STOP=1) started
+2026-10-22 23:04:50 guard s224s2fam ($15.9676 = $16 - outside $0.0324, GUARD_STOP=1; 336:s224_fh_s1:2.9:48000 337:s224_rd_s1:3.5:48000 338:s224_fh_s2:2.9:48000 339:s224_rd_s2:3.5:48000) started
+2026-10-22 23:04:50 b336: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_fh_s1.json)
+2026-10-22 23:11:54 b337: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 23:21:58 b337: deploying s224_rd_s1 on offer 57308838 (149.40.242.200, RTX_3090, $0.2414/h)
+2026-10-22 23:34:14 b337: 03:33:47 HOSTPROBE 0.5768 s/step (limit 0.854; b225 reference 0.657) on 149.40.242.200:20190
+2026-10-22 23:35:34 b337: K7 mem_check {"peak_gib_train_step":12.651230335235596,"peak_gib_eval_n16_k24":10.336616516113281,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.76614377895991 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $3.77 (48000 + EQ 4800 steps, 2 eval set(s) x 2.0 h; cap $3.80); family so far $3.0924 (admitted + BAD) of $16
+2026-10-22 23:35:34 b337: ADMIT s224_rd_s1 on 149.40.242.200:20190 (instance 57314530): $3.77
+2026-10-22 23:35:34 b337: ckpt mirror (every 0.43 h) + cell guard ($4.60 - rejected-host $0.0000 = $4.6, GUARD_STOP=1) started
+2026-10-22 23:35:34 b337: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_rd_s1.json)
+2026-10-22 23:42:49 b338: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-22 23:52:54 b338: deploying s224_fh_s2 on offer 28824264 (186.128.151.58, RTX_3090, $0.2014/h)
+2026-10-22 23:54:29 b338: did not start (BAD HOST 2 / 4; billed ~$0.0067)
+offer_pick: search failed: t)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='console.vast.ai', port=443): Max retries exceeded with url: /api/v0/bundles/ (Caused by NameResolutionError("HTTPSConnection(host='console.vast.ai', port=443): Failed to resolve 'console.vast.ai' ([Errno 11001] getaddrinfo failed)"))
+
+2026-10-22 23:54:32 b338: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 00:04:36 b338: deploying s224_fh_s2 on offer 56443391 (192.54.244.15, RTX_3090, $0.2414/h)
+2026-10-23 00:17:57 b338: 04:16:59 HOSTPROBE 0.5164 s/step (limit 0.854; b225 reference 0.657) on 192.54.244.15:40228
+2026-10-23 00:18:03 b338: K7 mem_check {"peak_gib_train_step":12.646544456481934,"peak_gib_eval_n16_k24":10.33489990234375,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.7128762006759644 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $3.1 (48000 + EQ 4800 steps, 1 eval set(s) x 2.0 h; cap $3.10); family so far $6.8691 (admitted + BAD) of $16
+2026-10-23 00:18:03 b338: ADMIT s224_fh_s2 on 192.54.244.15:40228 (instance 57318662): $3.1
+2026-10-23 00:18:03 b338: ckpt mirror (every 0.4 h) + cell guard ($3.70 - rejected-host $0.0067 = $3.6933, GUARD_STOP=1) started
+2026-10-23 00:18:03 b338: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_fh_s2.json)
+2026-10-23 00:25:06 b339: deploying s224_rd_s2 on offer 54895038 (85.30.169.224, RTX_3090, $0.2281/h)
+2026-10-23 00:32:24 b339: 04:31:31 HOSTPROBE 0.5025 s/step (limit 0.854; b225 reference 0.657) on 85.30.169.224:40584
+2026-10-23 00:32:31 b339: K7 mem_check {"peak_gib_train_step":12.651230335235596,"peak_gib_eval_n16_k24":10.336616516113281,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.687285061677297 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $3.3 (48000 + EQ 4800 steps, 2 eval set(s) x 2.0 h; cap $3.80); family so far $9.9691 (admitted + BAD) of $16
+2026-10-23 00:32:31 b339: ADMIT s224_rd_s2 on 85.30.169.224:40584 (instance 57321002): $3.3
+2026-10-23 00:32:31 b339: ckpt mirror (every 0.38 h) + cell guard ($4.60 - rejected-host $0.0000 = $4.6, GUARD_STOP=1) started
+2026-10-23 00:32:31 b339: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_rd_s2.json)
+2026-10-23 00:39:32 §224 Stage-2 filler done: 336:s224_fh_s1 86.127.1.195:56745 57311788 $0.2327/h sps 0.7333270311355591 3.06;337:s224_rd_s1 149.40.242.200:20190 57314530 $0.2414/h sps 0.76614377895991 3.77;338:s224_fh_s2 192.54.244.15:40228 57318662 $0.2414/h sps 0.7128762006759644 3.1;339:s224_rd_s2 85.30.169.224:40584 57321002 $0.2281/h sps 0.687285061677297 3.3;
+2026-10-23 10:18:27 start: QS 340:s224_rd_s3:3.10:3.70:48000:1:3; family $16; SETUP_H 0.4; EVAL_H 2.0; vbank sha 0634fdc03816; vbank_diag sha a602c4075b71; vbank_eval sha dd5752b8ae10
+2026-10-23 10:18:29 b340: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 10:28:31 b340: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 10:38:34 b340: deploying s224_rd_s3 on offer 55351991 (37.191.136.34, RTX_3090, $0.2009/h)
+2026-10-23 10:46:03 b340: did not start (BAD HOST 1 / 4; billed ~$0.0268)
+2026-10-23 10:46:05 b340: deploying s224_rd_s3 on offer 57308836 (149.40.242.200, RTX_3090, $0.2414/h)
+2026-10-23 10:51:48 b340: 14:51:42 HOSTPROBE 0.5693 s/step (limit 0.854; b225 reference 0.657) on 149.40.242.200:20185
+2026-10-23 10:53:01 b340: K7 mem_check {"peak_gib_train_step":12.651230335235596,"peak_gib_eval_n16_k24":10.336616516113281,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.7604821761449178 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $3.27 (48000 + EQ 4800 steps, 1 eval set(s) x 2.0 h; cap $3.10); family so far $10.5598 (admitted + BAD) of $16
+2026-10-23 10:53:01 b340: projection $3.27 (cell cap $3.10; family $10.5598 + $3.27 vs $16) NOT admitted on 149.40.242.200:20185 (measured refusal 1 / 3) - destroying, next host
+2026-10-23 10:53:03 b340: DESTROYED_VERIFIED 57384839
+2026-10-23 10:53:05 b340: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 11:03:08 b340: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-23 11:13:11 b340: deploying s224_rd_s3 on offer 48791687 (70.69.192.6, RTX_3090, $0.1671/h)
+2026-10-23 11:22:44 b340: 15:21:55 HOSTPROBE 0.5513 s/step (limit 0.854; b225 reference 0.657) on 70.69.192.6:27344
+2026-10-23 11:23:50 b340: K7 mem_check {"peak_gib_train_step":12.651230335235596,"peak_gib_eval_n16_k24":10.336616516113281,"bs":64,"micro":1,"eval_bs":64,"gpu":"NVIDIAGeForceRTX3090","amp":"torch.bfloat16"}; G-TIME 0.7626559575398763 s/step ({"auto_micro":1,"peak_gib_by_micro":{"1":11.27},"mem_budget":21.0}) -> cell projection $2.27 (48000 + EQ 4800 steps, 1 eval set(s) x 2.0 h; cap $3.10); family so far $10.588 (admitted + BAD) of $16
+2026-10-23 11:23:51 b340: ADMIT s224_rd_s3 on 70.69.192.6:27344 (instance 57387721): $2.27
+2026-10-23 11:23:51 b340: ckpt mirror (every 0.42 h) + cell guard ($3.70 - rejected-host $0.0550 = $3.645, GUARD_STOP=1) started
+2026-10-23 11:23:51 guard s224s2fam ($5.412 = $16 - outside $10.588, GUARD_STOP=1; 340:s224_rd_s3:2.9:48000) started
+2026-10-23 11:23:51 b340: post-admit checks started (G-FH-EQ: 1; args vs scratch/s224_args_frozen_s224_rd_s3.json)
+2026-10-23 11:30:51 §224 Stage-2 filler done: # 336:s224_fh_s1 86.127.1.195:56745 57311788 $0.2327/h sps 0.7333270311355591 3.06;# 337:s224_rd_s1 149.40.242.200:20190 57314530 $0.2414/h sps 0.76614377895991 3.77;# 338:s224_fh_s2 192.54.244.15:40228 57318662 $0.2414/h sps 0.7128762006759644 3.1;# 339:s224_rd_s2 85.30.169.224:40584 57321002 $0.2281/h sps 0.687285061677297 3.3;realised:pre-s3-nonBAD # invoices $10.533 minus BAD $0.0391 10.4939;340:s224_rd_s3 70.69.192.6:27344 57387721 $0.1671/h sps 0.7626559575398763 2.27;
