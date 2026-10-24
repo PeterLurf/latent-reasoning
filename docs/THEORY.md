@@ -318,6 +318,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | CLOSED | **CLOSED 10-23 (229-1): language line closed after the §229 fallback also failed; $1.19 total.** PILOT FAIL 10-23 (228-2): P-LAT2 d=2 0.087 = DIRECT 0.093 (chance), pass-1 aux 0.51 -> LAT-NOT-LEARNABLE-D2; pre-named cumulative-target fallback proposed (~$0.7), else close; $0.58.** APPROVED by Audit 10-23 (cap $20): build inject_ow (deviations (a)-(g) with §184 line refs) + score_lat (hop-per-pass / relay stubs) -> G-D -> local pilots -> d<=4 cloud pilot -> Stage 1** |
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
+| 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | registered | **for Audit’s ruling** |
 
 ## Live sections
 
@@ -19205,6 +19206,26 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **Cost.** ≈ $1.2 (12k fine-tune + 3090 evals, as Stage-1 cells); cap $4; realised at registration $0.
 
 **Build.** vbank --fh_lambda_fixed (default None ⇒ bitwise §224); gradflow; a flags-off bitwise gate; Audit G-D; G-FH-EQ v2 on the host.
+
+## 231. LARGE-BASE: the §228 latent C1 band on Qwen2.5-0.5B (the user's 10-23 decision "both, synthetic first"; **for Audit's ruling, cap $25** (staged terminal design; the full d ≤ 8 design, $30.53 at guard, is not registered); pre-registered 2026-10-24 00:51 EDT, before any §231 code or output)
+
+**Registered text.** docs/research_largebase_2026-10-23/LB_v1.md **at 857aed34** (v1 = LB_draft.md 9c38f364 + REVIEW_LB fixes 1–10), frozen. Literature: LIT_LARGEBASE_CHECK_2026-10-24.md.
+
+**Premise (REVIEW_LB #1, $0).** At GPT-2 small, the §228 INJECT think pass never computes the unrequested d = 2 intermediate: v_1 is at chance in the write source (probe 0.11–0.16). Does a larger base compute it eagerly?
+
+**Launch condition P1′ ($0, CPU).** EAGER on d ≥ 2 items at the write sources of frozen Qwen2.5-0.5B. **≤ 0.30 → no spend; the line closes.**
+
+**Cells.** DIRECT-Q, LAT-Q (INJECT port; TWO trunk-lr arms, 1.6e-5 and 8.6e-5, or Shapiro's lr if extracted before launch) and TEXT-Q (the §227 control, to 30k). Exposure-matched; one cloud RTX 3090 class. Deviations L1–L13 as listed (RoPE, digit-split tokenizer, GQA memory init with per-head rotations, two-group optimiser, wo lr 3.8e-5).
+
+**Gates.**
+- A1 (d ≤ 2, 8k): LP0 self-calibrated; LP1; **LP2 on d = 2 items only**; LP3 binding, not applicable if DIRECT-Q d = 2 > 0.55.
+- A2 (d ≤ 4): LP4.
+- Stage B (U{1..6}, 36k) only on an A pass, with §228's readings (R1, mean-state R2, R3 swap on cf(a) ∪ cf_b).
+- If DIRECT-Q d = 3 > 0.50, Stage B does not run and the d ≤ 8 design goes to the user.
+
+**OC.** P(C1) ≈ 0.04; ≈ 0 under no effect.
+
+**Cost.** $18.79 point / $24.42 guard; cap $25; expected ≈ $5.7–7.4. Realised at registration $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
