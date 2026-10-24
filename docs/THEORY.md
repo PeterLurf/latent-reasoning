@@ -21535,7 +21535,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Why:** P-2 was refused at admission. On the one HOSTPROBE-passing 3090, LAT-ST's G-TIME was 2.03 s/step at micro 2: 12k → $1.45, over the $1.00 admit bound.
   - The cause is structural: the +7-token cued think inputs and the lower caches push the micro-1 train peak over the 21 GiB budget (§228 P-LAT2: 18.8 GiB at micro 1). micro 2 is gradient accumulation, the same per-step batch.
   - BAD spend so far $0.24 (3 hosts failed HOSTPROBE).
-- **Proposal (option b):** keep 12k steps and the micro the memory check picks. P-2 admit $1.55 / guard $1.85 (was $1.00 / $1.16). The §233 family cap stays $19.
+- **Ruling (Audit, adopted):** keep 12k steps (exposure-matched to CD and §228) and the micro the memory check picks. **P-2 admit $1.50 / guard $1.75** (was $1.00 / $1.16; Theory had proposed $1.55 / $1.85). The §233 family cap stays $19, and the 4-BAD rule is kept.
 - Rejected:
   - (a) raising mem_budget to 23 GiB risks a late OOM on a 24 GB card;
   - (c) cutting to 8k changes the registered pilot length;
