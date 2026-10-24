@@ -21306,6 +21306,29 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - answers fixed by pass n;
   - **formation-time repair** proposed (far loss on wrong-prefix items while computation forms; repair dose 3,240–3,590 from scratch vs 6–10 in the fine-tune cells, which show no depth cost).
 
+**Note 224-11 (2026-10-23 23:16 EDT; HOLD-DEPTH Stage-0 result (224-10): hd_check_cpu on the 7 models (all rc 0) + hd_stage0_score.py; $0.)**
+- **Reading: MIXED → G-FAR proceeds to the red team** (pre-stated gate). RD s1 vs base s1 = MIXED; RD s2 vs base s2 = VALUE; the two disagree, so MIXED. **No SETTLE label anywhere.**
+- **Key fields (same-seed RD vs base):**
+
+| field | s1 | s2 |
+|---|---|---|
+| dU | +0.226 | −0.132 |
+| act_late_ratio | 1.28 | 0.88 |
+| d_idle_pre | +0.02 | +0.01 |
+| REPAIR_SIG | False | False |
+| PAR_SIG | True | True |
+| PAR_share | 0.79 | 0.63 |
+| d_ahead | −0.164 | −0.125 |
+| d_acc | −0.068 | −0.201 |
+
+  - FH: REPAIR_SIG True in s1 only; PAR_SIG True in both.
+  - RD s3 (no same-seed base): VALUE vs base s1, MIXED vs base s2; unlabelled.
+- **Reading (descriptive):**
+  - (i) Idling on computing passes is not supported (d_idle_pre ≈ 0; no SETTLE).
+  - (ii) **The predicted repair signature is ABSENT in both RD seeds.** The formation-time-repair premise of G-FAR is weakened.
+  - (iii) The consistent signature is the loss of items the base finishes ahead of schedule (PAR_SIG in 4 / 4 trained cells; d_ahead −0.13 to −0.21). The far pass costs the model's ability to finish deep items early within the computing budget. That is a capacity / value effect, not idling.
+  - The red team must weigh (ii) against G-FAR's premise before any spend.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
