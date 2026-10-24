@@ -1,0 +1,28 @@
+{
+ "rc": [
+  0,
+  0
+ ],
+ "eval_vb_keys": [
+  "acc_k",
+  "acc_n2",
+  "bank_ablate",
+  "bank_off",
+  "card",
+  "carry_likeness",
+  "dtype",
+  "eval_bs",
+  "hist_trunc",
+  "mct",
+  "mode",
+  "part_sec",
+  "per_n",
+  "r_acc_by_t",
+  "run",
+  "stepcap",
+  "test_meta",
+  "vswap"
+ ],
+ "d3hist": true,
+ "pass": true
+}

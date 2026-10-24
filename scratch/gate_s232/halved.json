@@ -1,0 +1,28 @@
+{
+ "hold_bs": 2,
+ "gate": {
+  "per_pair_ii_hold_vs_K": 1.0,
+  "pooled_c1hold": {
+   "n_pairs": 88,
+   "follow_ii": 1.0,
+   "own_ii": 0.0,
+   "follow_iv": 0.8068181818181818,
+   "own_iv": 0.011363636363636364
+  },
+  "pooled_eval_vb": {
+   "n_pairs": 88,
+   "follow_ii": 1.0,
+   "own_ii": 0.0,
+   "follow_iv": 0.8068181818181818,
+   "own_iv": 0.011363636363636364
+  },
+  "pooled_equal": true,
+  "v0only_chunks_bitwise": 1.0,
+  "v0only_n_chunks": 19,
+  "v0off_changed_share_clean": 0.19318181818181818,
+  "pass": true
+ },
+ "non_hold_arms_equal_share": 1.0,
+ "ii_hold_128_equal_share_vs_bs32": 1.0,
+ "pass": true
+}

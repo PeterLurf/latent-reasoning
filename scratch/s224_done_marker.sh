@@ -6,6 +6,7 @@
 # s224_mark <run dir> -> RUN (a marker present) | BADM (no marker, a resume checkpoint ckpt_last.pt present) | BAD (neither)
 s224_mark() {
   case "$1" in *_re) [ -s "$1/eval_khorizon.json" ] && [ -s "$1/eval_vb.json" ] && echo RUN || echo BAD; return ;; esac   # the shipped model.pt is no marker
+  case "$1" in *_c1) [ -s "$1/eval_c1hold.json" ] && [ -s "$1/eval_vb.json" ] && echo RUN || echo BAD; return ;; esac   # §232 Stage A staged eval-only dirs
   if [ -s "$1/eval_khorizon.json" ] || [ -s "$1/model.pt" ] || [ -s "$1/timing.json" ] || [ -s "$1/mem_check.json" ]; then echo RUN
   elif [ -s "$1/log.jsonl" ] && grep -q '"step": 1200,' "$1/log.jsonl"; then echo RUN
   elif [ -s "$1/ckpt_last.pt" ]; then echo BADM
@@ -15,6 +16,7 @@ s224_mark() {
 s224_need() {
   case "$1" in
     *_re) echo "eval_vb.json eval_khorizon.json" ;;
+    *_c1) echo "eval_vb.json eval_d3hist.json eval_c1hold.json" ;;   # §232 Stage A
     *_gtime) echo "timing.json args.json" ;;
     *_mem) echo "mem_check.json" ;;   # §228 (10-23): inject_ow --mem_check exits before args.json (b341 FETCH_INCOMPLETE)
     *_eqA|*_eqB) echo "log.jsonl args.json" ;;

@@ -1,0 +1,23 @@
+# THEORY §232 HOLD-C1 Stage A (HC_v1 §2, Note 232-1; Audit-approved, Stage-A cap $2.5): ONE eval-only RTX 3090, fp32, eval_bs 32, staged dirs
+# boxes/runs_fsq/<model>_c1 (model.pt + args.json copies, sha-checked; committed run dirs never written): vbank_eval acc,probe,vswap,stall -> vbank_diag
+# d3hist (OLD-SWAP) -> vbank_diag c1hold (its identity gate reads the same dir's eval_vb vswap). s1 trio first.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s213_d3t_s1_c1 boxes.vbank_eval --run boxes/runs_fsq/s213_d3t_s1_c1 --parts acc,probe,vswap,stall --eval_bs 32
+boxes/runs_fsq/s213_d3t_s1_c1 boxes.vbank_diag --run boxes/runs_fsq/s213_d3t_s1_c1 --part d3hist --eval_bs 32
+boxes/runs_fsq/s213_d3t_s1_c1 boxes.vbank_diag --run boxes/runs_fsq/s213_d3t_s1_c1 --part c1hold --eval_bs 32
+boxes/runs_fsq/s215_ftctrl_s1_c1 boxes.vbank_eval --run boxes/runs_fsq/s215_ftctrl_s1_c1 --parts acc,probe,vswap,stall --eval_bs 32
+boxes/runs_fsq/s215_ftctrl_s1_c1 boxes.vbank_diag --run boxes/runs_fsq/s215_ftctrl_s1_c1 --part d3hist --eval_bs 32
+boxes/runs_fsq/s215_ftctrl_s1_c1 boxes.vbank_diag --run boxes/runs_fsq/s215_ftctrl_s1_c1 --part c1hold --eval_bs 32
+boxes/runs_fsq/s230_fhftfix_s1_c1 boxes.vbank_eval --run boxes/runs_fsq/s230_fhftfix_s1_c1 --parts acc,probe,vswap,stall --eval_bs 32
+boxes/runs_fsq/s230_fhftfix_s1_c1 boxes.vbank_diag --run boxes/runs_fsq/s230_fhftfix_s1_c1 --part d3hist --eval_bs 32
+boxes/runs_fsq/s230_fhftfix_s1_c1 boxes.vbank_diag --run boxes/runs_fsq/s230_fhftfix_s1_c1 --part c1hold --eval_bs 32
+boxes/runs_fsq/s216_d3t_s2_c1 boxes.vbank_eval --run boxes/runs_fsq/s216_d3t_s2_c1 --parts acc,probe,vswap,stall --eval_bs 32
+boxes/runs_fsq/s216_d3t_s2_c1 boxes.vbank_diag --run boxes/runs_fsq/s216_d3t_s2_c1 --part d3hist --eval_bs 32
+boxes/runs_fsq/s216_d3t_s2_c1 boxes.vbank_diag --run boxes/runs_fsq/s216_d3t_s2_c1 --part c1hold --eval_bs 32
+boxes/runs_fsq/s224_ftctrl_s2_c1 boxes.vbank_eval --run boxes/runs_fsq/s224_ftctrl_s2_c1 --parts acc,probe,vswap,stall --eval_bs 32
+boxes/runs_fsq/s224_ftctrl_s2_c1 boxes.vbank_diag --run boxes/runs_fsq/s224_ftctrl_s2_c1 --part d3hist --eval_bs 32
+boxes/runs_fsq/s224_ftctrl_s2_c1 boxes.vbank_diag --run boxes/runs_fsq/s224_ftctrl_s2_c1 --part c1hold --eval_bs 32
+boxes/runs_fsq/s224_fhft_s2_c1 boxes.vbank_eval --run boxes/runs_fsq/s224_fhft_s2_c1 --parts acc,probe,vswap,stall --eval_bs 32
+boxes/runs_fsq/s224_fhft_s2_c1 boxes.vbank_diag --run boxes/runs_fsq/s224_fhft_s2_c1 --part d3hist --eval_bs 32
+boxes/runs_fsq/s224_fhft_s2_c1 boxes.vbank_diag --run boxes/runs_fsq/s224_fhft_s2_c1 --part c1hold --eval_bs 32
