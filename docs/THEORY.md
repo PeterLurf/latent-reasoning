@@ -318,7 +318,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 228 | LAT-OW (C1 on language; for Audit, cap $20): §184 INJECT ported to the TOPO word programs vs exposure-matched DIRECT; band from DIRECT; R1 depth gain, R2 mean-state ablation, R3 state swap on cf(a) U cf_b (follow_U >= 0.5); pilots d<=2 ($0) + d<=4 (cloud ~$1.2); LAT_v1.md at e78d7211 | CLOSED | **CLOSED 10-23 (229-1): language line closed after the §229 fallback also failed; $1.19 total.** PILOT FAIL 10-23 (228-2): P-LAT2 d=2 0.087 = DIRECT 0.093 (chance), pass-1 aux 0.51 -> LAT-NOT-LEARNABLE-D2; pre-named cumulative-target fallback proposed (~$0.7), else close; $0.58.** APPROVED by Audit 10-23 (cap $20): build inject_ow (deviations (a)-(g) with §184 line refs) + score_lat (hop-per-pass / relay stubs) -> G-D -> local pilots -> d<=4 cloud pilot -> Stage 1** |
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
-| 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | registered | **for Audit’s ruling** |
+| 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | registered | **APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 
 ## Live sections
 
@@ -21398,6 +21398,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - If DEPTH fails, the report shows the ratio beside it, so that "over-dosed on s1" stays distinguishable from "no fix". The pass rule is unchanged.
 - **(2) Fail-branch wording:** "the cost is extrapolation shortcutting, not the in-range C1 floor" is tagged **[DESCRIPTIVE, REVIEW_HD]**, an interpretation, not a finding. The C6 status line on a fail reads: "hold fixed by RD; depth cost at n 9–11 −0.08 / −0.15 / −0.26 unresolved".
 - **(3) Pass scope:** "hold without depth cost: 1 confirmed (s1) + 1 motivating (s2) seed, 12k post-formation anchored far fine-tune at λ 1.6".
+
+**Note 231-1 (2026-10-24 00:52 EDT; §231 approval conditions (Audit), pre-stated before any P1′ output; P1′ spec frozen here.)**
+- **P1′ (the $0 launch condition).**
+  - **Model:** frozen Qwen2.5-0.5B (revision 060db649…), CPU fp32, ≤ 3 threads, Idle priority.
+  - **Items:** TOPO generator, frames 0–5, d = 2, N = 3,000 (stream seed 23122, unused by any registered set). Plus d = 3 items (N = 1,500) for v_1 and v_2, descriptive.
+  - **Split:** by item sig, 60 / 20 / 20 (fit / val / test).
+  - **Features (no layer search):** the write sources (i) RMSNorm₁₂(h₁₂) and (ii) h₂₄ before the final norm, at the last token of S_1's defining sentence (the EAGER position).
+  - **Controls:**
+    - (a) **layer-0 / embedding states** at the same positions;
+    - (b) **frozen GPT-2 small** at its write sources (LN(h₆) and h_top before ln_f, as REVIEW_LB check T).
+  - **Probe:** multinomial logistic regression, standardised, L2 with wd chosen on val from {1e-4, 1e-3, 1e-2}, LBFGS 300 iterations. Test accuracy is reported.
+  - **Chance:** the test-set majority share of v_1, and 1 / 11.
+  - **Per-item test predictions are stored.**
+  - **Rule:** EAGER_Qwen = the higher of the two write sources' test accuracies. It **counts iff EAGER_Qwen > 0.30 AND ≥ layer-0 accuracy + 0.10.** Otherwise there is no spend, and §231 closes with $0 ("the 0.5B base does not compute the intermediate eagerly beyond a lexical / copy baseline").
+- **Two lr arms (A1):** A1 passes if either arm passes LP0–LP3. If both pass, the arm carried into A2 / B is the one with the higher LP2 on d = 2 (ties → 1.6e-5). Both are reported.
+- **Predictions unchanged:** P1′ ≈ 0.45; P(C1) ≈ 0.04.
+- **Build packet before any spend:** G-B8b; G-B9; the two-group optimiser flags-off bitwise gate; per-term gradflow; plain path; mem_check at the Stage-B shape; args diffs. boxes/deltamem.py stays untouched.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
