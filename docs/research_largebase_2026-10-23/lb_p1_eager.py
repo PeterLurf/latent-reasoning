@@ -57,6 +57,12 @@ def sent_end(it, k):
     return cand[0][1] if len(cand) == 1 else None
 
 
+def v0_end(it):
+    """Note 231-2 positive control: char end of S_0's own sentence, the GIVEN "<S_0> has <v_0> <u>." (asserted unique)."""
+    t = OW.GIVEN.format(A=it["names"]["spine"][0], v=it["values"][0], u=it["unit"]); hit = [m.start() for m in re.finditer(re.escape(t), it["text"])]
+    assert len(hit) == 1, ("S_0's sentence not unique", it["sig"], len(hit)); return hit[0] + len(t)
+
+
 def split_of(sig):
     h = int(hashlib.sha1(sig.encode()).hexdigest()[:8], 16) % 100
     return "fit" if h < 60 else ("val" if h < 80 else "test")
@@ -133,7 +139,9 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--model", default=QWEN); ap.add_argument("--revision", default="060db6499f32faf8b98477b0a26969ef7d8b9987")
     ap.add_argument("--n2", type=int, default=3000); ap.add_argument("--n3", type=int, default=1500); ap.add_argument("--bs", type=int, default=16)
     ap.add_argument("--smoke", action="store_true", help="N 40 / 20; prints shapes and counts only, writes nothing")
-    ap.add_argument("--out", default=os.path.join(HERE, "lb_p1_eager.json")); a = ap.parse_args()
+    ap.add_argument("--target", default="v1", choices=["v1", "v0"], help="v0 = Note 231-2 positive control (v_0 at S_0's own sentence end)")
+    ap.add_argument("--out", default=None); a = ap.parse_args()
+    a.out = a.out or os.path.join(HERE, "lb_p1_eager.json" if a.target == "v1" else "lb_p1_v0_control.json")
     if a.smoke:
         a.n2, a.n3 = 40, 20
     t0 = time.time(); st = OW.Stream(SEED, frames=OW.FRAME_TRAIN, order_mode="topo", dag=True)
@@ -146,9 +154,10 @@ def main():
     from boxes import s5
     g = s5.load_gpt2("cpu").eval()
     res = {"spec": "Note 231-1 (c3fcdcbb)", "seed": SEED, "qwen": {"model": a.model, "revision_arg": a.revision, "commit_hash": rev_full}, "sets": {}, "probes": {}}
-    sets = {"d2": (I2, {"V1": 1}), "d3": (I3, {"V1": 1, "V2": 2})}
+    sets = {"d2": (I2, {"V1": 1}), "d3": (I3, {"V1": 1, "V2": 2})} if a.target == "v1" else {"d2": (I2, {"V0": 0}), "d3": (I3, {"V0": 0})}
+    res["target"] = a.target
     for nm, (items, tg) in sets.items():
-        e1 = [sent_end(it, 1) for it in items]; assert all(x is not None for x in e1), "S_1's defining sentence not unique"
+        e1 = [sent_end(it, 1) if a.target == "v1" else v0_end(it) for it in items]; assert all(x is not None for x in e1), "the target sentence is not unique"
         F_ = {**qwen_feats(tok, qm, items, [x - 1 + 1 for x in e1], a.bs), **gpt2_feats(g, items, e1, a.bs)}   # " " + text shifts chars by 1: last char = end - 1 + 1
         sigs = [it["sig"] for it in items]; sp = np.array([split_of(s) for s in sigs]); res["sets"][nm] = {"n": len(items), "split": {k: int((sp == k).sum()) for k in ("fit", "val", "test")}}
         for tn, k in tg.items():
@@ -157,7 +166,7 @@ def main():
                 if a.smoke:
                     print(nm, tn, fn, X.shape, flush=True); continue
                 res["probes"]["%s_%s_%s" % (nm, tn, fn)] = probe(X, y, sp, sigs)
-        if nm == "d3":                                                      # V2 at S_2's own sentence end (descriptive)
+        if nm == "d3" and a.target == "v1":                                 # V2 at S_2's own sentence end (descriptive)
             e2 = [sent_end(it, 2) for it in items]; keep = [i for i, x in enumerate(e2) if x is not None]; res["sets"]["d3"]["v2s2_kept"] = len(keep)
             sub = [items[i] for i in keep]; F2 = {**qwen_feats(tok, qm, sub, [e2[i] for i in keep], a.bs), **gpt2_feats(g, sub, [e2[i] for i in keep], a.bs)}
             y2 = np.array([int(it["values"][2]) for it in sub]); sg2 = [it["sig"] for it in sub]; sp2 = np.array([split_of(s) for s in sg2])
