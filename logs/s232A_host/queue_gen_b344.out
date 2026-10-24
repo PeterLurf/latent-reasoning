@@ -1,0 +1,42 @@
+16:04:17 gpt2 bin from the HF hub: ok
+NVIDIA GeForce RTX 3090, 570.211.01
+16:04:24 modules import: boxes.vbank_diag boxes.vbank_eval 
+HOSTCHECK PASS (5 s)
+16:06:52 HOSTPROBE 0.6554 s/step (limit 0.854; b225 reference 0.657)
+16:06:52 start boxes/runs_fsq/s213_d3t_s1_c1
+16:49:41 evaluated boxes/runs_fsq/s213_d3t_s1_c1 rc 0 no-eval
+16:49:41 start boxes/runs_fsq/s213_d3t_s1_c1
+16:52:53 evaluated boxes/runs_fsq/s213_d3t_s1_c1 rc 0 no-eval
+16:52:53 start boxes/runs_fsq/s213_d3t_s1_c1
+16:58:20 evaluated boxes/runs_fsq/s213_d3t_s1_c1 rc 1 no-eval
+16:58:20 start boxes/runs_fsq/s215_ftctrl_s1_c1
+17:40:15 evaluated boxes/runs_fsq/s215_ftctrl_s1_c1 rc 0 no-eval
+17:40:15 start boxes/runs_fsq/s215_ftctrl_s1_c1
+17:43:25 evaluated boxes/runs_fsq/s215_ftctrl_s1_c1 rc 0 no-eval
+17:43:25 start boxes/runs_fsq/s215_ftctrl_s1_c1
+17:48:53 evaluated boxes/runs_fsq/s215_ftctrl_s1_c1 rc 1 no-eval
+17:48:53 start boxes/runs_fsq/s230_fhftfix_s1_c1
+18:30:54 evaluated boxes/runs_fsq/s230_fhftfix_s1_c1 rc 0 no-eval
+18:30:54 start boxes/runs_fsq/s230_fhftfix_s1_c1
+18:34:07 evaluated boxes/runs_fsq/s230_fhftfix_s1_c1 rc 0 no-eval
+18:34:07 start boxes/runs_fsq/s230_fhftfix_s1_c1
+18:39:42 evaluated boxes/runs_fsq/s230_fhftfix_s1_c1 rc 1 no-eval
+18:39:42 start boxes/runs_fsq/s216_d3t_s2_c1
+19:22:40 evaluated boxes/runs_fsq/s216_d3t_s2_c1 rc 0 no-eval
+19:22:40 start boxes/runs_fsq/s216_d3t_s2_c1
+19:25:52 evaluated boxes/runs_fsq/s216_d3t_s2_c1 rc 0 no-eval
+19:25:52 start boxes/runs_fsq/s216_d3t_s2_c1
+19:31:23 evaluated boxes/runs_fsq/s216_d3t_s2_c1 rc 1 no-eval
+19:31:23 start boxes/runs_fsq/s224_ftctrl_s2_c1
+20:13:06 evaluated boxes/runs_fsq/s224_ftctrl_s2_c1 rc 0 no-eval
+20:13:06 start boxes/runs_fsq/s224_ftctrl_s2_c1
+20:16:16 evaluated boxes/runs_fsq/s224_ftctrl_s2_c1 rc 0 no-eval
+20:16:16 start boxes/runs_fsq/s224_ftctrl_s2_c1
+20:21:41 evaluated boxes/runs_fsq/s224_ftctrl_s2_c1 rc 1 no-eval
+20:21:41 start boxes/runs_fsq/s224_fhft_s2_c1
+21:03:17 evaluated boxes/runs_fsq/s224_fhft_s2_c1 rc 0 no-eval
+21:03:17 start boxes/runs_fsq/s224_fhft_s2_c1
+21:06:26 evaluated boxes/runs_fsq/s224_fhft_s2_c1 rc 0 no-eval
+21:06:26 start boxes/runs_fsq/s224_fhft_s2_c1
+21:11:53 evaluated boxes/runs_fsq/s224_fhft_s2_c1 rc 1 no-eval
+21:11:53 QUEUE_DONE

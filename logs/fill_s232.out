@@ -1,0 +1,8 @@
+2026-10-24 11:50:38 start: QS 344:s232_stageA:1.60:2.50:4.1; family $2.5; SETUP_H 0.6; vbank_diag sha fec6245d02f1; vbank_eval sha dd5752b8ae10; staged boxes/runs_fsq/s213_d3t_s1_c1 boxes/runs_fsq/s215_ftctrl_s1_c1 boxes/runs_fsq/s230_fhftfix_s1_c1 boxes/runs_fsq/s216_d3t_s2_c1 boxes/runs_fsq/s224_ftctrl_s2_c1 boxes/runs_fsq/s224_fhft_s2_c1
+2026-10-24 11:50:41 b344: deploying s232_stageA on offer 28824264 (186.128.151.58, RTX_3090, $0.2014/h)
+2026-10-24 12:07:48 b344: 16:06:52 HOSTPROBE 0.6554 s/step (limit 0.854; b225 reference 0.657) on 186.128.151.58:50326
+2026-10-24 12:07:48 b344: eval-only projection $0.95 ((0.6 + 4.1 h) x $0.2014/h; cap $1.60); family so far $0.0 (admitted + BAD) of $2.5
+2026-10-24 12:07:48 b344: ADMIT s232_stageA on 186.128.151.58:50326 (instance 57533430): $0.95
+2026-10-24 12:07:48 b344: wall-clock guard ($2.50 - rejected-host $0.0000 = $2.5, GUARD_STOP=1, 18 queue lines) started
+2026-10-24 12:07:48 b344: post-admit checks started (shipped model.pt shas, 6 staged dirs)
+2026-10-24 12:14:48 §232 filler done: 344:s232_stageA 186.128.151.58:50326 57533430 $0.2014/h evalonly 0.95;

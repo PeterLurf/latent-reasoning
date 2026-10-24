@@ -1,0 +1,4 @@
+MEM 1 12.53759728372097
+{'step': 100, 'loss': 2.521487925052643, 'sec': 65, 'gamma': 0.0, 'fade': 0.20000000298023224, 'write_grad_norm': 0.0032483013309865783, 'write_grad_spike_100x_floor': False, 'gn_preclip': 16.168731689453125, 'clip_frac_100': 1.0}
+{'step': 200, 'loss': 2.390452527999878, 'sec': 131, 'gamma': 0.0, 'fade': 0.4000000059604645, 'write_grad_norm': 0.0051910703512839974, 'write_grad_spike_100x_floor': False, 'gn_preclip': 14.580516815185547, 'clip_frac_100': 1.0}
+TIMING 0.6554116308689117
