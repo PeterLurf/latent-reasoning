@@ -1,0 +1,136 @@
+MEM train 1 250 4.210184097290039
+[W1024 13:06:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 924844032 bytes (free: 281018368, total: 8585216000).
+[W1024 13:06:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 924844032 bytes (free: 0, total: 8585216000).
+[W1024 13:06:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 924844032 bytes (free: 0, total: 8585216000).
+MEM eval 1 250 inf
+[W1024 13:06:08.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 463470592 bytes (free: 0, total: 8585216000).
+MEM eval 1 125 6.078945159912109
+{'step': 100, 'loss': 2.508713662624359, 'sec': 21, 'aux_lambda': 0.0, 'answer_ce': 2.508713662624359, 'gn_preclip': 41.888427734375, 'gn_preclip_mean100': 48.497544574737546, 'clip_frac_100': 1.0}
+{'step': 200, 'loss': 2.3942244029045106, 'sec': 42, 'aux_lambda': 0.0, 'answer_ce': 2.3942244029045106, 'gn_preclip': 26.030122756958008, 'gn_preclip_mean100': 37.922620134353636, 'clip_frac_100': 1.0}
+{'step': 300, 'loss': 2.3562003779411316, 'sec': 63, 'aux_lambda': 0.0, 'answer_ce': 2.3562003779411316, 'gn_preclip': 18.399232864379883, 'gn_preclip_mean100': 30.22152293205261, 'clip_frac_100': 1.0}
+{'step': 400, 'loss': 2.3767457795143128, 'sec': 84, 'aux_lambda': 0.0, 'answer_ce': 2.3767457795143128, 'gn_preclip': 15.143964767456055, 'gn_preclip_mean100': 29.228247995376588, 'clip_frac_100': 1.0}
+{'step': 500, 'loss': 2.3812389039993285, 'sec': 106, 'aux_lambda': 0.0, 'answer_ce': 2.3812389039993285, 'gn_preclip': 22.00302505493164, 'gn_preclip_mean100': 25.058288221359252, 'clip_frac_100': 1.0}
+{'step': 600, 'loss': 2.3023662424087523, 'sec': 126, 'aux_lambda': 0.0, 'answer_ce': 2.3023662424087523, 'gn_preclip': 25.574617385864258, 'gn_preclip_mean100': 23.13884009361267, 'clip_frac_100': 1.0}
+{'step': 700, 'loss': 2.223976180553436, 'sec': 147, 'aux_lambda': 0.0, 'answer_ce': 2.223976180553436, 'gn_preclip': 26.390396118164062, 'gn_preclip_mean100': 22.33003329753876, 'clip_frac_100': 1.0}
+{'step': 800, 'loss': 2.107958332300186, 'sec': 168, 'aux_lambda': 0.0, 'answer_ce': 2.107958332300186, 'gn_preclip': 15.578974723815918, 'gn_preclip_mean100': 20.044893712997435, 'clip_frac_100': 1.0}
+{'step': 900, 'loss': 2.0142081534862517, 'sec': 189, 'aux_lambda': 0.0, 'answer_ce': 2.0142081534862517, 'gn_preclip': 17.068092346191406, 'gn_preclip_mean100': 17.118747105598448, 'clip_frac_100': 1.0}
+{'step': 1000, 'loss': 1.9950824916362762, 'sec': 210, 'aux_lambda': 0.0, 'answer_ce': 1.9950824916362762, 'gn_preclip': 17.17972183227539, 'gn_preclip_mean100': 16.542656207084654, 'clip_frac_100': 1.0}
+{'step': 1100, 'loss': 1.730696498155594, 'sec': 230, 'aux_lambda': 0.0, 'answer_ce': 1.730696498155594, 'gn_preclip': 14.54753589630127, 'gn_preclip_mean100': 15.2208926486969, 'clip_frac_100': 1.0}
+{'step': 1200, 'loss': 1.8246806681156158, 'sec': 251, 'aux_lambda': 0.0, 'answer_ce': 1.8246806681156158, 'gn_preclip': 17.8251895904541, 'gn_preclip_mean100': 15.017513718605041, 'clip_frac_100': 1.0}
+{'step': 1300, 'loss': 1.7830696815252305, 'sec': 272, 'aux_lambda': 0.0, 'answer_ce': 1.7830696815252305, 'gn_preclip': 21.66465950012207, 'gn_preclip_mean100': 14.677666215896606, 'clip_frac_100': 1.0}
+{'step': 1400, 'loss': 1.825582726597786, 'sec': 293, 'aux_lambda': 0.0, 'answer_ce': 1.825582726597786, 'gn_preclip': 10.650951385498047, 'gn_preclip_mean100': 15.342955212593079, 'clip_frac_100': 1.0}
+{'step': 1500, 'loss': 1.797665897011757, 'sec': 315, 'aux_lambda': 0.0, 'answer_ce': 1.797665897011757, 'gn_preclip': 12.894862174987793, 'gn_preclip_mean100': 14.395108180046082, 'clip_frac_100': 1.0}
+{'step': 1600, 'loss': 1.7393564534187318, 'sec': 336, 'aux_lambda': 0.0, 'answer_ce': 1.7393564534187318, 'gn_preclip': 13.442344665527344, 'gn_preclip_mean100': 13.534359431266784, 'clip_frac_100': 1.0}
+{'step': 1700, 'loss': 1.7210593795776368, 'sec': 357, 'aux_lambda': 0.0, 'answer_ce': 1.7210593795776368, 'gn_preclip': 7.38796854019165, 'gn_preclip_mean100': 13.94038987159729, 'clip_frac_100': 1.0}
+{'step': 1800, 'loss': 1.6490550577640533, 'sec': 378, 'aux_lambda': 0.0, 'answer_ce': 1.6490550577640533, 'gn_preclip': 11.68347454071045, 'gn_preclip_mean100': 12.96382658958435, 'clip_frac_100': 1.0}
+{'step': 1900, 'loss': 1.7865243935585022, 'sec': 399, 'aux_lambda': 0.0, 'answer_ce': 1.7865243935585022, 'gn_preclip': 15.29156494140625, 'gn_preclip_mean100': 14.075308604240417, 'clip_frac_100': 1.0}
+{'step': 2000, 'loss': 1.615915788412094, 'sec': 420, 'aux_lambda': 0.0, 'answer_ce': 1.615915788412094, 'gn_preclip': 13.351747512817383, 'gn_preclip_mean100': 12.996732234954834, 'clip_frac_100': 1.0}
+{'step': 2100, 'loss': 1.7229595440626144, 'sec': 445, 'aux_lambda': 0.0, 'answer_ce': 1.7229595440626144, 'gn_preclip': 13.557512283325195, 'gn_preclip_mean100': 12.795220069885254, 'clip_frac_100': 1.0}
+{'step': 2200, 'loss': 1.4521264201402664, 'sec': 465, 'aux_lambda': 0.0, 'answer_ce': 1.4521264201402664, 'gn_preclip': 12.139402389526367, 'gn_preclip_mean100': 12.749658932685852, 'clip_frac_100': 1.0}
+{'step': 2300, 'loss': 1.5959003758430481, 'sec': 486, 'aux_lambda': 0.0, 'answer_ce': 1.5959003758430481, 'gn_preclip': 12.127998352050781, 'gn_preclip_mean100': 12.065616149902343, 'clip_frac_100': 1.0}
+{'step': 2400, 'loss': 1.699248338341713, 'sec': 507, 'aux_lambda': 0.0, 'answer_ce': 1.699248338341713, 'gn_preclip': 17.402503967285156, 'gn_preclip_mean100': 12.10254985332489, 'clip_frac_100': 1.0}
+{'step': 2500, 'loss': 1.6541373056173325, 'sec': 528, 'aux_lambda': 0.0, 'answer_ce': 1.6541373056173325, 'gn_preclip': 17.989486694335938, 'gn_preclip_mean100': 11.655512733459473, 'clip_frac_100': 1.0}
+{'step': 2600, 'loss': 1.5706273978948593, 'sec': 549, 'aux_lambda': 0.0, 'answer_ce': 1.5706273978948593, 'gn_preclip': 9.370050430297852, 'gn_preclip_mean100': 11.39455750465393, 'clip_frac_100': 1.0}
+{'step': 2700, 'loss': 1.573368113040924, 'sec': 569, 'aux_lambda': 0.0, 'answer_ce': 1.573368113040924, 'gn_preclip': 7.087605953216553, 'gn_preclip_mean100': 10.85683195590973, 'clip_frac_100': 1.0}
+{'step': 2800, 'loss': 1.560178551673889, 'sec': 590, 'aux_lambda': 0.0, 'answer_ce': 1.560178551673889, 'gn_preclip': 9.689475059509277, 'gn_preclip_mean100': 11.345078406333924, 'clip_frac_100': 1.0}
+{'step': 2900, 'loss': 1.5087725657224655, 'sec': 611, 'aux_lambda': 0.0, 'answer_ce': 1.5087725657224655, 'gn_preclip': 6.855271816253662, 'gn_preclip_mean100': 11.146500191688538, 'clip_frac_100': 1.0}
+{'step': 3000, 'loss': 1.7308026731014252, 'sec': 632, 'aux_lambda': 0.0, 'answer_ce': 1.7308026731014252, 'gn_preclip': 20.632020950317383, 'gn_preclip_mean100': 11.646931247711182, 'clip_frac_100': 1.0}
+{'step': 3100, 'loss': 1.7004876232147217, 'sec': 653, 'aux_lambda': 0.0, 'answer_ce': 1.7004876232147217, 'gn_preclip': 7.817045211791992, 'gn_preclip_mean100': 11.54333927154541, 'clip_frac_100': 1.0}
+{'step': 3200, 'loss': 1.6434837192296983, 'sec': 674, 'aux_lambda': 0.0, 'answer_ce': 1.6434837192296983, 'gn_preclip': 6.306654453277588, 'gn_preclip_mean100': 11.533214583396912, 'clip_frac_100': 1.0}
+{'step': 3300, 'loss': 1.69066814661026, 'sec': 695, 'aux_lambda': 0.0, 'answer_ce': 1.69066814661026, 'gn_preclip': 14.277356147766113, 'gn_preclip_mean100': 11.536860785484315, 'clip_frac_100': 1.0}
+{'step': 3400, 'loss': 1.40110993206501, 'sec': 715, 'aux_lambda': 0.0, 'answer_ce': 1.40110993206501, 'gn_preclip': 9.421918869018555, 'gn_preclip_mean100': 10.458283090591431, 'clip_frac_100': 1.0}
+{'step': 3500, 'loss': 1.7017042142152787, 'sec': 737, 'aux_lambda': 0.0, 'answer_ce': 1.7017042142152787, 'gn_preclip': 11.154633522033691, 'gn_preclip_mean100': 10.993658404350281, 'clip_frac_100': 1.0}
+{'step': 3600, 'loss': 1.4844779881834984, 'sec': 757, 'aux_lambda': 0.0, 'answer_ce': 1.4844779881834984, 'gn_preclip': 9.689872741699219, 'gn_preclip_mean100': 10.14486864566803, 'clip_frac_100': 1.0}
+{'step': 3700, 'loss': 1.5878953266143798, 'sec': 778, 'aux_lambda': 0.0, 'answer_ce': 1.5878953266143798, 'gn_preclip': 11.577577590942383, 'gn_preclip_mean100': 10.767515153884888, 'clip_frac_100': 1.0}
+{'step': 3800, 'loss': 1.6703831392526627, 'sec': 799, 'aux_lambda': 0.0, 'answer_ce': 1.6703831392526627, 'gn_preclip': 15.542413711547852, 'gn_preclip_mean100': 10.872247796058655, 'clip_frac_100': 1.0}
+{'step': 3900, 'loss': 1.56966229647398, 'sec': 820, 'aux_lambda': 0.0, 'answer_ce': 1.56966229647398, 'gn_preclip': 14.009921073913574, 'gn_preclip_mean100': 10.439228494167327, 'clip_frac_100': 1.0}
+{'step': 4000, 'loss': 1.4917098218202591, 'sec': 841, 'aux_lambda': 0.0, 'answer_ce': 1.4917098218202591, 'gn_preclip': 5.665181636810303, 'gn_preclip_mean100': 10.63032446861267, 'clip_frac_100': 1.0}
+{'step': 4100, 'loss': 1.4764530730247498, 'sec': 865, 'aux_lambda': 0.0, 'answer_ce': 1.4764530730247498, 'gn_preclip': 8.292269706726074, 'gn_preclip_mean100': 10.258940486907958, 'clip_frac_100': 1.0}
+{'step': 4200, 'loss': 1.501086757183075, 'sec': 886, 'aux_lambda': 0.0, 'answer_ce': 1.501086757183075, 'gn_preclip': 8.707106590270996, 'gn_preclip_mean100': 10.296849341392518, 'clip_frac_100': 1.0}
+{'step': 4300, 'loss': 1.4924692457914353, 'sec': 907, 'aux_lambda': 0.0, 'answer_ce': 1.4924692457914353, 'gn_preclip': 9.429242134094238, 'gn_preclip_mean100': 10.301675324440003, 'clip_frac_100': 1.0}
+{'step': 4400, 'loss': 1.5950429165363311, 'sec': 928, 'aux_lambda': 0.0, 'answer_ce': 1.5950429165363311, 'gn_preclip': 8.22301959991455, 'gn_preclip_mean100': 10.250921545028687, 'clip_frac_100': 1.0}
+{'step': 4500, 'loss': 1.423254343867302, 'sec': 948, 'aux_lambda': 0.0, 'answer_ce': 1.423254343867302, 'gn_preclip': 9.40533447265625, 'gn_preclip_mean100': 9.988322830200195, 'clip_frac_100': 1.0}
+{'step': 4600, 'loss': 1.4551457232236862, 'sec': 969, 'aux_lambda': 0.0, 'answer_ce': 1.4551457232236862, 'gn_preclip': 13.597583770751953, 'gn_preclip_mean100': 10.108092160224915, 'clip_frac_100': 1.0}
+{'step': 4700, 'loss': 1.3052466920018195, 'sec': 989, 'aux_lambda': 0.0, 'answer_ce': 1.3052466920018195, 'gn_preclip': 10.793771743774414, 'gn_preclip_mean100': 9.800033073425293, 'clip_frac_100': 1.0}
+{'step': 4800, 'loss': 1.328466300368309, 'sec': 1010, 'aux_lambda': 0.0, 'answer_ce': 1.328466300368309, 'gn_preclip': 6.185965061187744, 'gn_preclip_mean100': 9.595211839675903, 'clip_frac_100': 1.0}
+{'step': 4900, 'loss': 1.4716703179478645, 'sec': 1031, 'aux_lambda': 0.0, 'answer_ce': 1.4716703179478645, 'gn_preclip': 8.677183151245117, 'gn_preclip_mean100': 10.211091375350952, 'clip_frac_100': 1.0}
+{'step': 5000, 'loss': 1.4691390106081963, 'sec': 1052, 'aux_lambda': 0.0, 'answer_ce': 1.4691390106081963, 'gn_preclip': 8.389949798583984, 'gn_preclip_mean100': 10.29493463754654, 'clip_frac_100': 1.0}
+{'step': 5100, 'loss': 1.447370778620243, 'sec': 1073, 'aux_lambda': 0.0, 'answer_ce': 1.447370778620243, 'gn_preclip': 9.798870086669922, 'gn_preclip_mean100': 10.005977010726928, 'clip_frac_100': 1.0}
+{'step': 5200, 'loss': 1.4876882249116898, 'sec': 1094, 'aux_lambda': 0.0, 'answer_ce': 1.4876882249116898, 'gn_preclip': 8.859322547912598, 'gn_preclip_mean100': 9.887617053985595, 'clip_frac_100': 1.0}
+{'step': 5300, 'loss': 1.4119942864775659, 'sec': 1115, 'aux_lambda': 0.0, 'answer_ce': 1.4119942864775659, 'gn_preclip': 6.356838703155518, 'gn_preclip_mean100': 10.102089347839355, 'clip_frac_100': 1.0}
+{'step': 5400, 'loss': 1.4284304863214492, 'sec': 1135, 'aux_lambda': 0.0, 'answer_ce': 1.4284304863214492, 'gn_preclip': 9.650920867919922, 'gn_preclip_mean100': 9.632598190307617, 'clip_frac_100': 1.0}
+{'step': 5500, 'loss': 1.3234967875480652, 'sec': 1156, 'aux_lambda': 0.0, 'answer_ce': 1.3234967875480652, 'gn_preclip': 6.449197292327881, 'gn_preclip_mean100': 9.468247456550598, 'clip_frac_100': 1.0}
+{'step': 5600, 'loss': 1.5872383758425712, 'sec': 1177, 'aux_lambda': 0.0, 'answer_ce': 1.5872383758425712, 'gn_preclip': 6.100409030914307, 'gn_preclip_mean100': 9.9991805934906, 'clip_frac_100': 1.0}
+{'step': 5700, 'loss': 1.3152320080995559, 'sec': 1198, 'aux_lambda': 0.0, 'answer_ce': 1.3152320080995559, 'gn_preclip': 3.533562660217285, 'gn_preclip_mean100': 9.381158006191253, 'clip_frac_100': 1.0}
+{'step': 5800, 'loss': 1.5130585035681725, 'sec': 1219, 'aux_lambda': 0.0, 'answer_ce': 1.5130585035681725, 'gn_preclip': 14.213190078735352, 'gn_preclip_mean100': 9.990752177238464, 'clip_frac_100': 1.0}
+{'step': 5900, 'loss': 1.4608892594277858, 'sec': 1240, 'aux_lambda': 0.0, 'answer_ce': 1.4608892594277858, 'gn_preclip': 8.202244758605957, 'gn_preclip_mean100': 9.885468263626098, 'clip_frac_100': 1.0}
+{'step': 6000, 'loss': 1.3967489916086198, 'sec': 1261, 'aux_lambda': 0.0, 'answer_ce': 1.3967489916086198, 'gn_preclip': 9.538203239440918, 'gn_preclip_mean100': 9.74978940963745, 'clip_frac_100': 1.0}
+{'step': 6100, 'loss': 1.3379884020984172, 'sec': 1290, 'aux_lambda': 0.0, 'answer_ce': 1.3379884020984172, 'gn_preclip': 5.409517765045166, 'gn_preclip_mean100': 9.855070626735687, 'clip_frac_100': 1.0}
+{'step': 6200, 'loss': 1.5995494312047958, 'sec': 1311, 'aux_lambda': 0.0, 'answer_ce': 1.5995494312047958, 'gn_preclip': 11.024508476257324, 'gn_preclip_mean100': 10.077938838005066, 'clip_frac_100': 1.0}
+{'step': 6300, 'loss': 1.327123299241066, 'sec': 1332, 'aux_lambda': 0.0, 'answer_ce': 1.327123299241066, 'gn_preclip': 8.628548622131348, 'gn_preclip_mean100': 9.34428204536438, 'clip_frac_100': 1.0}
+{'step': 6400, 'loss': 1.105805073529482, 'sec': 1352, 'aux_lambda': 0.0, 'answer_ce': 1.105805073529482, 'gn_preclip': 8.062362670898438, 'gn_preclip_mean100': 9.196378951072694, 'clip_frac_100': 1.0}
+{'step': 6500, 'loss': 1.4300833083689213, 'sec': 1373, 'aux_lambda': 0.0, 'answer_ce': 1.4300833083689213, 'gn_preclip': 13.030274391174316, 'gn_preclip_mean100': 9.961347737312316, 'clip_frac_100': 1.0}
+{'step': 6600, 'loss': 1.3191596694290637, 'sec': 1394, 'aux_lambda': 0.0, 'answer_ce': 1.3191596694290637, 'gn_preclip': 10.537649154663086, 'gn_preclip_mean100': 9.298462190628051, 'clip_frac_100': 1.0}
+{'step': 6700, 'loss': 1.4450460916757584, 'sec': 1415, 'aux_lambda': 0.0, 'answer_ce': 1.4450460916757584, 'gn_preclip': 14.633871078491211, 'gn_preclip_mean100': 9.63424349308014, 'clip_frac_100': 1.0}
+{'step': 6800, 'loss': 1.3203089171648026, 'sec': 1435, 'aux_lambda': 0.0, 'answer_ce': 1.3203089171648026, 'gn_preclip': 15.509167671203613, 'gn_preclip_mean100': 9.362407984733581, 'clip_frac_100': 1.0}
+{'step': 6900, 'loss': 1.3759722055494785, 'sec': 1456, 'aux_lambda': 0.0, 'answer_ce': 1.3759722055494785, 'gn_preclip': 5.099174499511719, 'gn_preclip_mean100': 9.83341549873352, 'clip_frac_100': 1.0}
+{'step': 7000, 'loss': 1.4341011269390582, 'sec': 1477, 'aux_lambda': 0.0, 'answer_ce': 1.4341011269390582, 'gn_preclip': 6.708306789398193, 'gn_preclip_mean100': 9.39735339164734, 'clip_frac_100': 1.0}
+{'step': 7100, 'loss': 1.4331573650240899, 'sec': 1498, 'aux_lambda': 0.0, 'answer_ce': 1.4331573650240899, 'gn_preclip': 8.016338348388672, 'gn_preclip_mean100': 9.991984205245972, 'clip_frac_100': 1.0}
+{'step': 7200, 'loss': 1.47459154099226, 'sec': 1519, 'aux_lambda': 0.0, 'answer_ce': 1.47459154099226, 'gn_preclip': 6.570130348205566, 'gn_preclip_mean100': 9.630086607933045, 'clip_frac_100': 1.0}
+{'step': 7300, 'loss': 1.2971325892210006, 'sec': 1540, 'aux_lambda': 0.0, 'answer_ce': 1.2971325892210006, 'gn_preclip': 5.8856120109558105, 'gn_preclip_mean100': 9.07864648103714, 'clip_frac_100': 1.0}
+{'step': 7400, 'loss': 1.5129859215021133, 'sec': 1561, 'aux_lambda': 0.0, 'answer_ce': 1.5129859215021133, 'gn_preclip': 5.694602012634277, 'gn_preclip_mean100': 9.600180077552796, 'clip_frac_100': 1.0}
+{'step': 7500, 'loss': 1.4661090345680714, 'sec': 1582, 'aux_lambda': 0.0, 'answer_ce': 1.4661090345680714, 'gn_preclip': 7.037728309631348, 'gn_preclip_mean100': 9.403761668205261, 'clip_frac_100': 1.0}
+{'step': 7600, 'loss': 1.1970495909452439, 'sec': 1602, 'aux_lambda': 0.0, 'answer_ce': 1.1970495909452439, 'gn_preclip': 10.497368812561035, 'gn_preclip_mean100': 9.304502625465393, 'clip_frac_100': 1.0}
+{'step': 7700, 'loss': 1.2945416048169136, 'sec': 1623, 'aux_lambda': 0.0, 'answer_ce': 1.2945416048169136, 'gn_preclip': 7.215080261230469, 'gn_preclip_mean100': 9.28517182826996, 'clip_frac_100': 1.0}
+{'step': 7800, 'loss': 1.4742826279997825, 'sec': 1644, 'aux_lambda': 0.0, 'answer_ce': 1.4742826279997825, 'gn_preclip': 5.717656135559082, 'gn_preclip_mean100': 9.656405606269836, 'clip_frac_100': 1.0}
+{'step': 7900, 'loss': 1.1840797692537308, 'sec': 1664, 'aux_lambda': 0.0, 'answer_ce': 1.1840797692537308, 'gn_preclip': 4.808255195617676, 'gn_preclip_mean100': 9.320166792869568, 'clip_frac_100': 1.0}
+{'step': 8000, 'loss': 1.3171181192994117, 'sec': 1685, 'aux_lambda': 0.0, 'answer_ce': 1.3171181192994117, 'gn_preclip': 13.322723388671875, 'gn_preclip_mean100': 9.422089166641236, 'clip_frac_100': 1.0}
+[W1024 13:34:26.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 228589568 bytes (free: 0, total: 8585216000).
+[W1024 13:34:39.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 333447168 bytes (free: 0, total: 8585216000).
+[W1024 13:34:51.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 394264576 bytes (free: 0, total: 8585216000).
+[W1024 13:34:52.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 398458880 bytes (free: 0, total: 8585216000).
+[W1024 13:34:55.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 402653184 bytes (free: 0, total: 8585216000).
+[W1024 13:34:58.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 415236096 bytes (free: 0, total: 8585216000).
+[W1024 13:34:59.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 427819008 bytes (free: 0, total: 8585216000).
+[W1024 13:35:00.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 427819008 bytes (free: 0, total: 8585216000).
+[W1024 13:35:06.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 455081984 bytes (free: 0, total: 8585216000).
+[W1024 13:35:06.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 455081984 bytes (free: 0, total: 8585216000).
+[W1024 13:35:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 480247808 bytes (free: 0, total: 8585216000).
+[W1024 13:35:07.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 480247808 bytes (free: 0, total: 8585216000).
+[W1024 13:35:08.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 480247808 bytes (free: 12582912, total: 8585216000).
+[W1024 13:35:08.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 480247808 bytes (free: 12582912, total: 8585216000).
+Traceback (most recent call last):
+  File "D:\Latent\docs\research_steptold_2026-10-24\st_cd_local.py", line 61, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "D:\Latent\docs\research_steptold_2026-10-24\st_cd_local.py", line 54, in main
+    rc = IO.main(["--arm", "direct"] + argv)
+  File "D:\Latent\boxes\inject_ow.py", line 440, in main
+    EV.run(a.out, [p_ for p_ in a.eval_parts.split(",") if p_], dev, a.eval_bs, model=(m, g), sets=SETS, train=train)
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\inject_ow_eval.py", line 257, in run
+    r_ = {"acc": lambda: part_acc(m, g, sets, a, dev, bs), "transfer": lambda: part_acc(m, g, sets, a, dev, bs, key="transfer"),
+          "mean_s": lambda: part_mean_s(m, g, sets, a, dev, bs), "swaps": lambda: part_swaps(m, g, sets, a, dev, bs),
+          "decode": lambda: part_decode(m, g, sets, a, dev, bs)}[p_]()
+  File "D:\Latent\boxes\inject_ow_eval.py", line 257, in <lambda>
+    r_ = {"acc": lambda: part_acc(m, g, sets, a, dev, bs), "transfer": lambda: part_acc(m, g, sets, a, dev, bs, key="transfer"),
+                         ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\inject_ow_eval.py", line 68, in part_acc
+    P = answers_by_kprime(m, g, T[d], KMAX if m is not None else 0, dev, bs); y = np.array([it["ans"] for it in T[d]])
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_ow_eval.py", line 53, in answers_by_kprime
+    out[r, 0] = pred_of(IO.direct_logits(g, ch, dev, ctx)); continue
+                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\inject_ow.py", line 105, in direct_logits
+    h, _ = g(g.embed(x), None)
+           ~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\Latent\boxes\core.py", line 152, in forward
+    m = F.gelu(a @ self.w(pre + "mlp.c_fc.weight") + self.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 458.00 MiB. GPU 0 has a total capacity of 8.00 GiB of which 12.00 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 5.84 GiB is allocated by PyTorch, and 1.04 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

@@ -1,0 +1,5 @@
+{
+ "check": "STEP-TOLD P1-ASK+NAME (ST_v1 \u00a72)",
+ "wrapper_sha256": "6eba1cb89b7bf9b679db3d59befed85bdb0412f042aecc7d58962bfbd1ab93fd",
+ "input": "think = [EOT] + enc(' ' + text' + ' ' + QUESTION(u, X)); dec = think + ' The answer is:'; target v_X; class by sha1(sig + '|askname')"
+}

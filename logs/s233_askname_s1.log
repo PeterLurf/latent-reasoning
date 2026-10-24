@@ -1,0 +1,93 @@
+MEM train 1 250 3.971498966217041
+[W1024 12:37:16.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 689963008 bytes (free: 0, total: 8585216000).
+[W1024 12:37:16.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 689963008 bytes (free: 37748736, total: 8585216000).
+[W1024 12:37:16.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 689963008 bytes (free: 37748736, total: 8585216000).
+MEM eval 1 250 inf
+MEM eval 1 125 4.646454334259033
+{'step': 100, 'loss': 1.453339381814003, 'sec': 20, 'aux_lambda': 0.0, 'answer_ce': 1.453339381814003, 'gn_preclip': 20.166748046875, 'gn_preclip_mean100': 34.05209526062012, 'clip_frac_100': 1.0}
+{'step': 200, 'loss': 1.0327978271245957, 'sec': 41, 'aux_lambda': 0.0, 'answer_ce': 1.0327978271245957, 'gn_preclip': 20.539493560791016, 'gn_preclip_mean100': 27.547208623886107, 'clip_frac_100': 1.0}
+{'step': 300, 'loss': 0.9569088006019593, 'sec': 61, 'aux_lambda': 0.0, 'answer_ce': 0.9569088006019593, 'gn_preclip': 19.82257843017578, 'gn_preclip_mean100': 23.22563961982727, 'clip_frac_100': 1.0}
+{'step': 400, 'loss': 1.0193493843078614, 'sec': 81, 'aux_lambda': 0.0, 'answer_ce': 1.0193493843078614, 'gn_preclip': 18.232654571533203, 'gn_preclip_mean100': 20.680132780075073, 'clip_frac_100': 1.0}
+{'step': 500, 'loss': 1.0318459829688071, 'sec': 101, 'aux_lambda': 0.0, 'answer_ce': 1.0318459829688071, 'gn_preclip': 9.778463363647461, 'gn_preclip_mean100': 18.252499604225157, 'clip_frac_100': 1.0}
+{'step': 600, 'loss': 0.9425688362121583, 'sec': 121, 'aux_lambda': 0.0, 'answer_ce': 0.9425688362121583, 'gn_preclip': 10.13277816772461, 'gn_preclip_mean100': 15.442953805923462, 'clip_frac_100': 1.0}
+{'step': 700, 'loss': 0.976903321146965, 'sec': 141, 'aux_lambda': 0.0, 'answer_ce': 0.976903321146965, 'gn_preclip': 21.98386001586914, 'gn_preclip_mean100': 14.670993976593017, 'clip_frac_100': 1.0}
+{'step': 800, 'loss': 0.9516490629315376, 'sec': 161, 'aux_lambda': 0.0, 'answer_ce': 0.9516490629315376, 'gn_preclip': 20.012020111083984, 'gn_preclip_mean100': 13.747141261100769, 'clip_frac_100': 1.0}
+{'step': 900, 'loss': 0.9331286829710007, 'sec': 181, 'aux_lambda': 0.0, 'answer_ce': 0.9331286829710007, 'gn_preclip': 8.182010650634766, 'gn_preclip_mean100': 12.769283332824706, 'clip_frac_100': 1.0}
+{'step': 1000, 'loss': 1.0358775758743286, 'sec': 201, 'aux_lambda': 0.0, 'answer_ce': 1.0358775758743286, 'gn_preclip': 19.576297760009766, 'gn_preclip_mean100': 14.202206592559815, 'clip_frac_100': 1.0}
+{'step': 1100, 'loss': 0.940576025545597, 'sec': 221, 'aux_lambda': 0.0, 'answer_ce': 0.940576025545597, 'gn_preclip': 15.01833438873291, 'gn_preclip_mean100': 12.418934211730956, 'clip_frac_100': 1.0}
+{'step': 1200, 'loss': 0.9310111823678017, 'sec': 241, 'aux_lambda': 0.0, 'answer_ce': 0.9310111823678017, 'gn_preclip': 19.609378814697266, 'gn_preclip_mean100': 11.352706665992736, 'clip_frac_100': 1.0}
+{'step': 1300, 'loss': 0.9172040763497352, 'sec': 261, 'aux_lambda': 0.0, 'answer_ce': 0.9172040763497352, 'gn_preclip': 7.1549601554870605, 'gn_preclip_mean100': 11.291072158813476, 'clip_frac_100': 1.0}
+{'step': 1400, 'loss': 0.8923967450857162, 'sec': 282, 'aux_lambda': 0.0, 'answer_ce': 0.8923967450857162, 'gn_preclip': 10.84759521484375, 'gn_preclip_mean100': 11.955485973358154, 'clip_frac_100': 1.0}
+{'step': 1500, 'loss': 0.789398271292448, 'sec': 302, 'aux_lambda': 0.0, 'answer_ce': 0.789398271292448, 'gn_preclip': 13.240991592407227, 'gn_preclip_mean100': 10.453985829353332, 'clip_frac_100': 1.0}
+{'step': 1600, 'loss': 0.7395401678234339, 'sec': 322, 'aux_lambda': 0.0, 'answer_ce': 0.7395401678234339, 'gn_preclip': 4.686518669128418, 'gn_preclip_mean100': 10.035472509860993, 'clip_frac_100': 1.0}
+{'step': 1700, 'loss': 0.7738279485702515, 'sec': 342, 'aux_lambda': 0.0, 'answer_ce': 0.7738279485702515, 'gn_preclip': 10.868607521057129, 'gn_preclip_mean100': 11.274521837234497, 'clip_frac_100': 1.0}
+{'step': 1800, 'loss': 0.6289088606089354, 'sec': 362, 'aux_lambda': 0.0, 'answer_ce': 0.6289088606089354, 'gn_preclip': 4.037394046783447, 'gn_preclip_mean100': 9.373504937887192, 'clip_frac_100': 1.0}
+{'step': 1900, 'loss': 0.6350515358801931, 'sec': 382, 'aux_lambda': 0.0, 'answer_ce': 0.6350515358801931, 'gn_preclip': 8.852378845214844, 'gn_preclip_mean100': 8.224799501299858, 'clip_frac_100': 0.99}
+{'step': 2000, 'loss': 0.5442979261279106, 'sec': 402, 'aux_lambda': 0.0, 'answer_ce': 0.5442979261279106, 'gn_preclip': 2.963251829147339, 'gn_preclip_mean100': 7.314239012002945, 'clip_frac_100': 0.96}
+{'step': 2100, 'loss': 0.558193048008252, 'sec': 427, 'aux_lambda': 0.0, 'answer_ce': 0.558193048008252, 'gn_preclip': 7.577375411987305, 'gn_preclip_mean100': 6.852299293875694, 'clip_frac_100': 0.89}
+{'step': 2200, 'loss': 0.358731733597815, 'sec': 447, 'aux_lambda': 0.0, 'answer_ce': 0.358731733597815, 'gn_preclip': 9.240226745605469, 'gn_preclip_mean100': 5.146111575402319, 'clip_frac_100': 0.75}
+{'step': 2300, 'loss': 0.4398487594013568, 'sec': 467, 'aux_lambda': 0.0, 'answer_ce': 0.4398487594013568, 'gn_preclip': 0.06858323514461517, 'gn_preclip_mean100': 6.112575551252812, 'clip_frac_100': 0.61}
+{'step': 2400, 'loss': 0.4453033393903752, 'sec': 487, 'aux_lambda': 0.0, 'answer_ce': 0.4453033393903752, 'gn_preclip': 13.80666446685791, 'gn_preclip_mean100': 5.96889160849154, 'clip_frac_100': 0.67}
+{'step': 2500, 'loss': 0.3857863478278159, 'sec': 507, 'aux_lambda': 0.0, 'answer_ce': 0.3857863478278159, 'gn_preclip': 7.042241096496582, 'gn_preclip_mean100': 5.492165441755206, 'clip_frac_100': 0.57}
+{'step': 2600, 'loss': 0.3625665714908973, 'sec': 527, 'aux_lambda': 0.0, 'answer_ce': 0.3625665714908973, 'gn_preclip': 0.35184985399246216, 'gn_preclip_mean100': 6.604822661150247, 'clip_frac_100': 0.6}
+{'step': 2700, 'loss': 0.3079880701430375, 'sec': 547, 'aux_lambda': 0.0, 'answer_ce': 0.3079880701430375, 'gn_preclip': 0.010267538949847221, 'gn_preclip_mean100': 5.027487785629928, 'clip_frac_100': 0.56}
+{'step': 2800, 'loss': 0.2425534661066922, 'sec': 567, 'aux_lambda': 0.0, 'answer_ce': 0.2425534661066922, 'gn_preclip': 6.122557163238525, 'gn_preclip_mean100': 3.9267704818537457, 'clip_frac_100': 0.5}
+{'step': 2900, 'loss': 0.21575278136922862, 'sec': 587, 'aux_lambda': 0.0, 'answer_ce': 0.21575278136922862, 'gn_preclip': 0.05301329866051674, 'gn_preclip_mean100': 3.7864029020490126, 'clip_frac_100': 0.47}
+{'step': 3000, 'loss': 0.25670497469545805, 'sec': 607, 'aux_lambda': 0.0, 'answer_ce': 0.25670497469545805, 'gn_preclip': 9.73843765258789, 'gn_preclip_mean100': 4.54491066575516, 'clip_frac_100': 0.57}
+{'step': 3100, 'loss': 0.2388462188048288, 'sec': 627, 'aux_lambda': 0.0, 'answer_ce': 0.2388462188048288, 'gn_preclip': 5.109822750091553, 'gn_preclip_mean100': 4.115523759156932, 'clip_frac_100': 0.57}
+{'step': 3200, 'loss': 0.21366880496483645, 'sec': 647, 'aux_lambda': 0.0, 'answer_ce': 0.21366880496483645, 'gn_preclip': 0.009992086328566074, 'gn_preclip_mean100': 4.080021082556341, 'clip_frac_100': 0.56}
+{'step': 3300, 'loss': 0.2285713360121008, 'sec': 668, 'aux_lambda': 0.0, 'answer_ce': 0.2285713360121008, 'gn_preclip': 7.49076509475708, 'gn_preclip_mean100': 4.395154861491173, 'clip_frac_100': 0.56}
+{'step': 3400, 'loss': 0.12537392297068436, 'sec': 687, 'aux_lambda': 0.0, 'answer_ce': 0.12537392297068436, 'gn_preclip': 0.008934656158089638, 'gn_preclip_mean100': 2.3310180371860043, 'clip_frac_100': 0.38}
+{'step': 3500, 'loss': 0.19730574606765003, 'sec': 708, 'aux_lambda': 0.0, 'answer_ce': 0.19730574606765003, 'gn_preclip': 6.421117305755615, 'gn_preclip_mean100': 3.728412804855034, 'clip_frac_100': 0.57}
+{'step': 3600, 'loss': 0.13594231423470773, 'sec': 727, 'aux_lambda': 0.0, 'answer_ce': 0.13594231423470773, 'gn_preclip': 0.005006304942071438, 'gn_preclip_mean100': 2.7343084968824405, 'clip_frac_100': 0.45}
+{'step': 3700, 'loss': 0.15945754435684648, 'sec': 747, 'aux_lambda': 0.0, 'answer_ce': 0.15945754435684648, 'gn_preclip': 0.011284634470939636, 'gn_preclip_mean100': 3.538572826271411, 'clip_frac_100': 0.51}
+{'step': 3800, 'loss': 0.15125386102670746, 'sec': 768, 'aux_lambda': 0.0, 'answer_ce': 0.15125386102670746, 'gn_preclip': 0.005416052881628275, 'gn_preclip_mean100': 3.563658512774855, 'clip_frac_100': 0.56}
+{'step': 3900, 'loss': 0.14031528432446067, 'sec': 788, 'aux_lambda': 0.0, 'answer_ce': 0.14031528432446067, 'gn_preclip': 5.9298224449157715, 'gn_preclip_mean100': 3.2984846524847673, 'clip_frac_100': 0.5}
+{'step': 4000, 'loss': 0.10880849709872564, 'sec': 808, 'aux_lambda': 0.0, 'answer_ce': 0.10880849709872564, 'gn_preclip': 0.005304527934640646, 'gn_preclip_mean100': 2.819860592680052, 'clip_frac_100': 0.47}
+{'step': 4100, 'loss': 0.09407835003130458, 'sec': 834, 'aux_lambda': 0.0, 'answer_ce': 0.09407835003130458, 'gn_preclip': 0.028349658474326134, 'gn_preclip_mean100': 2.734379867669195, 'clip_frac_100': 0.45}
+{'step': 4200, 'loss': 0.08138817806982843, 'sec': 854, 'aux_lambda': 0.0, 'answer_ce': 0.08138817806982843, 'gn_preclip': 0.011168541386723518, 'gn_preclip_mean100': 2.840348453175975, 'clip_frac_100': 0.47}
+{'step': 4300, 'loss': 0.07284146075806347, 'sec': 874, 'aux_lambda': 0.0, 'answer_ce': 0.07284146075806347, 'gn_preclip': 5.907756805419922, 'gn_preclip_mean100': 2.8212862994032912, 'clip_frac_100': 0.46}
+{'step': 4400, 'loss': 0.06193551687254512, 'sec': 894, 'aux_lambda': 0.0, 'answer_ce': 0.06193551687254512, 'gn_preclip': 0.005062547046691179, 'gn_preclip_mean100': 2.347203200040385, 'clip_frac_100': 0.52}
+{'step': 4500, 'loss': 0.03541353331951541, 'sec': 914, 'aux_lambda': 0.0, 'answer_ce': 0.03541353331951541, 'gn_preclip': 0.008957604877650738, 'gn_preclip_mean100': 1.6660851293313317, 'clip_frac_100': 0.41}
+{'step': 4600, 'loss': 0.03394194595020963, 'sec': 934, 'aux_lambda': 0.0, 'answer_ce': 0.03394194595020963, 'gn_preclip': 0.013670360669493675, 'gn_preclip_mean100': 1.6596178965223953, 'clip_frac_100': 0.45}
+{'step': 4700, 'loss': 0.019202613788365852, 'sec': 954, 'aux_lambda': 0.0, 'answer_ce': 0.019202613788365852, 'gn_preclip': 0.0038946301210671663, 'gn_preclip_mean100': 1.0054687660350465, 'clip_frac_100': 0.3}
+{'step': 4800, 'loss': 0.009929938764798862, 'sec': 974, 'aux_lambda': 0.0, 'answer_ce': 0.009929938764798862, 'gn_preclip': 0.007984486408531666, 'gn_preclip_mean100': 0.54692495635245, 'clip_frac_100': 0.16}
+{'step': 4900, 'loss': 0.00391372521116864, 'sec': 994, 'aux_lambda': 0.0, 'answer_ce': 0.00391372521116864, 'gn_preclip': 10.46884536743164, 'gn_preclip_mean100': 0.4601653334614821, 'clip_frac_100': 0.09}
+{'step': 5000, 'loss': 0.0024175803179241483, 'sec': 1014, 'aux_lambda': 0.0, 'answer_ce': 0.0024175803179241483, 'gn_preclip': 0.0036532096564769745, 'gn_preclip_mean100': 0.6068814662285149, 'clip_frac_100': 0.03}
+{'step': 5100, 'loss': 0.003902338650477759, 'sec': 1034, 'aux_lambda': 0.0, 'answer_ce': 0.003902338650477759, 'gn_preclip': 0.057663194835186005, 'gn_preclip_mean100': 0.20009402234223672, 'clip_frac_100': 0.05}
+{'step': 5200, 'loss': 0.0009094681347050937, 'sec': 1054, 'aux_lambda': 0.0, 'answer_ce': 0.0009094681347050937, 'gn_preclip': 0.0025592336896806955, 'gn_preclip_mean100': 0.043329140114365144, 'clip_frac_100': 0.0}
+{'step': 5300, 'loss': 0.0020520126328301557, 'sec': 1075, 'aux_lambda': 0.0, 'answer_ce': 0.0020520126328301557, 'gn_preclip': 0.0016219159588217735, 'gn_preclip_mean100': 0.13020099991117604, 'clip_frac_100': 0.03}
+{'step': 5400, 'loss': 0.0007237454362257267, 'sec': 1095, 'aux_lambda': 0.0, 'answer_ce': 0.0007237454362257267, 'gn_preclip': 0.1353105753660202, 'gn_preclip_mean100': 0.03916129493853077, 'clip_frac_100': 0.0}
+{'step': 5500, 'loss': 0.00046290572732686996, 'sec': 1115, 'aux_lambda': 0.0, 'answer_ce': 0.00046290572732686996, 'gn_preclip': 0.04188161715865135, 'gn_preclip_mean100': 0.020872708397218956, 'clip_frac_100': 0.0}
+{'step': 5600, 'loss': 0.0007482306187193899, 'sec': 1135, 'aux_lambda': 0.0, 'answer_ce': 0.0007482306187193899, 'gn_preclip': 0.001002469565719366, 'gn_preclip_mean100': 0.04118771447392646, 'clip_frac_100': 0.0}
+{'step': 5700, 'loss': 0.0003711143960390473, 'sec': 1155, 'aux_lambda': 0.0, 'answer_ce': 0.0003711143960390473, 'gn_preclip': 0.0011138739064335823, 'gn_preclip_mean100': 0.01546896037471015, 'clip_frac_100': 0.0}
+{'step': 5800, 'loss': 0.0004220404432999203, 'sec': 1175, 'aux_lambda': 0.0, 'answer_ce': 0.0004220404432999203, 'gn_preclip': 0.010066952556371689, 'gn_preclip_mean100': 0.02227794901584275, 'clip_frac_100': 0.0}
+{'step': 5900, 'loss': 0.0011275276068590757, 'sec': 1195, 'aux_lambda': 0.0, 'answer_ce': 0.0011275276068590757, 'gn_preclip': 0.050129637122154236, 'gn_preclip_mean100': 0.09139900690643117, 'clip_frac_100': 0.04}
+{'step': 6000, 'loss': 0.00040334165174499504, 'sec': 1215, 'aux_lambda': 0.0, 'answer_ce': 0.00040334165174499504, 'gn_preclip': 0.028360433876514435, 'gn_preclip_mean100': 0.01705319791682996, 'clip_frac_100': 0.0}
+{'step': 6100, 'loss': 0.0003306454849916918, 'sec': 1240, 'aux_lambda': 0.0, 'answer_ce': 0.0003306454849916918, 'gn_preclip': 0.0014519288670271635, 'gn_preclip_mean100': 0.013301783830393106, 'clip_frac_100': 0.0}
+{'step': 6200, 'loss': 0.0003925567171791045, 'sec': 1260, 'aux_lambda': 0.0, 'answer_ce': 0.0003925567171791045, 'gn_preclip': 0.03692419454455376, 'gn_preclip_mean100': 0.016065264700446277, 'clip_frac_100': 0.0}
+{'step': 6300, 'loss': 0.0002830062657903909, 'sec': 1280, 'aux_lambda': 0.0, 'answer_ce': 0.0002830062657903909, 'gn_preclip': 0.0009061298333108425, 'gn_preclip_mean100': 0.012478592180996203, 'clip_frac_100': 0.0}
+{'step': 6400, 'loss': 0.0002807431301152974, 'sec': 1300, 'aux_lambda': 0.0, 'answer_ce': 0.0002807431301152974, 'gn_preclip': 0.0012700470397248864, 'gn_preclip_mean100': 0.01573595864349045, 'clip_frac_100': 0.0}
+{'step': 6500, 'loss': 0.00029520972191676264, 'sec': 1320, 'aux_lambda': 0.0, 'answer_ce': 0.00029520972191676264, 'gn_preclip': 0.01538716722279787, 'gn_preclip_mean100': 0.011877408881555312, 'clip_frac_100': 0.0}
+{'step': 6600, 'loss': 0.00031188095083962253, 'sec': 1340, 'aux_lambda': 0.0, 'answer_ce': 0.00031188095083962253, 'gn_preclip': 0.023869136348366737, 'gn_preclip_mean100': 0.027968744984827935, 'clip_frac_100': 0.01}
+{'step': 6700, 'loss': 0.00048375804637544205, 'sec': 1360, 'aux_lambda': 0.0, 'answer_ce': 0.00048375804637544205, 'gn_preclip': 0.015743987634778023, 'gn_preclip_mean100': 0.05264175929769408, 'clip_frac_100': 0.01}
+{'step': 6800, 'loss': 0.00029851178151147907, 'sec': 1380, 'aux_lambda': 0.0, 'answer_ce': 0.00029851178151147907, 'gn_preclip': 0.0280186515301466, 'gn_preclip_mean100': 0.016720624137669803, 'clip_frac_100': 0.0}
+{'step': 6900, 'loss': 0.00025290899400715717, 'sec': 1400, 'aux_lambda': 0.0, 'answer_ce': 0.00025290899400715717, 'gn_preclip': 0.0005469856550917029, 'gn_preclip_mean100': 0.01014017661480466, 'clip_frac_100': 0.0}
+{'step': 7000, 'loss': 0.00023184517023764784, 'sec': 1420, 'aux_lambda': 0.0, 'answer_ce': 0.00023184517023764784, 'gn_preclip': 0.0005992122460156679, 'gn_preclip_mean100': 0.008864789006474893, 'clip_frac_100': 0.0}
+{'step': 7100, 'loss': 0.00024404706606219408, 'sec': 1441, 'aux_lambda': 0.0, 'answer_ce': 0.00024404706606219408, 'gn_preclip': 0.003727698465809226, 'gn_preclip_mean100': 0.010136215116945095, 'clip_frac_100': 0.0}
+{'step': 7200, 'loss': 0.0005601338427914015, 'sec': 1461, 'aux_lambda': 0.0, 'answer_ce': 0.0005601338427914015, 'gn_preclip': 0.0022931285202503204, 'gn_preclip_mean100': 0.06088714568992146, 'clip_frac_100': 0.01}
+{'step': 7300, 'loss': 0.0002028902524671139, 'sec': 1481, 'aux_lambda': 0.0, 'answer_ce': 0.0002028902524671139, 'gn_preclip': 0.0006937970174476504, 'gn_preclip_mean100': 0.0071981904239510185, 'clip_frac_100': 0.0}
+{'step': 7400, 'loss': 0.0002604032794079103, 'sec': 1501, 'aux_lambda': 0.0, 'answer_ce': 0.0002604032794079103, 'gn_preclip': 0.0006098661688156426, 'gn_preclip_mean100': 0.009448961332091131, 'clip_frac_100': 0.0}
+{'step': 7500, 'loss': 0.00024141279458490318, 'sec': 1521, 'aux_lambda': 0.0, 'answer_ce': 0.00024141279458490318, 'gn_preclip': 0.0122869573533535, 'gn_preclip_mean100': 0.008841562575835269, 'clip_frac_100': 0.0}
+{'step': 7600, 'loss': 0.00021241117079625837, 'sec': 1541, 'aux_lambda': 0.0, 'answer_ce': 0.00021241117079625837, 'gn_preclip': 0.010700433515012264, 'gn_preclip_mean100': 0.019034272853750735, 'clip_frac_100': 0.01}
+{'step': 7700, 'loss': 0.0001942444488304318, 'sec': 1561, 'aux_lambda': 0.0, 'answer_ce': 0.0001942444488304318, 'gn_preclip': 0.004194997251033783, 'gn_preclip_mean100': 0.0075350113213062285, 'clip_frac_100': 0.0}
+{'step': 7800, 'loss': 0.0002477789377553563, 'sec': 1581, 'aux_lambda': 0.0, 'answer_ce': 0.0002477789377553563, 'gn_preclip': 0.0006034900434315205, 'gn_preclip_mean100': 0.010102449399128091, 'clip_frac_100': 0.0}
+{'step': 7900, 'loss': 0.0001714838698899257, 'sec': 1601, 'aux_lambda': 0.0, 'answer_ce': 0.0001714838698899257, 'gn_preclip': 0.0007889521075412631, 'gn_preclip_mean100': 0.006452696435153484, 'clip_frac_100': 0.0}
+{'step': 8000, 'loss': 0.0015881254430496483, 'sec': 1621, 'aux_lambda': 0.0, 'answer_ce': 0.0015881254430496483, 'gn_preclip': 0.012810450047254562, 'gn_preclip_mean100': 0.1331213464125176, 'clip_frac_100': 0.01}
+[W1024 13:04:32.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 213909504 bytes (free: 0, total: 8585216000).
+[W1024 13:04:44.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 289406976 bytes (free: 0, total: 8585216000).
+[W1024 13:04:52.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 306184192 bytes (free: 0, total: 8585216000).
+[W1024 13:05:00.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 337641472 bytes (free: 0, total: 8585216000).
+PART acc done 46 s
+DONE boxes/runs_fsq/s233_askname_s1
+SUMMARY written
