@@ -65,6 +65,7 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 229 | LAT-OW-CUM | Does a cumulative re-rooted per-pass target rescue §228? | FAILED; §228 language line CLOSED (Note 229-1) | d2 0.083 vs 0.093; pass-1 aux 0.55; §228+§229 ≈ $1.19 | Recipe negative at this scale; user 10-23: synthetic C6 first, then a ~0.5–1B base. | C1 |
 | 230 | FH-FT-FIX | Does a post-formation far FT at fixed λ hold without depth cost? | MET (PASS, Note 230-2; s1 confirmatory, s2 motivating) | H(128) 0.994 vs ctrl 0.117; DEPTH 0.615 vs 0.593; $1.00 | Far loss costs depth only during formation; apply it after (12k FT, λ 1.6): depth parity. | C6 |
 | 231 | LARGE-BASE | Does Qwen2.5-0.5B compute the d=2 intermediate eagerly (P1′, $0)? | FAILED; CLOSED at $0 (Note 231-3) | EAGER v_1 0.112 vs layer-0 0.116 (chance); positive control v_0 0.988 | 0.5B base does not compute the intermediate either; scale alone is not the lever. | C1 |
+| 232 | HOLD-C1 | Do C1 serial use and the §230 hold coexist? | COEXIST 2/2 (COEXIST-SHIFTED; Note 232-3); blind s3 triggered | pgain 0.871/0.872 ≈ base; follow_ii 1.0; H(128) 0.994/0.990; carry 0.60/0.69 vs 0.83; $1.28 | Hold FT keeps causal serial use; shifts read policy away from carry. | C1, C6 |
 
 ## What worked
 
