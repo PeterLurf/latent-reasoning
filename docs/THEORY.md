@@ -21504,6 +21504,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - So STALL and the DEEP / NOLOSS inputs are not blind. The decisive blind C1 readings are PROBE-GAIN / PROBE(2–6), the onset slope / mean, and VALUE-SWAP.
 - **Build:** the c1hold part. G-D packet: identity gate in-part (per-pair + exact pooled-count equality with eval_vb vswap); the V_0-masked arm verified to mask only V_0; per-item outputs stored for every share-gated reading; memory check at the c1hold shape on the 3090.
 
+**Note 233-1 (2026-10-24 12:37 EDT; §233 P1-ASK+NAME read rule, pinned before any gate output (the runs launched at 81768aab are not read); implementation choices confirmed.)**
+- **Choices confirmed:**
+  - class per item = sha1(sig + "|askname") mod (3 at d = 1, 4 at d = 2), with no rng drawn, so the d-sequence and the item stream are P-DIR2's;
+  - (iii) = the first distractor, else the first given G_t, else S_0, recorded per item;
+  - (iv) at d = 2 only;
+  - CD = text + cues S_1..S_d, target v_d.
+- **Pass rule (per class, test accuracy):**
+  - **(i) S_1 is read at d = 2 only** (at d = 1, S_1 is the final answer, so it is not a one-hop test of an unrequested intermediate): ≥ 0.80;
+  - **(iv)** at d = 2: ≥ 0.80;
+  - **(ii) ∪ (iii) given**, each class pooled over d 1–2: ≥ 0.90;
+  - overall d = 1 (all classes): ≥ 0.80.
+  - All four must hold. Per class × d is reported.
+- **CD-local:** CUED-DIRECT d = 2 test accuracy ≥ 0.80 → ST stops ("the plan alone solves d = 2 one-pass").
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
