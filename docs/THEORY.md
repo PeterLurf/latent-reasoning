@@ -319,7 +319,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 229 | LAT-OW-CUM (§228 pre-named fallback; Audit-approved, ~$0.7): INJECT aux target = re-rooted program R_j (one change); P-LAT2 form on a cloud 3090 vs s228_pdir2c_s1; LP0 re-calibrated (38.1); LP3 fail closes the §228 language line -> base-model question to the user | CLOSED | **CLOSED 10-23 (229-1): d=2 0.083 = chance (DIRECT 0.093), pass-1 aux 0.55 -> fails LP2/LP3; closes the §228 language line; base-model question to the user; ~$0.54** |
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2, Audit-reproduced; depth parity, not gain): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
-| 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **for Audit’s ruling** |
+| 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 
 ## Live sections
 
@@ -21474,6 +21474,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Together with §224: training the far loss from scratch costs depth (RD −0.08 / −0.15 / −0.26), while applying it after formation does not.
   - This recipe may be carried into C1 work on the synthetic line, with that scope.
 - **Realised:** §230 ≈ $1.00; the HOLD-DEPTH line (§224 + §230) = $18.87.
+
+**Note 232-1 (2026-10-24 11:41 EDT; Audit's approval conditions for §232, before any §232 output; no rule change).**
+- **(1) The s2 recipe difference, disclosed:** HC s2 = s224_fhft_s2, the §224 dose-rule cell (λ set to 1.618 at the end of the 250–500 dose window; no FP term in the loss during the window). It is NOT §230's fixed-λ-from-step-1 recipe. s2 tests "the same dose, a different path". **If s1 and s2 split, this difference is a named candidate cause,** not noise.
+- **(2)** s3's HC cell uses §230's recipe exactly (--fh_lambda_fixed 1.6, 12k post-formation from D3-T s3), so the confirmatory seed tests the recipe the status line names.
+- **(3) Already seen on the §232 models, listed:**
+  - HOLD (eval_khorizon H(K′)) for HC s1 / s2 and FT-CTRL s1 / s2;
+  - eval_vb acc_n2 (n 1–8, and DEPTH n 9–11, so DEEP is partly seen);
+  - stall.recovery (1.0 for HC s1 / s2 and FT-CTRL);
+  - acc_k K′ 0 / 1 (the C1 floor) for HC s1 and FT-CTRL s1;
+  - eval_vb carry_likeness and the bank_ablate rows (read by the HC drafter: 0.602 / 0.694 vs 0.825 / 0.833; s2 n 8 0.641).
+  - **Not seen anywhere:** PROBE(t) / PROBE-GAIN, SERIAL-ONSET, VALUE-SWAP (any arm), OLD-SWAP, SWAP-HOLD, arm (v). PROBE and VALUE-SWAP were never run on any FT cell.
+  - So STALL and the DEEP / NOLOSS inputs are not blind. The decisive blind C1 readings are PROBE-GAIN / PROBE(2–6), the onset slope / mean, and VALUE-SWAP.
+- **Build:** the c1hold part. G-D packet: identity gate in-part (per-pair + exact pooled-count equality with eval_vb vswap); the V_0-masked arm verified to mask only V_0; per-item outputs stored for every share-gated reading; memory check at the c1hold shape on the 3090.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
