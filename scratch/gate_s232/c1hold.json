@@ -1,0 +1,57 @@
+{
+ "rc": 0,
+ "top_keys": [
+  "c1hold",
+  "card",
+  "dtype",
+  "eval_bs",
+  "mct",
+  "mode",
+  "per_n",
+  "run",
+  "sec"
+ ],
+ "arms_dicts": {
+  "ii_K": true,
+  "iv_K": true,
+  "ii_hold": true,
+  "v_K": true,
+  "v0off_K": true
+ },
+ "gate": {
+  "per_pair_ii_hold_vs_K": 1.0,
+  "pooled_c1hold": {
+   "n_pairs": 88,
+   "follow_ii": 1.0,
+   "own_ii": 0.0,
+   "follow_iv": 0.8068181818181818,
+   "own_iv": 0.011363636363636364
+  },
+  "pooled_eval_vb": {
+   "n_pairs": 88,
+   "follow_ii": 1.0,
+   "own_ii": 0.0,
+   "follow_iv": 0.8068181818181818,
+   "own_iv": 0.011363636363636364
+  },
+  "pooled_equal": true,
+  "v0only_chunks_bitwise": 1.0,
+  "v0only_n_chunks": 19,
+  "v0off_changed_share_clean": 0.19318181818181818,
+  "pass": true
+ },
+ "hold_bs": 32,
+ "mem_tried": [
+  [
+   32,
+   8,
+   3,
+   "ok, peak 0.198 of the card"
+  ]
+ ],
+ "n_pairs_all": 88,
+ "n_items": 88,
+ "n_pairs_clean": 88,
+ "known_answer_v_follow_ge_0.95": true,
+ "pass": true
+}

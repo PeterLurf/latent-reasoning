@@ -33,7 +33,7 @@ fetch() {   # fetch <name> <remote tar arguments>: sha-verified, 3 tries, extrac
 }
 mkdir -p /d/drain_tmp
 for j in $runs; do n=$(echo $j | tr '/' '_')
-  xm=""; case $j in *_re) xm="--exclude=$j/model.pt";; esac
+  xm=""; case $j in *_re|*_c1) xm="--exclude=$j/model.pt";; esac
   fetch $n --exclude=$j/ckpt_last.pt --exclude=$j/ckpt_last.pt.tmp --exclude=$j/ckpt_prev.pt $xm $j logs/gen_$(basename $j).log || { echo "FETCH_INCOMPLETE $ID ($j)"; exit 1; }
 done
 fetch logs logs || { echo "FETCH_INCOMPLETE $ID (logs)"; exit 1; }

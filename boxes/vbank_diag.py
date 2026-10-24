@@ -1640,14 +1640,124 @@ def part_deep(m, TE_unused, dev, bs, run):
     return res
 
 
+@torch.no_grad()
+def part_c1hold(m, TE, dev, bs, run, kh=128, mem_frac=0.85, hold_bs=None):
+    """§232 HOLD-C1 (HC_v1 §3 / §4, Note 232-1; REVIEW_HC fix 6) -> eval_c1hold.json under the single top-level key "c1hold". VALUE-SWAP class A pairs
+    (vbank_eval.make_pairs, rng 21120), grouped by (n, t) and chunked at eval_bs exactly as vbank_eval.vswap_class; per chunk the recipient / donor K = n + 2
+    rollouts are held (clean = both correct at K' = n + 2, as vswap). Arms (edit / ver_sub / v0_off_after hooks only, no new rollout code):
+      ii_K       the donor's V_t as the stored entry at t (vswap ii), K = n + 2;   iv_K = ii_K with V_0 masked for passes > t (vswap iv)
+      ii_hold    the same splice, ONE K' = 128 rollout with coda rows n + 2 and 128 -> SWAP-HOLD: answer at K' 128 and agree = answer(128) == answer(n + 2)
+      v_K        consistent donor history: edit at t -> donor V_t, ver_sub = donor V_1..V_{t-1} (default REPLACE: entry s read as F_s by passes > s + 1 and
+                 the coda after pass >= s + 1), V_0 the recipient's;   v0off_K = v_K with v0_off_after = t
+    Gates (in-part): (a) per pair, ii's answer from the K' 128 rollout's coda row n + 2 == ii_K's (share; the long rollout runs at hold_bs, and if
+    hold_bs < eval_bs the reference is a same-bs K = n + 2 ii rollout, never eval_vb); (b) pooled n_pairs / follow_ii / own_ii / follow_iv / own_iv ==
+    <run>/eval_vb.json vswap (same card / bs; exact float equality); (c) V0-ONLY: v0off_K's logits == v_K run with ver_keep(t', nver) = (version != 0) or
+    t' <= t (a mask that drops version 0 only) bitwise per chunk, and the changed-answer share v0off vs v (exposure). Memory: the deepest pair chunk
+    (n max, longest recipient) with the held K rollouts + the K' 128 spliced rollout; peak > mem_frac of the card or OOM halves hold_bs.
+    Per pair (store-items rule): i, n, t, clean, y, yd and every arm's answer; ii's donor log-prob margin (logit_yd - max other number logit) at n + 2 / 128."""
+    num = torch.tensor(N.NUM_IDS, device=dev); pairs, qual = VE.make_pairs(TE, cls="A"); cuda = str(dev).startswith("cuda")
+    groups = [(key, [p_ for p_ in pairs if (p_["n"], p_["t"]) == key]) for key in sorted({(p_["n"], p_["t"]) for p_ in pairs})]
+    res = {"k_hold": kh, "eval_bs": bs, "mem_tried": [], "candidates": len(pairs), "qualifying_share_by_n": qual}
+
+    def a_(r_, k, lens):
+        lg = m.answer_logits(r_["coda"][k][1], lens)[:, num]; return lg.argmax(-1), lg
+
+    def marg(lg, yd):
+        o_ = lg.clone(); o_[torch.arange(len(yd), device=dev), yd] = float("-inf"); return (lg[torch.arange(len(yd), device=dev), yd] - o_.max(-1).values)
+
+    def ii_edit(t, Vd):
+        return lambda tt, V: Vd.clone() if tt == t else None
+
+    def held(ps):
+        rec = [TE[p_["i"]] for p_ in ps]; don = [p_["donor"] for p_ in ps]; x, pad, lens = VB.batch_x(rec, dev); xd, pdd, ld = VB.batch_x(don, dev)
+        assert torch.equal(pad, pdd) and torch.equal(lens, ld), "c1hold: donor slots != recipient slots"
+        return rec, don, x, pad, lens, xd, pdd, ld
+
+    def fits(b_):
+        if not cuda:
+            return True
+        n_max = max(k[0] for k, _ in groups); cand = [(k, g_) for k, g_ in groups if k[0] == n_max]
+        (n, t), g_ = max(cand, key=lambda kg: max(len(TE[p_["i"]]["syms"]) for p_ in kg[1])); ps = sorted(g_, key=lambda p_: -len(TE[p_["i"]]["syms"]))[:b_]; K = n + 2
+        try:
+            torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); rec, don, x, pad, lens, xd, pdd, ld = held(ps); rows = torch.arange(len(ps), device=dev)
+            rr = m.rollout(x, pad, K, coda_rows={K: rows}); rd = m.rollout(xd, pdd, K, coda_rows={K: rows})
+            ra = m.rollout(x, pad, kh, coda_rows={K: rows, kh: rows}, edit=ii_edit(t, rd["V"][t])); del ra, rr, rd
+            pk = torch.cuda.max_memory_allocated(dev) / torch.cuda.get_device_properties(dev).total_memory; ok = pk <= mem_frac
+            res["mem_tried"].append([b_, n, len(ps), "%s peak %.3f of the card" % ("ok," if ok else "over %.2f," % mem_frac, pk)]); return ok
+        except torch.OutOfMemoryError:
+            res["mem_tried"].append([b_, n, len(ps), "OOM"]); torch.cuda.empty_cache(); return False
+    hb = bs if hold_bs is None else hold_bs                                 # hold_bs: gates only (forces the halved-hold path; main() never passes it)
+    while hold_bs is None and hb >= 1 and not fits(hb):
+        hb //= 2
+    assert hb >= 1, ("c1hold: no hold_bs fits K' %d" % kh, res["mem_tried"])
+    res["hold_bs"] = hb; items = []; cnt = {a: {} for a in ("ii", "iv")}; v0chk = [0, 0]; v0chg = [0, 0]
+    for (n, t), grp in groups:
+        K = n + 2
+        for ch in VE.chunks(list(range(len(grp))), bs):
+            ps = [grp[j] for j in ch]; B = len(ps); rec, don, x, pad, lens, xd, pdd, ld = held(ps); rows = torch.arange(B, device=dev)
+            rr = m.rollout(x, pad, K, coda_rows={K: rows}); rd = m.rollout(xd, pdd, K, coda_rows={K: rows}); Vd = rd["V"][t]
+            y = torch.tensor([it["t"] for it in rec], device=dev); yd = torch.tensor([it["t"] for it in don], device=dev)
+            clean = (a_(rr, K, lens)[0] == y) & (a_(rd, K, ld)[0] == yd)
+            r_ = m.rollout(x, pad, K, coda_rows={K: rows}, edit=ii_edit(t, Vd)); A_ii, L_ii = a_(r_, K, lens); del r_
+            r_ = m.rollout(x, pad, K, coda_rows={K: rows}, edit=ii_edit(t, Vd), v0_off_after=t); A_iv = a_(r_, K, lens)[0]; del r_
+            for arm, A in (("ii", A_ii), ("iv", A_iv)):                     # vswap_class's pooled counts
+                d_ = cnt[arm].setdefault(str(n), {"follow": 0, "own": 0, "pairs": 0})
+                d_["follow"] += int(((A == yd) & clean).sum()); d_["own"] += int(((A == y) & clean).sum()); d_["pairs"] += int(clean.sum())
+            dons = [rd["V"][s_] for s_ in range(1, t)]
+            r_ = m.rollout(x, pad, K, coda_rows={K: rows}, edit=ii_edit(t, Vd), ver_sub=dons); A_v = a_(r_, K, lens)[0]; del r_
+            r_ = m.rollout(x, pad, K, coda_rows={K: rows}, edit=ii_edit(t, Vd), ver_sub=dons, v0_off_after=t); A_v0, L_v0 = a_(r_, K, lens); del r_
+            try:                                                            # gate (c): the same arm through a keep-mask that drops version 0 only
+                m.ver_keep = lambda tt, nver: (torch.arange(nver, device=dev) != 0) | (tt <= t)
+                r_ = m.rollout(x, pad, K, coda_rows={K: rows}, edit=ii_edit(t, Vd), ver_sub=dons); L_kp = a_(r_, K, lens)[1]; del r_
+            finally:
+                m.ver_keep = None
+            v0chk[0] += int(torch.equal(L_v0, L_kp)); v0chk[1] += 1; v0chg[0] += int(((A_v0 != A_v) & clean).sum()); v0chg[1] += int(clean.sum())
+            A_hK = torch.empty_like(A_ii); A_h = torch.empty_like(A_ii); M_hK = torch.empty(B, device=dev); M_h = torch.empty(B, device=dev); A_ref = A_ii
+            if hb < bs:
+                A_ref = torch.empty_like(A_ii)
+            for s0 in range(0, B, hb):                                      # SWAP-HOLD (at hold_bs; == eval_bs unless the memory check halved it)
+                sl = slice(s0, s0 + hb); r2 = torch.arange(len(range(B)[sl]), device=dev); xs, pds, ls = x[sl], pad[sl], lens[sl]; Vs = Vd[sl]
+                r_ = m.rollout(xs, pds, kh, coda_rows={K: r2, kh: r2}, edit=ii_edit(t, Vs)); a1, l1 = a_(r_, K, ls); a2, l2 = a_(r_, kh, ls); del r_
+                A_hK[sl], A_h[sl] = a1, a2; M_hK[sl], M_h[sl] = marg(l1, yd[sl]), marg(l2, yd[sl])
+                if hb < bs:                                                 # the same-bs K = n + 2 reference (never eval_vb)
+                    r_ = m.rollout(xs, pds, K, coda_rows={K: r2}, edit=ii_edit(t, Vs)); A_ref[sl] = a_(r_, K, ls)[0]; del r_
+            for r in range(B):
+                items.append({"i": ps[r]["i"], "n": n, "t": t, "clean": bool(clean[r]), "y": int(y[r]), "yd": int(yd[r]), "ii_K": int(A_ii[r]), "iv_K": int(A_iv[r]),
+                              "ii_K_ref": int(A_ref[r]), "ii_hold_K": int(A_hK[r]), "ii_hold_128": int(A_h[r]), "v_K": int(A_v[r]), "v0off_K": int(A_v0[r]),
+                              "ii_margin_K": float(M_hK[r]), "ii_margin_128": float(M_h[r])})
+            del rr, rd, Vd
+    tot = lambda arm, f: sum(v[f] for v in cnt[arm].values()) / max(1, sum(v["pairs"] for v in cnt[arm].values()))  # noqa: E731
+    pooled = {"n_pairs": sum(v["pairs"] for v in cnt["ii"].values()), "follow_ii": tot("ii", "follow"), "own_ii": tot("ii", "own"), "follow_iv": tot("iv", "follow"),
+              "own_iv": tot("iv", "own")}
+    g = {"per_pair_ii_hold_vs_K": float(np.mean([it["ii_hold_K"] == it["ii_K_ref"] for it in items])) if items else None, "pooled_c1hold": pooled}
+    try:
+        vs = json.load(open(os.path.join(run, "eval_vb.json")))["vswap"]; g["pooled_eval_vb"] = {k: vs.get(k) for k in pooled}
+        g["pooled_equal"] = all(vs.get(k) == v for k, v in pooled.items())
+    except (OSError, KeyError) as e:
+        g["pooled_eval_vb"] = {"error": str(e)}; g["pooled_equal"] = False
+    g["v0only_chunks_bitwise"] = v0chk[0] / max(1, v0chk[1]); g["v0only_n_chunks"] = v0chk[1]; g["v0off_changed_share_clean"] = v0chg[0] / max(1, v0chg[1])
+    g["pass"] = g["per_pair_ii_hold_vs_K"] == 1.0 and g["pooled_equal"] and g["v0only_chunks_bitwise"] == 1.0
+    cl = [it for it in items if it["clean"]]; sh = lambda f: float(np.mean([f(it) for it in cl])) if cl else None  # noqa: E731
+    arms = {"ii_K": {"follow": sh(lambda it: it["ii_K"] == it["yd"]), "own": sh(lambda it: it["ii_K"] == it["y"])},
+            "iv_K": {"follow": sh(lambda it: it["iv_K"] == it["yd"]), "own": sh(lambda it: it["iv_K"] == it["y"])},
+            "ii_hold": {"follow_128": sh(lambda it: it["ii_hold_128"] == it["yd"]), "own_128": sh(lambda it: it["ii_hold_128"] == it["y"]),
+                        "agree": sh(lambda it: it["ii_hold_128"] == it["ii_hold_K"]), "margin_K_mean": sh(lambda it: it["ii_margin_K"]), "margin_128_mean": sh(lambda it: it["ii_margin_128"])},
+            "v_K": {"follow": sh(lambda it: it["v_K"] == it["yd"]), "own": sh(lambda it: it["v_K"] == it["y"])},
+            "v0off_K": {"follow": sh(lambda it: it["v0off_K"] == it["yd"]), "own": sh(lambda it: it["v0off_K"] == it["y"])}}
+    res.update({"n_pairs_clean": len(cl), "n_pairs_all": len(items), "arms": arms, "gate": g, "items": items, "def": part_c1hold.__doc__})
+    assert all(isinstance(v, dict) for v in arms.values()), "c1hold: arm keys must be dicts (main() key-collision lesson)"
+    print("C1HOLD gate", {k: g[k] for k in ("per_pair_ii_hold_vs_K", "pooled_equal", "v0only_chunks_bitwise", "pass")}, "hold_bs", hb, flush=True)
+    return {"c1hold": res}
+
+
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth", "deep", "khorizon"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--part", required=True, choices=["rs", "pf", "x16", "longstep", "foreign", "steppos", "gsplice", "a15", "d3diag", "wpereset", "d3sel", "lfk", "stabhist", "d3hist", "hold", "stepbyt", "hist24", "ageproj", "agerevert", "carrier", "chainlabel", "chainlabel_fresh", "pause", "selfdepth", "deep", "khorizon", "c1hold"])
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--eval_bs", type=int, default=32); ap.add_argument("--per_n", type=int, default=1000)
     ap.add_argument("--lineage", default="s1", choices=["s1", "s2"]); ap.add_argument("--round", type=int, default=1, choices=[1, 2], help="§216 E2: part selfdepth's pool / gate paths")
     ap.add_argument("--out_dir", default="", help="§216 G-S16 / G-S19: write eval_<part>.json here instead of the run dir (smokes)")
     a = ap.parse_args(); dev = a.device; torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     m, args = VE.load(a.run, dev); TE = N.test_set(a.per_n); t0 = time.time()
-    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run, a.lineage, a.round) if a.part == "selfdepth" else part_deep(m, TE, dev, a.eval_bs, a.run) if a.part == "deep" else part_khorizon(m, TE, dev, a.eval_bs, a.run) if a.part == "khorizon" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
+    res = part_x16(m, TE, dev, a.eval_bs, a.run) if a.part == "x16" else part_foreign(m, TE, dev, a.eval_bs, a.run) if a.part == "foreign" else part_carrier(m, TE, dev, a.eval_bs, a.run) if a.part == "carrier" else part_selfdepth(m, TE, dev, a.eval_bs, a.run, a.lineage, a.round) if a.part == "selfdepth" else part_deep(m, TE, dev, a.eval_bs, a.run) if a.part == "deep" else part_khorizon(m, TE, dev, a.eval_bs, a.run) if a.part == "khorizon" else part_c1hold(m, TE, dev, a.eval_bs, a.run) if a.part == "c1hold" else {"rs": part_rs, "pf": part_pf, "steppos": part_steppos, "gsplice": part_gsplice, "a15": part_a15, "d3diag": part_d3diag, "wpereset": part_wpereset, "d3sel": part_d3sel, "lfk": part_lfk, "stabhist": part_stabhist, "d3hist": part_d3hist, "hold": part_hold, "stepbyt": part_stepbyt, "hist24": part_hist24, "ageproj": part_ageproj, "agerevert": part_agerevert, "chainlabel": part_chainlabel, "chainlabel_fresh": part_chainlabel_fresh, "pause": part_pause, "longstep": lambda m_, T_, d_, b_: {"long_step_m_T": long_step(m_, T_, d_, b_, True),
                                                                                                    "def": "LONG-STEP keyed '<m>_<T>' (m operators, T tokens incl. EOT and ' =')"}}[a.part](m, TE, dev, a.eval_bs)
     res.update({"run": a.run, "mode": m.mode, "mct": bool(args.get("mct")), "eval_bs": a.eval_bs, "dtype": "fp32", "per_n": a.per_n,
                 "card": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "sec": round(time.time() - t0)})
