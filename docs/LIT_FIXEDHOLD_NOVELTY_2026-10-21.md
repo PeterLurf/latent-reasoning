@@ -17,3 +17,17 @@ Written 2026-10-21 by the Literature session, for Theory. Kept light under the u
 - **Weight transfer:** our r is relative, Viakhirev's residual is absolute, so 0.05 does not transfer (the draft's Q1). Viakhirev's dose curve does show that settling starts at 1/10 of the headline weight (0.005).
 - **Add Viakhirev's answer-only arm** (gate-free, readout penalty) as a cheap descriptive control. It separates "state settles" from "answer frozen", which is exactly S5's question.
 - **Correctness signals in loops:** TRM / HRM halting heads are trained on whether the answer is correct. That is a halting target, not a fixed-point penalty, so it is only a cousin of S1.
+
+## Addendum (2026-10-23): HOLD-DEPTH draft (HD_draft.md, ee9537b9), N1–N3
+**Bansal 2202.05826, read in the PDF.**
+- Progressive loss: run a random number of iterations, then restart the recurrence from those features while discarding the earlier gradients. Train to produce the solution after a random number of further iterations.
+- Explicitly "to continue improving the quality of partial solutions, **even when they contain errors**".
+- Mixed with L_max_iters at α = 1 (prefix sums) or 0.01 (chess). **There is no correctness gate.**
+- Bansal reports extrapolation **gains** (e.g. chess DT-Recall with progressive loss 97 % vs 83 % without).
+- **G-FAR is therefore not a known Bansal variant.** It is the opposite design choice: it withholds the repair signal from wrong prefixes, where Bansal trains on them.
+
+| # | verdict | basis |
+|---|---|---|
+| N1 (progressive / random-depth training fixed hold but cost extrapolation by 0.08–0.26) | **OK** as a reported cost; **not found** for progressive loss | Bansal and Anil 2211.09961 report gains. A depth / extrapolation **cost** of stability training is reported only for fixed-point penalties: Viakhirev 2608.18222's dose curve, with over-contraction suppressing conversion (its 1.0-weight "zero extrapolation" is from a subagent, unverified by me). Also the general caution that global contraction erases computation (LIT_CAND5_6). Pre-state the error-prefix explanation as a hypothesis. |
+| N2 (gating the far answer loss on the model's own correctness at n + 2) | **NARROW** | Training only on one's own correct outputs is known: STaR 2203.14465 and rejection-sampling fine-tuning filter by correctness; loss truncation (Kang & Hashimoto 2004.14589) drops high-loss examples; self-paced learning. **Not found for a recurrent-depth hold / far-pass loss**, where Bansal does the opposite. Wording: "a correctness-gated variant of progressive / far-pass training (cf. Bansal 2202.05826, which deliberately trains on erroneous prefixes)". |
+| N3 (the same far loss after the algorithm formed costs no depth: timing matters) | **NARROW** | Critical learning periods (Achille 1711.08856: early deficits permanently change what is learned) and staged curricula (Coconut; ATC 2609.19717's competence-gated stages) make timing effects known in general. For an auxiliary stability loss in looped models: not found. |
