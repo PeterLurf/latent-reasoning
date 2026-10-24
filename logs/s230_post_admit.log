@@ -1,0 +1,3 @@
+2026-10-24 01:01:22 b343 s230_fhftfix_s1 G-FH-EQ: EQ OK eqA == eqB (12 records)
+2026-10-24 01:01:24 b343 s230_fhftfix_s1 host cell args.json: ARGS-CHECK OK (frozen scratch/s224_args_frozen_s230_fhftfix_s1.json; torch 2.5.1+cu124; micro 1)
+2026-10-24 01:01:24 b343 s230_fhftfix_s1 POSTCHECK OK

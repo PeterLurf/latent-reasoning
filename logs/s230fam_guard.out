@@ -1,0 +1,10 @@
+2026-10-24 00:17:32 start: cap $4.00, cells {343: 's230_fhftfix_s1'}, marks {343: (500, 1000, 2000, 4000, 8000, 9000, 10800, 11900)}, recent-rate polls 5
+2026-10-24 01:07:48 CHECK b343 @500: {343: {'step': 900, 's_per_step': 0.618, 's_per_step_avg': 0.618, 'dph': 0.2511111111111111, 'proj_usd': 0.6}} | pair projection $0.60 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 01:17:52 CHECK b343 @1000: {343: {'step': 1900, 's_per_step': 0.617, 's_per_step_avg': 0.617, 'dph': 0.2511111111111111, 'proj_usd': 0.6}} | pair projection $0.60 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 01:27:55 CHECK b343 @2000: {343: {'step': 2800, 's_per_step': 0.618, 's_per_step_avg': 0.618, 'dph': 0.2511111111111111, 'proj_usd': 0.61}} | pair projection $0.61 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 01:48:06 CHECK b343 @4000: {343: {'step': 4800, 's_per_step': 0.617, 's_per_step_avg': 0.617, 'dph': 0.2511111111111111, 'proj_usd': 0.6}} | pair projection $0.60 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 02:28:20 CHECK b343 @8000: {343: {'step': 8700, 's_per_step': 0.618, 's_per_step_avg': 0.617, 'dph': 0.2511111111111111, 'proj_usd': 0.6}} | pair projection $0.60 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 02:38:23 CHECK b343 @9000: {343: {'step': 9700, 's_per_step': 0.619, 's_per_step_avg': 0.618, 'dph': 0.2511111111111111, 'proj_usd': 0.61}} | pair projection $0.61 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 02:58:30 CHECK b343 @10800: {343: {'step': 11600, 's_per_step': 0.62, 's_per_step_avg': 0.618, 'dph': 0.2511111111111111, 'proj_usd': 0.61}} | pair projection $0.61 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 03:08:33 CHECK b343 @11900: {343: {'step': 12000, 's_per_step': 0.62, 's_per_step_avg': 0.618, 'dph': 0.2511111111111111, 'proj_usd': 0.61}} | pair projection $0.61 (cells with data [343], others at HIGH {343: 1.2}; BAD HOSTs 0)
+2026-10-24 03:08:33 guard done: every cell past its last mark (its final step); last pair projection $0.61
