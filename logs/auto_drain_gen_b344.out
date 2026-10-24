@@ -1,0 +1,9 @@
+13:03:50 gen_b344 NEW FAILURE LINE (continuing): 16:58:20 evaluated boxes/runs_fsq/s213_d3t_s1_c1 rc 1 no-eval
+13:54:04 gen_b344 NEW FAILURE LINE (continuing): 16:58:20 evaluated boxes/runs_fsq/s213_d3t_s1_c1 rc 1 no-eval
+17:48:53 evaluated boxes/runs_fsq/s215_ftctrl_s1_c1 rc 1 no-eval
+14:44:19 gen_b344 NEW FAILURE LINE (continuing): 17:48:53 evaluated boxes/runs_fsq/s215_ftctrl_s1_c1 rc 1 no-eval
+18:39:42 evaluated boxes/runs_fsq/s230_fhftfix_s1_c1 rc 1 no-eval
+15:34:34 gen_b344 NEW FAILURE LINE (continuing): 18:39:42 evaluated boxes/runs_fsq/s230_fhftfix_s1_c1 rc 1 no-eval
+19:31:23 evaluated boxes/runs_fsq/s216_d3t_s2_c1 rc 1 no-eval
+16:24:49 gen_b344 NEW FAILURE LINE (continuing): 19:31:23 evaluated boxes/runs_fsq/s216_d3t_s2_c1 rc 1 no-eval
+20:21:41 evaluated boxes/runs_fsq/s224_ftctrl_s2_c1 rc 1 no-eval

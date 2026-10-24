@@ -1,0 +1,2 @@
+C1HOLD gate {'per_pair_ii_hold_vs_K': 1.0, 'pooled_equal': True, 'v0only_chunks_bitwise': 1.0, 'pass': True} hold_bs 32
+DONE boxes/runs_fsq/s216_d3t_s2_c1/eval_c1hold.json 503

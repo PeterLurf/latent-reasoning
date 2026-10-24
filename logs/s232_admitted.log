@@ -1,0 +1,3 @@
+# §232 ledger (fill_s232); last field = $
+# 344:s232_stageA 186.128.151.58:50326 57533430 $0.2014/h evalonly 0.95
+realised:b344 # 57533430 11:50-18:13 6.37 h x $0.2014/h (Stage A incl. the c1hold re-run; destroyed 18:13) 1.2829
