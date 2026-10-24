@@ -31,3 +31,20 @@ Written 2026-10-21 by the Literature session, for Theory. Kept light under the u
 | N1 (progressive / random-depth training fixed hold but cost extrapolation by 0.08–0.26) | **OK** as a reported cost; **not found** for progressive loss | Bansal and Anil 2211.09961 report gains. A depth / extrapolation **cost** of stability training is reported only for fixed-point penalties: Viakhirev 2608.18222's dose curve, with over-contraction suppressing conversion (its 1.0-weight "zero extrapolation" is from a subagent, unverified by me). Also the general caution that global contraction erases computation (LIT_CAND5_6). Pre-state the error-prefix explanation as a hypothesis. |
 | N2 (gating the far answer loss on the model's own correctness at n + 2) | **NARROW** | Training only on one's own correct outputs is known: STaR 2203.14465 and rejection-sampling fine-tuning filter by correctness; loss truncation (Kang & Hashimoto 2004.14589) drops high-loss examples; self-paced learning. **Not found for a recurrent-depth hold / far-pass loss**, where Bansal does the opposite. Wording: "a correctness-gated variant of progressive / far-pass training (cf. Bansal 2202.05826, which deliberately trains on erroneous prefixes)". |
 | N3 (the same far loss after the algorithm formed costs no depth: timing matters) | **NARROW** | Critical learning periods (Achille 1711.08856: early deficits permanently change what is learned) and staged curricula (Coconut; ATC 2609.19717's competence-gated stages) make timing effects known in general. For an auxiliary stability loss in looped models: not found. |
+
+## Addendum (2026-10-24): HOLD-C1 draft (HC_draft.md, 43cce7d8), S1–S3
+From our own notes only (no new searches, under the usage limit).
+
+**Prior on stability / fixed-point training disrupting the use of intermediate states**
+- Viakhirev 2608.18222 [empirics, read 10-21]:
+  - The fixed-point objective can produce a **"settles but EM = 0" mode** ("converged to a non-algorithm"; flat Lyapunov spectrum).
+  - Its answer-only control freezes outputs without the latent settling, and depth then destroys it.
+  - Settling and computing are therefore separable outcomes. That supports testing C1 after a hold FT rather than assuming it.
+- Global contraction erases computation (LIT_CAND5_6; Viakhirev's over-contraction).
+- **Not found:** any paper that measures **causal use of intermediate states** (swap / patch / probe-onset) before vs after a stability or fixed-point objective in a looped model.
+
+| # | verdict | basis |
+|---|---|---|
+| S1 (post-formation, correctness-gated, anchored far-pass FT extends hold to 16× while keeping probe onset, value-swap and stall within noise) | **OK, narrow wording** | Its parts: terminal fixed-point penalties (Viakhirev); correctness-gated far loss (NARROW, see the HOLD-DEPTH addendum: STaR / loss-truncation family; Bansal trains on erroneous prefixes); post-horizon decay (2608.11233, 2609.33144). Not found: a C1 causal battery preserved across a stability FT. |
+| S2 (SWAP-HOLD: splice a mid-chain latent and test whether the spliced result is held for 128 passes) | **NARROW** | **2609.01924** (Jacobian lens on Huginn; LIT_INPUT_BYPASS_LOOPED_2026-10-14): an injection swap at recurrence k flips to the new answer in 30 / 30, including k = 12, i.e. a persistence-of-swap test in a looped model. It shows ~2-recurrence memory (recomputation from the input). Also SCIT 2608.27265 / Liang & Pan 2602.00449 (patching at step t, short horizon). New: a **state** (not input) splice with a 128-pass hold horizon. |
+| S3 (the hold objective shifts computing passes' version reads off the newest version; stability induces history use) | **OK** (descriptive, our architecture) | Viakhirev reports the objective changes the operator's regime (non-normal attractor), not memory-read patterns. Version-bank reads are specific to our model. Not found. |
