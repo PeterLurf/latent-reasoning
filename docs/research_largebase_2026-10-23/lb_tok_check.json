@@ -1,0 +1,1681 @@
+{
+ "seed_len": 23101,
+ "n_per_d": 256,
+ "ow_words_sha256": "f0c53df6fd89a0c7b08b327f71a1e953fb4a0a4b517b1118d681fb9f042f8383",
+ "bases": {
+  "gpt2": {
+   "tokenizer_sha256": "tiktoken-gpt2",
+   "num": {
+    "by_value": {
+     "0": {
+      "in_sentence": [
+       " 0"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 0"
+      ],
+      "n_after_suffix": 1
+     },
+     "1": {
+      "in_sentence": [
+       " 1"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 1"
+      ],
+      "n_after_suffix": 1
+     },
+     "2": {
+      "in_sentence": [
+       " 2"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 2"
+      ],
+      "n_after_suffix": 1
+     },
+     "3": {
+      "in_sentence": [
+       " 3"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 3"
+      ],
+      "n_after_suffix": 1
+     },
+     "4": {
+      "in_sentence": [
+       " 4"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 4"
+      ],
+      "n_after_suffix": 1
+     },
+     "5": {
+      "in_sentence": [
+       " 5"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 5"
+      ],
+      "n_after_suffix": 1
+     },
+     "6": {
+      "in_sentence": [
+       " 6"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 6"
+      ],
+      "n_after_suffix": 1
+     },
+     "7": {
+      "in_sentence": [
+       " 7"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 7"
+      ],
+      "n_after_suffix": 1
+     },
+     "8": {
+      "in_sentence": [
+       " 8"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 8"
+      ],
+      "n_after_suffix": 1
+     },
+     "9": {
+      "in_sentence": [
+       " 9"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 9"
+      ],
+      "n_after_suffix": 1
+     },
+     "10": {
+      "in_sentence": [
+       " 10"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 10"
+      ],
+      "n_after_suffix": 1
+     }
+    },
+    "answer_single_token_after_space": true,
+    "first_token_collisions": [],
+    "separate_space_tokens_before_answer": [
+     0
+    ]
+   },
+   "names": {
+    "n_names": 40,
+    "single_token": 40,
+    "multi_token": [],
+    "possessive_len_hist": {
+     "2": 40
+    }
+   },
+   "aux_prompt": {
+    "1": [
+     " Step",
+     " 1",
+     " :"
+    ],
+    "2": [
+     " Step",
+     " 2",
+     " :"
+    ],
+    "3": [
+     " Step",
+     " 3",
+     " :"
+    ],
+    "4": [
+     " Step",
+     " 4",
+     " :"
+    ],
+    "5": [
+     " Step",
+     " 5",
+     " :"
+    ],
+    "6": [
+     " Step",
+     " 6",
+     " :"
+    ],
+    "7": [
+     " Step",
+     " 7",
+     " :"
+    ],
+    "8": [
+     " Step",
+     " 8",
+     " :"
+    ]
+   },
+   "len": {
+    "1": {
+     "think_mean": 35.46484375,
+     "think_max": 44,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 6.0,
+     "cum_tgt_max": 6,
+     "text_cot_mean": 45.46484375,
+     "text_cot_max": 54
+    },
+    "2": {
+     "think_mean": 45.015625,
+     "think_max": 59,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 19.15625,
+     "cum_tgt_max": 44,
+     "text_cot_mean": 60.015625,
+     "text_cot_max": 74
+    },
+    "3": {
+     "think_mean": 58.0859375,
+     "think_max": 78,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 28.934895833333332,
+     "cum_tgt_max": 57,
+     "text_cot_mean": 78.0859375,
+     "text_cot_max": 98
+    },
+    "4": {
+     "think_mean": 71.609375,
+     "think_max": 88,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 36.5625,
+     "cum_tgt_max": 73,
+     "text_cot_mean": 96.609375,
+     "text_cot_max": 113
+    },
+    "5": {
+     "think_mean": 85.375,
+     "think_max": 108,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 44.39296875,
+     "cum_tgt_max": 93,
+     "text_cot_mean": 115.375,
+     "text_cot_max": 138
+    },
+    "6": {
+     "think_mean": 97.89453125,
+     "think_max": 124,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 51.219401041666664,
+     "cum_tgt_max": 108,
+     "text_cot_mean": 132.89453125,
+     "text_cot_max": 159
+    },
+    "7": {
+     "think_mean": 111.62890625,
+     "think_max": 140,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 58.296316964285715,
+     "cum_tgt_max": 124,
+     "text_cot_mean": 151.62890625,
+     "text_cot_max": 180
+    },
+    "8": {
+     "think_mean": 125.171875,
+     "think_max": 156,
+     "value_tgt_mean": 6.0,
+     "value_tgt_max": 6,
+     "cum_tgt_mean": 65.9677734375,
+     "cum_tgt_max": 142,
+     "text_cot_mean": 170.171875,
+     "text_cot_max": 201
+    }
+   },
+   "len_ratio_vs_gpt2": {
+    "1": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "2": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "3": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "4": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "5": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "6": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "7": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    },
+    "8": {
+     "think_mean": 1.0,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.0,
+     "cum_tgt_mean": 1.0,
+     "text_cot_mean": 1.0
+    }
+   }
+  },
+  "qwen25_05b": {
+   "tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+   "num": {
+    "by_value": {
+     "0": {
+      "in_sentence": [
+       " ",
+       "0"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "0"
+      ],
+      "n_after_suffix": 2
+     },
+     "1": {
+      "in_sentence": [
+       " ",
+       "1"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "1"
+      ],
+      "n_after_suffix": 2
+     },
+     "2": {
+      "in_sentence": [
+       " ",
+       "2"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "2"
+      ],
+      "n_after_suffix": 2
+     },
+     "3": {
+      "in_sentence": [
+       " ",
+       "3"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "3"
+      ],
+      "n_after_suffix": 2
+     },
+     "4": {
+      "in_sentence": [
+       " ",
+       "4"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "4"
+      ],
+      "n_after_suffix": 2
+     },
+     "5": {
+      "in_sentence": [
+       " ",
+       "5"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "5"
+      ],
+      "n_after_suffix": 2
+     },
+     "6": {
+      "in_sentence": [
+       " ",
+       "6"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "6"
+      ],
+      "n_after_suffix": 2
+     },
+     "7": {
+      "in_sentence": [
+       " ",
+       "7"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "7"
+      ],
+      "n_after_suffix": 2
+     },
+     "8": {
+      "in_sentence": [
+       " ",
+       "8"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "8"
+      ],
+      "n_after_suffix": 2
+     },
+     "9": {
+      "in_sentence": [
+       " ",
+       "9"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "9"
+      ],
+      "n_after_suffix": 2
+     },
+     "10": {
+      "in_sentence": [
+       " ",
+       "1",
+       "0"
+      ],
+      "n_in_sentence": 3,
+      "after_suffix": [
+       " ",
+       "1",
+       "0"
+      ],
+      "n_after_suffix": 3
+     }
+    },
+    "answer_single_token_after_space": false,
+    "first_token_collisions": [
+     [
+      1,
+      10
+     ]
+    ],
+    "separate_space_tokens_before_answer": [
+     1
+    ]
+   },
+   "names": {
+    "n_names": 40,
+    "single_token": 40,
+    "multi_token": [],
+    "possessive_len_hist": {
+     "2": 40
+    }
+   },
+   "aux_prompt": {
+    "1": [
+     " Step",
+     " ",
+     "1",
+     " :"
+    ],
+    "2": [
+     " Step",
+     " ",
+     "2",
+     " :"
+    ],
+    "3": [
+     " Step",
+     " ",
+     "3",
+     " :"
+    ],
+    "4": [
+     " Step",
+     " ",
+     "4",
+     " :"
+    ],
+    "5": [
+     " Step",
+     " ",
+     "5",
+     " :"
+    ],
+    "6": [
+     " Step",
+     " ",
+     "6",
+     " :"
+    ],
+    "7": [
+     " Step",
+     " ",
+     "7",
+     " :"
+    ],
+    "8": [
+     " Step",
+     " ",
+     "8",
+     " :"
+    ]
+   },
+   "len": {
+    "1": {
+     "think_mean": 38.58203125,
+     "think_max": 48,
+     "value_tgt_mean": 7.11328125,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 7.11328125,
+     "cum_tgt_max": 8,
+     "text_cot_mean": 50.80859375,
+     "text_cot_max": 60
+    },
+    "2": {
+     "think_mean": 48.95703125,
+     "think_max": 65,
+     "value_tgt_mean": 7.08203125,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 21.224609375,
+     "cum_tgt_max": 48,
+     "text_cot_mean": 67.1953125,
+     "text_cot_max": 84
+    },
+    "3": {
+     "think_mean": 61.875,
+     "think_max": 79,
+     "value_tgt_mean": 7.10546875,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 31.240885416666668,
+     "cum_tgt_max": 60,
+     "text_cot_mean": 86.29296875,
+     "text_cot_max": 103
+    },
+    "4": {
+     "think_mean": 76.0703125,
+     "think_max": 93,
+     "value_tgt_mean": 7.1083984375,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 39.455078125,
+     "cum_tgt_max": 77,
+     "text_cot_mean": 106.59765625,
+     "text_cot_max": 125
+    },
+    "5": {
+     "think_mean": 90.87890625,
+     "think_max": 113,
+     "value_tgt_mean": 7.09140625,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 47.89375,
+     "cum_tgt_max": 97,
+     "text_cot_mean": 127.4453125,
+     "text_cot_max": 150
+    },
+    "6": {
+     "think_mean": 104.23046875,
+     "think_max": 129,
+     "value_tgt_mean": 7.095052083333333,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 55.109375,
+     "cum_tgt_max": 116,
+     "text_cot_mean": 146.88671875,
+     "text_cot_max": 171
+    },
+    "7": {
+     "think_mean": 118.71484375,
+     "think_max": 147,
+     "value_tgt_mean": 7.08203125,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 62.669642857142854,
+     "cum_tgt_max": 130,
+     "text_cot_mean": 167.3515625,
+     "text_cot_max": 196
+    },
+    "8": {
+     "think_mean": 133.17578125,
+     "think_max": 162,
+     "value_tgt_mean": 7.0986328125,
+     "value_tgt_max": 8,
+     "cum_tgt_mean": 70.8828125,
+     "cum_tgt_max": 149,
+     "text_cot_mean": 188.046875,
+     "text_cot_max": 217
+    }
+   },
+   "len_ratio_vs_gpt2": {
+    "1": {
+     "think_mean": 1.088,
+     "think_max": 1.091,
+     "value_tgt_mean": 1.186,
+     "cum_tgt_mean": 1.186,
+     "text_cot_mean": 1.118
+    },
+    "2": {
+     "think_mean": 1.088,
+     "think_max": 1.102,
+     "value_tgt_mean": 1.18,
+     "cum_tgt_mean": 1.108,
+     "text_cot_mean": 1.12
+    },
+    "3": {
+     "think_mean": 1.065,
+     "think_max": 1.013,
+     "value_tgt_mean": 1.184,
+     "cum_tgt_mean": 1.08,
+     "text_cot_mean": 1.105
+    },
+    "4": {
+     "think_mean": 1.062,
+     "think_max": 1.057,
+     "value_tgt_mean": 1.185,
+     "cum_tgt_mean": 1.079,
+     "text_cot_mean": 1.103
+    },
+    "5": {
+     "think_mean": 1.064,
+     "think_max": 1.046,
+     "value_tgt_mean": 1.182,
+     "cum_tgt_mean": 1.079,
+     "text_cot_mean": 1.105
+    },
+    "6": {
+     "think_mean": 1.065,
+     "think_max": 1.04,
+     "value_tgt_mean": 1.183,
+     "cum_tgt_mean": 1.076,
+     "text_cot_mean": 1.105
+    },
+    "7": {
+     "think_mean": 1.063,
+     "think_max": 1.05,
+     "value_tgt_mean": 1.18,
+     "cum_tgt_mean": 1.075,
+     "text_cot_mean": 1.104
+    },
+    "8": {
+     "think_mean": 1.064,
+     "think_max": 1.038,
+     "value_tgt_mean": 1.183,
+     "cum_tgt_mean": 1.075,
+     "text_cot_mean": 1.105
+    }
+   }
+  },
+  "llama32_1b": {
+   "tokenizer_sha256": "6b9e4e7fb171f92fd137b777cc2714bf87d11576700a1dcd7a399e7bbe39537b",
+   "num": {
+    "by_value": {
+     "0": {
+      "in_sentence": [
+       " ",
+       "0"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "0"
+      ],
+      "n_after_suffix": 2
+     },
+     "1": {
+      "in_sentence": [
+       " ",
+       "1"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "1"
+      ],
+      "n_after_suffix": 2
+     },
+     "2": {
+      "in_sentence": [
+       " ",
+       "2"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "2"
+      ],
+      "n_after_suffix": 2
+     },
+     "3": {
+      "in_sentence": [
+       " ",
+       "3"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "3"
+      ],
+      "n_after_suffix": 2
+     },
+     "4": {
+      "in_sentence": [
+       " ",
+       "4"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "4"
+      ],
+      "n_after_suffix": 2
+     },
+     "5": {
+      "in_sentence": [
+       " ",
+       "5"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "5"
+      ],
+      "n_after_suffix": 2
+     },
+     "6": {
+      "in_sentence": [
+       " ",
+       "6"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "6"
+      ],
+      "n_after_suffix": 2
+     },
+     "7": {
+      "in_sentence": [
+       " ",
+       "7"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "7"
+      ],
+      "n_after_suffix": 2
+     },
+     "8": {
+      "in_sentence": [
+       " ",
+       "8"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "8"
+      ],
+      "n_after_suffix": 2
+     },
+     "9": {
+      "in_sentence": [
+       " ",
+       "9"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "9"
+      ],
+      "n_after_suffix": 2
+     },
+     "10": {
+      "in_sentence": [
+       " ",
+       "10"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "10"
+      ],
+      "n_after_suffix": 2
+     }
+    },
+    "answer_single_token_after_space": true,
+    "first_token_collisions": [],
+    "separate_space_tokens_before_answer": [
+     1
+    ]
+   },
+   "names": {
+    "n_names": 40,
+    "single_token": 40,
+    "multi_token": [],
+    "possessive_len_hist": {
+     "2": 40
+    }
+   },
+   "aux_prompt": {
+    "1": [
+     " Step",
+     " ",
+     "1",
+     " :"
+    ],
+    "2": [
+     " Step",
+     " ",
+     "2",
+     " :"
+    ],
+    "3": [
+     " Step",
+     " ",
+     "3",
+     " :"
+    ],
+    "4": [
+     " Step",
+     " ",
+     "4",
+     " :"
+    ],
+    "5": [
+     " Step",
+     " ",
+     "5",
+     " :"
+    ],
+    "6": [
+     " Step",
+     " ",
+     "6",
+     " :"
+    ],
+    "7": [
+     " Step",
+     " ",
+     "7",
+     " :"
+    ],
+    "8": [
+     " Step",
+     " ",
+     "8",
+     " :"
+    ]
+   },
+   "len": {
+    "1": {
+     "think_mean": 38.26171875,
+     "think_max": 46,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 7.0,
+     "cum_tgt_max": 7,
+     "text_cot_mean": 50.26171875,
+     "text_cot_max": 58
+    },
+    "2": {
+     "think_mean": 48.60546875,
+     "think_max": 64,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 21.060546875,
+     "cum_tgt_max": 46,
+     "text_cot_mean": 66.60546875,
+     "text_cot_max": 82
+    },
+    "3": {
+     "think_mean": 61.47265625,
+     "think_max": 79,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 31.010416666666668,
+     "cum_tgt_max": 59,
+     "text_cot_mean": 85.47265625,
+     "text_cot_max": 103
+    },
+    "4": {
+     "think_mean": 75.62890625,
+     "think_max": 92,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 39.140625,
+     "cum_tgt_max": 76,
+     "text_cot_mean": 105.62890625,
+     "text_cot_max": 122
+    },
+    "5": {
+     "think_mean": 90.35546875,
+     "think_max": 113,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 47.5875,
+     "cum_tgt_max": 97,
+     "text_cot_mean": 126.35546875,
+     "text_cot_max": 149
+    },
+    "6": {
+     "think_mean": 103.58203125,
+     "think_max": 128,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 54.718098958333336,
+     "cum_tgt_max": 115,
+     "text_cot_mean": 145.58203125,
+     "text_cot_max": 170
+    },
+    "7": {
+     "think_mean": 117.95703125,
+     "think_max": 147,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 62.232142857142854,
+     "cum_tgt_max": 130,
+     "text_cot_mean": 165.95703125,
+     "text_cot_max": 195
+    },
+    "8": {
+     "think_mean": 132.265625,
+     "think_max": 161,
+     "value_tgt_mean": 7.0,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 70.328125,
+     "cum_tgt_max": 147,
+     "text_cot_mean": 186.265625,
+     "text_cot_max": 215
+    }
+   },
+   "len_ratio_vs_gpt2": {
+    "1": {
+     "think_mean": 1.079,
+     "think_max": 1.045,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.167,
+     "text_cot_mean": 1.106
+    },
+    "2": {
+     "think_mean": 1.08,
+     "think_max": 1.085,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.099,
+     "text_cot_mean": 1.11
+    },
+    "3": {
+     "think_mean": 1.058,
+     "think_max": 1.013,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.072,
+     "text_cot_mean": 1.095
+    },
+    "4": {
+     "think_mean": 1.056,
+     "think_max": 1.045,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.071,
+     "text_cot_mean": 1.093
+    },
+    "5": {
+     "think_mean": 1.058,
+     "think_max": 1.046,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.072,
+     "text_cot_mean": 1.095
+    },
+    "6": {
+     "think_mean": 1.058,
+     "think_max": 1.032,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.068,
+     "text_cot_mean": 1.095
+    },
+    "7": {
+     "think_mean": 1.057,
+     "think_max": 1.05,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.068,
+     "text_cot_mean": 1.094
+    },
+    "8": {
+     "think_mean": 1.057,
+     "think_max": 1.032,
+     "value_tgt_mean": 1.167,
+     "cum_tgt_mean": 1.066,
+     "text_cot_mean": 1.095
+    }
+   }
+  },
+  "smollm2_360m": {
+   "tokenizer_sha256": "9ca9acddb6525a194ec8ac7a87f24fbba7232a9a15ffa1af0c1224fcd888e47c",
+   "num": {
+    "by_value": {
+     "0": {
+      "in_sentence": [
+       " ",
+       "0"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "0"
+      ],
+      "n_after_suffix": 2
+     },
+     "1": {
+      "in_sentence": [
+       " ",
+       "1"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "1"
+      ],
+      "n_after_suffix": 2
+     },
+     "2": {
+      "in_sentence": [
+       " ",
+       "2"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "2"
+      ],
+      "n_after_suffix": 2
+     },
+     "3": {
+      "in_sentence": [
+       " ",
+       "3"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "3"
+      ],
+      "n_after_suffix": 2
+     },
+     "4": {
+      "in_sentence": [
+       " ",
+       "4"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "4"
+      ],
+      "n_after_suffix": 2
+     },
+     "5": {
+      "in_sentence": [
+       " ",
+       "5"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "5"
+      ],
+      "n_after_suffix": 2
+     },
+     "6": {
+      "in_sentence": [
+       " ",
+       "6"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "6"
+      ],
+      "n_after_suffix": 2
+     },
+     "7": {
+      "in_sentence": [
+       " ",
+       "7"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "7"
+      ],
+      "n_after_suffix": 2
+     },
+     "8": {
+      "in_sentence": [
+       " ",
+       "8"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "8"
+      ],
+      "n_after_suffix": 2
+     },
+     "9": {
+      "in_sentence": [
+       " ",
+       "9"
+      ],
+      "n_in_sentence": 2,
+      "after_suffix": [
+       " ",
+       "9"
+      ],
+      "n_after_suffix": 2
+     },
+     "10": {
+      "in_sentence": [
+       " ",
+       "1",
+       "0"
+      ],
+      "n_in_sentence": 3,
+      "after_suffix": [
+       " ",
+       "1",
+       "0"
+      ],
+      "n_after_suffix": 3
+     }
+    },
+    "answer_single_token_after_space": false,
+    "first_token_collisions": [
+     [
+      1,
+      10
+     ]
+    ],
+    "separate_space_tokens_before_answer": [
+     1
+    ]
+   },
+   "names": {
+    "n_names": 40,
+    "single_token": 37,
+    "multi_token": [
+     "Gus",
+     "Ned",
+     "Zoe"
+    ],
+    "possessive_len_hist": {
+     "2": 37,
+     "3": 3
+    }
+   },
+   "aux_prompt": {
+    "1": [
+     " Step",
+     " ",
+     "1",
+     " :"
+    ],
+    "2": [
+     " Step",
+     " ",
+     "2",
+     " :"
+    ],
+    "3": [
+     " Step",
+     " ",
+     "3",
+     " :"
+    ],
+    "4": [
+     " Step",
+     " ",
+     "4",
+     " :"
+    ],
+    "5": [
+     " Step",
+     " ",
+     "5",
+     " :"
+    ],
+    "6": [
+     " Step",
+     " ",
+     "6",
+     " :"
+    ],
+    "7": [
+     " Step",
+     " ",
+     "7",
+     " :"
+    ],
+    "8": [
+     " Step",
+     " ",
+     "8",
+     " :"
+    ]
+   },
+   "len": {
+    "1": {
+     "think_mean": 39.3359375,
+     "think_max": 51,
+     "value_tgt_mean": 7.2265625,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 7.2265625,
+     "cum_tgt_max": 9,
+     "text_cot_mean": 51.67578125,
+     "text_cot_max": 63
+    },
+    "2": {
+     "think_mean": 49.62109375,
+     "think_max": 68,
+     "value_tgt_mean": 7.146484375,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 21.462890625,
+     "cum_tgt_max": 50,
+     "text_cot_mean": 67.98828125,
+     "text_cot_max": 87
+    },
+    "3": {
+     "think_mean": 63.0078125,
+     "think_max": 85,
+     "value_tgt_mean": 7.186197916666667,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 31.8125,
+     "cum_tgt_max": 64,
+     "text_cot_mean": 87.66796875,
+     "text_cot_max": 110
+    },
+    "4": {
+     "think_mean": 77.58203125,
+     "think_max": 98,
+     "value_tgt_mean": 7.1806640625,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 40.1220703125,
+     "cum_tgt_max": 82,
+     "text_cot_mean": 108.3984375,
+     "text_cot_max": 129
+    },
+    "5": {
+     "think_mean": 92.5546875,
+     "think_max": 116,
+     "value_tgt_mean": 7.16640625,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 48.69609375,
+     "cum_tgt_max": 101,
+     "text_cot_mean": 129.49609375,
+     "text_cot_max": 155
+    },
+    "6": {
+     "think_mean": 106.125,
+     "think_max": 133,
+     "value_tgt_mean": 7.166666666666667,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 56.083984375,
+     "cum_tgt_max": 119,
+     "text_cot_mean": 149.2109375,
+     "text_cot_max": 176
+    },
+    "7": {
+     "think_mean": 120.94140625,
+     "think_max": 150,
+     "value_tgt_mean": 7.157366071428571,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 63.75,
+     "cum_tgt_max": 133,
+     "text_cot_mean": 170.10546875,
+     "text_cot_max": 200
+    },
+    "8": {
+     "think_mean": 135.625,
+     "think_max": 166,
+     "value_tgt_mean": 7.1669921875,
+     "value_tgt_max": 9,
+     "cum_tgt_mean": 72.07568359375,
+     "cum_tgt_max": 152,
+     "text_cot_mean": 191.04296875,
+     "text_cot_max": 222
+    }
+   },
+   "len_ratio_vs_gpt2": {
+    "1": {
+     "think_mean": 1.109,
+     "think_max": 1.159,
+     "value_tgt_mean": 1.204,
+     "cum_tgt_mean": 1.204,
+     "text_cot_mean": 1.137
+    },
+    "2": {
+     "think_mean": 1.102,
+     "think_max": 1.153,
+     "value_tgt_mean": 1.191,
+     "cum_tgt_mean": 1.12,
+     "text_cot_mean": 1.133
+    },
+    "3": {
+     "think_mean": 1.085,
+     "think_max": 1.09,
+     "value_tgt_mean": 1.198,
+     "cum_tgt_mean": 1.099,
+     "text_cot_mean": 1.123
+    },
+    "4": {
+     "think_mean": 1.083,
+     "think_max": 1.114,
+     "value_tgt_mean": 1.197,
+     "cum_tgt_mean": 1.097,
+     "text_cot_mean": 1.122
+    },
+    "5": {
+     "think_mean": 1.084,
+     "think_max": 1.074,
+     "value_tgt_mean": 1.194,
+     "cum_tgt_mean": 1.097,
+     "text_cot_mean": 1.122
+    },
+    "6": {
+     "think_mean": 1.084,
+     "think_max": 1.073,
+     "value_tgt_mean": 1.194,
+     "cum_tgt_mean": 1.095,
+     "text_cot_mean": 1.123
+    },
+    "7": {
+     "think_mean": 1.083,
+     "think_max": 1.071,
+     "value_tgt_mean": 1.193,
+     "cum_tgt_mean": 1.094,
+     "text_cot_mean": 1.122
+    },
+    "8": {
+     "think_mean": 1.084,
+     "think_max": 1.064,
+     "value_tgt_mean": 1.194,
+     "cum_tgt_mean": 1.093,
+     "text_cot_mean": 1.123
+    }
+   }
+  },
+  "pythia_410m": {
+   "tokenizer_sha256": "c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624",
+   "num": {
+    "by_value": {
+     "0": {
+      "in_sentence": [
+       " 0"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 0"
+      ],
+      "n_after_suffix": 1
+     },
+     "1": {
+      "in_sentence": [
+       " 1"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 1"
+      ],
+      "n_after_suffix": 1
+     },
+     "2": {
+      "in_sentence": [
+       " 2"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 2"
+      ],
+      "n_after_suffix": 1
+     },
+     "3": {
+      "in_sentence": [
+       " 3"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 3"
+      ],
+      "n_after_suffix": 1
+     },
+     "4": {
+      "in_sentence": [
+       " 4"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 4"
+      ],
+      "n_after_suffix": 1
+     },
+     "5": {
+      "in_sentence": [
+       " 5"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 5"
+      ],
+      "n_after_suffix": 1
+     },
+     "6": {
+      "in_sentence": [
+       " 6"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 6"
+      ],
+      "n_after_suffix": 1
+     },
+     "7": {
+      "in_sentence": [
+       " 7"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 7"
+      ],
+      "n_after_suffix": 1
+     },
+     "8": {
+      "in_sentence": [
+       " 8"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 8"
+      ],
+      "n_after_suffix": 1
+     },
+     "9": {
+      "in_sentence": [
+       " 9"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 9"
+      ],
+      "n_after_suffix": 1
+     },
+     "10": {
+      "in_sentence": [
+       " 10"
+      ],
+      "n_in_sentence": 1,
+      "after_suffix": [
+       " 10"
+      ],
+      "n_after_suffix": 1
+     }
+    },
+    "answer_single_token_after_space": true,
+    "first_token_collisions": [],
+    "separate_space_tokens_before_answer": [
+     0
+    ]
+   },
+   "names": {
+    "n_names": 40,
+    "single_token": 37,
+    "multi_token": [
+     "Mia",
+     "Zoe",
+     "Fay"
+    ],
+    "possessive_len_hist": {
+     "2": 37,
+     "3": 3
+    }
+   },
+   "aux_prompt": {
+    "1": [
+     " Step",
+     " 1",
+     " :"
+    ],
+    "2": [
+     " Step",
+     " 2",
+     " :"
+    ],
+    "3": [
+     " Step",
+     " 3",
+     " :"
+    ],
+    "4": [
+     " Step",
+     " 4",
+     " :"
+    ],
+    "5": [
+     " Step",
+     " 5",
+     " :"
+    ],
+    "6": [
+     " Step",
+     " 6",
+     " :"
+    ],
+    "7": [
+     " Step",
+     " 7",
+     " :"
+    ],
+    "8": [
+     " Step",
+     " 8",
+     " :"
+    ]
+   },
+   "len": {
+    "1": {
+     "think_mean": 35.984375,
+     "think_max": 47,
+     "value_tgt_mean": 6.12890625,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 6.12890625,
+     "cum_tgt_max": 7,
+     "text_cot_mean": 46.11328125,
+     "text_cot_max": 58
+    },
+    "2": {
+     "think_mean": 45.5859375,
+     "think_max": 61,
+     "value_tgt_mean": 6.064453125,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 19.376953125,
+     "cum_tgt_max": 44,
+     "text_cot_mean": 60.71484375,
+     "text_cot_max": 77
+    },
+    "3": {
+     "think_mean": 58.55078125,
+     "think_max": 76,
+     "value_tgt_mean": 6.059895833333333,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 29.149739583333332,
+     "cum_tgt_max": 58,
+     "text_cot_mean": 78.73046875,
+     "text_cot_max": 97
+    },
+    "4": {
+     "think_mean": 72.32421875,
+     "think_max": 89,
+     "value_tgt_mean": 6.0546875,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 36.8818359375,
+     "cum_tgt_max": 74,
+     "text_cot_mean": 97.54296875,
+     "text_cot_max": 115
+    },
+    "5": {
+     "think_mean": 86.421875,
+     "think_max": 109,
+     "value_tgt_mean": 6.08046875,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 44.92578125,
+     "cum_tgt_max": 94,
+     "text_cot_mean": 116.82421875,
+     "text_cot_max": 139
+    },
+    "6": {
+     "think_mean": 99.12890625,
+     "think_max": 124,
+     "value_tgt_mean": 6.078776041666667,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 51.856119791666664,
+     "cum_tgt_max": 112,
+     "text_cot_mean": 134.6015625,
+     "text_cot_max": 161
+    },
+    "7": {
+     "think_mean": 112.96875,
+     "think_max": 143,
+     "value_tgt_mean": 6.071986607142857,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 59.016183035714285,
+     "cum_tgt_max": 127,
+     "text_cot_mean": 153.47265625,
+     "text_cot_max": 184
+    },
+    "8": {
+     "think_mean": 126.61328125,
+     "think_max": 156,
+     "value_tgt_mean": 6.06689453125,
+     "value_tgt_max": 7,
+     "cum_tgt_mean": 66.6640625,
+     "cum_tgt_max": 141,
+     "text_cot_mean": 172.1484375,
+     "text_cot_max": 202
+    }
+   },
+   "len_ratio_vs_gpt2": {
+    "1": {
+     "think_mean": 1.015,
+     "think_max": 1.068,
+     "value_tgt_mean": 1.021,
+     "cum_tgt_mean": 1.021,
+     "text_cot_mean": 1.014
+    },
+    "2": {
+     "think_mean": 1.013,
+     "think_max": 1.034,
+     "value_tgt_mean": 1.011,
+     "cum_tgt_mean": 1.012,
+     "text_cot_mean": 1.012
+    },
+    "3": {
+     "think_mean": 1.008,
+     "think_max": 0.974,
+     "value_tgt_mean": 1.01,
+     "cum_tgt_mean": 1.007,
+     "text_cot_mean": 1.008
+    },
+    "4": {
+     "think_mean": 1.01,
+     "think_max": 1.011,
+     "value_tgt_mean": 1.009,
+     "cum_tgt_mean": 1.009,
+     "text_cot_mean": 1.01
+    },
+    "5": {
+     "think_mean": 1.012,
+     "think_max": 1.009,
+     "value_tgt_mean": 1.013,
+     "cum_tgt_mean": 1.012,
+     "text_cot_mean": 1.013
+    },
+    "6": {
+     "think_mean": 1.013,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.013,
+     "cum_tgt_mean": 1.012,
+     "text_cot_mean": 1.013
+    },
+    "7": {
+     "think_mean": 1.012,
+     "think_max": 1.021,
+     "value_tgt_mean": 1.012,
+     "cum_tgt_mean": 1.012,
+     "text_cot_mean": 1.012
+    },
+    "8": {
+     "think_mean": 1.012,
+     "think_max": 1.0,
+     "value_tgt_mean": 1.011,
+     "cum_tgt_mean": 1.011,
+     "text_cot_mean": 1.012
+    }
+   }
+  }
+ }
+}
