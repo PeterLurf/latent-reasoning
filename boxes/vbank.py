@@ -662,6 +662,7 @@ def main():
     ap.add_argument("--far_w", type=float, default=1.0, help="§224: L_far weight (G-FH-EQ: 0)")
     ap.add_argument("--fh_dose", default="250,500", help="§224 dose window lo,hi (inclusive; Stage 2: 7500,8000)")
     ap.add_argument("--fh_target", type=float, default=0.2); ap.add_argument("--fh_lam_cap", type=float, default=10.0)
+    ap.add_argument("--fh_lambda_fixed", type=float, default=None, help="§230: lambda fixed at this value from step 1 (no dose window); None = the §224 dose rule")
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     a = ap.parse_args(); os.makedirs(a.out, exist_ok=True); dev = a.device
     from boxes import s5
@@ -682,6 +683,8 @@ def main():
     rng_far = np.random.default_rng(a.seed + 7100) if a.far else None   # §224: T_far only; every other rng untouched
     far_lo, far_hi = (int(v) for v in a.far_t.split(",")); fh_d0, fh_d1 = (int(v) for v in a.fh_dose.split(","))
     fhs = {"lam": None, "lam_step": None, "ratio_median": None, "ratios": [], "far_nonfinite": 0}   # §224 dose-rule state (checkpointed)
+    if a.fh_lambda_fixed is not None:                                       # §230: lambda set before step 1, so the dose window never opens (in_win needs lam None)
+        assert a.fh and a.fh_lambda_fixed > 0, "§230: --fh_lambda_fixed needs --fh (and > 0)"; fhs.update(lam=float(a.fh_lambda_fixed), lam_step=0, fixed=True)
     pool, rng_s, selfst = None, None, {"cursor": 0, "n_self_steps": 0, "self_reuse": 0}   # not "sd" (init_from binds and dels sd)
     if a.self_pool:                                                         # §215: the pool (sha + key-set checked); rng_s = seed + 21800 (coin + self U only)
         import boxes.selfdepth as SD
@@ -870,6 +873,8 @@ def main():
                 med = float(np.median(fhs["ratios"])); fhs.update(lam=min(a.fh_lam_cap, a.fh_target / med) if med > 0 else a.fh_lam_cap, lam_step=step, ratio_median=med)
                 log.write(json.dumps({"step": step, "fh_lambda_set": fhs["lam"], "fh_ratio_median": med, "fh_n_ratios": len(fhs["ratios"]), "fh_capped": fhs["lam"] >= a.fh_lam_cap}) + "\n"); log.flush()
             fst.update(fh_lambda=lam, fh_lfp1=float(Lp_.detach())); facc.append(fst); del Lf_, Lp_, rfar_
+            if a.fh_lambda_fixed is not None and step == step0 and not a.resume:   # Note 230-1: L_FP on the initial (step-0) weights
+                log.write(json.dumps({"step": step, "fh_lfp1_step0": fst["fh_lfp1"], "fh_lambda_fixed": lam}) + "\n"); log.flush()
         gn = torch.nn.utils.clip_grad_norm_(m.parameters(), 1.0); gn_log.append(float(gn))
         ans = float(np.mean([s_["answer_ce"] for s_ in sts])); rec = float(np.mean([s_["rec_ce"] for s_ in sts]))
         if far_bad or not (math.isfinite(tot) and bool(torch.isfinite(gn))):
@@ -910,6 +915,9 @@ def main():
                              "far_t_mean": mean_("t_far"), "fh_lfp1": mean_("fh_lfp1"), "fh_lambda": fhs["lam"] if a.fh else 0.0,
                              "fh_gratio1": facc[-1].get("fh_gratio1") if facc else None, "fh_gnorm_fp1": facc[-1].get("fh_gnorm_fp1") if facc else None,
                              "fh_gnorm_rest": facc[-1].get("fh_gnorm_rest") if facc else None, "far_nonfinite": fhs["far_nonfinite"]})
+                if a.fh_lambda_fixed is not None and rec_["fh_lfp1"] is not None and rec_["answer_ce"]:   # Note 230-1 (descriptive dose scale; window means)
+                    fp_ = fhs["lam"] * rec_["fh_lfp1"]; den_ = rec_["answer_ce"] + (rec_["rec_ce"] or 0.0) + (rec_["far_ce"] or 0.0)
+                    rec_.update({"fh_fp_over_ans": fp_ / rec_["answer_ce"], "fh_fp_over_rest": fp_ / den_ if den_ else None})
             log.write(json.dumps(rec_) + "\n"); log.flush(); print(rec_, flush=True); acc = []; facc = []
         m.gather_log = None
         if step in KEEP:

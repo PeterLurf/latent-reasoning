@@ -1,0 +1,12 @@
+# THEORY §230 FH-FT-FIX (Note 230-1; cap $4; Audit-approved): s230_fhftfix_s1 = s224_fhft_s1's frozen args + --fh_lambda_fixed 1.6 (lambda fixed from
+# step 1, no dose window); 12k FT from s213_d3t_s1, lr 3e-5, one non-580 RTX 3090; G-FH-EQ v2 (eqA / eqB as §224, unchanged); host evals acc,stall +
+# khorizon (as §224 Stage 1). Comparator s224_ftctrl_s1_re (existing). Frozen args scratch/s224_args_frozen_s230_fhftfix_s1.json.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/s230_fhftfix_s1_mem boxes.vbank --mode slva --table train --seed 1 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s213_d3t_s1/model.pt --draws_log_steps 20000 --far --fh --fh_lambda_fixed 1.6 --mem_check --mem_check_steps 2 --auto_micro
+boxes/runs_fsq/s230_fhftfix_s1_gtime boxes.vbank --mode slva --table train --seed 1 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s213_d3t_s1/model.pt --draws_log_steps 20000 --far --fh --fh_lambda_fixed 1.6 --time_steps 60 --auto_micro
+boxes/runs_fsq/s230_fhftfix_s1_eqB scratch.s222_det_wrap boxes/vbank.py --mode slva --table train --seed 1 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s213_d3t_s1/model.pt --draws_log_steps 20000 --micro 2 --fp32 --stop_at 1200
+boxes/runs_fsq/s230_fhftfix_s1_eqA scratch.s222_det_wrap boxes/vbank.py --mode slva --table train --seed 1 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s213_d3t_s1/model.pt --draws_log_steps 20000 --far --far_w 0 --micro 2 --fp32 --stop_at 1200
+boxes/runs_fsq/s230_fhftfix_s1 boxes.vbank --mode slva --table train --seed 1 --steps 12000 --lr 3e-5 --cur 8 --c_sched 0,1 --kmax 12 --kextra 4 --init_from boxes/runs_fsq/s213_d3t_s1/model.pt --draws_log_steps 20000 --far --fh --fh_lambda_fixed 1.6 --auto_micro --ckpt_every 2000 --args_ref scratch/s224_args_frozen_s224_fhft_s1.json
+boxes/runs_fsq/s230_fhftfix_s1 boxes.vbank_eval --run boxes/runs_fsq/s230_fhftfix_s1 --parts acc,stall --eval_bs 32
+boxes/runs_fsq/s230_fhftfix_s1 boxes.vbank_diag --run boxes/runs_fsq/s230_fhftfix_s1 --part khorizon --eval_bs 32
