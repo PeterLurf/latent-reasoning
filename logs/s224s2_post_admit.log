@@ -1,0 +1,15 @@
+2026-10-22 23:20:08 b336 s224_fh_s1 G-FH-EQ: EQ OK eqA == eqB (12 records)
+2026-10-22 23:20:10 b336 s224_fh_s1 host cell args.json: ARGS-CHECK OK (frozen scratch/s224_args_frozen_s224_fh_s1.json; torch 2.5.1+cu124; micro 1)
+2026-10-22 23:20:10 b336 s224_fh_s1 POSTCHECK OK
+2026-10-22 23:50:59 b337 s224_rd_s1 G-FH-EQ: EQ OK eqA == eqB (12 records)
+2026-10-22 23:51:02 b337 s224_rd_s1 host cell args.json: ARGS-CHECK OK (frozen scratch/s224_args_frozen_s224_rd_s1.json; torch 2.5.1+cu124; micro 1)
+2026-10-22 23:51:03 b337 s224_rd_s1 POSTCHECK OK
+2026-10-23 00:43:24 b338 s224_fh_s2 G-FH-EQ: EQ OK eqA == eqB (12 records)
+2026-10-23 00:43:27 b338 s224_fh_s2 host cell args.json: ARGS-CHECK OK (frozen scratch/s224_args_frozen_s224_fh_s2.json; torch 2.5.1+cu124; micro 1)
+2026-10-23 00:43:27 b338 s224_fh_s2 POSTCHECK OK
+2026-10-23 00:57:53 b339 s224_rd_s2 G-FH-EQ: EQ OK eqA == eqB (12 records)
+2026-10-23 00:57:56 b339 s224_rd_s2 host cell args.json: ARGS-CHECK OK (frozen scratch/s224_args_frozen_s224_rd_s2.json; torch 2.5.1+cu124; micro 1)
+2026-10-23 00:57:56 b339 s224_rd_s2 POSTCHECK OK
+2026-10-23 11:59:11 b340 s224_rd_s3 G-FH-EQ: EQ OK eqA == eqB (12 records)
+2026-10-23 11:59:12 b340 s224_rd_s3 host cell args.json: ARGS-CHECK OK (frozen scratch/s224_args_frozen_s224_rd_s3.json; torch 2.5.1+cu124; micro 1)
+2026-10-23 11:59:12 b340 s224_rd_s3 POSTCHECK OK
