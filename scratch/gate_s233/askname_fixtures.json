@@ -1,0 +1,2997 @@
+{
+ "i_d1": [
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Ray has 2 apples. Joy has 3 apples. Dan has 10 apples. Dan's apples times Joy's apples make Val's apples. How many apples does Val have? How many apples does Val have? The answer is:",
+   "values": [
+    10,
+    8
+   ],
+   "spine": [
+    "Dan",
+    "Val"
+   ],
+   "distractors": [
+    [
+     "Ray",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Pam has 2 books. Tom has 10 books. Gus has as many books as Pam's books times Tom's. How many books does Gus have? How many books does Gus have? The answer is:",
+   "values": [
+    2,
+    9
+   ],
+   "spine": [
+    "Pam",
+    "Gus"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Hal has 8 cards. Leo has 10 cards. Cal has 8 cards. Multiply Cal's cards by Leo's cards to get Sam's cards. How many cards does Sam have? How many cards does Sam have? The answer is:",
+   "values": [
+    8,
+    3
+   ],
+   "spine": [
+    "Cal",
+    "Sam"
+   ],
+   "distractors": [
+    [
+     "Hal",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Ben has 3 shells. Bob has 3 shells. Jon has as many shells as Bob's shells times Ben's. How many shells does Jon have? How many shells does Jon have? The answer is:",
+   "values": [
+    3,
+    9
+   ],
+   "spine": [
+    "Bob",
+    "Jon"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Bob has 3 shells. Tom has 6 shells. Zoe holds Bob's shells multiplied by Tom's shells. How many shells does Zoe have? How many shells does Zoe have? The answer is:",
+   "values": [
+    3,
+    7
+   ],
+   "spine": [
+    "Bob",
+    "Zoe"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Jon has 3 books. Tom has 1 books. Val has 2 books. Ted holds Val's books multiplied by Jon's books. How many books does Ted have? How many books does Ted have? The answer is:",
+   "values": [
+    2,
+    6
+   ],
+   "spine": [
+    "Val",
+    "Ted"
+   ],
+   "distractors": [
+    [
+     "Tom",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Sue has 2 eggs. Leo has 2 eggs. Sue's eggs times Leo's eggs make Jim's eggs. How many eggs does Jim have? How many eggs does Jim have? The answer is:",
+   "values": [
+    2,
+    4
+   ],
+   "spine": [
+    "Sue",
+    "Jim"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Pam has 4 cups. Leo has 10 cups. Eve owns the product of Pam's and Leo's cups. How many cups does Eve have? How many cups does Eve have? The answer is:",
+   "values": [
+    4,
+    7
+   ],
+   "spine": [
+    "Pam",
+    "Eve"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Sue has 3 eggs. Eve has 6 eggs. Multiply Eve's eggs by Sue's eggs to get Nan's eggs. How many eggs does Nan have? How many eggs does Nan have? The answer is:",
+   "values": [
+    6,
+    7
+   ],
+   "spine": [
+    "Eve",
+    "Nan"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Finn has 9 cups. Ted has 9 cups. Sam has 5 cups. Ted's cups times Sam's cups make Sue's cups. Kim has 8 cups. How many cups does Sue have? How many cups does Sue have? The answer is:",
+   "values": [
+    9,
+    1
+   ],
+   "spine": [
+    "Ted",
+    "Sue"
+   ],
+   "distractors": [
+    [
+     "Kim",
+     8
+    ],
+    [
+     "Finn",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Leo has 3 cards. Kim has 6 cards. Wes has 10 cards. Max owns the product of Wes's and Leo's cards. How many cards does Max have? How many cards does Max have? The answer is:",
+   "values": [
+    10,
+    8
+   ],
+   "spine": [
+    "Wes",
+    "Max"
+   ],
+   "distractors": [
+    [
+     "Kim",
+     6
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Ben has 9 cups. Zoe has 1 cups. Ned owns the product of Zoe's and Ben's cups. How many cups does Ned have? How many cups does Ned have? The answer is:",
+   "values": [
+    1,
+    9
+   ],
+   "spine": [
+    "Zoe",
+    "Ned"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Ivy has 7 pens. Zoe has 9 pens. Ted has 5 pens. Ray has as many pens as Ted's pens times Ivy's. How many pens does Ray have? How many pens does Ray have? The answer is:",
+   "values": [
+    5,
+    2
+   ],
+   "spine": [
+    "Ted",
+    "Ray"
+   ],
+   "distractors": [
+    [
+     "Zoe",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Ted has 10 eggs. Nan has 3 eggs. Cal has 1 eggs. Wes has 5 eggs. Ian owns the product of Wes's and Ted's eggs. How many eggs does Ian have? How many eggs does Ian have? The answer is:",
+   "values": [
+    5,
+    6
+   ],
+   "spine": [
+    "Wes",
+    "Ian"
+   ],
+   "distractors": [
+    [
+     "Nan",
+     3
+    ],
+    [
+     "Cal",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Pat has 5 eggs. Ian has 7 eggs. Jim has as many eggs as Pat's eggs times Ian's. How many eggs does Jim have? How many eggs does Jim have? The answer is:",
+   "values": [
+    5,
+    2
+   ],
+   "spine": [
+    "Pat",
+    "Jim"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Bob has 4 pens. Kate has 10 pens. Pam has 3 pens. Tom owns the product of Bob's and Pam's pens. How many pens does Tom have? How many pens does Tom have? The answer is:",
+   "values": [
+    4,
+    1
+   ],
+   "spine": [
+    "Bob",
+    "Tom"
+   ],
+   "distractors": [
+    [
+     "Kate",
+     10
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Ted has 7 cards. Pam has 9 cards. Kate has as many cards as Ted's cards times Pam's. How many cards does Kate have? How many cards does Kate have? The answer is:",
+   "values": [
+    7,
+    8
+   ],
+   "spine": [
+    "Ted",
+    "Kate"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Ned has 2 keys. Joe has 8 keys. Kate has as many keys as Ned's keys times Joe's. Nan has 7 keys. How many keys does Kate have? How many keys does Kate have? The answer is:",
+   "values": [
+    2,
+    5
+   ],
+   "spine": [
+    "Ned",
+    "Kate"
+   ],
+   "distractors": [
+    [
+     "Nan",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Wes has 3 keys. Cal has 10 keys. Val has 6 keys. Zoe holds Wes's keys multiplied by Val's keys. How many keys does Zoe have? How many keys does Zoe have? The answer is:",
+   "values": [
+    3,
+    7
+   ],
+   "spine": [
+    "Wes",
+    "Zoe"
+   ],
+   "distractors": [
+    [
+     "Cal",
+     10
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "i",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Wes has 5 pens. Eve has 4 pens. Lou has 9 pens. Leo has 8 pens. Multiply Lou's pens by Leo's pens to get Joe's pens. How many pens does Joe have? How many pens does Joe have? The answer is:",
+   "values": [
+    9,
+    6
+   ],
+   "spine": [
+    "Lou",
+    "Joe"
+   ],
+   "distractors": [
+    [
+     "Eve",
+     4
+    ],
+    [
+     "Wes",
+     5
+    ]
+   ]
+  }
+ ],
+ "i_d2": [
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Pat has 1 cups. Leo owns 8 cups more than Pat does. Ray owns the cups of Leo and Pat combined. How many cups does Ray have? How many cups does Leo have? The answer is:",
+   "values": [
+    1,
+    9,
+    10
+   ],
+   "spine": [
+    "Pat",
+    "Leo",
+    "Ray"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Val has 6 keys. Val has 5 more keys than Eve. Pat owns 8 times the keys that Eve owns. How many keys does Pat have? How many keys does Eve have? The answer is:",
+   "values": [
+    6,
+    1,
+    8
+   ],
+   "spine": [
+    "Val",
+    "Eve",
+    "Pat"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Ron has 3 pens. Dee has 2 pens. Mia has 5 pens. Wes has 0 pens. Eli has the number of pens Wes has, plus 4. Eli's pens times Ron's pens make Finn's pens. How many pens does Finn have? How many pens does Eli have? The answer is:",
+   "values": [
+    0,
+    4,
+    1
+   ],
+   "spine": [
+    "Wes",
+    "Eli",
+    "Finn"
+   ],
+   "distractors": [
+    [
+     "Dee",
+     2
+    ],
+    [
+     "Mia",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Tom has 5 pens. Ned has 8 pens. Kate owns 9 pens less than Tom does. Kate's pens times Ned's pens make Sue's pens. How many pens does Sue have? How many pens does Kate have? The answer is:",
+   "values": [
+    5,
+    7,
+    1
+   ],
+   "spine": [
+    "Tom",
+    "Kate",
+    "Sue"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Eve has 2 keys. Tom has 6 times the number of keys Eve has. Bob has as many keys as Tom and Eve together. How many keys does Bob have? How many keys does Tom have? The answer is:",
+   "values": [
+    2,
+    1,
+    3
+   ],
+   "spine": [
+    "Eve",
+    "Tom",
+    "Bob"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Zoe has 3 eggs. Finn has 10 eggs. Bob has 5 eggs. Multiply Bob's eggs by 6 to get Max's eggs. Max has 7 more eggs than Ray. How many eggs does Ray have? How many eggs does Max have? The answer is:",
+   "values": [
+    5,
+    8,
+    1
+   ],
+   "spine": [
+    "Bob",
+    "Max",
+    "Ray"
+   ],
+   "distractors": [
+    [
+     "Finn",
+     10
+    ],
+    [
+     "Zoe",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Sam has 1 cups. If you take 9 from Sam's cups, you get Dan's cups. Ken has 7 cups. Dan's cups times Ken's cups make Ivy's cups. How many cups does Ivy have? How many cups does Dan have? The answer is:",
+   "values": [
+    1,
+    3,
+    10
+   ],
+   "spine": [
+    "Sam",
+    "Dan",
+    "Ivy"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Val has 9 coins. Pam has 6 coins. Together, Pam and Val have as many coins as Ted. Ray has 10 coins. Eli has 5 coins. Lou has 8 coins. Wes has as many coins as Ted and Lou together. How many coins does Wes have? How many coins does Ted have? The answer is:",
+   "values": [
+    6,
+    4,
+    1
+   ],
+   "spine": [
+    "Pam",
+    "Ted",
+    "Wes"
+   ],
+   "distractors": [
+    [
+     "Ray",
+     10
+    ],
+    [
+     "Eli",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Eve has 10 stamps. Ken has 4 stamps. Pat owns the stamps of Eve and Ken combined. Together, Pat and Eve have as many stamps as Joe. How many stamps does Joe have? How many stamps does Pat have? The answer is:",
+   "values": [
+    10,
+    3,
+    2
+   ],
+   "spine": [
+    "Eve",
+    "Pat",
+    "Joe"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Eve has 3 keys. Ray has 2 keys. Sue has 9 times as many keys as Ray. Gus has as many keys as Sue has more than Eve. How many keys does Gus have? How many keys does Sue have? The answer is:",
+   "values": [
+    2,
+    7,
+    4
+   ],
+   "spine": [
+    "Ray",
+    "Sue",
+    "Gus"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Val has 9 stamps. Max has 6 stamps. Val has 7 fewer stamps than Eve. Eve's stamps, multiplied by 6, give Ben's stamps. How many stamps does Ben have? How many stamps does Eve have? The answer is:",
+   "values": [
+    9,
+    5,
+    8
+   ],
+   "spine": [
+    "Val",
+    "Eve",
+    "Ben"
+   ],
+   "distractors": [
+    [
+     "Max",
+     6
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Leo has 5 stamps. Dee has 4 stamps. Amy has 10 stamps. Sam owns the stamps of Amy and Dee combined. Sam's stamps, multiplied by 2, give Dan's stamps. How many stamps does Dan have? How many stamps does Sam have? The answer is:",
+   "values": [
+    10,
+    3,
+    6
+   ],
+   "spine": [
+    "Amy",
+    "Sam",
+    "Dan"
+   ],
+   "distractors": [
+    [
+     "Leo",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Eli has 1 cups. Dee has 0 cups. Compared with Dee, Amy has 1 extra cups. Jon's cups equal the sum of Amy's and Dee's. How many cups does Jon have? How many cups does Amy have? The answer is:",
+   "values": [
+    0,
+    1,
+    1
+   ],
+   "spine": [
+    "Dee",
+    "Amy",
+    "Jon"
+   ],
+   "distractors": [
+    [
+     "Eli",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Sue has 9 books. Pam has 9 books. Finn has 5 books. Hal has 8 times the number of books Pam has. Kate owns 8 times the books that Hal owns. How many books does Kate have? How many books does Hal have? The answer is:",
+   "values": [
+    9,
+    6,
+    4
+   ],
+   "spine": [
+    "Pam",
+    "Hal",
+    "Kate"
+   ],
+   "distractors": [
+    [
+     "Finn",
+     5
+    ],
+    [
+     "Sue",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 0,
+   "decoded_dec": " Kate has 1 eggs. Ron has 6 eggs. Dan has 8 eggs. Ian has 6 fewer eggs than Ron. Compared with Ian, Leo is short 7 eggs. How many eggs does Leo have? How many eggs does Ian have? The answer is:",
+   "values": [
+    6,
+    0,
+    4
+   ],
+   "spine": [
+    "Ron",
+    "Ian",
+    "Leo"
+   ],
+   "distractors": [
+    [
+     "Dan",
+     8
+    ],
+    [
+     "Kate",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Eve has 3 pens. Ray has 8 pens. Ian owns 8 pens more than Ray does. Max has as many pens as Ian's pens times Eve's. How many pens does Max have? How many pens does Ian have? The answer is:",
+   "values": [
+    8,
+    5,
+    4
+   ],
+   "spine": [
+    "Ray",
+    "Ian",
+    "Max"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Joe has 3 stamps. Pat has 9 stamps. Amy has 1 stamps. Fay has as many stamps as Pat has more than Amy. Wes has as many stamps as Fay's stamps times Joe's. How many stamps does Wes have? How many stamps does Fay have? The answer is:",
+   "values": [
+    9,
+    8,
+    2
+   ],
+   "spine": [
+    "Pat",
+    "Fay",
+    "Wes"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Hal has 0 coins. Hal has 7 more coins than Ken. Add Hal's coins to Ken's coins to get Ian's coins. How many coins does Ian have? How many coins does Ken have? The answer is:",
+   "values": [
+    0,
+    4,
+    4
+   ],
+   "spine": [
+    "Hal",
+    "Ken",
+    "Ian"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Bob has 3 pens. Sue has 4 pens. Leo has 7 pens. Eli has 8 pens. Eli's pens minus Leo's pens make Nan's pens. Multiply Nan's pens by 4 to get Cal's pens. How many pens does Cal have? How many pens does Nan have? The answer is:",
+   "values": [
+    8,
+    1,
+    4
+   ],
+   "spine": [
+    "Eli",
+    "Nan",
+    "Cal"
+   ],
+   "distractors": [
+    [
+     "Sue",
+     4
+    ],
+    [
+     "Bob",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "i",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Sue has 0 cards. Finn has 10 cards. Wes's cards equal Sue's minus Finn's. Ivy has 1 fewer cards than Wes. How many cards does Ivy have? How many cards does Wes have? The answer is:",
+   "values": [
+    0,
+    1,
+    0
+   ],
+   "spine": [
+    "Sue",
+    "Wes",
+    "Ivy"
+   ],
+   "distractors": []
+  }
+ ],
+ "ii_d1": [
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 10,
+   "decoded_dec": " Zoe has 7 cups. Mia has 10 cups. Ron has 4 cups. Hal has 4 cups. Jim holds Mia's cups multiplied by Ron's cups. How many cups does Jim have? How many cups does Mia have? The answer is:",
+   "values": [
+    10,
+    7
+   ],
+   "spine": [
+    "Mia",
+    "Jim"
+   ],
+   "distractors": [
+    [
+     "Hal",
+     4
+    ],
+    [
+     "Zoe",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 10,
+   "decoded_dec": " Ivy has 5 books. Val has 10 books. Dee has as many books as Val's books times Ivy's. Eve has 10 books. How many books does Dee have? How many books does Val have? The answer is:",
+   "values": [
+    10,
+    6
+   ],
+   "spine": [
+    "Val",
+    "Dee"
+   ],
+   "distractors": [
+    [
+     "Eve",
+     10
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 10,
+   "decoded_dec": " Pat has 7 apples. Zoe has 10 apples. Zoe's apples times Pat's apples make Ray's apples. How many apples does Ray have? How many apples does Zoe have? The answer is:",
+   "values": [
+    10,
+    4
+   ],
+   "spine": [
+    "Zoe",
+    "Ray"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Ted has 3 stamps. Gil has 7 stamps. Sam has 2 stamps. Nan owns the product of Ted's and Sam's stamps. How many stamps does Nan have? How many stamps does Ted have? The answer is:",
+   "values": [
+    3,
+    6
+   ],
+   "spine": [
+    "Ted",
+    "Nan"
+   ],
+   "distractors": [
+    [
+     "Gil",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Jon has 7 coins. Hal has 9 coins. Multiply Hal's coins by Jon's coins to get Amy's coins. How many coins does Amy have? How many coins does Hal have? The answer is:",
+   "values": [
+    9,
+    8
+   ],
+   "spine": [
+    "Hal",
+    "Amy"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Pat has 7 apples. Wes has 10 apples. Multiply Pat's apples by Wes's apples to get Max's apples. How many apples does Max have? How many apples does Pat have? The answer is:",
+   "values": [
+    7,
+    4
+   ],
+   "spine": [
+    "Pat",
+    "Max"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Dan has 6 eggs. Ben has 2 eggs. Zoe holds Dan's eggs multiplied by Ben's eggs. How many eggs does Zoe have? How many eggs does Dan have? The answer is:",
+   "values": [
+    6,
+    1
+   ],
+   "spine": [
+    "Dan",
+    "Zoe"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Mia has 4 books. Max has 9 books. Hal owns the product of Mia's and Max's books. How many books does Hal have? How many books does Mia have? The answer is:",
+   "values": [
+    4,
+    3
+   ],
+   "spine": [
+    "Mia",
+    "Hal"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Leo has 1 apples. Eli has 8 apples. Jim has as many apples as Leo's apples times Eli's. How many apples does Jim have? How many apples does Leo have? The answer is:",
+   "values": [
+    1,
+    8
+   ],
+   "spine": [
+    "Leo",
+    "Jim"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Ian has 5 apples. Wes has 1 apples. Fay has 3 apples. Ted has 9 apples. Kim owns the product of Ted's and Ian's apples. How many apples does Kim have? How many apples does Ted have? The answer is:",
+   "values": [
+    9,
+    1
+   ],
+   "spine": [
+    "Ted",
+    "Kim"
+   ],
+   "distractors": [
+    [
+     "Fay",
+     3
+    ],
+    [
+     "Wes",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Ben has 5 apples. Max has 8 apples. Leo has 9 apples. Zoe has 8 apples. Dee owns the product of Max's and Ben's apples. How many apples does Dee have? How many apples does Max have? The answer is:",
+   "values": [
+    8,
+    7
+   ],
+   "spine": [
+    "Max",
+    "Dee"
+   ],
+   "distractors": [
+    [
+     "Leo",
+     9
+    ],
+    [
+     "Zoe",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Val has 1 stamps. Gil has 3 stamps. Sam has 9 stamps. Pam has 3 stamps. Joy's stamps equal Sam's multiplied by Gil's. How many stamps does Joy have? How many stamps does Sam have? The answer is:",
+   "values": [
+    9,
+    5
+   ],
+   "spine": [
+    "Sam",
+    "Joy"
+   ],
+   "distractors": [
+    [
+     "Val",
+     1
+    ],
+    [
+     "Pam",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Sue has 9 cards. Pam has 2 cards. Sue's cards times Pam's cards make Ray's cards. Ben has 7 cards. How many cards does Ray have? How many cards does Sue have? The answer is:",
+   "values": [
+    9,
+    7
+   ],
+   "spine": [
+    "Sue",
+    "Ray"
+   ],
+   "distractors": [
+    [
+     "Ben",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Ian has 3 books. Ken has 9 books. Sam has 8 books. Amy owns the product of Ken's and Ian's books. Gil has 2 books. How many books does Amy have? How many books does Ken have? The answer is:",
+   "values": [
+    9,
+    5
+   ],
+   "spine": [
+    "Ken",
+    "Amy"
+   ],
+   "distractors": [
+    [
+     "Sam",
+     8
+    ],
+    [
+     "Gil",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Ann has 3 cups. Leo has 9 cups. Dan has 9 cups. Joe owns the product of Dan's and Ann's cups. Hal has 1 cups. How many cups does Joe have? How many cups does Dan have? The answer is:",
+   "values": [
+    9,
+    5
+   ],
+   "spine": [
+    "Dan",
+    "Joe"
+   ],
+   "distractors": [
+    [
+     "Leo",
+     9
+    ],
+    [
+     "Hal",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Bob has 3 pens. Dan has 7 pens. Ivy owns the product of Bob's and Dan's pens. Ben has 8 pens. Leo has 2 pens. How many pens does Ivy have? How many pens does Bob have? The answer is:",
+   "values": [
+    3,
+    10
+   ],
+   "spine": [
+    "Bob",
+    "Ivy"
+   ],
+   "distractors": [
+    [
+     "Leo",
+     2
+    ],
+    [
+     "Ben",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Ron has 5 cards. Lou has 1 cards. Kate has 6 cards. Finn has 3 cards. Joe holds Lou's cards multiplied by Finn's cards. How many cards does Joe have? How many cards does Lou have? The answer is:",
+   "values": [
+    1,
+    3
+   ],
+   "spine": [
+    "Lou",
+    "Joe"
+   ],
+   "distractors": [
+    [
+     "Kate",
+     6
+    ],
+    [
+     "Ron",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Tom has 3 apples. Jim has 9 apples. Pat has as many apples as Tom's apples times Jim's. Ben has 10 apples. How many apples does Pat have? How many apples does Tom have? The answer is:",
+   "values": [
+    3,
+    5
+   ],
+   "spine": [
+    "Tom",
+    "Pat"
+   ],
+   "distractors": [
+    [
+     "Ben",
+     10
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 10,
+   "decoded_dec": " Jon has 10 books. Gus has 7 books. Leo owns the product of Jon's and Gus's books. How many books does Leo have? How many books does Jon have? The answer is:",
+   "values": [
+    10,
+    4
+   ],
+   "spine": [
+    "Jon",
+    "Leo"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "ii",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Pam has 10 shells. Ron has 3 shells. Fay has 8 shells. Cal holds Ron's shells multiplied by Pam's shells. How many shells does Cal have? How many shells does Ron have? The answer is:",
+   "values": [
+    3,
+    8
+   ],
+   "spine": [
+    "Ron",
+    "Cal"
+   ],
+   "distractors": [
+    [
+     "Fay",
+     8
+    ]
+   ]
+  }
+ ],
+ "ii_d2": [
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Mia has 9 cards. Wes has the number of cards Mia has, minus 1. Wes has 3 more cards than Jon. How many cards does Jon have? How many cards does Mia have? The answer is:",
+   "values": [
+    9,
+    8,
+    5
+   ],
+   "spine": [
+    "Mia",
+    "Wes",
+    "Jon"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Ben has 8 keys. Pat has 3 keys. Mia has 4 keys. Zoe has 4 keys. Sue has the number of keys Zoe has, plus 7. Max's keys equal Sue's minus Mia's. How many keys does Max have? How many keys does Zoe have? The answer is:",
+   "values": [
+    4,
+    0,
+    7
+   ],
+   "spine": [
+    "Zoe",
+    "Sue",
+    "Max"
+   ],
+   "distractors": [
+    [
+     "Ben",
+     8
+    ],
+    [
+     "Pat",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Joe has 7 cards. Sam has the number of cards Joe has, plus 4. Cal has 8 cards. Add Cal's cards to Sam's cards to get Tom's cards. How many cards does Tom have? How many cards does Joe have? The answer is:",
+   "values": [
+    7,
+    0,
+    8
+   ],
+   "spine": [
+    "Joe",
+    "Sam",
+    "Tom"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 0,
+   "decoded_dec": " Dee has 0 shells. Ann has 3 shells. Together, Dee and Ann have as many shells as Wes. Mia's shells are 6 times Wes's. How many shells does Mia have? How many shells does Dee have? The answer is:",
+   "values": [
+    0,
+    3,
+    7
+   ],
+   "spine": [
+    "Dee",
+    "Wes",
+    "Mia"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Val has 8 keys. Nan has 9 keys. Eve has the number of keys Nan has, minus 4. Ted has 8 fewer keys than Eve. How many keys does Ted have? How many keys does Nan have? The answer is:",
+   "values": [
+    9,
+    5,
+    8
+   ],
+   "spine": [
+    "Nan",
+    "Eve",
+    "Ted"
+   ],
+   "distractors": [
+    [
+     "Val",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Zoe has 8 pens. Ian has 5 pens. Tom has 9 pens. Ted has 7 pens. Mia owns the product of Ted's and Tom's pens. Dan has 1 pens. Jon's pens equal Mia's multiplied by Zoe's. How many pens does Jon have? How many pens does Ted have? The answer is:",
+   "values": [
+    7,
+    8,
+    9
+   ],
+   "spine": [
+    "Ted",
+    "Mia",
+    "Jon"
+   ],
+   "distractors": [
+    [
+     "Dan",
+     1
+    ],
+    [
+     "Ian",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Ian has 9 books. Eve has 9 books. Sue has 2 books. Finn has 9 books. Val has 5 books. Multiply Val's books by Finn's books to get Kate's books. Ken owns the product of Kate's and Sue's books. How many books does Ken have? How many books does Val have? The answer is:",
+   "values": [
+    5,
+    1,
+    2
+   ],
+   "spine": [
+    "Val",
+    "Kate",
+    "Ken"
+   ],
+   "distractors": [
+    [
+     "Ian",
+     9
+    ],
+    [
+     "Eve",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Max has 1 keys. Leo has 3 keys. Finn owns the difference between Max's and Leo's keys. Dan has 4 keys. Add Dan's keys to Finn's keys to get Ned's keys. How many keys does Ned have? How many keys does Max have? The answer is:",
+   "values": [
+    1,
+    9,
+    2
+   ],
+   "spine": [
+    "Max",
+    "Finn",
+    "Ned"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 10,
+   "decoded_dec": " Amy has 7 cups. Leo has 10 cups. Val owns the product of Leo's and Amy's cups. Add Leo's cups to Val's cups to get Cal's cups. How many cups does Cal have? How many cups does Leo have? The answer is:",
+   "values": [
+    10,
+    4,
+    3
+   ],
+   "spine": [
+    "Leo",
+    "Val",
+    "Cal"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Ray has 2 shells. Gus's shells are 2 times Ray's. Ron owns the shells of Gus and Ray combined. How many shells does Ron have? How many shells does Ray have? The answer is:",
+   "values": [
+    2,
+    4,
+    6
+   ],
+   "spine": [
+    "Ray",
+    "Gus",
+    "Ron"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Pam has 6 pens. Hal has 6 pens. Ted holds Pam's pens multiplied by Hal's pens. Mia's pens are 6 times Ted's. How many pens does Mia have? How many pens does Pam have? The answer is:",
+   "values": [
+    6,
+    3,
+    7
+   ],
+   "spine": [
+    "Pam",
+    "Ted",
+    "Mia"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 0,
+   "decoded_dec": " Eve has 0 stamps. Ken has 9 stamps. Gus has the number of stamps Eve has, plus 1. Lou has 3 stamps. Ann owns the product of Gus's and Lou's stamps. How many stamps does Ann have? How many stamps does Eve have? The answer is:",
+   "values": [
+    0,
+    1,
+    3
+   ],
+   "spine": [
+    "Eve",
+    "Gus",
+    "Ann"
+   ],
+   "distractors": [
+    [
+     "Ken",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Ivy has 6 keys. Nan has 7 keys. Ted has 4 keys. Gil has 5 keys. Take Gil's keys from Nan's keys to get Sue's keys. Pam has 7 keys. Zoe has as many keys as Sue and Ivy together. How many keys does Zoe have? How many keys does Nan have? The answer is:",
+   "values": [
+    7,
+    2,
+    8
+   ],
+   "spine": [
+    "Nan",
+    "Sue",
+    "Zoe"
+   ],
+   "distractors": [
+    [
+     "Ted",
+     4
+    ],
+    [
+     "Pam",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Ray has 8 stamps. Amy has 8 stamps. Jim has the stamps Ray has beyond Amy's. Cal has 10 stamps. Bob's stamps equal Jim's minus Cal's. How many stamps does Bob have? How many stamps does Ray have? The answer is:",
+   "values": [
+    8,
+    0,
+    1
+   ],
+   "spine": [
+    "Ray",
+    "Jim",
+    "Bob"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Eve has 7 cards. Sue has 2 cards. Dan owns the difference between Sue's and Eve's cards. Ben has 10 more cards than Dan. How many cards does Ben have? How many cards does Sue have? The answer is:",
+   "values": [
+    2,
+    6,
+    5
+   ],
+   "spine": [
+    "Sue",
+    "Dan",
+    "Ben"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Finn has 2 keys. Ted has 6 keys. Val has the number of keys Ted has, minus 7. Pam has 8 keys. Val has 10 more keys than Jon. How many keys does Jon have? How many keys does Ted have? The answer is:",
+   "values": [
+    6,
+    10,
+    0
+   ],
+   "spine": [
+    "Ted",
+    "Val",
+    "Jon"
+   ],
+   "distractors": [
+    [
+     "Finn",
+     2
+    ],
+    [
+     "Pam",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Max has 9 eggs. Joy has 1 eggs. Sam has 9 eggs. Multiply Max's eggs by Sam's eggs to get Hal's eggs. Pam has the number of eggs Hal has, minus 10. Joe has 1 eggs. How many eggs does Pam have? How many eggs does Max have? The answer is:",
+   "values": [
+    9,
+    4,
+    5
+   ],
+   "spine": [
+    "Max",
+    "Hal",
+    "Pam"
+   ],
+   "distractors": [
+    [
+     "Joy",
+     1
+    ],
+    [
+     "Joe",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 7,
+   "decoded_dec": " Jim has 7 eggs. Zoe has 4 eggs. Together, Jim and Zoe have as many eggs as Bob. If you take 3 from Bob's eggs, you get Eli's eggs. Eve has 4 eggs. How many eggs does Eli have? How many eggs does Jim have? The answer is:",
+   "values": [
+    7,
+    0,
+    8
+   ],
+   "spine": [
+    "Jim",
+    "Bob",
+    "Eli"
+   ],
+   "distractors": [
+    [
+     "Eve",
+     4
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Ted has 5 cards. Ted has 4 fewer cards than Kate. Sue has 3 cards. Compared with Kate, Joy has 1 extra cards. How many cards does Joy have? How many cards does Ted have? The answer is:",
+   "values": [
+    5,
+    9,
+    10
+   ],
+   "spine": [
+    "Ted",
+    "Kate",
+    "Joy"
+   ],
+   "distractors": [
+    [
+     "Sue",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "ii",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Ivy has 1 coins. If you add 1 to Ivy's coins, you get Ben's coins. Compared with Ben, Lou is short 10 coins. Ron has 3 coins. How many coins does Lou have? How many coins does Ivy have? The answer is:",
+   "values": [
+    1,
+    2,
+    3
+   ],
+   "spine": [
+    "Ivy",
+    "Ben",
+    "Lou"
+   ],
+   "distractors": [
+    [
+     "Ron",
+     3
+    ]
+   ]
+  }
+ ],
+ "iii_d1": [
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 5,
+   "decoded_dec": " Nan has 10 books. Sam has 4 books. Cal has 5 books. Multiply Nan's books by Sam's books to get Joe's books. How many books does Joe have? How many books does Cal have? The answer is:",
+   "values": [
+    10,
+    7
+   ],
+   "spine": [
+    "Nan",
+    "Joe"
+   ],
+   "distractors": [
+    [
+     "Cal",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 3,
+   "decoded_dec": " Pam has 3 keys. Kim has 6 keys. Kim's keys times Pam's keys make Tom's keys. How many keys does Tom have? How many keys does Pam have? The answer is:",
+   "values": [
+    6,
+    7
+   ],
+   "spine": [
+    "Kim",
+    "Tom"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 7,
+   "decoded_dec": " Lou has 7 coins. Ken has 5 coins. Mia has 2 coins. Ron has as many coins as Mia's coins times Ken's. How many coins does Ron have? How many coins does Lou have? The answer is:",
+   "values": [
+    2,
+    10
+   ],
+   "spine": [
+    "Mia",
+    "Ron"
+   ],
+   "distractors": [
+    [
+     "Lou",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 5,
+   "decoded_dec": " Ray has 1 coins. Joe has 5 coins. Multiply Ray's coins by Joe's coins to get Eve's coins. How many coins does Eve have? How many coins does Joe have? The answer is:",
+   "values": [
+    1,
+    5
+   ],
+   "spine": [
+    "Ray",
+    "Eve"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 8,
+   "decoded_dec": " Dan has 1 keys. Amy has 2 keys. Jon holds Dan's keys multiplied by Amy's keys. Kim has 8 keys. How many keys does Jon have? How many keys does Kim have? The answer is:",
+   "values": [
+    1,
+    2
+   ],
+   "spine": [
+    "Dan",
+    "Jon"
+   ],
+   "distractors": [
+    [
+     "Kim",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 9,
+   "decoded_dec": " Sam has 9 stamps. Ted has 6 stamps. Multiply Ted's stamps by Sam's stamps to get Mia's stamps. How many stamps does Mia have? How many stamps does Sam have? The answer is:",
+   "values": [
+    6,
+    10
+   ],
+   "spine": [
+    "Ted",
+    "Mia"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 1,
+   "decoded_dec": " Ron has 1 cups. Kim has 2 cups. Bob has 4 cups. Val owns the product of Kim's and Bob's cups. How many cups does Val have? How many cups does Ron have? The answer is:",
+   "values": [
+    2,
+    8
+   ],
+   "spine": [
+    "Kim",
+    "Val"
+   ],
+   "distractors": [
+    [
+     "Ron",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 3,
+   "decoded_dec": " Ann has 8 coins. Dee has 3 coins. Finn has 5 coins. Ned has 4 coins. Kim has as many coins as Ann's coins times Ned's. How many coins does Kim have? How many coins does Dee have? The answer is:",
+   "values": [
+    8,
+    10
+   ],
+   "spine": [
+    "Ann",
+    "Kim"
+   ],
+   "distractors": [
+    [
+     "Dee",
+     3
+    ],
+    [
+     "Finn",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 9,
+   "decoded_dec": " Nan has 9 coins. Ian has 5 coins. Hal has as many coins as Ian's coins times Nan's. How many coins does Hal have? How many coins does Nan have? The answer is:",
+   "values": [
+    5,
+    1
+   ],
+   "spine": [
+    "Ian",
+    "Hal"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 6,
+   "decoded_dec": " Kate has 6 stamps. Cal has 5 stamps. Lou has 6 stamps. Multiply Kate's stamps by Cal's stamps to get Ann's stamps. Eli has 6 stamps. How many stamps does Ann have? How many stamps does Eli have? The answer is:",
+   "values": [
+    6,
+    8
+   ],
+   "spine": [
+    "Kate",
+    "Ann"
+   ],
+   "distractors": [
+    [
+     "Eli",
+     6
+    ],
+    [
+     "Lou",
+     6
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 10,
+   "decoded_dec": " Jim has 10 stamps. Nan has 5 stamps. Joy holds Nan's stamps multiplied by Jim's stamps. How many stamps does Joy have? How many stamps does Jim have? The answer is:",
+   "values": [
+    5,
+    6
+   ],
+   "spine": [
+    "Nan",
+    "Joy"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 7,
+   "decoded_dec": " Bob has 3 keys. Ron has 7 keys. Gus has 7 keys. Leo has 7 keys. Ivy has as many keys as Bob's keys times Leo's. How many keys does Ivy have? How many keys does Gus have? The answer is:",
+   "values": [
+    3,
+    10
+   ],
+   "spine": [
+    "Bob",
+    "Ivy"
+   ],
+   "distractors": [
+    [
+     "Gus",
+     7
+    ],
+    [
+     "Ron",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 4,
+   "decoded_dec": " Wes has 1 keys. Tom has 4 keys. Max has 10 keys. Kate's keys equal Max's multiplied by Tom's. Mia has 4 keys. How many keys does Kate have? How many keys does Mia have? The answer is:",
+   "values": [
+    10,
+    7
+   ],
+   "spine": [
+    "Max",
+    "Kate"
+   ],
+   "distractors": [
+    [
+     "Mia",
+     4
+    ],
+    [
+     "Wes",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 3,
+   "decoded_dec": " Ron has 3 apples. Wes has 4 apples. Joy owns the product of Wes's and Ron's apples. How many apples does Joy have? How many apples does Ron have? The answer is:",
+   "values": [
+    4,
+    1
+   ],
+   "spine": [
+    "Wes",
+    "Joy"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 5,
+   "decoded_dec": " Ted has 5 cups. Pam has 6 cups. Dee holds Pam's cups multiplied by Ted's cups. How many cups does Dee have? How many cups does Ted have? The answer is:",
+   "values": [
+    6,
+    8
+   ],
+   "spine": [
+    "Pam",
+    "Dee"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 4,
+   "decoded_dec": " Dan has 3 cards. Eli has 4 cards. Nan has as many cards as Dan's cards times Eli's. How many cards does Nan have? How many cards does Eli have? The answer is:",
+   "values": [
+    3,
+    1
+   ],
+   "spine": [
+    "Dan",
+    "Nan"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 6,
+   "decoded_dec": " Leo has 6 pens. Lou has 1 pens. Kate owns the product of Lou's and Leo's pens. How many pens does Kate have? How many pens does Leo have? The answer is:",
+   "values": [
+    1,
+    6
+   ],
+   "spine": [
+    "Lou",
+    "Kate"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 10,
+   "decoded_dec": " Finn has 10 coins. Pat has 10 coins. Dee has as many coins as Finn's coins times Pat's. How many coins does Dee have? How many coins does Pat have? The answer is:",
+   "values": [
+    10,
+    1
+   ],
+   "spine": [
+    "Finn",
+    "Dee"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 9,
+   "decoded_dec": " Cal has 2 cards. Sue has 8 cards. Lou has 9 cards. Kim has 9 cards. Joe holds Sue's cards multiplied by Lou's cards. How many cards does Joe have? How many cards does Kim have? The answer is:",
+   "values": [
+    8,
+    6
+   ],
+   "spine": [
+    "Sue",
+    "Joe"
+   ],
+   "distractors": [
+    [
+     "Kim",
+     9
+    ],
+    [
+     "Cal",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 1,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 1,
+   "decoded_dec": " Eve has 7 cards. Ken has 1 cards. Mia has 7 cards. Ted has 7 cards. Leo holds Eve's cards multiplied by Ted's cards. How many cards does Leo have? How many cards does Ken have? The answer is:",
+   "values": [
+    7,
+    5
+   ],
+   "spine": [
+    "Eve",
+    "Leo"
+   ],
+   "distractors": [
+    [
+     "Ken",
+     1
+    ],
+    [
+     "Mia",
+     7
+    ]
+   ]
+  }
+ ],
+ "iii_d2": [
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 9,
+   "decoded_dec": " Amy has 10 coins. Ivy has 9 coins. Joy has 1 coins. Fay has 3 coins. Ted owns the difference between Fay's and Joy's coins. Ned has as many coins as Ted and Fay together. How many coins does Ned have? How many coins does Ivy have? The answer is:",
+   "values": [
+    3,
+    2,
+    5
+   ],
+   "spine": [
+    "Fay",
+    "Ted",
+    "Ned"
+   ],
+   "distractors": [
+    [
+     "Ivy",
+     9
+    ],
+    [
+     "Amy",
+     10
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 5,
+   "decoded_dec": " Lou has 8 books. Jon has 5 books. Ben has 1 books. Ken owns the difference between Ben's and Lou's books. Pam has 9 books. Dee has 3 books. Gus owns the books of Ken and Dee combined. How many books does Gus have? How many books does Jon have? The answer is:",
+   "values": [
+    1,
+    4,
+    7
+   ],
+   "spine": [
+    "Ben",
+    "Ken",
+    "Gus"
+   ],
+   "distractors": [
+    [
+     "Jon",
+     5
+    ],
+    [
+     "Pam",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 7,
+   "decoded_dec": " Ben has 7 keys. Wes has 10 keys. Eli has 2 keys. Nan owns 3 times the keys that Eli owns. Compared with Nan, Sam has 8 extra keys. How many keys does Sam have? How many keys does Ben have? The answer is:",
+   "values": [
+    2,
+    6,
+    3
+   ],
+   "spine": [
+    "Eli",
+    "Nan",
+    "Sam"
+   ],
+   "distractors": [
+    [
+     "Ben",
+     7
+    ],
+    [
+     "Wes",
+     10
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 5,
+   "decoded_dec": " Ned has 7 stamps. Val has 5 more stamps than Ned. Lou has 5 stamps. Together, Val and Ned have as many stamps as Mia. Hal has 1 stamps. How many stamps does Mia have? How many stamps does Lou have? The answer is:",
+   "values": [
+    7,
+    1,
+    8
+   ],
+   "spine": [
+    "Ned",
+    "Val",
+    "Mia"
+   ],
+   "distractors": [
+    [
+     "Lou",
+     5
+    ],
+    [
+     "Hal",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "S_0",
+   "target": 6,
+   "decoded_dec": " Lou has 6 books. Sam owns 7 books less than Lou does. Gus's books are 3 times Sam's. How many books does Gus have? How many books does Lou have? The answer is:",
+   "values": [
+    6,
+    10,
+    8
+   ],
+   "spine": [
+    "Lou",
+    "Sam",
+    "Gus"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 7,
+   "decoded_dec": " Pat has 1 books. Sue has 4 books. Cal has 7 books. Multiply Sue's books by 8 to get Eli's books. Joy has the books Eli has beyond Pat's. How many books does Joy have? How many books does Cal have? The answer is:",
+   "values": [
+    4,
+    10,
+    9
+   ],
+   "spine": [
+    "Sue",
+    "Eli",
+    "Joy"
+   ],
+   "distractors": [
+    [
+     "Cal",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "S_0",
+   "target": 4,
+   "decoded_dec": " Val has 4 keys. Eve has 5 times the number of keys Val has. Sam has 8 fewer keys than Eve. How many keys does Sam have? How many keys does Val have? The answer is:",
+   "values": [
+    4,
+    9,
+    1
+   ],
+   "spine": [
+    "Val",
+    "Eve",
+    "Sam"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 6,
+   "decoded_dec": " Jim has 6 books. Ned has 3 books. Dee has 10 books. Tom has 4 books. Sam's books equal Dee's multiplied by Ned's. Compared with Sam, Ted has 1 extra books. How many books does Ted have? How many books does Jim have? The answer is:",
+   "values": [
+    10,
+    8,
+    9
+   ],
+   "spine": [
+    "Dee",
+    "Sam",
+    "Ted"
+   ],
+   "distractors": [
+    [
+     "Jim",
+     6
+    ],
+    [
+     "Tom",
+     4
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 7,
+   "decoded_dec": " Jon has 7 cups. Mia has 1 cups. Kim has 3 cups. Max owns the product of Mia's and Kim's cups. Max's cups plus Mia's cups make Jim's cups. How many cups does Jim have? How many cups does Jon have? The answer is:",
+   "values": [
+    1,
+    3,
+    4
+   ],
+   "spine": [
+    "Mia",
+    "Max",
+    "Jim"
+   ],
+   "distractors": [
+    [
+     "Jon",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 7,
+   "decoded_dec": " Pam has 6 cards. Mia has 7 cards. Ivy has 4 cards. Dee owns the difference between Ivy's and Pam's cards. Compared with Dee, Pat is short 3 cards. How many cards does Pat have? How many cards does Mia have? The answer is:",
+   "values": [
+    4,
+    9,
+    6
+   ],
+   "spine": [
+    "Ivy",
+    "Dee",
+    "Pat"
+   ],
+   "distractors": [
+    [
+     "Mia",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 7,
+   "decoded_dec": " Hal has 0 cards. Compared with Hal, Jim is short 4 cards. Val has 7 cards. Leo holds Jim's cards multiplied by Val's cards. How many cards does Leo have? How many cards does Val have? The answer is:",
+   "values": [
+    0,
+    7,
+    5
+   ],
+   "spine": [
+    "Hal",
+    "Jim",
+    "Leo"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 4,
+   "decoded_dec": " Hal has 2 cups. Joe has 3 cups. Sam has 4 cups. Pam has 1 cups. Ann owns the difference between Pam's and Hal's cups. Together, Ann and Joe have as many cups as Ray. How many cups does Ray have? How many cups does Sam have? The answer is:",
+   "values": [
+    1,
+    10,
+    2
+   ],
+   "spine": [
+    "Pam",
+    "Ann",
+    "Ray"
+   ],
+   "distractors": [
+    [
+     "Sam",
+     4
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 9,
+   "decoded_dec": " Dee has 10 shells. Dee's shells, multiplied by 6, give Ned's shells. Val has 9 shells. Ian holds Ned's shells multiplied by Val's shells. How many shells does Ian have? How many shells does Val have? The answer is:",
+   "values": [
+    10,
+    5,
+    1
+   ],
+   "spine": [
+    "Dee",
+    "Ned",
+    "Ian"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 10,
+   "decoded_dec": " Zoe has 10 stamps. Eve has 5 stamps. Dan's stamps are 2 times Eve's. Dan's stamps minus Zoe's stamps make Ian's stamps. How many stamps does Ian have? How many stamps does Zoe have? The answer is:",
+   "values": [
+    5,
+    10,
+    0
+   ],
+   "spine": [
+    "Eve",
+    "Dan",
+    "Ian"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "given_G",
+   "target": 8,
+   "decoded_dec": " Kim has 8 cups. Lou has 3 cups. If you add 6 to Lou's cups, you get Eve's cups. Amy's cups equal Eve's minus Kim's. How many cups does Amy have? How many cups does Kim have? The answer is:",
+   "values": [
+    3,
+    9,
+    1
+   ],
+   "spine": [
+    "Lou",
+    "Eve",
+    "Amy"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 4,
+   "decoded_dec": " Ray has 4 eggs. Joe has 4 eggs. Gil has 6 eggs. Joy holds Joe's eggs multiplied by Gil's eggs. Ned has 8 eggs. Kim's eggs equal Joy's multiplied by Ned's. How many eggs does Kim have? How many eggs does Ray have? The answer is:",
+   "values": [
+    4,
+    2,
+    5
+   ],
+   "spine": [
+    "Joe",
+    "Joy",
+    "Kim"
+   ],
+   "distractors": [
+    [
+     "Ray",
+     4
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 8,
+   "decoded_dec": " Joy has 10 keys. Tom has 8 keys. Gil has 3 keys. Ann's keys equal the sum of Joy's and Gil's. Amy has the number of keys Ann has, minus 5. Fay has 2 keys. How many keys does Amy have? How many keys does Tom have? The answer is:",
+   "values": [
+    10,
+    2,
+    8
+   ],
+   "spine": [
+    "Joy",
+    "Ann",
+    "Amy"
+   ],
+   "distractors": [
+    [
+     "Tom",
+     8
+    ],
+    [
+     "Fay",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 2,
+   "decoded_dec": " Tom has 2 cards. Ken has 10 cards. Eve has 6 cards. Dan has 2 more cards than Eve. Add Ken's cards to Dan's cards to get Mia's cards. How many cards does Mia have? How many cards does Tom have? The answer is:",
+   "values": [
+    6,
+    8,
+    7
+   ],
+   "spine": [
+    "Eve",
+    "Dan",
+    "Mia"
+   ],
+   "distractors": [
+    [
+     "Tom",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 5,
+   "decoded_dec": " Joy has 2 keys. Eve has 1 keys. Ted has 5 keys. Amy has the number of keys Joy has, plus 8. Sam has 5 fewer keys than Amy. How many keys does Sam have? How many keys does Ted have? The answer is:",
+   "values": [
+    2,
+    10,
+    5
+   ],
+   "spine": [
+    "Joy",
+    "Amy",
+    "Sam"
+   ],
+   "distractors": [
+    [
+     "Ted",
+     5
+    ],
+    [
+     "Eve",
+     1
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iii",
+   "fallback": "distractor",
+   "target": 4,
+   "decoded_dec": " Lou has 4 stamps. Ian has 4 stamps. Ted has 6 stamps. Compared with Ted, Ken has 3 extra stamps. Val's stamps equal Ken's minus Ian's. How many stamps does Val have? How many stamps does Lou have? The answer is:",
+   "values": [
+    6,
+    9,
+    5
+   ],
+   "spine": [
+    "Ted",
+    "Ken",
+    "Val"
+   ],
+   "distractors": [
+    [
+     "Lou",
+     4
+    ]
+   ]
+  }
+ ],
+ "iv_d2": [
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 1,
+   "decoded_dec": " Finn has 9 coins. Pam has 7 coins. Lou has 3 coins. Dee has 10 coins. Hal has 9 coins. Ned has 5 coins. Tom holds Ned's coins multiplied by Finn's coins. How many coins does Tom have? How many coins does Tom have? The answer is:",
+   "values": [
+    7,
+    5,
+    1
+   ],
+   "spine": [
+    "Pam",
+    "Ned",
+    "Tom"
+   ],
+   "distractors": [
+    [
+     "Dee",
+     10
+    ],
+    [
+     "Lou",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Dan has 10 keys. Sue has 8 keys. Lou has 10 keys. Ann has 1 keys. Ann has 3 more keys than Ken. How many keys does Ken have? How many keys does Ken have? The answer is:",
+   "values": [
+    10,
+    1,
+    9
+   ],
+   "spine": [
+    "Lou",
+    "Ann",
+    "Ken"
+   ],
+   "distractors": [
+    [
+     "Sue",
+     8
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Tom has 8 books. Leo has 10 books. Bob has the number of books Leo has, minus 7. How many books does Bob have? How many books does Bob have? The answer is:",
+   "values": [
+    8,
+    10,
+    3
+   ],
+   "spine": [
+    "Tom",
+    "Leo",
+    "Bob"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Eli has 5 cups. Jon has 3 cups. Eve has 8 times the number of cups Jon has. How many cups does Eve have? How many cups does Eve have? The answer is:",
+   "values": [
+    5,
+    3,
+    2
+   ],
+   "spine": [
+    "Eli",
+    "Jon",
+    "Eve"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Val has 4 coins. Kate has 5 coins. Add Val's coins to Kate's coins to get Eve's coins. How many coins does Eve have? How many coins does Eve have? The answer is:",
+   "values": [
+    4,
+    5,
+    9
+   ],
+   "spine": [
+    "Val",
+    "Kate",
+    "Eve"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Eve has 2 books. Ted has 2 books. Wes has 8 books. Gil has 5 books. If you add 9 to Gil's books, you get Eli's books. How many books does Eli have? How many books does Eli have? The answer is:",
+   "values": [
+    2,
+    5,
+    3
+   ],
+   "spine": [
+    "Ted",
+    "Gil",
+    "Eli"
+   ],
+   "distractors": [
+    [
+     "Eve",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 9,
+   "decoded_dec": " Nan has 3 coins. Ivy has 6 coins. Zoe has 4 coins. Amy has as many coins as Zoe has more than Ivy. How many coins does Amy have? How many coins does Amy have? The answer is:",
+   "values": [
+    3,
+    4,
+    9
+   ],
+   "spine": [
+    "Nan",
+    "Zoe",
+    "Amy"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 3,
+   "decoded_dec": " Ted has 9 shells. Gil has 3 shells. Ivy has 1 shells. Multiply Ivy's shells by Gil's shells to get Pam's shells. How many shells does Pam have? How many shells does Pam have? The answer is:",
+   "values": [
+    9,
+    1,
+    3
+   ],
+   "spine": [
+    "Ted",
+    "Ivy",
+    "Pam"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Hal has 1 shells. Jim has 9 shells. Leo has 6 shells. Finn has 8 shells. Joy has 2 shells. Sue has as many shells as Finn and Jim together. How many shells does Sue have? How many shells does Sue have? The answer is:",
+   "values": [
+    9,
+    8,
+    6
+   ],
+   "spine": [
+    "Jim",
+    "Finn",
+    "Sue"
+   ],
+   "distractors": [
+    [
+     "Leo",
+     6
+    ],
+    [
+     "Joy",
+     2
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Dee has 2 coins. Amy has 9 coins. Ann has 2 coins. Eli has 4 coins. Eli's coins minus Amy's coins make Pam's coins. How many coins does Pam have? How many coins does Pam have? The answer is:",
+   "values": [
+    2,
+    4,
+    6
+   ],
+   "spine": [
+    "Dee",
+    "Eli",
+    "Pam"
+   ],
+   "distractors": []
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Wes has 7 keys. Dan has 3 keys. Pat has 7 keys. Amy has 2 keys. Ann has 8 keys. Gil has 3 keys. Gil's keys minus Ann's keys make Nan's keys. How many keys does Nan have? How many keys does Nan have? The answer is:",
+   "values": [
+    7,
+    3,
+    6
+   ],
+   "spine": [
+    "Wes",
+    "Gil",
+    "Nan"
+   ],
+   "distractors": [
+    [
+     "Dan",
+     3
+    ],
+    [
+     "Pat",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 8,
+   "decoded_dec": " Leo has 1 keys. Hal has 3 keys. Ben has 5 keys. Fay has 8 keys. Bob has 5 keys. Sam owns the difference between Bob's and Fay's keys. How many keys does Sam have? How many keys does Sam have? The answer is:",
+   "values": [
+    1,
+    5,
+    8
+   ],
+   "spine": [
+    "Leo",
+    "Bob",
+    "Sam"
+   ],
+   "distractors": [
+    [
+     "Ben",
+     5
+    ],
+    [
+     "Hal",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Tom has 5 apples. Ned has 3 apples. Nan has 1 apples. Leo has 10 apples. Ray has 0 apples. Ted's apples equal the sum of Ray's and Tom's. How many apples does Ted have? How many apples does Ted have? The answer is:",
+   "values": [
+    1,
+    0,
+    5
+   ],
+   "spine": [
+    "Nan",
+    "Ray",
+    "Ted"
+   ],
+   "distractors": [
+    [
+     "Ned",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Eli has 1 stamps. Finn has 2 stamps. Jim has 0 stamps. Joe has 9 stamps. Gus has 1 stamps. Ben has as many stamps as Gus's stamps times Finn's. How many stamps does Ben have? How many stamps does Ben have? The answer is:",
+   "values": [
+    0,
+    1,
+    2
+   ],
+   "spine": [
+    "Jim",
+    "Gus",
+    "Ben"
+   ],
+   "distractors": [
+    [
+     "Eli",
+     1
+    ],
+    [
+     "Joe",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Cal has 4 coins. Finn has 2 coins. Sam has 2 coins. Nan has 2 coins. Gil has 4 coins. Kim has as many coins as Gil has more than Sam. How many coins does Kim have? How many coins does Kim have? The answer is:",
+   "values": [
+    2,
+    4,
+    2
+   ],
+   "spine": [
+    "Nan",
+    "Gil",
+    "Kim"
+   ],
+   "distractors": [
+    [
+     "Cal",
+     4
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 6,
+   "decoded_dec": " Zoe has 2 books. Gus has 2 books. Bob has 2 books. Ian has 3 books. Jim holds Ian's books multiplied by Zoe's books. Hal has 9 books. How many books does Jim have? How many books does Jim have? The answer is:",
+   "values": [
+    2,
+    3,
+    6
+   ],
+   "spine": [
+    "Bob",
+    "Ian",
+    "Jim"
+   ],
+   "distractors": [
+    [
+     "Gus",
+     2
+    ],
+    [
+     "Hal",
+     9
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 2,
+   "decoded_dec": " Jon has 3 cards. Val has 8 cards. Ken has 6 cards. Ann has 10 cards. Jim has 1 cards. Jim's cards minus Ann's cards make Sam's cards. How many cards does Sam have? How many cards does Sam have? The answer is:",
+   "values": [
+    6,
+    1,
+    2
+   ],
+   "spine": [
+    "Ken",
+    "Jim",
+    "Sam"
+   ],
+   "distractors": [
+    [
+     "Val",
+     8
+    ],
+    [
+     "Jon",
+     3
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 4,
+   "decoded_dec": " Mia has 3 shells. Jim has 7 shells. Ned has 1 shells. Ned's shells plus Mia's shells make Wes's shells. How many shells does Wes have? How many shells does Wes have? The answer is:",
+   "values": [
+    3,
+    1,
+    4
+   ],
+   "spine": [
+    "Mia",
+    "Ned",
+    "Wes"
+   ],
+   "distractors": [
+    [
+     "Jim",
+     7
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 5,
+   "decoded_dec": " Ken has 5 apples. Joy has 5 apples. Wes has 2 apples. Nan has 9 apples. Val has 8 apples. Sue has 10 apples. Ted has the apples Sue has beyond Joy's. How many apples does Ted have? How many apples does Ted have? The answer is:",
+   "values": [
+    8,
+    10,
+    5
+   ],
+   "spine": [
+    "Val",
+    "Sue",
+    "Ted"
+   ],
+   "distractors": [
+    [
+     "Nan",
+     9
+    ],
+    [
+     "Ken",
+     5
+    ]
+   ]
+  },
+  {
+   "d": 2,
+   "class": "iv",
+   "fallback": null,
+   "target": 10,
+   "decoded_dec": " Hal has 5 cards. Wes has 6 cards. Cal has 9 times the number of cards Wes has. How many cards does Cal have? How many cards does Cal have? The answer is:",
+   "values": [
+    5,
+    6,
+    10
+   ],
+   "spine": [
+    "Hal",
+    "Wes",
+    "Cal"
+   ],
+   "distractors": []
+  }
+ ]
+}
