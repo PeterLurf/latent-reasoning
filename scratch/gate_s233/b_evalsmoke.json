@@ -1,0 +1,46 @@
+{
+ "lat": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json",
+   "eval_cue_only.json",
+   "eval_cue_wrong.json",
+   "eval_lp5.json",
+   "eval_mean_s.json"
+  ],
+  "n_items_acc_d2": 20,
+  "cue_wrong_arms": [
+   "all",
+   "ans",
+   "at_1",
+   "at_2",
+   "sig"
+  ],
+  "cue_only_keys": [
+   "ans",
+   "aux_ok_1",
+   "aux_ok_2",
+   "pred",
+   "sig"
+  ],
+  "lp5_keys": [
+   "2",
+   "8"
+  ],
+  "fixture": {
+   "cue_only_pass1": " How many pens does Jon have?",
+   "cue_wrong_pass1_names": "Pat",
+   "cue_wrong_pass2_names": "Ted"
+  }
+ },
+ "cd": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json"
+  ],
+  "n_items_acc_d2": 20
+ },
+ "pass": true
+}

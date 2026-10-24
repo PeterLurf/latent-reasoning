@@ -1,0 +1,78 @@
+{
+ "bad": [],
+ "fixtures": [
+  {
+   "d": 1,
+   "pass1": "s 8 pens. Multiply Wes's pens by Amy's pens to get Sam's pens. How many pens does Sam have? How many pens does Sam have?",
+   "pass_hold": "s. How many pens does Sam have? How many pens does Sam have?",
+   "cd_dec": " Wes has 2 pens. Amy has 8 pens. Multiply Wes's pens by Amy's pens to get Sam's pens. How many pens does Sam have? How many pens does Sam have? The answer is:"
+  },
+  {
+   "d": 1,
+   "pass1": ". Gus has 5 keys. Gus's keys times Bob's keys make Eve's keys. How many keys does Eve have? How many keys does Eve have?",
+   "pass_hold": "s. How many keys does Eve have? How many keys does Eve have?",
+   "cd_dec": " Bob has 6 keys. Hal has 4 keys. Gus has 5 keys. Gus's keys times Bob's keys make Eve's keys. How many keys does Eve have? How many keys does Eve have? The answer is:"
+  },
+  {
+   "d": 1,
+   "pass1": "tamps. Ron has as many stamps as Ben's stamps times Ken's. How many stamps does Ron have? How many stamps does Ron have?",
+   "pass_hold": "ow many stamps does Ron have? How many stamps does Ron have?",
+   "cd_dec": "Dan has 1 stamps. Ken has 5 stamps. Ben has 1 stamps. Pat has 7 stamps. Ron has as many stamps as Ben's stamps times Ken's. How many stamps does Ron have? How many stamps does Ron have? The answer is:"
+  },
+  {
+   "d": 2,
+   "pass1": "ou together. Gil's coins, multiplied by 8, give Ted's coins. How many coins does Ted have? How many coins does Gil have?",
+   "pass_hold": " How many coins does Ted have? How many coins does Ted have?",
+   "cd_dec": " Gil has as many coins as Eve and Lou together. Gil's coins, multiplied by 8, give Ted's coins. How many coins does Ted have? How many coins does Gil have? How many coins does Ted have? The answer is:"
+  },
+  {
+   "d": 2,
+   "pass1": "re than Ivy. Amy's books times Eve's books make Pat's books. How many books does Pat have? How many books does Amy have?",
+   "pass_hold": " How many books does Pat have? How many books does Pat have?",
+   "cd_dec": "Amy has as many books as Sue has more than Ivy. Amy's books times Eve's books make Pat's books. How many books does Pat have? How many books does Amy have? How many books does Pat have? The answer is:"
+  },
+  {
+   "d": 2,
+   "pass1": " plus 7. Jon's stamps, multiplied by 3, give Fay's stamps. How many stamps does Fay have? How many stamps does Jon have?",
+   "pass_hold": "ow many stamps does Fay have? How many stamps does Fay have?",
+   "cd_dec": " has the number of stamps Dee has, plus 7. Jon's stamps, multiplied by 3, give Fay's stamps. How many stamps does Fay have? How many stamps does Jon have? How many stamps does Fay have? The answer is:"
+  },
+  {
+   "d": 4,
+   "pass1": "l's stamps. Dee has the number of stamps Val has, minus 2. How many stamps does Dee have? How many stamps does Nan have?",
+   "pass_hold": "ow many stamps does Dee have? How many stamps does Dee have?",
+   "cd_dec": "r of stamps Val has, minus 2. How many stamps does Dee have? How many stamps does Nan have? How many stamps does Finn have? How many stamps does Val have? How many stamps does Dee have? The answer is:"
+  },
+  {
+   "d": 4,
+   "pass1": " keys Gil has. Sue has as many keys as Ivy's keys times Gil's. How many keys does Sue have? How many keys does Wes have?",
+   "pass_hold": "s. How many keys does Sue have? How many keys does Sue have?",
+   "cd_dec": " as many keys as Ivy's keys times Gil's. How many keys does Sue have? How many keys does Wes have? How many keys does Gil have? How many keys does Ivy have? How many keys does Sue have? The answer is:"
+  },
+  {
+   "d": 4,
+   "pass1": "e's coins. If you add 2 to Joe's coins, you get Joy's coins. How many coins does Joy have? How many coins does Ray have?",
+   "pass_hold": " How many coins does Joy have? How many coins does Joy have?",
+   "cd_dec": "o Joe's coins, you get Joy's coins. How many coins does Joy have? How many coins does Ray have? How many coins does Gus have? How many coins does Joe have? How many coins does Joy have? The answer is:"
+  },
+  {
+   "d": 8,
+   "pass1": "than Dan does. Add Joe's keys to Ted's keys to get Eli's keys. How many keys does Eli have? How many keys does Eve have?",
+   "pass_hold": "s. How many keys does Eli have? How many keys does Eli have?",
+   "cd_dec": "s Ron have? How many keys does Wes have? How many keys does Joy have? How many keys does Jon have? How many keys does Dan have? How many keys does Ted have? How many keys does Eli have? The answer is:"
+  },
+  {
+   "d": 8,
+   "pass1": " beyond Mia's. Add Ken's pens to Jim's pens to get Max's pens. How many pens does Max have? How many pens does Joy have?",
+   "pass_hold": "s. How many pens does Max have? How many pens does Max have?",
+   "cd_dec": "s Jon have? How many pens does Ken have? How many pens does Eve have? How many pens does Gil have? How many pens does Ian have? How many pens does Jim have? How many pens does Max have? The answer is:"
+  },
+  {
+   "d": 8,
+   "pass1": "qual Cal's minus Max's. Joe's coins equal Mia's minus Dee's. How many coins does Joe have? How many coins does Ivy have?",
+   "pass_hold": " How many coins does Joe have? How many coins does Joe have?",
+   "cd_dec": "ave? How many coins does Ray have? How many coins does Leo have? How many coins does Kate have? How many coins does Cal have? How many coins does Mia have? How many coins does Joe have? The answer is:"
+  }
+ ],
+ "pass": true
+}

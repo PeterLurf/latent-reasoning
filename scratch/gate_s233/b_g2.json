@@ -1,0 +1,33 @@
+{
+ "by_d": {
+  "1": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "grad_rel_max": 1.0710894256112176e-14,
+   "n_distinct_inputs": 1,
+   "pass": true
+  },
+  "2": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "grad_rel_max": 1.6015670284974484e-15,
+   "n_distinct_inputs": 2,
+   "pass": true
+  },
+  "4": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "grad_rel_max": 1.4360291445772007e-15,
+   "n_distinct_inputs": 4,
+   "pass": true
+  },
+  "8": {
+   "loss_rel": 0.0,
+   "S_rel_max": 0.0,
+   "grad_rel_max": 1.657507618095434e-12,
+   "n_distinct_inputs": 8,
+   "pass": true
+  }
+ },
+ "pass": true
+}
