@@ -21293,6 +21293,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - (c) the answer CE at T_far biasing early passes toward settling.
   - The next draft starts from these, with a derivation and a red team.
 
+**Note 224-10 (2026-10-23 22:15 EDT; HOLD-DEPTH Stage 0 pre-stated: docs/research_holddepth_2026-10-23/HD_draft.md §2 at ee9537b9, before any deep-item read; $0 CPU; the follow-up to §224's depth cost under the user's "synthetic first" (10-23).)**
+- **Readings, predictions and labels** are as frozen in HD_draft §2.1–2.3 (hd_check_cpu.py + hd_stage0_score.py):
+  - VALUE (capacity / repair-set) vs SETTLE (pass-gated idling) vs MIXED;
+  - the RD label requires RD s1 and s2 to agree; RD s3 is shown and never labelled; FH is descriptive.
+- **Theory's prior:** VALUE 0.6, SETTLE 0.15, MIXED 0.25.
+- **Gate:** SETTLE withdraws the G-FAR lever. VALUE or MIXED sends the lever (§3) to the red team.
+- **Models:** s213_d3t_s1, s216_d3t_s2, s224_rd_s1 / s2 / s3, s224_fh_s1 / s2; n 9–11, 128 items each; CPU fp32, 2 threads, idle priority.
+- **Committed-data findings (HD_draft §1, descriptive):**
+  - not early-finish (RD 0.155–0.169 vs base 0.174–0.204);
+  - not CurGate (advances 6k / 9k everywhere; entry within +300 steps);
+  - answers fixed by pass n;
+  - **formation-time repair** proposed (far loss on wrong-prefix items while computation forms; repair dose 3,240–3,590 from scratch vs 6–10 in the fine-tune cells, which show no depth cost).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
