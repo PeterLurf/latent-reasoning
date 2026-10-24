@@ -1,0 +1,334 @@
+{
+ "diffs": {
+  "FT-CTRL s1 vs HC s1": {
+   "far": [
+    null,
+    true
+   ],
+   "far_n": [
+    null,
+    16
+   ],
+   "far_t": [
+    null,
+    "13,48"
+   ],
+   "far_w": [
+    null,
+    1.0
+   ],
+   "fh": [
+    null,
+    true
+   ],
+   "fh_dose": [
+    null,
+    "250,500"
+   ],
+   "fh_lam_cap": [
+    null,
+    10.0
+   ],
+   "fh_lambda_fixed": [
+    null,
+    1.6
+   ],
+   "fh_target": [
+    null,
+    0.2
+   ]
+  },
+  "FT-CTRL s2 vs HC-near s2": {
+   "far": [
+    false,
+    true
+   ],
+   "fh": [
+    false,
+    true
+   ]
+  },
+  "HC-near s2 vs HC s1": {
+   "fh_lambda_fixed": [
+    null,
+    1.6
+   ],
+   "init_from": [
+    "boxes/runs_fsq/s216_d3t_s2/model.pt",
+    "boxes/runs_fsq/s213_d3t_s1/model.pt"
+   ],
+   "seed": [
+    2,
+    1
+   ]
+  },
+  "PLANNED s232_fhftfix_s2 vs FT-CTRL s2": {
+   "far": [
+    true,
+    false
+   ],
+   "fh": [
+    true,
+    false
+   ],
+   "fh_lambda_fixed": [
+    1.6,
+    null
+   ]
+  },
+  "PLANNED s232_fhftfix_s2 vs HC s1": {
+   "init_from": [
+    "boxes/runs_fsq/s216_d3t_s2/model.pt",
+    "boxes/runs_fsq/s213_d3t_s1/model.pt"
+   ],
+   "seed": [
+    2,
+    1
+   ]
+  },
+  "RD-FT s1 vs HC s1": {
+   "fh": [
+    false,
+    true
+   ],
+   "fh_lambda_fixed": [
+    null,
+    1.6
+   ]
+  },
+  "RD-FT s2 vs HC-near s2": {
+   "fh": [
+    false,
+    true
+   ]
+  }
+ },
+ "models": {
+  "s213_d3t_s1": {
+   "args": {
+    "c_sched": "1000,8000",
+    "cur": "3,5,8",
+    "far": null,
+    "far_n": null,
+    "far_t": null,
+    "fh": null,
+    "fh_lambda_fixed": null,
+    "init_from": null,
+    "lr": 0.0001,
+    "mode": "slva",
+    "seed": 1,
+    "steps": 48000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3070",
+   "eval_vb_parts": [
+    "acc_n2",
+    "probe",
+    "vswap",
+    "stall"
+   ],
+   "lineage": "s1",
+   "model_pt": true,
+   "mtime": "2026-10-16 20:28",
+   "role": "BASE",
+   "size": 502609294
+  },
+  "s215_ftctrl_s1": {
+   "args": {
+    "c_sched": "0,1",
+    "cur": "8",
+    "far": null,
+    "far_n": null,
+    "far_t": null,
+    "fh": null,
+    "fh_lambda_fixed": null,
+    "init_from": "boxes/runs_fsq/s213_d3t_s1/model.pt",
+    "lr": 3e-05,
+    "mode": "slva",
+    "seed": 1,
+    "steps": 12000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3070",
+   "eval_vb_parts": [
+    "acc_n2",
+    "probe",
+    "vswap",
+    "stall"
+   ],
+   "lineage": "s1",
+   "model_pt": true,
+   "mtime": "2026-10-17 17:15",
+   "role": "FT-CTRL",
+   "size": 502609294
+  },
+  "s216_d3t_s2": {
+   "args": {
+    "c_sched": "1000,8000",
+    "cur": "3,5,8",
+    "far": null,
+    "far_n": null,
+    "far_t": null,
+    "fh": null,
+    "fh_lambda_fixed": null,
+    "init_from": "",
+    "lr": 0.0001,
+    "mode": "slva",
+    "seed": 2,
+    "steps": 48000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3070",
+   "eval_vb_parts": [
+    "acc_n2",
+    "probe",
+    "vswap",
+    "stall"
+   ],
+   "lineage": "s2",
+   "model_pt": true,
+   "mtime": "2026-10-18 06:47",
+   "role": "BASE",
+   "size": 502609294
+  },
+  "s224_fhft_s2": {
+   "args": {
+    "c_sched": "0,1",
+    "cur": "8",
+    "far": true,
+    "far_n": 16,
+    "far_t": "13,48",
+    "fh": true,
+    "fh_lambda_fixed": null,
+    "init_from": "boxes/runs_fsq/s216_d3t_s2/model.pt",
+    "lr": 3e-05,
+    "mode": "slva",
+    "seed": 2,
+    "steps": 12000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3090",
+   "eval_vb_parts": [
+    "acc_n2",
+    "stall"
+   ],
+   "lineage": "s2",
+   "model_pt": true,
+   "mtime": "2026-10-22 18:26",
+   "role": "HC-near",
+   "size": 502609294
+  },
+  "s224_ftctrl_s2": {
+   "args": {
+    "c_sched": "0,1",
+    "cur": "8",
+    "far": false,
+    "far_n": 16,
+    "far_t": "13,48",
+    "fh": false,
+    "fh_lambda_fixed": null,
+    "init_from": "boxes/runs_fsq/s216_d3t_s2/model.pt",
+    "lr": 3e-05,
+    "mode": "slva",
+    "seed": 2,
+    "steps": 12000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3090",
+   "eval_vb_parts": [
+    "acc_n2",
+    "stall"
+   ],
+   "lineage": "s2",
+   "model_pt": true,
+   "mtime": "2026-10-22 17:46",
+   "role": "FT-CTRL",
+   "size": 502609294
+  },
+  "s224_rdft_s1": {
+   "args": {
+    "c_sched": "0,1",
+    "cur": "8",
+    "far": true,
+    "far_n": 16,
+    "far_t": "13,48",
+    "fh": false,
+    "fh_lambda_fixed": null,
+    "init_from": "boxes/runs_fsq/s213_d3t_s1/model.pt",
+    "lr": 3e-05,
+    "mode": "slva",
+    "seed": 1,
+    "steps": 12000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3090",
+   "eval_vb_parts": [
+    "acc_n2",
+    "stall"
+   ],
+   "lineage": "s1",
+   "model_pt": true,
+   "mtime": "2026-10-22 20:03",
+   "role": "RD-FT",
+   "size": 502609294
+  },
+  "s224_rdft_s2": {
+   "args": {
+    "c_sched": "0,1",
+    "cur": "8",
+    "far": true,
+    "far_n": 16,
+    "far_t": "13,48",
+    "fh": false,
+    "fh_lambda_fixed": null,
+    "init_from": "boxes/runs_fsq/s216_d3t_s2/model.pt",
+    "lr": 3e-05,
+    "mode": "slva",
+    "seed": 2,
+    "steps": 12000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3090",
+   "eval_vb_parts": [
+    "acc_n2",
+    "stall"
+   ],
+   "lineage": "s2",
+   "model_pt": true,
+   "mtime": "2026-10-22 20:50",
+   "role": "RD-FT",
+   "size": 502609294
+  },
+  "s230_fhftfix_s1": {
+   "args": {
+    "c_sched": "0,1",
+    "cur": "8",
+    "far": true,
+    "far_n": 16,
+    "far_t": "13,48",
+    "fh": true,
+    "fh_lambda_fixed": 1.6,
+    "init_from": "boxes/runs_fsq/s213_d3t_s1/model.pt",
+    "lr": 3e-05,
+    "mode": "slva",
+    "seed": 1,
+    "steps": 12000
+   },
+   "eval_khorizon": true,
+   "eval_vb_card": "NVIDIA GeForce RTX 3090",
+   "eval_vb_parts": [
+    "acc_n2",
+    "stall"
+   ],
+   "lineage": "s1",
+   "model_pt": true,
+   "mtime": "2026-10-24 03:01",
+   "role": "HC",
+   "size": 502609294
+  }
+ },
+ "ok": {
+  "all_model_pt": true,
+  "planned_diff_is_seed_init": true
+ }
+}
