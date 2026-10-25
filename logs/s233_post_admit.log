@@ -1,0 +1,2 @@
+2026-10-24 16:44:16 b345 st_plst2_s1 host cell args.json: ARGS-CHECK OK (frozen scratch/s233_args_frozen_st_plst2_s1.json; torch 2.5.1+cu124; micro 2; eval_bs 250)
+2026-10-24 16:44:16 b345 st_plst2_s1 POSTCHECK OK

@@ -1,0 +1,6 @@
+22:29:21 gen_b345 NEW FAILURE LINE (continuing): 02:20:00 evaluated boxes/runs_fsq/st_plst2_s1 rc 1 no-eval
+22:56:11 gen_b345 fetch retry 1: FETCH_INCOMPLETE 57561827 boxes/runs_fsq/st_plst2_s1 MISSING eval.json
+23:11:05 gen_b345 fetch retry 2: FETCH_INCOMPLETE 57561827 boxes/runs_fsq/st_plst2_s1 MISSING eval.json
+23:26:07 gen_b345 fetch retry 3: FETCH_INCOMPLETE 57561827 boxes/runs_fsq/st_plst2_s1 MISSING eval.json
+23:44:11 gen_b345 DRAIN FAILED:
+FETCH_INCOMPLETE 57561827 boxes/runs_fsq/st_plst2_s1 MISSING eval.json
