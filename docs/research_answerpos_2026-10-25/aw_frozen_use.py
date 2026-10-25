@@ -69,8 +69,8 @@ def write_s1(m, g, rows, dev, bs):
         ch = rows[i:i + bs]; B = len(ch); seqs = [r["x1"] for r in ch]; ids_, _ = pad(seqs); x = torch.tensor(ids_, device=dev); pos = torch.tensor([len(q) - 1 for q in seqs], device=dev)
         cap = {}; S0 = mem.zero_state(B, dev); DM.gpt_forward_mem_r(g, g.embed(x), mem, S0, cap=cap); ar = torch.arange(B, device=dev)
         assert float(cap["read"].abs().max()) == 0.0
-        out.append(DM.write_seq(mem, cap["h6"][ar, pos][:, None], cap["hw"][ar, pos][:, None], S0, None))
-    return torch.cat(out)
+        out.append(DM.write_seq(mem, cap["h6"][ar, pos][:, None], cap["hw"][ar, pos][:, None], S0, None).cpu())
+    return torch.cat(out)   # kept on CPU (8 GB cards: N 8,000 states ~1.6 GB); batches move to dev
 
 
 @torch.no_grad()
@@ -79,7 +79,7 @@ def lower(g, seqs, dev, bs):
     out = []
     for i in range(0, len(seqs), bs):
         ch = seqs[i:i + bs]; ids_, _ = pad(ch); x = torch.tensor(ids_, device=dev); h = DM.gpt_lower(g, g.embed(x), 6)
-        out += [(h[r, :len(q)].clone(), len(q) - 1) for r, q in enumerate(ch)]
+        out += [(h[r, :len(q)].cpu(), len(q) - 1) for r, q in enumerate(ch)]   # CPU cache (memory); batch() moves to dev
     return out
 
 
@@ -99,7 +99,7 @@ def batch(L, idx, dev):
 
 
 def logits_at(m, g, L, S, idx, dev, pos_override=None):
-    H, last = batch(L, idx, dev); h = upper(m, g, H, S[idx]); pos = last if pos_override is None else pos_override
+    H, last = batch(L, idx, dev); h = upper(m, g, H, S[torch.as_tensor(idx)].to(dev)); pos = last if pos_override is None else pos_override
     return g.logits(h[torch.arange(len(idx), device=dev), pos]).float()
 
 
