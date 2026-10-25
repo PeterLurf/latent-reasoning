@@ -321,7 +321,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | CLOSED | **CLOSED 10-25 (232-4, Audit-reproduced): COEXIST 2/3 (claim holds); s3 C1-HARMED on the V_0-masked arm only (-0.043; trend -0.017/-0.002/-0.043 in all 3 seeds); all decisive C1 stats kept; hold 0.999; $4.04.** STAGE A 10-24 (232-3, Audit-reproduced): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
-| 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
+| 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; to the user before P-2; $0.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
 
 ## Live sections
 
@@ -21628,6 +21628,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **So the askname-side G-AW0 outcome was effectively known before the 0.90 → 0.80 change.** It passes either bar, so the decision is unaffected, but G-AW0 is a build check, not a blind test.
   - **G-AW1 FROZEN-USE is the blind $0 gate.** A fail goes to the user before any spend.
 - **Build G-D packet:** FX-LEAK through the real paths; flags-off bitwise vs inject_st; @no_grad on every eval part (ast-checked); an evalsmoke at the real eval_bs.
+
+**Note 234-2 (2026-10-25 14:58 EDT; §234 $0 gates: G-AW0 (aw_gate_askname.json) and G-AW1 FROZEN-USE (aw_frozen_use.json; RTX 4060, 496 s); $0.)**
+- **G-AW0 PASS (a build check, outcome known: 234-1):**
+  - u1|v1 1.000 (layer-0 u0|v1 0.095, majority 0.113);
+  - the written S_1 carries v_1 at 1.000 (s1|v1);
+  - the model's own argmax on v_1 1.000.
+- **G-AW1 FROZEN-USE FAILS (the blind gate):** frozen askname trunk + a single pass-1 write of the ':' state, fitting only W_o (+ s_add / s_del).
+  - **MAIN v_2 test acc 0.118 vs majority 0.107** (≤ majority + 0.10 → FAIL); best val 0.136; rank-32 W_o 0.119.
+  - Controls valid: (a) S := 0 0.014; (b) the LP2-path readout of v_1 1.000.
+  - Descriptive swap: follow cf_a 0.14, own 0.09, donor-final 0.12 (no use).
+- **Reading:** the value is in the state, and a readout can extract it (1.000), but the frozen trunk cannot USE a value read into its residual stream to compute the next step.
+  - **The bottleneck is read-into-compute,** not writing (G-AW0) and not deciding what to compute (233-2).
+  - Caveat: frozen trunk, linear W_o. A jointly trained trunk might learn to read, but §233's trained cued arm did not (with a weakly written state, 0.29).
+- **Per AW_v1 §2, this goes to the user before P-2.** No spend; the inject_aw build is held.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
