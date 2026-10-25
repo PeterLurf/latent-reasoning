@@ -1,0 +1,32 @@
+2026-10-24 14:56:50 start: QS 345:st_plst2_s1:1.00:1.16:12000:0.95; family $19; SETUP_H 0.4; EVAL_H 1.0; inject_st sha c9e74203004e; inject_st_eval sha 5343d59e7f2a
+2026-10-24 14:56:53 b345: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-24 15:06:55 b345: deploying st_plst2_s1 on offer 57551665 (85.90.17.171, RTX_3090, $0.2241/h)
+2026-10-24 15:46:17 b345: HOSTPROBE 19:45:26 HOSTPROBE_SLOW rc 9 (9.6305 > 0.854 s/step) on 85.90.17.171:18068 - refusing
+2026-10-24 15:46:20 b345: DESTROYED_VERIFIED 57552728
+2026-10-24 15:46:22 b345: deploying st_plst2_s1 on offer 57459931 (142.127.90.36, RTX_3090, $0.2281/h)
+2026-10-24 15:52:21 b345: HOSTPROBE 19:52:12 HOSTPROBE_SLOW rc 9 (0.954 > 0.854 s/step) on 142.127.90.36:40530 - refusing
+2026-10-24 15:52:23 b345: DESTROYED_VERIFIED 57556738
+2026-10-24 15:52:26 b345: no RTX_3090 offer (non-580, <= $0.25); retry in 10 min
+2026-10-24 16:02:28 b345: deploying st_plst2_s1 on offer 30240325 (77.48.24.250, RTX_3090, $0.1779/h)
+2026-10-24 16:08:02 b345: 20:07:41 HOSTPROBE 0.618 s/step (limit 0.854; b225 reference 0.657) on 77.48.24.250:48245
+2026-10-24 16:12:21 b345: K7 mem_check ; G-TIME 2.032620890935262 s/step (micro 2) -> cell projection $1.45 (12000 steps, 1 x 1.0 h eval / tail; cap $1.00); family so far $0.176 (admitted + BAD) of $19
+2026-10-24 16:12:21 b345: projection $1.45 (cell cap $1.00; family $0.176 + $1.45 vs $19) NOT admitted on 77.48.24.250:48245 (measured refusal 1 / 3) - destroying, next host
+2026-10-24 16:12:23 b345: DESTROYED_VERIFIED 57558084
+2026-10-24 16:12:26 b345: deploying st_plst2_s1 on offer 54311341 (190.22.60.176, RTX_3090, $0.2147/h)
+2026-10-24 16:21:39 b345: HOSTPROBE 20:21:03 HOSTPROBE_SLOW rc 9 (1.1289 > 0.854 s/step) on 190.22.60.176:50159 - refusing
+2026-10-24 16:21:41 b345: DESTROYED_VERIFIED 57559127
+2026-10-24 16:21:41 CAP: 4 BAD / refused hosts - held; tell Audit / Theory
+2026-10-24 16:24:09 start: QS 345:st_plst2_s1:1.50:1.75:12000:1.45; family $19; SETUP_H 0.4; EVAL_H 1.0; inject_st sha c9e74203004e; inject_st_eval sha 5343d59e7f2a
+2026-10-24 16:24:11 b345: deploying st_plst2_s1 on offer 41812721 (85.30.169.224, RTX_3090, $0.2014/h)
+2026-10-24 16:31:06 b345: 20:30:47 HOSTPROBE 0.6285 s/step (limit 0.854; b225 reference 0.657) on 85.30.169.224:40206
+2026-10-24 16:35:24 b345: K7 mem_check ; G-TIME 2.0708080649375917 s/step (micro 2) -> cell projection $1.67 (12000 steps, 1 x 1.0 h eval / tail; cap $1.50); family so far $0.2414 (admitted + BAD) of $19
+2026-10-24 16:35:24 b345: projection $1.67 (cell cap $1.50; family $0.2414 + $1.67 vs $19) NOT admitted on 85.30.169.224:40206 (measured refusal 1 / 3) - destroying, next host
+2026-10-24 16:35:26 b345: DESTROYED_VERIFIED 57560583
+2026-10-24 16:35:28 b345: deploying st_plst2_s1 on offer 56286259 (194.14.47.19, RTX_3090, $0.209/h)
+2026-10-24 16:40:58 b345: 20:40:06 HOSTPROBE 0.5245 s/step (limit 0.854; b225 reference 0.657) on 194.14.47.19:23368
+2026-10-24 16:44:13 b345: K7 mem_check {"checks":[{"kind":"train","micro":1,"eval_bs":250,"peak_gib":21.166800126433372},{"kind":"eval","micro":1,"eval_bs":250,"peak_gib":5.169526100158691}],"micro":1,"eval_bs":250,"peak_gib_train":21.166800126433372,"peak_gib_eval":5.169526100158691,"train":"thelongestbs/microof256d=2items(SEED_MEMCHECK)atK=8,+AdamWstates","eval":"thelongestof256d=12itemsxeval_bsatK'0..14(fp32,nooptimiserstate)"}; G-TIME 1.6604241847991943 s/step (micro 2) -> cell projection $1.45 (12000 steps, 1 x 1.0 h eval / tail; cap $1.50); family so far $0.2817 (admitted + BAD) of $19
+2026-10-24 16:44:13 b345: ADMIT st_plst2_s1 on 194.14.47.19:23368 (instance 57561827): $1.45
+2026-10-24 16:44:14 b345: ckpt mirror (every 0.46 h) + cell guard ($1.75 - rejected-host $0.2817 = $1.4683, GUARD_STOP=1, marks 500,1000,2000,4000,8000,11900) started
+2026-10-24 16:44:14 guard s233fam ($18.7183 = $19 - outside $0.2817, GUARD_STOP=1; 345:st_plst2_s1:1.45:12000) started
+2026-10-24 16:44:14 b345: post-admit checks started (args + shas vs scratch/s233_args_frozen_st_plst2_s1.json)
+2026-10-24 16:51:14 §233 filler done: 345:st_plst2_s1 194.14.47.19:23368 57561827 $0.209/h sps 1.6604241847991943 1.45;
