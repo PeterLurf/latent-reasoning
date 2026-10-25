@@ -320,7 +320,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 230 | FH-FT-FIX (HOLD-DEPTH, from REVIEW_HD; for Audit, cap $4): post-formation anchored far fine-tune at fixed lambda 1.6 on s1 (s2 at 1.618 motivated: H128 0.99, depth +0.05 vs FT-CTRL); pass H>=0.95 to K′128 & DEPTH >= FT-CTRL - 0.03; fail closes the HD line | registered | **PASSED 10-24 (230-2, Audit-reproduced; depth parity, not gain): H(K′) >= 0.994 to 128 (FT-CTRL 0.117), DEPTH +0.022 vs FT-CTRL, NOLOSS ok -> hold without depth cost (1 confirmed + 1 motivating seed, 12k post-formation FT, lambda 1.6); $1.00.** APPROVED by Audit (cap $4; 230-1 conditions: dose-ratio logging, fail-branch wording, pass scope); build --fh_lambda_fixed -> G-D -> 1 cloud 3090 cell** |
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | registered | **STAGE A 10-24 (232-3, Audit-reproduced): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
-| 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | registered | **LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
+| 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 
 ## Live sections
 
@@ -21565,6 +21565,28 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Status (Audit-reproduced; wording per Audit):** "C1 and C6 coexist (2 seeds); the hold fine-tune lowers carry-likeness 0.83 → 0.60–0.69 (read-policy shift, pre-registered)". FAR_CHANGED stays visible. The blind s3 (§230's exact recipe; base args diff vs s213_d3t_s1 = {seed} only; all cells on the 3090 class; off-host mirrors for the 48k base) decides 2 / 3 or 3 / 3.
 - **Next:** s3 cells (D3-T s3 base 48k, FT-CTRL s3, HC s3 with --fh_lambda_fixed 1.6; cap $4), then their Stage-A evals on one 3090.
 - **Realised:** Stage A ≈ $1.28.
+
+**Note 233-4 (2026-10-25 00:19 EDT; §233 P-2 failure record + result, and the §233 CLOSE: `python -B theory/score_st.py` on st_plst2_s1 / st_pcd2_s1 (one RTX 3090, 12k) + s228_pdir2c_s1.)**
+- **Failure record (Audit's request):** LAT's in-process eval OOMed in mean_s because the copied eval parts had lost their @torch.no_grad decorators.
+  - Fix 9e886c95 (G-D'd). All 5 parts were re-run on the same host with the committed code (host sha a5c43d19).
+  - The grad-mode acc / lp5 files are kept as *.gradmode. Per-item answers are identical (12,000 / 12,000; 4,000 / 4,000), and the no_grad files bind.
+  - **Realised ≈ $1.61 + BAD $0.28 ≈ $1.89, a disclosed overrun of the cell's $1.85** (cause: the eval re-run).
+  - **Lesson:** copied eval modules must keep every @no_grad; check decorators via ast in the G-D packet.
+- **P-2 FAILS (LP2, LP3, LP5):**
+  - LAT-ST TEST2 d = 2 acc **0.090** vs CUED-DIRECT 0.097 vs plain DIRECT 0.093 (all chance);
+  - pass-1 aux value acc on d = 2 **0.33** (LP2 needs 0.80; §228's uncued 0.25; prediction ≈ 0.25, P(LP2) 0.25);
+  - LP5 drop −0.007 (the pass-1 state is unused);
+  - MEAN-STATE 0.092 (passes trivially at chance);
+  - CUE-ONLY guard not tripped (0.093);
+  - **CUE-WRONG drop 0.001 (the cue is not used);**
+  - LP0 passes (both arms); LP1 passes; not still rising.
+- **§233 CLOSES** (the registered rule: P-2 is a binding gate; there is no further pilot). §233 realised ≈ $2.13 incl. the earlier refused-admission BAD ($0.24).
+- **What the language line now shows (descriptive, combining §226–§233):**
+  - (i) One pass computes whichever single quantity it is asked for, incl. the one-hop intermediate (233-2: 1.000).
+  - (ii) One pass cannot chain two steps even with the full plan given (CUED-DIRECT 0.089 / 0.097).
+  - (iii) The INJECT memory loop cannot carry even step 1 through its state on language: pass-1 aux 0.25 (§228), 0.33 (§233, cued), and the frozen 0.5B base has no eager intermediate (§231).
+  - **The bottleneck is writing a computed value into the INJECT state (and reading it back), not deciding what to compute.**
+  - The remaining pre-named route is a loop retrofit (Shapiro 2608.11233-style: re-feeding hidden states through the base's own layers, no separate memory), tested first on GPT-2 small. **That needs the user's direction (language line).**
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
