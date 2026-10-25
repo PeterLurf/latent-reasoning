@@ -94,6 +94,7 @@ def items_rec(T, extra):
     return {"sig": [it["sig"] for it in T], "ans": [it["ans"] for it in T], **extra}
 
 
+@torch.no_grad()                                                            # 10-24 (b345 mean_s OOM: a bare dec_logits built an autograd graph)
 def part_acc(m, g, sets, a, dev, bs):
     T = tokd(sets, a, IO.TEST_DS); K = a["think_k"]; out = {"by_d": {}, "items": {}}
     for d in IO.TEST_DS:
@@ -107,6 +108,7 @@ def part_acc(m, g, sets, a, dev, bs):
     out["acc_by_d"] = {d: v["acc"] for d, v in out["by_d"].items()}; return out
 
 
+@torch.no_grad()                                                            # 10-24 (b345 mean_s OOM: a bare dec_logits built an autograd graph)
 def part_lp5(m, g, sets, a, dev, bs, ds):
     K = a["think_k"]; T = tokd(sets, a, ds); out = {"by_d": {}, "items": {}}
     for d in ds:
@@ -125,6 +127,7 @@ def part_lp5(m, g, sets, a, dev, bs, ds):
     out["def"] = "MEAN-AT-1: S after pass 1 := the TEST2-d mean of S_1; passes 2..K' on their own cues; LP5 binding at K' = d, K' = think_k descriptive"; return out
 
 
+@torch.no_grad()                                                            # 10-24 (b345 mean_s OOM: a bare dec_logits built an autograd graph)
 def part_mean_s(m, g, sets, a, dev, bs):
     K = a["think_k"]; T = tokd(sets, a, IO.TEST_DS); tot = None; n = 0; per = {}
     for d in IO.TEST_DS:
@@ -146,6 +149,7 @@ def part_mean_s(m, g, sets, a, dev, bs):
     out["def"] = "pooled: the decoder reads the TEST2 mean of S_K over d 1..12 (binding at P-2: acc_MEAN <= CD + 0.10); per_d: the TEST2-d mean (descriptive)"; return out
 
 
+@torch.no_grad()                                                            # 10-24 (b345 mean_s OOM: a bare dec_logits built an autograd graph)
 def part_cue_only(m, g, sets, a, dev, bs, ds):
     K = a["think_k"]; T = tokd(sets, a, ds); out = {"by_d": {}, "items": {}}
 
@@ -160,6 +164,7 @@ def part_cue_only(m, g, sets, a, dev, bs, ds):
                   "plain DIRECT same items) + 0.05 (the scorer's)"); return out
 
 
+@torch.no_grad()                                                            # 10-24 (b345 mean_s OOM: a bare dec_logits built an autograd graph)
 def part_cue_wrong(m, g, sets, a, dev, bs, ds):
     K = a["think_k"]; T = tokd(sets, a, ds); out = {"by_d": {}, "items": {}}
 
