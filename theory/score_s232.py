@@ -59,7 +59,10 @@ def mean_onset(ev):
 
 
 def model(runs, m):
-    d = os.path.join(runs, m + "_c1"); ev, dh, ch = jl(os.path.join(d, "eval_vb.json")), jl(os.path.join(d, "eval_d3hist.json")), jl(os.path.join(d, "eval_c1hold.json"))
+    d = os.path.join(runs, m + "_c1")
+    if not os.path.isdir(d):                                                # s3 cells were evaluated in their own run dirs (no _c1 staging)
+        d = os.path.join(runs, m)
+    ev, dh, ch = jl(os.path.join(d, "eval_vb.json")), jl(os.path.join(d, "eval_d3hist.json")), jl(os.path.join(d, "eval_c1hold.json"))
     o = {"name": m, "missing": [f for f, v in (("eval_vb.json", ev), ("eval_d3hist.json", dh), ("eval_c1hold.json", ch)) if v is None], "cards": []}
     if o["missing"]:
         return o
@@ -151,7 +154,8 @@ def score_seed(runs, s):
 
 def score(runs=R):
     res = {"section": 232, "registered": "HC_v1.md @ ee6828ac + 232-1", "seeds": {}}; cards = []
-    seeds = ["s1", "s2"] + (["s3"] if os.path.isdir(os.path.join(runs, SEEDS["s3"]["hc"] + "_c1")) else [])
+    s3hc = SEEDS["s3"]["hc"]
+    seeds = ["s1", "s2"] + (["s3"] if (os.path.isdir(os.path.join(runs, s3hc + "_c1")) or os.path.exists(os.path.join(runs, s3hc, "eval_c1hold.json"))) else [])
     for s in seeds:
         o, M = score_seed(runs, s); res["seeds"][s] = o; cards += [x for v in M.values() for x in v.get("cards", []) if x]
     cls = sorted(set(str(c) for c in cards)); res["card_classes"] = cls
@@ -216,6 +220,14 @@ def fixtures():
     o = score(_world({("s1", "base"): {"gate": False}})); res.append(("BASE unreadable -> C1-KEPT on ctrl only, flagged", "C1-KEPT on" in str(o["seeds"]["s1"]["flags"]), o["seeds"]["s1"]["flags"]))
     o = score(_world({("s2", "ctrl"): {"card": "NVIDIA GeForce RTX 4060"}})); res.append(("mixed card -> VOID", o["verdict"].startswith("VOID"), o["verdict"]))
     o = score(_world({("s1", "hc"): {"slope": 1.5}})); res.append(("onset slope +0.5 -> C1-HARMED", "C1-HARMED" in o["verdict"], o["verdict"]))
+    d = _world()                                                            # s3 in plain run dirs (no _c1), as landed
+    for role, m in SEEDS["s3"].items():
+        _mk(d, m)
+        src, dst = os.path.join(d, m + "_c1"), os.path.join(d, m)
+        for f_ in os.listdir(src):
+            os.replace(os.path.join(src, f_), os.path.join(dst, f_))
+        os.rmdir(src)
+    o = score(d); res.append(("s3 in plain run dirs is found -> 3/3", "s3" in o["seeds"] and o["verdict"].startswith("COEXIST (3/3"), o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
