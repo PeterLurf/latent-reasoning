@@ -21,3 +21,18 @@ Latent side:
 | N1 (each think pass is told by name which quantity to compute, never its value; CUED-DIRECT credits the depth gain to the loop, not the plan) | **OK, narrow wording** | Step cues are the text-side idea of least-to-most / self-ask / successive prompting / planning tokens, here moved into a latent loop. Not found latent-side. Wording: "a latent-loop analogue of decomposition prompting (2205.10625, 2210.03350)", with the claim scoped to C1-TOLD. CUED-DIRECT, which separates the plan's effect from the loop's, is the key design point. |
 | N2 (diagnosis: the looped arm fails because no pass is asked for the intermediate; v_1 at chance at the write source while the given value decodes at 0.988) | **NARROW** | Kin: Biran 2406.12775 ("Hopping Too Late": the bridge entity is resolved too late in the layers for the second hop); Yang 2402.16837 (latent multi-hop is partial); Press 2210.03350 (sub-answers known but not composed). The specific probe pattern in our model is our own observation. |
 | N3 (MEAN-AT-t plus same-skeleton swaps to separate serial use of a told state from per-pass recompute) | **NARROW** | Mean ablation of latents is standard (Dilgren 2604.04902); counterfactual swaps follow SCIT 2608.27265 / our §221. The per-pass placement with the cue held fixed is a design refinement. |
+
+## Addendum (2026-10-25): ANSWER-WRITE draft (AW_draft.md), N1–N3
+- **RMT 2207.06881 verified:** Bulatov, Kuratov & Burtsev, "Recurrent Memory Transformer". Memory is written from the output states of dedicated **write tokens** at segment ends, not from an answer position.
+
+**Prior work: memory or latents taken from an answer / readout-position state** (from our notes, CODI read 10-21)
+- **Coconut 2412.06769:** the continuous thought **is the last hidden state at the next-token (readout) position**, fed back as the next input. This is the closest form.
+- **CODI 2502.21074:** distils hidden activations "at the token position corresponding to the colon ':'" before the answer, an answer-position anchor (used as a distillation target, not written to memory).
+- **RMT / ARMT 2407.04841:** dedicated memory-token write positions.
+- **Not found:** a loop that poses an explicit per-pass sub-question and writes **only** the answer-position state of that query into a recurrent (delta-rule) memory.
+
+| # | verdict | basis |
+|---|---|---|
+| N1 (each pass answers a sub-question; only the answer-position hidden state is written to the memory; cue- and init-matched one-pass comparator) | **NARROW** | The readout-position state as the latent is Coconut's continuous thought, and CODI anchors on the answer-position state. New: the per-pass explicit query + a single answer-position write into a delta memory with the plan given (the STEP-TOLD line). Wording: "a query-conditioned variant of Coconut-style last-hidden-state feedback, written into a recurrent memory". |
+| N2 (diagnosis: the INJECT write source didn't carry v_1, which is linear at 1.000 at the answer position of a one-pass model asked for it) | **NARROW** | Kin: Biran 2406.12775; Yang 2402.16837; CODI §5.1's decodable intermediates at the readout. The specific measurement is our own. |
+| N3 (single-token writes make per-pass attribution clean) | **NARROW** | As the draft says: mean ablation and swaps are standard (Dilgren; SCIT; §221). A design refinement. |
