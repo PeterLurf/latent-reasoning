@@ -321,6 +321,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | CLOSED | **CLOSED 10-25 (232-4, Audit-reproduced): COEXIST 2/3 (claim holds); s3 C1-HARMED on the V_0-masked arm only (-0.043; trend -0.017/-0.002/-0.043 in all 3 seeds); all decisive C1 stats kept; hold 0.999; $4.04.** STAGE A 10-24 (232-3, Audit-reproduced): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
+| 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **for Audit’s ruling** |
 
 ## Live sections
 
@@ -19258,6 +19259,25 @@ A null is the likeliest outcome. The expected value is mainly mechanism informat
 **OC.** P(pass) ≈ 0 under no effect, recompute, cue-solves-one-pass or pass-1-only; P(C1-TOLD) ≈ 0.04.
 
 **Cost.** Guards $1.16 / $2.82 / $14.78; family cap $19; expected ≈ $2.0. Realised $0.
+
+## 234. ANSWER-WRITE: write the INJECT state from the answer-position state (the user's 10-25 decision, relayed by Audit; **for Audit's ruling, family cap $30 under a running rule**; pre-registered 2026-10-25 14:32 EDT, before any §234 init read or output)
+
+**Registered text.** docs/research_answerpos_2026-10-25/AW_v1.md **at b51151b1** (v1 = AW_draft.md 0982fcd9 + REVIEW_AW fixes), frozen. Literature 9ce7aeb5: N1–N3 narrow.
+
+**Premise.** Audit's $0 probes:
+- §233 LAT-ST's cue-end trunk carries v_1 at 0.247 (locus d500ca4c);
+- the P1-ASK+NAME one-pass model carries v_1 at the answer position ':' at 1.000 (af0f0eed).
+
+So the INJECT state is written from the ':' state of a per-pass "How many <u> does <S_t> have? The answer is:" decode (γ = 1 from step 1), init s233_askname_s1.
+
+**Gates.**
+- $0 G-AW0 (v_1 at the write source ≥ 0.80);
+- $0 **G-AW1 FROZEN-USE** (the frozen trunk reads a single-write S_1 to v_2 ≥ 0.50 with only W_o fit; a fail goes to the user);
+- then P-2 (one 3090, d ≤ 2, 12k) with §233's P-2 readings vs CD-AN, plus SWAP-K state use and failure labels (AW-SOURCE-DRIFT / AW-NOT-STORED / AW-WEAK-READ / DEC-STEP2).
+
+**OC.** PASS 0 under no effect / unread / recompute / init-solves-one-pass; P(P-2) ≈ 0.19; P(C1-TOLD) ≈ 0.04.
+
+**Cost.** P-2 guard $2.31; family guard $29.81 ≤ $30; running rule (realised + remaining guards ≤ $30, else the user decides); expected ≈ $4.2. Realised $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
