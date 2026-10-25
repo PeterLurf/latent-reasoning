@@ -1,0 +1,45 @@
+{
+ "ref": "scratch/s224_args_frozen_s224_ftctrl_s2.json",
+ "diff": {
+  "cuda_version": [
+   null,
+   "12.4"
+  ],
+  "cudnn_version": [
+   null,
+   90100
+  ],
+  "image_tag": [
+   null,
+   "pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel"
+  ],
+  "init_from": [
+   "boxes/runs_fsq/s216_d3t_s2/model.pt",
+   "boxes/runs_fsq/s232_d3t_s3/model.pt"
+  ],
+  "out": [
+   "boxes/runs_fsq/s224_ftctrl_s2",
+   "boxes/runs_fsq/s232_ftctrl_s3"
+  ],
+  "python_version": [
+   null,
+   "3.11.10"
+  ],
+  "seed": [
+   2,
+   3
+  ],
+  "torch_version": [
+   null,
+   "2.5.1+cu124"
+  ],
+  "train_driver": [
+   null,
+   "570.211.01"
+  ],
+  "train_gpu": [
+   null,
+   "NVIDIA GeForce RTX 3090"
+  ]
+ }
+}
