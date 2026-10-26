@@ -51,3 +51,7 @@ Latent side:
 - **Scope:** d = 2, one seed, GPT-2 small, plan given; no chaining past the trained depth yet.
 
 **Suggested sentence:** "Extending SCIT's cache-level counterfactual transfer (2608.27265) to a compact recurrent memory: on templated word programs with a given plan, swapping a single per-pass memory state written from the answer position of a sub-question makes the answer follow the donor's intermediate (1.000 vs floor 0.175; d = 2, one seed, GPT-2 small)."
+
+- **Update (2026-10-26, Note 234-6 ST-AN):** writing from all cue tokens solves d = 2 in one late pass with S_1 unused (mean-S_1 drop 0.013; SWAP-1 stays on its own value 0.742). Writing from the answer position makes pass 1 causal (drop 0.882; SWAP-1 follows 1.000).
+  - **The N1 wording stands.** The answer-position write is now the attributed ingredient, which sharpens the contrast with SCIT's failed hidden-only swap.
+  - Still one seed, d = 2. No new claim.
