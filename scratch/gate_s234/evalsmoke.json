@@ -1,0 +1,50 @@
+{
+ "lat_aw": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json",
+   "eval_cue_only.json",
+   "eval_cue_wrong.json",
+   "eval_lp5.json",
+   "eval_mean_s.json",
+   "eval_probe.json",
+   "eval_swap_1.json",
+   "eval_swap_k.json",
+   "eval_ws.json"
+  ],
+  "eval_bs": 250,
+  "peak_gib": 5.161265850067139,
+  "n_items_acc_d2": 250,
+  "swap_k_n": 1000,
+  "swap_k_tried": 1613,
+  "swap_k_items": 1000,
+  "swap_1_ks": [
+   "2",
+   "8"
+  ],
+  "probe_keys": [
+   "l0|v1",
+   "read1|v1",
+   "u1|v1"
+  ],
+  "probe_n": 3000,
+  "read_vec_check_rel": 0.0,
+  "ws_ds": [
+   "1",
+   "2"
+  ],
+  "ws_items_d2": 250
+ },
+ "cd_an": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json"
+  ],
+  "eval_bs": 100,
+  "peak_gib": 5.11701774597168,
+  "n_items_acc_d2": 250
+ },
+ "pass": true
+}

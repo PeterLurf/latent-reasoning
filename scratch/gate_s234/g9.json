@@ -1,0 +1,82 @@
+{
+ "bad": [],
+ "fixtures": [
+  {
+   "d": 1,
+   "pass1": "ply Wes's pens by Amy's pens to get Sam's pens. How many pens does Sam have? How many pens does Sam have? The answer is:",
+   "pass_hold": "w many pens does Sam have? How many pens does Sam have? The answer is:",
+   "dec_tail": " get Sam's pens. How many pens does Sam have? The answer is:"
+  },
+  {
+   "d": 1,
+   "pass1": "s. Gus's keys times Bob's keys make Eve's keys. How many keys does Eve have? How many keys does Eve have? The answer is:",
+   "pass_hold": "w many keys does Eve have? How many keys does Eve have? The answer is:",
+   "dec_tail": "make Eve's keys. How many keys does Eve have? The answer is:"
+  },
+  {
+   "d": 1,
+   "pass1": "as many stamps as Ben's stamps times Ken's. How many stamps does Ron have? How many stamps does Ron have? The answer is:",
+   "pass_hold": "ny stamps does Ron have? How many stamps does Ron have? The answer is:",
+   "dec_tail": "s times Ken's. How many stamps does Ron have? The answer is:"
+  },
+  {
+   "d": 2,
+   "pass1": "l's coins, multiplied by 8, give Ted's coins. How many coins does Ted have? How many coins does Gil have? The answer is:",
+   "pass_hold": "many coins does Ted have? How many coins does Ted have? The answer is:",
+   "dec_tail": "ve Ted's coins. How many coins does Ted have? The answer is:"
+  },
+  {
+   "d": 2,
+   "pass1": "y's books times Eve's books make Pat's books. How many books does Pat have? How many books does Amy have? The answer is:",
+   "pass_hold": "many books does Pat have? How many books does Pat have? The answer is:",
+   "dec_tail": "ke Pat's books. How many books does Pat have? The answer is:"
+  },
+  {
+   "d": 2,
+   "pass1": "stamps, multiplied by 3, give Fay's stamps. How many stamps does Fay have? How many stamps does Jon have? The answer is:",
+   "pass_hold": "ny stamps does Fay have? How many stamps does Fay have? The answer is:",
+   "dec_tail": " Fay's stamps. How many stamps does Fay have? The answer is:"
+  },
+  {
+   "d": 4,
+   "pass1": " has the number of stamps Val has, minus 2. How many stamps does Dee have? How many stamps does Nan have? The answer is:",
+   "pass_hold": "ny stamps does Dee have? How many stamps does Dee have? The answer is:",
+   "dec_tail": " has, minus 2. How many stamps does Dee have? The answer is:"
+  },
+  {
+   "d": 4,
+   "pass1": "Sue has as many keys as Ivy's keys times Gil's. How many keys does Sue have? How many keys does Wes have? The answer is:",
+   "pass_hold": "w many keys does Sue have? How many keys does Sue have? The answer is:",
+   "dec_tail": "eys times Gil's. How many keys does Sue have? The answer is:"
+  },
+  {
+   "d": 4,
+   "pass1": "ou add 2 to Joe's coins, you get Joy's coins. How many coins does Joy have? How many coins does Ray have? The answer is:",
+   "pass_hold": "many coins does Joy have? How many coins does Joy have? The answer is:",
+   "dec_tail": "et Joy's coins. How many coins does Joy have? The answer is:"
+  },
+  {
+   "d": 8,
+   "pass1": "Add Joe's keys to Ted's keys to get Eli's keys. How many keys does Eli have? How many keys does Eve have? The answer is:",
+   "pass_hold": "w many keys does Eli have? How many keys does Eli have? The answer is:",
+   "dec_tail": " get Eli's keys. How many keys does Eli have? The answer is:"
+  },
+  {
+   "d": 8,
+   "pass1": "Add Ken's pens to Jim's pens to get Max's pens. How many pens does Max have? How many pens does Joy have? The answer is:",
+   "pass_hold": "w many pens does Max have? How many pens does Max have? The answer is:",
+   "dec_tail": " get Max's pens. How many pens does Max have? The answer is:"
+  },
+  {
+   "d": 8,
+   "pass1": "s Max's. Joe's coins equal Mia's minus Dee's. How many coins does Joe have? How many coins does Ivy have? The answer is:",
+   "pass_hold": "many coins does Joe have? How many coins does Joe have? The answer is:",
+   "dec_tail": "'s minus Dee's. How many coins does Joe have? The answer is:"
+  },
+  {
+   "cue_only_pass1": " How many coins does Ivy have? The answer is:"
+  }
+ ],
+ "cue_only_cue_wrong_suffix_sites": 2,
+ "pass": true
+}
