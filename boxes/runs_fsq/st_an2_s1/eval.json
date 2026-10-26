@@ -1,0 +1,124 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 518
+  },
+  "lp5": {
+   "file": "eval_lp5.json",
+   "sec": 16
+  },
+  "mean_s": {
+   "file": "eval_mean_s.json",
+   "sec": 228
+  },
+  "cue_only": {
+   "file": "eval_cue_only.json",
+   "sec": 2
+  },
+  "cue_wrong": {
+   "file": "eval_cue_wrong.json",
+   "sec": 21
+  },
+  "swap_k": {
+   "file": "eval_swap_k.json",
+   "sec": 14
+  },
+  "swap_1": {
+   "file": "eval_swap_1.json",
+   "sec": 10
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_bs": 250,
+ "write_src": "all",
+ "ds": [
+  2
+ ],
+ "module_sha256": "9abd9aa0fd5be7dbaea48040a98dde84a1723f5081dba52716522139aec111a8",
+ "train": {
+  "train_sec": 17989,
+  "last_step": 12000,
+  "n_nonfinite": 0,
+  "entry_d1": 216,
+  "futility": null,
+  "clip_rate": 0.29175,
+  "grad_norm_preclip": {
+   "median": 0.004963316954672337,
+   "p90": 11.266658401489257
+  },
+  "write_grad_spikes_floor": [
+   {
+    "step": 400,
+    "mean": 0.30659938564000183,
+    "max": 6.645555019378662,
+    "median_prev_1k": 0.02660601492971182,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 1200,
+    "mean": 0.1858864517037,
+    "max": 12.133197784423828,
+    "median_prev_1k": 0.05826951935887337,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 2300,
+    "mean": 0.12571053572261007,
+    "max": 4.2411417961120605,
+    "median_prev_1k": 0.03791387937963009,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 3300,
+    "mean": 0.18975610381741717,
+    "max": 7.924211502075195,
+    "median_prev_1k": 0.04911906272172928,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 3600,
+    "mean": 0.15752519321809813,
+    "max": 9.758249282836914,
+    "median_prev_1k": 0.04972615838050842,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 5100,
+    "mean": 0.24478234395577603,
+    "max": 3.069316864013672,
+    "median_prev_1k": 0.002145241480320692,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 5200,
+    "mean": 0.3329495727075846,
+    "max": 2.0046091079711914,
+    "median_prev_1k": 0.004123048624023795,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 6400,
+    "mean": 0.07314520696510954,
+    "max": 4.072643756866455,
+    "median_prev_1k": 0.0017037586658261716,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 6500,
+    "mean": 0.12866769890310026,
+    "max": 1.7035198211669922,
+    "median_prev_1k": 0.0012219022610224783,
+    "spike_100x_floor": true
+   }
+  ],
+  "micro": 2,
+  "train_gpu": "NVIDIA GeForce RTX 3090"
+ }
+}
