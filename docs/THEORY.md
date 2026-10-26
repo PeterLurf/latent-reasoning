@@ -321,7 +321,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 231 | LARGE-BASE (user decision 10-23; for Audit, cap $25): §228 band on Qwen2.5-0.5B; $0 EAGER launch condition (<= 0.30 closes); DIRECT-Q / LAT-Q (two lr arms) / TEXT-Q; staged terminal design (U{1..6}); LB_v1.md at 857aed34 | CLOSED | **CLOSED 10-24 (231-3): P1′ FAIL (EAGER_Qwen 0.112 = chance; positive control v_0 0.988 valid) -> 0.5B base does not compute the intermediate eagerly; $0.** APPROVED by Audit 10-24 (cap $25; 231-1 conditions); next: $0 P1′ EAGER probe with layer-0 control** |
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | CLOSED | **CLOSED 10-25 (232-4, Audit-reproduced): COEXIST 2/3 (claim holds); s3 C1-HARMED on the V_0-masked arm only (-0.043; trend -0.017/-0.002/-0.043 in all 3 seeds); all decisive C1 stats kept; hold 0.999; $4.04.** STAGE A 10-24 (232-3, Audit-reproduced): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
-| 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
+| 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
 
 ## Live sections
 
@@ -21652,6 +21652,30 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **WS-READOUT is eval-only:** boxes/inject_aw.py ws_readout runs under @torch.no_grad, switches to eval mode (dropout off, so no RNG is consumed), uses a fixed item set, and restores the train mode. It is never fed back into training state.
 - **Scorer amendment** (score_st.dedupe, shared by score_aw): the last record per step (100-step rows) and per bin (1k rows) wins. So the pre-crash 8,100–8,900 duplicates never enter LP0's windows, the bins or STILL-RISING.
   - New fixture: a duplicated step range with planted pre-crash gn spikes is ignored. score_st fixtures 11/11; score_aw 8/8.
+
+**Note 234-4 (2026-10-25 23:42 EDT; §234 P-2 result: `python -B theory/score_aw.py` (d666f2ee; resume-safe 86921e30) on aw_plaw2_s1 (LAT-AW, resumed from 8k after a host reboot; Audit's resume-equivalence gate PASS) + aw_pcd2_s1 (CD-AN), both on one RTX 3090; realised $0.68.)**
+- **P-2 PASSES. Label: C1-TOLD; DEC-STEP2 (chaining untested at d = 2).**
+
+| reading | value |
+|---|---|
+| **LP3** TEST2 d = 2 | LAT-AW **1.000** vs CD-AN 0.097, plain DIRECT 0.093 |
+| **LP2** pass-1 aux on d = 2 | 1.000 |
+| **LP5** (mean pass-1 state, cue kept, K′ = d) | drop 0.882 |
+| **MEAN-STATE** | 0.113 |
+| CUE-ONLY guard | 0.107, not tripped |
+| **CUE-WRONG** drop | 0.509, the cue is used → C1-TOLD |
+| LP0 / LP1 | pass (no non-finite; 0 windows over cap) |
+
+- **STATE-USE (SWAP-K, 1,000 same-skeleton pairs): follow_U 1.000 vs floor 0.175; follow cf_a 1.000, donor-final 0.000, own 0.000.**
+  - The answer equals the recipient's step-2 operation applied to the DONOR's stored v_1: the state's value is causally composed with the recipient's own next step.
+- **Diagnostics:** end-of-run probes u1|v1 1.000, read1|v1 1.000 (l0 0.087); WS-READOUT ≈ 1.0 at every pass (d 1, 2). No failure labels.
+- **Reading.** Written from the answer position (where one pass computes v_t, 233-2 / af0f0eed), the INJECT state carries step 1 perfectly. A jointly trained trunk learns to read it and compose step 2, where the frozen W_o-only route could not (G-AW1, 234-2).
+  - The language bottleneck in §228–§233 was the write source plus a trained read path.
+  - **Scope: "C1, scaffolded (plan given)", d = 2 only, one seed, GPT-2 small, the askname init.**
+- **Next (pre-pinned in AW_v1 §5; running cost rule):**
+  - (1) **ST-AN:** §233's LAT-ST on the askname init, γ = 1, the P-2 rule. It separates write source from init.
+  - (2) **P-4:** d ≤ 4, chaining required (WS-READOUT ≥ 0.50 at pass ≥ 2 on d ≥ 3; LP4).
+  - (3) Stage 1, re-costed from the measured s/step.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
