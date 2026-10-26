@@ -1,0 +1,27 @@
+{
+ "rc": 0,
+ "sha_equal": {
+  "test2_sha": true,
+  "transfer_sha": true,
+  "pairs2_sha": true,
+  "floors2_sha": true,
+  "s226_test_sha": true,
+  "s227_decode_sha": true
+ },
+ "mul_s_p3": 0.5,
+ "pair_stats_equal": true,
+ "test2_sigs_equal": true,
+ "swap_k_sigs_equal": true,
+ "swap_kd_sigs_equal": {
+  "3": true,
+  "4": true
+ },
+ "probe_sigs_equal": true,
+ "lp5_sigs_equal": true,
+ "lp5h_sigs_equal": true,
+ "ws_sigs_equal": true,
+ "cue_only_sigs_equal": true,
+ "cue_wrong_sigs_equal": true,
+ "mean_s_sigs_equal": true,
+ "pass": true
+}

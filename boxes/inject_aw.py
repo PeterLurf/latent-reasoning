@@ -125,6 +125,7 @@ def main(argv=None):
     ap.add_argument("--cue", default="none", choices=["none", "step", "all"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
+    ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
     import boxes.deltamem as DM_
     from boxes.fsq120 import make_opt, lr_at, driver_version, env_info
@@ -147,13 +148,14 @@ def main(argv=None):
     ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
     t_sets = time.time()
     if a.src == "ow":
-        SETS = build_sets(); EXCL = SETS["excl"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, **OWKW)
+        SETS = build_sets(); EXCL = SETS["excl"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, **OWKW)   # §235: training stream only
     else:                                                                   # gate only: nested170's TE / SPOOL exclusion and item law
         TE = N7.test_set(1000); EXCL = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)
         for _ in range(2200):
             r__, _t = N7.generate(r_sp, 8); EXCL.add(tuple(N7.render(r__)))
         SETS = None; stream = None
     set_sec = round(time.time() - t_sets)
+    assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"
     m, g, params = build_aw(a, dev)
     f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]
 
@@ -347,6 +349,8 @@ def main(argv=None):
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
             if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back
                 br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)
+            if a.mul_s_p3 < 1.0 and stream is not None:                    # §235: cumulative accepted d 3 training items with a mul_s step / all d 3 items
+                br["stream_d3_mul_s"] = [stream.stats.get("d3_mul_s", 0), stream.stats.get("d3_items", 0)]
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
