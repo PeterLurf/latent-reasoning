@@ -1,0 +1,83 @@
+{
+ "lat_aw": {
+  "rc": 0,
+  "diff_keys": [
+   "eval_parts",
+   "format",
+   "init_sha",
+   "init_sha256",
+   "init_trunk",
+   "write_mix_end",
+   "write_mix_start",
+   "write_src"
+  ],
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong",
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws"
+   ],
+   "init_sha": [
+    null,
+    "c00f7ec0bd7977fe"
+   ],
+   "init_sha256": [
+    null,
+    "c00f7ec0bd7977fea3ffc4d1ab296e16c6f7bf668fc0e16db583fece3233aed2"
+   ],
+   "init_trunk": [
+    null,
+    "boxes/runs_fsq/s233_askname_s1/model.pt"
+   ],
+   "write_mix_end": [
+    6000,
+    0
+   ],
+   "write_mix_start": [
+    2000,
+    0
+   ],
+   "write_src": [
+    null,
+    "answer"
+   ]
+  },
+  "format_new": "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7233 LAT-ST: think_t = [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_min(t, d))); lower cache per distinct input | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)",
+  "args_file": "D:/Latent/scratch/_tmp/s234/args_lat_aw/args.json",
+  "inject_st_sha256": "c9e74203004eb388a4a69697d8d107b5646ac09e443dc1bd461176c9eaeb07bf",
+  "inject_ow_sha256_equal": true,
+  "pass": true
+ },
+ "cd_an": {
+  "rc": 0,
+  "diff_keys": [
+   "init_sha",
+   "init_sha256",
+   "init_trunk",
+   "write_src"
+  ],
+  "diff": {
+   "init_sha": [
+    null,
+    "c00f7ec0bd7977fe"
+   ],
+   "init_sha256": [
+    null,
+    "c00f7ec0bd7977fea3ffc4d1ab296e16c6f7bf668fc0e16db583fece3233aed2"
+   ],
+   "init_trunk": [
+    null,
+    "boxes/runs_fsq/s233_askname_s1/model.pt"
+   ],
+   "write_src": [
+    null,
+    "all"
+   ]
+  },
+  "format_new": "dec = [EOT] + enc(' ' + text) + enc(' The answer is:') -> the number token (plain trunk, one pass) | \u00a7233 CUED-DIRECT: dec = [EOT] + enc(' ' + text + sum_t ' ' + QUESTION(u, S_t), t = 1..d) + ' The answer is:'",
+  "args_file": "D:/Latent/scratch/_tmp/s234/args_cd_an/args.json",
+  "inject_st_sha256": "c9e74203004eb388a4a69697d8d107b5646ac09e443dc1bd461176c9eaeb07bf",
+  "inject_ow_sha256_equal": true,
+  "pass": true
+ },
+ "pass": true
+}

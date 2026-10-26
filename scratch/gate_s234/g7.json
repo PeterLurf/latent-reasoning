@@ -1,0 +1,78 @@
+{
+ "loss_path": {
+  "rc": 9,
+  "n_dec_calls": 16,
+  "n_write_calls": 132,
+  "dec_reads_last_write_S": true,
+  "bad_idx": [],
+  "dec_ends_in_suffix": true,
+  "note": "dec tokens == tok_ow's dec is asserted in tok_aw for every item (G9 re-checks)",
+  "pass": true
+ },
+ "eval_path": {
+  "a_invariant_S_fixed": {
+   "wrong_cue": true,
+   "other_text": true
+  },
+  "b_planted_leak_detected": {
+   "wrong_cue": true,
+   "other_text": true
+  },
+  "c_live": {
+   "wrong_cue": {
+    "S_K_differ_all": true,
+    "logits_differ_any": true,
+    "answers_real": [
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5
+    ],
+    "answers_var": [
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5
+    ]
+   },
+   "other_text": {
+    "S_K_differ_all": true,
+    "logits_differ_any": true,
+    "answers_real": [
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5,
+     5
+    ],
+    "answers_var": [
+     5,
+     5,
+     5,
+     5,
+     3,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "d_SK_equal_aux_on_off": true,
+  "e_dec_tokens_eq_tok_ow": true,
+  "e_batch_composition_logits_rel": 3.951702243721689e-15,
+  "e_batch_composition_SK_rel": 2.842659269429888e-15,
+  "pass": true
+ },
+ "pass": true
+}

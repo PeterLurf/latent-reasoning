@@ -1,0 +1,41 @@
+{
+ "answer_ce": {
+  "gpt2_nonzero": 148,
+  "mem_nonzero": 12,
+  "mem_grad_norms": {
+   "mem.s_add": 3.387948565226598,
+   "mem.s_del": 0.0036521222131404916,
+   "mem.ln.weight": 0.9467765958459394,
+   "mem.ln.bias": 1.2084057949897815,
+   "mem.qkv.weight": 69.49186746556288,
+   "mem.qkv.bias": 6.798859324276261,
+   "mem.gate.weight": 0.062435331010036385,
+   "mem.gate.bias": 0.004771415722320605,
+   "mem.wo.weight": 243.33879460675035,
+   "mem.wo.bias": 1.1897113969398037,
+   "mem.ln_w.weight": 15.536631141066787,
+   "mem.ln_w.bias": 21.95290917887865
+  },
+  "zero_or_none": []
+ },
+ "aux_ce": {
+  "gpt2_nonzero": 148,
+  "mem_nonzero": 12,
+  "mem_grad_norms": {
+   "mem.s_add": 1.0712740034091701,
+   "mem.s_del": 0.0004040136683147555,
+   "mem.ln.weight": 0.4475065820131913,
+   "mem.ln.bias": 0.15483035353719307,
+   "mem.qkv.weight": 15.71812234953804,
+   "mem.qkv.bias": 1.3965087083818384,
+   "mem.gate.weight": 0.018913108734454773,
+   "mem.gate.bias": 0.001629905716773492,
+   "mem.wo.weight": 46.059390386664596,
+   "mem.wo.bias": 0.351208594635837,
+   "mem.ln_w.weight": 2.4376643092056804,
+   "mem.ln_w.bias": 4.848993440487336
+  },
+  "zero_or_none": []
+ },
+ "pass": true
+}

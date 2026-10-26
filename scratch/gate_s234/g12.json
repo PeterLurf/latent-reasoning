@@ -1,0 +1,16 @@
+{
+ "sha256": "c00f7ec0bd7977fea3ffc4d1ab296e16c6f7bf668fc0e16db583fece3233aed2",
+ "class": "InjectAW",
+ "init_sha256_on_args": null,
+ "trunk_equal_file": true,
+ "copies": {
+  "qkv_w": true,
+  "qkv_b": true,
+  "ln": true,
+  "ln_w": true
+ },
+ "wrong_sha_asserts": true,
+ "tensors_differing_from_base_gpt2": 148,
+ "n_tensors": 148,
+ "pass": true
+}
