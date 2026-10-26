@@ -56,3 +56,15 @@ Latent side:
   - **The N1 wording stands.** The answer-position write is now the attributed ingredient, which sharpens the contrast with SCIT's failed hidden-only swap.
   - Still one seed, d = 2. No new claim.
 - **Update (Note 234-7, P-4):** the chaining gate failed at d = 4. Descriptively, d = 3 is a full latent chain (mid-chain swap follows 0.805); at d = 4 the readout stalls after pass 3 (accuracy 0.765). Scope is now "scaffolded, d ≤ 3, one seed". The N1 NARROW wording and the §234 suggested sentence stand; change "d = 2" to "d ≤ 3 (descriptive at d = 3)" if cited.
+
+## Addendum (2026-10-26): D4-DECOR draft (74a67eeb): priors for the pass-index → operation shortcut and the decorrelation fix
+(The draft has no N1 sentence; one is proposed below.)
+
+**Priors:**
+- **Kuo 2606.29983** (read 10-20) [empirics; derivations in its appendices]: OOD variance in looped transformers comes from the **spurious correlation between sequence length and loop count**. Randomising the loop count (K = n ± 5) decorrelates it: addition seed std 9.9 → 5.9, OOD 22.1 → 30.9. This is the closest prior for "decorrelate a pass-index cue in the training data".
+- **Liang, Jin & Pan 2609.33144** (verified 10-21): a matched-recurrence loop advances through a "transferable **progress cue**", a step-position signal that degrades past the training horizon.
+- **Positional shortcuts and randomisation:** Ruoss 2305.16843 (randomised positions); McLeish 2405.17399 (Abacus random offsets; our §177 caution that offsets can erase pass identity).
+- **General shortcut learning and rebalancing:** Geirhos 2004.07780; Lin 2503.07604 (fixed-pattern shortcuts in implicit multi-step arithmetic).
+- All IDs verified (2004.07780 and 2405.17399 on 10-26; the rest earlier).
+
+**Suggested N1 (NARROW):** "In a plan-given latent loop, a training-distribution correlation between pass index and operation produced a pass-position shortcut (pass 3 ignores the stated op). We remove it by decorrelating the two in the data, the analogue for operations of Kuo et al.'s length–loop-count decorrelation (2606.29983)." No "first".
