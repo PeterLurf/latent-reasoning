@@ -41,12 +41,15 @@ def _operand(rng, op):
     return int(rng.integers(2, P)) if BASE[op] == "mul" else int(rng.integers(1, P))
 
 
-def _draw_program(rng, d, dag=True):
+def _draw_program(rng, d, dag=True, mul_s_p3=1.0):
     """v1.2's _draw_program with values in Z_11 (no range rejection); dag=False: no forced mul_s (no ts draw) and regular ops from OPS_CHAIN.
+    mul_s_p3 (§235 D4-DECOR, D4_v1 §1): at d = 3 only, with probability 1 - mul_s_p3 the program has no forced mul_s (ts := None, every step a regular op); the
+    coin is drawn ONCE per program, before the restart loop, and only when mul_s_p3 < 1 (1.0 = no extra rng draw = the stream unchanged).
     -> ops, bs, js, s, ts, restarts, raw (the unreduced value of each step)."""
     restarts = 0; reg = OPS_REG if dag else OPS_CHAIN
+    no_ts = bool(dag and d == 3 and mul_s_p3 < 1.0 and rng.random() >= mul_s_p3)
     while True:
-        ts = int(rng.integers(3, d + 1)) if (dag and d >= 3) else None
+        ts = int(rng.integers(3, d + 1)) if (dag and d >= 3 and not no_ts) else None
         s = [int(rng.integers(0, P))]; ops, bs, js, raw = [], [], [], []; ok = True
         for t in range(1, d + 1):
             if t == ts:
@@ -93,9 +96,9 @@ def _decorate(it, order_mode, raw=None, dag=True):
     it["mod"] = P; it["order_mode"] = order_mode; return it
 
 
-def make(rng, d, frames=FRAME_TRAIN, stats=None, order_mode="forward", dag=True):
-    """v1.2's make() draw sequence (program, n_dis, names, unit, frames, distractor values, order) with the two changes (+ §226 dag)."""
-    ops, bs, js, s, ts, rs, raw = _draw_program(rng, d, dag)
+def make(rng, d, frames=FRAME_TRAIN, stats=None, order_mode="forward", dag=True, mul_s_p3=1.0):
+    """v1.2's make() draw sequence (program, n_dis, names, unit, frames, distractor values, order) with the two changes (+ §226 dag, §235 mul_s_p3)."""
+    ops, bs, js, s, ts, rs, raw = _draw_program(rng, d, dag, mul_s_p3)
     if stats is not None:
         stats["restarts"] = stats.get("restarts", 0) + rs; stats["items"] = stats.get("items", 0) + 1
     n_v = sum(op.endswith("_v") for op in ops); n_dis = int(rng.integers(0, 3))
@@ -133,13 +136,16 @@ def redraw(rng, it, tries=1000):
 
 
 class Stream:
-    def __init__(self, seed, excl=(), frames=FRAME_TRAIN, order_mode="forward", dag=True):
+    def __init__(self, seed, excl=(), frames=FRAME_TRAIN, order_mode="forward", dag=True, mul_s_p3=1.0):
         self.rng = np.random.default_rng(seed); self.excl = set(excl); self.frames = frames; self.order_mode = order_mode; self.dag = dag; self.stats = {}
+        self.mul_s_p3 = float(mul_s_p3)                                     # §235: 1.0 = unchanged (no coin, no extra stats keys)
 
     def draw(self, d):
         while True:
-            it = make(self.rng, d, self.frames, self.stats, self.order_mode, self.dag)
+            it = make(self.rng, d, self.frames, self.stats, self.order_mode, self.dag, self.mul_s_p3)
             if it["sig"] not in self.excl:
+                if self.mul_s_p3 < 1.0 and d == 3:                          # §235 realised shares (accepted d 3 items; only when the coin is on)
+                    self.stats["d3_items"] = self.stats.get("d3_items", 0) + 1; self.stats["d3_mul_s"] = self.stats.get("d3_mul_s", 0) + int("mul_s" in it["ops"])
                 return it
 
 

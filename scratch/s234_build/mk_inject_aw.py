@@ -7,7 +7,8 @@ E = [
 ('    ap.add_argument("--cue", default="none", choices=["none", "step", "all"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")',
  '    ap.add_argument("--cue", default="none", choices=["none", "step", "all"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")\n'
  '    ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + \' The answer is:\' on every pass input, only the \':\' state writes")\n'
- '    ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")'),
+ '    ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")\n'
+ '    ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")'),
 ('    assert a.cue != "all" or (a.arm == "direct" and a.src == "ow"), "--cue all: CUED-DIRECT (direct, OW)"',
  '    assert a.cue != "all" or (a.arm == "direct" and a.src == "ow"), "--cue all: CUED-DIRECT (direct, OW)"\n'
  '    assert a.write_src != "answer" or (a.arm == "inject" and a.cue == "step"), "--write_src answer: LAT-AW (inject, --cue step)"\n'
@@ -38,6 +39,14 @@ E = [
  '                br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)'),
 # the eval module
 ('    from boxes import inject_st_eval as EV\n    EV.run(a.out,', '    from boxes import inject_aw_eval as EV\n    EV.run(a.out,'),
+# §235 D4-DECOR (D4_v1 §1): --mul_s_p3 on the TRAINING stream only (never OWKW: calibration / memcheck / every eval stream unchanged) + the realised d 3 shares in the bins
+('    m, g, params = build_aw(a, dev)', '    assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"\n    m, g, params = build_aw(a, dev)'),
+('        SETS = build_sets(); EXCL = SETS["excl"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, **OWKW)',
+ '        SETS = build_sets(); EXCL = SETS["excl"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, **OWKW)   # §235: training stream only'),
+('                br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)',
+ '                br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)\n'
+ '            if a.mul_s_p3 < 1.0 and stream is not None:                    # §235: cumulative accepted d 3 training items with a mul_s step / all d 3 items\n'
+ '                br["stream_d3_mul_s"] = [stream.stats.get("d3_mul_s", 0), stream.stats.get("d3_items", 0)]'),
 ]
 for o, n in E:
     assert main.count(o) == 1, ("edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)

@@ -1,0 +1,25 @@
+{
+ "lat_aw4": {
+  "rc": 0,
+  "diff": {
+   "mul_s_p3": [
+    null,
+    0.5
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s235/args_lat_aw4/args.json",
+  "pass": true
+ },
+ "cd_an4": {
+  "rc": 0,
+  "diff": {
+   "mul_s_p3": [
+    null,
+    0.5
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s235/args_cd_an4/args.json",
+  "pass": true
+ },
+ "pass": true
+}
