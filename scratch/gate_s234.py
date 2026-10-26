@@ -415,8 +415,38 @@ def resume():
     return o
 
 
+ST_AN = [x if x != "answer" else "all" for x in LAT_AW]                     # Note 234-4 (1): ST-AN = aw_plaw2_s1 with --write_src all (all-token writes, no suffix)
+
+
+def stan():
+    """ST-AN smoke on the 4060: 50 steps (stop_at 50, micro 8, log 10) -> rc 9, gamma 1.0 logged, no ws_readout key, aux_vacc_by_d_pass present; memory / timing
+    (--auto_micro, budget 6.0, time_steps 30); a 20-step model through inject_aw_eval at eval_bs 250 with the P-2 eval_parts (probe / ws filtered for write_src all)."""
+    import torch
+    import boxes.inject_ow as IO
+    import boxes.inject_aw_eval as AE
+    assert ST_AN.count("all") == 1 and "answer" not in ST_AN
+    o = {}
+    d = G8.fresh(TMP + "/stan_smoke"); rc = G8.sh([sys.executable, "-B", "-m", "boxes.inject_aw"] + ST_AN + ["--micro", "8", "--stop_at", "50", "--ckpt_every", "0", "--log_every", "10",
+                                                                                                  "--device", DEV, "--out", d], d + "/stdout.log")
+    lg = [json.loads(l_) for l_ in open(d + "/log.jsonl")] if os.path.exists(d + "/log.jsonl") else []; br = [r_ for r_ in lg if "by_d" in r_]
+    o["smoke"] = {"rc": rc, "gamma": sorted({r_["gamma"] for r_ in lg if "gamma" in r_}), "bin_keys": sorted(br[-1]) if br else None}
+    d = G8.fresh(TMP + "/stan_f2"); rc = G8.sh([sys.executable, "-B", "-m", "boxes.inject_aw"] + ST_AN + ["--auto_micro", "--mem_budget", "6.0", "--time_steps", "30", "--log_every", "10",
+                                                                                               "--device", DEV, "--out", d], d + "/stdout.log")
+    o["f2"] = {"rc": rc, **{f_[:-5]: json.load(open(os.path.join(d, f_))) for f_ in ("mem_check.json", "timing.json") if os.path.exists(os.path.join(d, f_))}}
+    d = G8.fresh(TMP + "/stan_ev"); rc = G8.sh([sys.executable, "-B", "-m", "boxes.inject_aw"] + ST_AN + ["--steps", "20", "--micro", "8", "--eval_bs", "250", "--eval_parts", "",
+                                                                                              "--ckpt_every", "0", "--log_every", "10", "--device", DEV, "--out", d], d + "/stdout.log")
+    S = IO.build_sets(); S["test2"] = {k: v[:250] for k, v in S["test2"].items()}; torch.zeros(1, device=DEV)
+    AE.run(d, "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws".split(","), DEV, 250, sets=S)
+    fs = sorted(f_ for f_ in os.listdir(d) if f_.startswith("eval")); sk = json.load(open(d + "/eval_swap_k.json"))
+    o["evalsmoke"] = {"rc": rc, "files": fs, "swap_k_n": sk["n_pairs"], "write_src": json.load(open(d + "/eval.json")).get("write_src")}
+    o["pass"] = (o["smoke"]["rc"] == 9 and o["smoke"]["gamma"] == [1.0] and o["smoke"]["bin_keys"] is not None and "ws_readout" not in o["smoke"]["bin_keys"]
+                 and "aux_vacc_by_d_pass" in o["smoke"]["bin_keys"] and o["f2"]["rc"] == 0 and "timing" in o["f2"] and o["evalsmoke"]["rc"] == 0
+                 and set(fs) == {"eval.json"} | {"eval_%s.json" % p_ for p_ in ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1")} and o["evalsmoke"]["swap_k_n"] == 1000)
+    return o
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True); os.makedirs(TMP, exist_ok=True)
-    fns = {"g1": g1, "g2": g2, "g2b": g2b, "g3": g3, "g4_g10": g4_g10, "g5": g5, "args": args_part, "g7": g7, "g9": g9, "g11": g11, "g12": g12, "evalsmoke": evalsmoke, "resume": resume}
+    fns = {"g1": g1, "g2": g2, "g2b": g2b, "g3": g3, "g4_g10": g4_g10, "g5": g5, "args": args_part, "g7": g7, "g9": g9, "g11": g11, "g12": g12, "evalsmoke": evalsmoke, "resume": resume, "stan": stan}
     for part in [x for x in sys.argv[1:] if x in fns]:
         r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)

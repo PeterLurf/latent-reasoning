@@ -1,0 +1,90 @@
+{
+ "smoke": {
+  "rc": 9,
+  "gamma": [
+   1.0
+  ],
+  "bin_keys": [
+   "aux_vacc_by_d_pass",
+   "aux_vacc_by_d_pass_n",
+   "aux_vacc_by_pass",
+   "bin",
+   "bin_steps",
+   "by_d",
+   "dseq",
+   "exposure_by_d",
+   "ihash",
+   "step"
+  ]
+ },
+ "f2": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 2,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 4,
+     "eval_bs": 250,
+     "peak_gib": 6.87186823785305
+    },
+    {
+     "kind": "train",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 4.547815904021263
+    },
+    {
+     "kind": "eval",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 5.169526100158691
+    }
+   ],
+   "micro": 8,
+   "eval_bs": 250,
+   "peak_gib_train": 4.547815904021263,
+   "peak_gib_eval": 5.169526100158691,
+   "train": "the longest bs / micro of 256 d = 2 items (SEED_MEMCHECK) at K = 8, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  },
+  "timing": {
+   "arm": "inject",
+   "think_k": 8,
+   "d_max": 2,
+   "steps_timed": 30,
+   "sec_per_step": 10.556465530395508,
+   "est_hours_steps": 35.188218434651695,
+   "gpu": "NVIDIA GeForce RTX 4060",
+   "micro": 8,
+   "peak_gib": 5.169526100158691
+  }
+ },
+ "evalsmoke": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json",
+   "eval_cue_only.json",
+   "eval_cue_wrong.json",
+   "eval_lp5.json",
+   "eval_mean_s.json",
+   "eval_swap_1.json",
+   "eval_swap_k.json"
+  ],
+  "swap_k_n": 1000,
+  "write_src": "all"
+ },
+ "pass": true
+}
