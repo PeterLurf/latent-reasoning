@@ -46,6 +46,22 @@ def lp0(lg):
     return not bad, "cap %.3g, %d over" % (cap, len(bad))
 
 
+def dedupe(lg):
+    """resume-safe log: the LAST record per step (100-step rows) and per bin (1k rows) wins, so pre-crash duplicates of a resumed range never
+    enter LP0's windows, the bins or STILL-RISING (Audit, §234 b347); other rows are kept in order. Output is sorted by step / bin."""
+    if lg is None:
+        return None
+    st, bn, other = {}, {}, []
+    for r in lg:
+        if isinstance(r.get("by_d"), dict) and "bin" in r:
+            bn[r["bin"]] = r
+        elif "step" in r and "gn_preclip_mean100" in r:
+            st[r["step"]] = r
+        else:
+            other.append(r)
+    return [st[k] for k in sorted(st)] + [bn[k] for k in sorted(bn)] + other
+
+
 def bins(lg):
     return [r for r in lg if isinstance(r.get("by_d"), dict)]
 
@@ -56,7 +72,7 @@ def score(runs=R):
     for k, run, files in (("lat", LAT, ("eval_acc", "eval_lp5", "eval_mean_s", "eval_cue_only", "eval_cue_wrong")), ("cd", CD, ("eval_acc",)), ("dir", DIR, ("eval_acc",))):
         for x in files:
             f[(k, x)] = jl(os.path.join(runs, run, x + ".json"))
-    lgl, lgc = rows(os.path.join(runs, LAT, "log.jsonl")), rows(os.path.join(runs, CD, "log.jsonl"))
+    lgl, lgc = dedupe(rows(os.path.join(runs, LAT, "log.jsonl"))), dedupe(rows(os.path.join(runs, CD, "log.jsonl")))
     miss = [("%s/%s" % k) for k, v in f.items() if v is None] + [n for n, v in (("lat log", lgl), ("cd log", lgc)) if v is None]
     if miss:
         o["verdict"] = "pending (missing %s)" % miss; return o
@@ -118,6 +134,12 @@ def fixtures():
     o = score(_world(gn_spike=True)); res.append(("gn spike 40 vs cap ~2.4 -> FAIL LP0-lat", "LP0-lat" in o["verdict"], o["verdict"]))
     o = score(_world(lat=0.6, rise=True)); res.append(("rising and short -> FAIL + STILL-RISING", "STILL-RISING" in o["verdict"], o["verdict"]))
     d = _world(); os.remove(os.path.join(d, LAT, "eval_lp5.json")); o = score(d); res.append(("missing -> pending", o["verdict"].startswith("pending"), o["verdict"]))
+    d = _world(); lg = os.path.join(d, LAT, "log.jsonl")
+    L = [json.loads(l) for l in open(lg)]                                  # a crash at 8.9k resumed from 8k: pre-crash 8,100..8,900 then the resumed copies
+    pre = [dict(r, gn_preclip_mean100=500.0) for r in L if "gn_preclip_mean100" in r and 8000 < r["step"] <= 8900]
+    out_ = [r for r in L if not ("gn_preclip_mean100" in r and r["step"] > 8000)] + pre + [r for r in L if "gn_preclip_mean100" in r and r["step"] > 8000]
+    open(lg, "w").write("\n".join(json.dumps(r) for r in out_) + "\n")
+    o = score(d); res.append(("resumed duplicate range with pre-crash gn spikes -> ignored (PASS)", o["verdict"].startswith("P-2 PASS"), o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
