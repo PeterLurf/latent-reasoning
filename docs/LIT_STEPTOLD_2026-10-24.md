@@ -36,3 +36,18 @@ Latent side:
 | N1 (each pass answers a sub-question; only the answer-position hidden state is written to the memory; cue- and init-matched one-pass comparator) | **NARROW** | The readout-position state as the latent is Coconut's continuous thought, and CODI anchors on the answer-position state. New: the per-pass explicit query + a single answer-position write into a delta memory with the plan given (the STEP-TOLD line). Wording: "a query-conditioned variant of Coconut-style last-hidden-state feedback, written into a recurrent memory". |
 | N2 (diagnosis: the INJECT write source didn't carry v_1, which is linear at 1.000 at the answer position of a one-pass model asked for it) | **NARROW** | Kin: Biran 2406.12775; Yang 2402.16837; CODI §5.1's decodable intermediates at the readout. The specific measurement is our own. |
 | N3 (single-token writes make per-pass attribution clean) | **NARROW** | As the draft says: mean ablation and swaps are standard (Dilgren; SCIT; §221). A design refinement. |
+
+## Addendum (2026-10-25): §234 P-2 PASS (Note 234-4): "first" wording
+**Claim checked:** a causal state-swap of a latent intermediate in a fine-tuned LM on a natural-language-templated task, with the counterfactual = the recipient's step 2 applied to the donor's stored value.
+
+**Verdict on "first": WITHDRAW.**
+- **SCIT 2608.27265** (read 10-20) already shows this on fine-tuned CODI-GPT2 and CODI / Sim-CoT-LLaMA3-1B, with English templates ("Alice has {A} red balls and {B} blue balls. She gives away {C} …"). The oracle is the donor's intermediate P_s combined with the recipient's B_r, exactly our counterfactual form. Latent-cache transplant target-win is 0.70–1.00 (GPT-2) and 0.93–1.00 (1B).
+- **Also prior:** our own §221 INT-FOLLOW on natural GSM8K (0.33–0.54); Liang & Pan 2602.00449 (synthetic CODI state swap, 90 % flip at early latents).
+
+**What is new (narrow wording, OK):**
+- **(i)** The carrier is a **compact recurrent-memory state written from one answer-position vector per pass**, not a KV-cache slice. SCIT's hidden-only swap failed (0.000 at 1B; 0.246 / 0.000 at GPT-2), where ours succeeds at 1.000 vs floor 0.175.
+- **(ii)** The per-pass sub-question scaffold (plan given), with a cue-matched one-pass comparator (0.097).
+- **(iii)** Mean-state ablation −0.882.
+- **Scope:** d = 2, one seed, GPT-2 small, plan given; no chaining past the trained depth yet.
+
+**Suggested sentence:** "Extending SCIT's cache-level counterfactual transfer (2608.27265) to a compact recurrent memory: on templated word programs with a given plan, swapping a single per-pass memory state written from the answer position of a sub-question makes the answer follow the donor's intermediate (1.000 vs floor 0.175; d = 2, one seed, GPT-2 small)."
