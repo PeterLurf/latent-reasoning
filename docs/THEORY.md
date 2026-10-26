@@ -21672,6 +21672,9 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Reading.** Written from the answer position (where one pass computes v_t, 233-2 / af0f0eed), the INJECT state carries step 1 perfectly. A jointly trained trunk learns to read it and compose step 2, where the frozen W_o-only route could not (G-AW1, 234-2).
   - The language bottleneck in §228–§233 was the write source plus a trained read path.
   - **Scope: "C1, scaffolded (plan given)", d = 2 only, one seed, GPT-2 small, the askname init.**
+  - **Novelty (Literature, addendum in LIT_STEPTOLD_2026-10-24.md): "first" is WITHDRAWN.** SCIT 2608.27265 already shows causal counterfactual transfer of a latent intermediate in fine-tuned LMs on English templates, with the same oracle form; see also §221 INT-FOLLOW and Liang & Pan 2602.00449.
+    - New (narrow): the carrier is a compact recurrent-memory state, one answer-position vector written per pass, not a KV-cache slice (SCIT's hidden-only swap read 0.000 at 1B); the per-pass sub-question scaffold with a cue-matched comparator.
+    - **Wording:** "Extending SCIT's cache-level counterfactual transfer (2608.27265) to a compact recurrent memory: on templated word programs with a given plan, swapping a single per-pass memory state written from the answer position of a sub-question makes the answer follow the donor's intermediate (1.000 vs floor 0.175; d = 2, one seed, GPT-2 small)."
 - **Next (pre-pinned in AW_v1 §5; running cost rule):**
   - (1) **ST-AN:** §233's LAT-ST on the askname init, γ = 1, the P-2 rule. It separates write source from init.
   - (2) **P-4:** d ≤ 4, chaining required (WS-READOUT ≥ 0.50 at pass ≥ 2 on d ≥ 3; LP4).
