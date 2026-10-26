@@ -6,7 +6,8 @@ P-2 gates = score_st's (LP0, LP1, LP2 on d = 2, LP3 vs CD-AN, LP5, MEAN-STATE, C
 P-2 PASS = score_st's PASS conditions & STATE-USE & not VOID. Labels on a pass: C1-TOLD / plain C1 (CUE-WRONG), plus DEC-STEP2 (d = 2 cannot show chaining; P-4 must).
 Failure diagnosis (AW_v1 sec. 3, descriptive): end-of-run eval_probe u1|v1 < 0.80 -> AW-SOURCE-DRIFT; u1|v1 >= 0.80 and read1|v1 < 0.80 -> AW-NOT-STORED;
   LP2 pass but LP3 or LP5 fail -> AW-WEAK-READ. WS-READOUT (eval_ws by_d) reported.
-    python -B theory/score_aw.py [--fixtures]
+    ST-AN (Note 234-5): --stan scores st_an2_s1 by the same P-2 rule, probe optional; PASS -> ATTRIBUTION-INIT, FAIL -> ATTRIBUTION-WRITE.
+    python -B theory/score_aw.py [--fixtures] [--stan]
 """
 import argparse, json, os, sys, tempfile
 _HR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,6 +17,7 @@ import score_st as ST  # noqa: E402
 R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_aw.json")
 LAT, CD, DIR = "aw_plaw2_s1", "aw_pcd2_s1", "s228_pdir2c_s1"
+STAN = "st_an2_s1"
 
 
 def jl(p):
@@ -25,29 +27,31 @@ def jl(p):
         return None
 
 
-def score(runs=R):
+def score(runs=R, lat=LAT, need_probe=True):
     old = (ST.LAT, ST.CD, ST.DIR)
-    ST.LAT, ST.CD, ST.DIR = LAT, CD, DIR
+    ST.LAT, ST.CD, ST.DIR = lat, CD, DIR
     try:
         o = ST.score(runs)
     finally:
         ST.LAT, ST.CD, ST.DIR = old
     o.update({"section": 234, "registered": "AW_v1.md @ b51151b1 + 234-1 / 234-2"})
-    sk, pr, ws = jl(os.path.join(runs, LAT, "eval_swap_k.json")), jl(os.path.join(runs, LAT, "eval_probe.json")), jl(os.path.join(runs, LAT, "eval_ws.json"))
-    if o["verdict"].startswith("pending") or sk is None or pr is None:
+    sk, pr, ws = jl(os.path.join(runs, lat, "eval_swap_k.json")), jl(os.path.join(runs, lat, "eval_probe.json")), jl(os.path.join(runs, lat, "eval_ws.json"))
+    if o["verdict"].startswith("pending") or sk is None or (pr is None and need_probe):
         o["verdict"] = o["verdict"] if o["verdict"].startswith("pending") else "pending (missing %s)" % [n for n, v in (("swap_k", sk), ("probe", pr)) if v is None]
         return o
     su = sk.get("n_pairs", 0) >= 1000 and sk["follow_U"] >= 0.50 and sk["follow_U"] >= sk["floor"] + 0.30
-    u1 = pr["probes"]["u1|v1"]["test_acc"]; rd = pr["probes"]["read1|v1"]["test_acc"]
+    u1 = pr["probes"]["u1|v1"]["test_acc"] if pr else None; rd = pr["probes"]["read1|v1"]["test_acc"] if pr else None
     diag = []
-    if u1 < 0.80:
+    if pr is None:
+        pass  # ST-AN (all-token write): probe / ws skipped by design (Note 234-5)
+    elif u1 < 0.80:
         diag.append("AW-SOURCE-DRIFT")
     elif rd < 0.80:
         diag.append("AW-NOT-STORED")
     if o.get("LP2") and not (o.get("LP3") and o.get("LP5")):
         diag.append("AW-WEAK-READ")
     o.update({"STATE_USE": su, "swap_k": {k: sk.get(k) for k in ("n_pairs", "follow_U", "floor", "follow_dfin", "follow_ca", "stay_own")},
-              "probe_end": {"u1|v1": u1, "read1|v1": rd, "l0|v1": pr["probes"]["l0|v1"]["test_acc"]}, "diagnosis": diag,
+              "probe_end": {"u1|v1": u1, "read1|v1": rd, "l0|v1": pr["probes"]["l0|v1"]["test_acc"]} if pr else None, "diagnosis": diag,
               "ws_readout": (ws or {}).get("by_d")})
     if o["verdict"].startswith("VOID"):
         return o
@@ -60,6 +64,13 @@ def score(runs=R):
         o["verdict"] = o["verdict"].replace("P-2 FAIL (", "P-2 FAIL (STATE-USE,")
     if diag and "FAIL" in o["verdict"]:
         o["verdict"] += " | " + ",".join(diag)
+    return o
+
+
+def stan(runs=R):
+    """ST-AN (Note 234-5): the P-2 rule on st_an2_s1 (all-token write; probe / ws skipped). PASS -> ATTRIBUTION-INIT, FAIL -> ATTRIBUTION-WRITE, VOID / pending -> none."""
+    o = score(runs, lat=STAN, need_probe=False); o["run"] = STAN
+    v = o["verdict"]; o["attribution"] = "ATTRIBUTION-INIT" if v.startswith("P-2 PASS") else "ATTRIBUTION-WRITE" if v.startswith("P-2 FAIL") else None
     return o
 
 
@@ -84,14 +95,19 @@ def fixtures():
     o = score(world(lat=0.1, mean1=0.8)); res.append(("LP2 ok, LP3 / LP5 fail -> AW-WEAK-READ", "AW-WEAK-READ" in o["verdict"], o["verdict"]))
     o = score(world(co=0.5)); res.append(("cue alone answers -> VOID", o["verdict"].startswith("VOID"), o["verdict"]))
     d = world(); os.remove(os.path.join(d, LAT, "eval_swap_k.json")); o = score(d); res.append(("missing swap_k -> pending", o["verdict"].startswith("pending"), o["verdict"]))
+    d = world(); os.remove(os.path.join(d, LAT, "eval_probe.json")); os.replace(os.path.join(d, LAT), os.path.join(d, STAN)); o = stan(d)
+    res.append(("ST-AN (no probe) passes -> ATTRIBUTION-INIT", o["verdict"].startswith("P-2 PASS") and o["attribution"] == "ATTRIBUTION-INIT", o["verdict"]))
+    d = world(sk_follow_U=0.3); os.remove(os.path.join(d, LAT, "eval_probe.json")); os.replace(os.path.join(d, LAT), os.path.join(d, STAN)); o = stan(d)
+    res.append(("ST-AN fails -> ATTRIBUTION-WRITE", o["attribution"] == "ATTRIBUTION-WRITE", o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--stan", action="store_true"); a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = score(); print(o["verdict"])
-    os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", newline=chr(10)), indent=1, default=str)
+    o = stan() if a.stan else score(); print(o["verdict"], o.get("attribution") or "")
+    out = OUT.replace(".json", "_stan.json") if a.stan else OUT
+    os.makedirs(os.path.dirname(out), exist_ok=True); json.dump(o, open(out, "w", newline=chr(10)), indent=1, default=str)
