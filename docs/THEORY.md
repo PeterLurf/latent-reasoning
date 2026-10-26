@@ -21708,6 +21708,9 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - the substitution table (answer = v_t shares) per d.
   - Censoring: as P-2 (a crash means resume; missing parts mean pending, FAIL at --final).
 - **Running cost rule:** realised $0.68 + ST-AN guard $2.05 + P-4 guard $4.17 = $6.90 ≤ $30.
+- **Amendment (before any P-4 output; Experiments' build finding):** at d = 3, t = ⌈3/2⌉ = 2 keeps no informative pairs. In TOPO / dag programs step 3 always references a state (src_j 1), so cf_a(2) equals the donor's final: 0 / 400, matching build_sets' pair_stats d 3 at 0 / 3,000.
+  - **So at d = 3 the descriptive swaps use t = 1:** SWAP-MID after pass 1 with U = {cf_a(1), cf_b(1)}, and SWAP-K with U = {donor final, cf_a(1)}. This is a mid-chain swap with two remaining steps, the stronger chaining preview.
+  - d = 4 keeps t = 2 (≈ 46% of pairs kept). Both stay descriptive.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
