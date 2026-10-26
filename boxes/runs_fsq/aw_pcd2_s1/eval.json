@@ -1,0 +1,36 @@
+{
+ "arm": "direct",
+ "cue": "all",
+ "think_k": 0,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 24
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_bs": 250,
+ "write_src": "all",
+ "ds": [
+  2
+ ],
+ "module_sha256": "9abd9aa0fd5be7dbaea48040a98dde84a1723f5081dba52716522139aec111a8",
+ "train": {
+  "train_sec": 1188,
+  "last_step": 12000,
+  "n_nonfinite": 0,
+  "entry_d1": 216,
+  "futility": null,
+  "clip_rate": 0.5334166666666667,
+  "grad_norm_preclip": {
+   "median": 5.306975364685059,
+   "p90": 11.981580638885498
+  },
+  "write_grad_spikes_floor": [],
+  "micro": 1,
+  "train_gpu": "NVIDIA GeForce RTX 3090"
+ }
+}

@@ -1,0 +1,3 @@
+# §234 ledger (fill_s234); last field = $
+347:aw_plaw2_s1 109.87.158.217:18025 57741164 $0.2014/h sps 0.5328734119733175 0.64
+realised:b347 # 57741164 20:18-23:40 ~3.4 h x $0.2014/h (P-2 LAT-AW + CD-AN; host reboot ~21:46, resume 22:24 from ckpt 8000; wall guard spent) 0.68
