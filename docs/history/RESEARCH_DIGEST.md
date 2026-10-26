@@ -11,7 +11,7 @@ Each digest was condensed from section headers, result blocks and Notes, not fro
 
 | C | status | best evidence | what blocks it |
 |---|---|---|---|
-| C1 latents do the work | MET on synthetic; language open | §184 (nested arithmetic, 2/2), §211 VERSION-BANK, §217 causal use preserved; §227 sets a language band | GSM8K latents recompute from input (§207, §208); word tasks not one-pass learnable (§223, §226); §228/§229 failed at GPT-2 small (d2 at chance); larger base next |
+| C1 latents do the work | MET on synthetic; language MET scaffolded at d=2, 1 seed (§234) | §184 (nested arithmetic, 2/2), §211 VERSION-BANK, §217 causal use preserved; §227 sets a language band | GSM8K latents recompute from input (§207, §208); word tasks not one-pass learnable (§223, §226); §228/§229 failed at GPT-2 small (d2 at chance); larger base next |
 | C6 stable | MET in scope; hold without depth cost (§230) | §193 RMS×WINDOW 2/2 to K'32; §224 trained far pass holds to K'128 | seed-3 failures (§192, §205); §224's from-scratch hold cost depth; §230 post-formation FT holds to K'128 at depth parity (1 confirmed + 1 motivating seed) |
 | C4 scalable supervision on a pretrained LM | not met (strict) | self-labelled chains (§215–§219); short-label foothold (§96, §112) | strict C4 barrier from final answers alone (§103–§117); CoT warm start forgotten (§202) |
 | C2 more thinking helps past training | not met | written-state / restart length generalisation in toys (§26, §71, §92); in-support self-depth (§215, §216) | boundary still binds (§216 LIT-C2-2 0.018); depth limited by pass count / basin entry |

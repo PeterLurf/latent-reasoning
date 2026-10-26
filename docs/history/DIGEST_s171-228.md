@@ -67,6 +67,7 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 231 | LARGE-BASE | Does Qwen2.5-0.5B compute the d=2 intermediate eagerly (P1′, $0)? | FAILED; CLOSED at $0 (Note 231-3) | EAGER v_1 0.112 vs layer-0 0.116 (chance); positive control v_0 0.988 | 0.5B base does not compute the intermediate either; scale alone is not the lever. | C1 |
 | 232 | HOLD-C1 | Do C1 serial use and the §230 hold coexist? | COEXIST 2/3, CLOSED (Note 232-4): s1/s2 SHIFTED, s3 C1-HARMED | pgain ≈ base all 3; H(128) ≥ 0.990; v0off follow drops in all 3 (−0.017/−0.002/−0.043); carry 0.83→0.56–0.69; $4.04 | Hold FT keeps core causal serial use but consistently erodes v0-masked robustness. | C1, C6 |
 | 233 | STEP-TOLD | Does telling each pass which quantity to compute rescue language C1? | FAILED; CLOSED (Note 233-4) | d2 lat 0.090 vs CD 0.097 vs DIRECT 0.093; pass-1 aux 0.33; cue unused (CUE-WRONG 0.001); $1.89 | One pass computes the asked quantity, but the INJECT state does not hold step 1: write/read bottleneck, not the plan. | C1 |
+| 234 | ANSWER-WRITE | Does writing the latent state from the answer-position ':' state give language C1? | P-2 PASS (Note 234-4): C1, scaffolded (plan given), d=2, 1 seed; G-AW1 frozen-use had FAILED | d2 1.000 vs CD 0.097 / DIRECT 0.093; LP5 drop 0.882; swap follow 1.000; d3 0.008, d4 0.076; $0.68 | First language C1 band: write from where the model computes the value; does not extend past training d. | C1 |
 
 ## What worked
 
