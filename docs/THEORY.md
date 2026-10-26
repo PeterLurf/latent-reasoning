@@ -322,6 +322,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | CLOSED | **CLOSED 10-25 (232-4, Audit-reproduced): COEXIST 2/3 (claim holds); s3 C1-HARMED on the V_0-masked arm only (-0.043; trend -0.017/-0.002/-0.043 in all 3 seeds); all decisive C1 stats kept; hold 0.999; $4.04.** STAGE A 10-24 (232-3, Audit-reproduced): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 | 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
+| 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
 
 ## Live sections
 
@@ -19278,6 +19279,28 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 **OC.** PASS 0 under no effect / unread / recompute / init-solves-one-pass; P(P-2) ≈ 0.19; P(C1-TOLD) ≈ 0.04.
 
 **Cost.** P-2 guard $2.31; family guard $29.81 ≤ $30; running rule (realised + remaining guards ≤ $30, else the user decides); expected ≈ $4.2. Realised $0.
+
+## 235. D4-DECOR: decorrelate pass index from op in training (the user's 10-26 decision "Fix depth-4 chain", relayed by Audit; **family cap $30 under the running rule**; pre-registered 2026-10-26 14:34 EDT, before any build or output)
+
+- **Text:** docs/research_d4chain_2026-10-26/D4_v1.md (wins over D4_draft.md 74a67eeb). Red team: REVIEW_D4.md (GO-with-fixes; all 8 adopted). Literature N1 NARROW (LIT_STEPTOLD addendum; closest prior Kuo 2606.29983).
+- **Diagnosis ($0, Note 234-7 + Audit c0943199 + Theory):** §234 P-4 pass 3 at d 4 is right on (mul_s, src 1) at 0.998 and at 0.103 on every other op (n 564). On wrong non-mul_s items its argmax is S_2*S_1 mod 11 at 0.505 (chance ~0.09).
+  - The generator forces mul_s at ts ~ U{3..d}, so d 3's step 3 is always mul_s; pass 3 learned the position prior.
+  - InjectAW has no pass embedding (the pass index comes only from memory / cue).
+- **Change (single, data only):** OW.Stream kwarg mul_s_p3, default 1.0 (bitwise). At d 3 only, with probability 1 - mul_s_p3 the program drops the forced mul_s. The coin is drawn once per program before the restart loop, only when < 1.
+  - **Training stream only, 0.5.** It is never in OWKW, so the calibration, memcheck and every eval stream are unchanged.
+  - Gates: set shas equal aw_plaw4_s1's; eval sigs equal.
+  - Arms d4d_plaw4_s1 (LAT-AW) and d4d_pcd4_s1 (CD-AN), args diff {mul_s_p3 1.0 -> 0.5} + name; everything else as P-4 (askname init, gamma 1, d ~ U{1..4}, 16k, one RTX 3090, off-host ckpts every 1k).
+  - Disclosed: skipped d 3 items have S_1 / S_2 < 2 ~8% each, and _v ops add a given sentence.
+- **Binding** (theory/score_d4.py @ f3256b50; fixtures 9/9; P-4 reference reproduces OP-READ 0.103 -> D4-CAP (none)):
+  - score_aw4's P-4 gates (LP0 each arm; LP4; CHAIN; LP5-4; CUE-ONLY guard);
+  - **OP-READ:** TEST2 d 4 pass-3 WS on non-mul_s step-3 items >= 0.80 (ops regenerated, joined by sig; any missing sig -> VOID).
+  - PASS = all.
+  - FAIL labels, first match: VOID; D4-REGRESS (d 3 < 0.95); D4-CAP (OP-READ < 0.80; none < 0.55 / partial); D4-PASS4 (CHAIN fails at pass 4); D4-OTHER.
+- **Descriptive:** WS by (pass, op); the shortcut rate; the aux staircase; MEAN-AT-1, SWAP-MID, CUE-WRONG.
+- **OC (1 seed):** P(PASS | H-CAP) ~0.01; P(PASS | H-POS, pass 4 learns) ~0.65; P(PASS | H-POS, pass 4 lags) ~0.10 (D4-PASS4). Prior H-POS ~0.7, so P(PASS) ~0.3.
+- **Censoring:** as P-4 (crash -> resume + dedupe; missing parts -> pending, FAIL at --final).
+- **Cost:** admit <= $1.30, guard $4.17. Running: $3.01 realised + $4.17 = $7.18 <= $30.
+- **Build (Experiments; G-D at Audit):** the kwarg + flags-off bitwise stream gate (10k draws per d at 1.0); training-only wiring + set-sha / eval-sig identity gates; realised d 3 mul_s share ~0.5 logged; gradflow + smoke as P-4.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
