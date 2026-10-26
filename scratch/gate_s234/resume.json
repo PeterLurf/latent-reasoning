@@ -1,0 +1,46 @@
+{
+ "rc": [
+  9,
+  9
+ ],
+ "ck10_step": 10,
+ "step": [
+  20,
+  20
+ ],
+ "n_model_tensors": 162,
+ "mismatch": [],
+ "n_mismatch": 0,
+ "keys": [
+  "model",
+  "opt",
+  "rng_d",
+  "np_rng",
+  "torch_rng",
+  "cuda_rng",
+  "stream_rng",
+  "stream_stats",
+  "step",
+  "n_nonfinite",
+  "expo",
+  "binacc",
+  "vbin",
+  "vbin_d",
+  "dseq",
+  "iseq",
+  "d2_bins",
+  "ent",
+  "fut",
+  "wlast",
+  "gn_log",
+  "wg_hist"
+ ],
+ "n_post_records": [
+  11,
+  11
+ ],
+ "post_resume_log_equal": true,
+ "bin20_has_ws_readout": true,
+ "resumed_marker_B": true,
+ "pass": true
+}
