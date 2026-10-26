@@ -1,0 +1,121 @@
+{
+ "section": 234,
+ "stage": "P-4",
+ "registered": "Note 234-5 (+ amendment)",
+ "LP0": {
+  "lat": [
+   true,
+   "cap 29.7, 0 over"
+  ],
+  "cd": [
+   true,
+   "cap 28.5, 0 over"
+  ]
+ },
+ "LP4": true,
+ "acc": {
+  "2": {
+   "lat": 1.0,
+   "cd": 0.104,
+   "dir": 0.093
+  },
+  "3": {
+   "lat": 1.0,
+   "cd": 0.368,
+   "dir": 0.093
+  },
+  "4": {
+   "lat": 0.765,
+   "cd": 0.15,
+   "dir": 0.092
+  }
+ },
+ "CHAIN": false,
+ "ws_rows": {
+  "3": {
+   "2": 0.9900000691413879,
+   "3": 1.0
+  },
+  "4": {
+   "2": 0.9910000562667847,
+   "3": 0.4930000305175781,
+   "4": 0.05100000277161598
+  }
+ },
+ "LP5_4": true,
+ "lp5h_drops": {
+  "3": 0.744,
+  "4": 0.4119999999999999
+ },
+ "lp5h_pooled": 0.578,
+ "lp5h_n": {
+  "3": 1000,
+  "4": 1000
+ },
+ "CUE_ONLY_ok": true,
+ "MEAN_AT_1_desc": {
+  "3": 0.763,
+  "4": 0.42399999999999993
+ },
+ "CUE_WRONG_drop": {
+  "3": 0.7050000000000001,
+  "4": 0.472
+ },
+ "swap_desc": {
+  "3": {
+   "t_mid": 1,
+   "n_pairs": 1000,
+   "swap_k": {
+    "follow_U": 0.834,
+    "floor": 0.241,
+    "follow_dfin": 0.018,
+    "follow_ca": 0.816,
+    "stay_own": 0.053
+   },
+   "swap_mid": {
+    "3": {
+     "follow_U": 0.805,
+     "floor": 0.174,
+     "follow_ca": 0.805,
+     "follow_cb": 0.805,
+     "stay_own": 0.055
+    },
+    "8": {
+     "follow_U": 0.812,
+     "floor": 0.168,
+     "follow_ca": 0.812,
+     "follow_cb": 0.812,
+     "stay_own": 0.05
+    }
+   }
+  },
+  "4": {
+   "t_mid": 2,
+   "n_pairs": 1000,
+   "swap_k": {
+    "follow_U": 0.791,
+    "floor": 0.204,
+    "follow_dfin": 0.02,
+    "follow_ca": 0.771,
+    "stay_own": 0.035
+   },
+   "swap_mid": {
+    "4": {
+     "follow_U": 0.366,
+     "floor": 0.186,
+     "follow_ca": 0.321,
+     "follow_cb": 0.289,
+     "stay_own": 0.126
+    },
+    "8": {
+     "follow_U": 0.375,
+     "floor": 0.176,
+     "follow_ca": 0.327,
+     "follow_cb": 0.294,
+     "stay_own": 0.149
+    }
+   }
+  }
+ },
+ "verdict": "P-4 FAIL (CHAIN)"
+}
