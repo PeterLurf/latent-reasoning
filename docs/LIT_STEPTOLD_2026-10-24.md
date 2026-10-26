@@ -55,3 +55,4 @@ Latent side:
 - **Update (2026-10-26, Note 234-6 ST-AN):** writing from all cue tokens solves d = 2 in one late pass with S_1 unused (mean-S_1 drop 0.013; SWAP-1 stays on its own value 0.742). Writing from the answer position makes pass 1 causal (drop 0.882; SWAP-1 follows 1.000).
   - **The N1 wording stands.** The answer-position write is now the attributed ingredient, which sharpens the contrast with SCIT's failed hidden-only swap.
   - Still one seed, d = 2. No new claim.
+- **Update (Note 234-7, P-4):** the chaining gate failed at d = 4. Descriptively, d = 3 is a full latent chain (mid-chain swap follows 0.805); at d = 4 the readout stalls after pass 3 (accuracy 0.765). Scope is now "scaffolded, d ≤ 3, one seed". The N1 NARROW wording and the §234 suggested sentence stand; change "d = 2" to "d ≤ 3 (descriptive at d = 3)" if cited.
