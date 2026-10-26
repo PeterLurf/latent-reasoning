@@ -21713,7 +21713,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - d = 4 keeps t = 2 (≈ 46% of pairs kept). Both stay descriptive.
 
 **Note 234-6 (2026-10-26 06:15 EDT; §234 ST-AN scored: theory/score_aw.py --stan @ ac984d8e, theory/results/score_aw_stan.json; Experiments b03d4168, uninterrupted, realised $1.33.)**
-- **Registered verdict (Note 234-5): P-2 FAIL (LP5) → ATTRIBUTION-WRITE.** The answer-position write source, not the askname init, carries the serial gain.
+- **Registered verdict (Note 234-5): P-2 FAIL (LP5) → ATTRIBUTION-WRITE.** Reading (worded with Audit, who reproduced the verdict): **the askname init makes d = 2 latent-solvable under either write source.** ST-AN also reaches 1.000 through the final state. **The answer-position write is what makes pass 1's state causally used** (serial, step by step). With all-token writes, pass 1 is bypassed. It is not "the write position made d = 2 work".
   - Gates: LP0 both arms OK; LP1, LP2 (0.99997), LP3 (d = 2 1.000 vs CD-AN 0.097) and MEAN-STATE (0.104) all pass; CUE-ONLY 0.113 (guard OK); STATE-USE passes (SWAP-K follow_U 1.000, floor 0.177).
   - **LP5 fails:** with S_1 replaced by its mean, accuracy goes 1.000 → 0.987 (drop 0.013 < 0.30). Label AW-WEAK-READ, by the scorer's rule.
 - **Descriptive: ST-AN solves d = 2 without using pass 1.**
@@ -21722,7 +21722,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The final state is used: SWAP-K follows 1.000, and MEAN-STATE drops to chance.
   - So the all-token write reads like one extra think pass over the whole text, computing both steps at the last pass. It is not a two-step chain through S_1.
   - This sharpens 234-4: in LAT-AW the dependence on pass 1 (LP5 0.882, SWAP-1 1.000) comes from the answer-position write.
-- **Status unchanged:** "C1, scaffolded (plan given), d = 2, 1 seed". P-4 (b349, landing ~07:30) is the chaining test, scored by score_aw4.py @ e823ea6e.
+- **Status unchanged:** "C1, scaffolded (plan given), d = 2, 1 seed". The serial pass-1 use is attributed to the answer-position write; d = 2 solvability is attributed to the init.
+- **For P-4 (b349, landing ~07:30; score_aw4.py @ e823ea6e):** a d = 2 success alone could be a composition in the last pass only. P-4's chaining evidence must therefore come from CHAIN (WS-READOUT at every pass 2..d) and LP5-4 (the mid-chain state mean), not from LP4 accuracy.
 - **Running cost:** realised $0.68 + $1.33 + P-4 guard $4.17 = $6.18 ≤ $30.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
