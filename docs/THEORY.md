@@ -21646,6 +21646,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The P-2 cloud pilot proceeds as registered (AW_v1 §3; running cost rule). It tests whether a jointly trained trunk learns to read a value that is now present in the state (unlike §233), where the frozen W_o-only route could not (Audit's framing).
   - A P-2 fail closes §234. Audit reproduced G-AW1.
 
+**Note 234-3 (2026-10-25 22:27 EDT; §234 P-2 resume record and a scorer amendment, before any P-2 output is read; Audit's request).**
+- **Resume:** b347 (aw_plaw2_s1) crashed at ≈ step 8,900 on a host reboot and was resumed from the step-8,000 checkpoint on the same host (resume is OK under the censoring rule).
+  - inject_aw's resume path inherits inject_st's §233-tested full-state set.
+- **WS-READOUT is eval-only:** boxes/inject_aw.py ws_readout runs under @torch.no_grad, switches to eval mode (dropout off, so no RNG is consumed), uses a fixed item set, and restores the train mode. It is never fed back into training state.
+- **Scorer amendment** (score_st.dedupe, shared by score_aw): the last record per step (100-step rows) and per bin (1k rows) wins. So the pre-crash 8,100–8,900 duplicates never enter LP0's windows, the bins or STILL-RISING.
+  - New fixture: a duplicated step range with planted pre-crash gn spikes is ignored. score_st fixtures 11/11; score_aw 8/8.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
