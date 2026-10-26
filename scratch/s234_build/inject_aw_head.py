@@ -9,7 +9,7 @@ inject_st exactly (gate G1). Eval: boxes/inject_aw_eval.py (inject_st_eval's par
   --init_trunk P      GPT-2 loaded strict from P before DeltaMem is built (DeltaMem copies block 6's ln_1 / c_attn and block 11's ln_1 from the LOADED
                       trunk; g_add calibrated on it); --init_sha the expected sha256 prefix (asserted). CD-AN = --arm direct --cue all --init_trunk P.
   WS-READOUT          every 1k-bin record (LAT-AW): the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d) on the first 200 TEST2
-                      items of d 1 and 2 (held out by construction; no EXCL change, so the training stream is st_plst2_s1's), no_grad, never fed back.
+                      items of d 1..d_max (Note 234-5 c; held out by construction; no EXCL change, so the training stream is st_plst2_s1's), no_grad, never fed back.
     python -m boxes.inject_aw --arm inject --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe
         --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --write_mix_start 0 --write_mix_end 0 --d_max 2 --steps 12000 --out ..."""
 import os

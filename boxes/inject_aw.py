@@ -9,7 +9,7 @@ inject_st exactly (gate G1). Eval: boxes/inject_aw_eval.py (inject_st_eval's par
   --init_trunk P      GPT-2 loaded strict from P before DeltaMem is built (DeltaMem copies block 6's ln_1 / c_attn and block 11's ln_1 from the LOADED
                       trunk; g_add calibrated on it); --init_sha the expected sha256 prefix (asserted). CD-AN = --arm direct --cue all --init_trunk P.
   WS-READOUT          every 1k-bin record (LAT-AW): the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d) on the first 200 TEST2
-                      items of d 1 and 2 (held out by construction; no EXCL change, so the training stream is st_plst2_s1's), no_grad, never fed back.
+                      items of d 1..d_max (Note 234-5 c; held out by construction; no EXCL change, so the training stream is st_plst2_s1's), no_grad, never fed back.
     python -m boxes.inject_aw --arm inject --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe
         --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --write_mix_start 0 --write_mix_end 0 --d_max 2 --steps 12000 --out ..."""
 import os
@@ -206,7 +206,7 @@ def main(argv=None):
     s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, **OWKW) if a.src == "ow" else None
     MC_TR = sorted([tok_aw(s_mc.draw(a.d_max), a.aux_target, a.cue, a.write_src) for _ in range(256)], key=lambda it: -st_len(it)) if s_mc else None
     MC_EV = sorted([tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][12]], key=lambda it: -st_len(it))[:1] if s_mc else None   # §233: TEST2's own longest d 12 (cued)
-    WS_ITEMS = {d_: [tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][d_][:200]] for d_ in (1, 2)} if a.write_src == "answer" else None   # §234 WS-READOUT
+    WS_ITEMS = {d_: [tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][d_][:200]] for d_ in range(1, a.d_max + 1)} if a.write_src == "answer" else None   # §234 WS-READOUT (Note 234-5 c: d 1..d_max)
 
     def mem_train(micro):
         """the training step's peak at bs / micro of the longest d_max items + AdamW's two fp32 states (nested170's rule)."""
@@ -345,7 +345,7 @@ def main(argv=None):
             if vbin_d:                                                      # §233 LP2 key (+ the per-cell counts: G10 pools them back to aux_vacc_by_pass)
                 br["aux_vacc_by_d_pass"] = {d_: {k_: v_[0] / v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
-            if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1 / 2 (first 200 each), fp32, no_grad, never fed back
+            if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back
                 br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:

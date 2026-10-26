@@ -1,0 +1,38 @@
+{
+ "parts": {
+  "part_acc": [
+   "torch.no_grad()"
+  ],
+  "part_lp5": [
+   "torch.no_grad()"
+  ],
+  "part_mean_s": [
+   "torch.no_grad()"
+  ],
+  "part_cue_only": [
+   "torch.no_grad()"
+  ],
+  "part_cue_wrong": [
+   "torch.no_grad()"
+  ],
+  "part_swap_k": [
+   "torch.no_grad()"
+  ],
+  "part_swap_1": [
+   "torch.no_grad()"
+  ],
+  "part_probe": [
+   "torch.no_grad()"
+  ],
+  "part_ws": [
+   "torch.no_grad()"
+  ],
+  "part_swap_kd": [
+   "torch.no_grad()"
+  ],
+  "part_lp5h": [
+   "torch.no_grad()"
+  ]
+ },
+ "pass": true
+}

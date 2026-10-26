@@ -1,0 +1,9 @@
+# THEORY §234 P-4 (Note 234-5 + amendment; AW_v1 §5; admit <= $3.21, guard $4.17): one non-580 RTX 3090, d ~ U{1..4}, 16k, init s233_askname_s1, gamma = 1 from step 1.
+# F2 (K7 + G-TIME at the LAT-AW d <= 4 shape) -> LAT-AW aw_plaw4_s1 (evals + lp5h, swap_kd; ws d 1..4) -> CD-AN aw_pcd4_s1 on the SAME host (eval acc). Off-host ckpts (mirror, 1k).
+# Frozen args scratch/s234_args_frozen_<run>.json. Diffs vs P-2: LAT-AW {d_max, steps, eval_parts}; CD-AN {d_max, steps}.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/aw_plaw4_s1_mem boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --mem_check
+boxes/runs_fsq/aw_plaw4_s1_gtime boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --time_steps 60 --auto_micro
+boxes/runs_fsq/aw_plaw4_s1 boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --auto_micro --ckpt_every 1000 --eval_parts acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd --args_ref scratch/s234_args_frozen_aw_plaw4_s1.json
+boxes/runs_fsq/aw_pcd4_s1 boxes.inject_aw --arm direct --d_max 4 --steps 16000 --cue all --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --auto_micro --ckpt_every 1000 --eval_parts acc --args_ref scratch/s234_args_frozen_aw_pcd4_s1.json

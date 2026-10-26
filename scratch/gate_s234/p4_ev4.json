@@ -1,0 +1,90 @@
+{
+ "lat_aw4": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json",
+   "eval_cue_only.json",
+   "eval_cue_wrong.json",
+   "eval_lp5.json",
+   "eval_lp5h.json",
+   "eval_mean_s.json",
+   "eval_probe.json",
+   "eval_swap_1.json",
+   "eval_swap_k.json",
+   "eval_swap_kd.json",
+   "eval_ws.json"
+  ],
+  "peak_gib": 5.161876201629639,
+  "lp5h": {
+   "3": {
+    "t_mean": 2,
+    "ks": [
+     "3",
+     "8"
+    ]
+   },
+   "4": {
+    "t_mean": 2,
+    "ks": [
+     "4",
+     "8"
+    ]
+   }
+  },
+  "swap_kd": {
+   "3": {
+    "n_pairs": 1000,
+    "tried": 1855,
+    "t_mid": 1,
+    "mid_ks": [
+     "3",
+     "8"
+    ]
+   },
+   "4": {
+    "n_pairs": 1000,
+    "tried": 1957,
+    "t_mid": 2,
+    "mid_ks": [
+     "4",
+     "8"
+    ]
+   }
+  },
+  "swap_kd_test2_overlap": 0,
+  "ws_ds": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "cue_only_ds": [
+   "2",
+   "3",
+   "4"
+  ],
+  "cue_wrong_ds": [
+   "2",
+   "3",
+   "4"
+  ],
+  "lp5_ds": [
+   "2",
+   "3",
+   "4"
+  ],
+  "swap_k_n": 1000,
+  "probe_n": 3000,
+  "n_test2_cut": 500
+ },
+ "cd_an4": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json"
+  ],
+  "peak_gib": 5.11701774597168
+ },
+ "pass": true
+}

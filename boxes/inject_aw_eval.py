@@ -6,11 +6,15 @@ scratch/s234_build/mk_inject_aw_eval.py (inject_st_eval.py stays byte-identical)
              text; follow_U (U = {donor final, cf_a(1)}), floor (MEAN-K: the donors' mean S_K), per pair.
   swap_1     SWAP-1 (descriptive): S_1 := donor's S_1, passes 2..K' own; follow cf_a(1) at K' 2 and K.
   probe      end-of-run u1|v1 / read1|v1 / l0|v1 probes, pass-1 trunk argmax, pass-1 / pass-2 key cosine (write_src answer only).
-  ws         WS-READOUT on all of TEST2 d 1 / 2 per pass (write_src answer only).
+  ws         WS-READOUT on all of TEST2 d 1..d_max per pass (write_src answer only; Note 234-5 c; CHAIN at P-4 = every pass 2..d on d 3-4 >= 0.50).
+  lp5h       (P-4, Note 234-5 a) LP5-4 MEAN-AT-ceil(d/2) on TEST2 d 3..d_max: answers at K' = d (binding, pooled d 3-4) and think_k; per item.
+  swap_kd    (P-4, Note 234-5 b + amendment, descriptive) d 3..d_max, 1,000 same-skeleton pairs per d (t = ceil(d/2); d 3 -> t 1): SWAP-K (S_K := donor's; U = {donor final, cf_a(t)};
+             floor MEAN-K) and SWAP-MID (S_t := donor's, own later passes; U = {cf_a(t), cf_b(t)}; floor MEAN at t); per pair.
     python -m boxes.inject_aw_eval --run boxes/runs_fsq/<run> --parts acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws [--device cuda:0 --eval_bs 100]"""
 import argparse
 import contextlib
 import json
+import math
 import os
 import sys
 import time
@@ -29,7 +33,7 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd")
 AW_ONLY = ("probe", "ws")
 
 
@@ -327,10 +331,87 @@ def part_probe(m, g, sets, a, dev, bs):
 
 @torch.no_grad()
 def part_ws(m, g, sets, a, dev, bs):
-    K = a["think_k"]; T = tokd(sets, a, (1, 2)); r_, pv = AW.ws_readout(m, T, dev, K, bs, per_item=True)
+    K = a["think_k"]; T = tokd(sets, a, range(1, a["d_max"] + 1)); r_, pv = AW.ws_readout(m, T, dev, K, bs, per_item=True)   # Note 234-5 (c): d 1..d_max
     return {"by_d": r_, "items": {str(d): items_rec(T[d], {"pred_by_pass": pv[str(d)], "v": [[int(it["raw"]["values"][min(t, d)]) for t in range(1, K + 1)] for it in T[d]]})
-                                  for d in (1, 2)},
-            "def": "WS-READOUT (descriptive): the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d), TEST2 d 1 / 2 (all 1,000), fp32"}
+                                  for d in T},
+            "def": "WS-READOUT (descriptive): the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d), TEST2 d 1..d_max (all 1,000 per d), fp32"}
+
+
+SEED_SWAPD_REC, SEED_SWAPD_DON = 23260, 23270                              # §234 P-4 (Note 234-5 b): recipients Stream(23260 + d), donors redraw rng (23270 + d), d 3 / 4
+
+
+def swap_t(d):
+    """Note 234-5 (b) + amendment: the swap step t = ceil(d / 2), except d 3 -> t 1 (at t 2 step 3 is a state reference, so cf_a(2) = donor final: 0 kept)."""
+    return 1 if d == 3 else math.ceil(d / 2)
+
+
+def swap_pairs_d(a, d):
+    """Note 234-5 (b) + amendment: the PAIRS law at depth d with t = swap_t(d) (ceil(d / 2); d 3 -> 1): recipients d from Stream(23260 + d), donors OW.redraw(rng 23270 + d); kept iff
+    |{own, donor final, cf_a(t)}| = 3, cf_b(t) not in {own, donor final}, equal text token length; the first 1,000 (3,000 tries). Cues equal (asserted)."""
+    t = swap_t(d); r2 = np.random.default_rng(SEED_SWAPD_DON + d); s2 = OW.Stream(SEED_SWAPD_REC + d, frames=OW.FRAME_TRAIN, **IO.OWKW); kept = []; tried = 0
+    while len(kept) < SWAP_CAP and tried < SWAP_TRIES:
+        rec = s2.draw(d); don = OW.redraw(r2, rec)
+        if don is None or don["sig"] == rec["sig"]:
+            continue
+        tried += 1; own, dfin, ca, cb = rec["answer"], don["answer"], IO.cf(rec, don, t, "a"), IO.cf(rec, don, t, "b")
+        if len({own, dfin, ca}) == 3 and cb not in (own, dfin) and len(IO.ENC.encode(rec["text"])) == len(IO.ENC.encode(don["text"])):
+            kept.append((rec, don, ca, cb))
+    for rec, don, _, _ in kept:
+        assert all(ST.cue_str(rec, c) == ST.cue_str(don, c) for c in range(1, d + 1)), "SWAP: the cues must be equal (same skeleton)"
+    tk = lambda it: AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all"))  # noqa: E731
+    return [tk(p_[0]) for p_ in kept], [tk(p_[1]) for p_ in kept], kept, tried, t
+
+
+@torch.no_grad()
+def part_swap_kd(m, g, sets, a, dev, bs):
+    """Note 234-5 (b) + amendment, descriptive, d 3..d_max, t = swap_t(d): SWAP-K (S_K := donor's S_K; U = {donor final, cf_a(t)}; floor = MEAN-K, the donors' mean S_K) and
+    SWAP-MID (S after pass t := donor's, the recipient's own later passes; U = {cf_a(t), cf_b(t)}; floor = MEAN at t, the donors' mean S_t), K' = d and K."""
+    K = a["think_k"]; out = {"by_d": {}, "items": {}}
+    for d in [d_ for d_ in range(3, a["d_max"] + 1)]:
+        R, Dn, kept, tried, t = swap_pairs_d(a, d)
+        if not kept:                                                        # guard: no kept pair (d 3 at t 2 was structurally empty; swap_t uses t 1 there)
+            out["by_d"][str(d)] = {"n_pairs": 0, "tried": tried, "t_mid": t, "note": "no kept pair under the PAIRS law"}; continue
+        own = np.array([p_[0]["answer"] for p_ in kept]); dfin = np.array([p_[1]["answer"] for p_ in kept])
+        ca = np.array([p_[2] for p_ in kept]); cb = np.array([p_[3] for p_ in kept]); ks = sorted({d, K})
+        SDs = grab_states(m, Dn, dev, bs, (t, K)); SD, ST_ = SDs[K], SDs[t]; I, _ = passes(m, R, dev, bs, set(ks))
+        sw = dec_with(m, R, SD, dev, bs); mn = dec_with(m, R, SD.mean(0), dev, bs, shared=True); mt = ST_.mean(0)
+        M_, _ = passes(m, R, dev, bs, set(ks), edit=lambda t_, S, sl: ST_[sl].to(dev, S.dtype) if t_ == t else None)
+        F_, _ = passes(m, R, dev, bs, set(ks), edit=lambda t_, S, sl: mt.to(dev, S.dtype)[None].expand(S.shape[0], *mt.shape).contiguous() if t_ == t else None)
+        inK = lambda p: (p == dfin) | (p == ca); inM = lambda p: (p == ca) | (p == cb)  # noqa: E731
+        out["by_d"][str(d)] = {"n_pairs": len(kept), "tried": tried, "t_mid": t, "intact_acc": {str(k): float((I[k] == own).mean()) for k in ks},
+                               "swap_k": {"follow_U": float(inK(sw).mean()), "floor": float(inK(mn).mean()), "follow_dfin": float((sw == dfin).mean()),
+                                          "follow_ca": float((sw == ca).mean()), "stay_own": float((sw == own).mean())},
+                               "swap_mid": {str(k): {"follow_U": float(inM(M_[k]).mean()), "floor": float(inM(F_[k]).mean()), "follow_ca": float((M_[k] == ca).mean()),
+                                                     "follow_cb": float((M_[k] == cb).mean()), "stay_own": float((M_[k] == own).mean())} for k in ks}}
+        out["items"][str(d)] = {"rec_sig": [p_[0]["sig"] for p_ in kept], "don_sig": [p_[1]["sig"] for p_ in kept], "own": own.tolist(), "dfin": dfin.tolist(), "ca": ca.tolist(),
+                                "cb": cb.tolist(), "intact": {str(k): I[k].tolist() for k in ks}, "swap_k": sw.tolist(), "mean_k": mn.tolist(),
+                                "swap_mid": {str(k): M_[k].tolist() for k in ks}, "mean_mid": {str(k): F_[k].tolist() for k in ks}}
+    out["def"] = ("Note 234-5 (b) + amendment, descriptive, d >= 3: pairs = the PAIRS law at d with t = ceil(d/2), d 3 -> t 1 (recipients Stream(23260 + d), donors redraw rng 23270 + d, cap 1,000); "
+                  "SWAP-K: S_K := donor's S_K, U = {donor final, cf_a(t)}, floor = MEAN-K (the donors' mean S_K); SWAP-MID: S after pass t := donor's S_t, the recipient's own "
+                  "later passes, U = {cf_a(t), cf_b(t)}, floor = MEAN at t (the donors' mean S_t); answers at K' = d and think_k")
+    return out
+
+
+@torch.no_grad()
+def part_lp5h(m, g, sets, a, dev, bs):
+    """Note 234-5 (a), LP5-4: MEAN-AT-ceil(d/2) on TEST2 d 3..d_max: S after pass ceil(d/2) := the TEST2-d mean of S_ceil(d/2), the other passes on their own cues;
+    answers at K' = d (binding, pooled over d 3-4 by the scorer) and K' = think_k, + the intact answers from the same code path; per item."""
+    K = a["think_k"]; ds = [d_ for d_ in range(3, a["d_max"] + 1)]; T = tokd(sets, a, ds); out = {"by_d": {}, "items": {}}
+    for d in ds:
+        t = math.ceil(d / 2); acc_ = {"sum": None}
+
+        def grab(t_, S, sl):
+            if t_ == t:
+                s_ = S.float().sum(0); acc_["sum"] = s_ if acc_["sum"] is None else acc_["sum"] + s_
+        passes(m, T[d], dev, bs, {t}, on_state=grab); mean_t = acc_["sum"] / len(T[d])
+        ks = sorted({d, K}); y = np.array([it["ans"] for it in T[d]])
+        I, _ = passes(m, T[d], dev, bs, set(ks))
+        M, _ = passes(m, T[d], dev, bs, set(ks), edit=lambda t_, S, sl: mean_t.to(S.dtype)[None].expand(S.shape[0], *S.shape[1:]).contiguous() if t_ == t else None)
+        out["by_d"][str(d)] = {"t_mean": t, "intact": {str(k): float((I[k] == y).mean()) for k in ks}, "mean_at_t": {str(k): float((M[k] == y).mean()) for k in ks},
+                               "k_binding": d, "mean_state_norm": float(mean_t.norm())}
+        out["items"][str(d)] = items_rec(T[d], {"intact": {str(k): I[k].tolist() for k in ks}, "mean_at_t": {str(k): M[k].tolist() for k in ks}})
+    out["def"] = "LP5-4 MEAN-AT-ceil(d/2) (Note 234-5 a): S after pass ceil(d/2) := the TEST2-d mean of S_ceil(d/2); binding at K' = d, pooled over d 3-4 (drop >= 0.30)"
+    return out
 
 
 def load(run, dev):
@@ -363,7 +444,7 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
         r_ = {"acc": lambda: part_acc(m, g, sets, a, dev, bs), "lp5": lambda: part_lp5(m, g, sets, a, dev, bs, ds), "mean_s": lambda: part_mean_s(m, g, sets, a, dev, bs),
               "cue_only": lambda: part_cue_only(m, g, sets, a, dev, bs, ds), "cue_wrong": lambda: part_cue_wrong(m, g, sets, a, dev, bs, ds),
               "swap_k": lambda: part_swap_k(m, g, sets, a, dev, bs), "swap_1": lambda: part_swap_1(m, g, sets, a, dev, bs), "probe": lambda: part_probe(m, g, sets, a, dev, bs),
-              "ws": lambda: part_ws(m, g, sets, a, dev, bs)}[p_]()
+              "ws": lambda: part_ws(m, g, sets, a, dev, bs), "lp5h": lambda: part_lp5h(m, g, sets, a, dev, bs), "swap_kd": lambda: part_swap_kd(m, g, sets, a, dev, bs)}[p_]()
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}
