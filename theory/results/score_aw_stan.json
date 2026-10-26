@@ -1,0 +1,49 @@
+{
+ "section": 234,
+ "stage": "P-2",
+ "registered": "AW_v1.md @ b51151b1 + 234-1 / 234-2",
+ "LP0": {
+  "lat": [
+   true,
+   "cap 25.5, 0 over"
+  ],
+  "cd": [
+   true,
+   "cap 19.2, 0 over"
+  ]
+ },
+ "LP1": true,
+ "LP2": true,
+ "LP2_value": 0.9999682418699187,
+ "LP3": true,
+ "acc_d2": {
+  "lat": 1.0,
+  "cd": 0.097,
+  "dir": 0.093
+ },
+ "LP5": false,
+ "LP5_drop": 0.013000000000000012,
+ "MEAN_STATE": true,
+ "mean_state_acc": 0.104,
+ "CUE_ONLY_ok": true,
+ "cue_only_acc": 0.113,
+ "CUE_WRONG_drop": 0.0,
+ "STILL_RISING": false,
+ "verdict": "P-2 FAIL (LP5) | AW-WEAK-READ",
+ "STATE_USE": true,
+ "swap_k": {
+  "n_pairs": 1000,
+  "follow_U": 1.0,
+  "floor": 0.177,
+  "follow_dfin": 0.0,
+  "follow_ca": 1.0,
+  "stay_own": 0.0
+ },
+ "probe_end": null,
+ "diagnosis": [
+  "AW-WEAK-READ"
+ ],
+ "ws_readout": null,
+ "run": "st_an2_s1",
+ "attribution": "ATTRIBUTION-WRITE"
+}
