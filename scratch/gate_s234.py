@@ -387,8 +387,36 @@ def evalsmoke():
     return o
 
 
+def resume():
+    """Audit 10-25 (after the b347 host-reboot resume): LAT-AW at the P-2 args (init askname, gamma 1), det wrap, fp32, micro 8, sched_scale 0.02 on the 4060:
+    A = 20 steps straight (ckpt every 10, stop_at 20) vs B = A's step-10 ckpt + --resume to 20: every ckpt field torch.equal at step 20 (model, opt, all rngs,
+    stream, bins incl. vbin_d, gn / write-grad logs) and the post-resume log records (steps 11-20 + the step-20 bin incl. ws_readout) equal minus sec."""
+    import shutil
+    da = G8.fresh(TMP + "/resume_A"); db = G8.fresh(TMP + "/resume_B")
+    common = LAT_AW + ["--fp32", "--micro", "8", "--sched_scale", "0.02", "--ckpt_every", "10", "--log_every", "1", "--stop_at", "20"]
+    ra = det("boxes/inject_aw.py", common, da); shutil.copy(da + "/ckpt_prev.pt", TMP + "/ck10.pt")
+    G8.fresh(db); shutil.copy(TMP + "/ck10.pt", db + "/ck10.pt")
+    rb = G8.sh([sys.executable, "-B", "-m", "scratch.s222_det_wrap", "boxes/inject_aw.py"] + common + ["--resume", db + "/ck10.pt", "--device", DEV, "--out", db], db + "/stdout.log")
+    import torch
+    o = {"rc": [ra, rb], "ck10_step": torch.load(db + "/ck10.pt", map_location="cpu", weights_only=False)["step"]}
+    if os.path.exists(da + "/ckpt_last.pt") and os.path.exists(db + "/ckpt_last.pt"):
+        keys = ("model", "opt", "rng_d", "np_rng", "torch_rng", "cuda_rng", "stream_rng", "stream_stats", "step", "n_nonfinite", "expo", "binacc", "vbin", "vbin_d", "dseq",
+                "iseq", "d2_bins", "ent", "fut", "wlast", "gn_log", "wg_hist")
+        o.update(G8.ck_equal(da + "/ckpt_last.pt", db + "/ckpt_last.pt", keys=keys)); o["keys"] = list(keys)
+        rd = lambda p: [json.loads(l_) for l_ in open(p)]  # noqa: E731
+        strip = lambda r_: {k: v for k, v in r_.items() if k != "sec"}  # noqa: E731
+        la = [strip(r_) for r_ in rd(da + "/log.jsonl") if isinstance(r_.get("step"), int) and r_["step"] > 10 and "resumed" not in r_]
+        lb = [strip(r_) for r_ in rd(db + "/log.jsonl") if isinstance(r_.get("step"), int) and r_["step"] > 10 and "resumed" not in r_]
+        o["n_post_records"] = [len(la), len(lb)]; o["post_resume_log_equal"] = la == lb and len(la) > 0
+        bins = [r_ for r_ in la if "by_d" in r_]; o["bin20_has_ws_readout"] = bool(bins and "ws_readout" in bins[-1] and "aux_vacc_by_d_pass" in bins[-1])
+        o["resumed_marker_B"] = any("resumed" in r_ for r_ in rd(db + "/log.jsonl"))
+    o["pass"] = (o["rc"] == [9, 9] and o["ck10_step"] == 10 and o.get("n_mismatch") == 0 and bool(o.get("post_resume_log_equal")) and bool(o.get("bin20_has_ws_readout"))
+                 and bool(o.get("resumed_marker_B")))
+    return o
+
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True); os.makedirs(TMP, exist_ok=True)
-    fns = {"g1": g1, "g2": g2, "g2b": g2b, "g3": g3, "g4_g10": g4_g10, "g5": g5, "args": args_part, "g7": g7, "g9": g9, "g11": g11, "g12": g12, "evalsmoke": evalsmoke}
+    fns = {"g1": g1, "g2": g2, "g2b": g2b, "g3": g3, "g4_g10": g4_g10, "g5": g5, "args": args_part, "g7": g7, "g9": g9, "g11": g11, "g12": g12, "evalsmoke": evalsmoke, "resume": resume}
     for part in [x for x in sys.argv[1:] if x in fns]:
         r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)
