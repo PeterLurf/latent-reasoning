@@ -1,0 +1,19 @@
+{
+ "rc": [
+  9,
+  9
+ ],
+ "step": [
+  30,
+  30
+ ],
+ "n_model_tensors": 162,
+ "mismatch": [],
+ "n_mismatch": 0,
+ "log_equal": true,
+ "ws_readout_ds": [
+  "1",
+  "2"
+ ],
+ "pass": true
+}

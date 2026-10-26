@@ -1,0 +1,20 @@
+{
+ "parts": {
+  "acc": true,
+  "lp5": true,
+  "mean_s": true,
+  "cue_only": true,
+  "cue_wrong": true,
+  "swap_k": true,
+  "swap_1": true,
+  "probe": true,
+  "ws": true
+ },
+ "def_changed": {
+  "ws": [
+   "WS-READOUT (descriptive): the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d), TEST2 d 1 / 2 (all 1,000), fp32",
+   "WS-READOUT (descriptive): the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d), TEST2 d 1..d_max (all 1,000 per d), fp32"
+  ]
+ },
+ "pass": true
+}

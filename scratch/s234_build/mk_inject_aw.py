@@ -21,7 +21,7 @@ E = [
  '    MC_EV = sorted([tok_st(it, a.aux_target, a.cue) for it in SETS["test2"][12]], key=lambda it: -st_len(it))[:1] if s_mc else None   # §233: TEST2\'s own longest d 12 (cued)',
  '    MC_TR = sorted([tok_aw(s_mc.draw(a.d_max), a.aux_target, a.cue, a.write_src) for _ in range(256)], key=lambda it: -st_len(it)) if s_mc else None\n'
  '    MC_EV = sorted([tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][12]], key=lambda it: -st_len(it))[:1] if s_mc else None   # §233: TEST2\'s own longest d 12 (cued)\n'
- '    WS_ITEMS = {d_: [tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][d_][:200]] for d_ in (1, 2)} if a.write_src == "answer" else None   # §234 WS-READOUT'),
+ '    WS_ITEMS = {d_: [tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][d_][:200]] for d_ in range(1, a.d_max + 1)} if a.write_src == "answer" else None   # §234 WS-READOUT (Note 234-5 c: d 1..d_max)'),
 ('        from boxes import inject_st_eval as EV\n        torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); EV.answers_by_kprime(m, g, MC_EV * ebs, 14 if K else 0, dev, ebs, None)',
  '        from boxes import inject_aw_eval as EV\n        torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(dev); EV.answers_by_kprime(m, g, MC_EV * ebs, 14 if K else 0, dev, ebs, None)'),
 # info
@@ -34,7 +34,7 @@ E = [
 # 1k bins: WS-READOUT
 ('                br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}',
  '                br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}\n'
- '            if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1 / 2 (first 200 each), fp32, no_grad, never fed back\n'
+ '            if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back\n'
  '                br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)'),
 # the eval module
 ('    from boxes import inject_st_eval as EV\n    EV.run(a.out,', '    from boxes import inject_aw_eval as EV\n    EV.run(a.out,'),

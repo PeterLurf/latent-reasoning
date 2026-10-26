@@ -10,13 +10,17 @@ scratch/s234_build/mk_inject_aw_eval.py (inject_st_eval.py stays byte-identical)
              text; follow_U (U = {donor final, cf_a(1)}), floor (MEAN-K: the donors' mean S_K), per pair.
   swap_1     SWAP-1 (descriptive): S_1 := donor's S_1, passes 2..K' own; follow cf_a(1) at K' 2 and K.
   probe      end-of-run u1|v1 / read1|v1 / l0|v1 probes, pass-1 trunk argmax, pass-1 / pass-2 key cosine (write_src answer only).
-  ws         WS-READOUT on all of TEST2 d 1 / 2 per pass (write_src answer only).
+  ws         WS-READOUT on all of TEST2 d 1..d_max per pass (write_src answer only; Note 234-5 c; CHAIN at P-4 = every pass 2..d on d 3-4 >= 0.50).
+  lp5h       (P-4, Note 234-5 a) LP5-4 MEAN-AT-ceil(d/2) on TEST2 d 3..d_max: answers at K' = d (binding, pooled d 3-4) and think_k; per item.
+  swap_kd    (P-4, Note 234-5 b + amendment, descriptive) d 3..d_max, 1,000 same-skeleton pairs per d (t = ceil(d/2); d 3 -> t 1): SWAP-K (S_K := donor's; U = {donor final, cf_a(t)};
+             floor MEAN-K) and SWAP-MID (S_t := donor's, own later passes; U = {cf_a(t), cf_b(t)}; floor MEAN at t); per pair.
     python -m boxes.inject_aw_eval --run boxes/runs_fsq/<run> --parts acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws [--device cuda:0 --eval_bs 100]"""
 '''
 E = [
 ('from boxes import inject_st as ST  # noqa: E402\n',
  'from boxes import inject_st as ST  # noqa: E402\nfrom boxes import inject_aw as AW  # noqa: E402\nimport boxes.deltamem as DM  # noqa: E402\nimport boxes.ow_words as OW  # noqa: E402\n'),
-('PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong")', 'PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws")\nAW_ONLY = ("probe", "ws")'),
+('PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong")', 'PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd")\nAW_ONLY = ("probe", "ws")'),
+('import json\n', 'import json\nimport math\n'),
 ('    return {d: [ST.tok_st(it, a.get("aux_target", "value"), a.get("cue", "none")) for it in sets[key][d]] for d in ds}',
  '    return {d: [AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for it in sets[key][d]] for d in ds}'),
 ('        return [EOT] + IO.ENC.encode(" " + ST.cue_str(it["raw"], min(t, it["d"])))',
@@ -31,7 +35,7 @@ E = [
 ('              "cue_only": lambda: part_cue_only(m, g, sets, a, dev, bs, ds), "cue_wrong": lambda: part_cue_wrong(m, g, sets, a, dev, bs, ds)}[p_]()',
  '              "cue_only": lambda: part_cue_only(m, g, sets, a, dev, bs, ds), "cue_wrong": lambda: part_cue_wrong(m, g, sets, a, dev, bs, ds),\n'
  '              "swap_k": lambda: part_swap_k(m, g, sets, a, dev, bs), "swap_1": lambda: part_swap_1(m, g, sets, a, dev, bs), "probe": lambda: part_probe(m, g, sets, a, dev, bs),\n'
- '              "ws": lambda: part_ws(m, g, sets, a, dev, bs)}[p_]()'),
+ '              "ws": lambda: part_ws(m, g, sets, a, dev, bs), "lp5h": lambda: part_lp5h(m, g, sets, a, dev, bs), "swap_kd": lambda: part_swap_kd(m, g, sets, a, dev, bs)}[p_]()'),
 ('        assert a.get(k_) in (None, v_), ("§233: set sha mismatch vs args.json", k_)', '        assert a.get(k_) in (None, v_), ("§234: set sha mismatch vs args.json", k_)'),
 ]
 for o, n in E:

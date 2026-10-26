@@ -1,0 +1,37 @@
+{
+ "lat_aw4": {
+  "rc": 0,
+  "diff": {
+   "d_max": [
+    2,
+    4
+   ],
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws",
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd"
+   ],
+   "steps": [
+    12000,
+    16000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s234/p4/args_lat_aw4/args.json",
+  "pass": true
+ },
+ "cd_an4": {
+  "rc": 0,
+  "diff": {
+   "d_max": [
+    2,
+    4
+   ],
+   "steps": [
+    12000,
+    16000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s234/p4/args_cd_an4/args.json",
+  "pass": true
+ },
+ "pass": true
+}
