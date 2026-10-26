@@ -21726,6 +21726,30 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **For P-4 (b349, landing ~07:30; score_aw4.py @ e823ea6e):** a d = 2 success alone could be a composition in the last pass only. P-4's chaining evidence must therefore come from CHAIN (WS-READOUT at every pass 2..d) and LP5-4 (the mid-chain state mean), not from LP4 accuracy.
 - **Running cost:** realised $0.68 + $1.33 + P-4 guard $4.17 = $6.18 ≤ $30.
 
+**Note 234-7 (2026-10-26 07:44 EDT; §234 P-4 scored: theory/score_aw4.py @ e823ea6e, theory/results/score_aw4.json; Experiments 1cd927ac, no resume, realised $0.97 + $0.03 bad host; §234 total $3.01.)**
+- **Registered verdict (Note 234-5): P-4 FAIL (CHAIN).** Stage 1 is not admitted.
+  - LP0 OK in both arms.
+  - **LP4 passes:** LAT-AW TEST2 d 3 1.000 / d 4 0.765, vs CD-AN 0.368 / 0.150 (DIRECT 0.093 / 0.092).
+  - **LP5-4 passes:** pooled drop 0.578 (d 3 0.744, d 4 0.412; n 1,000 each).
+  - CUE-ONLY guard OK.
+  - **CHAIN fails at d = 4.** WS-READOUT at pass 2 / 3 / 4 is 0.991 / 0.493 / 0.051, against a bar of >= 0.50 at every pass. d = 3 meets it (pass 2 0.990, pass 3 1.000).
+- **Descriptive, 1 seed:**
+  - **d = 3 reads as a full step-by-step chain:**
+    - the ':' argmax holds v_t at every pass;
+    - MEAN-AT-1 drop 0.763; CUE-WRONG drop 0.705;
+    - SWAP-MID after pass 1 (two steps remaining) follows cf 0.805 (floor 0.174);
+    - the answer is v_3 at 0.999 (substitution table: v_1 / v_2 shares <= 0.001).
+  - **d = 4 is a partial chain:**
+    - at pass 4 the ':' argmax repeats pass 3 (equal 0.797; v_3 share 0.484, v_4 0.051), so the trunk doesn't take step 4 at ':';
+    - decoder accuracy is 0.571 at K' 4 and 0.765 at K' 8. It is the same whether or not pass 3's argmax was right at K' 4 (0.570 / 0.572); at K' 8 it is 0.878 / 0.655;
+    - errors are not v_t substitutions (v_1-v_3 shares <= 0.09);
+    - SWAP-MID after pass 2 follows only 0.366 (floor 0.186); MEAN-AT-1 drop 0.424; CUE-WRONG drop 0.472;
+    - accuracy alternates between odd and even hold passes (K' 5 / 6 / 7 / 8: 0.301 / 0.748 / 0.285 / 0.765), suggesting period-2 dynamics in the hold.
+  - The decoder solves one more step than the passes given: d 2 is 1.000 at K' 1 and d 3 is 1.000 at K' 2 (the "pass + decoder" route from 234-4).
+  - WS is the trunk's argmax at ':', not the stored state, so CHAIN failing does not show that S_3 lacks v_3. It does show that the trunk stops writing the step-t answer at ':' after pass 3.
+- **Status:** "C1, scaffolded (plan given), d <= 3, 1 seed" (d = 3 descriptive; the binding P-4 gate failed at d = 4). No unqualified language-C1 claim.
+- **Next:** not pre-named, so it goes to the user (Theory asks; Audit relays). Running cost $3.01 realised, no open guards.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
