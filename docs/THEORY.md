@@ -21677,6 +21677,35 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (2) **P-4:** d ≤ 4, chaining required (WS-READOUT ≥ 0.50 at pass ≥ 2 on d ≥ 3; LP4).
   - (3) Stage 1, re-costed from the measured s/step.
 
+**Note 234-5 (2026-10-25 23:45 EDT; §234 after P-2: Audit-reproduced; the $0 d ≥ 3 substitution check; ST-AN and P-4 pinned before launch; no P-2 reading changes.)**
+- **Audit reproduced P-2** (d = 2 1.000 from the raw items; all fields match 234-4).
+  - **Status line, as Audit requires everywhere:** "C1, scaffolded (plan given), d = 2, 1 seed". There is no "language C1 met" without the qualifier and a second seed.
+- **$0 substitution check** (aw_plaw2_s1 TEST2 items at K′ 8, regenerated with build_sets' TEST2 stream; descriptive):
+
+| d | TEST2 acc | answer = v_2 | answer = v_0 | answer = v_1 | answer = v_3 | answer = v_4 | none |
+|---|---|---|---|---|---|---|---|
+| 3 | 0.008 | **0.582** | 0.085 | 0.056 | 0.008 | – | 0.338 |
+| 4 | 0.076 | **0.397** | 0.087 | 0.055 | 0.049 | 0.076 | 0.428 |
+
+  - **The d ≤ 2-trained model runs exactly two steps and reports S_2.** Below-chance d = 3 is a systematic stop at the trained depth, not noise. Chaining beyond the trained depth is untested, so P-4 (trained d ≤ 4) is the chaining test.
+- **ST-AN (pinned, AW_v1 §5):** §233's LAT-ST write (all cue tokens) on the askname init, γ = 1, the P-2 recipe and evals (probe / ws skipped for the all-token write). Args diff vs aw_plaw2_s1 = {write_src answer → all} (+ derived format). One RTX 3090; admit ≤ $1.58, guard $2.05.
+  - **Read:** P-2 PASS for ST-AN → the init, not the write source, carries the gain (ATTRIBUTION-INIT). P-2 FAIL → the write source is necessary (ATTRIBUTION-WRITE).
+- **P-4 (pinned):** LAT-AW and CD-AN (same askname init), d ~ U{1..4}, 16k, γ = 1, one RTX 3090. Admit ≤ $3.21, guard $4.17; off-host checkpoints every 1k.
+  - **Binding:**
+    - LP0 (each arm);
+    - **LP4:** LAT TEST2 d = 3 ≥ 0.60 and d = 4 ≥ 0.50, each ≥ CD-AN + 0.25;
+    - **CHAIN:** WS-READOUT (the eval part, TEST2 d 3–4) ≥ 0.50 at every pass 2..d, read on the value v_min(t, d);
+    - **LP5-4:** MEAN-AT-⌈d/2⌉ (S after pass ⌈d/2⌉ := its TEST2-d mean; the other passes on their own cues), drop ≥ 0.30 pooled over d 3–4 at K′ = d;
+    - CUE-ONLY guard on d 3–4.
+  - **Descriptive:**
+    - MEAN-AT-1;
+    - SWAP-K at d 3–4 (new seeds, the same pair law, U = {donor final, cf_a(⌈d/2⌉)}, floor = MEAN-K, cap 1,000 per d);
+    - **SWAP-MID** (S after pass ⌈d/2⌉ := donor's, then the recipient's own later passes; U = {cf_a(⌈d/2⌉), cf_b}; floor = MEAN at ⌈d/2⌉), the Stage-1 R3 form, previewed here;
+    - SWAP-1 and probe at d = 2 only;
+    - the substitution table (answer = v_t shares) per d.
+  - Censoring: as P-2 (a crash means resume; missing parts mean pending, FAIL at --final).
+- **Running cost rule:** realised $0.68 + ST-AN guard $2.05 + P-4 guard $4.17 = $6.90 ≤ $30.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
