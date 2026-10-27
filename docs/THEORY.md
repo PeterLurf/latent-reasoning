@@ -21871,6 +21871,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(2)** On CAP or MERGED, the pre-named next step is the per-pass op-target aux design, not another data law.
 - **(3) Extra build gates:** an eval-set sha table with REG sets disjoint from training draws; the position->op MI from the actual streams as a gate JSON.
 
+**Note 236-2 (2026-10-27 04:03 EDT; §236 amendment before any build output: one descriptive reference dropped.)**
+- **d4d_plaw4_s1_reg is dropped.** d4d_plaw4_s1/model.pt was deleted 10-26 on Theory's retention line in Note 234-8 (my oversight: RC_v1 listed it afterwards), and the host and mirror ckpts are gone. It was descriptive only (the H-POS baseline), so no binding reading changes, and it is not retrained.
+- The REG references are now s228_pdir2c_s1_reg (the CUE-ONLY bar, binding input) plus aw_plaw4_s1_reg and aw_plaw4_s2_reg (descriptive).
+- The seed-2 run aw_plaw4_s2 finished training at 02:54 and eval at 03:08 on 10-27 (local files); it was scored in 234-9.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
