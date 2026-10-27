@@ -88,3 +88,21 @@ From our own notes; no new scans (as requested). All IDs were verified earlier.
 **Suggested NARROW wording:** "To remove the pass-position shortcut that a fixed final operation allowed (§234–235), each step's operation is drawn iid in training and test, as in standard synthetic multi-step arithmetic (e.g. Lin 2503.07604), so no pass index predicts its operation."
 - Present it as **evaluation hygiene**, not a contribution.
 - The finding that a latent loop exploited op position, and merged steps, is our observation. Kin: Kuo (length ↔ loop count) and Liang & Pan (compressed rollouts).
+
+## Addendum (2026-10-27): §237 REG-BOOT PASS (Note 237-4): priors and wording
+From our own notes; all IDs verified earlier.
+
+**Closest priors: latent / looped multi-step arithmetic in a pretrained LM, with causal mid-chain swaps**
+- **SCIT 2608.27265** (read 10-20) [empirics]: counterfactual cache transplants in fine-tuned CODI-GPT2 and CODI / Sim-CoT-LLaMA3-1B on English-templated arithmetic.
+  - Two-hop: GPT-2 cache 0.70–1.00.
+  - **Three-hop:** Sim-CoT-LLaMA3-1B oracle target-win 1.000, but its semantic controls were not below the oracle; GPT-2 three-hop 0.71–0.86.
+  - Teacher-forced closed-set scoring; KV-cache carrier. Hidden-only swaps fail (0.000 at 1B).
+- **Liang & Pan 2602.00449:** CODI on synthetic polynomial iteration; a state swap swept over latent position (flip 90 / 80 / 72 % early, near 0 late); deeper horizons compress.
+- **Shapiro 2608.11233:** Qwen2.5-0.5B looped retrofit on arithmetic; extrapolation past supervised depth 12 decays (97.7 → 10.9 % at 22). No causal swaps.
+- **2609.01924** (Huginn): input-injection swaps persist only ~2 recurrences.
+- **Our own:** §221 INT-FOLLOW on natural GSM8K (0.33–0.54); §234 (d ≤ 3, one seed).
+- **Not found:** a compact **recurrent-memory** latent state in a pretrained LM carrying a d = 4 chain, with free-generation swap-following at every intermediate, on iid-op word programs.
+
+**Suggested NARROW wording (no "first"):**
+"On templated word programs with iid affine operations and a given plan, a GPT-2 latent loop that writes the answer-position state of each per-pass sub-question into a recurrent memory solves d 3–4 at 1.000 where an exposure-matched one-pass comparator is at chance. Each intermediate is decodable at every pass, and mid-chain state swaps are followed (0.98), in two seeds. This extends SCIT's synthetic counterfactual transfer (2608.27265; KV-cache carrier, ≤ 3 hops, teacher-forced) to a compact recurrent memory at depth 4."
+- Report d 5 = 0.86 and the 14-pass stability as **post hoc / descriptive**.
