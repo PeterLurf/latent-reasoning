@@ -325,6 +325,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
 | 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
+| 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 
 ## Live sections
 
@@ -19362,6 +19363,30 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Build (Experiments; G-D Audit):**
   - inject_aw --init_model <path> --init_model_sha <prefix>: loads the full model state strict (trunk + DeltaMem + W_o + norms), skips calibration, fresh optimizer. Default off is bitwise.
   - Gates: a strict-load test; at step 0 the loaded model reproduces aw_plaw2_s1's TEST2 d 2 acc on a 200-item slice; flags-off bitwise; the args diff.
+
+## 238. DAG-FREE: C1 with cross-state products at position-independent passes (Theory's choice under the user's 10-26 standing rules relayed by Audit; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-27 19:54 EDT, before any build or output)
+
+- **Text:** docs/research_dagfree_2026-10-27/DF_v1.md (wins over DF_draft.md 3ff7ac55). Red team: REVIEW_DF.md (GO-with-fixes; both blockers and all fixes adopted).
+- **Why:** §237 passed C1 on REG (no cross-state product). This extends the scope to products S_{t-1} * S_j that can occur at any pass t >= 3, with probability independent of t and d, so no pass position predicts them.
+- **Law (mul_s_p = 2):**
+  - per step t >= 3, mul_s with q_t = 0.179 / 0.151 / 0.147 (t 3 / 4 / >= 5), giving a realised ~0.125 after fallbacks; steps 1-2 are REG;
+  - the build gates realised P(mul_s | t, d) at 0.125 +/- 0.01 (t 3-6) and reports I(op; t, d) on t >= 3; the claim is scoped to t >= 3;
+  - every stream uses DF with new seeds; a law tag goes into the set shas; reg_kw raises on unknown values.
+- **Sets:** TEST2-DF (d 1..12 x 1,000); OPCLASS-DF (d 4 x 3,000, pass-4 classes); PROD-SWAP (d 3, step 3 = mul_s; memory after pass 2 := donor's; keep iff own != dfin and cb not in {own, dfin}; cap 1,000).
+  - Build gate: every op class n >= 50 at pass 3 and pass 4 (mul_s at pass 4 split j 1 / 2).
+- **Runs:** df_plaw4_s1 (init rcb_plaw4_s1) / df_plaw4_s2 (init rcb_plaw4_s2), df_pcd4_s1 (init rcb_pcd4_s1); 16k, d ~ U{1..4}, gamma 1.
+  - One lineage (both from aw_plaw2_s1), 2 data orders.
+  - Refs (eval-only on DF): s228_pdir2c_s1_df at bs 100 + bs 50; step 0 rcb_plaw4_s1_df / rcb_plaw4_s2_df / rcb_pcd4_s1_df.
+- **Binding** (theory/score_df.py; fixtures 8/8), per LAT seed:
+  - LP0; PROD-ACC (product items d 3-4 >= 0.80 and >= CD-AN + 0.25); CHAIN;
+  - OP-ALL+ (every class >= 0.80 at pass 3 and pass 4; class n < 50 -> VOID);
+  - PROD-SWAP (follow_U = follow_dfin + follow_cb >= 0.50 and >= floor + 0.30); CUE-ONLY (min bar rule 236-4).
+  - Labels: VOID / PASS [ZERO-SHOT if step 0 already passes mul_s and PROD-SWAP] / READ2 (pass named; partial / none) / CAP / SWAP-FAIL / MERGED / PASS4-LAG / GATE-OTHER.
+  - Overall PASS / SPLIT / FAIL / VOID.
+- **Hypotheses:** H-EXT (the add_s j >= 1 read supports a product) vs H-READ2 (a superposed read gives a sum, not a product). PARTNER-MEM vs PARTNER-TEXT from follow_dfin vs follow_cb (descriptive).
+- **OC:** per seed P(VOID) ~0.05, P(PASS | H-EXT) ~0.65, P(PASS | H-READ2) ~0.02; prior 0.5. Overall P(PASS) ~0.15, P(>= SPLIT) ~0.45.
+- **Censoring:** as §236.
+- **Cost:** admit <= $2.6, guard $7. Running $8.76 + $7 = $15.8 <= $30.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.

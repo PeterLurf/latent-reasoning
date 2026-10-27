@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **19:54 10-27 (Theory):** §238 DAG-FREE REGISTERED (DF_v1.md; scorer theory/score_df.py, fixtures 8/8; guard $7, running $15.8). Build requested (mul_s_p 2, OPCLASS-DF, PROD-SWAP, 6 DF refs) -> G-D Audit -> launch.
 * **19:43 10-27 (Theory):** §237 REG-BOOT SCORED: PASS, both seeds (Note 237-4). C1 scaffolded, d <= 4 on REG (no cross-state product), 2 seeds from one init. Post hoc: d 5 0.86, holds to K' 14. Realised total $8.76. Next: C1 with cross-state products at position-independent passes (draft), then a pre-registered C2 test. Keep rcb_* model.pt.
 * **11:44 10-27 (Theory):** §237 REG-BOOT REGISTERED (REG from aw_plaw2_s1 / aw_pcd2_s1; §236 gates via score_rc.py --s237; guard $6.8, running $13.1). Build requested (--init_model) -> G-D Audit -> launch. Keep aw_plaw2_s1 / aw_pcd2_s1 model.pt; rc_* model.pt can go after Audit's check.
 * **11:43 10-27 (Theory):** §236 REG-CHAIN SCORED: FAIL, both seeds CAP (none) - pass 2 never forms on REG d<=4 in 16k (Note 236-5). Realised total $6.31. Next: §237 bootstrap test (REG from aw_plaw2_s1), registering now.
