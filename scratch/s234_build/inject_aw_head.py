@@ -85,6 +85,12 @@ def build_aw(a, dev):
     return m, g, m
 
 
+def reg_excl(a, excl):
+    """§236: the union of the eval module's own REG sets' sigs (swap_k d 2, swap_kd d 3..d_max + d 3 t 2, probe) for the training EXCL (0 overlap by construction)."""
+    from boxes import inject_aw_eval as AE
+    return set().union(*AE.reg_eval_sigs(vars(a), excl).values())
+
+
 @torch.no_grad()
 def ws_readout(m, items_by_d, dev, K, bs=50, per_item=False):
     """WS-READOUT: per d, per pass t, the trunk's argmax over the 11 number tokens at ':' vs v_min(t, d); never fed back. per_item: also

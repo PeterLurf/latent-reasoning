@@ -1,0 +1,46 @@
+{
+ "lat_aw4": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json",
+   "eval_cue_only.json",
+   "eval_cue_wrong.json",
+   "eval_lp5.json",
+   "eval_lp5h.json",
+   "eval_mean_s.json",
+   "eval_probe.json",
+   "eval_swap_1.json",
+   "eval_swap_k.json",
+   "eval_swap_kd.json",
+   "eval_ws.json"
+  ],
+  "peak_gib": 5.002403259277344,
+  "swap_kd_3": {
+   "n_pairs": 1000,
+   "t_mid": 1,
+   "n_pairs_t2": 1000,
+   "tried_t2": 1632
+  },
+  "swap_mid_t2_ks": [
+   "3",
+   "8"
+  ],
+  "swap_kd_4": {
+   "n_pairs": 1000,
+   "t_mid": 2
+  },
+  "items_3_t2": true,
+  "swap_k_sigs_reg": true,
+  "probe_sigs_reg": true
+ },
+ "cd_an4": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json"
+  ],
+  "peak_gib": 4.995795726776123
+ },
+ "pass": true
+}

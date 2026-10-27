@@ -85,6 +85,12 @@ def build_aw(a, dev):
     return m, g, m
 
 
+def reg_excl(a, excl):
+    """§236: the union of the eval module's own REG sets' sigs (swap_k d 2, swap_kd d 3..d_max + d 3 t 2, probe) for the training EXCL (0 overlap by construction)."""
+    from boxes import inject_aw_eval as AE
+    return set().union(*AE.reg_eval_sigs(vars(a), excl).values())
+
+
 @torch.no_grad()
 def ws_readout(m, items_by_d, dev, K, bs=50, per_item=False):
     """WS-READOUT: per d, per pass t, the trunk's argmax over the 11 number tokens at ':' vs v_min(t, d); never fed back. per_item: also
@@ -126,6 +132,7 @@ def main(argv=None):
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
+    ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1], help="§236: 0 = REG law (no forced mul_s) on every stream / set (new eval seeds); 1 = unchanged")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
     import boxes.deltamem as DM_
     from boxes.fsq120 import make_opt, lr_at, driver_version, env_info
@@ -148,7 +155,8 @@ def main(argv=None):
     ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
     t_sets = time.time()
     if a.src == "ow":
-        SETS = build_sets(); EXCL = SETS["excl"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, **OWKW)   # §235: training stream only
+        SETS = build_sets(mul_s_p=a.mul_s_p); EXCL = SETS["excl"] | (reg_excl(a, SETS["excl"]) if a.mul_s_p == 0 else set())   # §236: + the eval-own REG sets
+        stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # §235 / §236: training stream
     else:                                                                   # gate only: nested170's TE / SPOOL exclusion and item law
         TE = N7.test_set(1000); EXCL = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)
         for _ in range(2200):
@@ -156,6 +164,7 @@ def main(argv=None):
         SETS = None; stream = None
     set_sec = round(time.time() - t_sets)
     assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"
+    assert a.mul_s_p == 1 or (a.mul_s_p3 == 1.0 and a.src == "ow"), "--mul_s_p 0: OW only, mul_s_p3 must be 1"
     m, g, params = build_aw(a, dev)
     f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]
 
@@ -205,7 +214,7 @@ def main(argv=None):
             stat["la"] = stat.get("la", 0.0) + float(la.detach()) * len(items); stat["n"] = stat.get("n", 0) + len(items)
         return loss
 
-    s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, **OWKW) if a.src == "ow" else None
+    s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, mul_s_p=a.mul_s_p, **OWKW) if a.src == "ow" else None   # §236: the run's law
     MC_TR = sorted([tok_aw(s_mc.draw(a.d_max), a.aux_target, a.cue, a.write_src) for _ in range(256)], key=lambda it: -st_len(it)) if s_mc else None
     MC_EV = sorted([tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][12]], key=lambda it: -st_len(it))[:1] if s_mc else None   # §233: TEST2's own longest d 12 (cued)
     WS_ITEMS = {d_: [tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][d_][:200]] for d_ in range(1, a.d_max + 1)} if a.write_src == "answer" else None   # §234 WS-READOUT (Note 234-5 c: d 1..d_max)
@@ -279,7 +288,7 @@ def main(argv=None):
         if a.src == "nested":
             its = [tok_nested(it) for it in N7.train_items(np.random.default_rng(17001), 64, a.n_max_train, set())]
         else:
-            s_ = OW.Stream(SEED_CAL, frames=OW.FRAME_TRAIN, **OWKW); its = [tok_aw(s_.draw(1 + i % a.d_max), a.aux_target, a.cue, a.write_src) for i in range(64)]
+            s_ = OW.Stream(SEED_CAL, frames=OW.FRAME_TRAIN, mul_s_p=a.mul_s_p, **OWKW); its = [tok_aw(s_.draw(1 + i % a.d_max), a.aux_target, a.cue, a.write_src) for i in range(64)]
         xs, msk = cue_inputs(m, its, dev); m.mem.norms = []
         with torch.no_grad(), ac():
             S_c = m.mem.zero_state(64, dev)
