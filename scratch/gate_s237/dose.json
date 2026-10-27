@@ -1,0 +1,16 @@
+{
+ "rc": {
+  "rc": 9,
+  "s228_init": true,
+  "dir": "D:/Latent/scratch/_tmp/s237/smoke_rc"
+ },
+ "rcb": {
+  "rc": 9,
+  "s228_init": false,
+  "dir": "D:/Latent/scratch/_tmp/s237/smoke_rcb"
+ },
+ "dose_lambda_paths_equal": true,
+ "gamma_all_1": true,
+ "s_add_loaded_equals_file": true,
+ "pass": true
+}

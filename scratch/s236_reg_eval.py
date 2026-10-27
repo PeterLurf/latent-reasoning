@@ -18,6 +18,7 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--parts", required=True); ap.add_argument("--eval_bs", type=int, default=250)
     ap.add_argument("--device", default="cuda:0"); ap.add_argument("--src_dir", default="", help="gates only: the source run dir (default boxes/runs_fsq/<run>)")
     ap.add_argument("--out", default="", help="gates only: the output dir (default boxes/runs_fsq/<run>_reg)")
+    ap.add_argument("--set_d_max", type=int, default=0, help="§237 step-0 refs: evaluate at this d_max (aw_plaw2_s1 trained at 2 -> the P-4 parts at 4); 0 = the run's")
     a = ap.parse_args()
     import torch
     import boxes.inject_ow as IO
@@ -27,6 +28,8 @@ def main():
     os.makedirs(out, exist_ok=True); S = IO.build_sets(mul_s_p=0)
     ra = json.load(open(os.path.join(src, "args.json"))); assert int(ra.get("mul_s_p", 1)) == 1, "the source run must be a default-law run"
     na = {**ra, "mul_s_p": 0, "reg_of": a.run, "reg_src_dir": os.path.relpath(src, ROOT).replace(os.sep, "/"), "pair_stats": S["pair_stats"], **S["shas"]}
+    if a.set_d_max:                                                         # §237: the eval's d range only (ds = 2..d_max, swap_kd / lp5h d 3..d_max, ws d 1..d_max)
+        na["reg_d_max_override"] = [ra.get("d_max"), a.set_d_max]; na["d_max"] = a.set_d_max
     json.dump(na, open(os.path.join(out, "args.json"), "w", newline="\n"), indent=1)
     mp = os.path.join(out, "model.pt")
     if not os.path.exists(mp):

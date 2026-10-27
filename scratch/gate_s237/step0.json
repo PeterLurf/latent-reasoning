@@ -1,0 +1,23 @@
+{
+ "lat": {
+  "run": "aw_plaw2_s1",
+  "k": 8,
+  "same_items": true,
+  "acc_now": 1.0,
+  "acc_ref": 1.0,
+  "n_differ": 0,
+  "fade": 1.0,
+  "gamma": 1.0
+ },
+ "cd": {
+  "run": "aw_pcd2_s1",
+  "k": 0,
+  "same_items": true,
+  "acc_now": 0.095,
+  "acc_ref": 0.095,
+  "n_differ": 0,
+  "fade": null,
+  "gamma": null
+ },
+ "pass": true
+}

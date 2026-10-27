@@ -1,0 +1,17 @@
+{
+ "lat": {
+  "keys_equal": true,
+  "n_keys": 162,
+  "all_equal": true,
+  "class": "InjectAW"
+ },
+ "cd": {
+  "keys_equal": true,
+  "n_keys": 148,
+  "all_equal": true,
+  "class": "GPT2KV"
+ },
+ "wrong_sha_rc": 1,
+ "wrong_sha_asserted": true,
+ "pass": true
+}

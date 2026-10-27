@@ -1,0 +1,63 @@
+{
+ "rcb_plaw4_s1": {
+  "rc": 0,
+  "diff": {
+   "init_model": [
+    null,
+    "boxes/runs_fsq/aw_plaw2_s1/model.pt"
+   ],
+   "init_model_sha": [
+    null,
+    "484dab1eab9e2c12"
+   ],
+   "init_model_sha256": [
+    null,
+    "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s237/args_rcb_plaw4_s1/args.json",
+  "init_sha_full_ok": true,
+  "pass": true
+ },
+ "rcb_plaw4_s2": {
+  "rc": 0,
+  "diff": {
+   "init_model": [
+    null,
+    "boxes/runs_fsq/aw_plaw2_s1/model.pt"
+   ],
+   "init_model_sha": [
+    null,
+    "484dab1eab9e2c12"
+   ],
+   "init_model_sha256": [
+    null,
+    "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s237/args_rcb_plaw4_s2/args.json",
+  "init_sha_full_ok": true,
+  "pass": true
+ },
+ "rcb_pcd4_s1": {
+  "rc": 0,
+  "diff": {
+   "init_model": [
+    null,
+    "boxes/runs_fsq/aw_pcd2_s1/model.pt"
+   ],
+   "init_model_sha": [
+    null,
+    "1d73f6a1e8e34f3b"
+   ],
+   "init_model_sha256": [
+    null,
+    "1d73f6a1e8e34f3b6c20c817430bfe17d10b4a4b6dd42221de17adb8f0c46e3d"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s237/args_rcb_pcd4_s1/args.json",
+  "init_sha_full_ok": true,
+  "pass": true
+ },
+ "pass": true
+}

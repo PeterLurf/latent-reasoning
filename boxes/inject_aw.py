@@ -133,6 +133,8 @@ def main(argv=None):
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
     ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1], help="§236: 0 = REG law (no forced mul_s) on every stream / set (new eval seeds); 1 = unchanged")
+    ap.add_argument("--init_model", default="", help="§237: the full params state (trunk + DeltaMem + W_o + gains) loaded strict after the build; calibration skipped")
+    ap.add_argument("--init_model_sha", default="", help="§237: its sha256 prefix (asserted)")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
     import boxes.deltamem as DM_
     from boxes.fsq120 import make_opt, lr_at, driver_version, env_info
@@ -166,6 +168,10 @@ def main(argv=None):
     assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"
     assert a.mul_s_p == 1 or (a.mul_s_p3 == 1.0 and a.src == "ow"), "--mul_s_p 0: OW only, mul_s_p3 must be 1"
     m, g, params = build_aw(a, dev)
+    assert bool(a.init_model) == bool(a.init_model_sha), "--init_model needs --init_model_sha"
+    if a.init_model:                                                        # §237: the full model state, strict; the sha logged (init_model_sha256)
+        sha_m = hashlib.sha256(open(a.init_model, "rb").read()).hexdigest(); assert sha_m.startswith(a.init_model_sha), ("init_model sha", sha_m, a.init_model_sha)
+        params.load_state_dict(torch.load(a.init_model, map_location=dev, weights_only=True), strict=True); a.init_model_sha256 = sha_m
     f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]
 
     def lam_at(step):
@@ -271,7 +277,7 @@ def main(argv=None):
     if a.args_only:
         print("ARGS_ONLY", a.out, flush=True); return 0
     opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_log = []; aux_hist = []
-    expo = {}; binacc = {}; vbin = {}; vbin_d = {}; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
+    expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
@@ -282,9 +288,9 @@ def main(argv=None):
             stream.rng.bit_generator.state = ck["stream_rng"]; stream.stats = dict(ck["stream_stats"])
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; gn_log = list(ck["gn_log"]); t0 = time.time() - ck["elapsed"]
         expo, binacc, vbin, dseq, iseq, d2_bins, ent, fut, wlast = ck["expo"], ck["binacc"], ck["vbin"], ck["dseq"], ck["iseq"], ck["d2_bins"], ck["ent"], ck["fut"], ck["wlast"]
-        vbin_d = ck.get("vbin_d", {})
+        vbin_d = ck.get("vbin_d", {}); gnbin = ck.get("gnbin", {})
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
-    elif m is not None and K > 0:                                           # note 147-2: g_add calibration at the think hand-offs (nested170's)
+    elif m is not None and K > 0 and not a.init_model:                      # note 147-2: g_add calibration (§237: skipped under --init_model, the loaded s_add kept)
         if a.src == "nested":
             its = [tok_nested(it) for it in N7.train_items(np.random.default_rng(17001), 64, a.n_max_train, set())]
         else:
@@ -321,6 +327,7 @@ def main(argv=None):
         la_ = st_["la"] / st_["n"]; acc_ = st_["acc"] / st_["n"]; aux_hist.append((la_, st_["aux"] / st_["n"] if "aux" in st_ else None))
         dk = str(its[0]["d"]) if a.src == "ow" else "mix"; expo[dk] = expo.get(dk, 0) + 1
         b_ = binacc.setdefault(dk, [0, 0.0, 0.0, 0]); b_[0] += 1; b_[1] += acc_; b_[2] += la_; b_[3] += float(gn) > 1.0
+        gb_ = gnbin.setdefault(dk, [0.0, 0]); gb_[0] += float(gn); gb_[1] += 1   # §237: pre-clip grad norm per d (emitted under --init_model)
         for vok, _n in st_.get("vacc", []):
             for t_, v_ in vok.items():
                 vb_ = vbin.setdefault(str(t_), [0.0, 0]); vb_[0] += v_; vb_[1] += 1
@@ -360,10 +367,12 @@ def main(argv=None):
                 br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)
             if a.mul_s_p3 < 1.0 and stream is not None:                    # §235: cumulative accepted d 3 training items with a mul_s step / all d 3 items
                 br["stream_d3_mul_s"] = [stream.stats.get("d3_mul_s", 0), stream.stats.get("d3_items", 0)]
+            if a.init_model and gnbin:                                       # §237 (Note 237-1): the mean pre-clip grad norm per d over the bin
+                br["gn_preclip_by_d"] = {k_: v_[0] / v_[1] for k_, v_ in sorted(gnbin.items())}
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; dseq = []; iseq = []
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; dseq = []; iseq = []
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
@@ -381,7 +390,7 @@ def main(argv=None):
                         "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
                         "stream_rng": stream.rng.bit_generator.state if stream is not None else None, "stream_stats": dict(stream.stats) if stream is not None else None,
                         "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_log": gn_log, "elapsed": time.time() - t0, "expo": expo, "binacc": binacc,
-                        "vbin": vbin, "vbin_d": vbin_d, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
+                        "vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
     if a.time_steps:
         sps = (time.time() - tt0) / max(1, last - step0 + 1)
         tj = {"arm": a.arm, "think_k": K, "d_max": a.d_max, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours_steps": sps * a.steps / 3600,
