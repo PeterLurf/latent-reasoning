@@ -1,0 +1,5 @@
+# §237 ledger (fill_s237); last field = $
+354:rcb_plaw4_s1 186.128.136.213:50319 57993424 $0.2081/h sps 0.8779276649157206 1.21
+355:rcb_plaw4_s2 149.200.53.205:28167 58000462 $0.1614/h sps 0.8492817004521688 0.84
+realised:b354 # 57993424 13:40-19:37 ~6.0 h x $0.2081/h (§237 rcb_plaw4_s1 + rcb_pcd4_s1; wall guard spent) 1.238
+realised:b355 # 58000462 14:51-19:18 ~4.5 h x $0.1614/h (§237 rcb_plaw4_s2; wall guard spent) 0.718
