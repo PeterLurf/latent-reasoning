@@ -199,4 +199,17 @@ if __name__ == "__main__":
     if a.s237:
         LATS, CD = ("rcb_plaw4_s1", "rcb_plaw4_s2"), "rcb_pcd4_s1"; out = OUT.replace(".json", "_s237.json")
     o = score(); o["section"] = 237 if a.s237 else 236; print(o["verdict"])
+    if a.s237:   # Note 237-1 (1): step-0 (the init on the REG sets, eval-only) beside the finals, descriptive deltas; d 2 not creditable to §237
+        def _s0(run):
+            g = lambda f: A4.jl(os.path.join(R, run, f + ".json"))  # noqa: E731
+            acc, ws, h, sk = g("eval_acc"), g("eval_ws"), g("eval_lp5h"), g("eval_swap_kd")
+            if acc is None:
+                return None
+            return {"acc": {d: acc["by_d"][d]["acc"] for d in ("1", "2", "3", "4")}, "ws": (ws or {}).get("by_d"),
+                    "lp5h_drop": {d: h["by_d"][d]["intact"][d] - h["by_d"][d]["mean_at_t"][d] for d in A4.DS} if h else None,
+                    "swap_mid_d3_t1": sk["by_d"]["3"]["swap_mid"]["3"] if sk else None}
+        o["step0"] = {"lat": _s0("aw_plaw2_s1_reg"), "cd": _s0("aw_pcd2_s1_reg")}
+        if o["step0"]["lat"] and "seeds" in o:
+            o["delta_acc_vs_step0"] = {k: {d: s["acc"][d]["lat"] - o["step0"]["lat"]["acc"][d] for d in ("2", "3", "4")} for k, s in o["seeds"].items() if "acc" in s}
+        print("step0:", "present" if o["step0"]["lat"] else "MISSING aw_plaw2_s1_reg (report pending)")
     os.makedirs(os.path.dirname(out), exist_ok=True); json.dump(o, open(out, "w", newline=chr(10)), indent=1, default=str)
