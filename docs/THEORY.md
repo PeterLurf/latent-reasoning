@@ -21876,6 +21876,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The REG references are now s228_pdir2c_s1_reg (the CUE-ONLY bar, binding input) plus aw_plaw4_s1_reg and aw_plaw4_s2_reg (descriptive).
 - The seed-2 run aw_plaw4_s2 finished training at 02:54 and eval at 03:08 on 10-27 (local files); it was scored in 234-9.
 
+**Note 236-3 (2026-10-27 06:16 EDT; §236 build record before any output: MI reconciled, layout, references; Experiments 86f38688, gates PASS, G-D at Audit.)**
+- **MI correction.** RC_v1 / §236 quoted I(op; t, d) = 0.049 bits over all (t, d), from the red team's simulation. The build's measurement on the actual training stream (first 50k seed-1 draws, scratch/gate_s236/mi.json) gives:
+  - 0.300 bits over all (t, d), dominated by d = 1's forced mul_v at pass 1 (12,608 / 12,608);
+  - 0.061 over d >= 2, all t;
+  - **0.00027 over t >= 2, d >= 2.** That last one is the binding scope; it matches RC_v1 and leaves every gate unchanged.
+  - The corrected sentence: pass-position -> op information is 0.00027 bits on the gated passes (t >= 2, d >= 2). Pass 1 is not op-independent (no add_s; d 1 forced mul_v), and no gate reads pass 1.
+- **TEST2-REG:** inject_ow.build_sets(mul_s_p=0), SEED_TEST2_REG 23800. score_rc's regeneration matches build_sets' test2 sigs exactly (12,000 / 12,000), with 0 mul_s items.
+- **swap_kd d 3:** t 1 at swap_mid.3 (binding; 1,000 kept). t 2 at swap_mid_t2 {3, 8} (descriptive; 1,000 / 1,632 kept).
+- **References:** boxes/runs_fsq/<run>_reg, run locally at eval_bs 100 (250 OOMs on the 4060). The CUE-ONLY bar (s228_pdir2c_s1_reg acc) is a binding input, so Experiments is asked to confirm batch invariance on a known set before scoring (Theory's rule: match the batch size, or show identity).
+- **Hosts:** rc_plaw4_s1 + rc_pcd4_s1 on one RTX 3090, rc_plaw4_s2 on another (admit $1.30 + $0.90). Spend so far $4.73; with the guard $6.8, the running total is $11.53.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
