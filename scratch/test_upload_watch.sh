@@ -5,10 +5,11 @@
 #   stalled   2 MB at ~20 KB/s (< 200 KB per 4 s)      -> rc 4, UPLOAD_STALLED (window), scp killed
 #   slowmax   4 MB at ~100 KB/s (>= 200 KB / 4 s, needs ~40 s > UP_MAX_S 12) -> rc 4, UPLOAD_STALLED (max)
 #   scpfail   scp exits 1 at once                      -> rc 1 (the caller's sha check / retry path)
+#   probefail the size probe fails once at the first window check, upload healthy (200 KB/s) -> rc 0, complete (Audit 10-27)
 # A killed upload must stop: the dst file size is unchanged 3 s after upload_watch returns. The stub is an executable named scp (one process, like the real one).
 set -u
 cd "$(dirname "$0")/.." || exit 2
-. scratch/upload_watch.sh
+. "${UW_FILE:-scratch/upload_watch.sh}"                                  # UW_FILE: test a staged copy (e.g. upload_watch.sh.new) before the swap
 T=scratch/_tmp/upload_watch_test; rm -rf "$T"; mkdir -p "$T"; head -c 4000000 /dev/urandom > "$T/src.bin"; head -c 2000000 "$T/src.bin" > "$T/src2.bin"
 mkdir -p "$T/bin"; cat > "$T/bin/scp" <<'STUB'
 #!/usr/bin/env bash
@@ -33,5 +34,15 @@ case_ fast "$T/src2.bin" 1000000 0 ""
 case_ stalled "$T/src2.bin" 20000 4 "bytes in"
 case_ slowmax "$T/src.bin" 100000 4 "no completion within"
 case_ scpfail "$T/src2.bin" fail 1 ""
+# probefail (Audit 10-27): the size probe fails ONCE, at the 4th poll (the first window check), during a healthy upload -> must complete (rc 0)
+echo 0 > "$T/probe_n"; S_OK="$S"
+S="bash $PWD/$T/probe.sh"; cat > "$T/probe.sh" <<'PR'
+n=$(( $(cat "$PROBE_N") + 1 )); echo $n > "$PROBE_N"; [ "$n" = 4 ] && exit 255; exec bash -c "$1"
+PR
+export PROBE_N="$PWD/$T/probe_n"
+case_ probefail "$T/src2.bin" 200000 0 ""
+S="$S_OK"
+[ "$(stat -c %s "$T/dst_probefail.bin")" = 2000000 ] || { echo "  FAIL probefail size"; ok=0; }
+[ "$(cat "$T/probe_n")" -ge 5 ] || { echo "  FAIL probefail: the failing probe was never reached"; ok=0; }
 [ "$(stat -c %s "$T/dst_fast.bin")" = 2000000 ] || { echo "  FAIL fast size"; ok=0; }
 rm -rf "$T"; [ "$ok" = 1 ] && echo "UPLOAD_WATCH TEST PASS" || { echo "UPLOAD_WATCH TEST FAIL"; exit 1; }
