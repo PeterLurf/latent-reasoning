@@ -1,0 +1,42 @@
+{
+ "n_mul_s": {
+  "test2": 0,
+  "transfer": 0,
+  "pairs": 0,
+  "floors": 0,
+  "TE6_reg": 0,
+  "PC6_reg": 0,
+  "swap_k_d2": 0,
+  "swap_kd_d3": 0,
+  "swap_kd_d4": 0,
+  "swap_kd_d3_t2": 0,
+  "probe": 0,
+  "calibration": 0,
+  "memcheck_d4": 0
+ },
+ "swap_kd_d3_n": [
+  1000,
+  1
+ ],
+ "swap_kd_d4_n": [
+  1000,
+  2
+ ],
+ "swap_kd_d3_t2_n": [
+  1000,
+  1632
+ ],
+ "default_law_has_mul_s_test2_d3plus": 10000,
+ "reg_shas": {
+  "test2_sha": "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+  "transfer_sha": "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+  "pairs2_sha": "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+  "floors2_sha": "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+  "s226_test_sha": "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+  "s227_decode_sha": "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea"
+ },
+ "reg_shas_differ_from_default": true,
+ "set_law": "reg",
+ "seed_grep_before_build": "the build-time grep (boxes / scratch / theory / docs/research_* .py, 10-27, before any \u00a7236 edit) found none of 23800 23801 23802 23803 23804 23810 23811 23812 23823 23824 23833 23834 23843 23853",
+ "pass": true
+}

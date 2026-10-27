@@ -1,0 +1,9 @@
+# THEORY §236 REG-CHAIN (RC_v1 74d0424d; Notes 236-1 / 236-2): the P-4 recipe (one non-580 RTX 3090, d ~ U{1..4}, 16k, askname init, gamma 1, P-4 evals) under the
+# REG law (--mul_s_p 0: no forced mul_s on every stream; REG eval sets from new seeds). LAT-AW rc_plaw4_s1 then CD-AN rc_pcd4_s1 on the SAME host. Off-host ckpts (mirror).
+# Frozen args scratch/s236_args_frozen_<run>.json. Scorer theory/score_rc.py.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/rc_plaw4_s1_mem boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --mul_s_p 0 --mem_check
+boxes/runs_fsq/rc_plaw4_s1_gtime boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --time_steps 60 --mul_s_p 0 --auto_micro
+boxes/runs_fsq/rc_plaw4_s1 boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --mul_s_p 0 --auto_micro --ckpt_every 1000 --eval_parts acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd --args_ref scratch/s236_args_frozen_rc_plaw4_s1.json
+boxes/runs_fsq/rc_pcd4_s1 boxes.inject_aw --arm direct --d_max 4 --steps 16000 --cue all --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --mul_s_p 0 --auto_micro --ckpt_every 1000 --eval_parts acc --args_ref scratch/s236_args_frozen_rc_pcd4_s1.json

@@ -37,6 +37,7 @@ E = [
  '              "swap_k": lambda: part_swap_k(m, g, sets, a, dev, bs), "swap_1": lambda: part_swap_1(m, g, sets, a, dev, bs), "probe": lambda: part_probe(m, g, sets, a, dev, bs),\n'
  '              "ws": lambda: part_ws(m, g, sets, a, dev, bs), "lp5h": lambda: part_lp5h(m, g, sets, a, dev, bs), "swap_kd": lambda: part_swap_kd(m, g, sets, a, dev, bs)}[p_]()'),
 ('        assert a.get(k_) in (None, v_), ("§233: set sha mismatch vs args.json", k_)', '        assert a.get(k_) in (None, v_), ("§234: set sha mismatch vs args.json", k_)'),
+('    if sets is None:\n        sets = IO.build_sets()', '    if sets is None:\n        sets = IO.build_sets(mul_s_p=int(a.get("mul_s_p", 1)))   # §236: the run\'s law'),
 ]
 for o, n in E:
     assert body.count(o) == 1, ("edit not applied exactly once", body.count(o), o[:90]); body = body.replace(o, n)

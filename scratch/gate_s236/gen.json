@@ -1,0 +1,40 @@
+{
+ "stream": {
+  "1_default": true,
+  "1_explicit_1": true,
+  "2_default": true,
+  "2_explicit_1": true,
+  "3_default": true,
+  "3_explicit_1": true,
+  "4_default": true,
+  "4_explicit_1": true,
+  "5_default": true,
+  "5_explicit_1": true,
+  "6_default": true,
+  "6_explicit_1": true,
+  "7_default": true,
+  "7_explicit_1": true,
+  "8_default": true,
+  "8_explicit_1": true,
+  "9_default": true,
+  "9_explicit_1": true,
+  "10_default": true,
+  "10_explicit_1": true,
+  "11_default": true,
+  "11_explicit_1": true,
+  "12_default": true,
+  "12_explicit_1": true
+ },
+ "test_set_default": true,
+ "test_set_explicit_1": true,
+ "pair_candidates_default": true,
+ "pair_candidates_explicit_1": true,
+ "build_sets_shas_equal_P4": true,
+ "pair_stats_equal_P4": true,
+ "excl_n": [
+  160598,
+  160598,
+  160598
+ ],
+ "pass": true
+}

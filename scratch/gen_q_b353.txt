@@ -1,0 +1,7 @@
+# THEORY §236 REG-CHAIN seed 2 (RC_v1): LAT-AW rc_plaw4_s2 = rc_plaw4_s1's recipe with --seed 2 (one non-580 RTX 3090; REG law; P-4 evals). Off-host ckpts.
+# Frozen args scratch/s236_args_frozen_rc_plaw4_s2.json.
+# HOSTPROBE
+# P=1
+boxes/runs_fsq/rc_plaw4_s2_mem boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --mul_s_p 0 --seed 2 --mem_check
+boxes/runs_fsq/rc_plaw4_s2_gtime boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --time_steps 60 --mul_s_p 0 --seed 2 --auto_micro
+boxes/runs_fsq/rc_plaw4_s2 boxes.inject_aw --arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --mul_s_p 0 --seed 2 --auto_micro --ckpt_every 1000 --eval_parts acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd --args_ref scratch/s236_args_frozen_rc_plaw4_s2.json

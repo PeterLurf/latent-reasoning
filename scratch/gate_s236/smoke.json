@@ -1,0 +1,24 @@
+{
+ "lat_aw4": {
+  "rc": 9,
+  "ws_ds": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "set_law": "reg",
+  "mul_s_p": 0,
+  "excl_n": 174599,
+  "test2_sha": "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91"
+ },
+ "cd_an4": {
+  "rc": 9,
+  "ws_ds": [],
+  "set_law": "reg",
+  "mul_s_p": 0,
+  "excl_n": 174599,
+  "test2_sha": "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91"
+ },
+ "pass": true
+}

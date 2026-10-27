@@ -1,0 +1,203 @@
+{
+ "rc_plaw4_s1": {
+  "rc": 0,
+  "diff_keys": [
+   "excl_n",
+   "floors2_sha",
+   "inject_ow_sha256",
+   "mul_s_p",
+   "mul_s_p3",
+   "pair_stats",
+   "pairs2_sha",
+   "s226_test_sha",
+   "s227_decode_sha",
+   "set_law",
+   "test2_sha",
+   "transfer_sha"
+  ],
+  "diff": {
+   "excl_n": [
+    160598,
+    174599
+   ],
+   "floors2_sha": [
+    "86ce9be92e7938b43e7c42b01f349c412de0d71237beee5f43473729932bb49b",
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900"
+   ],
+   "inject_ow_sha256": [
+    "0695c354cc72411a70d538451a9cfb1ae2592f437207e51a9885d41f0a1e5afe",
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e"
+   ],
+   "mul_s_p": [
+    null,
+    0
+   ],
+   "mul_s_p3": [
+    null,
+    1.0
+   ],
+   "pairs2_sha": [
+    "8d8ae8187945f3ea3b979f13c1bf8880bdfd5ccef6deb05b50fc8aedd8abd8d5",
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3"
+   ],
+   "s226_test_sha": [
+    "93b24cacabf17f6691f7242c9b2ec41414beae5a1fafe11e21a2d965d4f9b771",
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53"
+   ],
+   "s227_decode_sha": [
+    "62470881321854492848f1147a89e878314c19ef121290d00fdccb6ee00d0a50",
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea"
+   ],
+   "set_law": [
+    null,
+    "reg"
+   ],
+   "test2_sha": [
+    "2a51c14ba5ed4a9538adf90e75e73f6bea140ad760b4531e8200b4f71d7ed516",
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91"
+   ],
+   "transfer_sha": [
+    "d4b9055d8e1d40b0b51c0669ecf565abcf24f78f2e8f19c4928aa70a8e1ef6bf",
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s236/args_rc_plaw4_s1/args.json",
+  "pass": true
+ },
+ "rc_plaw4_s2": {
+  "rc": 0,
+  "diff_keys": [
+   "excl_n",
+   "floors2_sha",
+   "inject_ow_sha256",
+   "mul_s_p",
+   "mul_s_p3",
+   "pair_stats",
+   "pairs2_sha",
+   "s226_test_sha",
+   "s227_decode_sha",
+   "seed",
+   "set_law",
+   "test2_sha",
+   "transfer_sha"
+  ],
+  "diff": {
+   "excl_n": [
+    160598,
+    174599
+   ],
+   "floors2_sha": [
+    "86ce9be92e7938b43e7c42b01f349c412de0d71237beee5f43473729932bb49b",
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900"
+   ],
+   "inject_ow_sha256": [
+    "0695c354cc72411a70d538451a9cfb1ae2592f437207e51a9885d41f0a1e5afe",
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e"
+   ],
+   "mul_s_p": [
+    null,
+    0
+   ],
+   "mul_s_p3": [
+    null,
+    1.0
+   ],
+   "pairs2_sha": [
+    "8d8ae8187945f3ea3b979f13c1bf8880bdfd5ccef6deb05b50fc8aedd8abd8d5",
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3"
+   ],
+   "s226_test_sha": [
+    "93b24cacabf17f6691f7242c9b2ec41414beae5a1fafe11e21a2d965d4f9b771",
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53"
+   ],
+   "s227_decode_sha": [
+    "62470881321854492848f1147a89e878314c19ef121290d00fdccb6ee00d0a50",
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea"
+   ],
+   "seed": [
+    1,
+    2
+   ],
+   "set_law": [
+    null,
+    "reg"
+   ],
+   "test2_sha": [
+    "2a51c14ba5ed4a9538adf90e75e73f6bea140ad760b4531e8200b4f71d7ed516",
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91"
+   ],
+   "transfer_sha": [
+    "d4b9055d8e1d40b0b51c0669ecf565abcf24f78f2e8f19c4928aa70a8e1ef6bf",
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s236/args_rc_plaw4_s2/args.json",
+  "pass": true
+ },
+ "rc_pcd4_s1": {
+  "rc": 0,
+  "diff_keys": [
+   "excl_n",
+   "floors2_sha",
+   "inject_ow_sha256",
+   "mul_s_p",
+   "mul_s_p3",
+   "pair_stats",
+   "pairs2_sha",
+   "s226_test_sha",
+   "s227_decode_sha",
+   "set_law",
+   "test2_sha",
+   "transfer_sha"
+  ],
+  "diff": {
+   "excl_n": [
+    160598,
+    174599
+   ],
+   "floors2_sha": [
+    "86ce9be92e7938b43e7c42b01f349c412de0d71237beee5f43473729932bb49b",
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900"
+   ],
+   "inject_ow_sha256": [
+    "0695c354cc72411a70d538451a9cfb1ae2592f437207e51a9885d41f0a1e5afe",
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e"
+   ],
+   "mul_s_p": [
+    null,
+    0
+   ],
+   "mul_s_p3": [
+    null,
+    1.0
+   ],
+   "pairs2_sha": [
+    "8d8ae8187945f3ea3b979f13c1bf8880bdfd5ccef6deb05b50fc8aedd8abd8d5",
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3"
+   ],
+   "s226_test_sha": [
+    "93b24cacabf17f6691f7242c9b2ec41414beae5a1fafe11e21a2d965d4f9b771",
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53"
+   ],
+   "s227_decode_sha": [
+    "62470881321854492848f1147a89e878314c19ef121290d00fdccb6ee00d0a50",
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea"
+   ],
+   "set_law": [
+    null,
+    "reg"
+   ],
+   "test2_sha": [
+    "2a51c14ba5ed4a9538adf90e75e73f6bea140ad760b4531e8200b4f71d7ed516",
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91"
+   ],
+   "transfer_sha": [
+    "d4b9055d8e1d40b0b51c0669ecf565abcf24f78f2e8f19c4928aa70a8e1ef6bf",
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s236/args_rc_pcd4_s1/args.json",
+  "pass": true
+ },
+ "pass": true
+}

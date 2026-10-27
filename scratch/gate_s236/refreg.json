@@ -1,0 +1,15 @@
+{
+ "rc": 0,
+ "files": [
+  "args.json",
+  "eval.json",
+  "eval_acc.json",
+  "eval_cue_only.json",
+  "eval_swap_kd.json",
+  "eval_ws.json",
+  "model.pt"
+ ],
+ "args_reg_shas": true,
+ "src_untouched": true,
+ "pass": true
+}
