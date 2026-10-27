@@ -68,3 +68,4 @@ Latent side:
 - All IDs verified (2004.07780 and 2405.17399 on 10-26; the rest earlier).
 
 **Suggested N1 (NARROW):** "In a plan-given latent loop, a training-distribution correlation between pass index and operation produced a pass-position shortcut (pass 3 ignores the stated op). We remove it by decorrelating the two in the data, the analogue for operations of Kuo et al.'s length–loop-count decorrelation (2606.29983)." No "first".
+- **Update (Note 235-1):** §235 D4-DECOR read **VOID**. The decorrelation moved pass 3's op prior instead of removing it. The proposed N1 is a design description only; do not cite it as a result.
