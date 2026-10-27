@@ -68,8 +68,10 @@ $S "python -c \"import ctypes;exit(ctypes.CDLL('libcuda.so.1').cuInit(0))\"" 2>/
 tar -czf /tmp/up_$LBL.tgz --exclude=__pycache__ latent scratch/queue_worker2.sh scratch/stage1_guard.py scratch/eval_battery.sh $EXTRA ${EXTRA_FILES:-} $Q
 echo "UPLOAD_BYTES $(stat -c %s /tmp/up_$LBL.tgz) START $(date +%s)"
 LSUM=$(sha256sum /tmp/up_$LBL.tgz | cut -c1-64)                    # 2026-10-04: e7's upload arrived corrupt (gzip CRC) and was never checked
+UP_T0=$(date +%s); . "$(dirname "$0")/upload_watch.sh"              # 2026-10-27 (Audit; §237 b354 sat 54 min at ~25 KB/s): kill a stalled upload -> FAILED (caller destroys)
 for try in 1 2 3; do
-  scp -q -i ~/.ssh/runpod_ed25519 -P $P /tmp/up_$LBL.tgz root@$H:/tmp/up.tgz
+  upload_watch /tmp/up_$LBL.tgz $P $H /tmp/up.tgz; urc=$?
+  [ "$urc" = 4 ] && { rm -f /tmp/up_$LBL.tgz; echo "FAILED upload (stalled)"; exit 3; }
   [ "$($S "sha256sum /tmp/up.tgz" 2>/dev/null | cut -c1-64)" = "$LSUM" ] && break
   echo "UPLOAD_SHA_MISMATCH try $try"; [ $try = 3 ] && { rm -f /tmp/up_$LBL.tgz; echo "FAILED upload"; exit 3; }
 done
