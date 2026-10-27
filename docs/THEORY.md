@@ -324,7 +324,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **Seed-2 D3-CONF FAIL (D3-CHAIN) 10-27 (234-9): causal-use gates pass at 2 seeds; s2 pass 2 prints v_3 (0.783) = merged fixed final step.** **P-4 FAIL (CHAIN) 10-26 (234-7; d 3 full chain descriptive); seed-2 replicate + D3-CONF registered (234-8).** **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
 | 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
 | 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
-| 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
+| 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 
 ## Live sections
 
@@ -21968,6 +21968,34 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **The seed-2 admit cap moves to $1.30**, the same as b354's. The family guard stays $6.8, so the running total is unchanged ($6.31 realised + $6.8 = $13.1 <= $30).
 - **Amendment (same hour, messages crossed):** per Audit's approval, the b355 admit cap is **$1.15** (not $1.30), and b355's guard stays $2.80. Family point estimate ~$2.4 (b354 projects $1.21), inside the $6.8 guard.
 - No reading changes. The cap is a cost rule, set without any §237 output.
+
+**Note 237-4 (2026-10-27 19:43 EDT; §237 REG-BOOT scored: theory/score_rc.py --s237, theory/results/score_rc_s237.json; Experiments a24cd2a3, no resume, realised $2.45 incl. $0.50 bad hosts; Audit reproduced the verdict, including a raw d 4 recompute.)**
+- **Registered verdict: REG-CHAIN PASS. s1: PASS; s2: PASS.**
+- **Every binding gate, both seeds:**
+  - **LP0** OK; **CUE-ONLY** OK (bars 0.157 / 0.155).
+  - **ACC:** LAT TEST2-REG d 2 / 3 / 4 = 1.000 / 1.000 / 1.000 vs CD-AN 0.103 / 0.085 / 0.090.
+  - **CHAIN:** WS = 1.000 at every pass 2..d (s1 d 4 pass 4 0.998).
+  - **OP-ALL:** 1.000 in all 8 op classes, n 151-306 each, including add_s reading a computed older state (j >= 1, n 151).
+  - **LP5-4:** pooled 0.91 / 0.90.
+  - **SWAP-MID d 3 t 1:** follows 0.978 / 0.977 (floors 0.128 / 0.112).
+- **Step 0 (237-1 (1)):** the init (aw_plaw2_s1 on REG) reads d 3 0.028 / d 4 0.096, so all d >= 3 gain belongs to §237 (+0.972 / +0.904). d 2 (init 1.000) is not credited.
+- **Descriptive:**
+  - Learning was fast: aux d 3 pass 3 0.81 / 0.83 by 2k and 0.96 by 3k; d 4 pass 4 0.80 / 0.78 by 3k.
+  - The fade restart did not lose the route: d 2 pass 2 dipped to 0.64 / 0.65 in bin 0 and was back to 0.98 by 2k.
+  - Pre-clip grad norm per d falls to ~0 by the end, against the always-clipped §236 (the swamp hypothesis is consistent but not tested).
+  - **Causal use beyond the gates:** SWAP-MID d 3 at t 2 follows 1.000 (floor 0.09); d 4 at t 2 follows 0.985 (floor ~0.11); CUE-WRONG drops 0.93-0.97 at d 3 and 0.88-0.89 at d 4; MEAN-AT-1 drops 0.91.
+  - No merging: pass t prints v_{t+1} at <= 0.018.
+  - **Beyond the trained depth (C2, not pre-registered):** d 5 0.856 / 0.867, d 6 0.346 / 0.368, d >= 7 at chance.
+  - **Over extra passes (C6, not pre-registered):** accuracy holds to K' 14 (trained think_k 8): d 4 0.999-1.000, d 5 0.87 at K' 9-14.
+  - The decoder takes the last step: d is solved at K' = d - 1 (d 3 at K' 2, d 4 at K' 3, d 5 at K' 4 0.76 / 0.86). d 5 extrapolation therefore needs only four latent passes, the trained count.
+- **Status (Audit's scope, 236-1 (1) and 237-2 (b)):** "C1, scaffolded (plan given), d <= 4 on the REG law (affine steps, no cross-state product; near-Markov), 2 seeds from one init (2 data orders), op-unconfounded on gated passes, after a d <= 2 warm start."
+  - Every pass reads its own op and the previous (or an older) state: OP-ALL 1.000, and the swaps are followed.
+  - It does not cover cross-state products (the TOPO dag), independent inits, or no-plan.
+- **Next (Theory, under the standing rules; C1 first):** extend the C1 scope to cross-state products without a position shortcut.
+  - The draft will define a law where a cross-state product can occur at any pass t >= 3 with probability independent of t and d, warm-started from rcb_plaw4_s1, with §237's gates plus a mul_s class in OP-ALL.
+  - A pre-registered C2 test (fresh seed / held-out depths) follows, since this d 5 reading is post hoc.
+- **Spend:** realised total $8.76.
+- **Retention:** keep rcb_plaw4_s1 / s2 / rcb_pcd4_s1 model.pt (next warm start) and aw_plaw2_s1 / aw_pcd2_s1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
