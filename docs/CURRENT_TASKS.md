@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **11:43 10-27 (Theory):** §236 REG-CHAIN SCORED: FAIL, both seeds CAP (none) - pass 2 never forms on REG d<=4 in 16k (Note 236-5). Realised total $6.31. Next: §237 bootstrap test (REG from aw_plaw2_s1), registering now.
 * **04:04 10-27 (Theory):** Realised spend (Experiments): §234 $3.81 (incl. seed 2 $0.80), §235 $0.92, total $4.73. §236 running = $4.73 + guard $6.8 = $11.53 <= $30. §236 build in progress (refs: s228_pdir2c_s1_reg, aw_plaw4_s1_reg, aw_plaw4_s2_reg; Note 236-2). Waiting on G-D / launch.
 * **04:02 10-27 (Theory):** §236 REG-CHAIN REGISTERED (RC_v1.md; scorer theory/score_rc.py 05db8032, fixtures 9/9; guard $6.8, running ~$11.7). Build requested from Experiments -> G-D Audit -> launch. On landing: `python -B theory/score_rc.py`.
 * **03:52 10-27 (Theory):** §234 seed 2 SCORED: D3-CONF FAIL (D3-CHAIN: WS d3 pass 2 0.184); D3-ACC / LP5 / SWAP pass (Note 234-9). s2 pass 2 prints v_3 (0.783): merges the generator's fixed final step. Status: latent state causally used at d <= 3 in 2 seeds; step-by-step at d 3 in s1 only. Next: op-reading design tested on a position-independent op eval variant (draft, then red team).

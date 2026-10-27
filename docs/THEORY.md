@@ -323,7 +323,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 | 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **Seed-2 D3-CONF FAIL (D3-CHAIN) 10-27 (234-9): causal-use gates pass at 2 seeds; s2 pass 2 prints v_3 (0.783) = merged fixed final step.** **P-4 FAIL (CHAIN) 10-26 (234-7; d 3 full chain descriptive); seed-2 replicate + D3-CONF registered (234-8).** **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
 | 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
-| 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
+| 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
 
 ## Live sections
 
@@ -21892,6 +21892,29 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Why min, not Audit's suggested max:** the guard VOIDs a seed whose cue-only accuracy exceeds the bar, so a lower bar is the stricter guard against a false PASS. max would loosen it.
 - The difference is <= 0.002 at any d (0 at d 3), so the choice is immaterial in practice; it is recorded so the rule is fixed before outputs.
 - theory/score_rc.py implements it, fixtures 11/11, including a case VOID at the min bar but not at the max.
+
+**Note 236-5 (2026-10-27 11:43 EDT; §236 REG-CHAIN scored: theory/score_rc.py @ 2cc36f87, theory/results/score_rc.json; Experiments 7b4a6291, no resume, realised $1.58; Audit reproduced the verdict.)**
+- **Registered verdict: REG-CHAIN FAIL. s1: CAP (none); s2: CAP (none).**
+  - LP0 OK; CUE-ONLY OK (bars 0.157 / 0.155).
+  - ACC, CHAIN, OP-ALL, LP5-4 and SWAP-MID all fail in both seeds. LAT acc d 1 / 2 / 3 / 4: s1 1.000 / 0.295 / 0.093 / 0.095; s2 1.000 / 0.166 / 0.092 / 0.103. CD-AN: 1.000 / 0.109 / 0.083 / 0.093.
+  - OP-ALL is at chance in every class (0.09-0.14).
+- **The CAP label's premise does not hold.** CAP was defined for "passes 1-2 work, pass 3 can't read the op". Here **pass 2 never forms, even at d 2**:
+  - log aux_vacc d 2 pass 2 is 0.09-0.11 to 9k, then 0.14 / 0.16 at 16k; pass 1 reaches 1.0 by ~5k;
+  - every d >= 2 step is clipped all run (clip 1.0); median pre-clip grad norm is 11.7 / 8.4, vs 1.4 / 0.6 in P-4.
+- **Comparison (descriptive):** pass 2 formed at 6-9k in every earlier run with the askname init:
+  - P-2 aw_plaw2_s1: d <= 2, no mul_s anywhere, 0.235 -> 0.992 at 7-8k;
+  - P-4 s1 and s2 (default law): 0.50 / 0.84 at bin 6, 1.0 by 9k.
+  - REG d ~ U{1..4}: 0 of 2 seeds by 16k.
+  - **The d <= 2 items are identical under both laws.** P-2 shows mul_s is not needed for pass 2 to form. So the REG d 3-4 items, not the missing mul_s, keep pass 2 from forming within 16k.
+  - **Correction to Audit's "mul_s bootstrapped pass 2":** P-2 is a counterexample.
+  - A plausible but untested mechanism: the d 3-4 REG items' large, always-clipped gradients swamp the d 2 signal under global clipping. In P-4, d 3's fixed S_2*S_1 final step is an easier target.
+  - "Slower, not impossible" can't be excluded (pass 2 still creeping at 16k).
+- **Status unchanged:** C1, scaffolded (plan given), latent state causally used at d <= 3 in 2 seeds under the default law; step-by-step at d 3 in s1 only. REG adds no binding reading.
+- **Next (Theory, under the standing rules):** a bootstrap test, not the op-aux design.
+  - The pre-named op-aux (236-1 (2)) assumed a working pass 2 with failed op reading, and pass 2 did not form here at all.
+  - §237 warm-starts REG training from aw_plaw2_s1 (pass 2 formed, trained on d <= 2 only, never saw mul_s), so it has no op shortcut to unlearn. It asks whether passes 3-4 then chain with op reading.
+  - Op-aux stays pre-named for CAP with passes 1-2 working.
+- **Spend:** realised $6.31 total.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
