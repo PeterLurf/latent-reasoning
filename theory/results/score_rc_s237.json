@@ -1,0 +1,507 @@
+{
+ "section": 237,
+ "registered": "RC_v1.md",
+ "runs": [
+  "rcb_plaw4_s1",
+  "rcb_plaw4_s2",
+  "rcb_pcd4_s1",
+  "s228_pdir2c_s1_reg"
+ ],
+ "seeds": {
+  "rcb_plaw4_s1": {
+   "section": 234,
+   "stage": "P-4",
+   "registered": "Note 234-5 (+ amendment)",
+   "LP0": {
+    "lat": [
+     true,
+     "cap 16.1, 0 over"
+    ],
+    "cd": [
+     true,
+     "cap 18, 0 over"
+    ]
+   },
+   "LP4": true,
+   "acc": {
+    "2": {
+     "lat": 1.0,
+     "cd": 0.103,
+     "dir": 0.095
+    },
+    "3": {
+     "lat": 1.0,
+     "cd": 0.085,
+     "dir": 0.086
+    },
+    "4": {
+     "lat": 1.0,
+     "cd": 0.09,
+     "dir": 0.095
+    }
+   },
+   "CHAIN": true,
+   "ws_rows": {
+    "3": {
+     "2": 1.0,
+     "3": 1.0
+    },
+    "4": {
+     "2": 1.0,
+     "3": 1.0,
+     "4": 0.9980000257492065
+    }
+   },
+   "LP5_4": true,
+   "lp5h_drops": {
+    "3": 0.91,
+    "4": 0.911
+   },
+   "lp5h_pooled": 0.9105,
+   "lp5h_n": {
+    "3": 1000,
+    "4": 1000
+   },
+   "CUE_ONLY_ok": true,
+   "MEAN_AT_1_desc": {
+    "3": 0.91,
+    "4": 0.913
+   },
+   "CUE_WRONG_drop": {
+    "3": 0.9319999999999999,
+    "4": 0.891
+   },
+   "swap_desc": {
+    "3": {
+     "t_mid": 1,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.368,
+      "floor": 0.193,
+      "follow_dfin": 0.159,
+      "follow_ca": 0.209,
+      "stay_own": 0.074
+     },
+     "swap_mid": {
+      "3": {
+       "follow_U": 0.978,
+       "floor": 0.128,
+       "follow_ca": 0.828,
+       "follow_cb": 0.977,
+       "stay_own": 0.003
+      },
+      "8": {
+       "follow_U": 0.978,
+       "floor": 0.125,
+       "follow_ca": 0.828,
+       "follow_cb": 0.977,
+       "stay_own": 0.003
+      }
+     }
+    },
+    "4": {
+     "t_mid": 2,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.354,
+      "floor": 0.169,
+      "follow_dfin": 0.151,
+      "follow_ca": 0.203,
+      "stay_own": 0.081
+     },
+     "swap_mid": {
+      "4": {
+       "follow_U": 0.985,
+       "floor": 0.124,
+       "follow_ca": 0.907,
+       "follow_cb": 0.906,
+       "stay_own": 0.0
+      },
+      "8": {
+       "follow_U": 0.985,
+       "floor": 0.121,
+       "follow_ca": 0.907,
+       "follow_cb": 0.906,
+       "stay_own": 0.0
+      }
+     }
+    }
+   },
+   "verdict": "P-4 PASS (C1-TOLD)",
+   "run": "rcb_plaw4_s1",
+   "cue_only_bars": {
+    "3": 0.157,
+    "4": 0.155
+   },
+   "op_all": {
+    "add_c": {
+     "acc": 1.0,
+     "n": 287
+    },
+    "sub_c": {
+     "acc": 1.0,
+     "n": 255
+    },
+    "mul_c": {
+     "acc": 1.0,
+     "n": 261
+    },
+    "add_v": {
+     "acc": 1.0,
+     "n": 306
+    },
+    "sub_v": {
+     "acc": 1.0,
+     "n": 292
+    },
+    "mul_v": {
+     "acc": 1.0,
+     "n": 297
+    },
+    "add_s_j0": {
+     "acc": 1.0,
+     "n": 151
+    },
+    "add_s_j1+": {
+     "acc": 1.0,
+     "n": 151
+    }
+   },
+   "merged_rows": {
+    "3": {
+     "1": 0.014,
+     "2": 0.011
+    },
+    "4": {
+     "1": 0.008,
+     "2": 0.018,
+     "3": 0.009
+    }
+   },
+   "swap_mid_d3_t1": {
+    "follow_U": 0.978,
+    "floor": 0.128,
+    "follow_ca": 0.828,
+    "follow_cb": 0.977,
+    "stay_own": 0.003
+   },
+   "swap_mid_d3_t2": {
+    "3": {
+     "follow_U": 1.0,
+     "floor": 0.087,
+     "follow_ca": 1.0,
+     "follow_cb": 1.0,
+     "stay_own": 0.0
+    },
+    "8": {
+     "follow_U": 1.0,
+     "floor": 0.099,
+     "follow_ca": 1.0,
+     "follow_cb": 1.0,
+     "stay_own": 0.0
+    }
+   },
+   "gates": {
+    "LP0": true,
+    "ACC": true,
+    "CHAIN": true,
+    "OP-ALL": true,
+    "LP5-4": true,
+    "SWAP-MID": true
+   },
+   "op_all_min": 1.0,
+   "label": "PASS"
+  },
+  "rcb_plaw4_s2": {
+   "section": 234,
+   "stage": "P-4",
+   "registered": "Note 234-5 (+ amendment)",
+   "LP0": {
+    "lat": [
+     true,
+     "cap 14.9, 0 over"
+    ],
+    "cd": [
+     true,
+     "cap 18, 0 over"
+    ]
+   },
+   "LP4": true,
+   "acc": {
+    "2": {
+     "lat": 1.0,
+     "cd": 0.103,
+     "dir": 0.095
+    },
+    "3": {
+     "lat": 1.0,
+     "cd": 0.085,
+     "dir": 0.086
+    },
+    "4": {
+     "lat": 1.0,
+     "cd": 0.09,
+     "dir": 0.095
+    }
+   },
+   "CHAIN": true,
+   "ws_rows": {
+    "3": {
+     "2": 1.0,
+     "3": 1.0
+    },
+    "4": {
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0
+    }
+   },
+   "LP5_4": true,
+   "lp5h_drops": {
+    "3": 0.898,
+    "4": 0.911
+   },
+   "lp5h_pooled": 0.9045,
+   "lp5h_n": {
+    "3": 1000,
+    "4": 1000
+   },
+   "CUE_ONLY_ok": true,
+   "MEAN_AT_1_desc": {
+    "3": 0.913,
+    "4": 0.911
+   },
+   "CUE_WRONG_drop": {
+    "3": 0.965,
+    "4": 0.88
+   },
+   "swap_desc": {
+    "3": {
+     "t_mid": 1,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.368,
+      "floor": 0.184,
+      "follow_dfin": 0.159,
+      "follow_ca": 0.209,
+      "stay_own": 0.074
+     },
+     "swap_mid": {
+      "3": {
+       "follow_U": 0.977,
+       "floor": 0.112,
+       "follow_ca": 0.827,
+       "follow_cb": 0.977,
+       "stay_own": 0.003
+      },
+      "8": {
+       "follow_U": 0.977,
+       "floor": 0.112,
+       "follow_ca": 0.827,
+       "follow_cb": 0.977,
+       "stay_own": 0.003
+      }
+     }
+    },
+    "4": {
+     "t_mid": 2,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.354,
+      "floor": 0.181,
+      "follow_dfin": 0.151,
+      "follow_ca": 0.203,
+      "stay_own": 0.081
+     },
+     "swap_mid": {
+      "4": {
+       "follow_U": 0.985,
+       "floor": 0.106,
+       "follow_ca": 0.907,
+       "follow_cb": 0.906,
+       "stay_own": 0.0
+      },
+      "8": {
+       "follow_U": 0.985,
+       "floor": 0.106,
+       "follow_ca": 0.907,
+       "follow_cb": 0.906,
+       "stay_own": 0.0
+      }
+     }
+    }
+   },
+   "verdict": "P-4 PASS (C1-TOLD)",
+   "run": "rcb_plaw4_s2",
+   "cue_only_bars": {
+    "3": 0.157,
+    "4": 0.155
+   },
+   "op_all": {
+    "add_c": {
+     "acc": 1.0,
+     "n": 287
+    },
+    "sub_c": {
+     "acc": 1.0,
+     "n": 255
+    },
+    "mul_c": {
+     "acc": 1.0,
+     "n": 261
+    },
+    "add_v": {
+     "acc": 1.0,
+     "n": 306
+    },
+    "sub_v": {
+     "acc": 1.0,
+     "n": 292
+    },
+    "mul_v": {
+     "acc": 1.0,
+     "n": 297
+    },
+    "add_s_j0": {
+     "acc": 1.0,
+     "n": 151
+    },
+    "add_s_j1+": {
+     "acc": 1.0,
+     "n": 151
+    }
+   },
+   "merged_rows": {
+    "3": {
+     "1": 0.014,
+     "2": 0.011
+    },
+    "4": {
+     "1": 0.008,
+     "2": 0.018,
+     "3": 0.009
+    }
+   },
+   "swap_mid_d3_t1": {
+    "follow_U": 0.977,
+    "floor": 0.112,
+    "follow_ca": 0.827,
+    "follow_cb": 0.977,
+    "stay_own": 0.003
+   },
+   "swap_mid_d3_t2": {
+    "3": {
+     "follow_U": 1.0,
+     "floor": 0.098,
+     "follow_ca": 1.0,
+     "follow_cb": 1.0,
+     "stay_own": 0.0
+    },
+    "8": {
+     "follow_U": 1.0,
+     "floor": 0.094,
+     "follow_ca": 1.0,
+     "follow_cb": 1.0,
+     "stay_own": 0.0
+    }
+   },
+   "gates": {
+    "LP0": true,
+    "ACC": true,
+    "CHAIN": true,
+    "OP-ALL": true,
+    "LP5-4": true,
+    "SWAP-MID": true
+   },
+   "op_all_min": 1.0,
+   "label": "PASS"
+  }
+ },
+ "verdict": "REG-CHAIN PASS | s1: PASS / s2: PASS",
+ "step0": {
+  "lat": {
+   "acc": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 0.028,
+    "4": 0.096
+   },
+   "ws": {
+    "1": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0,
+     "6": 1.0,
+     "7": 1.0,
+     "8": 1.0
+    },
+    "2": {
+     "1": 1.0,
+     "2": 0.9980000257492065,
+     "3": 0.9980000257492065,
+     "4": 0.9980000257492065,
+     "5": 0.9980000257492065,
+     "6": 0.9980000257492065,
+     "7": 0.9980000257492065,
+     "8": 0.9980000257492065
+    },
+    "3": {
+     "1": 1.0,
+     "2": 0.5630000233650208,
+     "3": 0.03800000250339508,
+     "4": 0.04200000315904617,
+     "5": 0.03800000250339508,
+     "6": 0.04200000315904617,
+     "7": 0.039000000804662704,
+     "8": 0.04100000113248825
+    },
+    "4": {
+     "1": 0.999000072479248,
+     "2": 0.42000001668930054,
+     "3": 0.05900000408291817,
+     "4": 0.09800000488758087,
+     "5": 0.10100000351667404,
+     "6": 0.0990000069141388,
+     "7": 0.09800000488758087,
+     "8": 0.0990000069141388
+    }
+   },
+   "lp5h_drop": {
+    "3": -0.059,
+    "4": 0.006000000000000005
+   },
+   "swap_mid_d3_t1": {
+    "follow_U": 0.031,
+    "floor": 0.098,
+    "follow_ca": 0.026,
+    "follow_cb": 0.02,
+    "stay_own": 0.094
+   }
+  },
+  "cd": {
+   "acc": {
+    "1": 1.0,
+    "2": 0.099,
+    "3": 0.073,
+    "4": 0.103
+   },
+   "ws": null,
+   "lp5h_drop": null,
+   "swap_mid_d3_t1": null
+  }
+ },
+ "delta_acc_vs_step0": {
+  "rcb_plaw4_s1": {
+   "2": 0.0,
+   "3": 0.972,
+   "4": 0.904
+  },
+  "rcb_plaw4_s2": {
+   "2": 0.0,
+   "3": 0.972,
+   "4": 0.904
+  }
+ }
+}
