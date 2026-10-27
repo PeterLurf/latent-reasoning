@@ -21963,6 +21963,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(b) Weaker replicate.** Both LAT seeds start from the same init (aw_plaw2_s1). s2 differs only in seed-driven data order (and dropout, if any) after step 0, so agreement between seeds is weaker evidence than §236's independent inits. The status wording will say 'same init, 2 data orders'.
 - rc_* model.pt deleted (Audit confirmed). Step-0 references are running locally.
 
+**Note 237-3 (2026-10-27 14:38 EDT; §237 admit cap for seed 2, before any §237 output.)**
+- b355 (rcb_plaw4_s2) was refused at its $0.90 admit cap (projections $1.11, $0.96). A 16k LAT cell alone on a fast 3090 projects about $0.95-1.10 (§236's rc_plaw4_s2 realised $0.71 on a faster host).
+- **The seed-2 admit cap moves to $1.30**, the same as b354's. The family guard stays $6.8, so the running total is unchanged ($6.31 realised + $6.8 = $13.1 <= $30).
+- No reading changes. The cap is a cost rule, set without any §237 output.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
