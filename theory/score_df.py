@@ -98,7 +98,7 @@ def seed_readings(runs, lat, ref0, t2, oc):
     o["run"] = lat
     if o["verdict"].startswith("pending"):
         o["label"] = "pending"; return o
-    need = [(dr, "eval_acc") for dr in DIRS] + [(lat, "eval_opclass"), (lat, "eval_swap_prod"), (ref0, "eval_ws"), (ref0, "eval_opclass"), (ref0, "eval_swap_prod")]
+    need = [(dr, "eval_acc") for dr in DIRS] + [(lat, "eval_opclass"), (lat, "eval_swap_prod"), (ref0, "eval_acc"), (ref0, "eval_ws"), (ref0, "eval_opclass"), (ref0, "eval_swap_prod")]
     miss = ["%s/%s" % k for k in need if A4.jl(os.path.join(runs, k[0], k[1] + ".json")) is None]
     if miss:
         o["label"] = "pending"; o["verdict"] = "pending (missing %s)" % miss; return o
@@ -126,7 +126,9 @@ def seed_readings(runs, lat, ref0, t2, oc):
         V = np.array(w[d]["v"]); merged[d] = {str(t): float((np.array(w[d]["pred_by_pass"][str(t)]) == V[:, t]).mean()) for t in range(1, int(d))}
     o.update({"gates": g, "prod_acc": {"lat": pa, "cd": pc, "n": npr}, "mul_min": mmin, "mul_min_step0": m0min, "others_min": others, "swap_prod": sp, "swap_prod_step0": sp0,
               "partner": "MEM" if sp["follow_dfin"] >= sp["follow_cb"] else "TEXT", "merged_rows": merged})
-    zero = m0ok and swap_ok(sp0)
+    pa0, _ = prod_acc(ref0, runs, t2); o["prod_acc_step0"] = pa0                 # Note 238-1 (1): ZERO-SHOT needs step 0 to pass all three
+    zero = m0ok and swap_ok(sp0) and pa0 is not None and pa0 >= 0.80
+    o["step0_gates"] = {"PROD-ACC": pa0 is not None and pa0 >= 0.80, "OP-ALL+ mul": m0ok, "PROD-SWAP": swap_ok(sp0)}
     if all(g.values()):
         o["label"] = "PASS" + (" (ZERO-SHOT)" if zero else "")
     elif not mok and others >= 0.80:
@@ -145,6 +147,26 @@ def seed_readings(runs, lat, ref0, t2, oc):
     return o
 
 
+def retention(runs, lat):
+    """Note 238-1 (2), descriptive: the §238 model on §237's REG TEST2 (eval-only <lat>_reg: acc, ws) vs §237's finals; flags any drop > 0.05."""
+    import score_rc as RC
+    r = A4.jl(os.path.join(runs, lat + "_reg", "eval_acc.json")); w = A4.jl(os.path.join(runs, lat + "_reg", "eval_ws.json"))
+    ref = A4.jl(os.path.join(runs, {"df_plaw4_s1": "rcb_plaw4_s1", "df_plaw4_s2": "rcb_plaw4_s2"}.get(lat, ""), "eval_acc.json"))
+    if r is None or w is None or ref is None:
+        return {"status": "pending (missing %s_reg acc / ws)" % lat}
+    out = {"acc": {d: r["by_d"][d]["acc"] for d in ("2", "3", "4")}, "acc_s237": {d: ref["by_d"][d]["acc"] for d in ("2", "3", "4")}}
+    rg = RC.regen_reg()
+    if rg is not None:
+        ok, cl = [], []
+        for d in ("3", "4"):
+            it = w["items"][d]; V = np.array(it["v"]); ok += (np.array(it["pred_by_pass"]["3"]) == V[:, 2]).tolist(); cl += [RC.op_class(rg[x], 3) for x in it["sig"] if x in rg]
+        ok, cl = np.array(ok), np.array(cl)
+        if len(ok) == len(cl):
+            out["op_all_reg"] = {c: float(ok[cl == c].mean()) for c in RC.CLASSES if (cl == c).any()}
+    out["regressions"] = [d for d in ("2", "3", "4") if out["acc_s237"][d] - out["acc"][d] > 0.05] + [c for c, v in out.get("op_all_reg", {}).items() if v < 0.95]
+    return out
+
+
 def score(runs=R, sets=None):
     sets = sets if sets is not None else regen()
     o = {"section": 238, "registered": "DF_v1.md", "runs": list(LATS) + [CD]}
@@ -157,7 +179,8 @@ def score(runs=R, sets=None):
         o["verdict"] = "pending (%s)" % "; ".join(s["verdict"] for s in seeds.values() if s["label"] == "pending"); return o
     npass = sum(lb.startswith("PASS") for lb in labs)
     v = "DF PASS" if npass == 2 else "DF SPLIT" if npass == 1 else "DF VOID" if all(lb == "VOID" for lb in labs) else "DF FAIL"
-    o["verdict"] = "%s | %s" % (v, " / ".join("%s: %s" % (k[-2:], s["label"]) for k, s in seeds.items())); return o
+    o["verdict"] = "%s | %s" % (v, " / ".join("%s: %s" % (k[-2:], s["label"]) for k, s in seeds.items()))
+    o["retention"] = {lat: retention(runs, lat) for lat in LATS}; return o
 
 
 def fixtures():
