@@ -1,0 +1,72 @@
+{
+ "by_d": {
+  "1": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  },
+  "2": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 2
+  },
+  "3": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  },
+  "4": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  },
+  "5": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  },
+  "6": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  },
+  "7": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  },
+  "8": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 1
+  },
+  "9": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 1
+  },
+  "10": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 1
+  },
+  "11": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 1
+  },
+  "12": {
+   "n": 1000,
+   "same_items": true,
+   "n_pred_differ": 0
+  }
+ },
+ "n_pred_differ_total": 6,
+ "all_same_items": true,
+ "eval_bs": [
+  100,
+  50
+ ],
+ "pass": false,
+ "def": "Audit G-D 10-27: s228_pdir2c_s1_reg acc at eval_bs 100 vs 50 on the same TEST2-REG items (fp32, 4060): per-item preds equal, else the count of differing items"
+}
