@@ -1,0 +1,421 @@
+{
+ "section": 236,
+ "registered": "RC_v1.md",
+ "runs": [
+  "rc_plaw4_s1",
+  "rc_plaw4_s2",
+  "rc_pcd4_s1",
+  "s228_pdir2c_s1_reg"
+ ],
+ "seeds": {
+  "rc_plaw4_s1": {
+   "section": 234,
+   "stage": "P-4",
+   "registered": "Note 234-5 (+ amendment)",
+   "LP0": {
+    "lat": [
+     true,
+     "cap 31.2, 0 over"
+    ],
+    "cd": [
+     true,
+     "cap 29, 0 over"
+    ]
+   },
+   "LP4": false,
+   "acc": {
+    "2": {
+     "lat": 0.295,
+     "cd": 0.109,
+     "dir": 0.095
+    },
+    "3": {
+     "lat": 0.093,
+     "cd": 0.083,
+     "dir": 0.086
+    },
+    "4": {
+     "lat": 0.095,
+     "cd": 0.093,
+     "dir": 0.095
+    }
+   },
+   "CHAIN": false,
+   "ws_rows": {
+    "3": {
+     "2": 0.1340000033378601,
+     "3": 0.0990000069141388
+    },
+    "4": {
+     "2": 0.1210000067949295,
+     "3": 0.13100001215934753,
+     "4": 0.09400000423192978
+    }
+   },
+   "LP5_4": false,
+   "lp5h_drops": {
+    "3": 0.016,
+    "4": -0.012999999999999998
+   },
+   "lp5h_pooled": 0.001500000000000001,
+   "lp5h_n": {
+    "3": 1000,
+    "4": 1000
+   },
+   "CUE_ONLY_ok": true,
+   "MEAN_AT_1_desc": {
+    "3": 0.006000000000000005,
+    "4": -0.0030000000000000027
+   },
+   "CUE_WRONG_drop": {
+    "3": 0.022000000000000006,
+    "4": -0.026999999999999996
+   },
+   "swap_desc": {
+    "3": {
+     "t_mid": 1,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.199,
+      "floor": 0.178,
+      "follow_dfin": 0.095,
+      "follow_ca": 0.104,
+      "stay_own": 0.093
+     },
+     "swap_mid": {
+      "3": {
+       "follow_U": 0.128,
+       "floor": 0.119,
+       "follow_ca": 0.102,
+       "follow_cb": 0.121,
+       "stay_own": 0.078
+      },
+      "8": {
+       "follow_U": 0.12,
+       "floor": 0.119,
+       "follow_ca": 0.103,
+       "follow_cb": 0.112,
+       "stay_own": 0.086
+      }
+     }
+    },
+    "4": {
+     "t_mid": 2,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.194,
+      "floor": 0.208,
+      "follow_dfin": 0.1,
+      "follow_ca": 0.094,
+      "stay_own": 0.094
+     },
+     "swap_mid": {
+      "4": {
+       "follow_U": 0.116,
+       "floor": 0.112,
+       "follow_ca": 0.099,
+       "follow_cb": 0.098,
+       "stay_own": 0.092
+      },
+      "8": {
+       "follow_U": 0.116,
+       "floor": 0.107,
+       "follow_ca": 0.098,
+       "follow_cb": 0.097,
+       "stay_own": 0.095
+      }
+     }
+    }
+   },
+   "verdict": "P-4 FAIL (LP4,CHAIN,LP5-4)",
+   "run": "rc_plaw4_s1",
+   "cue_only_bars": {
+    "3": 0.157,
+    "4": 0.155
+   },
+   "op_all": {
+    "add_c": {
+     "acc": 0.11498257839721254,
+     "n": 287
+    },
+    "sub_c": {
+     "acc": 0.11372549019607843,
+     "n": 255
+    },
+    "mul_c": {
+     "acc": 0.09195402298850575,
+     "n": 261
+    },
+    "add_v": {
+     "acc": 0.12091503267973856,
+     "n": 306
+    },
+    "sub_v": {
+     "acc": 0.10273972602739725,
+     "n": 292
+    },
+    "mul_v": {
+     "acc": 0.13131313131313133,
+     "n": 297
+    },
+    "add_s_j0": {
+     "acc": 0.11258278145695365,
+     "n": 151
+    },
+    "add_s_j1+": {
+     "acc": 0.1390728476821192,
+     "n": 151
+    }
+   },
+   "merged_rows": {
+    "3": {
+     "1": 0.017,
+     "2": 0.09
+    },
+    "4": {
+     "1": 0.01,
+     "2": 0.107,
+     "3": 0.087
+    }
+   },
+   "swap_mid_d3_t1": {
+    "follow_U": 0.128,
+    "floor": 0.119,
+    "follow_ca": 0.102,
+    "follow_cb": 0.121,
+    "stay_own": 0.078
+   },
+   "swap_mid_d3_t2": {
+    "3": {
+     "follow_U": 0.089,
+     "floor": 0.105,
+     "follow_ca": 0.089,
+     "follow_cb": 0.089,
+     "stay_own": 0.096
+    },
+    "8": {
+     "follow_U": 0.092,
+     "floor": 0.098,
+     "follow_ca": 0.092,
+     "follow_cb": 0.092,
+     "stay_own": 0.096
+    }
+   },
+   "gates": {
+    "LP0": true,
+    "ACC": false,
+    "CHAIN": false,
+    "OP-ALL": false,
+    "LP5-4": false,
+    "SWAP-MID": false
+   },
+   "op_all_min": 0.09195402298850575,
+   "label": "CAP (none)"
+  },
+  "rc_plaw4_s2": {
+   "section": 234,
+   "stage": "P-4",
+   "registered": "Note 234-5 (+ amendment)",
+   "LP0": {
+    "lat": [
+     true,
+     "cap 32.9, 0 over"
+    ],
+    "cd": [
+     true,
+     "cap 29, 0 over"
+    ]
+   },
+   "LP4": false,
+   "acc": {
+    "2": {
+     "lat": 0.166,
+     "cd": 0.109,
+     "dir": 0.095
+    },
+    "3": {
+     "lat": 0.092,
+     "cd": 0.083,
+     "dir": 0.086
+    },
+    "4": {
+     "lat": 0.103,
+     "cd": 0.093,
+     "dir": 0.095
+    }
+   },
+   "CHAIN": false,
+   "ws_rows": {
+    "3": {
+     "2": 0.11700000613927841,
+     "3": 0.0990000069141388
+    },
+    "4": {
+     "2": 0.09700000286102295,
+     "3": 0.1290000081062317,
+     "4": 0.10700000822544098
+    }
+   },
+   "LP5_4": false,
+   "lp5h_drops": {
+    "3": 0.0,
+    "4": -0.0020000000000000018
+   },
+   "lp5h_pooled": -0.0010000000000000009,
+   "lp5h_n": {
+    "3": 1000,
+    "4": 1000
+   },
+   "CUE_ONLY_ok": true,
+   "MEAN_AT_1_desc": {
+    "3": 0.0050000000000000044,
+    "4": -0.002999999999999989
+   },
+   "CUE_WRONG_drop": {
+    "3": -0.0040000000000000036,
+    "4": -0.0020000000000000018
+   },
+   "swap_desc": {
+    "3": {
+     "t_mid": 1,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.159,
+      "floor": 0.177,
+      "follow_dfin": 0.078,
+      "follow_ca": 0.081,
+      "stay_own": 0.113
+     },
+     "swap_mid": {
+      "3": {
+       "follow_U": 0.101,
+       "floor": 0.1,
+       "follow_ca": 0.087,
+       "follow_cb": 0.084,
+       "stay_own": 0.108
+      },
+      "8": {
+       "follow_U": 0.097,
+       "floor": 0.097,
+       "follow_ca": 0.085,
+       "follow_cb": 0.081,
+       "stay_own": 0.11
+      }
+     }
+    },
+    "4": {
+     "t_mid": 2,
+     "n_pairs": 1000,
+     "swap_k": {
+      "follow_U": 0.174,
+      "floor": 0.205,
+      "follow_dfin": 0.081,
+      "follow_ca": 0.093,
+      "stay_own": 0.092
+     },
+     "swap_mid": {
+      "4": {
+       "follow_U": 0.121,
+       "floor": 0.116,
+       "follow_ca": 0.101,
+       "follow_cb": 0.106,
+       "stay_own": 0.096
+      },
+      "8": {
+       "follow_U": 0.106,
+       "floor": 0.11,
+       "follow_ca": 0.089,
+       "follow_cb": 0.092,
+       "stay_own": 0.094
+      }
+     }
+    }
+   },
+   "verdict": "P-4 FAIL (LP4,CHAIN,LP5-4)",
+   "run": "rc_plaw4_s2",
+   "cue_only_bars": {
+    "3": 0.157,
+    "4": 0.155
+   },
+   "op_all": {
+    "add_c": {
+     "acc": 0.11498257839721254,
+     "n": 287
+    },
+    "sub_c": {
+     "acc": 0.11764705882352941,
+     "n": 255
+    },
+    "mul_c": {
+     "acc": 0.09578544061302682,
+     "n": 261
+    },
+    "add_v": {
+     "acc": 0.12745098039215685,
+     "n": 306
+    },
+    "sub_v": {
+     "acc": 0.10616438356164383,
+     "n": 292
+    },
+    "mul_v": {
+     "acc": 0.10437710437710437,
+     "n": 297
+    },
+    "add_s_j0": {
+     "acc": 0.12582781456953643,
+     "n": 151
+    },
+    "add_s_j1+": {
+     "acc": 0.13245033112582782,
+     "n": 151
+    }
+   },
+   "merged_rows": {
+    "3": {
+     "1": 0.018,
+     "2": 0.101
+    },
+    "4": {
+     "1": 0.01,
+     "2": 0.1,
+     "3": 0.095
+    }
+   },
+   "swap_mid_d3_t1": {
+    "follow_U": 0.101,
+    "floor": 0.1,
+    "follow_ca": 0.087,
+    "follow_cb": 0.084,
+    "stay_own": 0.108
+   },
+   "swap_mid_d3_t2": {
+    "3": {
+     "follow_U": 0.087,
+     "floor": 0.084,
+     "follow_ca": 0.087,
+     "follow_cb": 0.087,
+     "stay_own": 0.086
+    },
+    "8": {
+     "follow_U": 0.085,
+     "floor": 0.084,
+     "follow_ca": 0.085,
+     "follow_cb": 0.085,
+     "stay_own": 0.086
+    }
+   },
+   "gates": {
+    "LP0": true,
+    "ACC": false,
+    "CHAIN": false,
+    "OP-ALL": false,
+    "LP5-4": false,
+    "SWAP-MID": false
+   },
+   "op_all_min": 0.09578544061302682,
+   "label": "CAP (none)"
+  }
+ },
+ "verdict": "REG-CHAIN FAIL | s1: CAP (none) / s2: CAP (none)"
+}
