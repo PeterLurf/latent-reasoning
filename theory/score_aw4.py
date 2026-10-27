@@ -62,6 +62,31 @@ def score(runs=R):
     return o
 
 
+def score_d3(runs=R, lat="aw_plaw4_s2", cd="aw_pcd4_s2"):
+    """Note 234-8 D3-CONF (confirmatory, seed 2 only; seed 1 was exploratory): LP0 each arm; D3-ACC LAT d 3 >= 0.60 and >= CD-AN + 0.25; D3-CHAIN
+    WS d 3 passes 2-3 >= 0.50; D3-LP5 lp5h d 3 drop >= 0.30; D3-SWAP SWAP-MID d 3 (t 1, K' 3) follow_U >= 0.50 and >= floor + 0.30; CUE-ONLY d 3 guard."""
+    global LAT, CD
+    old = (LAT, CD); LAT, CD = lat, cd
+    try:
+        o = score(runs)
+    finally:
+        LAT, CD = old
+    o = {"section": 234, "stage": "P-4 seed replicate + D3-CONF", "registered": "Note 234-8", "runs": [lat, cd], "p4_verdict": o["verdict"], "p4": o}
+    p4 = o["p4"]
+    if p4["verdict"].startswith("pending"):
+        o["verdict"] = p4["verdict"]; return o
+    co = jl(os.path.join(runs, lat, "eval_cue_only.json"))["by_d"]["3"]; guard = co["answer_acc"] <= max(co["majority"], p4["acc"]["3"]["dir"]) + 0.05
+    sm = jl(os.path.join(runs, lat, "eval_swap_kd.json"))["by_d"]["3"]["swap_mid"]["3"]
+    g = {"LP0": p4["LP0"]["lat"][0] and p4["LP0"]["cd"][0], "D3-ACC": p4["acc"]["3"]["lat"] >= 0.60 and p4["acc"]["3"]["lat"] >= p4["acc"]["3"]["cd"] + 0.25,
+         "D3-CHAIN": all(v >= 0.50 for v in p4["ws_rows"]["3"].values()), "D3-LP5": p4["lp5h_drops"]["3"] >= 0.30,
+         "D3-SWAP": sm["follow_U"] >= 0.50 and sm["follow_U"] >= sm["floor"] + 0.30}
+    o.update({"gates": g, "swap_mid_d3": sm, "cue_only_d3": co["answer_acc"], "CUE_ONLY_d3_ok": guard})
+    if not guard:
+        o["verdict"] = "VOID (CUE-ONLY d 3)"; return o
+    o["verdict"] = "D3-CONF PASS" if all(g.values()) else "D3-CONF FAIL (%s)" % ",".join(k for k, v in g.items() if not v)
+    return o
+
+
 def fixtures():
     res = []
     def world(lat3=0.9, lat4=0.85, cd=0.1, ws=0.95, mean_t=0.2, co=0.1, cwd=0.5):
@@ -87,14 +112,30 @@ def fixtures():
     o = score(world(co=0.5)); res.append(("cue alone answers -> VOID", o["verdict"].startswith("VOID"), o["verdict"]))
     o = score(world(cwd=0.05)); res.append(("cue unused -> PASS plain C1", "plain C1" in o["verdict"], o["verdict"]))
     d = world(); os.remove(os.path.join(d, LAT, "eval_lp5h.json")); o = score(d); res.append(("missing -> pending", o["verdict"].startswith("pending"), o["verdict"]))
+
+    def w3(follow=0.8, floor=0.2, co=0.1, **kw):
+        d = world(co=co, **kw)
+        for a, b in ((LAT, "aw_plaw4_s2"), (CD, "aw_pcd4_s2")):
+            os.replace(os.path.join(d, a), os.path.join(d, b))
+        p = os.path.join(d, "aw_plaw4_s2", "eval_swap_kd.json"); j = json.load(open(p)); j["by_d"]["3"]["swap_mid"] = {"3": {"follow_U": follow, "floor": floor}}
+        json.dump(j, open(p, "w")); return d
+    o = score_d3(w3(lat4=0.3)); res.append(("d3 chain, d4 fails -> D3-CONF PASS (P-4 FAIL)", o["verdict"] == "D3-CONF PASS" and "FAIL" in o["p4_verdict"], o["verdict"] + " / " + o["p4_verdict"]))
+    o = score_d3(w3(follow=0.45)); res.append(("swap not followed -> FAIL D3-SWAP", "D3-SWAP" in o["verdict"], o["verdict"]))
+    o = score_d3(w3(follow=0.55, floor=0.4)); res.append(("follow within floor+0.30 -> FAIL D3-SWAP", "D3-SWAP" in o["verdict"], o["verdict"]))
+    o = score_d3(w3(mean_t=0.8)); res.append(("mid mean harmless -> FAIL D3-LP5", "D3-LP5" in o["verdict"], o["verdict"]))
+    o = score_d3(w3(lat3=0.5)); res.append(("d3 0.5 -> FAIL D3-ACC", "D3-ACC" in o["verdict"], o["verdict"]))
+    o = score_d3(w3(co=0.5)); res.append(("cue-only d3 -> VOID", o["verdict"].startswith("VOID"), o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--d3", action="store_true", help="Note 234-8 seed-2 D3-CONF"); a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
+    if a.d3:
+        o = score_d3(); print(o["verdict"], "| P-4 replicate:", o["p4_verdict"])
+        os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT.replace(".json", "_d3s2.json"), "w", newline=chr(10)), indent=1, default=str); sys.exit(0)
     o = score(); print(o["verdict"])
     os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", newline=chr(10)), indent=1, default=str)
