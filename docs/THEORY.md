@@ -21996,6 +21996,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - A pre-registered C2 test (fresh seed / held-out depths) follows, since this d 5 reading is post hoc.
 - **Spend:** realised total $8.76.
 - **Retention:** keep rcb_plaw4_s1 / s2 / rcb_pcd4_s1 model.pt (next warm start) and aw_plaw2_s1 / aw_pcd2_s1.
+- **Literature (LIT_STEPTOLD addendum, IDs verified), N1 NARROW, no "first".** Literature's wording, with Theory's qualifier added in brackets: "On templated word programs with iid affine operations and a given plan, a GPT-2 latent loop that writes the answer-position state of each per-pass sub-question into a recurrent memory solves d 3-4 at 1.000 where an exposure-matched one-pass comparator is at chance; each intermediate is decodable at every pass and mid-chain state swaps are followed (0.98), in two seeds [from one d <= 2 warm-start init]. This extends SCIT's synthetic counterfactual transfer (2608.27265; KV-cache carrier, <= 3 hops, teacher-forced) to a compact recurrent memory at depth 4." Closest priors: SCIT 2608.27265; Liang & Pan 2602.00449; Shapiro 2608.11233; 2609.01924. d 5 0.86 and the 14-pass stability stay post hoc.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
