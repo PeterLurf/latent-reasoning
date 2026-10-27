@@ -1,5 +1,5 @@
 """THEORY §236 REG-CHAIN scorer (docs/research_regchain_2026-10-27/RC_v1.md; Theory is the only scorer).
-Runs: LAT-AW rc_plaw4_s1 / rc_plaw4_s2, CD-AN rc_pcd4_s1 (one RTX 3090 each); CUE-ONLY bar from s228_pdir2c_s1_reg (plain DIRECT, REG eval).
+Runs: LAT-AW rc_plaw4_s1 / rc_plaw4_s2, CD-AN rc_pcd4_s1; CUE-ONLY bar from s228_pdir2c_s1_reg + _reg_bs50 (plain DIRECT, REG eval), read at the MIN over the two (Note 236-4).
 Per LAT seed, binding: LP0 (seed + CD-AN); ACC (d 3 >= 0.60, d 4 >= 0.50, each >= CD-AN + 0.25); CHAIN (WS >= 0.50 at passes 2..d, d 3-4);
   OP-ALL (pass-3 WS pooled d 3-4 >= 0.80 for every op class: 6 regular + add_s j=0 + add_s j>=1; any class n < 50 -> VOID); LP5-4 (pooled >= 0.30);
   SWAP-MID d 3 t 1 (follow_U >= 0.50 and >= floor + 0.30); CUE-ONLY guard d 3-4.
@@ -17,6 +17,7 @@ import score_aw4 as A4  # noqa: E402
 R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_rc.json")
 LATS, CD, DIRR = ("rc_plaw4_s1", "rc_plaw4_s2"), "rc_pcd4_s1", "s228_pdir2c_s1_reg"
+DIR_VARIANTS = (DIRR, DIRR + "_bs50")
 CLASSES = ("add_c", "sub_c", "mul_c", "add_v", "sub_v", "mul_v", "add_s_j0", "add_s_j1+")
 
 
@@ -47,6 +48,17 @@ def seed_readings(runs, lat, regen):
     o["run"] = lat
     if o["verdict"].startswith("pending"):
         o["label"] = "pending"; return o
+    # Note 236-4: the DIRECT bar is read at the MIN over the reference's eval_bs variants (stricter guard); each variant must exist
+    co = A4.jl(os.path.join(runs, lat, "eval_cue_only.json"))["by_d"]; bars = {}
+    for d in A4.DS:
+        accs = []
+        for dr in DIR_VARIANTS:
+            j = A4.jl(os.path.join(runs, dr, "eval_acc.json"))
+            if j is None:
+                o["label"] = "pending"; o["verdict"] = "pending (missing %s/eval_acc)" % dr; return o
+            accs.append(j["by_d"][d]["acc"])
+        bars[d] = max(co[d]["majority"], min(accs)) + 0.05
+    o["cue_only_bars"] = bars; o["CUE_ONLY_ok"] = all(co[d]["answer_acc"] <= bars[d] for d in A4.DS)
     w = A4.jl(os.path.join(runs, lat, "eval_ws.json"))["items"]
     ok3, cls3, merged = [], [], {}
     for d in ("3", "4"):
@@ -111,7 +123,7 @@ def fixtures():
     res = []
     rng0 = np.random.default_rng(0)
 
-    def world(seedcfg=None, co=0.1):
+    def world(seedcfg=None, co=0.1, dir100=0.1, dir50=0.1):
         """seedcfg: {lat: dict(p3_bad_class=None|cls, p3_bad=0..1, p4=1.0, merge=False, follow=0.8, lat4=0.85)}"""
         seedcfg = seedcfg or {}
         d = tempfile.mkdtemp(); regen = {}
@@ -125,7 +137,7 @@ def fixtures():
                 src = [(1 if (i % 2) else 0) if op == "add_s" else None for op in ops]
                 items.append({"ops": ops, "src_j": src}); regen[sig[i]] = items[-1]
             base[dd] = (V, sig, items)
-        for run, accs in [(lat, {"2": 1.0, "3": 0.95, "4": (seedcfg.get(lat) or {}).get("lat4", 0.85)}) for lat in LATS] + [(CD, {"2": 0.1, "3": 0.3, "4": 0.1}), (DIRR, {"2": 0.1, "3": 0.1, "4": 0.1})]:
+        for run, accs in [(lat, {"2": 1.0, "3": 0.95, "4": (seedcfg.get(lat) or {}).get("lat4", 0.85)}) for lat in LATS] + [(CD, {"2": 0.1, "3": 0.3, "4": 0.1}), (DIRR, {"2": dir100, "3": dir100, "4": dir100}), (DIRR + "_bs50", {"2": dir50, "3": dir50, "4": dir50})]:
             p = os.path.join(d, run); os.makedirs(p)
             json.dump({"by_d": {k: {"acc": v} for k, v in accs.items()}}, open(os.path.join(p, "eval_acc.json"), "w"))
             with open(os.path.join(p, "log.jsonl"), "w") as fh:
@@ -165,6 +177,9 @@ def fixtures():
     d, rg = world({lat: {"merge": True} for lat in LATS}); o = score(d, rg); res.append(("pass 2 prints v_3 -> MERGED", o["verdict"].count("MERGED") == 2, o["verdict"]))
     d, rg = world({"rc_plaw4_s1": {"follow": 0.4}}); o = score(d, rg); res.append(("swap not followed -> GATE-OTHER (SWAP-MID)", "s1: GATE-OTHER (SWAP-MID)" in o["verdict"], o["verdict"]))
     d, rg = world(co=0.5); o = score(d, rg); res.append(("cue alone -> both VOID", o["verdict"].startswith("REG-CHAIN VOID"), o["verdict"]))
+    d, rg = world(co=0.17, dir100=0.13, dir50=0.11); o = score(d, rg)
+    res.append(("bar at min over bs variants (0.16 < 0.17 < 0.18) -> VOID", o["verdict"].startswith("REG-CHAIN VOID"), o["verdict"]))
+    d, rg = world(); import shutil; shutil.rmtree(os.path.join(d, DIRR + "_bs50")); o = score(d, rg); res.append(("missing bs50 ref -> pending", o["verdict"].startswith("pending"), o["verdict"]))
     d, rg = world(); rg = {k: v for k, v in rg.items() if k != "4_0"}; o = score(d, rg); res.append(("sig missing -> seed VOID", o["verdict"].startswith("REG-CHAIN VOID"), o["verdict"]))
     d, rg = world(); os.remove(os.path.join(d, LATS[1], "eval_lp5h.json")); o = score(d, rg); res.append(("missing part -> pending", o["verdict"].startswith("pending"), o["verdict"]))
     d, rg = world(); rg2 = {k: {"ops": ["add_c"] * len(v["ops"]), "src_j": [None] * len(v["ops"])} for k, v in rg.items()}; o = score(d, rg2)

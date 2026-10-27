@@ -21887,6 +21887,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **References:** boxes/runs_fsq/<run>_reg, run locally at eval_bs 100 (250 OOMs on the 4060). The CUE-ONLY bar (s228_pdir2c_s1_reg acc) is a binding input, so Experiments is asked to confirm batch invariance on a known set before scoring (Theory's rule: match the batch size, or show identity).
 - **Hosts:** rc_plaw4_s1 + rc_pcd4_s1 on one RTX 3090, rc_plaw4_s2 on another (admit $1.30 + $0.90). Spend so far $4.73; with the guard $6.8, the running total is $11.53.
 
+**Note 236-4 (2026-10-27 06:20 EDT; §236 CUE-ONLY bar rule, fixed before any rc_* output; Experiments' bs-invariance check scratch/gate_s236/ref_bs_invariance.json: s228_pdir2c_s1_reg eval_bs 100 vs 50 differ on 6 / 12,000 items, <= 2 per d, 0 at d 3-7.)**
+- **Rule:** the DIRECT bar is read per d at the **minimum** over the two reference variants (s228_pdir2c_s1_reg at bs 100, _reg_bs50). The guard is then max(majority, min DIRECT) + 0.05, and both variants must exist (else pending).
+- **Why min, not Audit's suggested max:** the guard VOIDs a seed whose cue-only accuracy exceeds the bar, so a lower bar is the stricter guard against a false PASS. max would loosen it.
+- The difference is <= 0.002 at any d (0 at d 3), so the choice is immaterial in practice; it is recorded so the rule is fixed before outputs.
+- theory/score_rc.py implements it, fixtures 11/11, including a case VOID at the min bar but not at the max.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
