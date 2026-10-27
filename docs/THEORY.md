@@ -324,6 +324,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **Seed-2 D3-CONF FAIL (D3-CHAIN) 10-27 (234-9): causal-use gates pass at 2 seeds; s2 pass 2 prints v_3 (0.783) = merged fixed final step.** **P-4 FAIL (CHAIN) 10-26 (234-7; d 3 full chain descriptive); seed-2 replicate + D3-CONF registered (234-8).** **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
 | 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
 | 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
+| 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 
 ## Live sections
 
@@ -19329,6 +19330,38 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - inject_ow exports SEED_TEST2_REG (the scorer regenerates ops);
   - swap_kd d 3 at t 1 (path by_d.3.swap_mid.3, as P-4) plus t 2 (by_d.3.swap_mid_t2, descriptive);
   - the (t, d) op table from 50k draws.
+
+## 237. REG-BOOT: REG chaining from a model whose pass 2 already works (Theory's choice under the user's 10-26 standing rules relayed by Audit; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-27 11:44 EDT, before any build or output)
+
+- **Why (Note 236-5):** on REG d ~ U{1..4} from the askname init, pass 2 never formed in 16k (0 / 2 seeds). Pass 2 formed at 6-9k in every askname run with the default law, including P-2 (d <= 2, no mul_s). So §236 did not reach the question it asked: whether passes 3-4 read the op once the read-into-compute route exists.
+  - §237 supplies that route by initialisation and asks the same question with §236's gates.
+- **Change vs §236 (one change: the init):**
+  - LAT-AW starts from aw_plaw2_s1/model.pt (P-2's trained model: pass 2 at 1.000, trained on d <= 2 only, so it never saw mul_s and has no pass-3 op prior);
+  - CD-AN starts from aw_pcd2_s1/model.pt.
+  - Fresh optimizer and schedule, step 0, 16k, REG law, d ~ U{1..4}, γ = 1, as rc_plaw4 otherwise.
+  - mem.norms come from the loaded model; the norm calibration is skipped (a consequence of warm-starting).
+  - Runs rcb_plaw4_s1 / rcb_plaw4_s2 (LAT-AW) and rcb_pcd4_s1 (CD-AN). Args diff vs rc_plaw4_s1 / rc_pcd4_s1 = {init_model} + seed + name.
+  - The eval sets, references and REG streams are §236's (same set shas).
+- **Disclosed:**
+  - not budget-matched to §236 (the init carries 12k d <= 2 steps);
+  - the "plan given" scaffold and REG's scope (affine, no cross-state product; near-Markov) as §236.
+- **Derivation:**
+  - [A] Pass 2's read-into-compute is the route passes 3-4 reuse: the same trunk, cue and read at each pass, with no pass embedding.
+  - [C1] H-POS: with the route present and op_t independent of t (0.00027 bits on gated passes), passes 3-4 learn from d 3-4 supervision, giving OP-ALL >= 0.8 and CHAIN.
+  - [C2] H-CAP: passes >= 3 can't compose a read state with a newly read op beyond what pass 2 does, giving CAP with passes 1-2 working.
+  - [C3] PASS4-LAG: pass 4 gets only 25% of steps; it failed in all earlier runs.
+  - **Risk:** REG d 3-4 gradients degrade pass 2. Logged: aux d 2 pass 2 by bin, descriptive; an end-of-run d 2 acc < 0.9 is reported.
+- **Readings (binding, theory/score_rc.py --s237; §236's gates, labels, overall rule and CUE-ONLY min-bar rule unchanged):**
+  - per seed: LP0, ACC, CHAIN, OP-ALL (>= 0.80 per class; n < 50 -> VOID), LP5-4, SWAP-MID d 3 t 1, CUE-ONLY;
+  - overall: PASS (both) / SPLIT / FAIL / VOID.
+  - **Pre-named next:** CAP with passes 1-2 working in both seeds -> the per-pass op-target aux design (236-1 (2)).
+- **OC:** per seed P(VOID) ~0.1. P(PASS | H-POS, pass 4 learns) ~0.7; P(PASS | pass 4 lags) ~0.05; P(PASS | H-CAP) ~0.01. Priors 0.35 / 0.35 / 0.3.
+  - Per seed P(PASS) ~0.23; overall P(PASS) ~0.1, P(>= SPLIT) ~0.37.
+- **Censoring:** as §236.
+- **Cost:** three runs, as §236 ($1.58 realised there). Admit <= $2.2, guard $6.8. Running: realised $6.31 + $6.8 = $13.1 <= $30.
+- **Build (Experiments; G-D Audit):**
+  - inject_aw --init_model <path> --init_model_sha <prefix>: loads the full model state strict (trunk + DeltaMem + W_o + norms), skips calibration, fresh optimizer. Default off is bitwise.
+  - Gates: a strict-load test; at step 0 the loaded model reproduces aw_plaw2_s1's TEST2 d 2 acc on a 200-item slice; flags-off bitwise; the args diff.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
