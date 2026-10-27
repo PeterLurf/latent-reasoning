@@ -5,3 +5,5 @@ realised:b347 # 57741164 20:18-23:40 ~3.4 h x $0.2014/h (P-2 LAT-AW + CD-AN; hos
 349:aw_plaw4_s1 185.188.217.123:50951 57778022 $0.2409/h sps 0.75408349831899 1.27
 realised:b348 # 57763504 00:15-05:47 ~5.5 h x $0.2401/h (ST-AN st_an2_s1; wall guard spent) 1.328
 realised:b349 # 57778022 02:50-06:50 ~4.0 h x $0.2409/h (P-4 LAT-AW d<=4 16k + CD-AN; wall guard spent) 0.965
+351:aw_plaw4_s2 185.188.217.123:51873 57913342 $0.188/h sps 0.7500998934110006 0.98
+realised:b351 # 57913342 23:50-03:48 ~4.0 h x $0.188/h (§234 P-4 seed 2 LAT-AW + CD-AN; wall guard spent) 0.748
