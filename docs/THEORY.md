@@ -322,7 +322,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 232 | HOLD-C1 (user 10-24; for Audit, cap $7): VB-C1 battery + OLD-SWAP + c1hold on BASE / FT-CTRL / HC (s230_fhftfix_s1, s224_fhft_s2) on one 3090; COEXIST / COEXIST-SHIFTED / C1-HARMED; blind s3 pre-registered; HC_v1.md at ee6828ac | CLOSED | **CLOSED 10-25 (232-4, Audit-reproduced): COEXIST 2/3 (claim holds); s3 C1-HARMED on the V_0-masked arm only (-0.043; trend -0.017/-0.002/-0.043 in all 3 seeds); all decisive C1 stats kept; hold 0.999; $4.04.** STAGE A 10-24 (232-3, Audit-reproduced): COEXIST 2/2 (both COEXIST-SHIFTED): VB-C1 kept within margins vs BASE and FT-CTRL, hold to K′128, depth parity; read shift = newest-version share only (OLD-SWAP 0); blind s3 triggered; $1.28.** APPROVED by Audit 10-24 (cap $7; 232-1: s2 recipe difference disclosed, s3 = §230 recipe, seen-readings list); build c1hold -> G-D -> Stage A on a 3090** |
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 | 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
-| 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
+| 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
 
 ## Live sections
 
@@ -21772,6 +21772,31 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - WS is the trunk's argmax at ':', not the stored state, so CHAIN failing does not show that S_3 lacks v_3. It does show that the trunk stops writing the step-t answer at ':' after pass 3.
 - **Status:** "C1, scaffolded (plan given), d <= 3, 1 seed" (d = 3 descriptive; the binding P-4 gate failed at d = 4). No unqualified language-C1 claim.
 - **Next:** not pre-named, so it goes to the user (Theory asks; Audit relays). Running cost $3.01 realised, no open guards.
+
+**Note 235-1 (2026-10-26 20:43 EDT; §235 D4-DECOR scored: theory/score_d4.py @ f3256b50, theory/results/score_d4.json; Experiments ecd1c2b9, no resume, realised $0.92 incl. a $0.04 bad host; Audit reproduced the verdict.)**
+- **Registered verdict: VOID (CUE-ONLY guard on d 3-4).**
+  - eval_cue_only d 3 answer_acc 0.260 vs bar max(majority 0.129, DIRECT 0.093) + 0.05 = 0.179. d 4 is 0.135 (bar 0.173). P-4's model gave 0.120 at d 3.
+  - Same eval module (sha 0bea332e) as P-4.
+  - The training stream's realised d 3 mul_s share is 0.493 at bin 0 and 0.500 over the run (stream_d3_mul_s), as registered.
+- **The other binding gates (descriptive only under VOID) would have failed anyway:**
+  - LP4 F: LAT d 3 / 4 1.000 / 0.350 (P-4 0.765), CD-AN 0.298 / 0.158;
+  - CHAIN F: d 4 WS pass 2 / 3 / 4 = 0.999 / 0.472 / 0.265;
+  - OP-READ F: 0.688 (n 564; P-4 0.103);
+  - LP5-4 T: pooled 0.482.
+  - So even without VOID, the label would have been D4-CAP (partial).
+- **Descriptive, 1 seed:**
+  - **The op prior at d 4 pass 3 moved; the model didn't learn to read the op for every op.**
+    - Non-mul_s 0.103 -> 0.688, and the S_2*S_1 shortcut rate on wrong non-mul_s items fell 0.505 -> 0.159.
+    - But (mul_s, src 1) fell 0.998 -> 0.193, while the same op at d 3 pass 3 holds 0.953.
+    - Final accuracy on d 4 items whose step 3 is mul_s fell 0.924 -> 0.138; on non-mul_s items it went 0.642 -> 0.514.
+  - Passes 1-2 are >= 0.99 on every op in both runs.
+  - Mid-chain swaps are unchanged: SWAP-MID d 3 follows 0.812 (floor 0.200), d 4 0.363 (floor 0.187).
+  - **Why the guard fired (not settled):** the CUE-ONLY path removes the program text from the think passes but leaves the decoder unchanged, and the decoder sees the program.
+    - At d 3 its correct items overlap CD-AN's direct solves above base: P(CD-AN right | cue-only right) 0.396 vs 0.264.
+    - So the new mix plausibly trained the LAT decoder to solve d 3 partly by itself, as CD-AN does at 0.298, rather than a cue leaking the answer.
+    - That is a reading of the cause only; VOID stands under the rule.
+- **Status unchanged:** "C1, scaffolded (plan given), d <= 3, 1 seed" (P-4's model; §235's run adds no binding reading).
+- **Next:** no pre-named follow-up, and a second data fix would be a problem->fix loop. It goes to the user (Theory asks). Running cost: $3.01 + $0.92 = $3.93 realised, no open guards.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
