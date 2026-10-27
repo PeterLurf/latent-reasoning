@@ -323,6 +323,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 233 | STEP-TOLD (user 10-24; for Audit, cap $19): step-cued latent loop on TOPO, GPT-2 small; $0 P1-ASK+NAME + CD-local gates; P-2 vs CUED-DIRECT (LP2 d=2, LP3, LP5, CUE-ONLY, CUE-WRONG); claim C1 scaffolded; ST_v1.md at da924dca | CLOSED | **CLOSED 10-25 (233-4): P-2 FAIL - LAT-ST d=2 0.090 = chance (CD 0.097), pass-1 aux d2 0.33, LP5 -0.007, cue unused (CUE-WRONG 0.001); bottleneck = writing the value into the INJECT state; ~$2.13 (disclosed $0.04 cell overrun).** LOCAL GATES PASS 10-24 (233-2): P1-ASK+NAME 1.000 all classes (S_1 at d=2 1.000); CUED-DIRECT d=2 0.089 (plan alone does not solve d=2) -> P-2 cloud pilot next.** APPROVED by Audit 10-24 (cap $19): $0 local gates P1-ASK+NAME + CD-local on the 4060 now; cloud only after the G-D packet; wording "C1, scaffolded (plan given)" in every status line** |
 | 234 | ANSWER-WRITE (user 10-25 via Audit; for Audit, cap $30 running rule): INJECT state written from the answer-position state of a per-pass sub-question; init askname; $0 G-AW0 + G-AW1 FROZEN-USE gates; P-2 vs CD-AN with SWAP-K; AW_v1.md at b51151b1 | registered | **Seed-2 D3-CONF FAIL (D3-CHAIN) 10-27 (234-9): causal-use gates pass at 2 seeds; s2 pass 2 prints v_3 (0.783) = merged fixed final step.** **P-4 FAIL (CHAIN) 10-26 (234-7; d 3 full chain descriptive); seed-2 replicate + D3-CONF registered (234-8).** **P-2 PASS 10-25 (234-4): LAT-AW d=2 1.000 vs CD-AN 0.097; LP5 drop 0.882; swap follows cf_a 1.000 (floor 0.175); cue used (C1-TOLD, scaffolded; DEC-STEP2); $0.68 -> ST-AN + P-4 next.** G-AW1 FAIL 10-25 (234-2): v_1 stored 1.000 but frozen trunk cannot use it (v_2 0.118 vs 0.107) -> read-into-compute bottleneck; user (10-25): run P-2 anyway (~$2); P-2 fail closes §234.** APPROVED by Audit 10-25 (cap $30 running rule; 234-1: G-AW0 outcome known via af0f0eed, so G-AW1 is the blind gate); build -> G-AW0 -> G-AW1 -> P-2** |
 | 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
+| 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
 
 ## Live sections
 
@@ -19301,6 +19302,33 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Censoring:** as P-4 (crash -> resume + dedupe; missing parts -> pending, FAIL at --final).
 - **Cost:** admit <= $1.30, guard $4.17. Running: $3.01 realised + $4.17 = $7.18 <= $30.
 - **Build (Experiments; G-D at Audit):** the kwarg + flags-off bitwise stream gate (10k draws per d at 1.0); training-only wiring + set-sha / eval-sig identity gates; realised d 3 mul_s share ~0.5 logged; gradflow + smoke as P-4.
+
+## 236. REG-CHAIN: a C1 chaining test where no pass position predicts its op (Theory's choice under the user's 10-26 standing rules relayed by Audit; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-27 04:02 EDT, before any build or output)
+
+- **Text:** docs/research_regchain_2026-10-27/RC_v1.md (wins over RC_draft.md 4035dcde). Red team: REVIEW_RC.md (GO-with-fixes; all 7 adopted).
+  - Literature: evaluation hygiene, not a contribution ("each step's operation is drawn iid in training and test, as in standard synthetic multi-step arithmetic (e.g. Lin 2503.07604)"). The op-position / step-merging finding is ours; kin are Kuo 2606.29983 and Liang & Pan 2602.00449.
+- **Why:** the generator's forced mul_s (ts ~ U{3..d}) fixes the d 3 final op. That produced the pass-3 S_2*S_1 shortcut (234-7), s2's merged final step (234-9) and §235's moved prior (235-1). TEST2 carries the same confound.
+- **Law:** mul_s_p 0 (no forced mul_s) in training and every eval / calibration / memcheck stream. At mul_s_p 1 it is bitwise current.
+  - Op independence holds over passes >= 2 at d >= 2 (0.0003 bits; pass 1 differs: no add_s at t 1, d 1 forced mul_v).
+  - Disclosed: REG is close to Markov (add_s j >= 1 in 7.5% of d 3 / 16.7% of d 4 programs); all programs are affine, with no cross-state product.
+- **Runs:** rc_plaw4_s1 / rc_plaw4_s2 (LAT-AW), rc_pcd4_s1 (CD-AN); args diff vs aw_plaw4_s1 = {mul_s_p 0} + seed + name. As P-4 otherwise.
+  - Eval-only references on REG: s228_pdir2c_s1_reg (CUE-ONLY bar); aw_plaw4_s1 / s2 and d4d_plaw4_s1 *_reg (descriptive).
+- **Binding** (theory/score_rc.py @ 05db8032; fixtures 9/9), per LAT seed:
+  - LP0; ACC (d 3 >= 0.60, d 4 >= 0.50, each >= CD-AN + 0.25); CHAIN (WS >= 0.50 at every pass 2..d, d 3-4);
+  - OP-ALL (pass-3 WS pooled d 3-4 >= 0.80 for each of 8 op classes; n < 50 -> VOID);
+  - LP5-4 (>= 0.30); SWAP-MID d 3 t 1 (>= 0.50 and >= floor + 0.30); CUE-ONLY guard.
+  - Seed labels, first match: VOID; PASS; CAP; MERGED; PASS4-LAG; CHAIN-OTHER; GATE-OTHER.
+  - Overall: PASS (both) / SPLIT (one) / FAIL / VOID (both VOID).
+- **OC:** per seed P(VOID) ~0.15, P(PASS) ~0.22; overall P(PASS) ~0.1, P(>= SPLIT) ~0.35. The informative split is CAP vs PASS4-LAG vs PASS.
+  - Pre-named next on CAP in both seeds: the op-target aux design.
+- **Censoring:** as P-4; a missing reference makes the CUE-ONLY bar pending.
+- **Cost:** admit <= $2.2, guard $6.8. Running: realised ~$4.9 + $6.8 ~ $11.7 <= $30.
+- **Build gates (Experiments; G-D Audit):**
+  - the kwarg on Stream / test_set / pair_candidates, asserts, flags-off bitwise;
+  - zero mul_s in REG sets; 0 sig overlap train vs every eval set; new seeds; set shas in args;
+  - inject_ow exports SEED_TEST2_REG (the scorer regenerates ops);
+  - swap_kd d 3 at t 1 (path by_d.3.swap_mid.3, as P-4) plus t 2 (by_d.3.swap_mid_t2, descriptive);
+  - the (t, d) op table from 50k draws.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
