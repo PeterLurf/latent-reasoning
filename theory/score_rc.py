@@ -190,8 +190,13 @@ def fixtures():
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true")
+    ap.add_argument("--s237", action="store_true", help="§237 REG-BOOT: the same readings on rcb_plaw4_s1 / s2 + rcb_pcd4_s1, to score_rc_s237.json")
+    a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = score(); print(o["verdict"])
-    os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", newline=chr(10)), indent=1, default=str)
+    out = OUT
+    if a.s237:
+        LATS, CD = ("rcb_plaw4_s1", "rcb_plaw4_s2"), "rcb_pcd4_s1"; out = OUT.replace(".json", "_s237.json")
+    o = score(); o["section"] = 237 if a.s237 else 236; print(o["verdict"])
+    os.makedirs(os.path.dirname(out), exist_ok=True); json.dump(o, open(out, "w", newline=chr(10)), indent=1, default=str)

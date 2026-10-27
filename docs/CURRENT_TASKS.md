@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **11:44 10-27 (Theory):** §237 REG-BOOT REGISTERED (REG from aw_plaw2_s1 / aw_pcd2_s1; §236 gates via score_rc.py --s237; guard $6.8, running $13.1). Build requested (--init_model) -> G-D Audit -> launch. Keep aw_plaw2_s1 / aw_pcd2_s1 model.pt; rc_* model.pt can go after Audit's check.
 * **11:43 10-27 (Theory):** §236 REG-CHAIN SCORED: FAIL, both seeds CAP (none) - pass 2 never forms on REG d<=4 in 16k (Note 236-5). Realised total $6.31. Next: §237 bootstrap test (REG from aw_plaw2_s1), registering now.
 * **04:04 10-27 (Theory):** Realised spend (Experiments): §234 $3.81 (incl. seed 2 $0.80), §235 $0.92, total $4.73. §236 running = $4.73 + guard $6.8 = $11.53 <= $30. §236 build in progress (refs: s228_pdir2c_s1_reg, aw_plaw4_s1_reg, aw_plaw4_s2_reg; Note 236-2). Waiting on G-D / launch.
 * **04:02 10-27 (Theory):** §236 REG-CHAIN REGISTERED (RC_v1.md; scorer theory/score_rc.py 05db8032, fixtures 9/9; guard $6.8, running ~$11.7). Build requested from Experiments -> G-D Audit -> launch. On landing: `python -B theory/score_rc.py`.
