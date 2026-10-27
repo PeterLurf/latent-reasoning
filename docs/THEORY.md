@@ -21956,6 +21956,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(2) Build G-D includes:** the step-0 reproduction gate; strict-load key equality; an assert that the calibration skip leaves the dose / lambda paths unchanged (γ fixed 1); pre-clip grad norm logged per d bin (descriptive check of the gradient-swamp hypothesis from 236-5).
 - **(3)** The init model files ship with a host-side sha check.
 
+**Note 237-2 (2026-10-27 12:07 EDT; §237 disclosures before any output; Audit G-D PASS c94f77f7; b354 / b355 deploying.)**
+- **(a) Read fade restarts.** fade = min(1, step/500) per step, so the warm-started read starts at 0.002 and ramps over the first 500 steps, as in a fresh run.
+  - The init's pass-2 route is weakened for ~3% of training, and the early gradients favour read-free solutions. This is a named risk to the 'route present' premise.
+  - Descriptive check: aux d 2 pass 2 in bins 0-1 against step 0. A collapse below 0.5 that is not recovered by 4k is reported as 'route lost', and the run then does not test H-POS / H-CAP.
+- **(b) Weaker replicate.** Both LAT seeds start from the same init (aw_plaw2_s1). s2 differs only in seed-driven data order (and dropout, if any) after step 0, so agreement between seeds is weaker evidence than §236's independent inits. The status wording will say 'same init, 2 data orders'.
+- rc_* model.pt deleted (Audit confirmed). Step-0 references are running locally.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
