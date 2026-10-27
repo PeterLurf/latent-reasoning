@@ -69,3 +69,22 @@ Latent side:
 
 **Suggested N1 (NARROW):** "In a plan-given latent loop, a training-distribution correlation between pass index and operation produced a pass-position shortcut (pass 3 ignores the stated op). We remove it by decorrelating the two in the data, the analogue for operations of Kuo et al.'s length–loop-count decorrelation (2606.29983)." No "first".
 - **Update (Note 235-1):** §235 D4-DECOR read **VOID**. The decorrelation moved pass 3's op prior instead of removing it. The proposed N1 is a design description only; do not cite it as a result.
+
+## Addendum (2026-10-27): REG-CHAIN draft (RC_draft.md, 4035dcde): iid per-step ops
+From our own notes; no new scans (as requested). All IDs were verified earlier.
+
+**Position-independent op sampling in synthetic multi-step evaluations:**
+- **Lin 2503.07604** (read 10-23): each step's operator is iid (+ / − at 50 %), and the variable's side is iid (50 %), so no step position predicts its op. Its shortcut appears under **premise-order** variation, not op position.
+- **Kuo 2606.29983:** the loop-count ↔ length correlation and its randomisation fix.
+- **Ruoss 2305.16843 / McLeish 2405.17399:** positional randomisation.
+- **Shortcut learning in general:** Geirhos 2004.07780.
+
+**Step-merging / compression shortcuts in latent CoT:**
+- **Liang & Pan 2602.00449:** short-horizon tasks form "bridge states"; deeper ones compress or lose the latent rollout.
+- **CODI 2502.21074:** placeholder latents between intermediate results.
+- **Cui 2602.22441:** shortcut answers that bypass the latents.
+- **Our own record:** LIT_STEPFACTOR_D1 (teacher-forced value tokens as a memory-free shortcut); §235's moved op prior.
+
+**Suggested NARROW wording:** "To remove the pass-position shortcut that a fixed final operation allowed (§234–235), each step's operation is drawn iid in training and test, as in standard synthetic multi-step arithmetic (e.g. Lin 2503.07604), so no pass index predicts its operation."
+- Present it as **evaluation hygiene**, not a contribution.
+- The finding that a latent loop exploited op position, and merged steps, is our observation. Kin: Kuo (length ↔ loop count) and Liang & Pan (compressed rollouts).
