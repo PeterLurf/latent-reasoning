@@ -1,0 +1,148 @@
+{
+ "section": 234,
+ "stage": "P-4 seed replicate + D3-CONF",
+ "registered": "Note 234-8",
+ "runs": [
+  "aw_plaw4_s2",
+  "aw_pcd4_s2"
+ ],
+ "p4_verdict": "P-4 FAIL (CHAIN)",
+ "p4": {
+  "section": 234,
+  "stage": "P-4",
+  "registered": "Note 234-5 (+ amendment)",
+  "LP0": {
+   "lat": [
+    true,
+    "cap 33.8, 0 over"
+   ],
+   "cd": [
+    true,
+    "cap 37.9, 0 over"
+   ]
+  },
+  "LP4": true,
+  "acc": {
+   "2": {
+    "lat": 1.0,
+    "cd": 0.098,
+    "dir": 0.093
+   },
+   "3": {
+    "lat": 1.0,
+    "cd": 0.321,
+    "dir": 0.093
+   },
+   "4": {
+    "lat": 0.845,
+    "cd": 0.146,
+    "dir": 0.092
+   }
+  },
+  "CHAIN": false,
+  "ws_rows": {
+   "3": {
+    "2": 0.18400001525878906,
+    "3": 0.999000072479248
+   },
+   "4": {
+    "2": 0.42900002002716064,
+    "3": 0.46700000762939453,
+    "4": 0.02500000037252903
+   }
+  },
+  "LP5_4": true,
+  "lp5h_drops": {
+   "3": 0.734,
+   "4": 0.593
+  },
+  "lp5h_pooled": 0.6635,
+  "lp5h_n": {
+   "3": 1000,
+   "4": 1000
+  },
+  "CUE_ONLY_ok": true,
+  "MEAN_AT_1_desc": {
+   "3": 0.744,
+   "4": 0.5780000000000001
+  },
+  "CUE_WRONG_drop": {
+   "3": 0.564,
+   "4": 0.643
+  },
+  "swap_desc": {
+   "3": {
+    "t_mid": 1,
+    "n_pairs": 1000,
+    "swap_k": {
+     "follow_U": 0.846,
+     "floor": 0.271,
+     "follow_dfin": 0.017,
+     "follow_ca": 0.829,
+     "stay_own": 0.037
+    },
+    "swap_mid": {
+     "3": {
+      "follow_U": 0.772,
+      "floor": 0.189,
+      "follow_ca": 0.772,
+      "follow_cb": 0.772,
+      "stay_own": 0.055
+     },
+     "8": {
+      "follow_U": 0.828,
+      "floor": 0.206,
+      "follow_ca": 0.828,
+      "follow_cb": 0.828,
+      "stay_own": 0.038
+     }
+    }
+   },
+   "4": {
+    "t_mid": 2,
+    "n_pairs": 1000,
+    "swap_k": {
+     "follow_U": 0.807,
+     "floor": 0.23,
+     "follow_dfin": 0.022,
+     "follow_ca": 0.785,
+     "stay_own": 0.042
+    },
+    "swap_mid": {
+     "4": {
+      "follow_U": 0.229,
+      "floor": 0.172,
+      "follow_ca": 0.187,
+      "follow_cb": 0.128,
+      "stay_own": 0.165
+     },
+     "8": {
+      "follow_U": 0.2,
+      "floor": 0.167,
+      "follow_ca": 0.16,
+      "follow_cb": 0.111,
+      "stay_own": 0.204
+     }
+    }
+   }
+  },
+  "verdict": "P-4 FAIL (CHAIN)"
+ },
+ "gates": {
+  "LP0": true,
+  "D3-ACC": true,
+  "D3-CHAIN": false,
+  "D3-LP5": true,
+  "D3-SWAP": true
+ },
+ "swap_mid_d3": {
+  "follow_U": 0.772,
+  "floor": 0.189,
+  "follow_ca": 0.772,
+  "follow_cb": 0.772,
+  "stay_own": 0.055
+ },
+ "cue_only_d3": 0.137,
+ "CUE_ONLY_d3_ok": true,
+ "verdict": "D3-CONF FAIL (D3-CHAIN)"
+}
