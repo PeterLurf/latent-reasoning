@@ -106,3 +106,12 @@ From our own notes; all IDs verified earlier.
 **Suggested NARROW wording (no "first"):**
 "On templated word programs with iid affine operations and a given plan, a GPT-2 latent loop that writes the answer-position state of each per-pass sub-question into a recurrent memory solves d 3–4 at 1.000 where an exposure-matched one-pass comparator is at chance. Each intermediate is decodable at every pass, and mid-chain state swaps are followed (0.98), in two seeds. This extends SCIT's synthetic counterfactual transfer (2608.27265; KV-cache carrier, ≤ 3 hops, teacher-forced) to a compact recurrent memory at depth 4."
 - Report d 5 = 0.86 and the 14-pass stability as **post hoc / descriptive**.
+
+- **Note (2026-10-27, §238 DAG-FREE, from our own notes, no scan):** for latent **state × state** composition, the nearest priors are architectural.
+  - Second-order (state × input) RNNs: Goudreau et al. 1994; Giles et al. 1992.
+  - Input-switched affine maps: ISAN 1611.09434.
+  - Multiplicative RNNs: Sutskever et al. 2011 (see LIT_ACQ_AB_2026-10-01).
+  - All of these are state × **input** products, not a product of two stored states.
+  - Latent multiplication baselines: iCoT 2405.14838 (multi-digit multiplication by internalised CoT). LIT_S98_MULT found no latent-loop multiplication baselines.
+  - SCIT 2608.27265's templates are affine (no cross-state product).
+  - **Not found:** a looped / recurrent-memory LM composing two **stored** latent states multiplicatively with a causal product-step swap.
