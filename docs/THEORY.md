@@ -328,7 +328,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
-| 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
+| 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 
 ## Live sections
 
@@ -22264,6 +22264,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **D:** 500 of 5,000 C-stream programs qualify (<= A's p90 of 93 tokens), so D is kept. Only 107 of those are among C's 1,000, so LEN6_paired has n = 107 (descriptive).
 - **Disclosed limitation:** D is length-selected, so it over-represents programs with short base texts (e.g. fewer given-value sentences). STEP = A - D therefore compares d 4 with a simpler-text subset of d 6. A STEPS label is read with that caveat, and STEP' = B - C (length-matched, unselected) is reported beside it.
 - No overlap with TEST2 or the training exclusion.
+
+**Note 241-3 (2026-10-28 18:28 EDT; §241 LEN-STEP scored: theory/score_ls.py, theory/results/score_ls.json; Experiments fe48a7f9, 4060 fp32 bs 250; $0.)**
+- **Registered reading: LEN-STEP STEPS (both models).**
+  - LEN4_paired (n 1,000): s1 0.002, s2 0.005. Padding d 4 to d 6 length costs nothing: A 1.000 vs B 0.998 / 0.995.
+  - STEP = A - D: s1 0.602, s2 0.770. STEP' = B - C (length-matched, unselected): 0.617 / 0.776.
+  - **LEN6_paired is the clean same-program comparison at depth 6: n = 107 (small).** It reads -0.028 / +0.028, so shortening a d 6 program doesn't help either.
+  - C 0.381 / 0.219; D 0.398 / 0.230, despite D's selection toward simpler texts (givens 0.77 vs 2.33 per item, mul_s share 0.41 vs 0.43).
+- **Where the loss happens (WS per pass at d 6):**
+  - s1: passes 1-4 >= 0.95, pass 5 0.55 / 0.52, pass 6 0.31 / 0.33 (C / D).
+  - s2: pass 4 is already 0.69 (vs 1.000 at pass 4 in d 4, where it is the final step), pass 5 0.32 / 0.30.
+  - Text length is ruled out. The failure is in computing steps beyond the trained count (and, for s2, a non-final step at pass 4).
+- **Pre-named next (LS_v1 sec. 3): STEPS -> longer-depth training or the state-addressing question.**
+  - Before spending on longer-depth training (which would only move the boundary), Theory registers a $0 causal test of one specific step-counter: the additive state's norm grows with each step (~550 per step, REVIEW_OF), so ||S|| could tell the loop how many steps have been written.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
