@@ -22195,6 +22195,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - A cost rule only, set with no output read. If Audit sets a different number, Audit's wins.
 - **Audit's decision (same option, crossed):** the BAD-host count resets to 0 for the relaunch, while the BAD $ ledger carries forward ($0.18).
 
+**Note 240-7 (2026-10-28 11:24 EDT; §240 CTRL admit cap, Audit's decision, before any CTRL output.)**
+- **CTRL admit $0.75 each** (lh_ctrl_s1 / s2; plain 3090s project $0.59-0.71).
+- Guards unchanged ($1.40 CTRL, $6 total). Design admit <= $3.38; running total unchanged at $16.6 <= $30.
+- A cost rule only, set with no output read.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
