@@ -2,7 +2,7 @@
 Arms: lh_fh_s1 / lh_fh_s2 (HOLD-INC) and lh_ctrl_s1 / lh_ctrl_s2 (plain FT), inits df_plaw4_s1 / s2. eval_long_k128.json (K' 8/16/32/64/128, d 1-5) in arms + inits.
 Per FH seed, binding: HOLD-LONG3 (acc(K') >= acc(8) - 0.02 at K' 64 / 128, d 1-4); NOLOSS (score_df's §238 gates minus its LP0 + C1 floor + RETENTION:
   DF OP-ALL / PROD-SWAP / SWAP-MID d3 t1 / LP5 vs the init, REG OP-ALL / SWAP-MID / LP5 vs §237's rcb; any drop > 0.05 named); LP0-W on gn_plain_mean100
-  (cap max(2 x init windows 3-10, 5.0)); NORM GUARD (log norm_guard s8 / sd2 within +-25%% of bin 0).
+  (cap max(2 x init windows 3-10, 5.0)); NORM GUARD (Note 240-2: one-sided vs the paired CTRL; GAMED iff FH/CTRL > 1.25).
 Labels (first match): GAMED / LP0-FAIL / NOLOSS-FAIL (gates named) / HOLD-FAIL / PASS. LEVER: s1 min_d acc128 FH - CTRL >= 0.10; s2 FH >= CTRL - 0.02.
 Overall: MORE-TRAINING-SUFFICES if CTRL s1 passes HOLD-LONG3; PASS = both FH PASS and LEVER; NO-LEVER (both PASS, LEVER fails); SPLIT (one PASS); FAIL.
     python -B theory/score_lh.py [--fixtures]
@@ -51,13 +51,23 @@ def lp0w(runs, run, init):
     return not bad, "cap %.3g, %d over" % (cap, len(bad))
 
 
-def norm_guard(runs, run):
+def _ng_bins(runs, run):
     lg = ST.dedupe(ST.rows(os.path.join(runs, run, "log.jsonl"))) or []
-    ng = [r["norm_guard"] for r in lg if isinstance(r.get("norm_guard"), dict)]
-    if not ng:
-        return None, "no norm_guard rows"
-    b0 = ng[0]; bad = [(i, k) for i, r in enumerate(ng) for k in ("s8", "sd2") if not (0.75 * b0[k] <= r[k] <= 1.25 * b0[k])]
-    return not bad, bad[:5]
+    return {r["bin"]: r["norm_guard"] for r in lg if "bin" in r and isinstance(r.get("norm_guard"), dict)}
+
+
+def norm_guard(runs, run, ctrl):
+    """Note 240-2: one-sided, relative to the paired CTRL at the same bin. GAMED iff FH / CTRL > 1.25 for s8 or sd2 in any bin (inflation lowers the
+    penalised ratio). FH / CTRL < 0.75 is reported only (shrinking makes the penalty harder; NOLOSS covers lost computation)."""
+    f, c = _ng_bins(runs, run), _ng_bins(runs, ctrl)
+    common = sorted(set(f) & set(c))
+    if not common:
+        return None, "no paired norm_guard bins"
+    rat = {b: {k: f[b][k] / c[b][k] for k in ("s8", "sd2")} for b in common}
+    bad = [(b, k) for b, r in rat.items() for k, v in r.items() if v > 1.25]
+    shrink = [(b, k) for b, r in rat.items() for k, v in r.items() if v < 0.75]
+    vals = [v for r in rat.values() for v in r.values()]
+    return not bad, {"over": bad[:5], "shrink_desc": shrink[:5], "max_ratio": max(vals), "min_ratio": min(vals)}
 
 
 def retention(runs, fh, init, rcb, df_noloss):
@@ -108,7 +118,7 @@ def score(runs=R, df_noloss=None):
     for sd, (fh, ctrl, init, rcb) in SEEDS.items():
         s = {}
         hok, hdr = hold(tabs[fh]); s["hold"] = hok; s["hold_drops"] = hdr; s["step0_hold"] = hold(tabs[init])[0]
-        lok, lmsg = lp0w(runs, fh, init); gok, gmsg = norm_guard(runs, fh)
+        lok, lmsg = lp0w(runs, fh, init); gok, gmsg = norm_guard(runs, fh, ctrl)
         dn = df_noloss(fh, init)
         if lok is None or gok is None or dn.get("label") == "pending":
             o["seeds"][sd] = {"label": "pending", "why": [lmsg, gmsg, dn.get("verdict")]}; continue
@@ -136,7 +146,7 @@ def score(runs=R, df_noloss=None):
 def fixtures():
     res = []
 
-    def world(fh_drop=0.0, ctrl_drop=0.10, gamed=False, gn_spike=False, retention_drop=0.0, c1_bad=False):
+    def world(fh_drop=0.0, ctrl_drop=0.10, gamed=False, gn_spike=False, retention_drop=0.0, c1_bad=False, shrink=0.7):
         d = tempfile.mkdtemp()
         def long(run, drop):
             os.makedirs(os.path.join(d, run), exist_ok=True)
@@ -152,7 +162,10 @@ def fixtures():
                 for i in range(1, 81):
                     f.write(json.dumps({"step": i * 100, "gn_preclip_mean100": 3.0, "gn_plain_mean100": 9.0 if (gn_spike and i == 40) else 1.0}) + "\n")
                 for i in range(9):
-                    f.write(json.dumps({"bin": i, "by_d": {}, "norm_guard": {"s8": 10.0 * (1.5 if (gamed and i == 5) else 1.0), "sd2": 8.0}}) + "\n")
+                    f.write(json.dumps({"bin": i, "by_d": {}, "norm_guard": {"s8": 10.0 * (1.5 if (gamed and i == 5) else shrink if i > 0 else 1.0), "sd2": 8.0}}) + "\n")
+            with open(os.path.join(d, ctrl, "log.jsonl"), "w") as f:
+                for i in range(9):
+                    f.write(json.dumps({"bin": i, "by_d": {}, "norm_guard": {"s8": 10.0 * (0.7 if i > 0 else 1.0), "sd2": 8.0}}) + "\n")
             for run, sm, lp in ((fh, 0.95 - retention_drop, 0.9), (init, 0.95, 0.9), (fh + "_reg", 0.97, 0.9), (rcb, 0.97, 0.9)):
                 os.makedirs(os.path.join(d, run), exist_ok=True)
                 json.dump({"by_d": {"3": {"swap_mid": {"3": {"follow_U": sm}}}}}, open(os.path.join(d, run, "eval_swap_kd.json"), "w"))
@@ -168,7 +181,8 @@ def fixtures():
     o = score(world(ctrl_drop=0.12), stub); res.append(("FH holds, CTRL s1 drifts -> LH PASS", o["verdict"].startswith("LH PASS"), o["verdict"]))
     o = score(world(ctrl_drop=0.0), stub); res.append(("CTRL s1 holds too -> MORE-TRAINING-SUFFICES", o["verdict"].startswith("LH MORE-TRAINING-SUFFICES"), o["verdict"]))
     o = score(world(fh_drop=0.05), stub); res.append(("FH drifts -> HOLD-FAIL both", o["verdict"].count("HOLD-FAIL") == 2, o["verdict"]))
-    o = score(world(gamed=True), stub); res.append(("norm inflated -> GAMED", o["verdict"].count("GAMED") == 2, o["verdict"]))
+    o = score(world(gamed=True), stub); res.append(("FH norm 1.5 vs CTRL 0.7 at a bin -> GAMED", o["verdict"].count("GAMED") == 2, o["verdict"]))
+    o = score(world(shrink=0.4, ctrl_drop=0.12), stub); res.append(("FH shrinks to 0.57x CTRL -> not GAMED", o["verdict"].startswith("LH PASS"), o["verdict"]))
     o = score(world(gn_spike=True), stub); res.append(("plain gn spike over cap 5 -> LP0-FAIL", o["verdict"].count("LP0-FAIL") == 2, o["verdict"]))
     o = score(world(retention_drop=0.08), stub); res.append(("DF SWAP-MID drop 0.08 -> NOLOSS-FAIL named", "NOLOSS-FAIL (DF SWAP-MID)" in o["verdict"], o["verdict"]))
     o = score(world(c1_bad=True), stub); res.append(("K' 0 acc high -> NOLOSS-FAIL (C1-FLOOR)", "C1-FLOOR" in o["verdict"], o["verdict"]))

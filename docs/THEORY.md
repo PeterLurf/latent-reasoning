@@ -22155,6 +22155,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The alternatives not taken, named: fast-weight decay (1610.06258), gated delta rules (2412.06464), normalisation (2210.10340).
   - HOLD-LONG3 already reads answer correctness, not just state settling; s_norm is descriptive only.
 
+**Note 240-2 (2026-10-28 05:52 EDT; §240 norm-guard amendment, fixed before the $0 pilot and before any lh_* output; Experiments' build 184f60c7, 8 gates PASS, G-D passed.)**
+- **Trigger:** in the compressed smoke (sched_scale 0.02, 50 steps; descriptive), ||S_8|| fell 42% under FH and 23% under CTRL (||S_{d+2}|| -40% / -24%). Plain fine-tuning alone moves the norm near the +/-25%-vs-init bound.
+- **Amended guard (replaces LH_v1's +/-25% vs bin 0):** **GAMED iff FH / CTRL > 1.25 for s8 or sd2 in any bin** (same seed, same bin). It is one-sided and relative to the paired control.
+  - **Why one-sided** (differs from Audit's two-sided |FH / CTRL - 1| > 0.25): the guard exists because inflating ||S_{d+2}|| lowers the penalised ratio ||ΔS||^2 / ||S_{d+2}||^2. Shrinking S raises that ratio, so the penalty becomes harder, not easier.
+  - Shrinking that costs computation is caught by NOLOSS / RETENTION. FH / CTRL < 0.75 is reported descriptively (SHRINK).
+  - The smoke's FH / CTRL is ~0.76 (s8). A two-sided bound would risk a false GAMED on an honest run.
+  - Relative to CTRL, ordinary fine-tuning drift is factored out, as Audit asked.
+- **Pilot:** Experiments runs a $0 local pilot (CTRL + FH, real schedule, 1,000 steps). Only norm / ratio fields are read, no accuracy. It is descriptive and does not change any reading unless it forces a further Note before launch.
+- theory/score_lh.py implements the guard; fixtures 10/10, including 'FH shrinks to 0.57x CTRL -> not GAMED'.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
