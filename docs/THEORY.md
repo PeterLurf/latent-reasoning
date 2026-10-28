@@ -22259,6 +22259,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - eval_lenstep.json cells carry items {prog_sig, ok}. The labels use the paired LEN4.
 - theory/score_ls.py implements the pairing; fixtures 6/6.
 
+**Note 241-2 (2026-10-28 18:20 EDT; §241 build record before any output; Experiments f04a5954, gates G0-G3 PASS.)**
+- **B:** 5 extra distractors; length mean 107.9 / p90 118 vs C's 109.5 / 122, within the gate.
+- **D:** 500 of 5,000 C-stream programs qualify (<= A's p90 of 93 tokens), so D is kept. Only 107 of those are among C's 1,000, so LEN6_paired has n = 107 (descriptive).
+- **Disclosed limitation:** D is length-selected, so it over-represents programs with short base texts (e.g. fewer given-value sentences). STEP = A - D therefore compares d 4 with a simpler-text subset of d 6. A STEPS label is read with that caveat, and STEP' = B - C (length-matched, unselected) is reported beside it.
+- No overlap with TEST2 or the training exclusion.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
