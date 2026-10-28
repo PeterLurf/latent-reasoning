@@ -22200,6 +22200,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - Guards unchanged ($1.40 CTRL, $6 total). Design admit <= $3.38; running total unchanged at $16.6 <= $30.
 - A cost rule only, set with no output read.
 
+**Note 240-8 (2026-10-28 16:58 EDT; §240 scorer fix and disclosure, before the verdict.)**
+- **Disclosure:** while checking why score_lh returned pending, Theory printed the raw eval_long_k128 acc tables for all four arms and both inits (acc at K' 8 / 64 / 128, d 1-5). The fixes below are mechanical field paths and missing inputs only; no threshold, gate or label changes.
+- **(1) Missing parts.** score_df's §238 path (via score_aw4) needs lat eval_lp5 and eval_cue_wrong, which the 4-arm eval_parts omitted. Experiments is asked to run them locally ($0) on lh_fh_s1 / s2. They are not otherwise read.
+- **(2) Norm guard path.** Experiments' layout puts norm_guard inside each bin's `hold` record. score_lh read it at the top level (hence 'no paired bins'). It now reads bin.hold.norm_guard (top level still accepted); the fixtures are switched to the nested layout (10/10).
+  - Result (the guard is one-sided, 240-2): FH / CTRL max 0.653 (s1) / 0.792 (s2), so not GAMED. FH shrinks S to 0.20-0.79x CTRL (SHRINK, descriptive).
+- **(3) LP0-W is as registered, not a bug.** The cap is max(2 x the init's windows 3-10, 5.0) = 8.03 for s1 (init df_plaw4_s1 windows max 4.01) and 15.6 for s2.
+  - lh_fh_s1 has one gn_plain window over the cap: 8.48 at step 600, just after the penalty starts at 500. The rule binds.
+  - Descriptive: lh_ctrl_s1 (no penalty) exceeds the same cap at steps 700 / 800 (8.74 / 8.95). So the spike is common to both arms after the warm-start fade ramp (0 -> 1 over 500 steps), not specific to the penalty.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

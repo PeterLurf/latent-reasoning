@@ -53,7 +53,14 @@ def lp0w(runs, run, init):
 
 def _ng_bins(runs, run):
     lg = ST.dedupe(ST.rows(os.path.join(runs, run, "log.jsonl"))) or []
-    return {r["bin"]: r["norm_guard"] for r in lg if "bin" in r and isinstance(r.get("norm_guard"), dict)}
+    # Experiments' layout (240 build msg): bins carry norm_guard inside "hold" {inc_ratio, far_ratio, comp_ratio, hold_ratio, norm_guard}; top level also accepted
+    out = {}
+    for r in lg:
+        if "bin" in r:
+            ng = r.get("norm_guard") if isinstance(r.get("norm_guard"), dict) else (r.get("hold") or {}).get("norm_guard")
+            if isinstance(ng, dict):
+                out[r["bin"]] = ng
+    return out
 
 
 def norm_guard(runs, run, ctrl):
@@ -162,10 +169,10 @@ def fixtures():
                 for i in range(1, 81):
                     f.write(json.dumps({"step": i * 100, "gn_preclip_mean100": 3.0, "gn_plain_mean100": 9.0 if (gn_spike and i == 40) else 1.0}) + "\n")
                 for i in range(9):
-                    f.write(json.dumps({"bin": i, "by_d": {}, "norm_guard": {"s8": 10.0 * (1.5 if (gamed and i == 5) else shrink if i > 0 else 1.0), "sd2": 8.0}}) + "\n")
+                    f.write(json.dumps({"bin": i, "by_d": {}, "hold": {"norm_guard": {"s8": 10.0 * (1.5 if (gamed and i == 5) else shrink if i > 0 else 1.0), "sd2": 8.0}}}) + "\n")
             with open(os.path.join(d, ctrl, "log.jsonl"), "w") as f:
                 for i in range(9):
-                    f.write(json.dumps({"bin": i, "by_d": {}, "norm_guard": {"s8": 10.0 * (0.7 if i > 0 else 1.0), "sd2": 8.0}}) + "\n")
+                    f.write(json.dumps({"bin": i, "by_d": {}, "hold": {"norm_guard": {"s8": 10.0 * (0.7 if i > 0 else 1.0), "sd2": 8.0}}}) + "\n")
             for run, sm, lp in ((fh, 0.95 - retention_drop, 0.9), (init, 0.95, 0.9), (fh + "_reg", 0.97, 0.9), (rcb, 0.97, 0.9)):
                 os.makedirs(os.path.join(d, run), exist_ok=True)
                 json.dump({"by_d": {"3": {"swap_mid": {"3": {"follow_U": sm}}}}}, open(os.path.join(d, run, "eval_swap_kd.json"), "w"))
