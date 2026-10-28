@@ -23,12 +23,19 @@ def one(e):
     if e is None or any(a not in e for a in ARMS):
         return {"label": "pending"}
     acc = {a: e[a]["acc"] for a in ARMS}
+    # Note 242-1 (1): IDENTITY (scale 1.0 through the same path) must equal intact exactly, else the path is broken -> INVALID
+    if "identity_d6" not in e:
+        return {"label": "pending"}
+    if e["identity_d6"]["acc"] != e["intact_d6"]["acc"] or e["identity_d6"].get("ws") != e["intact_d6"].get("ws"):
+        return {"label": "INVALID", "why": "identity arm != intact"}
     harmless = acc["harm_d4"] >= 0.90
     dws = e["down_d6"]["ws"]["5"] - e["intact_d6"]["ws"]["5"]
     down = acc["down_d6"] - acc["intact_d6"] >= 0.15 and dws >= 0.15
     up = acc["intact_d4"] - acc["up_d4"] >= 0.15
     lab = ("INCONCLUSIVE" if not harmless else "NORM-COUNTER" if (down and up) else "PARTIAL-DOWN" if down else "PARTIAL-UP" if up else "NOT-NORM")
-    return {"label": lab, "acc": acc, "ws5_gain_down": dws, "down": down, "up": up, "harmless": harmless}
+    add = e.get("down_add_d6")                                               # Note 242-1 (2): additive heads only, descriptive
+    return {"label": lab, "acc": acc, "ws5_gain_down": dws, "down": down, "up": up, "harmless": harmless,
+            "down_add_d6_gain": (add["acc"] - acc["intact_d6"]) if add else None, "head_norms": e.get("head_norms")}
 
 
 def score(runs=R):
@@ -49,6 +56,7 @@ def fixtures():
             v = dict(i4=i4, i6=i6, dn=dn, up=up, hm=hm, ws_i6=ws_i6, ws_dn=ws_dn); v.update((per or {}).get(m, {}))
             wd = v["ws_dn"] if v["ws_dn"] is not None else v["ws_i6"]
             arms = {"intact_d4": {"acc": v["i4"], "ws": {"5": 1.0}}, "intact_d6": {"acc": v["i6"], "ws": {"5": v["ws_i6"]}}, "down_d6": {"acc": v["dn"], "ws": {"5": wd}},
+                    "identity_d6": {"acc": v.get("idn", v["i6"]), "ws": {"5": v["ws_i6"]}}, "down_add_d6": {"acc": v["dn"], "ws": {"5": wd}},
                     "up_d4": {"acc": v["up"], "ws": {"5": 1.0}}, "harm_d4": {"acc": v["hm"], "ws": {"5": 1.0}}}
             os.makedirs(os.path.join(d, m)); json.dump(arms, open(os.path.join(d, m, "eval_normctr.json"), "w"))
         return d
@@ -58,6 +66,7 @@ def fixtures():
     o = score(world(dn=0.7, ws_dn=0.9)); res.append(("down only -> PARTIAL-DOWN", o["verdict"].startswith("NORM-COUNTER PARTIAL-DOWN"), o["verdict"]))
     o = score(world(dn=0.7, ws_dn=0.55)); res.append(("acc up but ws5 not -> not DOWN", "PARTIAL-DOWN" not in o["verdict"], o["verdict"]))
     o = score(world(per={"lh_fh_s2": {"up": 0.5}})); res.append(("models disagree -> MIXED", o["verdict"].startswith("NORM-COUNTER MIXED"), o["verdict"]))
+    o = score(world(per={m: {"idn": 0.31} for m in MODELS})); res.append(("identity arm differs -> INVALID", o["verdict"].startswith("NORM-COUNTER INVALID"), o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
