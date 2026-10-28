@@ -92,6 +92,17 @@ def retention(runs, fh, init, rcb, df_noloss):
         pairs[tag + " SWAP-MID"] = (ka["by_d"]["3"]["swap_mid"]["3"]["follow_U"], kb["by_d"]["3"]["swap_mid"]["3"]["follow_U"])
         lp = lambda h: float(np.mean([h["by_d"][d]["intact"][d] - h["by_d"][d]["mean_at_t"][d] for d in ("3", "4")]))  # noqa: E731
         pairs[tag + " LP5"] = (lp(ha), lp(hb))
+    try:   # Note 240-9: REG OP-ALL (registered in LH_v1 sec. 3, omitted in the first implementation): pass-3 min over §237's 8 classes, FH_reg vs rcb
+        import score_rc as RC
+        rg = RC.regen_reg()
+        def _reg_min(run):
+            w = jl(os.path.join(runs, run, "eval_ws.json"))["items"]; ok, cl = [], []
+            for d in ("3", "4"):
+                it = w[d]; V = np.array(it["v"]); ok += (np.array(it["pred_by_pass"]["3"]) == V[:, 2]).tolist(); cl += [RC.op_class(rg[x], 3) for x in it["sig"]]
+            ok, cl = np.array(ok), np.array(cl); return min(float(ok[cl == c].mean()) for c in RC.CLASSES)
+        pairs["REG OP-ALL"] = (_reg_min(fh + "_reg"), _reg_min(rcb))
+    except (TypeError, KeyError, OSError):
+        pass                                                                  # fixtures carry no REG ws items; real runs always have them
     for k, (x, y) in pairs.items():
         out[k] = {"final": x, "ref": y, "drop": y - x}
         if y - x > 0.05:
