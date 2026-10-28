@@ -111,6 +111,63 @@ def ws_readout(m, items_by_d, dev, K, bs=50, per_item=False):
     return (out, preds) if per_item else out
 
 
+def state_n(S):
+    """per-item Frobenius norm of a DeltaMem state (all heads), fp32."""
+    return S.float().flatten(1).norm(dim=1)
+
+
+def hold_step(m, keep, far_items, T_far, K, BS, inc_on, lam, ac, dev):
+    """§240 HOLD-INC (LH_v1 §2 + Note 240-1), called after the plain backward of every micro-chunk (so the plain grads are complete and gn_plain is read first).
+    keep = [(states S_0..S_K detached, xs, mask, ds)] per chunk (one d per step). Stats (no_grad, every call): comp / hold = the mean ||S_t - S_{t-1}|| / ||S_{d+2}||
+    at t <= d / t >= d + 3; s8 / sd2 = the mean ||S_K|| / ||S_{d+2}|| (the norm guard). Penalty (inc_on): for each penalised pass t in H = {d+3..K}, its OWN forward
+    S_pen = write(sg S_{t-1}, x_{S_d cue}) with the lower blocks recomputed (hl_pen, not the CE cache) -> a graph disjoint from the CE graph; r_t = ||S_pen - sg S_{t-1}||^2
+    / ||sg S_{d+2}||^2; far pass on the first len(far_items) items of the batch: a no-grad prefix to T_far - 1, then one grad pass at T_far from the detached S_{T_far - 1}.
+    L_inc = lam * mean over the batch of the per-item mean over its terms (H, + T_far for the far items); backward()-ed here, chunk by chunk. -> the stats dict."""
+    st = {k: [0.0, 0] for k in ("comp", "hold", "s8", "sd2", "inc", "far")}; off = 0
+    for Ssv, xs, msk, ds in keep:
+        Ssv = [s_.detach() for s_ in Ssv]; n = Ssv[0].shape[0]; d = ds[0]; assert all(x == d for x in ds), "one d per step"; H = list(range(d + 3, K + 1))
+        with torch.no_grad():
+            den = state_n(Ssv[d + 2]).clamp_min(1e-12)
+            for t in range(1, K + 1):
+                key = "comp" if t <= d else ("hold" if t >= d + 3 else None)
+                if key:
+                    st[key][0] += float((state_n(Ssv[t] - Ssv[t - 1]) / den).sum()); st[key][1] += n
+            st["s8"][0] += float(state_n(Ssv[K]).sum()); st["s8"][1] += n; st["sd2"][0] += float(den.sum()); st["sd2"][1] += n
+        if inc_on and H:
+            w = torch.tensor([1.0 / (len(H) + (1 if off + i < len(far_items) else 0)) for i in range(n)], device=dev); tot = 0.0
+            with ac():
+                hlp = m.lower(xs[-1])                                       # the penalty's own lower blocks (the hold passes read the S_d cue = xs[-1])
+                for t in H:
+                    Sp = m.write(Ssv[t - 1], xs[-1], msk, hlp); tot = tot + (Sp.float() - Ssv[t - 1].float()).flatten(1).pow(2).sum(1) / den ** 2
+            (lam * (w * tot).sum() / BS).backward()
+            st["inc"][0] += float((tot / len(H)).detach().sum()); st["inc"][1] += n
+        off += n
+    if inc_on and len(far_items):
+        d = far_items[0]["d"]; H = list(range(d + 3, K + 1)); xs, msk = cue_inputs(m, far_items, dev); S = m.mem.zero_state(len(far_items), dev); den = None
+        with torch.no_grad(), ac():
+            hls = [m.lower(x_) for x_ in xs]
+            for t in range(1, T_far):
+                j = min(t, len(xs)) - 1; S = m.write(S, xs[j], msk, hls[j])
+                if t == d + 2:
+                    den = state_n(S).clamp_min(1e-12)
+        assert den is not None and T_far - 1 >= d + 2
+        S = S.detach()
+        with ac():
+            Sp = m.write(S, xs[-1], msk, m.lower(xs[-1]))
+        r = (Sp.float() - S.float()).flatten(1).pow(2).sum(1) / den ** 2
+        (lam * (r / (len(H) + 1)).sum() / BS).backward(); st["far"][0] += float(r.detach().sum()); st["far"][1] += len(far_items)
+    return st
+
+
+def hold_acc(hb, st):
+    for k_, v_ in st.items():
+        b_ = hb.setdefault(k_, [0.0, 0]); b_[0] += v_[0]; b_[1] += v_[1]
+
+
+def hold_mean(hb):
+    return {k_: (v_[0] / v_[1] if v_[1] else None) for k_, v_ in hb.items()}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=["direct", "inject"]); ap.add_argument("--think_k", type=int, default=0); ap.add_argument("--d_max", type=int, default=8)
@@ -133,6 +190,9 @@ def main(argv=None):
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
     ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1, 2], help="§236: 0 = REG law (no forced mul_s); §238: 2 = DF (per-step mul_s, q_t); 1 = unchanged - on every stream / set (new eval seeds)")
+    ap.add_argument("--hold_inc", type=float, default=0.0, help="§240: lambda of L_inc (HOLD-INC; 0 = off)"); ap.add_argument("--hold_start", type=int, default=500)
+    ap.add_argument("--hold_far_n", type=int, default=16); ap.add_argument("--hold_far_lo", type=int, default=16); ap.add_argument("--hold_far_hi", type=int, default=40)
+    ap.add_argument("--hold_log", action="store_true", help="§240: the hold stats + gn_plain without the penalty (CTRL arms); implied by --hold_inc > 0")
     ap.add_argument("--init_model", default="", help="§237: the full params state (trunk + DeltaMem + W_o + gains) loaded strict after the build; calibration skipped")
     ap.add_argument("--init_model_sha", default="", help="§237: its sha256 prefix (asserted)")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
@@ -153,6 +213,7 @@ def main(argv=None):
     assert 1 <= a.d_max <= 8 and a.bs % a.micro == 0
     K = a.think_k if a.arm == "inject" else 0
     torch.manual_seed(a.seed); rng_d = np.random.default_rng(a.seed + SEED_D); rng = np.random.default_rng(a.seed)
+    rng_far = np.random.default_rng(a.seed + 24800)                         # §240: T_far ~ U{hold_far_lo..hold_far_hi}, one draw per step (HOLD only)
     amp = None if (a.fp32 or not dev.startswith("cuda") or torch.cuda.get_device_capability(dev)[0] < 8) else torch.bfloat16
     ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
     t_sets = time.time()
@@ -167,6 +228,8 @@ def main(argv=None):
     set_sec = round(time.time() - t_sets)
     assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"
     assert a.mul_s_p == 1 or (a.mul_s_p3 == 1.0 and a.src == "ow"), "--mul_s_p 0: OW only, mul_s_p3 must be 1"
+    HOLD = a.hold_inc > 0 or a.hold_log                                     # §240: keep the detached states (penalty and / or the hold stats)
+    assert not HOLD or (a.arm == "inject" and a.cue == "step" and not a.ckpt_passes and a.src == "ow" and a.think_k >= 3), "--hold_*: LAT (inject, cue step)"
     m, g, params = build_aw(a, dev)
     assert bool(a.init_model) == bool(a.init_model_sha), "--init_model needs --init_model_sha"
     if a.init_model:                                                        # §237: the full model state, strict; the sha logged (init_model_sha256)
@@ -195,9 +258,12 @@ def main(argv=None):
             xs, msk = cue_inputs(m, items, dev); per = [[] for _ in items]; vok = {}   # §233: pass t reads xs[min(t, len(xs)) - 1] (cue none: one input)
             with ac():
                 S = m.mem.zero_state(len(items), dev); hls = [m.lower(x_) for x_ in xs] if a.cache_lower else None   # the lower cache per distinct input
+                Ssv = [S.detach()] if (HOLD and stat is not None) else None   # §240: S_0..S_K detached (the penalty's inputs / the hold stats)
                 for t in range(1, K + 1):
                     i_ = min(t, len(xs)) - 1; x = xs[i_]; hl = hls[i_] if hls is not None else None
                     S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk, hl)
+                    if Ssv is not None:
+                        Ssv.append(S.detach())
                     idx = [i for i, it in enumerate(items) if len(it["aux"]) >= t]
                     if idx:
                         lg_a, y_a = m.aux_logits(S[idx], [items[i] for i in idx], t, dev)
@@ -214,6 +280,8 @@ def main(argv=None):
             if stat is not None:
                 stat["aux"] = stat.get("aux", 0.0) + float(aux.detach()) * len(items); stat.setdefault("vacc", []).append((vok, len(items)))
                 stat.setdefault("vacc_d", []).append((str(items[0]["d"]), vok, len(items)))   # §233 aux_vacc_by_d_pass (one d per step)
+                if Ssv is not None:
+                    stat.setdefault("_keep", []).append((Ssv, xs, msk, [it["d"] for it in items]))
         if stat is not None:
             with torch.no_grad():
                 stat["acc"] = stat.get("acc", 0.0) + float((lg.detach()[:, NUM_IDS].argmax(-1).cpu().numpy() == np.array([it["ans"] for it in items])).sum())
@@ -227,7 +295,10 @@ def main(argv=None):
 
     def mem_train(micro):
         """the training step's peak at bs / micro of the longest d_max items + AdamW's two fp32 states (nested170's rule)."""
-        torch.cuda.reset_peak_memory_stats(dev); lam_now[0] = a.aux_step; l_ = loss_items(MC_TR[:a.bs // micro]); l_.backward(); params.zero_grad(set_to_none=True)
+        torch.cuda.reset_peak_memory_stats(dev); lam_now[0] = a.aux_step; st_m = {} if HOLD else None; l_ = loss_items(MC_TR[:a.bs // micro], st_m); l_.backward()
+        if HOLD:                                                            # §240: the penalty (on) and the far pass at hold_far_hi inside the peak
+            hold_step(m, st_m.pop("_keep"), MC_TR[:min(a.hold_far_n, a.bs // micro)], a.hold_far_hi, K, a.bs, a.hold_inc > 0, a.hold_inc, ac, dev)
+        params.zero_grad(set_to_none=True)
         return torch.cuda.max_memory_allocated(dev) / 2 ** 30 + 2 * sum(p_.numel() * 4 for p_ in params.parameters() if p_.requires_grad) / 2 ** 30
 
     def mem_eval(ebs):
@@ -277,7 +348,7 @@ def main(argv=None):
     if a.args_only:
         print("ARGS_ONLY", a.out, flush=True); return 0
     opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_log = []; aux_hist = []
-    expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
+    expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
@@ -288,7 +359,9 @@ def main(argv=None):
             stream.rng.bit_generator.state = ck["stream_rng"]; stream.stats = dict(ck["stream_stats"])
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; gn_log = list(ck["gn_log"]); t0 = time.time() - ck["elapsed"]
         expo, binacc, vbin, dseq, iseq, d2_bins, ent, fut, wlast = ck["expo"], ck["binacc"], ck["vbin"], ck["dseq"], ck["iseq"], ck["d2_bins"], ck["ent"], ck["fut"], ck["wlast"]
-        vbin_d = ck.get("vbin_d", {}); gnbin = ck.get("gnbin", {})
+        vbin_d = ck.get("vbin_d", {}); gnbin = ck.get("gnbin", {}); hbin = ck.get("hbin", {}); gn_plain_log = list(ck.get("gn_plain_log", []))
+        if ck.get("rng_far") is not None:
+            rng_far.bit_generator.state = ck["rng_far"]
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
     elif m is not None and K > 0 and not a.init_model:                      # note 147-2: g_add calibration (§237: skipped under --init_model, the loaded s_add kept)
         if a.src == "nested":
@@ -317,6 +390,13 @@ def main(argv=None):
         its = draw_items(d); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro; st_ = {}
         for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch], st_); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
+        if HOLD:                                                            # §240 (LH_v1 §2, Note 240-1): the plain grads are complete -> gn_plain (exact)
+            gn_plain_log.append(float(torch.sqrt(sum((p_.grad.float() ** 2).sum() for p_ in params.parameters() if p_.grad is not None))))
+            T_far = int(rng_far.integers(a.hold_far_lo, a.hold_far_hi + 1)); inc_on = a.hold_inc > 0 and step >= a.hold_start * sc
+            hs_ = hold_step(m, st_.pop("_keep"), its[:a.hold_far_n], T_far, K, a.bs, inc_on, a.hold_inc, ac, dev); hold_acc(hbin, hs_)
+            if step == step0 and not a.resume:                              # the norm guard at step 0 (this step's forward, before any update)
+                log.write(json.dumps({"step": 0, "norm_guard": {"s8": hs_["s8"][0] / hs_["s8"][1], "sd2": hs_["sd2"][0] / hs_["sd2"][1]},
+                                      "hold_ratios": {k_: (v_[0] / v_[1] if v_[1] else None) for k_, v_ in hs_.items() if k_ in ("comp", "hold")}}) + "\n"); log.flush()
         if m is not None:
             wwin.append(write_grad_norm(m))
         gn = torch.nn.utils.clip_grad_norm_(params.parameters(), 1.0); gn_log.append(float(gn))
@@ -352,6 +432,8 @@ def main(argv=None):
                 w_rec = {"step": step, "mean": float(np.mean(wwin)), "max": mx_, "median_prev_1k": md_, "spike_100x_floor": bool(late and mx_ > 100 * md_ > 0 and mx_ > 1.0)}
                 wlast.extend(wwin); del wlast[:-int(1000 * sc) or None]; wwin = []; wg_hist.append(w_rec)
                 rec.update({"gamma": float(m.mem.gamma), "fade": float(m.mem.fade), "write_grad_norm": w_rec["mean"], "write_grad_spike_100x_floor": w_rec["spike_100x_floor"]})
+            if HOLD and gn_plain_log:                                       # §240 LP0-W: the plain-loss grad norm (exact, every step)
+                rec["gn_plain_mean100"] = float(np.mean(gn_plain_log[-100:]))
             rec.update({"gn_preclip": gn_log[-1], "gn_preclip_mean100": float(np.mean(gn_log[-100:])), "clip_frac_100": float(np.mean([v_ > 1.0 for v_ in gn_log[-100:]]))})
             log.write(json.dumps(rec) + "\n"); log.flush(); print(rec, flush=True)
         if step % 1000 == 0 or step == last:                                # the 1k-bin record (a partial bin at a stop / the end)
@@ -369,10 +451,13 @@ def main(argv=None):
                 br["stream_d3_mul_s"] = [stream.stats.get("d3_mul_s", 0), stream.stats.get("d3_items", 0)]
             if a.init_model and gnbin:                                       # §237 (Note 237-1): the mean pre-clip grad norm per d over the bin
                 br["gn_preclip_by_d"] = {k_: v_[0] / v_[1] for k_, v_ in sorted(gnbin.items())}
+            if HOLD and hbin:                                               # §240: inc (the penalised squared ratio), far, comp / hold ratios, the norm guard
+                hm_ = hold_mean(hbin); br["hold"] = {"inc_ratio": hm_.get("inc"), "far_ratio": hm_.get("far"), "comp_ratio": hm_.get("comp"), "hold_ratio": hm_.get("hold"),
+                                                     "norm_guard": {"s8": hm_.get("s8"), "sd2": hm_.get("sd2")}}
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; dseq = []; iseq = []
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; dseq = []; iseq = []
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
@@ -390,7 +475,7 @@ def main(argv=None):
                         "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
                         "stream_rng": stream.rng.bit_generator.state if stream is not None else None, "stream_stats": dict(stream.stats) if stream is not None else None,
                         "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_log": gn_log, "elapsed": time.time() - t0, "expo": expo, "binacc": binacc,
-                        "vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
+                        "vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "hbin": hbin, "gn_plain_log": gn_plain_log, "rng_far": rng_far.bit_generator.state, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
     if a.time_steps:
         sps = (time.time() - tt0) / max(1, last - step0 + 1)
         tj = {"arm": a.arm, "think_k": K, "d_max": a.d_max, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours_steps": sps * a.steps / 3600,

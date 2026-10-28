@@ -553,8 +553,9 @@ def part_long(m, g, sets, a, dev, bs, kplist, ds):
     return out
 
 
-def run_long(out, dev, bs, kplist, ds):
-    """§239: load <out>/model.pt as load() does, build the run law's sets (set shas asserted vs args.json), part_long, write ONLY <out>/eval_long.json."""
+def run_long(out, dev, bs, kplist, ds, name="eval_long.json"):
+    """§239: load <out>/model.pt as load() does, build the run law's sets (set shas asserted vs args.json), part_long, write ONLY <out>/<name> (default
+    eval_long.json; §240: eval_long_k128.json)."""
     t1 = time.time(); a, m, g = load(out, dev); assert m is not None, "LONG-RUN: inject runs only"; sets = IO.build_sets(mul_s_p=law(a))
     for k_, v_ in sets["shas"].items():
         assert a.get(k_) in (None, v_), ("§239: set sha mismatch vs args.json", k_)
@@ -564,7 +565,7 @@ def run_long(out, dev, bs, kplist, ds):
     r_.update({"eval_dtype": "fp32", "eval_gpu": torch.cuda.get_device_name(dev) if str(dev).startswith("cuda") else "cpu", "eval_bs": bs, "kprime_list": kplist, "ds": ds,
                "law": law(a), "set_law": sets["shas"].get("set_law", "default"), "think_k": a["think_k"], "module_sha256": IO.sha_file(os.path.abspath(__file__)),
                "peak_gib": torch.cuda.max_memory_allocated(dev) / 2 ** 30 if str(dev).startswith("cuda") else None, "sec": round(time.time() - t1)})
-    json.dump(r_, open(os.path.join(out, "eval_long.json"), "w", newline="\n")); print("LONG done", out, r_["sec"], "s", flush=True)
+    json.dump(r_, open(os.path.join(out, name), "w", newline="\n")); print("LONG done", out, name, r_["sec"], "s", flush=True)
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
@@ -613,9 +614,10 @@ def main():
     ap.add_argument("--eval_bs", type=int, default=100); ap.add_argument("--out", default="", help="queue runners append --out; ignored (outputs go to --run)")
     ap.add_argument("--kprime_list", default="", help="§239: e.g. 8,16,32,64 -> eval_long.json only (run_long); default empty = the parts path")
     ap.add_argument("--long_ds", default="2,3,4,5", help="§239: the d values of run_long")
+    ap.add_argument("--long_name", default="eval_long.json", help="§240: the run_long output file (e.g. eval_long_k128.json)")
     a = ap.parse_args()
     if a.kprime_list:
-        run_long(a.run, a.device, a.eval_bs, [int(x) for x in a.kprime_list.split(",")], [int(x) for x in a.long_ds.split(",")]); return
+        run_long(a.run, a.device, a.eval_bs, [int(x) for x in a.kprime_list.split(",")], [int(x) for x in a.long_ds.split(",")], a.long_name); return
     run(a.run, [p_ for p_ in a.parts.split(",") if p_], a.device, a.eval_bs); print("DONE", a.run, flush=True)
 
 

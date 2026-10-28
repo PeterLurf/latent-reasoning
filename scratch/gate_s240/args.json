@@ -1,0 +1,207 @@
+{
+ "lh_fh_s1": {
+  "rc": 0,
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,opclass,swap_prod",
+    "acc,ws,opclass,swap_prod,swap_kd,lp5h,cue_only"
+   ],
+   "hold_far_hi": [
+    null,
+    40
+   ],
+   "hold_far_lo": [
+    null,
+    16
+   ],
+   "hold_far_n": [
+    null,
+    16
+   ],
+   "hold_inc": [
+    null,
+    1.6
+   ],
+   "hold_log": [
+    null,
+    false
+   ],
+   "hold_start": [
+    null,
+    500
+   ],
+   "init_model": [
+    "boxes/runs_fsq/rcb_plaw4_s1/model.pt",
+    "boxes/runs_fsq/df_plaw4_s1/model.pt"
+   ],
+   "init_model_sha": [
+    "67775e2492044a8a",
+    "ccf13a50a717fc2a"
+   ],
+   "init_model_sha256": [
+    "67775e2492044a8a0f1c59c345a9a9ed8dddfd37383a1220aca413bd5e8afc03",
+    "ccf13a50a717fc2a6d2c8608fbd981c4d55bf637aef5b9366a953086105c5143"
+   ],
+   "steps": [
+    16000,
+    8000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s240/args_lh_fh_s1/args.json",
+  "pass": true
+ },
+ "lh_fh_s2": {
+  "rc": 0,
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,opclass,swap_prod",
+    "acc,ws,opclass,swap_prod,swap_kd,lp5h,cue_only"
+   ],
+   "hold_far_hi": [
+    null,
+    40
+   ],
+   "hold_far_lo": [
+    null,
+    16
+   ],
+   "hold_far_n": [
+    null,
+    16
+   ],
+   "hold_inc": [
+    null,
+    1.6
+   ],
+   "hold_log": [
+    null,
+    false
+   ],
+   "hold_start": [
+    null,
+    500
+   ],
+   "init_model": [
+    "boxes/runs_fsq/rcb_plaw4_s2/model.pt",
+    "boxes/runs_fsq/df_plaw4_s2/model.pt"
+   ],
+   "init_model_sha": [
+    "a1d93d77fff86d93",
+    "04ee495b3456faab"
+   ],
+   "init_model_sha256": [
+    "a1d93d77fff86d932490c471cdf611bca6b02b61306b0a178c7193d87bfa068a",
+    "04ee495b3456faab0a479393ea4bdbca6e439d4d73a03f9bc3af42876e8f461c"
+   ],
+   "steps": [
+    16000,
+    8000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s240/args_lh_fh_s2/args.json",
+  "pass": true
+ },
+ "lh_ctrl_s1": {
+  "rc": 0,
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,opclass,swap_prod",
+    "acc,ws,opclass,swap_prod,swap_kd,lp5h,cue_only"
+   ],
+   "hold_far_hi": [
+    null,
+    40
+   ],
+   "hold_far_lo": [
+    null,
+    16
+   ],
+   "hold_far_n": [
+    null,
+    16
+   ],
+   "hold_inc": [
+    null,
+    0.0
+   ],
+   "hold_log": [
+    null,
+    true
+   ],
+   "hold_start": [
+    null,
+    500
+   ],
+   "init_model": [
+    "boxes/runs_fsq/rcb_plaw4_s1/model.pt",
+    "boxes/runs_fsq/df_plaw4_s1/model.pt"
+   ],
+   "init_model_sha": [
+    "67775e2492044a8a",
+    "ccf13a50a717fc2a"
+   ],
+   "init_model_sha256": [
+    "67775e2492044a8a0f1c59c345a9a9ed8dddfd37383a1220aca413bd5e8afc03",
+    "ccf13a50a717fc2a6d2c8608fbd981c4d55bf637aef5b9366a953086105c5143"
+   ],
+   "steps": [
+    16000,
+    8000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s240/args_lh_ctrl_s1/args.json",
+  "pass": true
+ },
+ "lh_ctrl_s2": {
+  "rc": 0,
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,opclass,swap_prod",
+    "acc,ws,opclass,swap_prod,swap_kd,lp5h,cue_only"
+   ],
+   "hold_far_hi": [
+    null,
+    40
+   ],
+   "hold_far_lo": [
+    null,
+    16
+   ],
+   "hold_far_n": [
+    null,
+    16
+   ],
+   "hold_inc": [
+    null,
+    0.0
+   ],
+   "hold_log": [
+    null,
+    true
+   ],
+   "hold_start": [
+    null,
+    500
+   ],
+   "init_model": [
+    "boxes/runs_fsq/rcb_plaw4_s2/model.pt",
+    "boxes/runs_fsq/df_plaw4_s2/model.pt"
+   ],
+   "init_model_sha": [
+    "a1d93d77fff86d93",
+    "04ee495b3456faab"
+   ],
+   "init_model_sha256": [
+    "a1d93d77fff86d932490c471cdf611bca6b02b61306b0a178c7193d87bfa068a",
+    "04ee495b3456faab0a479393ea4bdbca6e439d4d73a03f9bc3af42876e8f461c"
+   ],
+   "steps": [
+    16000,
+    8000
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s240/args_lh_ctrl_s2/args.json",
+  "pass": true
+ },
+ "pass": true
+}

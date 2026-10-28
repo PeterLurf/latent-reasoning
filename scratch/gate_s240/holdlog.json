@@ -1,0 +1,17 @@
+{
+ "rc": [
+  9,
+  9
+ ],
+ "step": [
+  30,
+  30
+ ],
+ "n_model_tensors": 162,
+ "mismatch": [],
+ "n_mismatch": 0,
+ "log_equal_minus_s240_keys": true,
+ "gn_plain_vs_preclip_rel_max": 4.4709807223993806e-09,
+ "has_step0_norm_guard": true,
+ "pass": true
+}

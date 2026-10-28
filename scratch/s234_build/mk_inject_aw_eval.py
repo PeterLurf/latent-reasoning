@@ -43,9 +43,10 @@ E = [
 ('    a = ap.parse_args(); run(a.run, [p_ for p_ in a.parts.split(",") if p_], a.device, a.eval_bs); print("DONE", a.run, flush=True)',
  '    ap.add_argument("--kprime_list", default="", help="§239: e.g. 8,16,32,64 -> eval_long.json only (run_long); default empty = the parts path")\n'
  '    ap.add_argument("--long_ds", default="2,3,4,5", help="§239: the d values of run_long")\n'
+ '    ap.add_argument("--long_name", default="eval_long.json", help="§240: the run_long output file (e.g. eval_long_k128.json)")\n'
  '    a = ap.parse_args()\n'
  '    if a.kprime_list:\n'
- '        run_long(a.run, a.device, a.eval_bs, [int(x) for x in a.kprime_list.split(",")], [int(x) for x in a.long_ds.split(",")]); return\n'
+ '        run_long(a.run, a.device, a.eval_bs, [int(x) for x in a.kprime_list.split(",")], [int(x) for x in a.long_ds.split(",")], a.long_name); return\n'
  '    run(a.run, [p_ for p_ in a.parts.split(",") if p_], a.device, a.eval_bs); print("DONE", a.run, flush=True)'),
 ]
 for o, n in E:
