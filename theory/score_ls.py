@@ -42,7 +42,7 @@ def one(e):
         step, how = a["B"] - a["C"], "B-C"
     len6, n6 = paired("D", "C") if "D" in a else (None, 0)
     lab = "BOTH" if (len4 >= 0.10 and step >= 0.10) else "LENGTH" if (len4 >= 0.10 and step < 0.10) else "STEPS" if (step >= 0.10 and len4 < 0.05) else "NEITHER"
-    return {"label": lab, "LEN4_paired": len4, "n_pairs_AB": n4, "STEP": step, "step_from": how, "LEN6_paired": len6, "n_pairs_DC": n6, "acc": a,
+    return {"label": lab, "LEN4_paired": len4, "n_pairs_AB": n4, "STEP": step, "step_from": how, "LEN6_paired": len6, "n_pairs_DC": n6, "STEP_prime_BC": a["B"] - a["C"], "acc": a,
             "ws": {k: c[k].get("ws") for k in c}}
 
 
