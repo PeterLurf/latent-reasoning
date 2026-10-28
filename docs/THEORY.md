@@ -22040,6 +22040,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - MI on t >= 3 = 0.00029 bits (actual stream); realised P(mul_s | t 3-6) within 0.125 +/- 0.01.
 - The LAT args diff also carries eval_parts (+ opclass, swap_prod); these are needed by the readings, accepted.
 
+**Note 238-3 (2026-10-27 22:48 EDT; §238 step-0 references read before any df_* output (the pre-registered ZERO-SHOT inputs); descriptive.)**
+- **Step 0** (the §237 models on the DF sets, never trained on mul_s):
+  - rcb_plaw4_s1_df: PROD-ACC 0.837 (n 363); mul_s at pass 3 0.872; at pass 4 j 1 0.915 / j 2 0.555; other classes >= 0.983; PROD-SWAP follow_U 0.939 (follow_dfin 0.931, follow_cb 0.008; floor 0.193).
+  - rcb_plaw4_s2_df: PROD-ACC 0.780; mul_s at pass 3 0.800; at pass 4 j 1 0.794 / j 2 0.309; others >= 0.971; PROD-SWAP 0.730 (dfin 0.693, cb 0.037).
+  - CD-AN step 0 PROD-ACC 0.105. DIRECT bars d 3 0.092 / d 4 0.087.
+- **Reading:**
+  - The §237 models already compose a product of two memory states without product training: follow_dfin >> follow_cb, so both factors come from memory, not from the text.
+  - **H-READ2 (a superposed read gives a sum, not a product) is already contradicted at step 0** for j = 1.
+  - The gap is reading the older partner S_2 at pass 4 (j 2: 0.555 / 0.309), where S_3 is the previous state.
+- **ZERO-SHOT status under 238-1 (1):** neither init passes all three at step 0. Both fail OP-ALL+ on mul_s j 2 at pass 4 (s2 also fails PROD-ACC and mul_s j 1). So a final PASS would not be labelled ZERO-SHOT.
+  - The deltas that §238 training can be credited with are mainly mul_s j 2 at pass 4 (+0.25 / +0.49 needed to reach 0.80) and s2's j 1 / PROD-ACC.
+  - The status line will report the step-0 values beside the finals.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
