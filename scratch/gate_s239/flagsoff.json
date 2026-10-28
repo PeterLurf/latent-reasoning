@@ -1,0 +1,19 @@
+{
+ "parts": {
+  "acc": true,
+  "lp5": true,
+  "mean_s": true,
+  "cue_only": true,
+  "cue_wrong": true,
+  "swap_k": true,
+  "swap_1": true,
+  "probe": true,
+  "ws": true,
+  "lp5h": true,
+  "swap_kd": true,
+  "opclass": true,
+  "swap_prod": true
+ },
+ "n_parts": 13,
+ "pass": true
+}

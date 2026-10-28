@@ -39,6 +39,14 @@ E = [
  '              "opclass": lambda: part_opclass(m, g, sets, a, dev, bs), "swap_prod": lambda: part_swap_prod(m, g, sets, a, dev, bs)}[p_]()'),
 ('        assert a.get(k_) in (None, v_), ("§233: set sha mismatch vs args.json", k_)', '        assert a.get(k_) in (None, v_), ("§234: set sha mismatch vs args.json", k_)'),
 ('    if sets is None:\n        sets = IO.build_sets()', '    if sets is None:\n        sets = IO.build_sets(mul_s_p=law(a))   # §236 / §238: the run\'s law (law() raises on unknown values)'),
+# §239 LONG-RUN: the --kprime_list CLI option (default '' = the unchanged run() path) -> run_long (eval_long.json only)
+('    a = ap.parse_args(); run(a.run, [p_ for p_ in a.parts.split(",") if p_], a.device, a.eval_bs); print("DONE", a.run, flush=True)',
+ '    ap.add_argument("--kprime_list", default="", help="§239: e.g. 8,16,32,64 -> eval_long.json only (run_long); default empty = the parts path")\n'
+ '    ap.add_argument("--long_ds", default="2,3,4,5", help="§239: the d values of run_long")\n'
+ '    a = ap.parse_args()\n'
+ '    if a.kprime_list:\n'
+ '        run_long(a.run, a.device, a.eval_bs, [int(x) for x in a.kprime_list.split(",")], [int(x) for x in a.long_ds.split(",")]); return\n'
+ '    run(a.run, [p_ for p_ in a.parts.split(",") if p_], a.device, a.eval_bs); print("DONE", a.run, flush=True)'),
 ]
 for o, n in E:
     assert body.count(o) == 1, ("edit not applied exactly once", body.count(o), o[:90]); body = body.replace(o, n)
