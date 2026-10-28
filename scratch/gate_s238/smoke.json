@@ -1,0 +1,21 @@
+{
+ "lat": {
+  "rc": 9,
+  "set_law": "df",
+  "mul_s_p": 2,
+  "excl_n": 177599,
+  "ws_ds": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ]
+ },
+ "cd": {
+  "rc": 9,
+  "set_law": "df",
+  "mul_s_p": 2,
+  "excl_n": 177599
+ },
+ "pass": true
+}

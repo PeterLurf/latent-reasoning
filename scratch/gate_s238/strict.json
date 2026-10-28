@@ -1,0 +1,18 @@
+{
+ "lat1": {
+  "keys_equal": true,
+  "all_equal": true,
+  "sha": "67775e2492044a8a"
+ },
+ "lat2": {
+  "keys_equal": true,
+  "all_equal": true,
+  "sha": "a1d93d77fff86d93"
+ },
+ "cd": {
+  "keys_equal": true,
+  "all_equal": true,
+  "sha": "9035c0989c602528"
+ },
+ "pass": true
+}

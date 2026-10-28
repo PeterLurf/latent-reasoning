@@ -1,0 +1,238 @@
+{
+ "df_plaw4_s1": {
+  "rc": 0,
+  "diff_keys": [
+   "eval_parts",
+   "excl_n",
+   "floors2_sha",
+   "init_model",
+   "init_model_sha",
+   "init_model_sha256",
+   "inject_ow_sha256",
+   "mul_s_p",
+   "pair_stats",
+   "pairs2_sha",
+   "s226_test_sha",
+   "s227_decode_sha",
+   "set_law",
+   "test2_sha",
+   "transfer_sha"
+  ],
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd",
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,opclass,swap_prod"
+   ],
+   "excl_n": [
+    174599,
+    177599
+   ],
+   "floors2_sha": [
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+    "8f7e69c461adced7b2231828070868b88240a1e85b5d682e21c17ed520c5eba3"
+   ],
+   "init_model": [
+    "boxes/runs_fsq/aw_plaw2_s1/model.pt",
+    "boxes/runs_fsq/rcb_plaw4_s1/model.pt"
+   ],
+   "init_model_sha": [
+    "484dab1eab9e2c12",
+    "67775e2492044a8a"
+   ],
+   "init_model_sha256": [
+    "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+    "67775e2492044a8a0f1c59c345a9a9ed8dddfd37383a1220aca413bd5e8afc03"
+   ],
+   "inject_ow_sha256": [
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e",
+    "88ee59e15101b1255af43acbb53aaf1a075dac127505a09a25e0c355b8812da8"
+   ],
+   "mul_s_p": [
+    0,
+    2
+   ],
+   "pairs2_sha": [
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+    "d1a59c2365dc8a83e8a707181623f8c220918b8b3b95a6cebfb74fa5f4ecdfcd"
+   ],
+   "s226_test_sha": [
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+    "037459650123824fe3ca186f50c1370468d87e320defae23442d8a26b1d006ac"
+   ],
+   "s227_decode_sha": [
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea",
+    "e7e8802faf89592ec478e752aadfc0fc4a25200868711e3bbcd06e9cd9d780bc"
+   ],
+   "set_law": [
+    "reg",
+    "df"
+   ],
+   "test2_sha": [
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+    "ec3d4858c5dcd673ed3db70aea4b1c6fc4a8800a66b40e41ea277d2e050d9edf"
+   ],
+   "transfer_sha": [
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+    "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s238/args_df_plaw4_s1/args.json",
+  "pass": true
+ },
+ "df_plaw4_s2": {
+  "rc": 0,
+  "diff_keys": [
+   "eval_parts",
+   "excl_n",
+   "floors2_sha",
+   "init_model",
+   "init_model_sha",
+   "init_model_sha256",
+   "inject_ow_sha256",
+   "mul_s_p",
+   "pair_stats",
+   "pairs2_sha",
+   "s226_test_sha",
+   "s227_decode_sha",
+   "set_law",
+   "test2_sha",
+   "transfer_sha"
+  ],
+  "diff": {
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd",
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,opclass,swap_prod"
+   ],
+   "excl_n": [
+    174599,
+    177599
+   ],
+   "floors2_sha": [
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+    "8f7e69c461adced7b2231828070868b88240a1e85b5d682e21c17ed520c5eba3"
+   ],
+   "init_model": [
+    "boxes/runs_fsq/aw_plaw2_s1/model.pt",
+    "boxes/runs_fsq/rcb_plaw4_s2/model.pt"
+   ],
+   "init_model_sha": [
+    "484dab1eab9e2c12",
+    "a1d93d77fff86d93"
+   ],
+   "init_model_sha256": [
+    "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+    "a1d93d77fff86d932490c471cdf611bca6b02b61306b0a178c7193d87bfa068a"
+   ],
+   "inject_ow_sha256": [
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e",
+    "88ee59e15101b1255af43acbb53aaf1a075dac127505a09a25e0c355b8812da8"
+   ],
+   "mul_s_p": [
+    0,
+    2
+   ],
+   "pairs2_sha": [
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+    "d1a59c2365dc8a83e8a707181623f8c220918b8b3b95a6cebfb74fa5f4ecdfcd"
+   ],
+   "s226_test_sha": [
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+    "037459650123824fe3ca186f50c1370468d87e320defae23442d8a26b1d006ac"
+   ],
+   "s227_decode_sha": [
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea",
+    "e7e8802faf89592ec478e752aadfc0fc4a25200868711e3bbcd06e9cd9d780bc"
+   ],
+   "set_law": [
+    "reg",
+    "df"
+   ],
+   "test2_sha": [
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+    "ec3d4858c5dcd673ed3db70aea4b1c6fc4a8800a66b40e41ea277d2e050d9edf"
+   ],
+   "transfer_sha": [
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+    "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s238/args_df_plaw4_s2/args.json",
+  "pass": true
+ },
+ "df_pcd4_s1": {
+  "rc": 0,
+  "diff_keys": [
+   "excl_n",
+   "floors2_sha",
+   "init_model",
+   "init_model_sha",
+   "init_model_sha256",
+   "inject_ow_sha256",
+   "mul_s_p",
+   "pair_stats",
+   "pairs2_sha",
+   "s226_test_sha",
+   "s227_decode_sha",
+   "set_law",
+   "test2_sha",
+   "transfer_sha"
+  ],
+  "diff": {
+   "excl_n": [
+    174599,
+    177599
+   ],
+   "floors2_sha": [
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+    "8f7e69c461adced7b2231828070868b88240a1e85b5d682e21c17ed520c5eba3"
+   ],
+   "init_model": [
+    "boxes/runs_fsq/aw_pcd2_s1/model.pt",
+    "boxes/runs_fsq/rcb_pcd4_s1/model.pt"
+   ],
+   "init_model_sha": [
+    "1d73f6a1e8e34f3b",
+    "9035c0989c602528"
+   ],
+   "init_model_sha256": [
+    "1d73f6a1e8e34f3b6c20c817430bfe17d10b4a4b6dd42221de17adb8f0c46e3d",
+    "9035c0989c6025280444a86e71d55621a5e1b7912193232fe0c7bdde94c8f133"
+   ],
+   "inject_ow_sha256": [
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e",
+    "88ee59e15101b1255af43acbb53aaf1a075dac127505a09a25e0c355b8812da8"
+   ],
+   "mul_s_p": [
+    0,
+    2
+   ],
+   "pairs2_sha": [
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+    "d1a59c2365dc8a83e8a707181623f8c220918b8b3b95a6cebfb74fa5f4ecdfcd"
+   ],
+   "s226_test_sha": [
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+    "037459650123824fe3ca186f50c1370468d87e320defae23442d8a26b1d006ac"
+   ],
+   "s227_decode_sha": [
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea",
+    "e7e8802faf89592ec478e752aadfc0fc4a25200868711e3bbcd06e9cd9d780bc"
+   ],
+   "set_law": [
+    "reg",
+    "df"
+   ],
+   "test2_sha": [
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+    "ec3d4858c5dcd673ed3db70aea4b1c6fc4a8800a66b40e41ea277d2e050d9edf"
+   ],
+   "transfer_sha": [
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+    "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6"
+   ]
+  },
+  "args_file": "D:/Latent/scratch/_tmp/s238/args_df_pcd4_s1/args.json",
+  "pass": true
+ },
+ "pass": true
+}

@@ -1,0 +1,37 @@
+{
+ "default": {
+  "parts": {
+   "acc": true,
+   "lp5": true,
+   "mean_s": true,
+   "cue_only": true,
+   "cue_wrong": true,
+   "swap_k": true,
+   "swap_1": true,
+   "probe": true,
+   "ws": true,
+   "lp5h": true,
+   "swap_kd": true
+  },
+  "def_changed": [],
+  "pass": true
+ },
+ "reg": {
+  "parts": {
+   "acc": true,
+   "lp5": true,
+   "mean_s": true,
+   "cue_only": true,
+   "cue_wrong": true,
+   "swap_k": true,
+   "swap_1": true,
+   "probe": true,
+   "ws": true,
+   "lp5h": true,
+   "swap_kd": true
+  },
+  "def_changed": [],
+  "pass": true
+ },
+ "pass": true
+}

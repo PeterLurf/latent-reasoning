@@ -1,0 +1,68 @@
+{
+ "lat": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json",
+   "eval_cue_only.json",
+   "eval_cue_wrong.json",
+   "eval_lp5.json",
+   "eval_lp5h.json",
+   "eval_mean_s.json",
+   "eval_opclass.json",
+   "eval_probe.json",
+   "eval_swap_1.json",
+   "eval_swap_k.json",
+   "eval_swap_kd.json",
+   "eval_swap_prod.json",
+   "eval_ws.json"
+  ],
+  "peak_gib": 4.940698146820068,
+  "opclass_n": 3000,
+  "opclass_passes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8"
+  ],
+  "opclass_items": 3000,
+  "swap_prod": {
+   "n_pairs": 1000,
+   "tried": 1417,
+   "k_flat": 3
+  },
+  "swap_prod_fields": [
+   "floor",
+   "follow_U",
+   "follow_cb",
+   "follow_dfin",
+   "stay_own"
+  ],
+  "swap_prod_by_k": [
+   "3",
+   "8"
+  ],
+  "swap_k_reg": true,
+  "probe_df": true,
+  "swap_prod_df": true,
+  "opclass_df": true,
+  "swap_kd_ds": [
+   "3",
+   "4"
+  ],
+  "swap_kd_has_t2": false
+ },
+ "cd": {
+  "rc": 0,
+  "files": [
+   "eval.json",
+   "eval_acc.json"
+  ],
+  "peak_gib": 4.951161861419678
+ },
+ "pass": true
+}

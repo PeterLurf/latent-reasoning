@@ -1,0 +1,16 @@
+{
+ "rc": 0,
+ "files": [
+  "args.json",
+  "eval.json",
+  "eval_acc.json",
+  "eval_cue_only.json",
+  "eval_opclass.json",
+  "eval_swap_prod.json",
+  "eval_ws.json",
+  "model.pt"
+ ],
+ "args_df_shas": true,
+ "src_untouched": true,
+ "pass": true
+}

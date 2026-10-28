@@ -45,6 +45,8 @@ SEED_D = 22331                                                              # + 
 SEED_TEST2, SEED_TRANSFER, SEED_PAIRS2, SEED_FLOOR2, SEED_PERM2 = 22960, 22961, 22970, 22975, 22980   # LAT_v1 draft §3 (unused elsewhere, grep 10-23)
 SEED_CAL, SEED_MEMCHECK = 22996, 22997                                      # g_add calibration / memory-check items (unused elsewhere, grep 10-23)
 SEED_TEST2_REG, SEED_TRANSFER_REG, SEED_PAIRS2_REG, SEED_FLOOR2_REG = 23800, 23801, 23802, 23804   # §236 REG sets (+1 of PAIRS2_REG = its stream; unused, grep 10-27)
+SEED_TEST2_DF, SEED_TRANSFER_DF, SEED_PAIRS2_DF, SEED_FLOOR2_DF = 24010, 24011, 24012, 24014       # §238 DF sets (+1 of PAIRS2_DF = its stream; unused, grep 10-27)
+SEED_OPCLASS_DF, OPCLASS_N, OPCLASS_D = 24015, 3000, 4                       # §238 OPCLASS-DF: Stream(SEED_OPCLASS_DF, frames=FRAME_TRAIN, **OWKW, mul_s_p=2), 3,000 at d 4, no EXCL
 OWKW = {"order_mode": "topo", "dag": True}
 PAIR_DS = range(3, 9); PAIR_TRIES = 3000; PAIR_CAP = 1000; FLOOR_K = 3; TEST_DS = range(1, 13); TEST_N = 1000
 
@@ -126,8 +128,9 @@ def build_sets(mul_s_p=1):
     the §228 evaluation sets (deterministic; lat_checks part C's pair / floor law with the exact-length rule made binding) and the training
     exclusion. -> dict: test2 {d: [items]}, transfer {d: [items]}, pairs {d: [{rec, don, t, ca, cb}]} (kept, first PAIR_CAP), floors {d: [[donor or
     None] x FLOOR_K]} (per kept pair), pair_stats, excl (sigs), shas."""
-    assert mul_s_p in (0, 1); kw = {} if mul_s_p else {"mul_s_p": 0}
-    sT, sX, sP, sF = (SEED_TEST2, SEED_TRANSFER, SEED_PAIRS2, SEED_FLOOR2) if mul_s_p else (SEED_TEST2_REG, SEED_TRANSFER_REG, SEED_PAIRS2_REG, SEED_FLOOR2_REG)
+    assert mul_s_p in (0, 1, 2), ("build_sets: mul_s_p", mul_s_p); kw = {} if mul_s_p == 1 else {"mul_s_p": mul_s_p}
+    sT, sX, sP, sF = {1: (SEED_TEST2, SEED_TRANSFER, SEED_PAIRS2, SEED_FLOOR2), 0: (SEED_TEST2_REG, SEED_TRANSFER_REG, SEED_PAIRS2_REG, SEED_FLOOR2_REG),
+                      2: (SEED_TEST2_DF, SEED_TRANSFER_DF, SEED_PAIRS2_DF, SEED_FLOOR2_DF)}[mul_s_p]
     s = OW.Stream(sT, frames=OW.FRAME_TRAIN, **OWKW, **kw); test2 = {d: [s.draw(d) for _ in range(TEST_N)] for d in TEST_DS}
     s = OW.Stream(sX, frames=(6, 7), **OWKW, **kw); transfer = {d: [s.draw(d) for _ in range(TEST_N)] for d in TEST_DS}
     r = np.random.default_rng(sP); s = OW.Stream(sP + 1, frames=OW.FRAME_TRAIN, **OWKW, **kw); rf = np.random.default_rng(sF)
@@ -157,8 +160,8 @@ def build_sets(mul_s_p=1):
             "pairs2_sha": OW.set_sha([x for d in PAIR_DS for p_ in pairs[d] for x in (p_["rec"], p_["don"])]),
             "floors2_sha": OW.set_sha([x for d in PAIR_DS for row in floors[d] for x in row if x is not None]),
             "s226_test_sha": OW.set_sha([it for d in sorted(TE6) for it in TE6[d]]), "s227_decode_sha": OW.set_sha(ED7)}
-    if not mul_s_p:
-        shas["set_law"] = "reg"                                             # §236: the REG sets' shas carry the law tag (absent = the default law)
+    if mul_s_p != 1:
+        shas["set_law"] = {0: "reg", 2: "df"}[mul_s_p]                       # §236 / §238: the law tag (absent = the default law)
     return {"test2": test2, "transfer": transfer, "pairs": pairs, "floors": floors, "pair_stats": pst, "excl": excl, "shas": shas}
 
 
@@ -448,6 +451,11 @@ def main(argv=None):
         if os.path.exists(os.path.join(a.out, ck_)):
             os.remove(os.path.join(a.out, ck_))
     print("DONE", a.out, flush=True); return 0
+
+
+def opclass_set():
+    """§238 OPCLASS-DF (DF_v1 §2): 3,000 d 4 items from OW.Stream(SEED_OPCLASS_DF, frames=FRAME_TRAIN, **OWKW, mul_s_p=2), no EXCL (score_df regenerates it so)."""
+    s = OW.Stream(SEED_OPCLASS_DF, frames=OW.FRAME_TRAIN, **OWKW, mul_s_p=2); return [s.draw(OPCLASS_D) for _ in range(OPCLASS_N)]
 
 
 if __name__ == "__main__":

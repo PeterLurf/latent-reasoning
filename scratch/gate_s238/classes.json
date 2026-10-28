@@ -1,0 +1,26 @@
+{
+ "pass3_test2_df_d34": {
+  "mul_c": 230,
+  "add_c": 262,
+  "sub_c": 231,
+  "add_v": 255,
+  "mul_v": 256,
+  "sub_v": 252,
+  "add_s": 264,
+  "mul_s": 250
+ },
+ "pass4_opclass_df": {
+  "sub_c": 386,
+  "add_c": 416,
+  "add_s": 370,
+  "mul_s_j2": 191,
+  "mul_c": 350,
+  "mul_v": 353,
+  "mul_s_j1": 199,
+  "add_v": 354,
+  "sub_v": 381
+ },
+ "min_pass3": 230,
+ "min_pass4": 191,
+ "pass": true
+}
