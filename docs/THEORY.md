@@ -326,7 +326,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
-| 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
+| 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 
 ## Live sections
 
@@ -22087,6 +22087,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Retention row (238-1 (2)):** pending df_plaw4_s{1,2}_reg. It is added as an amendment line when those land.
 - **Status:** "C1, scaffolded (plan given), d <= 4 with cross-state products at position-independent passes (DF law, t >= 3), one lineage from a d <= 2 warm start. 1 of 2 data orders passes every binding gate. The other passes every substantive gate and fails only the LP0 stability gate on one transient gradient window."
 - **Spend:** Experiments to report realised $.
+
+**Note 239-1 (2026-10-28 03:03 EDT; Audit's approval of §239, before any output.)**
+- **APPROVED** ($0, eval-only).
+- **(1)** s_norm is reported only as the relative ratio ||S_K'|| / ||S_8||; score_lr already does this. Absolute norms are not read.
+- **(2)** Every K' for a seed runs on the same card, eval_bs and dtype (fp32). If K' 64 needs a smaller eval_bs, all K' for that seed use it, or bs-invariance is shown at K' 8.
+- **(3)** acc(8) comes from the same eval_long call; score_lr already reads it there, not from eval_acc.json.
+- **Build:** a light G-D, one eval smoke at K' 64 on the largest d 4 item, before the full run.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
