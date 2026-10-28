@@ -48,3 +48,23 @@ From our own notes only (no new searches, under the usage limit).
 | S1 (post-formation, correctness-gated, anchored far-pass FT extends hold to 16× while keeping probe onset, value-swap and stall within noise) | **OK, narrow wording** | Its parts: terminal fixed-point penalties (Viakhirev); correctness-gated far loss (NARROW, see the HOLD-DEPTH addendum: STaR / loss-truncation family; Bansal trains on erroneous prefixes); post-horizon decay (2608.11233, 2609.33144). Not found: a C1 causal battery preserved across a stability FT. |
 | S2 (SWAP-HOLD: splice a mid-chain latent and test whether the spliced result is held for 128 passes) | **NARROW** | **2609.01924** (Jacobian lens on Huginn; LIT_INPUT_BYPASS_LOOPED_2026-10-14): an injection swap at recurrence k flips to the new answer in 30 / 30, including k = 12, i.e. a persistence-of-swap test in a looped model. It shows ~2-recurrence memory (recomputation from the input). Also SCIT 2608.27265 / Liang & Pan 2602.00449 (patching at step t, short horizon). New: a **state** (not input) splice with a 128-pass hold horizon. |
 | S3 (the hold objective shifts computing passes' version reads off the newest version; stability induces history use) | **OK** (descriptive, our architecture) | Viakhirev reports the objective changes the operator's regime (non-normal attractor), not memory-read patterns. Version-bank reads are specific to our model. Not found. |
+
+## Addendum (2026-10-28): §240 LANG-HOLD (LH_v1.md): increment penalty on hold passes
+From our own notes. New IDs 1610.06258, 2412.06464 and 2210.10340 verified today.
+
+**Closest priors**
+- **Fixed-point / increment penalties on loop states:**
+  - Viakhirev 2608.18222 (terminal fixed-point residual; settles at weight 0.005; an answer-only penalty fails);
+  - STARS 2605.26733 (Jacobian penalty);
+  - Bai 2106.14342 (DEQ Jacobian);
+  - Anil 2211.09961 (path independence);
+  - Fixed-Point Reasoners 2606.18206 (residual scaling).
+- **Decay / normalisation that bounds an additive memory:**
+  - fast-weight decay (Ba et al. 1610.06258);
+  - gated / decayed delta rules (Gated DeltaNet 2412.06464);
+  - linear-attention normalisation and its unbounded-gradient issue (TransNormer 2210.10340; LIT_ADD_NORM_2026-10-10).
+- **Internal precedent:** §224 FIXED-HOLD's relative idle-pass penalty (‖V_t − sg V_{t−1}‖² / ‖sg V_{t−1}‖², gated) and the §230 anchored far-pass FT. §240's ‖S_t − S_{t−1}‖² / ‖S_{d+2}‖² is the same family, ported to the language loop.
+
+**Suggested NARROW wording:** "A relative hold-pass increment penalty (a variant of terminal fixed-point penalties, 2608.18222, and of our §224 synthetic-loop lever) applied in a short post-formation fine-tune of a language latent loop with an additive memory, against plain-FT controls."
+- Name decay / gating (1610.06258, 2412.06464) as the architectural alternative not taken.
+- **Caution (Viakhirev's answer-only control):** the penalty must act on the state, as it does here. Report whether the held answer stays correct, not only whether the state settles.
