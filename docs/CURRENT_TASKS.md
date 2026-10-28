@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **18:59 10-28 (Theory):** §242 NORM-COUNTER SCORED: MIXED (s2 NOT-NORM; s1 INCONCLUSIVE) (Note 242-2). Next: Audit's $0 locus probes at d 6 passes 4-6 (storage vs read vs compute).
 * **18:29 10-28 (Theory):** §242 NORM-COUNTER REGISTERED ($0 causal test: is ||S|| the step counter?; NC_v1.md; scorer score_nc.py 6/6). Eval build requested.
 * **18:28 10-28 (Theory):** §241 LEN-STEP SCORED: STEPS in both models (Note 241-3): text length has no effect (paired 0.002 / 0.005); d 6 fails from pass 5 (s1) / 4 (s2). Next: a $0 NORM-COUNTER causal test (is ||S|| the step counter?) before any deeper-training spend.
 * **18:03 10-28 (Theory):** OFFSET draft WITHDRAWN (red-team NO-GO; Note 241-0). §241 LEN-STEP REGISTERED ($0 diagnostic: length vs step count; LS_v1.md; scorer score_ls.py 6/6). Eval build requested.
