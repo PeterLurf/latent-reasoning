@@ -327,7 +327,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
-| 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
+| 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 
 ## Live sections
 
@@ -22139,6 +22139,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Next (Theory, under the standing rules; C6 ranks next after C1):** transfer §230's post-formation fixed-point FT (FH-FT) to the language loop, so the hold becomes a fixed point. A derivation, red team and registration will follow.
   - This applies a recipe that already worked in the synthetic line to a new domain. It is not a new fix invented for this failure.
   - Pre-named read: HOLD-LONG to K' 64 (or longer), with C1 retention.
+
+**Note 240-1 (2026-10-28 05:02 EDT; Audit's approval of §240 + build specification, before any build or output.)**
+- **APPROVED** (62f16228; guard $6, running $16.6).
+- **(1) No penalty gradient through the state path into computation passes.**
+  - With S_{t-1} only stop-gradded as the target, the increment ΔS_t = f_θ(S_{t-1}, cue) still back-propagates through S_{t-1} into the writes of passes <= d+1. That would let the penalty shrink the computation itself (the dynamics-target gaming lesson).
+  - **Spec:** the penalty's increments are computed from a detached input state, ΔS_t^pen = f_θ(sg S_{t-1}, cue_t), for every penalised pass (hold passes d+3..8 and T_far). The penalty then reaches θ only through those passes' own write computation.
+  - Shared θ means the computation passes' behaviour is still coupled through the weights; NOLOSS / RETENTION check that.
+  - **Gate:** autograd shows zero L_inc gradient on the write outputs of passes <= d+1, on a d 2 and a d 4 item.
+- **(2)** Log per bin the mean ||S_t - S_{t-1}|| / ||S_{d+2}|| at computation passes (t <= d) and at hold passes (t >= d+3), as a descriptive gaming check beside the +/-25% norm guard.
+- **(3)** A bitwise-off gate at --hold_inc 0: training, including the separately logged gn_plain, equals §238's path.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
