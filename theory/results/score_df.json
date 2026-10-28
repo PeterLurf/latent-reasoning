@@ -44955,10 +44955,50 @@
  "verdict": "DF SPLIT | s1: GATE-OTHER (LP0) / s2: PASS",
  "retention": {
   "df_plaw4_s1": {
-   "status": "pending (missing df_plaw4_s1_reg acc / ws)"
+   "acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "acc_s237": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "op_all_reg": {
+    "add_c": 1.0,
+    "sub_c": 1.0,
+    "mul_c": 1.0,
+    "add_v": 1.0,
+    "sub_v": 1.0,
+    "mul_v": 1.0,
+    "add_s_j0": 1.0,
+    "add_s_j1+": 1.0
+   },
+   "regressions": []
   },
   "df_plaw4_s2": {
-   "status": "pending (missing df_plaw4_s2_reg acc / ws)"
+   "acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "acc_s237": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "op_all_reg": {
+    "add_c": 1.0,
+    "sub_c": 1.0,
+    "mul_c": 1.0,
+    "add_v": 1.0,
+    "sub_v": 1.0,
+    "mul_v": 1.0,
+    "add_s_j0": 1.0,
+    "add_s_j1+": 1.0
+   },
+   "regressions": []
   }
  }
 }

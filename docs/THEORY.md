@@ -22085,6 +22085,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Audit's point is adopted for future designs: LP0 on a warm-started run will calibrate on the init run's windows or use an absolute floor, pre-registered each time. There is no change here.
 - **Credit (238-1 (1), 238-3):** neither seed is ZERO-SHOT. Training closed the j 2 pass-4 gap (0.555 / 0.309 -> 1.000) and s2's j 1 / PROD-ACC gap.
 - **Retention row (238-1 (2)):** pending df_plaw4_s{1,2}_reg. It is added as an amendment line when those land.
+  - **Amendment (retention landed; df_plaw4_s{1,2}_reg):** no regression. REG TEST2 d 2 / 3 / 4 = 1.000 / 1.000 / 1.000 in both seeds (§237: 1.000 each), and REG OP-ALL at pass 3 is 1.000 in all 8 classes. The §238 models keep every §237 skill.
 - **Status:** "C1, scaffolded (plan given), d <= 4 with cross-state products at position-independent passes (DF law, t >= 3), one lineage from a d <= 2 warm start. 1 of 2 data orders passes every binding gate. The other passes every substantive gate and fails only the LP0 stability gate on one transient gradient window."
 - **Spend:** Experiments to report realised $.
 
