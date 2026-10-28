@@ -1,0 +1,18 @@
+{
+ "plain": {
+  "rc": 0,
+  "sec_per_step": 3.265122503042221
+ },
+ "ctrl": {
+  "rc": 0,
+  "sec_per_step": 3.067058575153351
+ },
+ "fh": {
+  "rc": 0,
+  "sec_per_step": 3.9046790599823
+ },
+ "fh_over_plain": 1.1958752103004353,
+ "ctrl_over_plain": 0.93933951093586,
+ "note": "4060, micro 8, sched 0.02: steps 1-40, the penalty on from step 10 (31 of 40 steps); the 3090 G-TIME line runs --hold_start 1",
+ "pass": true
+}
