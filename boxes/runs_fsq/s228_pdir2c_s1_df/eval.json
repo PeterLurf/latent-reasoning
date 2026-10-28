@@ -1,0 +1,24 @@
+{
+ "arm": "direct",
+ "cue": "none",
+ "think_k": 0,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 43
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 4060",
+ "eval_bs": 100,
+ "write_src": "all",
+ "ds": [
+  2
+ ],
+ "module_sha256": "0315b3f347479572bb5578824ca38842aec4d8181d1c3af0a64035a4ea4889be",
+ "train": null,
+ "reg_of": "s228_pdir2c_s1",
+ "reg_note": "eval-only DF reference (\u00a7236 / \u00a7238); train = the source run's"
+}
