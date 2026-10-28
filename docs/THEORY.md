@@ -325,7 +325,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 235 | D4-DECOR (user 10-26 via Audit: 'Fix depth-4 chain'; cap $30 running rule): training-only mul_s_p3 0.5 (d = 3 drops the forced mul_s half the time) to break §234 P-4's pass-index->op shortcut; eval sets + P-4 gates unchanged, + binding OP-READ (d 4 pass-3 non-mul_s >= 0.80; P-4 ref 0.103); D4_v1.md | registered | **VOID 10-26 (235-1): CUE-ONLY d 3 0.260 > 0.179; LP4 / CHAIN / OP-READ would fail anyway (d 4 0.350; OP-READ 0.688; mul_s at d 4 pass 3 0.998 -> 0.193); $0.92.** **APPROVED by Audit 10-26 (guard $4.17; running $7.18; extra build gates: d 3 coin stats over 50k draws, eval-set hashes, flags-off bitwise vs P-4).** **REGISTERED 14:34 10-26; build (Experiments) -> G-D (Audit) -> launch; scorer score_d4.py f3256b50** |
 | 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
-| 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
+| 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 
 ## Live sections
 
@@ -22052,6 +22052,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **ZERO-SHOT status under 238-1 (1):** neither init passes all three at step 0. Both fail OP-ALL+ on mul_s j 2 at pass 4 (s2 also fails PROD-ACC and mul_s j 1). So a final PASS would not be labelled ZERO-SHOT.
   - The deltas that §238 training can be credited with are mainly mul_s j 2 at pass 4 (+0.25 / +0.49 needed to reach 0.80) and s2's j 1 / PROD-ACC.
   - The status line will report the step-0 values beside the finals.
+
+**Note 238-4 (2026-10-28 03:00 EDT; §238 DAG-FREE scored: theory/score_df.py, theory/results/score_df.json; Audit reproduced the verdict.)**
+- **Registered verdict: DF SPLIT. s1: GATE-OTHER (LP0); s2: PASS.**
+- **Both seeds pass every substantive gate:**
+  - PROD-ACC 1.000 on the 363 product items (CD-AN 0.102; step 0 0.837 / 0.780);
+  - CHAIN; acc d 2-4 1.000 (s1 d 4 0.999);
+  - OP-ALL+: every class 1.000, including mul_s at pass 3 and at pass 4 with j 1 and j 2 (step 0 min 0.555 / 0.309);
+  - PROD-SWAP follow_U 1.000: follow_dfin 1.000, follow_cb 0.000, floor 0.201. Both factors come from memory.
+  - CUE-ONLY OK.
+- **s1 fails LP0 only.** The self-calibrated cap is 8.03 (2 x the max of windows 3-10, which are small after the warm start), and one window is over it: gn 15.52 at step 4,100.
+  - The spike was transient: one window (3,900-4,300: 1.20, 0.65, 15.52, 1.47, 2.04); loss 0.018 -> 0.030 -> 0.004 by 4,600; max gn after 5k 3.36 (< cap).
+  - The rule binds, so s1 is not a PASS.
+  - Audit's point is adopted for future designs: LP0 on a warm-started run will calibrate on the init run's windows or use an absolute floor, pre-registered each time. There is no change here.
+- **Credit (238-1 (1), 238-3):** neither seed is ZERO-SHOT. Training closed the j 2 pass-4 gap (0.555 / 0.309 -> 1.000) and s2's j 1 / PROD-ACC gap.
+- **Retention row (238-1 (2)):** pending df_plaw4_s{1,2}_reg. It is added as an amendment line when those land.
+- **Status:** "C1, scaffolded (plan given), d <= 4 with cross-state products at position-independent passes (DF law, t >= 3), one lineage from a d <= 2 warm start. 1 of 2 data orders passes every binding gate. The other passes every substantive gate and fails only the LP0 stability gate on one transient gradient window."
+- **Spend:** Experiments to report realised $.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
