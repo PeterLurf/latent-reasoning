@@ -329,7 +329,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 | 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
-| 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
+| 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
 
 ## Live sections
 
@@ -22303,6 +22303,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(2) ADD-ONLY arm (descriptive):** down_add_d6 rescales only the 6 additive heads at d 6 after pass 4 to their ||S_2||. If NORM-COUNTER holds, it says which heads a scale-invariant read must normalise.
 - **(3) Descriptive:** per-head-type norms (additive vs delta) per pass, at d 4 vs d 6 (eval_normctr.json head_norms).
 - theory/score_nc.py implements these; fixtures 7/7.
+
+**Note 242-2 (2026-10-28 18:59 EDT; §242 NORM-COUNTER scored: theory/score_nc.py, theory/results/score_nc.json; Experiments be839d56, 4060 fp32 bs 250; identity arm bitwise equal in both models; $0.)**
+- **Registered verdict: NORM-COUNTER MIXED. s1: INCONCLUSIVE; s2: NOT-NORM.**
+  - **s2:** HARMLESS 0.998.
+    - DOWN (S_4 -> ||S_2||, scale 0.58) hurts: d 6 0.213 -> 0.153, pass-5 WS 0.30 -> 0.21.
+    - UP (S_2 -> ||S_4||, scale 1.35) does nothing: d 4 1.000 -> 0.996.
+    - The norm is not s2's step counter.
+  - **s1:** HARMLESS fails (0.804 < 0.90; pass-4 WS 0.36 after rescaling S_3 by 0.35), so s1's read is scale-sensitive and the test is uninterpretable.
+    - Descriptive: DOWN hurts (0.415 -> 0.129); UP costs only 0.073 (1.000 -> 0.927).
+  - ADD-ONLY tracks DOWN in both (s1 0.117, s2 0.148): the additive heads hold the scale.
+- **Head norms (descriptive):** the final step barely writes. d 4 add-norm 1,560 -> 1,585 at pass 4; d 6 2,726 -> 2,749 at pass 6. Earlier steps add ~500 each, consistent with the decoder taking the last step (237-4).
+  - At d 6, pass 5 does write a full increment (2,217 -> 2,726) while its ':' output is right only 0.57 / 0.30.
+- **Reading:** no evidence that ||S|| is the step counter (s2 clean; s1 inconclusive). Pass 5 writes, but writes the wrong value.
+- **Pre-named next (NC_v1 sec. 3), NOT-NORM:** the state-addressing question. Does pass 5 at d 6 read the right stored state (v_4) and compose it with step 5's op?
+  - Theory asks Audit for its $0 locus probes (from scratch/audit_d4_chain) at d 6 passes 4-6 on lh_fh_s1 / s2: v_{t-1} decodable in S_{t-1}, v_{t-1} in pass t's read, and v_t from u.
+  - That separates a storage failure, a read / addressing failure and a compute failure.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
