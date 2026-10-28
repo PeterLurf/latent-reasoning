@@ -327,7 +327,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
-| 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
+| 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 
 ## Live sections
 
@@ -22208,6 +22208,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(3) LP0-W is as registered, not a bug.** The cap is max(2 x the init's windows 3-10, 5.0) = 8.03 for s1 (init df_plaw4_s1 windows max 4.01) and 15.6 for s2.
   - lh_fh_s1 has one gn_plain window over the cap: 8.48 at step 600, just after the penalty starts at 500. The rule binds.
   - Descriptive: lh_ctrl_s1 (no penalty) exceeds the same cap at steps 700 / 800 (8.74 / 8.95). So the spike is common to both arms after the warm-start fade ramp (0 -> 1 over 500 steps), not specific to the penalty.
+
+**Note 240-9 (2026-10-28 17:14 EDT; §240 LANG-HOLD scored: theory/score_lh.py, theory/results/score_lh.json; all four arms + both inits; realised ~$2.69 incl. $0.39 bad hosts.)**
+- **Registered verdict: LH SPLIT. s1: LP0-FAIL; s2: PASS.** LEVER holds (s1 +0.475); CTRL s1 does not hold, so this is not MORE-TRAINING-SUFFICES.
+- **HOLD-LONG3 (both FH seeds):** acc 1.000 at K' 8 / 64 / 128 for every d 1-4.
+  - **Step 0** (inits) at K' 128: d 1 0.242 / 0.119, d 2 0.350 / 0.565.
+  - **CTRL** at K' 128: s1 d 1 0.525; s2 d 1 0.183, d 2 0.709, d 3 0.898.
+  - ||S_128|| / ||S_8|| is 1.02-1.14 under FH, vs 11.8-16.4 at step 0. The hold is now a fixed point.
+- **NOLOSS, both seeds:**
+  - the §238 gates (PROD-ACC, CHAIN, OP-ALL+, PROD-SWAP, CUE-ONLY) all pass; the C1 floor passes;
+  - **RETENTION: no drop > 0.05.** Max drops s1 / s2: DF OP-ALL 0.016 / 0.003, DF PROD-SWAP 0.023 / 0.000, SWAP-MID 0.014 / 0.000, LP5 0.026 / 0.012, REG OP-ALL 0.026 / 0.008.
+  - Unlike §232 (where the hold FT eroded v0-masked robustness), the C1 / C6 coexistence here costs at most 0.026.
+- **NORM GUARD:** not GAMED; FH / CTRL max 0.653 / 0.792. FH shrinks S to 0.20-0.79x CTRL (SHRINK, descriptive).
+- **s1 LP0-W:** as Note 240-8, one gn_plain window of 8.48 vs the cap 8.03 at step 600, just after the penalty starts. The no-penalty control breaks the same cap at steps 700 / 800 (ramp-time spike). The rule binds; the warm-start checklist in CURRENT_TASKS now fixes this for future designs.
+- **Implementation note:** the registered REG OP-ALL retention row was missing from score_lh's first implementation. It was added before this note and gives no regression (0.026 / 0.008); no other change.
+  - lp5 / cue_wrong were run on the 4060, a different card from the 3090 host parts. They are code-path inputs only, not read by any binding gate here.
+- **Descriptive:** d 5 stays flat across K' (FH s1 0.863-0.864, s2 0.691-0.698), so more passes still don't add a fifth step (C2 not met).
+- **Status:** "C6 (long runs), language loop: hold to K' 128 (16x the trained passes) at 1.000 for d 1-4 in 2 / 2 FH seeds with the hold-increment penalty, where plain-FT controls and the inits drift; §237 / §238 C1 gates retained (max drop 0.026).
+  1 of 2 seeds passes every binding gate; the other fails only LP0-W on one ramp-time window its control shares. One lineage, scaffolded (plan given)."
+- **Spend:** realised total ~$13.25.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
