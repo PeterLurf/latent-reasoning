@@ -1,0 +1,188 @@
+{
+ "deterministic": true,
+ "same_cells_s1_s2": true,
+ "rerender_e0_identity": true,
+ "rerender_drop_identity_ndis0": true,
+ "n_ndis0_checked": 1642,
+ "B_same_programs_plus_e": true,
+ "length_gate": true,
+ "len_mean_p90_n": {
+  "A": [
+   82.86,
+   93.0,
+   1000
+  ],
+  "B": [
+   107.86,
+   118.0,
+   1000
+  ],
+  "C": [
+   109.55,
+   122.0,
+   1000
+  ],
+  "D": [
+   89.62,
+   93.0,
+   500
+  ]
+ },
+ "build": {
+  "e": 5,
+  "search": [
+   {
+    "e": 0,
+    "tok_mean": 82.86,
+    "tok_p90": 93.0,
+    "pass": false
+   },
+   {
+    "e": 1,
+    "tok_mean": 87.86,
+    "tok_p90": 98.0,
+    "pass": false
+   },
+   {
+    "e": 2,
+    "tok_mean": 92.86,
+    "tok_p90": 103.0,
+    "pass": false
+   },
+   {
+    "e": 3,
+    "tok_mean": 97.86,
+    "tok_p90": 108.0,
+    "pass": false
+   },
+   {
+    "e": 4,
+    "tok_mean": 102.86,
+    "tok_p90": 113.0,
+    "pass": false
+   },
+   {
+    "e": 5,
+    "tok_mean": 107.86,
+    "tok_p90": 118.0,
+    "pass": true
+   },
+   {
+    "e": 6,
+    "tok_mean": 112.86,
+    "tok_p90": 123.0,
+    "pass": true
+   },
+   {
+    "e": 7,
+    "tok_mean": 117.86,
+    "tok_p90": 128.0,
+    "pass": false
+   },
+   {
+    "e": 8,
+    "tok_mean": 122.86,
+    "tok_p90": 133.0,
+    "pass": false
+   },
+   {
+    "e": 9,
+    "tok_mean": 127.86,
+    "tok_p90": 138.0,
+    "pass": false
+   },
+   {
+    "e": 10,
+    "tok_mean": 132.86,
+    "tok_p90": 143.0,
+    "pass": false
+   },
+   {
+    "e": 11,
+    "tok_mean": 137.86,
+    "tok_p90": 148.0,
+    "pass": false
+   },
+   {
+    "e": 12,
+    "tok_mean": 142.86,
+    "tok_p90": 153.0,
+    "pass": false
+   },
+   {
+    "e": 13,
+    "tok_mean": 147.86,
+    "tok_p90": 158.0,
+    "pass": false
+   },
+   {
+    "e": 14,
+    "tok_mean": 152.86,
+    "tok_p90": 163.0,
+    "pass": false
+   },
+   {
+    "e": 15,
+    "tok_mean": 157.86,
+    "tok_p90": 168.0,
+    "pass": false
+   },
+   {
+    "e": 16,
+    "tok_mean": 162.86,
+    "tok_p90": 173.0,
+    "pass": false
+   },
+   {
+    "e": 17,
+    "tok_mean": 167.86,
+    "tok_p90": 178.0,
+    "pass": false
+   },
+   {
+    "e": 18,
+    "tok_mean": 172.86,
+    "tok_p90": 183.0,
+    "pass": false
+   },
+   {
+    "e": 19,
+    "tok_mean": 177.86,
+    "tok_p90": 188.0,
+    "pass": false
+   },
+   {
+    "e": 20,
+    "tok_mean": 182.86,
+    "tok_p90": 193.0,
+    "pass": false
+   }
+  ],
+  "A_p90": 93.0,
+  "C_mean": 109.545,
+  "C_p90": 122.0,
+  "D_qualified": 500,
+  "D_pool_scanned": 5000,
+  "D_in_C": 107,
+  "D_omitted": false
+ },
+ "overlap_prog_sigs": {
+  "A": {
+   "test2": 0,
+   "excl": 0
+  },
+  "B": {
+   "test2": 0,
+   "excl": 0
+  },
+  "C": {
+   "test2": 0,
+   "excl": 0
+  },
+  "D": {
+   "test2": 0,
+   "excl": 0
+  }
+ },
+ "pass": true
+}

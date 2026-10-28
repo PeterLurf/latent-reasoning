@@ -372,3 +372,83 @@ def run_long(out, dev, bs, kplist, ds, name="eval_long.json"):
                "law": law(a), "set_law": sets["shas"].get("set_law", "default"), "think_k": a["think_k"], "module_sha256": IO.sha_file(os.path.abspath(__file__)),
                "peak_gib": torch.cuda.max_memory_allocated(dev) / 2 ** 30 if str(dev).startswith("cuda") else None, "sec": round(time.time() - t1)})
     json.dump(r_, open(os.path.join(out, name), "w", newline="\n")); print("LONG done", out, name, r_["sec"], "s", flush=True)
+
+
+SEED_LS_A, SEED_LS_C, SEED_LS_B = 24100, 24101, 24102                      # §241 LEN-STEP (LS_v1 §2 + Note 241-1): A / C streams, B's re-render rng (unused, grep 10-28)
+LS_N, LS_DPOOL, LS_DMIN, LS_EMAX = 1000, 5000, 300, 20                     # items per cell; D's candidate programs (C's stream); D's floor; B's extra-distractor search range
+
+
+def rerender_dis(rng, it, n_extra=0, drop=False):
+    """§241 (Note 241-1 (1)): the SAME program re-rendered with only the distractor sentences changed. drop: every distractor removed (no rng); else n_extra new
+    distractors (names from the pool unused by the item, values U{1..P-1}), each inserted at a uniform slot of the kept statement order (distractors have no
+    deps, so any slot keeps the order a linear extension). Asserts identical ops / operands / src_j / values / answer / mul_s_t / frames / names (bar distractors)."""
+    sp, gn, dn, dv, order = it["names"]["spine"], it["names"]["givens"], list(it["names"]["distractors"]), list(it["distractor_values"]), list(it["order"])
+    if drop:
+        dn, dv, order = [], [], [x for x in order if not x.startswith("D")]
+    elif n_extra:
+        used = set(sp) | set(gn) | set(dn); pool = [x for x in OW.NAMES if x not in used]
+        for i in rng.choice(len(pool), size=n_extra, replace=False):
+            dn.append(pool[int(i)]); dv.append(int(rng.integers(1, OW.P))); order.insert(int(rng.integers(0, len(order) + 1)), "D%d" % (len(dn) - 1))
+    new = OW._decorate(OW.NW._finish(it["d"], it["ops"], it["operands"], it["src_j"], it["values"], it["mul_s_t"], sp, gn, dn, it["unit"], it["frames"], dv, order, len(dn)),
+                       it["order_mode"], None, it.get("dag", True))
+    for k in ("wrap_final", "wrap_any"):
+        if k in it:
+            new[k] = it[k]
+    for k in ("d", "ops", "operands", "src_j", "values", "answer", "mul_s_t", "frames", "unit", "givens"):
+        assert new[k] == it[k], ("§241 re-render changed the program", k)
+    assert new["names"]["spine"] == sp and new["names"]["givens"] == gn and set(new) == set(it), "§241 re-render keys / names"
+    assert OW.solve(new["text"]) == it["answer"], "§241 re-render: the independent solver disagrees"
+    return new
+
+
+def ls_len(a, it):
+    """token length of the pass-1 input (part_acc's L)."""
+    return len(seq_std(AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")), 1))
+
+
+def lenstep_cells(a):
+    """§241 cells (DF law = TEST2-DF's Stream law and frames, new seeds): A d 4 (LS_N), C d 6 (LS_N), B = A's programs + e extra distractors (e: the smallest
+    |mean_B - mean_C| among e in 0..LS_EMAX passing the length gate, |mean| <= 5 and |p90| <= 10; rng SEED_LS_B fresh per e), D = the first LS_DPOOL programs of
+    C's stream (C = the first LS_N) with 0 distractors, kept if length <= A's p90 (first LS_N kept; omitted when < LS_DMIN). -> cells {X: (items, prog_sigs)}, info."""
+    assert law(a) == 2, "§241: DF runs only"
+    kw = dict(frames=OW.FRAME_TRAIN, mul_s_p=2, **IO.OWKW)
+    sA = OW.Stream(SEED_LS_A, **kw); A = [sA.draw(4) for _ in range(LS_N)]
+    sC = OW.Stream(SEED_LS_C, **kw); Cpool = [sC.draw(6) for _ in range(LS_DPOOL)]; C = Cpool[:LS_N]
+    LA = np.array([ls_len(a, it) for it in A]); LC = np.array([ls_len(a, it) for it in C]); mC, pC = float(LC.mean()), float(np.percentile(LC, 90))
+    search = []
+    for e in range(LS_EMAX + 1):
+        rng = np.random.default_rng(SEED_LS_B); LB = np.array([ls_len(a, rerender_dis(rng, it, e)) for it in A])
+        search.append({"e": e, "tok_mean": float(LB.mean()), "tok_p90": float(np.percentile(LB, 90)), "pass": bool(abs(LB.mean() - mC) <= 5 and abs(np.percentile(LB, 90) - pC) <= 10)})
+    ok_e = [s_ for s_ in search if s_["pass"]]; assert ok_e, ("§241: no e passes the B / C length gate", search)
+    e = min(ok_e, key=lambda s_: abs(s_["tok_mean"] - mC))["e"]; rng = np.random.default_rng(SEED_LS_B); B = [rerender_dis(rng, it, e) for it in A]
+    pA = float(np.percentile(LA, 90)); Dsrc, D = [], []
+    for it in Cpool:
+        r_ = rerender_dis(None, it, drop=True)
+        if ls_len(a, r_) <= pA:
+            Dsrc.append(it["sig"]); D.append(r_)
+            if len(D) == LS_N:
+                break
+    cells = {"A": (A, [it["sig"] for it in A]), "B": (B, [it["sig"] for it in A]), "C": (C, [it["sig"] for it in C])}
+    if len(D) >= LS_DMIN:
+        cells["D"] = (D, Dsrc)
+    info = {"e": e, "search": search, "A_p90": pA, "C_mean": mC, "C_p90": pC, "D_qualified": len(D), "D_pool_scanned": len(Cpool) if len(D) < LS_N else None,
+            "D_in_C": sum(s_ in set(cells["C"][1]) for s_ in Dsrc), "D_omitted": len(D) < LS_DMIN}
+    return cells, info
+
+
+@torch.no_grad()
+def part_lenstep(m, g, sets, a, dev, bs):
+    """§241 LEN-STEP (LS_v1 §2 + Note 241-1): per cell acc at K' 8 (= think_k), WS per pass 1..8 (AW.ws_readout), tok_mean / tok_p90 (pass-1 input length),
+    items {prog_sig (the source A / C item's sig, shared across renders), ok (0/1 at K' 8), sig, L, pred, ws_pred}."""
+    K = a["think_k"]; assert K == 8, ("§241: K' 8 = think_k", K)
+    cells, info = lenstep_cells(a); out = {"cells": {}, "build": info}
+    for c_, (its, psig) in cells.items():
+        d = its[0]["d"]; T = [AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for it in its]
+        P, _ = passes(m, T, dev, bs, {K}); y = np.array([it["ans"] for it in T]); ok = (P[K] == y).astype(int); L = np.array([len(seq_std(it, 1)) for it in T])
+        ws, pv = AW.ws_readout(m, {d: T}, dev, K, bs, per_item=True)
+        out["cells"][c_] = {"d": d, "n": len(T), "tok_mean": float(L.mean()), "tok_p90": float(np.percentile(L, 90)), "acc": float(ok.mean()), "ws": ws[str(d)],
+                            "n_distractors_mean": float(np.mean([it["n_distractors"] for it in its])),
+                            "items": {"prog_sig": psig, "ok": ok.tolist(), "sig": [it["sig"] for it in its], "L": L.tolist(), "pred": P[K].tolist(), "ws_pred": pv[str(d)]}}
+    out["def"] = ("LEN-STEP (§241 LS_v1 + Note 241-1): DF law, new seeds A 24100 (d 4) / C 24101 (d 6) / B re-render 24102; B = A's programs + e distractors (length-matched "
+                  "to C); D = C-stream programs with 0 distractors, length <= A's p90 (omitted if < 300); acc at K' 8, WS per pass, fp32, one card, one eval_bs")
+    return out
