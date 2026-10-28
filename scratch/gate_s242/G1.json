@@ -1,0 +1,39 @@
+{
+ "lh_fh_s1": {
+  "4": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "acc_local": 1.0,
+   "acc_host": 1.0,
+   "agree_host": 1.0
+  },
+  "6": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "acc_local": 0.415,
+   "acc_host": 0.415,
+   "agree_host": 1.0,
+   "identity_eq": true,
+   "identity_scale_all_one": true
+  }
+ },
+ "lh_fh_s2": {
+  "4": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "acc_local": 1.0,
+   "acc_host": 1.0,
+   "agree_host": 1.0
+  },
+  "6": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "acc_local": 0.213,
+   "acc_host": 0.213,
+   "agree_host": 1.0,
+   "identity_eq": true,
+   "identity_scale_all_one": true
+  }
+ },
+ "pass": true
+}

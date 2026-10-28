@@ -1,0 +1,48 @@
+{
+ "rc": 0,
+ "arms_present": true,
+ "fields_ok": true,
+ "ws_has_5": true,
+ "identity_equal_items": true,
+ "identity_acc_ws_equal": true,
+ "post_relerr": {
+  "down_d6": 1.7881393432617188e-07,
+  "down_add_d6": 1.7881393432617188e-07,
+  "up_d4": 1.1920928955078125e-07,
+  "harm_d4": 1.1920928955078125e-07
+ },
+ "head_norms_shape": {
+  "4": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8"
+  ],
+  "6": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8"
+  ]
+ },
+ "meta": {
+  "eval_gpu": "NVIDIA GeForce RTX 4060",
+  "eval_bs": 250,
+  "eval_dtype": "fp32",
+  "law": 2,
+  "set_law": "df",
+  "think_k": 8,
+  "peak_gib": 3.2607712745666504,
+  "sec": 210
+ },
+ "score_nc_one_runs": true,
+ "pass": true
+}
