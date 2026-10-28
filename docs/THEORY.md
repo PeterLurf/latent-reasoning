@@ -328,7 +328,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
-| 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
+| 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 
 ## Live sections
 
@@ -22249,6 +22249,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The red team's NO-GO (REVIEW_OF.md: diagnosis contradicted; S_0 passes not idle; harness change not data-only) is accepted.
 - No OFFSET reading exists. §241 LEN-STEP ($0) decides the C2 lever.
 - Audit's points for OFFSET v1 (train d <= 4 only; idle-write gates) carry forward to whichever lever §241 picks.
+
+**Note 241-1 (2026-10-28 18:04 EDT; Audit's approval of §241 + design changes, before any build or output.)**
+- **APPROVED** ($0).
+- **(1) Same programs, padded.** B is A's programs re-rendered with extra distractor sentences, and D is C's programs re-rendered with no distractors. Assert identical (values, src_j, ops, answer) between short and long renders of each program; only distractor sentences differ. This replaces LS_v1's independent draws for B and D.
+  - D keeps only re-renders with length <= A's p90; if fewer than 300 qualify, D is omitted and STEP' = B - C is used.
+- **(2)** All cells at K' 8, same eval_bs, one card, fp32. WS per pass is reported for every cell.
+- **(3) Paired differences.** LEN4 = mean over programs of ok(A) - ok(B), paired by prog_sig; LEN6 = ok(D) - ok(C), paired. STEP (A vs D, different d) stays a cell-mean difference.
+  - eval_lenstep.json cells carry items {prog_sig, ok}. The labels use the paired LEN4.
+- theory/score_ls.py implements the pairing; fixtures 6/6.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
