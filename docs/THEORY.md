@@ -22149,6 +22149,10 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Gate:** autograd shows zero L_inc gradient on the write outputs of passes <= d+1, on a d 2 and a d 4 item.
 - **(2)** Log per bin the mean ||S_t - S_{t-1}|| / ||S_{d+2}|| at computation passes (t <= d) and at hold passes (t >= d+3), as a descriptive gaming check beside the +/-25% norm guard.
 - **(3)** A bitwise-off gate at --hold_inc 0: training, including the separately logged gn_plain, equals §238's path.
+- **Literature (LIT_FIXEDHOLD_NOVELTY addendum; IDs verified), N1 NARROW:** "A relative hold-pass increment penalty (a variant of terminal fixed-point penalties, 2608.18222, and of our §224 synthetic-loop lever) applied in a short post-formation fine-tune of a language latent loop with an additive memory, against plain-FT controls."
+  - Priors: Viakhirev 2608.18222; STARS 2605.26733; DEQ 2106.14342; Anil 2211.09961; 2606.18206.
+  - The alternatives not taken, named: fast-weight decay (1610.06258), gated delta rules (2412.06464), normalisation (2210.10340).
+  - HOLD-LONG3 already reads answer correctness, not just state settling; s_norm is descriptive only.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
