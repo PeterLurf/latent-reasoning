@@ -27,6 +27,7 @@ P = 11
 FRAMES, NAMES, UNITS, GIVEN, QUESTION = NW.FRAMES, NW.NAMES, NW.UNITS, NW.GIVEN, NW.QUESTION
 FRAME_TRAIN, FRAME_ALL, OPS, OPS_REG, BASE = NW.FRAME_TRAIN, NW.FRAME_ALL, NW.OPS, NW.OPS_REG, NW.BASE
 OPS_CHAIN = tuple(op for op in OPS_REG if op != "add_s")                  # §226 dag=False: every step reads only S_{t-1} (+ a constant / given)
+DF_Q = {3: 0.179, 4: 0.151, 5: 0.147}                                       # §238 DF_v1 §1: P(propose mul_s | t) (t >= 5 -> 5); realised ~0.125 after fallbacks
 SEED_TEST, SEED_PAIRS, SEED_TRAIN = 22900, 22910, 22930      # unused elsewhere in boxes/*.py (grep 2026-10-23)
 
 
@@ -46,12 +47,14 @@ def _draw_program(rng, d, dag=True, mul_s_p3=1.0, mul_s_p=1):
     mul_s_p3 (§235 D4-DECOR, D4_v1 §1): at d = 3 only, with probability 1 - mul_s_p3 the program has no forced mul_s (ts := None, every step a regular op); the
     coin is drawn ONCE per program, before the restart loop, and only when mul_s_p3 < 1 (1.0 = no extra rng draw = the stream unchanged).
     mul_s_p (§236 REG-CHAIN, RC_v1 §1) in {0, 1}: 0 = no program has the forced mul_s (no ts draw at any d); 1 = unchanged. mul_s_p3 must be 1 when mul_s_p = 0.
+    mul_s_p 2 (§238 DAG-FREE, DF_v1 §1): no forced mul_s; per step t >= 3 a mul_s with probability DF_Q[t] (partner j ~ U over the valid j in 1..t-2), else -
+    or when no partner is valid - a regular op as REG; mul_s_p3 must be 1.
     -> ops, bs, js, s, ts, restarts, raw (the unreduced value of each step)."""
-    assert mul_s_p in (0, 1) and (mul_s_p == 1 or mul_s_p3 == 1.0), ("mul_s_p", mul_s_p, mul_s_p3)
+    assert mul_s_p in (0, 1, 2) and (mul_s_p == 1 or mul_s_p3 == 1.0), ("mul_s_p", mul_s_p, mul_s_p3)
     restarts = 0; reg = OPS_REG if dag else OPS_CHAIN
     no_ts = bool(dag and d == 3 and mul_s_p3 < 1.0 and rng.random() >= mul_s_p3)
     while True:
-        ts = int(rng.integers(3, d + 1)) if (dag and d >= 3 and not no_ts and mul_s_p) else None
+        ts = int(rng.integers(3, d + 1)) if (dag and d >= 3 and not no_ts and mul_s_p == 1) else None   # §238: no forced step under 0 / 2
         s = [int(rng.integers(0, P))]; ops, bs, js, raw = [], [], [], []; ok = True
         for t in range(1, d + 1):
             if t == ts:
@@ -59,7 +62,11 @@ def _draw_program(rng, d, dag=True, mul_s_p3=1.0, mul_s_p=1):
                 if not cand:
                     ok = False; break
                 j = cand[int(rng.integers(0, len(cand)))]; ops.append("mul_s"); bs.append(s[j]); js.append(j); raw.append(_NW_APPLY("mul_s", s[t - 1], s[j])); s.append(apply("mul_s", s[t - 1], s[j])); continue
-            for _ in range(50):
+            if mul_s_p == 2 and dag and t >= 3 and rng.random() < DF_Q[min(t, 5)]:   # §238 DF: the per-step mul_s coin (t >= 3)
+                cand = [j for j in range(1, t - 1) if s[j] >= 2 and s[t - 1] >= 2]
+                if cand:
+                    j = cand[int(rng.integers(0, len(cand)))]; ops.append("mul_s"); bs.append(s[j]); js.append(j); raw.append(_NW_APPLY("mul_s", s[t - 1], s[j])); s.append(apply("mul_s", s[t - 1], s[j])); continue
+            for _ in range(50):                                             # (§238: no valid partner -> this regular-op draw, as REG)
                 op = "mul_v" if d == 1 else reg[int(rng.integers(0, len(reg)))]
                 if op == "add_s":
                     if t < 2:
@@ -141,7 +148,7 @@ class Stream:
     def __init__(self, seed, excl=(), frames=FRAME_TRAIN, order_mode="forward", dag=True, mul_s_p3=1.0, mul_s_p=1):
         self.rng = np.random.default_rng(seed); self.excl = set(excl); self.frames = frames; self.order_mode = order_mode; self.dag = dag; self.stats = {}
         self.mul_s_p3 = float(mul_s_p3)                                     # §235: 1.0 = unchanged (no coin, no extra stats keys)
-        self.mul_s_p = int(mul_s_p)                                         # §236: 1 = unchanged; 0 = REG (no forced mul_s)
+        self.mul_s_p = int(mul_s_p); assert self.mul_s_p in (0, 1, 2), ("mul_s_p", mul_s_p)   # §236: 0 = REG; §238: 2 = DF; 1 = unchanged
 
     def draw(self, d):
         while True:

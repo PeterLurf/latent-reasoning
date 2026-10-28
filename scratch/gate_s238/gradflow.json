@@ -1,0 +1,12 @@
+{
+ "n_with_mul_s": 3,
+ "answer_ce": {
+  "gpt2_nonzero": 148,
+  "mem_nonzero": 12
+ },
+ "aux_ce": {
+  "gpt2_nonzero": 148,
+  "mem_nonzero": 12
+ },
+ "pass": true
+}

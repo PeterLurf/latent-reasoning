@@ -86,6 +86,11 @@ E = [
  '                br["gn_preclip_by_d"] = {k_: v_[0] / v_[1] for k_, v_ in sorted(gnbin.items())}'),
 ('            binacc = {}; vbin = {}; vbin_d = {}; dseq = []; iseq = []', '            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; dseq = []; iseq = []'),
 ('"vbin": vbin, "vbin_d": vbin_d, "dseq": dseq,', '"vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "dseq": dseq,'),
+# §238 DAG-FREE: --mul_s_p 2 (DF); the eval-own EXCL for any non-default law
+('choices=[0, 1], help="§236: 0 = REG law (no forced mul_s) on every stream / set (new eval seeds); 1 = unchanged")',
+ 'choices=[0, 1, 2], help="§236: 0 = REG law (no forced mul_s); §238: 2 = DF (per-step mul_s, q_t); 1 = unchanged - on every stream / set (new eval seeds)")'),
+('(reg_excl(a, SETS["excl"]) if a.mul_s_p == 0 else set())   # §236: + the eval-own REG sets',
+ '(reg_excl(a, SETS["excl"]) if a.mul_s_p != 1 else set())   # §236 / §238: + the eval-own sets of the run law'),
 ]
 for o, n in E:
     assert main.count(o) == 1, ("edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)

@@ -132,7 +132,7 @@ def main(argv=None):
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
-    ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1], help="§236: 0 = REG law (no forced mul_s) on every stream / set (new eval seeds); 1 = unchanged")
+    ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1, 2], help="§236: 0 = REG law (no forced mul_s); §238: 2 = DF (per-step mul_s, q_t); 1 = unchanged - on every stream / set (new eval seeds)")
     ap.add_argument("--init_model", default="", help="§237: the full params state (trunk + DeltaMem + W_o + gains) loaded strict after the build; calibration skipped")
     ap.add_argument("--init_model_sha", default="", help="§237: its sha256 prefix (asserted)")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
@@ -157,7 +157,7 @@ def main(argv=None):
     ac = lambda: torch.autocast("cuda", dtype=amp, enabled=amp is not None)  # noqa: E731
     t_sets = time.time()
     if a.src == "ow":
-        SETS = build_sets(mul_s_p=a.mul_s_p); EXCL = SETS["excl"] | (reg_excl(a, SETS["excl"]) if a.mul_s_p == 0 else set())   # §236: + the eval-own REG sets
+        SETS = build_sets(mul_s_p=a.mul_s_p); EXCL = SETS["excl"] | (reg_excl(a, SETS["excl"]) if a.mul_s_p != 1 else set())   # §236 / §238: + the eval-own sets of the run law
         stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # §235 / §236: training stream
     else:                                                                   # gate only: nested170's TE / SPOOL exclusion and item law
         TE = N7.test_set(1000); EXCL = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)
