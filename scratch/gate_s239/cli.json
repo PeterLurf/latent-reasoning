@@ -1,0 +1,56 @@
+{
+ "rc": 0,
+ "files": [
+  "args.json",
+  "eval.json",
+  "eval_acc.json",
+  "eval_long.json",
+  "model.pt",
+  "train_summary.json"
+ ],
+ "others_untouched": true,
+ "by_d_keys": [
+  "2"
+ ],
+ "fields": [
+  "acc",
+  "nonfinite",
+  "s_cos",
+  "s_norm"
+ ],
+ "k_keys": [
+  "8",
+  "16",
+  "32",
+  "64"
+ ],
+ "item_keys": [
+  "ans",
+  "pred",
+  "sig"
+ ],
+ "pred_k": [
+  "8",
+  "16",
+  "32",
+  "64"
+ ],
+ "n_items": 1000,
+ "s_cos_8": 1.0,
+ "meta": {
+  "eval_bs": 100,
+  "eval_dtype": "fp32",
+  "kprime_list": [
+   8,
+   16,
+   32,
+   64
+  ],
+  "ds": [
+   2
+  ],
+  "law": 2,
+  "set_law": "df"
+ },
+ "pass": true
+}
