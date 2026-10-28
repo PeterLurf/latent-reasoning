@@ -22193,6 +22193,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **The FH admit cap moves to $1.00 each,** with a filler BAD-counter reset. CTRL caps are unchanged. The design admit is ~$3.2.
 - **The per-arm guards ($1.60 FH, $1.40 CTRL) and the $6 family guard stay,** so the running total is unchanged at $16.6 <= $30.
 - A cost rule only, set with no output read. If Audit sets a different number, Audit's wins.
+- **Audit's decision (same option, crossed):** the BAD-host count resets to 0 for the relaunch, while the BAD $ ledger carries forward ($0.18).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
