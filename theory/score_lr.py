@@ -30,7 +30,7 @@ def seed(e):
     mn = min(b[d]["acc"][k] for d in DS for k in ("8",) + KS)
     ok = all(v >= -0.02 for r in drops.values() for v in r.values())
     lab = "COLLAPSE" if (nonfin or mn < 0.5) else ("PASS" if ok else "DRIFT")
-    growth = {d: (b[d]["s_norm"]["64"] / b[d]["s_norm"]["8"]) if b[d].get("s_norm") else None for d in DS}
+    growth = {d: ({k: b[d]["s_norm"][k] / b[d]["s_norm"]["8"] for k in KS} if b[d].get("s_norm") else None) for d in DS}   # Note 239-1 (1): relative only
     return {"label": lab, "drops": drops, "min_acc": mn, "s_norm_growth": growth, "s_cos64": {d: (b[d].get("s_cos") or {}).get("64") for d in DS},
             "acc": {d: b[d]["acc"] for d in b}}
 
