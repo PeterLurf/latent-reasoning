@@ -326,6 +326,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 236 | REG-CHAIN (Theory's choice under the user's 10-26 standing rules; Audit approves; $30 guard): C1 chaining test on the REG law (no forced mul_s; op iid at passes >= 2) in training and new test sets; LAT-AW s1 + s2, CD-AN; binding ACC / CHAIN / OP-ALL (>= 0.80 per op class) / LP5-4 / SWAP-MID d 3 / CUE-ONLY; PASS = both seeds; RC_v1.md | registered | **FAIL 10-27 (236-5): both seeds CAP (none) - pass 2 never forms on REG d<=4 within 16k (d 2 acc 0.295 / 0.166); not an op-reading failure; $1.58.** **APPROVED by Audit 10-27 (236-1: scope wording; op-aux pre-named on CAP / MERGED; extra sha + MI gates).** **REGISTERED 04:02 10-27; build (Experiments) -> G-D (Audit) -> launch; scorer score_rc.py 05db8032** |
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
+| 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 
 ## Live sections
 
@@ -19387,6 +19388,23 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **OC:** per seed P(VOID) ~0.05, P(PASS | H-EXT) ~0.65, P(PASS | H-READ2) ~0.02; prior 0.5. Overall P(PASS) ~0.15, P(>= SPLIT) ~0.45.
 - **Censoring:** as §236.
 - **Cost:** admit <= $2.6, guard $7. Running $8.76 + $7 = $15.8 <= $30.
+
+## 239. LONG-RUN: C6 stability over long latent runs (Theory's choice under the user's 10-26 standing rules; Audit approves; eval-only, **$0**; pre-registered 2026-10-28 03:02 EDT, before any K' > 14 output)
+
+- **Text:** docs/research_longrun_2026-10-28/LR_v1.md.
+- **Why:** north star C6 ("no drift or collapse over long latent runs; low seed-to-seed variance") ranks above C2. The §238 models have only been read to K' 14 (trained think_k 8). The additive DeltaMem state can grow with each hold pass, so collapse at long K' is a live failure mode.
+- **Runs:** eval-only, no training.
+  - df_plaw4_s1 / df_plaw4_s2 (binding) and rcb_plaw4_s1 / s2 (descriptive), on TEST2-DF / TEST2-REG d 2-4 (all items).
+  - K' in {8, 16, 32, 64}, via a new eval option `--kprime_list` (default off = bitwise current), writing eval_long.json {acc, s_norm, s_cos per K'}.
+- **Binding** (theory/score_lr.py; fixtures 7/7):
+  - **HOLD-LONG:** acc(K') >= acc(8) - 0.02 for K' 16 / 32 / 64, every d, in each seed;
+  - **SEED-VAR:** |acc_s1 - acc_s2| <= 0.05 at every (d, K').
+  - Labels: PASS / DRIFT / COLLAPSE (acc < 0.5 or non-finite s_norm) per seed; overall PASS / SEED-SPLIT / FAIL.
+  - Descriptive: s_norm growth, s_cos(64), the rcb_* table, d 5.
+  - s1's §238 LP0 training-gate failure is stated beside the result; it doesn't bear on this eval-only reading.
+- **OC:** P(PASS | the hold is a fixed point) ~0.9; P(PASS | additive growth swamps the read) ~0.05; prior 0.6, so P(PASS) ~0.56.
+- **Censoring:** a missing (d, K') means pending; non-finite means COLLAPSE.
+- **Cost:** $0, local. Build gate: the default path bitwise vs the current eval on one model / d.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.

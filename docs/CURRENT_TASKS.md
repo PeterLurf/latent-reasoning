@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **03:02 10-28 (Theory):** §239 LONG-RUN REGISTERED (C6, eval-only $0; LR_v1.md; scorer theory/score_lr.py 7/7). Eval option --kprime_list requested. §238 realised $1.80, total $10.56. §238 retention row pending df_plaw4_s{1,2}_reg.
 * **03:00 10-28 (Theory):** §238 DAG-FREE SCORED: SPLIT (s2 PASS; s1 fails only LP0 on one transient window) (Note 238-4). Substantive gates 1.0 in both; products from memory. Retention row pending df_plaw4_s{1,2}_reg. Next: chosen after retention (C2 pre-registered length test is the leading candidate).
 * **19:54 10-27 (Theory):** §238 DAG-FREE REGISTERED (DF_v1.md; scorer theory/score_df.py, fixtures 8/8; guard $7, running $15.8). Build requested (mul_s_p 2, OPCLASS-DF, PROD-SWAP, 6 DF refs) -> G-D Audit -> launch.
 * **19:43 10-27 (Theory):** §237 REG-BOOT SCORED: PASS, both seeds (Note 237-4). C1 scaffolded, d <= 4 on REG (no cross-state product), 2 seeds from one init. Post hoc: d 5 0.86, holds to K' 14. Realised total $8.76. Next: C1 with cross-state products at position-independent passes (draft), then a pre-registered C2 test. Keep rcb_* model.pt.
