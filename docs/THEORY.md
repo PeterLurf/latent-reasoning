@@ -330,6 +330,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 | 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 | 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
+| 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
 
 ## Live sections
 
@@ -19468,6 +19469,33 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Pre-named next:** NORM-COUNTER or PARTIAL-DOWN -> a scale-invariant read or norm-matched augmentation as the C2 training lever; NOT-NORM -> the state-addressing question.
 - **Build:** eval part normctr -> eval_normctr.json {arm: {acc, ws {t}, n, mean_scale}}; flags-off (the intact arms reproduce eval_acc d 4 / 6 at K' 8); Audit G-D.
 - **Cost:** $0.
+
+## 243. DEPTH-CURRIC: does training on more depths make the step function extrapolate? (C2; Theory's choice under the user's 10-26 standing rules; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-28 19:15 EDT, before any build or output)
+
+- **Text:** docs/research_depthcurric_2026-10-28/DC_v1.md (wins over DC_draft.md cff1b394). Red team: REVIEW_DC.md (NO-GO as written; blockers 1-3 fixed, 4-8 adopted). Audit's two points adopted (CTRL identical but d_max; fallback pre-registered).
+- **Evidence:** §241 STEPS; §242 NOT-NORM; Audit's locus probes 4e6b4a94 (a COMPUTE failure past the trained depth; back-references to old states at chance).
+- **Offset model:** with f_M(k) = acc at d_max + k:
+  - H-ARCH: f_DC = f_CTRL (the limit moves with training);
+  - H-NARROW: f_DC > f_CTRL (wider training extrapolates further).
+  - The draft's absolute bars would have been met by H-ARCH, so they are replaced.
+- **Arms:** dc_s1 / dc_s2 (d ~ U{1..6}) and dc_ctrl_s1 / dc_ctrl_s2 (d ~ U{1..4}), from lh_fh_s1 / s2.
+  - Both arms: think_k 10, hold-increment penalty lambda 1.6 from step 500, far pass, 8k steps.
+  - DC vs CTRL args diff = {d_max}. One trunk lineage, 2 data orders.
+  - A $0 1k-step local pilot (dc_s1 + dc_ctrl_s1) fixes the LP0 cap in a Note before launch.
+- **Evals:** run_long K' 8 / 10 / 16 / 64 / 128 at d 1..12 (eval_long_dc.json) on all arms + inits; ws_long (WS per pass, d 1..10); §238 DF parts; per-d norm_guard.
+- **Binding** (theory/score_dc.py; fixtures 8/8), per seed:
+  - **EXTRAP:** DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24 at K' 16;
+  - **STEP-READ:** regular-op WS at passes 7-8 (DC, d 8) minus passes 5-6 (CTRL, d 6) >= 0.15;
+  - **C2-RISE:** d 12, K'16 - K'10 >= 0.10 and K'16 >= 0.25 (scaffolded: cues 11-12 only shown when K' > 10);
+  - **NOLOSS:** HOLD-LONG3 d 1-6, §238 gates, retention > 0.05 named;
+  - **LP0:** skip <= 1,000, cap from the pilot Note;
+  - **NORM GUARD:** per d <= 4, DC / CTRL > 1.25 means GAMED.
+  - Labels: GAMED / LP0-FAIL / NOLOSS-FAIL / UNINFORMATIVE (DC d 5-6 < 0.90) / H-ARCH (|f_DC - f_CTRL| <= 0.10, k 1-3) / PASS / EXTRAP / IN-RANGE-ONLY.
+  - Overall: PASS / EXTRAP (both) / H-ARCH (both) / SPLIT / FAIL.
+- **OC:** per seed P(EXTRAP or better) ~0.23, P(PASS) ~0.07; both seeds P(EXTRAP or better) ~0.14; under H-ARCH P(EXTRAP, both) < 0.01.
+- **Censoring:** as §240.
+- **Cost:** ~$1.0 per arm, four arms ~$4; admit caps from host G-TIME; guard $8. Running $13.25 + $8 = $21.25.
+- **Pre-registered fallback (not run): ADDR-LEVER.** On H-ARCH or IN-RANGE-ONLY in both seeds, the next lever targets old-state addressability (step-keyed writes or a larger delta-head share), with its own derivation and red team. Estimated guard $5, so running $26.25 <= $30.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
