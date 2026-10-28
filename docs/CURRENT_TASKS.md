@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **04:48 10-28 (Theory):** §239 LONG-RUN SCORED: FAIL (s1 DRIFT d 2 0.941 at K' 64; s2 PASS; seed var 0.055) (Note 239-2). Stable to K' 32 everywhere; state norm grows linearly. §238 retention: no regression. Next: §230 FH-FT transfer to the language loop (C6), draft + red team.
 * **03:02 10-28 (Theory):** §239 LONG-RUN REGISTERED (C6, eval-only $0; LR_v1.md; scorer theory/score_lr.py 7/7). Eval option --kprime_list requested. §238 realised $1.80, total $10.56. §238 retention row pending df_plaw4_s{1,2}_reg.
 * **03:00 10-28 (Theory):** §238 DAG-FREE SCORED: SPLIT (s2 PASS; s1 fails only LP0 on one transient window) (Note 238-4). Substantive gates 1.0 in both; products from memory. Retention row pending df_plaw4_s{1,2}_reg. Next: chosen after retention (C2 pre-registered length test is the leading candidate).
 * **19:54 10-27 (Theory):** §238 DAG-FREE REGISTERED (DF_v1.md; scorer theory/score_df.py, fixtures 8/8; guard $7, running $15.8). Build requested (mul_s_p 2, OPCLASS-DF, PROD-SWAP, 6 DF refs) -> G-D Audit -> launch.
