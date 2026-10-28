@@ -327,6 +327,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 237 | REG-BOOT (Theory's choice under the user's standing rules; Audit approves; $30 guard): §236 REG training warm-started from aw_plaw2_s1 (pass 2 formed; d <= 2 only, never saw mul_s), CD-AN from aw_pcd2_s1; §236's gates unchanged (score_rc.py --s237) | registered | **PASS 10-27 (237-4): both seeds; d 3 / 4 1.000 vs CD-AN 0.085 / 0.090 (step 0 0.028 / 0.096); WS 1.0 every pass; OP-ALL 1.0 all 8 classes; SWAP-MID 0.98; d 5 0.86 (post hoc); $2.45.** **APPROVED by Audit 10-27 (237-1: step-0 report, extra gates, init sha).** **REGISTERED 11:44 10-27; build -> G-D -> launch** |
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
+| 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 
 ## Live sections
 
@@ -19405,6 +19406,32 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **OC:** P(PASS | the hold is a fixed point) ~0.9; P(PASS | additive growth swamps the read) ~0.05; prior 0.6, so P(PASS) ~0.56.
 - **Censoring:** a missing (d, K') means pending; non-finite means COLLAPSE.
 - **Cost:** $0, local. Build gate: the default path bitwise vs the current eval on one model / d.
+
+## 240. LANG-HOLD: make the language loop's hold a fixed point with a hold-increment penalty (Theory's choice under the user's 10-26 standing rules; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-28 05:01 EDT, before any build or output)
+
+- **Text:** docs/research_langhold_2026-10-28/LH_v1.md (wins over LH_draft.md 9181002f). Red team: REVIEW_LH.md (NO-GO as written; v1 adopts all 11 findings).
+- **Why (239-2):** the hold drifts by K' 64 in one data order, with ||S|| growing ~K'/8. The synthetic anchor penalty (§224 / §230) does not transfer as is: the language state accumulates (S_a += phi v^T), so the anchor form demands one large negative write (step-0 ratio 3-129 vs VB 0.024).
+  - The analogue is a penalty on the hold increment, S_t - S_{t-1}.
+  - Oracle: a frozen S_{d+2} gives acc 1.000 at every K' for d 1-4.
+- **Lever:** L_inc = 1.6 * mean over hold passes t in {d+3..8} and one far pass T_far ~ U{16..40} (the first 16 items per batch, separate rng, no-grad prefix) of ||S_t - sg S_{t-1}||^2 / ||sg S_{d+2}||^2.
+  - It starts at step 500, after the fade ramp. The ratios are logged per bin.
+  - **Norm guard:** ||S_8|| and ||S_{d+2}|| within +/-25% of bin 0 (logged as `norm_guard` {s8, sd2} per bin, bin 0 at step 0), else GAMED.
+- **Arms:** lh_fh_s1 / lh_fh_s2 (HOLD-INC) and lh_ctrl_s1 / lh_ctrl_s2 (the same 8k FT, no penalty / far pass), from df_plaw4_s1 / s2, one RTX 3090 each. A flags-off bitwise gate keeps CTRL paired. Training logs `gn_plain_mean100` (the plain-loss grad norm) beside the total.
+- **Evals:** eval_long_k128.json (K' 8 / 16 / 32 / 64 / 128, d 1-5, TEST2-DF, one card / eval_bs per model) on the four arms and both inits (step 0). §238 DF parts on the arms; REG refs lh_fh_s{1,2}_reg (acc, ws, swap_kd, lp5h).
+- **Binding** (theory/score_lh.py; fixtures 9/9), per FH seed:
+  - **HOLD-LONG3:** acc(K') >= acc(8) - 0.02 at K' 64 / 128, d 1-4.
+  - **NOLOSS:** the §238 gates (PROD-ACC, CHAIN, OP-ALL+, PROD-SWAP, CUE-ONLY), the C1 floor (K' 0 / 1 <= CD-AN + 0.05 at d 3-4), and **RETENTION**:
+    - DF OP-ALL / PROD-SWAP / SWAP-MID d 3 t 1 / LP5 vs the init;
+    - REG OP-ALL / SWAP-MID / LP5 vs §237's rcb;
+    - any drop > 0.05 named (Audit; §232 lesson).
+  - **LP0-W:** cap max(2 x init windows 3-10, 5.0) on gn_plain.
+  - **NORM GUARD.**
+  - Labels: GAMED / LP0-FAIL / NOLOSS-FAIL (named) / HOLD-FAIL / PASS.
+- **LEVER:** s1 min_d acc(128) FH - CTRL >= 0.10; s2 FH >= CTRL - 0.02.
+- **Overall:** MORE-TRAINING-SUFFICES (CTRL s1 passes HOLD-LONG3) / PASS (both FH PASS and LEVER) / NO-LEVER (both PASS, LEVER fails) / SPLIT / FAIL.
+- **OC:** P(PASS) ~0.14; P(informative incl. MORE-TRAINING-SUFFICES) ~0.6.
+- **Censoring:** as §238 / §239.
+- **Cost:** four 8k runs ~$1.9 (step time measured on host first); admit <= $2.6, guard $6. Running $10.56 + $6 = $16.6 <= $30.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
