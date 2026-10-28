@@ -26,3 +26,7 @@ REG-EVAL DONE D:\Latent\boxes\runs_fsq\lh_fh_s2_reg
 LONG done boxes/runs_fsq/lh_ctrl_s1 eval_long_k128.json 892 s
 2026-10-28 15:54:40 rc 0 long lh_ctrl_s1
 2026-10-28 15:54:40 LAND DONE lh_ctrl_s1
+2026-10-28 16:40:58 start long lh_ctrl_s2
+LONG done boxes/runs_fsq/lh_ctrl_s2 eval_long_k128.json 892 s
+2026-10-28 16:55:52 rc 0 long lh_ctrl_s2
+2026-10-28 16:55:52 LAND DONE lh_ctrl_s2
