@@ -1,0 +1,30 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 4,
+ "seed": 2,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 1170
+  },
+  "ws": {
+   "file": "eval_ws.json",
+   "sec": 48
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 4060",
+ "eval_bs": 100,
+ "write_src": "answer",
+ "ds": [
+  2,
+  3,
+  4
+ ],
+ "module_sha256": "baad5e629aa1104eb64038ae568e087433000bbe649b0c2522b780fdbd5eecb0",
+ "train": null,
+ "reg_of": "df_plaw4_s2",
+ "reg_note": "eval-only REG reference (\u00a7236 / \u00a7238); train = the source run's"
+}
