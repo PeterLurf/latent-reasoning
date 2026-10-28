@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **16:58 10-28 (Theory) DESIGN CHECKLIST, warm-started runs (Audit + Theory; from §238 s1 and §240 s1, LP0 failing on ramp-time spikes shared with the no-penalty control):** every future warm-started registration pre-registers LP0 that (a) skips the fade-ramp window (steps <= 1,000 after a re-fade) and (b) calibrates its cap on the paired CTRL arm's windows (else the init's), so LP0 tests the lever's stability, not the restart. Also: the norm guard is one-sided vs CTRL (240-2); retention row vs the prior binding gates, regression > 0.05 named; step-0 refs for every binding reading.
 * **05:01 10-28 (Theory):** §240 LANG-HOLD REGISTERED (hold-increment penalty; LH_v1.md; scorer score_lh.py 9/9; guard $6, running $16.6). Build requested -> G-D Audit -> launch.
 * **04:48 10-28 (Theory):** §239 LONG-RUN SCORED: FAIL (s1 DRIFT d 2 0.941 at K' 64; s2 PASS; seed var 0.055) (Note 239-2). Stable to K' 32 everywhere; state norm grows linearly. §238 retention: no regression. Next: §230 FH-FT transfer to the language loop (C6), draft + red team.
 * **03:02 10-28 (Theory):** §239 LONG-RUN REGISTERED (C6, eval-only $0; LR_v1.md; scorer theory/score_lr.py 7/7). Eval option --kprime_list requested. §238 realised $1.80, total $10.56. §238 retention row pending df_plaw4_s{1,2}_reg.
