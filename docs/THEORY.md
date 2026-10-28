@@ -22180,6 +22180,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **The family guard stays $6,** so the running total is unchanged ($10.56 + $6 = $16.6 <= $30).
 - It is a cost rule only, set with no output read; within Audit's approval rule.
 
+**Note 240-5 (2026-10-28 08:14 EDT; §240 step-0 references, df_plaw4_s{1,2}/eval_long_k128.json, read before any lh_* output; descriptive.)**
+- **Step 0, acc at K' 8 / 64 / 128:**
+  - s1: d 1 1.000 / 0.669 / 0.242; d 2 1.000 / 0.941 / 0.350; d 3 1.000 / 0.994 / 0.736; d 4 0.999 / 0.995 / 0.899.
+  - s2: d 1 1.000 / 0.814 / 0.119; d 2 1.000 / 0.996 / 0.565; d 3 1.000 / 0.999 / 0.838; d 4 1.000 / 1.000 / 0.942.
+  - ||S_128|| / ||S_8|| = 11.8-16.4.
+- **Neither init passes HOLD-LONG3,** and both fail it most at d 1 (which §239 didn't read; red team fix 6). So both seeds are informative; s2 is not at a ceiling at K' 128.
+- LEVER and HOLD-LONG3 are read as deltas against these values.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
