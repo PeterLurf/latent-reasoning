@@ -329,6 +329,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 | 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
+| 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
 
 ## Live sections
 
@@ -19448,6 +19449,24 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - LENGTH (LEN4 >= 0.10, STEP < 0.10) / STEPS (STEP >= 0.10, LEN4 < 0.05) / BOTH / NEITHER; MIXED if the models disagree; INVALID if B is not length-matched.
   - Pre-named next lever: LENGTH or BOTH -> length augmentation at d <= 4; STEPS -> longer-depth training or the state-addressing question.
 - **Build:** OW.Stream n_dis_extra (default 0 bitwise); eval part lenstep -> eval_lenstep.json {cells: {A..D: {n, tok_mean, tok_p90, acc (K' 8), ws {t}}}}; the length-match gate; flags-off gate; Audit G-D.
+- **Cost:** $0.
+
+## 242. NORM-COUNTER: is the memory's norm the loop's step counter? (Theory's choice under the user's 10-26 standing rules; Audit approves; eval-only, **$0**; pre-registered 2026-10-28 18:29 EDT, before any build or output)
+
+- **Text:** docs/research_normctr_2026-10-28/NC_v1.md.
+- **Why (241-3):** d 6 fails from pass 5 at any text length. With no pass embedding, the loop can only infer how many steps it has taken from S. The additive S's norm grows ~linearly per write, so H-NORM says ||S|| is the learned step counter.
+- **Arms** (lh_fh_s1 / s2, TEST2-DF, K' 8, one card / eval_bs, fp32; uniform rescale of all heads, direction kept, n_ref from the item's own intact run):
+  - DOWN: d 6, S_4 -> ||S_2||;
+  - UP: d 4, S_2 -> ||S_4||;
+  - HARMLESS: d 4, S_3 -> ||S_1||;
+  - intact d 4 / d 6 from the same call.
+- **Readings** (theory/score_nc.py; fixtures 6/6), per model:
+  - HARMLESS acc >= 0.90, else INCONCLUSIVE;
+  - DOWN acc gain >= 0.15 with pass-5 WS gain >= 0.15;
+  - UP acc loss >= 0.15.
+  - Labels NORM-COUNTER / PARTIAL-DOWN / PARTIAL-UP / NOT-NORM / INCONCLUSIVE; MIXED if the models disagree.
+- **Pre-named next:** NORM-COUNTER or PARTIAL-DOWN -> a scale-invariant read or norm-matched augmentation as the C2 training lever; NOT-NORM -> the state-addressing question.
+- **Build:** eval part normctr -> eval_normctr.json {arm: {acc, ws {t}, n, mean_scale}}; flags-off (the intact arms reproduce eval_acc d 4 / 6 at K' 8); Audit G-D.
 - **Cost:** $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
