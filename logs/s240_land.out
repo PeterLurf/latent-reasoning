@@ -30,3 +30,17 @@ LONG done boxes/runs_fsq/lh_ctrl_s1 eval_long_k128.json 892 s
 LONG done boxes/runs_fsq/lh_ctrl_s2 eval_long_k128.json 892 s
 2026-10-28 16:55:52 rc 0 long lh_ctrl_s2
 2026-10-28 16:55:52 LAND DONE lh_ctrl_s2
+2026-10-28 16:58:38 start lp5,cue_wrong lh_fh_s1
+PART lp5 done 131 s
+PART cue_wrong done 230 s
+DONE boxes/runs_fsq/lh_fh_s1
+2026-10-28 17:05:11 rc 0 lp5,cue_wrong lh_fh_s1
+eval.json kept + lp5 / cue_wrong entries boxes/runs_fsq/lh_fh_s1
+2026-10-28 17:05:11 LP5CW DONE lh_fh_s1
+2026-10-28 17:05:11 start lp5,cue_wrong lh_fh_s2
+PART lp5 done 131 s
+PART cue_wrong done 230 s
+DONE boxes/runs_fsq/lh_fh_s2
+2026-10-28 17:11:44 rc 0 lp5,cue_wrong lh_fh_s2
+eval.json kept + lp5 / cue_wrong entries boxes/runs_fsq/lh_fh_s2
+2026-10-28 17:11:44 LP5CW DONE lh_fh_s2

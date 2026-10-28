@@ -32,6 +32,16 @@
   "swap_prod": {
    "file": "eval_swap_prod.json",
    "sec": 25
+  },
+  "lp5": {
+   "file": "eval_lp5.json",
+   "sec": 131,
+   "local": "4060 fp32 bs 250 (s240_lp5cw.sh)"
+  },
+  "cue_wrong": {
+   "file": "eval_cue_wrong.json",
+   "sec": 230,
+   "local": "4060 fp32 bs 250 (s240_lp5cw.sh)"
   }
  },
  "eval_dtype": "fp32",
