@@ -10,3 +10,15 @@ PART lp5h done 99 s
 REG-EVAL DONE D:\Latent\boxes\runs_fsq\lh_fh_s1_reg
 2026-10-28 13:35:29 rc 0 reg lh_fh_s1
 2026-10-28 13:35:29 LAND DONE lh_fh_s1
+2026-10-28 14:11:12 start long lh_fh_s2
+LONG done boxes/runs_fsq/lh_fh_s2 eval_long_k128.json 893 s
+2026-10-28 14:26:07 rc 0 long lh_fh_s2
+2026-10-28 14:26:07 start reg lh_fh_s2
+[W1028 14:40:42.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 264241152 bytes (free: 0, total: 8585216000).
+PART acc done 1170 s
+PART ws done 48 s
+PART swap_kd done 213 s
+PART lp5h done 99 s
+REG-EVAL DONE D:\Latent\boxes\runs_fsq\lh_fh_s2_reg
+2026-10-28 14:52:09 rc 0 reg lh_fh_s2
+2026-10-28 14:52:09 LAND DONE lh_fh_s2
