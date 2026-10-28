@@ -22174,6 +22174,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Reading:** the penalty is active and shrinking hold increments. FH shrinks S rather than inflating it; whether that costs computation is NOLOSS / RETENTION's question.
 - **Launch:** proceeds with no further change.
 
+**Note 240-4 (2026-10-28 07:56 EDT; §240 admit caps, before any lh_* output.)**
+- b358 (lh_fh_s1) was refused at its $0.70 admit. On the 3090 the penalty arm runs 1.131 s/step (micro 2), ~1.45x plain, not the 4060's 1.2x; the projection was $0.74.
+- **The FH arms' admit cap moves to $0.85 each** (lh_fh_s1, lh_fh_s2). CTRL arms are unchanged. The design admit becomes ~$2.90 (was $2.6).
+- **The family guard stays $6,** so the running total is unchanged ($10.56 + $6 = $16.6 <= $30).
+- It is a cost rule only, set with no output read; within Audit's approval rule.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
