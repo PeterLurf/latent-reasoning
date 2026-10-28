@@ -1,0 +1,12 @@
+{
+ "rc": {
+  "g1_old": 0,
+  "g1_new": 0
+ },
+ "equal": {
+  "ws": true,
+  "opclass": true,
+  "cue_only": true
+ },
+ "pass": true
+}
