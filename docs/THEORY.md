@@ -22188,6 +22188,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Neither init passes HOLD-LONG3,** and both fail it most at d 1 (which §239 didn't read; red team fix 6). So both seeds are informative; s2 is not at a ceiling at K' 128.
 - LEVER and HOLD-LONG3 are read as deltas against these values.
 
+**Note 240-6 (2026-10-28 09:36 EDT; §240 FH admit cap, before any lh_* output; supersedes 240-4's $0.85.)**
+- Host G-TIME with the penalty on is 1.13-1.25 s/step (~1.5x plain), so ~$0.75-0.95 per FH arm at $0.20-0.24/h. $0.85 still refused a $0.2365/h host ($0.93).
+- **The FH admit cap moves to $1.00 each,** with a filler BAD-counter reset. CTRL caps are unchanged. The design admit is ~$3.2.
+- **The per-arm guards ($1.60 FH, $1.40 CTRL) and the $6 family guard stay,** so the running total is unchanged at $16.6 <= $30.
+- A cost rule only, set with no output read. If Audit sets a different number, Audit's wins.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
