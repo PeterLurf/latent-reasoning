@@ -6,3 +6,4 @@ realised:b358 # 58104253 10:04-12:52 ~2.8 h x $0.2456/h (§240 lh_fh_s1; wall gu
 realised:b359 # 58110777 11:07-14:10 ~3.05 h (wall guard spent $0.715 at 14:04 + 6 min) (§240 lh_fh_s2) 0.741
 361:lh_ctrl_s2 194.14.47.19:23355 58133404 $0.209/h sps 0.8152240514755249 0.63
 realised:b360 # 58126316 13:20-15:39 ~2.3 h (wall guard spent $0.390 at 15:33 + 6 min) (§240 lh_ctrl_s1) 0.409
+realised:b361 # 58133404 14:29-16:40 ~2.2 h (wall guard spent $0.433 at 16:33 + 7 min) (§240 lh_ctrl_s2) 0.458
