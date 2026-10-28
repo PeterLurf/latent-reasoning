@@ -22030,6 +22030,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(3) Build G-D:** the MI gate on the actual streams (t >= 3); n >= 50 per class; sha-disjoint new sets; flags-off vs §237's module.
 - score_df.py fixtures 8/8 after the change. An encoding slip in the edit, cp1252 section signs, was repaired before commit; the file is UTF-8 / LF.
 
+**Note 238-2 (2026-10-27 21:58 EDT; §238 build record before any output; Experiments 2514c6ca, 14 gates PASS, G-D at Audit.)**
+- **Readings fixed now:**
+  - PROD-SWAP is read at K' = 3 = d (eval_swap_prod flat fields, k_flat 3; K' 8 descriptive);
+  - OPCLASS-DF = inject_ow.opclass_set() (seed 24015);
+  - TEST2-DF = build_sets(mul_s_p=2) (seed 24010).
+- score_df's regeneration matches both exactly (12,000 / 12,000 and 3,000 / 3,000 sigs).
+- **Pass-4 class sizes on OPCLASS-DF:** add_s_j0 123 (the smallest), mul_s_j1 199, mul_s_j2 191, the others 247-416. Pass 3 min 230. All are >= 50 as gated.
+- MI on t >= 3 = 0.00029 bits (actual stream); realised P(mul_s | t 3-6) within 0.125 +/- 0.01.
+- The LAT args diff also carries eval_parts (+ opclass, swap_prod); these are needed by the readings, accepted.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
