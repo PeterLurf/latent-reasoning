@@ -22165,6 +22165,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Pilot:** Experiments runs a $0 local pilot (CTRL + FH, real schedule, 1,000 steps). Only norm / ratio fields are read, no accuracy. It is descriptive and does not change any reading unless it forces a further Note before launch.
 - theory/score_lh.py implements the guard; fixtures 10/10, including 'FH shrinks to 0.57x CTRL -> not GAMED'.
 
+**Note 240-3 (2026-10-28 07:44 EDT; §240 pilot record, scratch/gate_s240/pilot.json; norm / ratio / grad-norm fields only, no accuracy; descriptive; no reading changes.)**
+- **Setup:** df_plaw4_s1 init, real 8k schedule, 1,000 steps (penalty on from step 500), 4060.
+- **CTRL bin 1:** s8 -23.8%, sd2 -22.5% vs step 0; hold_ratio 0.267.
+- **FH bin 1:** s8 -49.9%, sd2 -42.6%; inc_ratio 0.0080 (step-0 scale 0.03-0.11); hold_ratio 0.161; comp_ratio 0.426 (CTRL 0.348).
+- **FH / CTRL:** s8 0.657, sd2 0.741, so not GAMED under 240-2 (the old +/-25%-vs-init guard would have been hit by CTRL itself).
+- **Grad norms:** gn_plain is identical in both arms through step 500 (the off path is paired). FH gn_plain ~ gn_preclip after 500 (< 2%). Max windows: CTRL 4.74, FH 3.23 (cap >= 5.0).
+- **Reading:** the penalty is active and shrinking hold increments. FH shrinks S rather than inflating it; whether that costs computation is NOLOSS / RETENTION's question.
+- **Launch:** proceeds with no further change.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
