@@ -328,6 +328,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 238 | DAG-FREE (Theory's choice under the user's standing rules; Audit approves; $30 guard): C1 with cross-state products (mul_s) at passes t >= 3 with P(mul_s | t, d) ~ 0.125; warm start from §237 models; binding PROD-ACC / CHAIN / OP-ALL+ (pass 3 + pass 4, mul_s by j) / PROD-SWAP / CUE-ONLY; ZERO-SHOT label from step 0; DF_v1.md | registered | **SPLIT 10-28 (238-4): s2 PASS; s1 fails only LP0 (one transient gn window 15.5 vs cap 8.0); both: PROD-ACC 1.0, mul_s j1/j2 1.0 (step 0 0.56 / 0.31), PROD-SWAP dfin 1.0.** **APPROVED by Audit 10-27 (238-1: step-0 on all three product gates for ZERO-SHOT; REG retention row).** **REGISTERED 19:54 10-27; build -> G-D -> launch; scorer score_df.py (fixtures 8/8)** |
 | 239 | LONG-RUN (Theory's choice; C6; eval-only, $0): df_plaw4_s1 / s2 at K' 8 / 16 / 32 / 64 on TEST2-DF d 2-4; HOLD-LONG (acc(K') >= acc(8) - 0.02) + SEED-VAR (<= 0.05); LR_v1.md | registered | **FAIL 10-28 (239-2): s1 DRIFT (d 2 0.941 at K' 64), s2 PASS; stable to K' 32 in all models; ||S|| grows ~linearly (x8 at 64); $0.** **APPROVED by Audit 10-28 (239-1: relative norm; same card / bs / dtype per seed; acc(8) from the same call).** **REGISTERED 03:02 10-28; eval option build -> G-D -> local eval; scorer score_lr.py (fixtures 7/7)** |
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
+| 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 
 ## Live sections
 
@@ -19433,6 +19434,22 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Censoring:** as §238 / §239.
 - **Cost:** four 8k runs ~$1.9 (step time measured on host first); admit <= $2.6, guard $6. Running $10.56 + $6 = $16.6 <= $30.
 
+## 241. LEN-STEP: is the d >= 5 failure about text length or step count? (Theory's choice under the user's 10-26 standing rules; Audit approves; eval-only, **$0**; pre-registered 2026-10-28 18:03 EDT, before any build or output)
+
+- **OFFSET withdrawn (Note 241-0 below):** the red team (docs/research_offset_2026-10-28/REVIEW_OF.md) found its diagnosis contradicted.
+  - Pass 5 does compute (WS 0.83 / 0.60 / 0.32 at d 5 / 6 / 7; d 6 0.024 -> 0.408 from K' 4 to 5).
+  - At the same pass and step, accuracy falls with d.
+  - Training texts are <= 94 tokens at d 4 (d 6 mean 98; d 10-12 151-178).
+  - S_0-cued "idle" passes are not idle (they print v_1), and the change was not data-only.
+- **Text:** docs/research_lenstep_2026-10-28/LS_v1.md.
+- **Cells (new seeds, DF law, 1,000 items each):** A d 4 normal; B d 4 padded with extra distractors to C's length (gate: mean +/- 5, p90 +/- 10 tokens); C d 6 normal; D d 6 short (n_dis 0, length <= A's p90; optional if < 300 / 5,000 draws).
+- **Readings** (theory/score_ls.py; fixtures 6/6), per model lh_fh_s1 / s2:
+  - LEN4 = A - B; STEP = A - D (else B - C).
+  - LENGTH (LEN4 >= 0.10, STEP < 0.10) / STEPS (STEP >= 0.10, LEN4 < 0.05) / BOTH / NEITHER; MIXED if the models disagree; INVALID if B is not length-matched.
+  - Pre-named next lever: LENGTH or BOTH -> length augmentation at d <= 4; STEPS -> longer-depth training or the state-addressing question.
+- **Build:** OW.Stream n_dis_extra (default 0 bitwise); eval part lenstep -> eval_lenstep.json {cells: {A..D: {n, tok_mean, tok_p90, acc (K' 8), ws {t}}}}; the length-match gate; flags-off gate; Audit G-D.
+- **Cost:** $0.
+
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
 - **What 20k draws gave:** a 0.524 augmented share, failing I(t; M) alone (0.0514).
@@ -22227,6 +22244,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Status:** "C6 (long runs), language loop: hold to K' 128 (16x the trained passes) at 1.000 for d 1-4 in 2 / 2 FH seeds with the hold-increment penalty, where plain-FT controls and the inits drift; §237 / §238 C1 gates retained (max drop 0.026).
   1 of 2 seeds passes every binding gate; the other fails only LP0-W on one ramp-time window its control shares. One lineage, scaffolded (plan given)."
 - **Spend:** realised total ~$13.25.
+
+**Note 241-0 (2026-10-28 18:03 EDT; OFFSET draft (docs/research_offset_2026-10-28/OF_draft.md, 4da7f002) withdrawn, unregistered, before any build or spend.)**
+- The red team's NO-GO (REVIEW_OF.md: diagnosis contradicted; S_0 passes not idle; harness change not data-only) is accepted.
+- No OFFSET reading exists. §241 LEN-STEP ($0) decides the C2 lever.
+- Audit's points for OFFSET v1 (train d <= 4 only; idle-write gates) carry forward to whichever lever §241 picks.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
