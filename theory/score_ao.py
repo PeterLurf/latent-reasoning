@@ -15,6 +15,7 @@ R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_ao.json")
 SEEDS = {"s1": ("ao_s1", "aw_plaw2_s1"), "s2": ("ao_s2", "aux_s2")}
 CD, DIR, D = "aw_pcd2_s1", "s228_pdir2c_s1", "2"
+FINAL = False         # §245 AO-REP: the 18k reading is final (no STILL-RISING extension)
 
 
 def jl(p):
@@ -90,7 +91,7 @@ def seed(runs, ao, aux, base=None):
         o["label"] = "VOID"
     elif sok is False:
         o["label"] = "UNSTABLE"
-    elif not lp3 and rising:
+    elif not lp3 and rising and not FINAL:
         o["label"] = "STILL-RISING"
     elif not lp3 or not lp1:
         o["label"] = "NOT-FORMED"
@@ -165,8 +166,17 @@ def fixtures():
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true")
+    ap.add_argument("--rep", action="store_true", help="§245 AO-REP: ao_s3 / ao_s4 at a straight 18k, final (no STILL-RISING extension); comparator aw_plaw2_s1 (descriptive)")
+    a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = score(); print(o["verdict"])
-    os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
+    out = OUT
+    if a.rep:
+        SEEDS = {"s3": ("ao_s3", "aw_plaw2_s1"), "s4": ("ao_s4", "aw_plaw2_s1")}; FINAL = True; out = OUT.replace(".json", "_rep.json")
+    o = score(); o["section"] = 245 if a.rep else 244
+    if a.rep and "seeds" in o:
+        o["formed"] = sum(v.get("label", "").startswith("AUX-FREE") for v in o["seeds"].values())
+        o["verdict"] = "AO-REP %d/2 formed | %s" % (o["formed"], " / ".join("%s: %s" % (k, v.get("label")) for k, v in o["seeds"].items())) if not o["verdict"].startswith("pending") else o["verdict"]
+    print(o["verdict"])
+    os.makedirs(os.path.dirname(out), exist_ok=True); json.dump(o, open(out, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)

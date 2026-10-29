@@ -332,6 +332,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
 | 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **FAIL 10-29 (243-2): s1 GAMED (norm 1.8-3.2x CTRL) + LP0 + NOLOSS; s2 LP0-FAIL (one transient window) but EXTRAP / STEP-READ / NOLOSS pass; f_DC(+2) 0.70 / 0.87 vs f_CTRL 0.10 / 0.26 (not H-ARCH); C2-RISE fails (d 12 flat past budget); $3.40.** **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
 | 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **SPLIT 10-29 (244-5): s1 NOT-FORMED (chance); s2 AUX-FREE (plain) at 18k: d 2 0.967 vs CD 0.097, LP5 0.747, swap 0.656 (aux comparator 1.0 / 0.88 / 1.0); ~$2.0.** **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
+| 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 
 ## Live sections
 
@@ -19517,6 +19518,24 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - Labels VOID / UNSTABLE / STILL-RISING / NOT-FORMED / ACC-ONLY / AUX-FREE (C1-TOLD / plain). Overall AUX-FREE / SPLIT / FAIL. SURVIVAL ratios vs AUX descriptive.
 - **Pre-named next:** AUX-FREE -> AO from a base GPT-2 init (removes the askname foothold). FAIL -> the C4 line pauses for a new design. Distillation from the §227 teacher is not named (its weights are gone, and at 1.000 it equals the aux targets).
 - **Cost:** three arms ~$1.4 (+ $0.2 per extension); guard $3.5. Running $16.65 + $3.5 = $20.15 <= $30.
+
+## 245. AO-REP: how often does the answer-only d 2 loop form? (Theory's choice under the user's 10-26 standing rules; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-29 17:15 EDT, before any build or output)
+
+- **Why (244-5):** §244 is a SPLIT. s1 never left chance in 12k; s2 formed, but only by 18k, with an LR re-warm extension. The formation rate and the re-warm confound are both unknown, so the stricter base-init test is premature.
+- **Arms:** ao_s3 / ao_s4 = the §244 AO recipe (P-2 args via --args_ref aw_plaw2_s1, --aux_step 1 --aux_fade 0,0) with **--steps 18000** (a straight cosine over 18k, no re-warm) and seeds 3 / 4. One RTX 3090 each.
+  - Args diff vs ao_s1 = {steps 18000, seed}.
+  - The §244 gates (lam 0 from step 0; bitwise P-2 replay is not needed again on an unchanged module, but the module sha is asserted 461458f5).
+- **Readings** (theory/score_ao.py --rep; fixtures 9/9), per seed at 18k, **final** (no STILL-RISING extension):
+  - §244's binding gates (LP1, LP3, LP5, MEAN-STATE, STATE-USE, CUE-ONLY, STABLE) and labels.
+  - SURVIVAL vs aw_plaw2_s1 (descriptive).
+  - The formation rate k / 2 is reported; descriptively pooled with §244 (s1 no at 12k; s2 yes at 18k with a re-warm).
+- **Pre-stated interpretation:**
+  - 2 / 2 -> answer-only formation is reliable at 18k given askname; the next is the base-GPT-2-init AO (§244's pre-named stricter test);
+  - 1 / 2 -> a seed lottery (~50%); the base-init test proceeds only with >= 3 seeds;
+  - 0 / 2 -> §244 s2 was likely the re-warm / a lucky order; the AO line pauses.
+- **OC:** a true per-seed rate of 0.5 gives P(2 / 2) 0.25, P(1 / 2) 0.5, P(0 / 2) 0.25. A rate of 0.1 gives P(2 / 2) 0.01.
+- **Censoring:** as §244 (missing parts pending; FAIL at --final).
+- **Cost:** ~$0.7-0.9 per seed (18k at ~$0.045 / 1k); admit from host G-TIME; guard $2.5. Running $18.65 realised + $2.5 = $21.15 <= $30.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
