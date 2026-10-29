@@ -1,7 +1,7 @@
 # §244 ledger (fill_s244); last field = $
-366:ao_s1 194.14.47.19:23303 58268778 $0.209/h sps 0.5282099644343058 0.54
-367:ao_s2 194.26.196.171:18406 58270979 $0.2432/h sps 0.5462757309277853 0.64
-368:aux_s2 174.94.107.181:42039 58280938 $0.1759/h sps 0.5934725205103556 0.49
+# superseded by realised:b366 (Experiments 10-29): 366:ao_s1 194.14.47.19:23303 58268778 $0.209/h sps 0.5282099644343058 0.54
+# superseded by realised:b367 (Experiments 10-29): 367:ao_s2 194.26.196.171:18406 58270979 $0.2432/h sps 0.5462757309277853 0.64
+# superseded by realised:b368 (Experiments 10-29): 368:aux_s2 174.94.107.181:42039 58280938 $0.1759/h sps 0.5934725205103556 0.49
 realised:b366 # 58268778 (wall guard spent $0.462 at 13:46 + 6 min x $0.209/h) (§244 ao_s1) 0.483
 realised:b367 # 58270979 (wall guard spent $0.579 at 14:16 + 5 min x $0.2432/h) (§244 ao_s2) 0.599
 realised:b368 # 58280938 (wall guard spent $0.408 at 15:21 + 2 min x $0.1759/h) (§244 aux_s2) 0.414
