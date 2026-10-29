@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr")
-AW_ONLY = ("probe", "ws", "opclass", "lenstep", "normctr")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long")
+AW_ONLY = ("probe", "ws", "opclass", "lenstep", "normctr", "ws_long")
 
 
 def pred_of(lg):
@@ -714,6 +714,20 @@ def part_normctr(m, g, sets, a, dev, bs):
     out["def"] = ("NORM-COUNTER (§242 NC_v1 + Note 242-1): TEST2 of the run's law d 4 / d 6, K' 8, fp32; rescale S <- S * n_ref / ||S|| (all heads; down_add_d6: the 6 additive "
                   "heads to their own ||S_2||) after pass k with n_ref the same item's intact norm; identity_d6 = scale 1.0 on the same path; ws = WS-READOUT per pass")
     return out
+
+
+WSL_DS, WSL_K = tuple(range(1, 11)), 10                                    # §243 DC_v1 §3 fix 5: TEST2 d 1..10, passes 1..10
+
+
+@torch.no_grad()
+def part_ws_long(m, g, sets, a, dev, bs):
+    """§243 WS-LONG (DC_v1 §3 fix 5, descriptive + STEP-READ): WS-READOUT (AW.ws_readout: the trunk's argmax over the 11 number tokens at ':' of pass t, never fed
+    back) on TEST2 of the run's law, d 1..10 (all 1,000 each), passes 1..10 (independent of think_k); per item {sig, pred_by_pass {t}, v [v_min(t, d) for t 1..10]}.
+    ops / src_j are joined by the scorer from the TEST2 regen by sig."""
+    T = tokd(sets, a, list(WSL_DS)); r_, pv = AW.ws_readout(m, T, dev, WSL_K, bs, per_item=True)
+    return {"by_d": r_, "items": {str(d): {"sig": [it["sig"] for it in T[d]], "pred_by_pass": pv[str(d)],
+                                           "v": [[int(it["raw"]["values"][min(t, d)]) for t in range(1, WSL_K + 1)] for it in T[d]]} for d in WSL_DS},
+            "def": "WS-LONG (§243 DC_v1 fix 5): WS-READOUT per pass 1..10 on TEST2 d 1..10 (all items), fp32; v = v_min(t, d)"}
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
@@ -746,7 +760,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "swap_k": lambda: part_swap_k(m, g, sets, a, dev, bs), "swap_1": lambda: part_swap_1(m, g, sets, a, dev, bs), "probe": lambda: part_probe(m, g, sets, a, dev, bs),
               "ws": lambda: part_ws(m, g, sets, a, dev, bs), "lp5h": lambda: part_lp5h(m, g, sets, a, dev, bs), "swap_kd": lambda: part_swap_kd(m, g, sets, a, dev, bs),
               "opclass": lambda: part_opclass(m, g, sets, a, dev, bs), "swap_prod": lambda: part_swap_prod(m, g, sets, a, dev, bs),
-              "lenstep": lambda: part_lenstep(m, g, sets, a, dev, bs), "normctr": lambda: part_normctr(m, g, sets, a, dev, bs)}[p_]()
+              "lenstep": lambda: part_lenstep(m, g, sets, a, dev, bs), "normctr": lambda: part_normctr(m, g, sets, a, dev, bs),
+              "ws_long": lambda: part_ws_long(m, g, sets, a, dev, bs)}[p_]()
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

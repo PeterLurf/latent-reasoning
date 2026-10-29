@@ -1,0 +1,46 @@
+{
+ "plain": {
+  "rc": [
+   9,
+   9
+  ],
+  "step": [
+   30,
+   30
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0,
+  "log_equal_minus_ng_by_d": true,
+  "ng_by_d_bins": 0,
+  "ng_by_d_keys": [],
+  "n_bins": 1,
+  "pass": true
+ },
+ "hold": {
+  "rc": [
+   9,
+   9
+  ],
+  "step": [
+   30,
+   30
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0,
+  "log_equal_minus_ng_by_d": true,
+  "ng_by_d_bins": 1,
+  "ng_by_d_keys": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "n_bins": 1,
+  "pass": true
+ },
+ "pass": true
+}
