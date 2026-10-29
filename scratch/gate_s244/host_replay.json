@@ -1,0 +1,27 @@
+{
+ "host": "194.14.47.19:23303",
+ "orig_step100": {
+  "loss": 3.3319097250699996,
+  "answer_ce": 1.9519738509460876,
+  "aux_ce": 1.37993586063385,
+  "gn_preclip_mean100": 25.8707403922081,
+  "aux_lambda": 1.0
+ },
+ "replay_step100": {
+  "loss": 3.3319097250699996,
+  "answer_ce": 1.9519738509460876,
+  "aux_ce": 1.37993586063385,
+  "gn_preclip_mean100": 25.8707403922081,
+  "aux_lambda": 1.0
+ },
+ "rel_diff": {
+  "loss": 0.0,
+  "answer_ce": 0.0,
+  "aux_ce": 0.0,
+  "gn_preclip_mean100": 0.0
+ },
+ "replay_gpu": "NVIDIA GeForce RTX 3090",
+ "replay_micro": 1,
+ "replay_module_sha": "461458f58f79",
+ "pass": true
+}
