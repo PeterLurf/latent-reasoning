@@ -1,0 +1,53 @@
+{
+ "module_sha256": "461458f58f793bd4076cdd8127febc0e6dd3940682113dd39dae32ed62dd3e7d",
+ "module_ok": true,
+ "lam_0": 1.0,
+ "lam_ge1_all_zero": true,
+ "ao_s3": {
+  "rc": 0,
+  "diff_vs_ao_s1": {
+   "seed": [
+    1,
+    3
+   ],
+   "steps": [
+    12000,
+    18000
+   ]
+  },
+  "diff_vs_ao_s2": {
+   "seed": [
+    2,
+    3
+   ],
+   "steps": [
+    12000,
+    18000
+   ]
+  }
+ },
+ "ao_s4": {
+  "rc": 0,
+  "diff_vs_ao_s1": {
+   "seed": [
+    1,
+    4
+   ],
+   "steps": [
+    12000,
+    18000
+   ]
+  },
+  "diff_vs_ao_s2": {
+   "seed": [
+    2,
+    4
+   ],
+   "steps": [
+    12000,
+    18000
+   ]
+  }
+ },
+ "pass": true
+}
