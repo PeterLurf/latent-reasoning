@@ -29,10 +29,18 @@ for f, pre in (('$ADMLOG', ('realised:', 'gatehold:')), ('$BADLOG', None)):
             if l.strip() and not l.startswith('#') and (pre is None or l.startswith(pre)): s += float(l.split()[-1])
     except OSError: pass
 print(round(s, 4))"; }
-fam() { python -c "import sys; s = 0.0
-for f in ('$ADMLOG', '$BADLOG'):
-    try: s += sum(float(l.split()[-1]) for l in open(f) if l.strip() and not l.startswith('#'))
-    except OSError: pass
+fam() { python -c "import re; s = 0.0; real = {}; proj = {}   # Audit 10-29 (b369 refused twice): a landed cell counts ONCE - its realised line if present, else its admit projection
+try:
+    for l in open('$ADMLOG'):
+        if not l.strip() or l.startswith('#'): continue
+        v = float(l.split()[-1]); m = re.match(r'realised:b(\d+)', l); c = re.match(r'(\d+):', l)
+        if m: real[m.group(1)] = real.get(m.group(1), 0.0) + v
+        elif c: proj[c.group(1)] = v
+        else: s += v
+except OSError: pass
+s += sum(real.values()) + sum(v for k, v in proj.items() if k not in real)
+try: s += sum(float(l.split()[-1]) for l in open('$BADLOG') if l.strip() and not l.startswith('#'))
+except OSError: pass
 print(round(s, 4))"; }
 marks() { python -c "s = $1; m = [x for x in (500, 1000, 2000, 4000, 8000, 16000, 24000, 32000, 40000) if x < s - 100]; print(','.join(str(x) for x in m + [s - 100]))"; }
 refuse() {
