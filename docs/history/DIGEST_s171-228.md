@@ -74,6 +74,9 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 238 | DAG-FREE | Extend the chain to cross-state products at position-unpredictable passes (warm from §237) | DF SPLIT by rule (s1 fails only LP0 gn-stability; s2 PASS); all substantive gates pass both seeds | PROD-ACC 1.0 (CD 0.10); mul_s at pass 4 j2 1.0 (step-0 0.56/0.31); PROD-SWAP follow both-from-memory 1.000; ~$1.8 | Latent state composes two memory states multiplicatively; LP0 self-calibration is too tight on warm starts. | C1 |
 | 239 | LONG-RUN | Does the §238 language model hold its answer to K′ 64? (C6, $0) | FAIL (s1 DRIFT at 64; s2 PASS) | ≥0.998 to K′32 for all models; s1 d2 0.941 at 64; ‖S‖ grows ~linearly | Additive state drifts on hold passes; no fixed point. | C6 |
 | 240 | LANG-HOLD | Does a hold-increment penalty FT stabilise the language loop to K′128? | LH SPLIT (s1 LP0-FAIL on a fade-ramp spike shared by CTRL; s2 PASS); LEVER +0.475 | FH both seeds 1.000 at K′ 8/64/128 d1–4 vs init/CTRL collapse; retention max drop 0.026; ~$2.7 | C6 holds on language to 16× trained passes; d5 flat (no C2). | C6 |
+| 241 | LEN-STEP | Is the d6 failure text length or step count? ($0) | STEPS | padded d4 0.998; d6 0.38 / 0.40 at any length | Extrapolation limit is steps, not text length. | C2 |
+| 242 | NORM-COUNTER | Is the additive state norm the step counter? ($0) | MIXED (s1 inconclusive, s2 NOT-NORM) | d6 pass 5 writes a full increment but the wrong value | Not a norm counter; audit probe: COMPUTE failure past trained depth, S_2 back-references at chance. | C2 |
+| 243 | DEPTH-CURRIC | Does training to d6 extend extrapolation (H-NARROW vs H-ARCH)? | FAIL (s1 GAMED, s2 LP0 transient) | offset f at k=2: 0.70/0.87 vs CTRL 0.10/0.26; d12 flat K′10→16; ~$3.4 | Wider training extrapolates further (not H-ARCH), but extra passes past the budget add nothing (3rd time). | C2 |
 
 ## What worked
 
