@@ -6,3 +6,4 @@
 realised:b362 # 58193522 00:10-04:26 (wall guard: instance gone, spent ~$0.869) (§243 dc_s1) 0.869
 realised:b363 # 58197990 (wall guard spent $0.814 at 04:39 + 6 min x $0.209/h) (§243 dc_s2) 0.835
 realised:b364 # 58201196 (wall guard spent $0.760 at 05:08 + 5 min x $0.2014/h) (§243 dc_ctrl_s1) 0.777
+realised:b365 # 58205691 (wall guard spent $0.822 at 05:19 + 6 min x $0.2432/h) (§243 dc_ctrl_s2) 0.846
