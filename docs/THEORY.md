@@ -22414,6 +22414,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - The lam / aux-off gate and the args-diff gates pass (Experiments).
 - **Caps:** admit $0.70, guard $1.10 per arm; family cap CAPF $3.5. Running total unchanged ($20.15 at guard).
 
+**Note 244-3 (2026-10-29 14:22 EDT; §244 interim per-seed readings at 12k (score_ao.seed); the verdict waits for aux_s2 and ao_s2's extension.)**
+- **ao_s1 (realised $0.48): NOT-FORMED.**
+  - d 2 train acc flat at 0.09-0.10 across all 12 bins; eval d 2 0.082 (CD-AN 0.097); d 1 1.000.
+  - LP5 drop 0.0; SWAP-K follow 0.186 (floor 0.19); STABLE.
+  - Not rising, so no extension; its ckpt can go after the verdict.
+- **ao_s2 (realised $0.60): STILL-RISING**, so the one pre-registered +6k extension runs (resume from the verified 12k ckpt; inside the $3.5 guard).
+  - d 2 train acc by bin: 0.09-0.11 to bin 6, then 0.128 / 0.216 / 0.371 / 0.492 / 0.532 (bins 7-11).
+  - At 12k: eval d 2 0.526 (LP3 needs 0.70); LP5 drop 0.353 (passes); MEAN-STATE 0.157 (passes, <= 0.197); SWAP-K follow 0.345 vs floor 0.193 (fails 0.50); STABLE.
+  - It is scored at 18k by the same rules; that reading is final.
+- **Descriptive:** the two data orders differ sharply. s1 never leaves chance; s2's loop starts forming at ~7-8k, the same window as aux-trained P-2's pass-2 formation (0.235 -> 0.992 at 7-8k).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
