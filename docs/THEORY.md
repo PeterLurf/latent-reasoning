@@ -331,6 +331,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 | 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
 | 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **FAIL 10-29 (243-2): s1 GAMED (norm 1.8-3.2x CTRL) + LP0 + NOLOSS; s2 LP0-FAIL (one transient window) but EXTRAP / STEP-READ / NOLOSS pass; f_DC(+2) 0.70 / 0.87 vs f_CTRL 0.10 / 0.26 (not H-ARCH); C2-RISE fails (d 12 flat past budget); $3.40.** **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
+| 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
 
 ## Live sections
 
@@ -19496,6 +19497,26 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Censoring:** as §240.
 - **Cost:** ~$1.0 per arm, four arms ~$4; admit caps from host G-TIME; guard $8. Running $13.25 + $8 = $21.25.
 - **Pre-registered fallback (not run): ADDR-LEVER.** On H-ARCH or IN-RANGE-ONLY in both seeds, the next lever targets old-state addressability (step-keyed writes or a larger delta-head share), with its own derivation and red team. Estimated guard $5, so running $26.25 <= $30.
+
+## 244. ANSWER-ONLY: does the d 2 latent loop form without per-pass value targets? (Theory's choice under the user's 10-26 standing rules; Audit approves; **$30 guard, running rule**; pre-registered 2026-10-29 10:19 EDT, before any build or output)
+
+- **Text:** docs/research_answeronly_2026-10-29/AO_v1.md (wins over AO_draft.md c6ba5b25). Red team: REVIEW_AO.md (GO-with-fixes; all adopted). Audit's three points adopted.
+- **Scope (not a strict C4 test):** the askname init was trained on per-entity values; d 1 items are v_1 labels; the step cue gives the plan; d 2 is DEC-STEP2. **A pass is labelled "AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)".** It answers whether the per-pass aux loss is needed for the loop to form, given an askname-pretrained trunk.
+- **Prior:** §171 / §176 / §177 (final-only identical passes never trained) argue against.
+  - What differs: each pass is the askname question the init already answers; the write comes from that ':' state; and the decoder reads S_K, which holds pass 1's write, so gradient reaches it directly (no detach).
+  - P(AUX-FREE per seed) ~0.29; both ~0.18; under no effect < 0.01.
+- **Arms:**
+  - ao_s1 / ao_s2: the P-2 recipe with `--aux_step 1 --aux_fade 0,0` (lam 0 at every step >= 1; aux_step 0 trips asserts);
+  - comparators aw_plaw2_s1 and the new aux_s2 (seed only);
+  - all new runs with --args_ref aw_plaw2_s1, on an RTX 3090, with a bitwise 100-step replay gate (step 100 loss 3.3319097);
+  - CD-AN aw_pcd2_s1; DIRECT s228_pdir2c_s1.
+- **Binding** (theory/score_ao.py; fixtures 8/8), per AO seed:
+  - LP1 (d 1 >= 0.90); LP3 (d 2 >= 0.70 and >= CD + 0.30); LP5 (pass-1 mean drop >= 0.30); MEAN-STATE (<= CD + 0.10); STATE-USE (SWAP-K >= 0.50 and >= floor + 0.30); CUE-ONLY (VOID);
+  - **STABLE:** n_nonfinite <= 10, and no deduplicated 100-step loss rise above max(3 x the prior-10 median, 0.05) unrecovered within 5 rows. It replaces LP0 (descriptive); it flags 0 of 4 earlier stable runs.
+  - **STILL-RISING:** if LP3 fails with the last-4-bin slope > 0.02, one +6k extension, scored at 18k (final).
+  - Labels VOID / UNSTABLE / STILL-RISING / NOT-FORMED / ACC-ONLY / AUX-FREE (C1-TOLD / plain). Overall AUX-FREE / SPLIT / FAIL. SURVIVAL ratios vs AUX descriptive.
+- **Pre-named next:** AUX-FREE -> AO from a base GPT-2 init (removes the askname foothold). FAIL -> the C4 line pauses for a new design. Distillation from the §227 teacher is not named (its weights are gone, and at 1.000 it equals the aux targets).
+- **Cost:** three arms ~$1.4 (+ $0.2 per extension); guard $3.5. Running $16.65 + $3.5 = $20.15 <= $30.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
