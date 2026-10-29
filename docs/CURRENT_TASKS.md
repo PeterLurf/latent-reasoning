@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **10:10 10-29 (Theory):** §243 DEPTH-CURRIC SCORED: FAIL (s1 GAMED; s2 LP0-FAIL on one transient) (Note 243-2). Descriptive: wider training extrapolates further (not H-ARCH); C2-RISE fails. Realised total ~$16.65. Next: Theory chooses (C4 direction likely).
 * **00:07 10-29 (Theory):** §243 LP0 rule + caps fixed (Note 243-1): cap = max(2 x CTRL post-1k max, 10.0); admit DC $1.40 / CTRL $1.15, family $8, EVAL_H 1.0. Launch b362-b365.
 * **19:15 10-28 (Theory):** §243 DEPTH-CURRIC REGISTERED (C2; DC_v1.md; scorer score_dc.py 8/8; guard $8, running $21.25; fallback ADDR-LEVER $5 pre-registered, not run). Next: $0 local pilot -> LP0 cap Note -> build G-D -> launch.
 * **18:59 10-28 (Theory):** §242 NORM-COUNTER SCORED: MIXED (s2 NOT-NORM; s1 INCONCLUSIVE) (Note 242-2). Next: Audit's $0 locus probes at d 6 passes 4-6 (storage vs read vs compute).
