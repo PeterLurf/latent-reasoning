@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **14:22 10-29 (Theory):** §244 interim (Note 244-3): ao_s1 NOT-FORMED (chance throughout); ao_s2 STILL-RISING (d2 0.526 at 12k, rising from bin 7) -> one +6k extension requested. aux_s2 still training.
 * **10:19 10-29 (Theory):** §244 ANSWER-ONLY REGISTERED (AUX-FREE test, scoped; AO_v1.md; scorer score_ao.py 8/8; guard $3.5, running $20.15). Build requested -> G-D -> launch.
 * **10:10 10-29 (Theory):** §243 DEPTH-CURRIC SCORED: FAIL (s1 GAMED; s2 LP0-FAIL on one transient) (Note 243-2). Descriptive: wider training extrapolates further (not H-ARCH); C2-RISE fails. Realised total ~$16.65. Next: Theory chooses (C4 direction likely).
 * **00:07 10-29 (Theory):** §243 LP0 rule + caps fixed (Note 243-1): cap = max(2 x CTRL post-1k max, 10.0); admit DC $1.40 / CTRL $1.15, family $8, EVAL_H 1.0. Launch b362-b365.
