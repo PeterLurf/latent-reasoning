@@ -1,0 +1,30 @@
+2026-10-29 05:04:21 start long dc_s2
+LONG done boxes/runs_fsq/dc_s2 eval_long_dc.json 3482 s
+2026-10-29 06:02:26 rc 0 long dc_s2
+2026-10-29 06:02:26 start reg dc_s2
+PART acc done 1170 s
+PART ws done 112 s
+PART swap_kd done 518 s
+PART lp5h done 280 s
+REG-EVAL DONE D:\Latent\boxes\runs_fsq\dc_s2_reg
+2026-10-29 06:37:38 rc 0 reg dc_s2
+2026-10-29 06:37:38 LAND DONE dc_s2
+2026-10-29 06:37:44 start long dc_s1
+LONG done boxes/runs_fsq/dc_s1 eval_long_dc.json 3483 s
+2026-10-29 07:35:49 rc 0 long dc_s1
+2026-10-29 07:35:49 start reg dc_s1
+PART acc done 1170 s
+PART ws done 112 s
+PART swap_kd done 518 s
+PART lp5h done 280 s
+REG-EVAL DONE D:\Latent\boxes\runs_fsq\dc_s1_reg
+2026-10-29 08:11:02 rc 0 reg dc_s1
+2026-10-29 08:11:02 LAND DONE dc_s1
+2026-10-29 08:11:25 start long dc_ctrl_s2
+LONG done boxes/runs_fsq/dc_ctrl_s2 eval_long_dc.json 3483 s
+2026-10-29 09:09:30 rc 0 long dc_ctrl_s2
+2026-10-29 09:09:30 LAND DONE dc_ctrl_s2
+2026-10-29 09:09:37 start long dc_ctrl_s1
+LONG done boxes/runs_fsq/dc_ctrl_s1 eval_long_dc.json 3482 s
+2026-10-29 10:07:41 rc 0 long dc_ctrl_s1
+2026-10-29 10:07:41 LAND DONE dc_ctrl_s1
