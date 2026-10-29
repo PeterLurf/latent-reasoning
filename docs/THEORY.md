@@ -22407,6 +22407,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - If any update uses lam > 0, the arm is fixed before launch (e.g. aux_step 0 with the asserts relaxed under G-D), not after.
 - **STILL-RISING extension:** inside the $3.5 guard. Three arms ~$1.4 plus at most two +6k extensions at ~$0.2 each gives ~$1.8 <= $3.5.
 
+**Note 244-2 (2026-10-29 11:44 EDT; §244 build record before any ao_* / aux_s2 output; Audit G-D PASS b7cb8630; host replay scratch/gate_s244/host_replay.json.)**
+- **Bitwise host replay:** aw_plaw2_s1's exact flags on the current stack (module 461458f5; b366's host, an RTX 3090, micro 1).
+  - Step-100 record vs the logged P-2 one: loss 3.3319097250699996 vs 3.3319097250699996 (rel diff 0.0); answer_ce 1.95197385, aux_ce 1.37993586, gn_preclip_mean100 25.87074 (all diff 0.0).
+  - The 100-step mean diff is 0 (<= 1e-2) and the step-100 loss is within 3%. The module changes since P-2 do not alter the P-2 path.
+- The lam / aux-off gate and the args-diff gates pass (Experiments).
+- **Caps:** admit $0.70, guard $1.10 per arm; family cap CAPF $3.5. Running total unchanged ($20.15 at guard).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
