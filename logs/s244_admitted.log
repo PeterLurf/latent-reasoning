@@ -5,3 +5,5 @@
 realised:b366 # 58268778 (wall guard spent $0.462 at 13:46 + 6 min x $0.209/h) (§244 ao_s1) 0.483
 realised:b367 # 58270979 (wall guard spent $0.579 at 14:16 + 5 min x $0.2432/h) (§244 ao_s2) 0.599
 realised:b368 # 58280938 (wall guard spent $0.408 at 15:21 + 2 min x $0.1759/h) (§244 aux_s2) 0.414
+369:ao_s2_ext 35.131.20.10:40301 58298896 $0.2414/h sps 0.5363844235738119 0.84
+realised:b369 # 58298896 (wall guard spent $0.334 at 17:03 + 7 min x $0.248/h) (§244 ao_s2_ext +6k) 0.363
