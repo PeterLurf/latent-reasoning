@@ -332,7 +332,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
 | 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **FAIL 10-29 (243-2): s1 GAMED (norm 1.8-3.2x CTRL) + LP0 + NOLOSS; s2 LP0-FAIL (one transient window) but EXTRAP / STEP-READ / NOLOSS pass; f_DC(+2) 0.70 / 0.87 vs f_CTRL 0.10 / 0.26 (not H-ARCH); C2-RISE fails (d 12 flat past budget); $3.40.** **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
 | 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **SPLIT 10-29 (244-5): s1 NOT-FORMED (chance); s2 AUX-FREE (plain) at 18k: d 2 0.967 vs CD 0.097, LP5 0.747, swap 0.656 (aux comparator 1.0 / 0.88 / 1.0); ~$2.0.** **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
-| 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
+| 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 
 ## Live sections
 
@@ -22474,6 +22474,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Next (Theory, under the standing rules):** the verdict is a SPLIT with a seed lottery and an LR-re-warm confound, so the pre-named stricter test (base GPT-2 init) is premature.
   - First, a replication with two new data orders, a straight 18k schedule and no re-warm, to estimate the formation rate.
   - Registered separately (small, $0.9 per seed est.).
+
+**Note 245-1 (2026-10-29 17:16 EDT; Audit's approval of §245 + conditions, before any build or output; Audit also reproduced §244: AO SPLIT, ao_s2_ext d 2 raw 0.967.)**
+- **APPROVED** (guard $2.5, running $21.15).
+- **(1)** The args diff of ao_s3 / ao_s4 vs ao_s2 = {seed, steps 12k -> 18k} (+ keep_final_ckpt) only.
+  - Their cosine runs over 18k from step 0, which differs from ao_s2's path (12k + a 6k LR re-warm). s3 / s4 are the cleaner recipe.
+  - §244 s2 is not pooled with them as the same recipe. Any pooled rate carries that caveat, and the §245 decision rule reads s3 / s4 alone.
+- **(2)** The fixed filler (fam() once per cell) is used, plus the resume-aware projection if any cell resumes.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
