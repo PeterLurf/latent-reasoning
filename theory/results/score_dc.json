@@ -1,0 +1,104 @@
+{
+ "section": 243,
+ "registered": "DC_v1.md",
+ "seeds": {
+  "s1": {
+   "lp0_cap": 12.103793665673875,
+   "norm_guard": [
+    false,
+    {
+     "max_ratio": 3.2450831846641806
+    }
+   ],
+   "lp0": [
+    false,
+    [
+     [
+      1100,
+      14.548544268580153
+     ],
+     [
+      1800,
+      13.214057842560578
+     ],
+     [
+      1900,
+      15.124121500011533
+     ]
+    ]
+   ],
+   "noloss": [
+    "PROD-SWAP",
+    "DF PROD-SWAP",
+    "DF SWAP-MID",
+    "DF LP5",
+    "REG SWAP-MID",
+    "REG LP5"
+   ],
+   "informative": true,
+   "H_ARCH": false,
+   "EXTRAP": false,
+   "STEP_READ": true,
+   "step_read": [
+    0.903598971722365,
+    0.2264957264957265
+   ],
+   "C2_RISE": false,
+   "f_dc": {
+    "1": 0.959,
+    "2": 0.703,
+    "3": 0.162,
+    "4": 0.078
+   },
+   "f_ctrl": {
+    "1": 0.596,
+    "2": 0.095,
+    "3": 0.085,
+    "4": 0.092
+   },
+   "label": "GAMED"
+  },
+  "s2": {
+   "lp0_cap": 19.59354012141237,
+   "norm_guard": [
+    true,
+    {
+     "max_ratio": 1.1238309354999756
+    }
+   ],
+   "lp0": [
+    false,
+    [
+     [
+      5000,
+      34.700684946357796
+     ]
+    ]
+   ],
+   "noloss": [],
+   "informative": true,
+   "H_ARCH": false,
+   "EXTRAP": true,
+   "STEP_READ": true,
+   "step_read": [
+    0.9267352185089974,
+    0.34493284493284493
+   ],
+   "C2_RISE": false,
+   "f_dc": {
+    "1": 0.991,
+    "2": 0.868,
+    "3": 0.455,
+    "4": 0.163
+   },
+   "f_ctrl": {
+    "1": 0.765,
+    "2": 0.255,
+    "3": 0.111,
+    "4": 0.098
+   },
+   "label": "LP0-FAIL"
+  }
+ },
+ "verdict": "DC FAIL | s1: GAMED / s2: LP0-FAIL"
+}

@@ -330,7 +330,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 240 | LANG-HOLD (Theory's choice; C6; Audit approved in principle): 8k FT of df_plaw4_s1/s2 with a hold-increment penalty (lambda 1.6, from step 500, far pass T~U{16..40}) vs plain-FT controls; HOLD-LONG3 at K' 64/128 + NOLOSS (§238 gates, C1 floor, retention >0.05 named) + LP0-W + norm guard; LEVER vs CTRL s1 >= 0.10; LH_v1.md | registered | **SPLIT 10-28 (240-9): both FH hold 1.000 to K' 128 at d 1-4 (inits / CTRL drift; ||S|| ratio 1.1 vs 15); retention max drop 0.026; s2 PASS, s1 LP0-W fail on one ramp window shared by CTRL; LEVER +0.475.** **APPROVED by Audit 10-28 (240-1: detached-input increments, zero penalty grad on computation-pass writes, per-pass increment log, bitwise-off gate).** **REGISTERED 05:01 10-28; build -> G-D -> launch; scorer score_lh.py (fixtures 9/9)** |
 | 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 | 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
-| 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
+| 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **FAIL 10-29 (243-2): s1 GAMED (norm 1.8-3.2x CTRL) + LP0 + NOLOSS; s2 LP0-FAIL (one transient window) but EXTRAP / STEP-READ / NOLOSS pass; f_DC(+2) 0.70 / 0.87 vs f_CTRL 0.10 / 0.26 (not H-ARCH); C2-RISE fails (d 12 flat past budget); $3.40.** **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
 
 ## Live sections
 
@@ -22360,6 +22360,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Admit caps** (host G-TIME at admission; est. DC ~1.45x and CTRL ~1.2x §240 FH's ~$0.72):
   - DC admit $1.40, CTRL admit $1.15; per-arm guards DC $2.00, CTRL $1.80; family guard $8 (CAPF 8.0); EVAL_H 1.0.
   - Running: $13.25 + $8 = $21.25 <= $30.
+
+**Note 243-2 (2026-10-29 10:10 EDT; §243 DEPTH-CURRIC scored: theory/score_dc.py, theory/results/score_dc.json; Experiments 45140be2; realised ~$3.40 (total ~$16.65).)**
+- **Registered verdict: DC FAIL. s1: GAMED; s2: LP0-FAIL.**
+  - **s1 GAMED:** per-d norm guard. DC / CTRL at d 2-4 is 1.8-3.2 in bins 1-7 (max 3.25, d 2, bin 5). This is real, not small-number noise (d 1 is 0.8-1.2).
+    - s1 also fails LP0: sustained windows over its cap 12.1 at steps 1,100-2,400 (13-16), with loss back up to 1.08.
+    - s1 also fails NOLOSS: PROD-SWAP plus retention drops > 0.05 (DF PROD-SWAP, DF / REG SWAP-MID, DF / REG LP5).
+  - **s2 LP0-FAIL:** one window of 34.7 at step 5,000 vs its cap 19.6 (= 2 x CTRL post-1k max). Transient: neighbours 0.21 / 2.77, loss 0.0095 -> 0.0052. The rule binds.
+    - s2 otherwise passes EXTRAP, STEP-READ and NOLOSS (all §238 gates, retention, HOLD-LONG3 d 1-6); C2-RISE fails.
+- **Descriptive (offset model, acc at K' 16):**
+  - f_DC(k) for k 1-4 (d 7-10): s1 0.959 / 0.703 / 0.162 / 0.078; s2 0.991 / 0.868 / 0.455 / 0.163.
+  - f_CTRL(k) (d 5-8): s1 0.596 / 0.095 / 0.085 / 0.092; s2 0.765 / 0.255 / 0.111 / 0.098.
+  - **Not H-ARCH in either seed:** wider training extrapolates further than a shift. +2 depth holds at 0.70 / 0.87, vs CTRL's +2 at 0.10 / 0.26. In s2, +3 is 0.455 (EXTRAP met).
+  - STEP-READ: regular-op WS at passes 7-8 (d 8) 0.90 / 0.93 vs CTRL passes 5-6 (d 6) 0.23 / 0.34.
+  - **C2-RISE fails in both:** at d 12, K' 16 gives no gain over K' 10. More passes past the trained budget still don't add steps.
+- **Reading:** H-NARROW is favoured descriptively. Training on d <= 6 gives a step function that extrapolates about 2-3 depths, against about 1-2 after d <= 4 training. But C2 as defined (accuracy rising with passes past the trained budget) is not met, and neither seed passes the registered gates. s1's gain came with a gamed norm and lost causal-use (swap / LP5) robustness.
+- **Status:** C2 not met. Depth extrapolation improves with a wider depth range (descriptive, s2 clean apart from one transient LP0 window).
+- **Next:** ADDR-LEVER's trigger (H-ARCH or IN-RANGE-ONLY in both seeds) is not met, so no pre-named lever applies. The next direction is Theory's choice under the standing rules (north star C4 = C2; C2's 'more passes past the budget' has now failed in §239 / §240 / §243).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
