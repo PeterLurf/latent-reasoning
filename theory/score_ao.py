@@ -24,10 +24,18 @@ def jl(p):
         return None
 
 
-def stable(runs, run):
+def stable(runs, run, base=None):
+    """base: for an extension dir, the 12k run whose log precedes it (Note 244-4: the combined log; the 500 steps after the resume's LR re-warm are skipped)."""
     ts = jl(os.path.join(runs, run, "train_summary.json")) or {}
-    lg = ST.dedupe(ST.rows(os.path.join(runs, run, "log.jsonl"))) or []
+    lg = (ST.dedupe(ST.rows(os.path.join(runs, base, "log.jsonl"))) or []) if base else []
+    lg = ST.dedupe(lg + (ST.rows(os.path.join(runs, run, "log.jsonl")) or [])) or []
     L = [(r["step"], r["loss"]) for r in lg if "step" in r and "loss" in r]
+    resume = None
+    if base:
+        bsteps = [r["step"] for r in (ST.dedupe(ST.rows(os.path.join(runs, base, "log.jsonl"))) or []) if "step" in r and "loss" in r]
+        resume = max(bsteps) if bsteps else None
+    if resume is not None:
+        L = [(s, x) for s, x in L if not (resume < s <= resume + 500)]
     if not L:
         return None, "no loss rows"
     nnf = ts.get("n_nonfinite", 0) or 0
@@ -46,10 +54,14 @@ def stable(runs, run):
     return (nnf <= 10 and not bad), {"n_nonfinite": nnf, "unrecovered": bad[:3]}
 
 
-def seed(runs, ao, aux):
+def seed(runs, ao, aux, base=None):
+    """base: set when `ao` is a STILL-RISING extension dir (Note 244-4); the extension's evals are final, bins / loss from base + extension logs."""
     f = {(r, x): jl(os.path.join(runs, r, x + ".json")) for r in (ao,) for x in ("eval_acc", "eval_lp5", "eval_mean_s", "eval_cue_only", "eval_cue_wrong", "eval_swap_k")}
     f[(CD, "eval_acc")] = jl(os.path.join(runs, CD, "eval_acc.json")); f[(DIR, "eval_acc")] = jl(os.path.join(runs, DIR, "eval_acc.json"))
-    lg = ST.dedupe(ST.rows(os.path.join(runs, ao, "log.jsonl")))
+    lg = ST.rows(os.path.join(runs, ao, "log.jsonl"))
+    if base and lg is not None:
+        lg = (ST.rows(os.path.join(runs, base, "log.jsonl")) or []) + lg
+    lg = ST.dedupe(lg)
     miss = ["%s/%s" % k for k, v in f.items() if v is None] + (["log"] if lg is None else [])
     if miss:
         return {"label": "pending", "why": miss}
@@ -64,7 +76,9 @@ def seed(runs, ao, aux):
     cw = f[(ao, "eval_cue_wrong")]["by_d"][D]; cwd = l5["intact"][kb] - cw["all"][kb]
     tail = [r["by_d"][D]["acc"] for r in b if D in r["by_d"] and r["by_d"][D].get("acc") is not None][-4:]
     rising = len(tail) == 4 and float(np.polyfit(range(4), tail, 1)[0]) > 0.02
-    sok, smsg = stable(runs, ao)
+    if base:
+        rising = False                                                            # Note 244-4: the extension reading is final
+    sok, smsg = stable(runs, ao, base)
     o = {"LP1": lp1, "LP3": lp3, "acc_d2": {"ao": aL, "cd": aC, "dir": aD}, "LP5": lp5, "LP5_drop": lp5v, "MEAN_STATE": msok, "mean_state_acc": ms,
          "STATE_USE": su, "swap_k": {k: sk.get(k) for k in ("n_pairs", "follow_U", "floor")}, "CUE_ONLY_ok": guard, "CUE_WRONG_drop": cwd, "STABLE": (sok, smsg), "still_rising": rising}
     ref = {x: jl(os.path.join(runs, aux, x + ".json")) for x in ("eval_acc", "eval_lp5", "eval_swap_k")}
@@ -88,7 +102,13 @@ def seed(runs, ao, aux):
 
 
 def score(runs=R):
-    o = {"section": 244, "registered": "AO_v1.md", "seeds": {k: seed(runs, *v) for k, v in SEEDS.items()}}
+    seeds = {}
+    for k, (ao, aux) in SEEDS.items():           # Note 244-4: a STILL-RISING seed's final reading is its <ao>_ext dir (18k), logs combined
+        ext = ao + "_ext"
+        seeds[k] = seed(runs, ext, aux, base=ao) if os.path.isdir(os.path.join(runs, ext)) else seed(runs, ao, aux)
+        if os.path.isdir(os.path.join(runs, ext)):
+            seeds[k]["final_from"] = ext; seeds[k]["survival_caveat"] = "18k extension (LR re-warm) vs the 12k comparator; not step-matched"
+    o = {"section": 244, "registered": "AO_v1.md", "seeds": seeds}
     labs = [o["seeds"][k]["label"] for k in SEEDS]
     if "pending" in labs or "STILL-RISING" in labs:
         o["verdict"] = "pending (%s)" % " / ".join("%s: %s" % (k, v["label"]) for k, v in o["seeds"].items()); return o
@@ -135,6 +155,10 @@ def fixtures():
     o = score(world(nnf=50)); res.append(("many non-finite -> UNSTABLE", o["verdict"].count("UNSTABLE") == 2, o["verdict"]))
     o = score(world(ao=0.5, rise=True)); res.append(("still rising -> pending (extension)", o["verdict"].startswith("pending") and "STILL-RISING" in o["verdict"], o["verdict"]))
     o = score(world(per={"s2": {"ao": 0.3}})); res.append(("one seed -> SPLIT", o["verdict"].startswith("AO SPLIT"), o["verdict"]))
+    d = world(ao=0.5, rise=True); import shutil
+    shutil.copytree(os.path.join(d, "ao_s2"), os.path.join(d, "ao_s2_ext"))
+    json.dump({"by_d": {D: {"acc": 0.85}}}, open(os.path.join(d, "ao_s2_ext", "eval_acc.json"), "w"))
+    o = score(d); res.append(("s2 extension final at 18k (no second STILL-RISING)", o["seeds"]["s2"].get("final_from") == "ao_s2_ext" and o["seeds"]["s2"]["label"] != "STILL-RISING", o["seeds"]["s2"]["label"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
