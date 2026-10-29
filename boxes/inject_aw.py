@@ -190,6 +190,7 @@ def main(argv=None):
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
     ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1, 2], help="§236: 0 = REG law (no forced mul_s); §238: 2 = DF (per-step mul_s, q_t); 1 = unchanged - on every stream / set (new eval seeds)")
+    ap.add_argument("--keep_final_ckpt", action="store_true", help="§244: keep the final ckpt_last.pt as ckpt_final.pt (fetched by the drain) instead of deleting it")
     ap.add_argument("--hold_inc", type=float, default=0.0, help="§240: lambda of L_inc (HOLD-INC; 0 = off)"); ap.add_argument("--hold_start", type=int, default=500)
     ap.add_argument("--hold_far_n", type=int, default=16); ap.add_argument("--hold_far_lo", type=int, default=16); ap.add_argument("--hold_far_hi", type=int, default=40)
     ap.add_argument("--hold_log", action="store_true", help="§240: the hold stats + gn_plain without the penalty (CTRL arms); implied by --hold_inc > 0")
@@ -469,7 +470,7 @@ def main(argv=None):
             log.write(json.dumps({"futility": frec}) + "\n"); log.flush()
             if frec["stop"]:
                 fut["stop"] = step; json.dump(fut, open(os.path.join(a.out, "futility.json"), "w", newline="\n"), indent=1); break
-        if a.ckpt_every and (step % a.ckpt_every == 0 or step == a.stop_at) and step < a.steps:
+        if a.ckpt_every and (step % a.ckpt_every == 0 or step == a.stop_at) and (step < a.steps or a.keep_final_ckpt):   # §244: + the final step under --keep_final_ckpt
             cp = os.path.join(a.out, "ckpt_last.pt")
             if os.path.exists(cp):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
@@ -500,6 +501,8 @@ def main(argv=None):
         return 0
     from boxes import inject_aw_eval as EV
     EV.run(a.out, [p_ for p_ in a.eval_parts.split(",") if p_], dev, a.eval_bs, model=(m, g), sets=SETS, train=train)
+    if a.keep_final_ckpt and os.path.exists(os.path.join(a.out, "ckpt_last.pt")):   # §244: the final state kept for a resume (renamed: the drain skips ckpt_last.pt)
+        os.replace(os.path.join(a.out, "ckpt_last.pt"), os.path.join(a.out, "ckpt_final.pt"))
     for ck_ in ("ckpt_last.pt", "ckpt_prev.pt"):
         if os.path.exists(os.path.join(a.out, ck_)):
             os.remove(os.path.join(a.out, ck_))
