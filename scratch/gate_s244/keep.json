@@ -1,0 +1,15 @@
+{
+ "on": {
+  "rc": 0,
+  "ckpt_final": true,
+  "ckpt_last": false,
+  "final_step": 20
+ },
+ "off": {
+  "rc": 0,
+  "ckpt_final": false,
+  "ckpt_last": false,
+  "final_step": null
+ },
+ "pass": true
+}

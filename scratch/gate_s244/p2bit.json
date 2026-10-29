@@ -1,0 +1,20 @@
+{
+ "rc": [
+  9,
+  9
+ ],
+ "step": [
+  100,
+  100
+ ],
+ "n_model_tensors": 162,
+ "mismatch": [],
+ "n_mismatch": 0,
+ "log_equal": true,
+ "step100_loss_local": [
+  1.5604214701801538,
+  null
+ ],
+ "host_logged_step100_loss": 3.3319097250699996,
+ "pass": true
+}

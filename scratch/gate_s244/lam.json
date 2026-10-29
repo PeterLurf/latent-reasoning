@@ -1,0 +1,37 @@
+{
+ "lam_at_src": "def lam_at(step):\n        if not a.aux_step:\n            return 0.0\n        return a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc))",
+ "lam_0": 1.0,
+ "lam_ge1_all_zero": true,
+ "ao_records": 100,
+ "ao_steps": [
+  1,
+  100
+ ],
+ "aux_lambda_all_zero": true,
+ "aux_ce_finite": true,
+ "noaux_vs_ao_1": {
+  "step": [
+   1,
+   1
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0
+ },
+ "noaux_vs_ao_100": {
+  "step": [
+   100,
+   100
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0
+ },
+ "rc": {
+  "ao_1": 9,
+  "noaux_1": 9,
+  "ao_100": 9,
+  "noaux_100": 9
+ },
+ "pass": true
+}
