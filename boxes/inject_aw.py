@@ -348,7 +348,7 @@ def main(argv=None):
     if a.args_only:
         print("ARGS_ONLY", a.out, flush=True); return 0
     opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_log = []; aux_hist = []
-    expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
+    expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
     if a.resume:
         ck = torch.load(a.resume, map_location=dev, weights_only=False); params.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"])
@@ -359,7 +359,7 @@ def main(argv=None):
             stream.rng.bit_generator.state = ck["stream_rng"]; stream.stats = dict(ck["stream_stats"])
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; gn_log = list(ck["gn_log"]); t0 = time.time() - ck["elapsed"]
         expo, binacc, vbin, dseq, iseq, d2_bins, ent, fut, wlast = ck["expo"], ck["binacc"], ck["vbin"], ck["dseq"], ck["iseq"], ck["d2_bins"], ck["ent"], ck["fut"], ck["wlast"]
-        vbin_d = ck.get("vbin_d", {}); gnbin = ck.get("gnbin", {}); hbin = ck.get("hbin", {}); gn_plain_log = list(ck.get("gn_plain_log", []))
+        vbin_d = ck.get("vbin_d", {}); gnbin = ck.get("gnbin", {}); hbin = ck.get("hbin", {}); hbin_d = ck.get("hbin_d", {}); gn_plain_log = list(ck.get("gn_plain_log", []))
         if ck.get("rng_far") is not None:
             rng_far.bit_generator.state = ck["rng_far"]
         log.write(json.dumps({"step": ck["step"], "resumed": a.resume}) + "\n"); log.flush()
@@ -394,6 +394,7 @@ def main(argv=None):
             gn_plain_log.append(float(torch.sqrt(sum((p_.grad.float() ** 2).sum() for p_ in params.parameters() if p_.grad is not None))))
             T_far = int(rng_far.integers(a.hold_far_lo, a.hold_far_hi + 1)); inc_on = a.hold_inc > 0 and step >= a.hold_start * sc
             hs_ = hold_step(m, st_.pop("_keep"), its[:a.hold_far_n], T_far, K, a.bs, inc_on, a.hold_inc, ac, dev); hold_acc(hbin, hs_)
+            hold_acc(hbin_d.setdefault(str(its[0]["d"]), {}), {k_: hs_[k_] for k_ in ("s8", "sd2")})   # §243 DC_v1 fix 2: the per-d norm guard (one d per step)
             if step == step0 and not a.resume:                              # the norm guard at step 0 (this step's forward, before any update)
                 log.write(json.dumps({"step": 0, "norm_guard": {"s8": hs_["s8"][0] / hs_["s8"][1], "sd2": hs_["sd2"][0] / hs_["sd2"][1]},
                                       "hold_ratios": {k_: (v_[0] / v_[1] if v_[1] else None) for k_, v_ in hs_.items() if k_ in ("comp", "hold")}}) + "\n"); log.flush()
@@ -454,10 +455,11 @@ def main(argv=None):
             if HOLD and hbin:                                               # §240: inc (the penalised squared ratio), far, comp / hold ratios, the norm guard
                 hm_ = hold_mean(hbin); br["hold"] = {"inc_ratio": hm_.get("inc"), "far_ratio": hm_.get("far"), "comp_ratio": hm_.get("comp"), "hold_ratio": hm_.get("hold"),
                                                      "norm_guard": {"s8": hm_.get("s8"), "sd2": hm_.get("sd2")}}
+                br["hold"]["norm_guard_by_d"] = {k_: hold_mean(v_) for k_, v_ in sorted(hbin_d.items())}   # §243: {d: {s8, sd2}} (s8 = ||S_K||, K = think_k)
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; dseq = []; iseq = []
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
@@ -475,7 +477,7 @@ def main(argv=None):
                         "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
                         "stream_rng": stream.rng.bit_generator.state if stream is not None else None, "stream_stats": dict(stream.stats) if stream is not None else None,
                         "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_log": gn_log, "elapsed": time.time() - t0, "expo": expo, "binacc": binacc,
-                        "vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "hbin": hbin, "gn_plain_log": gn_plain_log, "rng_far": rng_far.bit_generator.state, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
+                        "vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "hbin": hbin, "hbin_d": hbin_d, "gn_plain_log": gn_plain_log, "rng_far": rng_far.bit_generator.state, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
     if a.time_steps:
         sps = (time.time() - tt0) / max(1, last - step0 + 1)
         tj = {"arm": a.arm, "think_k": K, "d_max": a.d_max, "steps_timed": last - step0 + 1, "sec_per_step": sps, "est_hours_steps": sps * a.steps / 3600,

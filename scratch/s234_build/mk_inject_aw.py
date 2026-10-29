@@ -97,6 +97,8 @@ for o, n in E:
 import runpy  # noqa: E402
 for o, n in runpy.run_path("scratch/s240_build/edits_s240.py")["E240"]:   # §240 LANG-HOLD main() edits (raw strings; each asserted once)
     assert main.count(o) == 1, ("§240 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
+for o, n in runpy.run_path("scratch/s243_build/edits_s243.py")["E243"]:   # §243 DEPTH-CURRIC: the per-d norm guard (stats only)
+    assert main.count(o) == 1, ("§243 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
 assert "tok_st(" not in main and "inject_st_eval" not in main and "build_model(" not in main, "leftovers"
 hdr = open("scratch/s234_build/inject_aw_head.py", encoding="utf-8").read() + open("scratch/s240_build/head_s240.py", encoding="utf-8").read()   # + §240 helpers
 open("boxes/inject_aw.py", "w", encoding="utf-8", newline="\n").write(hdr + "\n\n" + main + 'if __name__ == "__main__":\n    sys.exit(main())\n')

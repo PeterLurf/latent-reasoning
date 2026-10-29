@@ -1,0 +1,89 @@
+{
+ "dc": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 2,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 4,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 6.613155469298363
+    },
+    {
+     "kind": "eval",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 5.108386039733887
+    }
+   ],
+   "micro": 8,
+   "eval_bs": 250,
+   "peak_gib_train": 6.613155469298363,
+   "peak_gib_eval": 5.108386039733887,
+   "train": "the longest bs / micro of 256 d = 6 items (SEED_MEMCHECK) at K = 10, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  }
+ },
+ "ctrl": {
+  "rc": 0,
+  "mem_check": {
+   "checks": [
+    {
+     "kind": "train",
+     "micro": 1,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 2,
+     "eval_bs": 250,
+     "peak_gib": Infinity
+    },
+    {
+     "kind": "train",
+     "micro": 4,
+     "eval_bs": 250,
+     "peak_gib": 8.033291921019554
+    },
+    {
+     "kind": "train",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 5.161849603056908
+    },
+    {
+     "kind": "eval",
+     "micro": 8,
+     "eval_bs": 250,
+     "peak_gib": 5.108386039733887
+    }
+   ],
+   "micro": 8,
+   "eval_bs": 250,
+   "peak_gib_train": 5.161849603056908,
+   "peak_gib_eval": 5.108386039733887,
+   "train": "the longest bs / micro of 256 d = 4 items (SEED_MEMCHECK) at K = 10, + AdamW states",
+   "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+  }
+ },
+ "pass": true
+}
