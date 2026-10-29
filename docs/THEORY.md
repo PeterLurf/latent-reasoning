@@ -22425,6 +22425,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - It is scored at 18k by the same rules; that reading is final.
 - **Descriptive:** the two data orders differ sharply. s1 never leaves chance; s2's loop starts forming at ~7-8k, the same window as aux-trained P-2's pass-2 formation (0.235 -> 0.992 at 7-8k).
 
+**Note 244-4 (2026-10-29 15:01 EDT; §244 extension rules, fixed before any ao_s2_ext output; Experiments b369; Audit's two disclosures adopted.)**
+- **Extension:** ao_s2 resumes from its verified 12k ckpt (sha c8d52aaa) to 18k into run dir ao_s2_ext, with the same flags and aux weight 0.0. ao_s2's 12k evals are kept.
+- **Disclosure (1), LR re-warm:** the cosine schedule is recomputed over 18k at resume. LR goes from ~0 at 12,000 to 2.5e-5 (0.25 x base) at 12,001, then decays to 0 at 18,000. Any 18k gain is labelled 'extension with LR re-warm'.
+- **Disclosure (2), not step-matched:** ao_s2 at 18k vs aux_s2 at 12k. The registered comparator stays aux_s2 at 12k; SURVIVAL ratios at 18k carry that caveat.
+- **Scoring (theory/score_ao.py; fixtures 9/9):**
+  - s2's final reading uses ao_s2_ext's evals; bins and loss come from the combined ao_s2 + ao_s2_ext logs.
+  - STABLE skips the 500 steps after the resume (the LR re-warm window, as for the fade ramp).
+  - STILL-RISING is not re-applied; the 18k reading is final.
+  - s1's 12k reading is unchanged (NOT-FORMED).
+- **Caps:** admit $0.90 (G-TIME projects the full 18k) / guard $1.00, inside CAPF $3.5.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
