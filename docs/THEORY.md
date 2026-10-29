@@ -331,7 +331,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 241 | LEN-STEP ($0 diagnostic; Theory's choice; replaces the withdrawn OFFSET draft): 2x2 cells d 4 / d 6 x short / long (distractor padding) on lh_fh_s1 / s2; labels LENGTH / STEPS / BOTH / NEITHER pick the C2 lever; LS_v1.md | registered | **STEPS 10-28 (241-3): length effect 0.002 / 0.005 (paired n 1,000); d 6 fails at any length (0.38 / 0.22); loss at pass 5 (s1) / pass 4 (s2); $0.** **APPROVED by Audit 10-28 (241-1: same-program padded renders, paired by prog_sig; one card / K' 8; WS per pass).** **REGISTERED 18:03 10-28; eval build -> G-D -> local eval; scorer score_ls.py (fixtures 6/6)** |
 | 242 | NORM-COUNTER ($0 causal test; Theory's choice): rescale S (direction kept) DOWN at d 6 after pass 4 to ||S_2||, UP at d 4 after pass 2 to ||S_4||, HARMLESS control; is ||S|| the step counter? NC_v1.md | registered | **MIXED 10-28 (242-2): s2 NOT-NORM (down hurts, up null, harmless 0.998); s1 INCONCLUSIVE (harmless 0.804); pass 5 writes a full increment but the wrong value; $0.** **APPROVED by Audit 10-28 (242-1: identity path check, add-only arm, per-head norms).** **REGISTERED 18:29 10-28; eval build -> G-D -> local eval; scorer score_nc.py (fixtures 6/6)** |
 | 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **FAIL 10-29 (243-2): s1 GAMED (norm 1.8-3.2x CTRL) + LP0 + NOLOSS; s2 LP0-FAIL (one transient window) but EXTRAP / STEP-READ / NOLOSS pass; f_DC(+2) 0.70 / 0.87 vs f_CTRL 0.10 / 0.26 (not H-ARCH); C2-RISE fails (d 12 flat past budget); $3.40.** **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
-| 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
+| 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **SPLIT 10-29 (244-5): s1 NOT-FORMED (chance); s2 AUX-FREE (plain) at 18k: d 2 0.967 vs CD 0.097, LP5 0.747, swap 0.656 (aux comparator 1.0 / 0.88 / 1.0); ~$2.0.** **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
 
 ## Live sections
 
@@ -22435,6 +22435,26 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - STILL-RISING is not re-applied; the 18k reading is final.
   - s1's 12k reading is unchanged (NOT-FORMED).
 - **Caps:** admit $0.90 (G-TIME projects the full 18k) / guard $1.00, inside CAPF $3.5.
+
+**Note 244-5 (2026-10-29 17:12 EDT; §244 ANSWER-ONLY scored: theory/score_ao.py, theory/results/score_ao.json; realised ~$2.0 (ao_s1 $0.48, ao_s2 $0.60, aux_s2 $0.41, extension $0.36, bad hosts ~$0.15).)**
+- **Registered verdict: AO SPLIT. s1: NOT-FORMED; s2: AUX-FREE (plain), read at 18k from ao_s2_ext (extension with LR re-warm, 244-4).**
+- **s2 at 18k:**
+  - d 2 0.967 vs CD-AN 0.097 / DIRECT 0.093;
+  - LP5 drop 0.747; MEAN-STATE 0.146 (<= 0.197); SWAP-K follow 0.656 (floor 0.182);
+  - LP1 (d 1 1.000) and STABLE pass; CUE-ONLY OK.
+  - CUE-WRONG drop 0.113 (< 0.20), so the label is 'plain', not C1-TOLD: a wrong step cue costs little.
+  - d 2 train acc by bin: chance to bin 6, then 0.128 / 0.216 / 0.371 / 0.492 / 0.532 at 12k, then 0.610 / 0.812 / 0.904 / 0.945 / 0.965 / 0.967 to 18k.
+- **s1 at 12k:** chance throughout (d 2 0.082; LP5 0.0; SWAP 0.186 vs floor 0.19); not rising, so final.
+- **Comparator** (aux_s2 at 12k, the same seed with per-pass aux): d 2 1.000, LP5 drop 0.879, SWAP 1.000.
+  - SURVIVAL of s2 (18k vs the 12k comparator; not step-matched): acc 0.967, LP5 0.85, swap 0.656.
+- **Reading (scoped, AO_v1 sec. 1):** given the askname-pretrained trunk, the d 1 foothold and the step cue, the per-pass aux loss is not necessary for the d 2 loop to form in 1 of 2 data orders.
+  - It forms later (useful from ~7-8k, 0.97 only at 18k with an LR re-warm) and less robustly (swap 0.66 vs 1.00) than with aux.
+  - In the other data order it does not form in 12k at all.
+  - The history prior (§171 / §176 / §177 never trained) is broken in one seed, plausibly by the askname-form pass plus the ':' write (AO_v1 sec. 2).
+- **Status:** "AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2): 1 of 2 data orders forms the d 2 loop without per-pass value targets (with a 6k LR-re-warm extension)". This is not C4.
+- **Next (Theory, under the standing rules):** the verdict is a SPLIT with a seed lottery and an LR-re-warm confound, so the pre-named stricter test (base GPT-2 init) is premature.
+  - First, a replication with two new data orders, a straight 18k schedule and no re-warm, to estimate the formation rate.
+  - Registered separately (small, $0.9 per seed est.).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

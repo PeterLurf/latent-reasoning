@@ -1,0 +1,79 @@
+{
+ "section": 244,
+ "registered": "AO_v1.md",
+ "seeds": {
+  "s1": {
+   "LP1": true,
+   "LP3": false,
+   "acc_d2": {
+    "ao": 0.082,
+    "cd": 0.097,
+    "dir": 0.093
+   },
+   "LP5": false,
+   "LP5_drop": 0.0,
+   "MEAN_STATE": true,
+   "mean_state_acc": 0.08,
+   "STATE_USE": false,
+   "swap_k": {
+    "n_pairs": 1000,
+    "follow_U": 0.186,
+    "floor": 0.19
+   },
+   "CUE_ONLY_ok": true,
+   "CUE_WRONG_drop": 0.0,
+   "STABLE": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ],
+   "still_rising": false,
+   "survival": {
+    "acc": 0.082,
+    "lp5": 0.0,
+    "swap": 0.186
+   },
+   "label": "NOT-FORMED"
+  },
+  "s2": {
+   "LP1": true,
+   "LP3": true,
+   "acc_d2": {
+    "ao": 0.967,
+    "cd": 0.097,
+    "dir": 0.093
+   },
+   "LP5": true,
+   "LP5_drop": 0.747,
+   "MEAN_STATE": true,
+   "mean_state_acc": 0.146,
+   "STATE_USE": true,
+   "swap_k": {
+    "n_pairs": 1000,
+    "follow_U": 0.656,
+    "floor": 0.182
+   },
+   "CUE_ONLY_ok": true,
+   "CUE_WRONG_drop": 0.11299999999999999,
+   "STABLE": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ],
+   "still_rising": false,
+   "survival": {
+    "acc": 0.967,
+    "lp5": 0.8498293515358362,
+    "swap": 0.656
+   },
+   "label": "AUX-FREE (plain)",
+   "final_from": "ao_s2_ext",
+   "survival_caveat": "18k extension (LR re-warm) vs the 12k comparator; not step-matched"
+  }
+ },
+ "verdict": "AO SPLIT | s1: NOT-FORMED / s2: AUX-FREE (plain)"
+}
