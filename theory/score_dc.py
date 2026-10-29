@@ -3,7 +3,7 @@ Arms: dc_s1 / dc_s2 (d <= 6) vs dc_ctrl_s1 / dc_ctrl_s2 (d <= 4), think_k 10, fr
 eval_ws_long.json (WS per pass, d 1..10) per arm; ops joined from TEST2-DF regen by sig.
 Per seed: UNINFORMATIVE (DC d 5-6 at K' 8 < 0.90); H-ARCH (|DC(6+k) - CTRL(4+k)| <= 0.10, k 1..3, at K' 16); EXTRAP (DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24 at K' 16);
 STEP-READ (regular-op WS, DC passes 7-8 of d 8 minus CTRL passes 5-6 of d 6, >= 0.15); C2-RISE (DC d 12: K'16 - K'10 >= 0.10 and K'16 >= 0.25);
-NOLOSS (HOLD-LONG3 d 1-6 at K' 64/128; §238 gates; retention, via injectable checks); LP0 (skip steps <= 1000; cap from Note 243-x, LP0_CAP);
+NOLOSS (HOLD-LONG3 d 1-6 at K' 64/128; §238 gates; retention, via injectable checks); LP0 (Note 243-1: skip steps <= 1000; cap = max(2 x max(paired CTRL windows, step > 1000), LP0_FLOOR 10.0));
 NORM GUARD per d <= 4 (DC / CTRL > 1.25 -> GAMED). Labels first match: GAMED / LP0-FAIL / NOLOSS-FAIL / UNINFORMATIVE / H-ARCH / PASS / EXTRAP / IN-RANGE-ONLY.
     python -B theory/score_dc.py [--fixtures]
 """
@@ -16,7 +16,7 @@ import score_st as ST  # noqa: E402
 R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_dc.json")
 SEEDS = {"s1": ("dc_s1", "dc_ctrl_s1", "lh_fh_s1"), "s2": ("dc_s2", "dc_ctrl_s2", "lh_fh_s2")}
-LP0_CAP = {}          # filled from the pilot Note before launch (DC_v1 sec. 2); empty -> pending
+LP0_FLOOR = 10.0      # Note 243-1
 
 
 def jl(p):
@@ -69,10 +69,13 @@ def seed(runs, sd, regen, noloss_fn):
     W = {r: jl(os.path.join(runs, r, "eval_ws_long.json")) for r in (dc, ctrl)}
     if any(v is None for v in list(L.values()) + list(W.values())):
         return {"label": "pending", "why": "missing eval_long_dc / eval_ws_long"}
-    if sd not in LP0_CAP:
-        return {"label": "pending", "why": "LP0 cap not yet fixed (pilot Note)"}
     o = {}
-    gok, gmsg = norm_guard_d(runs, dc, ctrl); lok, lmsg = lp0(runs, dc, LP0_CAP[sd])
+    cw = [r.get("gn_plain_mean100", r.get("gn_preclip_mean100")) for r in (ST.dedupe(ST.rows(os.path.join(runs, ctrl, "log.jsonl"))) or [])
+          if r.get("step", 0) > 1000 and ("gn_plain_mean100" in r or "gn_preclip_mean100" in r)]
+    if not cw:
+        return {"label": "pending", "why": "no CTRL windows after step 1000"}
+    cap = max(2 * max(cw), LP0_FLOOR); o["lp0_cap"] = cap
+    gok, gmsg = norm_guard_d(runs, dc, ctrl); lok, lmsg = lp0(runs, dc, cap)
     nl = noloss_fn(runs, dc, init, L[dc])
     if gok is None or lok is None or nl is None:
         return {"label": "pending", "why": [gmsg, lmsg, "noloss"]}
@@ -123,7 +126,6 @@ def score(runs=R, regen=None, noloss_fn=None):
 
 def fixtures():
     res = []; rng = np.random.default_rng(0)
-    global LP0_CAP
 
     def world(dc_curve, ctrl_curve, inform=True, gn_spike=False, gamed=False, ws_dc=0.9, ws_c=0.6):
         d = tempfile.mkdtemp(); regen = {}
@@ -150,12 +152,11 @@ def fixtures():
                 json.dump({"items": items}, open(os.path.join(d, run, "eval_ws_long.json"), "w"))
                 with open(os.path.join(d, run, "log.jsonl"), "w") as f:
                     for i in range(1, 81):
-                        f.write(json.dumps({"step": i * 100, "gn_plain_mean100": 9.0 if (gn_spike and run == dc and i == 30) else 1.0}) + "\n")
+                        f.write(json.dumps({"step": i * 100, "gn_plain_mean100": 25.0 if (gn_spike and run == dc and i == 30) else 1.0}) + "\n")
                     for i in range(9):
                         ng = {str(x): {"s8": 10.0 * (1.5 if (gamed and run == dc) else 1.0), "sd2": 8.0} for x in range(1, 7)}
                         f.write(json.dumps({"bin": i, "by_d": {}, "hold": {"norm_guard_by_d": ng}}) + "\n")
         return d, regen
-    LP0_CAP = {"s1": 5.0, "s2": 5.0}
     nl_ok = lambda runs, dc, init, D: []  # noqa: E731
     chance = 0.09
     ctrl = lambda d: 1.0 if d <= 4 else 0.86 if d == 5 else 0.42 if d == 6 else chance  # noqa: E731
@@ -168,7 +169,14 @@ def fixtures():
     dd, rg = world(narrow, ctrl, gn_spike=True); o = score(dd, rg, nl_ok); res.append(("gn spike after 1k -> LP0-FAIL", o["verdict"].count("LP0-FAIL") == 2, o["verdict"]))
     dd, rg = world(narrow, ctrl, gamed=True); o = score(dd, rg, nl_ok); res.append(("per-d norm inflated -> GAMED", o["verdict"].count("GAMED") == 2, o["verdict"]))
     dd, rg = world(narrow, ctrl); o = score(dd, rg, lambda runs, dc, init, D: ["HOLD d6"]); res.append(("hold fails -> NOLOSS-FAIL", o["verdict"].count("NOLOSS-FAIL") == 2, o["verdict"]))
-    LP0_CAP = {}; dd, rg = world(narrow, ctrl); o = score(dd, rg, nl_ok); res.append(("no LP0 cap yet -> pending", o["verdict"].startswith("pending"), o["verdict"]))
+    dd, rg = world(narrow, ctrl)
+    for c in ("dc_ctrl_s1", "dc_ctrl_s2"):
+        open(os.path.join(dd, c, "log.jsonl"), "w").close()
+    o = score(dd, rg, nl_ok); res.append(("no CTRL windows after 1k -> pending", o["verdict"].startswith("pending"), o["verdict"]))
+    dd, rg = world(narrow, ctrl)
+    with open(os.path.join(dd, "dc_s1", "log.jsonl"), "a") as f:
+        f.write(json.dumps({"step": 5100, "gn_plain_mean100": 9.5}) + "\n")
+    o = score(dd, rg, nl_ok); res.append(("DC spike 9.5 under floor 10 -> not LP0-FAIL", "LP0-FAIL" not in o["verdict"], o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)

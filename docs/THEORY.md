@@ -22348,6 +22348,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Theory asks Audit for its $0 locus probes (from scratch/audit_d4_chain) at d 6 passes 4-6 on lh_fh_s1 / s2: v_{t-1} decodable in S_{t-1}, v_{t-1} in pass t's read, and v_t from u.
   - That separates a storage failure, a read / addressing failure and a compute failure.
 
+**Note 243-1 (2026-10-29 00:07 EDT; §243 LP0 rule and admit caps, fixed before launch; pilot scratch/gate_s243/pilot.json (gn and norm-guard fields only); Audit G-D PASS 9b5e8011.)**
+- **Pilot (4060, micro 16, real schedule, 1k steps from lh_fh_s1):**
+  - gn_plain windows at steps 100..1000: DC 12.37, 6.02, 4.05, 4.19, 3.20, 2.20, 2.97, 9.18, 3.85, 6.31; CTRL 9.94, 2.58, 11.04, 3.07, 3.80, 3.85, 1.03, 0.82, 0.91, 2.74.
+  - Per-d norm guard (bin 0): DC / CTRL at d <= 4 is 0.08-0.56, far under 1.25.
+  - The host runs micro <= 4 at the same effective batch; the grad norm of the accumulated mean gradient is equivalent up to fp order (Audit).
+- **LP0 rule (replaces 'a cap from the pilot'):** the pilot covers only steps <= 1,000, which the checklist skips, so it cannot calibrate a post-ramp cap.
+  - **cap_s = max(2 x max(dc_ctrl_s gn_plain windows with step > 1,000), 10.0).** Every dc_s window with step > 1,000 must be <= cap_s and finite.
+  - **Floor 10.0:** DC trains on harder d 5-6 items (the init is at 0.41 / 0.21 there), so larger plain gradients are expected by design. The pilot's DC post-ramp windows reach 9.18. The benign transients in §238 / §240 were 8.5-9. LP0 targets blow-ups, not those.
+  - theory/score_dc.py computes it; fixtures 9/9.
+- **Admit caps** (host G-TIME at admission; est. DC ~1.45x and CTRL ~1.2x §240 FH's ~$0.72):
+  - DC admit $1.40, CTRL admit $1.15; per-arm guards DC $2.00, CTRL $1.80; family guard $8 (CAPF 8.0); EVAL_H 1.0.
+  - Running: $13.25 + $8 = $21.25 <= $30.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
