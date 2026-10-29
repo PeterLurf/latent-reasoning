@@ -15,4 +15,4 @@ for n, run, s, dm in ((362, "dc_s1", 1, 6), (363, "dc_s2", 2, 6), (364, "dc_ctrl
            "boxes/runs_fsq/%s_mem boxes.inject_aw %s --mem_check\n"
            "boxes/runs_fsq/%s_gtime boxes.inject_aw %s --hold_start 1 --time_steps 60 --auto_micro\n"
            "boxes/runs_fsq/%s boxes.inject_aw %s %s\n") % (run, s, dm, G.DC_EVAL, run, run, b, run, b, run, b, f)
-    open(ROOT + "/scratch/gen_q_b%d.txt" % n, "w", newline="\n").write(txt); print("written b%d %s" % (n, run))
+    open(ROOT + "/scratch/gen_q_b%d.txt" % n, "w", encoding="utf-8", newline="\n").write(txt); print("written b%d %s" % (n, run))

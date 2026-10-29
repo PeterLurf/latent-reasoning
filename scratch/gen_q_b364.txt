@@ -1,4 +1,4 @@
-# THEORY ง243 DEPTH-CURRIC (539b4b3a; DC_v1 ง2-3, ง7; Audit approved): dc_ctrl_s1 = 8k fine-tune from lh_fh_s1, d ~ U{1..4}, think_k 10, --hold_inc 1.6 (hold_start 500), one non-580 RTX 3090; admit / guard per host (guard $8 over the design).
+# THEORY ยง243 DEPTH-CURRIC (539b4b3a; DC_v1 ยง2-3, ยง7; Audit approved): dc_ctrl_s1 = 8k fine-tune from lh_fh_s1, d ~ U{1..4}, think_k 10, --hold_inc 1.6 (hold_start 500), one non-580 RTX 3090; admit / guard per host (guard $8 over the design).
 # Evals on host: acc,ws,opclass,swap_prod,swap_kd,lp5h,cue_only,lp5,cue_wrong,ws_long; eval_long_dc (run_long) + REG refs local after landing. Frozen args scratch/s243_args_frozen_dc_ctrl_s1.json.
 # HOSTPROBE
 # P=1
