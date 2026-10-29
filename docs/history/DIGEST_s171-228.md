@@ -77,6 +77,7 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 241 | LEN-STEP | Is the d6 failure text length or step count? ($0) | STEPS | padded d4 0.998; d6 0.38 / 0.40 at any length | Extrapolation limit is steps, not text length. | C2 |
 | 242 | NORM-COUNTER | Is the additive state norm the step counter? ($0) | MIXED (s1 inconclusive, s2 NOT-NORM) | d6 pass 5 writes a full increment but the wrong value | Not a norm counter; audit probe: COMPUTE failure past trained depth, S_2 back-references at chance. | C2 |
 | 243 | DEPTH-CURRIC | Does training to d6 extend extrapolation (H-NARROW vs H-ARCH)? | FAIL (s1 GAMED, s2 LP0 transient) | offset f at k=2: 0.70/0.87 vs CTRL 0.10/0.26; d12 flat K′10→16; ~$3.4 | Wider training extrapolates further (not H-ARCH), but extra passes past the budget add nothing (3rd time). | C2 |
+| 244 | ANSWER-ONLY | Does the P-2 language chain form with answer CE only (no per-pass value targets)? | AO SPLIT: s1 NOT-FORMED, s2 AUX-FREE (plain) at 18k with LR re-warm | s2 d2 0.967 (CD 0.097); LP5 0.747; SWAP 0.656 (floor 0.18); comparator aux_s2 1.000; ~$2.3 | The latent chain can form from the final answer alone, but only in some data orders; formation ~7–8k like the aux model. Scope: plan given, askname init (not C4). | C4 |
 
 ## What worked
 
