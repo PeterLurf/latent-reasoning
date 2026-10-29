@@ -1,0 +1,39 @@
+2026-10-29 02:14:06 start long lh_fh_s1
+[W1029 02:32:27.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 421527552 bytes (free: 0, total: 8585216000).
+[W1029 02:44:28.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 568328192 bytes (free: 0, total: 8585216000).
+[W1029 02:52:22.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 639631360 bytes (free: 0, total: 8585216000).
+[W1029 02:57:39.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 658505728 bytes (free: 0, total: 8585216000).
+[W1029 03:05:06.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 689963008 bytes (free: 0, total: 8585216000).
+[W1029 03:07:05.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 685768704 bytes (free: 0, total: 8585216000).
+[W1029 03:07:12.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 685768704 bytes (free: 0, total: 8585216000).
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\inject_aw_eval.py", line 789, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\inject_aw_eval.py", line 784, in main
+    run_long(a.run, a.device, a.eval_bs, [int(x) for x in a.kprime_list.split(",")], [int(x) for x in a.long_ds.split(",")], a.long_name); return
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\inject_aw_eval.py", line 564, in run_long
+    r_ = part_long(m, g, sets, a, dev, bs, kplist, ds)
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_aw_eval.py", line 547, in part_long
+    A, _ = passes(m, T[d], dev, bs, set(kplist), on_state=grab); y = np.array([it["ans"] for it in T[d]])
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_aw_eval.py", line 65, in passes
+    msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)
+                                               ~~~~~~~^^^
+  File "D:\Latent\boxes\nested170.py", line 243, in lower
+    return self.DM.gpt_lower(self.g, self.g.embed(x), self.mem.layer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\deltamem.py", line 268, in gpt_lower
+    h = _block(g, i, h, hd)
+  File "D:\Latent\boxes\deltamem.py", line 259, in _block
+    m = F.gelu(a @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 654.00 MiB. GPU 0 has a total capacity of 8.00 GiB of which 0 bytes is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. Of the allocated memory 6.01 GiB is allocated by PyTorch, and 1.01 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+2026-10-29 03:07:13 rc 1 long lh_fh_s1
