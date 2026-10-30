@@ -1,0 +1,30 @@
+{
+ "rc": 0,
+ "d_fields_ok": true,
+ "head_keys": [
+  "b",
+  "fit_d_counts",
+  "train_acc",
+  "train_items",
+  "train_rows",
+  "val_acc",
+  "val_auc",
+  "val_items",
+  "val_rows",
+  "w_norm",
+  "y_rate_train"
+ ],
+ "head_ok": true,
+ "meta": {
+  "eval_gpu": "NVIDIA GeForce RTX 4060",
+  "eval_bs": 250,
+  "eval_dtype": "fp32",
+  "law": 2,
+  "set_law": "df",
+  "think_k": 8,
+  "peak_gib": 2.097576141357422,
+  "sec": 478
+ },
+ "score_rh_c5_runs": true,
+ "pass": true
+}

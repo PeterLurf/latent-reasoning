@@ -1,0 +1,131 @@
+{
+ "lh_fh_s1": {
+  "d1": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d2": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d3": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d4": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d5": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d6": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "truncated_eq_full": {
+   "d4": {
+    "0": true,
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": true
+   },
+   "d6": {
+    "0": true,
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": true
+   }
+  },
+  "fit_in_test2": 0,
+  "fit_in_excl": 0,
+  "fit_d_counts": {
+   "1": 1515,
+   "2": 1537,
+   "3": 1501,
+   "4": 1447
+  }
+ },
+ "lh_fh_s2": {
+  "d1": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d2": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d3": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d4": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d5": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "d6": {
+   "pred_eq_abk": true,
+   "k8_eq_eval_acc": true,
+   "k8_agree_eval_acc": 1.0
+  },
+  "truncated_eq_full": {
+   "d4": {
+    "0": true,
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": true
+   },
+   "d6": {
+    "0": true,
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": true
+   }
+  },
+  "fit_in_test2": 0,
+  "fit_in_excl": 0,
+  "fit_d_counts": {
+   "1": 1515,
+   "2": 1537,
+   "3": 1501,
+   "4": 1447
+  }
+ },
+ "pass": true
+}
