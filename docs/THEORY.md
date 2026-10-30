@@ -22748,6 +22748,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **MIXED:** otherwise.
   - Sanity: both probes >= 0.90 on frames 0-5 test, else INVALID.
 - **Build (Experiments, local $0):** eval_v1probe.json {model: {layer_chosen, val_acc, test_0_5, unseen {frame: acc}, layer0 {..}}}.
+- **Amendment (Audit, before any output):**
+  - (1) The layer-0 control is reported at every probed position, so a chosen-layer v_1 cannot be lexical copying (v_1 can appear as a given in some frames).
+  - (2) DIRECT is also probed at the token where S_1's question cue ends in the CD-AN prompt (at d 2 the answer position holds v_2).
+  - For DIRECT, the position (answer vs S_1 cue end) and the layer are both chosen by frames 0-5 val acc. The DIRECT-GENERAL / BOTH-NARROW rules read that val-chosen (position, layer). Both positions are reported.
+  - A reading counts only if the chosen layer beats layer 0 on unseen frames by >= 0.20; else it is labelled LEXICAL.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
