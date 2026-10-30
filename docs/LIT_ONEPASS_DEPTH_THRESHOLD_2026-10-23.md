@@ -109,3 +109,26 @@ Written 2026-10-23 by the Literature session, for Theory and Audit. Kept light u
   - The 10-21 §218 check found no delta-rule / fast-weight latent-CoT paper (δ-mem 2605.12357 is long-context recall).
   - The nearest memory-augmented Coconut, AGCLR 2606.07720, has one gated vector, one seed and no memory ablation (ProsQA / GSM8K).
   - **OK as "not found"**, scoped to our search.
+
+## Addendum (2026-10-30): FRAME-DIV: template diversity and transfer to unseen phrasings
+From our own notes (LIT_DIVERSITY_THRESHOLD_2026-10-02, LIT_PARAPHRASE_OPS_2026-10-02) plus GSM-Symbolic, verified today.
+
+**Diversity thresholds** [empirics unless tagged]:
+- Raventós 2306.15063: a task-diversity threshold separates memorising from generalising.
+- Zhou 2311.04420 and Oren 2109.02575: structurally diverse training improves compositional generalisation.
+- Okawa 2310.09336: abilities emerge multiplicatively with component exposure.
+- Wiedemer 2307.05596 [theorem]: compositional generalisation needs training support covering each component.
+- No paper gives a template count for word-problem arithmetic.
+
+**Surface perturbation of templated math:**
+- GSM-Symbolic (Mirzadeh et al. 2410.05229): accuracy varies across instantiations of the same template and falls when clauses are added, even for large LLMs.
+- Arun IwMfUz9KNj (abstract only): layout diversity costs convergence; per-example layouts block learning.
+
+**Pretrained-encoder transfer to paraphrases:**
+- Hill 2005.09382 and Lynch 2005.07648 show it.
+- Kim, Linzen & Smolensky 2212.10769: the transfer comes from pretraining exposure to the words. That makes "one unseen template fails, another transfers" a lexical-exposure question worth checking (which words or structures are new in the failing frame).
+
+**Latent-reasoning models:** not found. No latent-CoT paper reports template-held-out transfer.
+
+**Suggested NARROW wording:** "Template held-out transfer of the latent loop's per-pass step computation, as a function of training frame count (6 → 10). Diversity-threshold effects are known in general (2306.15063, 2311.04420), and GSM-Symbolic 2410.05229 reports template sensitivity in LLMs; not reported for latent reasoning."
+- Pre-state which lexical or structural features the 4 held-out frames share with the training frames (2212.10769).
