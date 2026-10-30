@@ -125,3 +125,11 @@ From our own notes; all IDs verified earlier.
 - **Lee 2502.01612:** a bootstrap, then extension by self-labels.
 
 **New:** in a recurrent-memory loop, depth extension past the supervised range from answer loss alone, with a keep-targets (AEX) vs drop-targets (AEX0) ablation. Our own §245 (answer-only formation 1 / 4 seeds) is the internal motivation.
+- **Outcome (Note 251-3):** AEX (targets kept on d ≤ 2) learned d 3–4 from answers (d 4 = 1.000 in 2 / 2; full causal bar 1 / 2, mid-swap 0.87 vs 0.46). AEX0 failed 0 / 2: one seed forgot the seeded skill, the other never extended.
+  - **Is an anchor already reported?** Partly, as replay:
+    - Lee 2502.01612 always keeps the gold D_0 in every self-training round's mix;
+    - iCoT 2405.14838 fails if CoT is removed too fast (Δ 16), and needs removal smoothing / optimizer reset;
+    - Coconut without its curriculum drops to 14.4 on GSM8K;
+    - forgetting of the seeded skill is the standard continual-learning failure that replay prevents.
+  - **Counterexample to "needed":** ATC 2609.19717 learns latents with no intermediate targets at all, from scratch, with a competence-gated curriculum.
+  - **Suggested wording:** "In our recurrent-memory loop (2 seeds), answer-only depth extension (+2) succeeded only when step targets were kept on the seeded depths, which act as a replay anchor (cf. Lee 2502.01612's retained D_0); without them, one seed forgot the seeded skill and the other never extended. A competence-gated curriculum (ATC 2609.19717) is the untested alternative."
