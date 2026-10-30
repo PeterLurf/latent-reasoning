@@ -333,7 +333,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 243 | DEPTH-CURRIC (Theory's choice; C2; Audit approved in principle): FT lh_fh_s* on DF d<=6 vs CTRL d<=4 (both think_k 10, hold penalty from 500); offset model: EXTRAP = DC(8) - CTRL(6) >= 0.20 and DC(9) >= 0.24, STEP-READ, C2-RISE at d 12; H-ARCH label; fallback ADDR-LEVER pre-registered ($5, not run); DC_v1.md | registered | **FAIL 10-29 (243-2): s1 GAMED (norm 1.8-3.2x CTRL) + LP0 + NOLOSS; s2 LP0-FAIL (one transient window) but EXTRAP / STEP-READ / NOLOSS pass; f_DC(+2) 0.70 / 0.87 vs f_CTRL 0.10 / 0.26 (not H-ARCH); C2-RISE fails (d 12 flat past budget); $3.40.** **APPROVED by Audit 10-28 (G-D adds: DC-vs-CTRL args-diff gate JSON, LP0 pilot Note before launch, mem_check d 6 / K 10 on the 3090 shape, run_long d 12 K' 128 smoke).** **REGISTERED 19:15 10-28; pilot -> LP0 cap Note -> build G-D -> launch; scorer score_dc.py (fixtures 8/8)** |
 | 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **SPLIT 10-29 (244-5): s1 NOT-FORMED (chance); s2 AUX-FREE (plain) at 18k: d 2 0.967 vs CD 0.097, LP5 0.747, swap 0.656 (aux comparator 1.0 / 0.88 / 1.0); ~$2.0.** **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
 | 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **0/2 10-29 (245-2): both VOID (decoder-direct partial d 2 ~0.2; latent unused); AO line pauses; pooled 1/4 formed (that one with an LR re-warm); $1.44.** **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
-| 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
+| 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 
 ## Live sections
 
@@ -22554,6 +22554,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **APPROVED** ($0).
 - **C5 censored items:** K' max = 8, as registered (RH_v1 sec. 2: 'If never reached, K' = 8'). Items whose decoder max-prob never reaches 0.90 by K' 8 count as halting at K' 8 with their K' 8 answer, in HALT-ACC and SAVING (and HARDER-MORE's mean).
 - **Added (descriptive):** the never-halt share per d, and the event-only mean K'_halt beside the censored mean. eval_halt.json must carry never_halt_n per d (plus khalt_hist). theory/score_rh.py reports both; fixtures 7/7.
+
+**Note 247-2 (2026-10-29 22:42 EDT; §247 READ-HALT scored: theory/score_rh.py, theory/results/score_rh.json; Experiments 7ac913e2, 4060 fp32 bs 250; $0.)**
+- **Registered verdicts: C7 ROUND-TRIP-ONLY (both models); C5 COSTLY (both models).**
+- **C7:**
+  - ROUND-TRIP passes (pooled 0.999 / 0.978; per cell >= 0.93, d 4 t 3 lowest).
+  - EDIT fails completely: follow = floor (0.006 / 0.007 vs 0.006 / 0.005).
+  - **The round trip is vacuous:** the edited runs give the intact answer on 94-100% of items (edit == intact 1.000 / 0.999 / 1.000 / 0.996 for s1). The oracle (gold value) and the all-pass augmentation controls also equal intact.
+  - So pass t's write ignores the appended sentence and recomputes v_t from the program text. The printed value is a faithful readout of what the model computes (WS ~ 1.0), but text cannot be fed back to steer it: there is no causal channel from language into the state through the write path. This is consistent with Audit's §234 oracle-rejection finding.
+  - **C7 not met** (decodable, and readable at ':', but not round-trip / edit faithful).
+- **C5:**
+  - The decoder is >= 0.90 confident after 0-1 passes at d 2-4 and wrong. Halt histograms at d 3: K' 1 on 914 / 1,000 (s1), 978 / 1,000 (s2).
+  - acc at halt: d 2 0.648 / 0.922, d 3 0.020 / 0.030, d 4 0.102 / 0.112, vs 1.000 at K' 8. Mean K'_halt: s1 0 / 0.62 / 0.92 / 0.98, s2 0 / 0.91 / 1.02 / 1.16 (d 1-4); never-halt share 0 at d 1-4.
+  - The decoder's confidence is miscalibrated early (confidently wrong before the chain completes), so it carries no halting signal.
+  - **C5 (readout halting) not met.** Learned halting would need training (e.g. a halting head trained on per-pass correctness).
+- **Consolidated language-line status (updates Note 246-1):** C1 met (scoped); C6 met (scoped); C2 not met; C3 latency yes / FLOPs no; C4 not met; **C5 not met (readout)**; **C7 not met (edit fails; text ignored by the write path)**.
+- **Spend:** realised total unchanged, ~$20.1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
