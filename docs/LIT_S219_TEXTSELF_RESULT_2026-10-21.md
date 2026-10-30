@@ -66,3 +66,17 @@ Written 2026-10-21 by the Literature session, for Theory and Audit.
   - Our own 10-01 check (LIT_PERM_TRACKING_CHECK: compute-matched CoT vs latent on state tracking) found none either.
   - One web search (2026-10-22) found none.
 - **Cite LOTUS** as the nearest efficiency comparison, but it is latency-framed and not budget-matched.
+
+## Addendum (2026-10-29): §245 / Note 246-0 (C3 FLOPs) and KV-cached latent positions
+- **Filed:** §245 AUX-FREE (answer-only formed the d2 loop in 1 / 4 seeds, the one with an lr re-warm) and Note 246-0 (latent ≈ 9× fewer serial steps than KV-cached text-CoT, but 1.5–3× more executed FLOPs at d 2–4, because each pass re-reads the prompt through the upper blocks).
+- **Latent methods that append KV-cached latent positions** (cost per latent step ≈ one token's forward pass):
+  - **Coconut 2412.06769:** each continuous thought is the next input position.
+  - **CODI 2502.21074:** latents are decoded step by step "with a cache storing previous keys and values" (§3.5, read 10-21).
+  - **Pause tokens** (Goyal et al. 2310.02226, verified): extra appended positions, no recurrence.
+  - **PCCoT** (Jacobi iterations over latent positions).
+  - **Huginn 2502.05171** is different: it recurs the core block per token, so FLOPs scale with recurrences; its KV-cache sharing across recurrences is an inference trick.
+- **FLOP-matched latent-vs-CoT comparisons:** none found (LIT note on MB N1, 10-22).
+  - MUX 2607.18264 Table 7 reports per-step training FLOPs relative to CODI (≈ 1.0×), not against CoT.
+  - LOTUS 2606.31779 reports latency.
+  - The iso-depth study 2604.21106 matches recurrence to depth, not to CoT.
+  - So a FLOP-matched C3 reading would be new as a measurement. Cite Coconut / CODI as the append-and-cache design that avoids re-reading the prompt.
