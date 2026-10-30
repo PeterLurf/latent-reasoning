@@ -22815,7 +22815,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - C4 stays **partial**: answer supervision extends depth by 2 beyond the supervised range, with weaker causal structure than per-pass supervision.
   - OC check: under 'targets needed' P(>= 1 EXTEND seed) was ~0.08; the observed AEX outcome favours 'answers suffice for new depth' (with an anchor).
 - **Oddity, descriptive only (SWAP-K):** by_d.4.swap_k follow_U / follow_dfin / follow_ca / stay_own = 0.354 / 0.151 / 0.203 / 0.081 are identical to three decimals in aex_s1, aex_s2 and rcb_plaw4_s2, while the floors differ. Not used by any gate; flagged to Audit.
-- **Literature: NARROW** (Note on AE_v1 §1; LIT_STEPTOLD_2026-10-24.md). Spend: family realised $4.65 of $5.5 (incl. VOID $1.23 + BAD hosts); credit $25.67.
+- **Literature: NARROW; the anchor need is partly known as replay** (Lee 2502.01612 keeps gold D_0 every round; iCoT 2405.14838 fails if CoT is removed too fast; forgetting is the standard continual-learning failure). Counterexample: ATC 2609.19717 learns with no intermediate targets via a competence-gated curriculum (untested here). Adopted wording: in our recurrent-memory loop (2 seeds), answer-only depth extension (+2) succeeded only when step targets were kept on the seeded depths, acting as a replay anchor (cf. Lee's retained D_0); without them one seed forgot the seeded skill and the other never extended (LIT_STEPTOLD_2026-10-24.md). Spend: family realised $4.65 of $5.5 (incl. VOID $1.23 + BAD hosts); credit $25.67.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
