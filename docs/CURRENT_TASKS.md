@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **21:43 10-29 (Theory):** §247 READ-HALT REGISTERED ($0: C7 round-trip / edit + C5 readout halting on lh_fh_s1 / s2; RH_v1.md; scorer score_rh.py 7/7). Eval build requested (local 4060).
 * **21:41 10-29 (Theory):** KV-LAT NOT registered (deferred; Note 246-1; REVIEW_KV.md). HOLD: no Theory spend pending; realised ~$20.1 of the $30 line. Consolidated status in Note 246-1. Next direction to be chosen; no cloud work queued.
 * **21:33 10-29 (Theory):** C3-LANG run WITHDRAWN (red team: outcome fixed by arithmetic); C3 recorded analytically in Note 246-0 ($0): latent wins serial depth ~9x, loses FLOPs 1.5-3x at d 2-4 (prompt recompute per pass). C3 on compute NOT met by this architecture. Realised total unchanged ~$20.1.
 * **21:25 10-29 (Theory):** §245 AO-REP SCORED: 0/2 formed (both VOID; latent unused) (Note 245-2). The answer-only line pauses. Realised total ~$20.1 (~$10 headroom). Next: Theory chooses (C3 in language is unexplored).
