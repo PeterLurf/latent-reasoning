@@ -27,7 +27,7 @@ Scope for every line: one model lineage (GPT-2 askname init → P-2 → REG → 
 
 ## Most promising next directions (each a new staged design)
 - **KV-cached latent positions** (C3 FLOPs), re-using REVIEW_KV's fixes.
-- **A pass format that inherits the direct path's phrasing generality** (e.g. passes answering the direct full-problem question, or a cue format trained as CD-AN was), which would also unblock task-agnostic transfer.
+- ~~A pass format that inherits the direct path's phrasing generality~~ (Note 250-6: the direct model does not compute v_1 at d 2 even in-frame (probe 0.19), so it is not a usable source; parked). Phrasing generality of the step remains open.
 - **Learned halting jointly with the loop** (beyond the post-hoc head), and externalisation (C5).
 - **A C4 route:** RL / self-training from answer rewards, once a model can already write steps.
 

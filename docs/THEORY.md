@@ -22754,6 +22754,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - For DIRECT, the position (answer vs S_1 cue end) and the layer are both chosen by frames 0-5 val acc. The DIRECT-GENERAL / BOTH-NARROW rules read that val-chosen (position, layer). Both positions are reported.
   - A reading counts only if the chosen layer beats layer 0 on unseen frames by >= 0.20; else it is labelled LEXICAL.
 
+**Note 250-6 (2026-10-30 08:19 EDT; the Note 250-5 probe read: scratch/s250_v1probe/eval_v1probe.json; path checks True; 4060 fp32 bs 100; $0.)**
+- **Pre-stated label: INVALID.** The DIRECT probe fails the in-frame sanity check (>= 0.90).
+  - df_pcd4_s1 v_1 at d 2, val-chosen layer 12: last-token test 0-5 = 0.193, cue1-end 0.188 (majority 0.106; layer 0 0.11-0.12). Unseen-frame means 0.158 / 0.169.
+  - LOOP (lh_fh_s1 pass-1 ':'), layer 12: test 0-5 = 1.000, unseen mean 0.490 (6 0.524, 12 0.521, 13 0.278, 14 0.524, 15 0.605); layer 0 0.11 / 0.09.
+- **Reading:** the one-pass direct model does not compute v_1 at d 2 in a linearly readable form, even on training frames, consistent with its d 2 accuracy of 0.152. Its unseen-frame success (frame 6 d 1 0.971) is single-step, where v_1 is the answer.
+  - So the direct path is not a source of phrasing-general intermediate states. The 'direct-format pass' pilot is NOT registered, and the format lead is parked.
+  - Descriptive, unexplained: the loop's own pass 1 reads frame 6 at 0.52 on d 2 items but its d 1 answer on frame 6 is 0.064 (§249; d 1 items are mul_v only). The phrasing failure is op-dependent within a frame; worth a look if the phrasing line resumes.
+- **Theory holds:** no spend pending; realised ~$22.9; Vast credit $30.56. The summary doc's 'pass format' direction is downgraded accordingly (direct path is not a usable source).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
