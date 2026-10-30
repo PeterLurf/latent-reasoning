@@ -27,7 +27,8 @@ def one(e, c):
     acc_ok = all(b[d]["acc"] >= 0.80 and b[d]["acc"] >= cb[d]["acc"] + 0.25 for d in ("2", "3", "4"))
     chain = all(b[d]["ws"][str(t)] >= 0.50 for d in ("3", "4") for t in range(2, int(d) + 1))
     lab = "VOID" if not guard else "TRANSFER" if (acc_ok and chain) else "ACC-ONLY" if acc_ok else "NO-TRANSFER"
-    return {"label": lab, "acc": {d: b[d]["acc"] for d in b}, "cd_acc": {d: cb[d]["acc"] for d in cb}, "ws": {d: b[d].get("ws") for d in ("3", "4")}, "guard": guard}
+    return {"label": lab, "acc": {d: b[d]["acc"] for d in b}, "cd_acc": {d: cb[d]["acc"] for d in cb}, "ws": {d: b[d].get("ws") for d in ("3", "4")}, "guard": guard,
+            "by_frame": e.get("by_frame")}                                        # Note 249-1 (3): frames 6 vs 7, descriptive
 
 
 def score(runs=R):

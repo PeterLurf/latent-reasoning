@@ -335,7 +335,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **0/2 10-29 (245-2): both VOID (decoder-direct partial d 2 ~0.2; latent unused); AO line pauses; pooled 1/4 formed (that one with an LR re-warm); $1.44.** **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
-| 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
+| 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
 
 ## Live sections
 
@@ -22623,6 +22623,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - It contrasts with 247-2: the softmax itself is confidently wrong early, but the state carries a linearly readable 'chain complete' signal.
 - **Consolidated language-line status:** C1 met (scoped); C6 met (scoped); **C5 partial (post-hoc learned halting)**; C3 latency yes / FLOPs no; C2, C4, C7 not met.
 - **Spend:** realised total unchanged, ~$20.1.
+
+**Note 249-1 (2026-10-29 23:56 EDT; Audit's approval of §249 + conditions, before any build or output.)**
+- **APPROVED** ($0).
+- **(1) Frames never trained:** a build gate asserts that frames 6-7 never appear in any training stream of the lh_fh lineage (askname init, P-2, REG, DF, LH), by the args' frames lists and a replay of the stream frame draws.
+- **(2)** CD-AN and the cue-only guard are evaluated on TRANSFER-DF itself (as FT_v1 sec. 2 already specifies), not reused from TEST2-DF.
+- **(3)** Per-frame (6 vs 7) acc and WS are reported beside the pooled values (descriptive; eval_transfer.json by_frame). score_ft carries them; fixtures 5/5.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
