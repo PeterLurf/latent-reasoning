@@ -1,0 +1,13 @@
+{
+ "rc": 9,
+ "stop": 11,
+ "n_calls": 0,
+ "n_hi": 0,
+ "n_lo": 0,
+ "n_d4": 0,
+ "aux_zero_hi": true,
+ "aux_pos_lo": true,
+ "d4_la_mem_norms": null,
+ "d4_write_read_nonzero": false,
+ "pass": false
+}
