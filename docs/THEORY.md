@@ -336,7 +336,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
 | 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **NO-TRANSFER both 10-30 (249-3): TRANSFER d 1-4 0.54 / 0.45 / 0.35 / 0.27 vs 1.000 in-frame; frame 7 d 1 1.000, frame 6 d 1 0.064 (CD-AN 0.971): the pass does not parse frame 6; $0.** **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
-| 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **Stage 0 10-30 (250-1): all 4 held-out frames FAILING (d 2 0.12-0.56) in both -> Stage 1 admitted; score_fd.py 8/8.** **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
+| 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **FAIL 10-30 (250-2): s1 MEMO, s2 LP0-FAIL (would be MEMO); trained new frames 1.000, held-out 12-15 barely move (GEN 0/4); H-MEMO; $2.82.** **Stage 0 10-30 (250-1): all 4 held-out frames FAILING (d 2 0.12-0.56) in both -> Stage 1 admitted; score_fd.py 8/8.** **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
 
 ## Live sections
 
@@ -22687,6 +22687,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - Wrap shares are ~0.80-0.84 per frame; acc_nowrap tracks acc.
 - **Stage-1 scorer:** theory/score_fd.py (fixtures 8/8). It takes FAILING frames from Stage 0 and implements GEN / MEMO / NO-GAIN / NOLOSS (TEST2 >= 0.98, §238 gates, HOLD-LONG3, retention) / LP0 (CTRL-calibrated after 1k, floor 10) as FD_v1 sec. 4.
 - **Stage-1 runs:** fd_div_s1 / s2 and fd_ctrl_s1 / s2 from lh_fh_s1 / s2; guard $5.
+
+**Note 250-2 (2026-10-30 08:02 EDT; §250 FRAME-DIV Stage 1 scored: theory/score_fd.py, theory/results/score_fd.json; realised ~$2.82; Vast credit $30.56.)**
+- **Registered verdict: FD FAIL. s1: MEMO; s2: LP0-FAIL** (one gn_plain window of 22.9 at step 1,700 vs cap 15.0, with loss 0.028. The rule binds; it would otherwise read MEMO).
+- **Both seeds learn the 4 trained new frames perfectly:** 8-11 at d 2-4 = 1.000 vs CTRL 0.40-0.95.
+- **The held-out new frames barely move (DIV vs CTRL at d 2):**
+  - 12: 0.47 / 0.36 vs 0.38 / 0.32;
+  - 13: 0.20 / 0.21 vs 0.12 / 0.12;
+  - 14: 0.24 / 0.16 vs 0.33 / 0.26 (worse);
+  - 15: 0.78 / 0.45 vs 0.56 / 0.56 (s1 up 0.22 at d 2 but below 0.80; s2 down).
+  - GEN: 0 of 4 frames in both seeds. NOLOSS passes in both (TEST2 >= 0.98, §238 gates, HOLD-LONG3, retention).
+- **Old unseen frames (descriptive):** frame 6 unchanged (0.40 vs 0.38-0.41); frame 7 s2 up (0.72 vs 0.51), s1 flat.
+- **Reading: H-MEMO.** Going from 6 to 10 training phrasings, the latent pass learns each added phrasing to ceiling but does not generalise to new constructions.
+  - Phrasing diversity at this scale does not make the step computation phrasing-general.
+  - With Kim, Linzen & Smolensky 2212.10769 (paraphrase transfer through lexical exposure), the pass seems to need each construction's words / structure in training, not just more frames.
+  - The one-pass CD-AN parses unseen frames (249-3), so the limitation is specific to the cued per-pass computation.
+- **Status:** C1 is frame-scoped (training phrasings; 6 -> 10 frames does not generalise). Task-agnostic transfer of the latent step is not achieved in this setup.
+- **Spend:** realised total ~$22.9; Vast credit $30.56.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
