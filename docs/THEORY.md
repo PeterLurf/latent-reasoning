@@ -334,6 +334,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **SPLIT 10-29 (244-5): s1 NOT-FORMED (chance); s2 AUX-FREE (plain) at 18k: d 2 0.967 vs CD 0.097, LP5 0.747, swap 0.656 (aux comparator 1.0 / 0.88 / 1.0); ~$2.0.** **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
 | 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **0/2 10-29 (245-2): both VOID (decoder-direct partial d 2 ~0.2; latent unused); AO line pauses; pooled 1/4 formed (that one with an LR re-warm); $1.44.** **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
+| 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
 
 ## Live sections
 
@@ -19557,6 +19558,24 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **OC:** C7-PASS (both) ~0.2 (Audit's §234 oracle-rejection finding weighs against); C5-READOUT ~0.6; under random confidence P(HARDER-MORE) ~0.04.
 - **Censoring:** missing parts mean pending; a cell with n < 900 is VOID.
 - **Cost:** $0, local 4060.
+
+## 248. HALT-HEAD: can a learned head read "chain complete" from the frozen loop? (C5; Theory's choice under the user's 10-26 standing rules; Audit approves; **$0**; pre-registered 2026-10-29 22:48 EDT, before any build or output)
+
+- **Text:** docs/research_halthead_2026-10-29/HH_v1.md.
+- **Why (247-2):** the decoder's own max-prob is confidently wrong at K' 0-1, so readout halting is COSTLY. C5 asks for learned halting.
+- **Declined (Audit's option 2, C7 TEXT-WRITE):** training the write to follow a text sentence needs x != gold (edits), so §247's edit test would largely measure its own training data. A non-circular C7 design is deferred.
+- **Head:**
+  - logistic regression on the decoder's final-layer answer-position hidden state at each K' 0..8 (models frozen);
+  - label y = [pred(K') == pred(8)] (self-consistency, no gold);
+  - fit on 6,000 fresh DF-stream items, d ~ U{1..4}, TEST2-DF sigs excluded; one head per model.
+  - Halt at the first K' with p >= 0.90, else 8 (censoring per 247-1).
+- **Binding** (TEST2-DF d 1-4; theory/score_rh.py --hh):
+  - HALT-ACC (>= acc(K' 8) - 0.02 each d), HARDER-MORE (mean K'_halt strictly increasing), SAVING (<= d + 1).
+  - Labels COSTLY / NO-SIGNAL / NO-SAVING / C5-LEARNED; VOID if head val_acc < 0.80. Overall both models, else MIXED.
+  - Scope: "C5-partial (post-hoc learned halt head on a frozen loop; externalisation not tested)".
+- **OC:** per model ~0.42, both ~0.3; under a K'-independent head P(HARDER-MORE) ~0.04.
+- **Censoring:** missing parts mean pending.
+- **Cost:** $0.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
