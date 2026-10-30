@@ -22716,6 +22716,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Sanity: frames 0-5 >= 0.90 for both models, else the probe is INVALID.
 - **Build (Experiments, local $0):** a probe part writing eval_s1probe.json {model: {frame_group: {acc, n}}}.
 
+**Note 250-4 (2026-10-30 08:07 EDT; the Note 250-3 probe read: scratch/s250_s1probe/eval_s1probe.json; 4060 fp32; path check pass-1 == host eval_ws: True; $0.)**
+- **Single-step ':' accuracy on v_1** (d 2 items, 1,000 per frame), frames 0-5 / 6 / 7 / 12 / 13 / 14 / 15:
+  - askname init: 1.000 / 0.600 / 0.698 / 0.612 / 0.130 / 0.468 / 0.688;
+  - P-2 pass 1 (aw_plaw2_s1, Audit's addition): 0.999 / 0.513 / 0.665 / 0.612 / 0.174 / 0.475 / 0.759;
+  - lh_fh_s1 pass 1 (S = 0): 1.000 / 0.527 / 0.702 / 0.516 / 0.274 / 0.522 / 0.613.
+- **Mean over frames 6 + 12-15:** askname 0.4996, P-2 0.507, lh_fh_s1 0.490.
+- **Pre-stated label: NARROW** (askname 0.4996 < 0.50, at the boundary). The sanity check holds (frames 0-5 >= 0.90).
+- **Substantively, no erosion:** the 52k-step loop lineage leaves the per-step phrasing generality where the askname init had it (0.49-0.51 throughout). The cued single-step skill was frame-narrow from the init, which was trained on frames 0-5 only.
+  - So the §249 / §250 limit is inherited from the init's training distribution, not caused by loop training.
+  - Regularisation toward the init would not help; a broader-phrasing init (a pretrained step skill over many surface forms) would.
+  - The one-pass CD-AN's better d 1 frame-6 parse (0.971) comes from its own training on full problems; it is not a general property of the init.
+- **Status unchanged:** C1 is frame-scoped. The cause is identified as init-inherited.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

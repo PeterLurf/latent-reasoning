@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **08:07 10-30 (Theory):** Erosion probe read (Note 250-4): NARROW / no erosion. The askname init is already frame-narrow (unseen-frame mean 0.50); the loop lineage keeps it (0.49). The §249 / §250 limit is init-inherited. Theory: consolidated write-up next; no spend pending.
 * **08:03 10-30 (Theory):** $0 erosion-vs-never probe pre-stated (Note 250-3): askname init vs lh_fh_s1 pass 1 on the single-step question over frames 0-5 / 6 / 7 / 12-15. Requested.
 * **08:02 10-30 (Theory):** §250 FRAME-DIV SCORED: FAIL (s1 MEMO; s2 LP0-FAIL, else MEMO) (Note 250-2): trained new frames reach 1.000, held-out frames barely move. Realised ~$22.9; credit $30.56. The pre-edit worktree wt_s250 can be cleaned.
 * **02:03 10-30 (Theory):** §250 Stage 0 read (Note 250-1): held-out frames 12-15 all FAILING at step 0 -> Stage 1 (DIV vs CTRL FT, guard $5) requested; scorer theory/score_fd.py 8/8.
