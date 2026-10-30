@@ -335,7 +335,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **0/2 10-29 (245-2): both VOID (decoder-direct partial d 2 ~0.2; latent unused); AO line pauses; pooled 1/4 formed (that one with an LR re-warm); $1.44.** **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
-| 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
+| 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **NO-TRANSFER both 10-30 (249-3): TRANSFER d 1-4 0.54 / 0.45 / 0.35 / 0.27 vs 1.000 in-frame; frame 7 d 1 1.000, frame 6 d 1 0.064 (CD-AN 0.971): the pass does not parse frame 6; $0.** **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
 
 ## Live sections
 
@@ -22637,6 +22637,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - WS at pass t is split by the frame of the op at step min(t, d), with n reported.
   - It stays descriptive; the binding gates read the pooled set.
 - **CD-AN eval_bs 100** (250 OOMs on the 4060 for the direct trunk); the LAT models use 250, one bs per model. Batch-invariance is precedented (236-4: 6 / 12,000 flips bs 50 vs 100; 0 / 12,000 at 250 vs 100). CD-AN feeds only the T-ACC margin and the guard bar.
+
+**Note 249-3 (2026-10-30 00:26 EDT; §249 FRAME-TRANSFER scored: theory/score_ft.py, theory/results/score_ft.json; 4060 fp32; transfer sha 195f6756; $0.)**
+- **Registered verdict: FRAME-TRANSFER NO-TRANSFER (both models).**
+  - LAT acc on TRANSFER-DF d 1-4: s1 0.543 / 0.449 / 0.352 / 0.263; s2 0.543 / 0.451 / 0.355 / 0.283. On TEST2-DF (frames 0-5) both are 1.000.
+  - CD-AN on TRANSFER: 0.971 / 0.152 / 0.105 / 0.084.
+  - T-ACC fails (d 2 needs 0.80). T-CHAIN fails: WS at pass 2 0.46, pass 3 0.34-0.36.
+  - T-GUARD holds (cue-only 0.07-0.10 <= majority + 0.05), so the reading is valid.
+- **Per frame (descriptive):**
+  - At d 1 (one op), frame 7 is 1.000 in both models but frame 6 is 0.064 (chance ~0.09). The loop cannot compute a single frame-6 step at all.
+  - CD-AN, the one-pass direct path on the same items, gets d 1 0.971, frame 6 included.
+  - At d > 1 accuracy falls roughly with the number of frame-6 steps (the mixed items track the pooled values).
+- **Reading:** the loop's per-pass computation (the askname-form question at ':' feeding the write) is tied to the training phrasings. One unseen frame (7) transfers perfectly; the other (6) is not parsed by the pass at all, while the direct path parses it.
+  - The latent chain transfers only as far as each step's phrasing is one the pass has learned. This is a frame-specific step computation, not a task-agnostic one.
+  - Implication for the roadmap (memory: path to GSM8K / task-agnostic): the pass needs exposure to diverse phrasings (frame augmentation) or a pass whose computation reuses the direct path's more general parsing.
+- **Consolidated language-line status:** C1 met (scoped to training frames; it transfers to frame 7, not frame 6); C6 met (scoped); C5 partial; C3 latency yes / FLOPs no; C2, C4, C7 not met.
+- **Spend:** realised total unchanged, ~$20.1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
