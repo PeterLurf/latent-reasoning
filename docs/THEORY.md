@@ -22705,6 +22705,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Status:** C1 is frame-scoped (training phrasings; 6 -> 10 frames does not generalise). Task-agnostic transfer of the latent step is not achieved in this setup.
 - **Spend:** realised total ~$22.9; Vast credit $30.56.
 
+**Note 250-3 (2026-10-30 08:03 EDT; $0 diagnostic pre-stated before any output, on Audit's suggestion: was the cued pass ever phrasing-general (erosion vs never)? Descriptive, no binding gate.)**
+- **Probe:** the single-step question "How many <u> does <S_1> have? The answer is:" over each item's text. Read the ':' argmax over the 11 number tokens vs v_1.
+  - Items: the §250 per-frame test sets at d 2 (all ops in that frame; step 1 is a regular op), 1,000 items per frame, for frames 0-5 (pooled), 6, 7 and 12-15.
+  - Models: (a) the askname init s233_askname_s1 (no loop FT); (b) lh_fh_s1, pass 1 only with S = 0 (the loop's first pass).
+- **Pre-stated readings:**
+  - **ERODED:** askname >= 0.85 on the mean of frames 6 + 12-15, and lh_fh_s1 <= askname - 0.20 there. Loop FT eroded the trunk's phrasing generality; the lever is regularisation toward the init (KL / replay of askname-style data over many frames), not more frames.
+  - **NARROW:** askname < 0.50 on that mean. The per-step skill was frame-narrow from the init.
+  - **MIXED:** otherwise.
+  - Sanity: frames 0-5 >= 0.90 for both models, else the probe is INVALID.
+- **Build (Experiments, local $0):** a probe part writing eval_s1probe.json {model: {frame_group: {acc, n}}}.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
