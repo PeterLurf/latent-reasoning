@@ -1,0 +1,14 @@
+2026-10-30 00:16:13 start lh_fh_s1 (bs 250)
+PART transfer done D:\Latent\boxes\runs_fsq\lh_fh_s1 218 s
+FT done D:\Latent\boxes\runs_fsq\lh_fh_s1 248 s
+2026-10-30 00:20:23 rc 0 lh_fh_s1
+2026-10-30 00:20:23 start lh_fh_s2 (bs 250)
+PART transfer done D:\Latent\boxes\runs_fsq\lh_fh_s2 218 s
+FT done D:\Latent\boxes\runs_fsq\lh_fh_s2 248 s
+2026-10-30 00:24:34 rc 0 lh_fh_s2
+2026-10-30 00:24:34 start df_pcd4_s1 (bs 100)
+[W1030 00:25:20.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 211812352 bytes (free: 0, total: 8585216000).
+PART transfer done D:\Latent\boxes\runs_fsq\df_pcd4_s1 18 s
+FT done D:\Latent\boxes\runs_fsq\df_pcd4_s1 49 s
+2026-10-30 00:25:25 rc 0 df_pcd4_s1
+2026-10-30 00:25:25 S249 DONE
