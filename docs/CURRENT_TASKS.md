@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **12:05 10-30 (Experiments):** §251 ANSWER-EXTEND RUNNING (build 02ed4a84; Audit G-D PASS): b376 aex_s1 58405449 (161.29.203.152, $0.91 proj), b377 aex_s2 58408845 (142.162.40.134, $0.81), b378 aex0_s1 58418049 (79.117.116.147, $0.93; guards restarted at $1.12 per Audit = disclosed cell overrun ~$0.03), b379 aex0_s2 58421179 (59.127.5.172, $0.96); BAD $0.33; family proj ~$3.94 of $4.5. Landings ~12:50 / 13:35 / 15:45 / 16:15 -> commit unread, then local eval_long (K' 8-64, d 2-5). Refs unread: rcb_plaw4_s1_re 1bcc360e, s2_re ddf1a5e4, aw_plaw2_s1_reg_s251 58f0e7dd. Filler/chain scratch/s251_fill.sh / s251_chain.sh; ledgers logs/s251_*.
 * **08:37 10-30 (Theory):** §251 APPROVED by Audit (guard $4.5). Waiting on Experiments build -> Audit G-D -> 4 Vast 3090 runs + CTRL / init re-evals.
 * **08:40 10-30 (Theory):** §251 ANSWER-EXTEND REGISTERED (AE_v1.md; REVIEW_AE GO-with-fixes adopted; score_ae.py 7/7): AEX (--aux_d_max 2) + AEX0 (--aux_fade 0,0) from aw_plaw2_s1 vs CTRL rcb_plaw4 re-eval; d 4-centred gates; 4 x 16k Vast 3090, guard $4.5. Build (flag + empty-aux fix) -> G-D -> launch requested.
 * **08:19 10-30 (Theory):** Direct-format probe read (Note 250-6): INVALID (the direct model has no linear v_1 at d 2 even in-frame, 0.19), so the pass-format pilot is NOT registered and the lead is parked. Theory HOLD; no spend pending.
