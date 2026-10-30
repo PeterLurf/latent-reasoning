@@ -1,0 +1,19 @@
+{
+ "6": {
+  "n": 4000,
+  "frames_ok": true,
+  "in_test2": 0,
+  "in_transfer": 0,
+  "in_excl": 0,
+  "sha": "13d64fba830e"
+ },
+ "7": {
+  "n": 4000,
+  "frames_ok": true,
+  "in_test2": 0,
+  "in_transfer": 0,
+  "in_excl": 0,
+  "sha": "90bcab3b58c3"
+ },
+ "pass": true
+}

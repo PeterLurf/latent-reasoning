@@ -1,0 +1,20 @@
+{
+ "draws": 20000,
+ "identical_programs": 20000,
+ "share": 1.0,
+ "first_divergence": null,
+ "div_frames_seen": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  8,
+  9,
+  10,
+  11
+ ],
+ "pass": true,
+ "note": "descriptive (FD_v1 \u00a74 disclosure): programs match until the frame draws' rng use differs"
+}

@@ -1,0 +1,12 @@
+{
+ "rc": {
+  "eb_old": 0,
+  "eb_new": 0
+ },
+ "equal": {
+  "ws": true,
+  "opclass": true,
+  "cue_only": true
+ },
+ "pass": true
+}

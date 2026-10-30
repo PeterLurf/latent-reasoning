@@ -1,0 +1,19 @@
+{
+ "rc": 9,
+ "step0": true,
+ "gn_plain": [
+  28.408107471466064,
+  22.047576975822448
+ ],
+ "bin_hold_keys": [
+  "comp_ratio",
+  "far_ratio",
+  "hold_ratio",
+  "inc_ratio",
+  "norm_guard",
+  "norm_guard_by_d"
+ ],
+ "inc_ratio_set": true,
+ "far_ratio_set": true,
+ "pass": true
+}
