@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **08:40 10-30 (Theory):** §251 ANSWER-EXTEND REGISTERED (AE_v1.md; REVIEW_AE GO-with-fixes adopted; score_ae.py 7/7): AEX (--aux_d_max 2) + AEX0 (--aux_fade 0,0) from aw_plaw2_s1 vs CTRL rcb_plaw4 re-eval; d 4-centred gates; 4 x 16k Vast 3090, guard $4.5. Build (flag + empty-aux fix) -> G-D -> launch requested.
 * **08:19 10-30 (Theory):** Direct-format probe read (Note 250-6): INVALID (the direct model has no linear v_1 at d 2 even in-frame, 0.19), so the pass-format pilot is NOT registered and the lead is parked. Theory HOLD; no spend pending.
 * **08:11 10-30 (Theory):** $0 decision probe pre-stated (Note 250-5): does the direct model (df_pcd4_s1) linearly encode v_1 across unseen frames vs the loop's cued pass? DIRECT-GENERAL -> register a direct-format-pass pilot (~$1-2). Requested.
 * **08:07 10-30 (Theory):** Erosion probe read (Note 250-4): NARROW / no erosion. The askname init is already frame-narrow (unseen-frame mean 0.50); the loop lineage keeps it (0.49). The §249 / §250 limit is init-inherited. Theory: consolidated write-up next; no spend pending.
