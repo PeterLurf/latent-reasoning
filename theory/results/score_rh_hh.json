@@ -1,0 +1,173 @@
+{
+ "section": 248,
+ "registered": "HH_v1.md",
+ "models": {
+  "lh_fh_s1": {
+   "label": "C5-LEARNED",
+   "mean_khalt": {
+    "1": 0.0,
+    "2": 1.202,
+    "3": 2.158,
+    "4": 3.162
+   },
+   "acc": {
+    "1": [
+     1.0,
+     1.0
+    ],
+    "2": [
+     0.993,
+     1.0
+    ],
+    "3": [
+     0.998,
+     1.0
+    ],
+    "4": [
+     0.997,
+     1.0
+    ]
+   },
+   "censoring": {
+    "1": {
+     "never_share": 0.0,
+     "event_only_mean": 0.0
+    },
+    "2": {
+     "never_share": 0.001,
+     "event_only_mean": 1.1951951951951951
+    },
+    "3": {
+     "never_share": 0.0,
+     "event_only_mean": 2.158
+    },
+    "4": {
+     "never_share": 0.002,
+     "event_only_mean": 3.152304609218437
+    },
+    "5": {
+     "never_share": 0.035,
+     "event_only_mean": 4.060103626943005
+    },
+    "6": {
+     "never_share": 0.18,
+     "event_only_mean": 4.412195121951219
+    }
+   },
+   "desc_d5_6": {
+    "5": {
+     "acc_halt": 0.756,
+     "acc_k8": 0.863,
+     "mean_khalt": 4.198
+    },
+    "6": {
+     "acc_halt": 0.199,
+     "acc_k8": 0.415,
+     "mean_khalt": 5.066
+    }
+   },
+   "head": {
+    "train_acc": 0.983287037037037,
+    "val_acc": 0.9839814814814815,
+    "val_auc": 0.9942799114998778,
+    "train_rows": 43200,
+    "val_rows": 10800,
+    "train_items": 4800,
+    "val_items": 1200,
+    "y_rate_train": 0.843587962962963,
+    "fit_d_counts": {
+     "1": 1515,
+     "2": 1537,
+     "3": 1501,
+     "4": 1447
+    },
+    "w_norm": 3.7391331445861846,
+    "b": 4.485859519989886
+   }
+  },
+  "lh_fh_s2": {
+   "label": "C5-LEARNED",
+   "mean_khalt": {
+    "1": 0.0,
+    "2": 1.201,
+    "3": 2.133,
+    "4": 3.259
+   },
+   "acc": {
+    "1": [
+     1.0,
+     1.0
+    ],
+    "2": [
+     1.0,
+     1.0
+    ],
+    "3": [
+     0.999,
+     1.0
+    ],
+    "4": [
+     0.994,
+     1.0
+    ]
+   },
+   "censoring": {
+    "1": {
+     "never_share": 0.0,
+     "event_only_mean": 0.0
+    },
+    "2": {
+     "never_share": 0.006,
+     "event_only_mean": 1.159959758551308
+    },
+    "3": {
+     "never_share": 0.001,
+     "event_only_mean": 2.1271271271271273
+    },
+    "4": {
+     "never_share": 0.004,
+     "event_only_mean": 3.2399598393574296
+    },
+    "5": {
+     "never_share": 0.023,
+     "event_only_mean": 3.63050153531218
+    },
+    "6": {
+     "never_share": 0.038,
+     "event_only_mean": 3.858627858627859
+    }
+   },
+   "desc_d5_6": {
+    "5": {
+     "acc_halt": 0.405,
+     "acc_k8": 0.691,
+     "mean_khalt": 3.731
+    },
+    "6": {
+     "acc_halt": 0.093,
+     "acc_k8": 0.213,
+     "mean_khalt": 4.016
+    }
+   },
+   "head": {
+    "train_acc": 0.9835416666666666,
+    "val_acc": 0.9822222222222222,
+    "val_auc": 0.9929168535298831,
+    "train_rows": 43200,
+    "val_rows": 10800,
+    "train_items": 4800,
+    "val_items": 1200,
+    "y_rate_train": 0.8452314814814815,
+    "fit_d_counts": {
+     "1": 1515,
+     "2": 1537,
+     "3": 1501,
+     "4": 1447
+    },
+    "w_norm": 3.4707299487110905,
+    "b": 5.437688508091919
+   }
+  }
+ },
+ "verdict": "HALT-HEAD C5-LEARNED (C5-LEARNED / C5-LEARNED)"
+}
