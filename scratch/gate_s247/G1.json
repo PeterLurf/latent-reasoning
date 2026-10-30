@@ -1,0 +1,47 @@
+{
+ "lh_fh_s1": {
+  "rh_input_empty_eq_cues": true,
+  "rh_answer_gold_ok": true,
+  "d3": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "empty_aug_eq_intact_d3t1": true,
+   "empty_aug_eq_intact_d3t2": true
+  },
+  "d4": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "empty_aug_eq_intact_d4t2": true,
+   "empty_aug_eq_intact_d4t3": true
+  },
+  "halt_pred_eq_abk_d1": true,
+  "halt_pred_eq_abk_d2": true,
+  "halt_pred_eq_abk_d3": true,
+  "halt_pred_eq_abk_d4": true,
+  "halt_pred_eq_abk_d5": true,
+  "halt_pred_eq_abk_d6": true
+ },
+ "lh_fh_s2": {
+  "rh_input_empty_eq_cues": true,
+  "rh_answer_gold_ok": true,
+  "d3": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "empty_aug_eq_intact_d3t1": true,
+   "empty_aug_eq_intact_d3t2": true
+  },
+  "d4": {
+   "ans_eq_abk": true,
+   "ws_eq_readout": true,
+   "empty_aug_eq_intact_d4t2": true,
+   "empty_aug_eq_intact_d4t3": true
+  },
+  "halt_pred_eq_abk_d1": true,
+  "halt_pred_eq_abk_d2": true,
+  "halt_pred_eq_abk_d3": true,
+  "halt_pred_eq_abk_d4": true,
+  "halt_pred_eq_abk_d5": true,
+  "halt_pred_eq_abk_d6": true
+ },
+ "pass": true
+}
