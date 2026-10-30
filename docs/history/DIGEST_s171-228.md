@@ -81,6 +81,7 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 245 | AO-REP | Does answer-only formation replicate on 2 new seeds (straight 18k)? | 0/2 formed (both VOID on CUE-ONLY; NOT-FORMED anyway) → AO line paused | d2 0.248 / 0.194; LP5 ≈ 0; pooled 1/4 seeds (that one with LR re-warm); ~$1.44 | Without per-pass targets the latent chain rarely forms; the decoder partly solves d2 from text instead. | C4 |
 | 246 | C3-LANG (analytic) | Is the language latent loop compute-competitive with text CoT? | Analytic, $0 (Note 246-0); KV-LAT pilot deferred | serial layers 36 vs 324 at d4 (latency ~9× better); executed GFLOPs 57.5 vs 19.1 (1.5–3× worse) | Re-reading the prompt every pass costs FLOPs; fix = KV-cached latent positions (unstaged). | C3 |
 | 247 | READ-HALT | C7 round-trip+edit and C5 readout halting on lh_fh ($0) | C7 ROUND-TRIP-ONLY (vacuous: write ignores the text); C5 COSTLY | round trip 0.999/0.978 but edit follow = floor 0.006; halting at K′1 with acc 0.02–0.11 | Printed values are faithful readouts but text has no causal path into the state; decoder confidence is no halting signal. | C5, C7 |
+| 248 | HALT-HEAD | Can a post-hoc halt head (self-consistency labels) give learned halting? ($0) | C5-LEARNED both seeds (C5-partial) | head val_acc 0.98; mean K′_halt 0/1.2/2.2/3.2 at d1–4; acc at halt ≥ 0.993; d5–6 early halts cost acc | Halting ~d passes instead of 8 in range; post-hoc head on a frozen loop, not trained into the loop. | C5 |
 
 ## What worked
 
