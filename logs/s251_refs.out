@@ -1,0 +1,39 @@
+2026-10-30 09:29:17 start re rcb_plaw4_s1
+PART acc done 1170 s
+PART lp5 done 128 s
+PART mean_s done 500 s
+PART cue_only done 16 s
+PART cue_wrong done 226 s
+PART swap_k done 29 s
+PART swap_1 done 19 s
+PART probe done 18 s
+PART ws done 48 s
+PART lp5h done 99 s
+PART swap_kd done 213 s
+DONE boxes/runs_fsq/rcb_plaw4_s1_re
+2026-10-30 10:11:00 rc 0 re rcb_plaw4_s1
+2026-10-30 10:11:00 start re rcb_plaw4_s2
+PART acc done 1170 s
+PART lp5 done 128 s
+PART mean_s done 501 s
+PART cue_only done 16 s
+PART cue_wrong done 226 s
+PART swap_k done 29 s
+PART swap_1 done 19 s
+PART probe done 18 s
+PART ws done 48 s
+PART lp5h done 99 s
+PART swap_kd done 213 s
+DONE boxes/runs_fsq/rcb_plaw4_s2_re
+2026-10-30 10:52:45 rc 0 re rcb_plaw4_s2
+2026-10-30 10:52:45 start step0 aw_plaw2_s1
+PART acc done 1169 s
+PART ws done 48 s
+PART swap_kd done 214 s
+PART lp5h done 99 s
+PART cue_only done 15 s
+PART cue_wrong done 227 s
+PART lp5 done 128 s
+REG-EVAL DONE boxes/runs_fsq/aw_plaw2_s1_reg_s251
+2026-10-30 11:25:02 rc 0 step0 aw_plaw2_s1
+2026-10-30 11:25:02 S251 REFS DONE
