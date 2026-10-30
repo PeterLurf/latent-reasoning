@@ -1,0 +1,78 @@
+{
+ "section": 245,
+ "registered": "AO_v1.md",
+ "seeds": {
+  "s3": {
+   "LP1": true,
+   "LP3": false,
+   "acc_d2": {
+    "ao": 0.248,
+    "cd": 0.097,
+    "dir": 0.093
+   },
+   "LP5": false,
+   "LP5_drop": 0.0010000000000000009,
+   "MEAN_STATE": false,
+   "mean_state_acc": 0.232,
+   "STATE_USE": false,
+   "swap_k": {
+    "n_pairs": 1000,
+    "follow_U": 0.167,
+    "floor": 0.172
+   },
+   "CUE_ONLY_ok": false,
+   "CUE_WRONG_drop": 0.0010000000000000009,
+   "STABLE": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ],
+   "still_rising": false,
+   "survival": {
+    "acc": 0.248,
+    "lp5": 0.0011337868480725633,
+    "swap": 0.167
+   },
+   "label": "VOID"
+  },
+  "s4": {
+   "LP1": true,
+   "LP3": false,
+   "acc_d2": {
+    "ao": 0.194,
+    "cd": 0.097,
+    "dir": 0.093
+   },
+   "LP5": false,
+   "LP5_drop": -0.0010000000000000009,
+   "MEAN_STATE": true,
+   "mean_state_acc": 0.186,
+   "STATE_USE": false,
+   "swap_k": {
+    "n_pairs": 1000,
+    "follow_U": 0.194,
+    "floor": 0.194
+   },
+   "CUE_ONLY_ok": false,
+   "CUE_WRONG_drop": 0.0,
+   "STABLE": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ],
+   "still_rising": false,
+   "survival": {
+    "acc": 0.194,
+    "lp5": -0.0011337868480725633,
+    "swap": 0.194
+   },
+   "label": "VOID"
+  }
+ },
+ "verdict": "AO-REP 0/2 formed | s3: VOID / s4: VOID",
+ "formed": 0
+}
