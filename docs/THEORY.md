@@ -22630,6 +22630,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(2)** CD-AN and the cue-only guard are evaluated on TRANSFER-DF itself (as FT_v1 sec. 2 already specifies), not reused from TEST2-DF.
 - **(3)** Per-frame (6 vs 7) acc and WS are reported beside the pooled values (descriptive; eval_transfer.json by_frame). score_ft carries them; fixtures 5/5.
 
+**Note 249-2 (2026-10-30 00:16 EDT; §249 build record before any reading; Experiments a755253b; lineage gate G0 PASS: frames 0-5 only in every lh_fh-lineage training stream (code + 20k-draw replays); transfer sha 195f6756 matches.)**
+- **by_frame (descriptive, accepted as built):**
+  - TRANSFER items draw a frame per op independently, so d > 1 items mostly mix frames.
+  - '6' / '7' = acc over items whose every op uses that frame (d 3 ~120-134 each; d 4 smaller); 'mixed' = the rest.
+  - WS at pass t is split by the frame of the op at step min(t, d), with n reported.
+  - It stays descriptive; the binding gates read the pooled set.
+- **CD-AN eval_bs 100** (250 OOMs on the 4060 for the direct trunk); the LAT models use 250, one bs per model. Batch-invariance is precedented (236-4: 6 / 12,000 flips bs 50 vs 100; 0 / 12,000 at 250 vs 100). CD-AN feeds only the T-ACC margin and the guard bar.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
