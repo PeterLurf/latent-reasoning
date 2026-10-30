@@ -5,3 +5,6 @@
 379:aex0_s2 59.127.5.172:12242 58421179 $0.2081/h sps 0.8307480176289876 0.96
 realised:b376 # 58405449 (wall guard spent $0.725 at 12:10 + 1 min x $0.2395/h; OOM at ~9.6k, idle after) (§251 aex_s1 VOID) 0.729
 realised:b377 # 58408845 (wall guard spent $0.481 at 12:05 + 6 min x $0.2019/h; OOM at start, idle after) (§251 aex_s2 VOID) 0.501
+380:aex_s1 174.94.107.181:42063 58423469 $0.1759/h sps 0.8518127799034119 0.82
+381:aex_s2 77.48.24.203:42670 58427570 $0.1471/h sps 0.8217379848162333 0.67
+realised:b378 # 58418049 (wall guard spent $0.801 at 15:13 + 4 min x $0.2014/h) (§251 aex0_s1) 0.814
