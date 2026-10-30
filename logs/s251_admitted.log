@@ -9,3 +9,4 @@ realised:b377 # 58408845 (wall guard spent $0.481 at 12:05 + 6 min x $0.2019/h; 
 381:aex_s2 77.48.24.203:42670 58427570 $0.1471/h sps 0.8217379848162333 0.67
 realised:b378 # 58418049 (wall guard spent $0.801 at 15:13 + 4 min x $0.2014/h) (§251 aex0_s1) 0.814
 realised:b379 # 58421179 (wall guard spent $0.776 at 15:35 + 7 min x $0.2081/h) (§251 aex0_s2) 0.800
+realised:b380 # 58423469 (wall guard spent $0.679 at 16:07 + 7 min x $0.1886/h) (§251 aex_s1 rerun) 0.701
