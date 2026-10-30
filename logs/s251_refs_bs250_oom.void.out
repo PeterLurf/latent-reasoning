@@ -1,0 +1,45 @@
+2026-10-30 09:08:47 start re rcb_plaw4_s1
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\Latent\boxes\inject_aw_eval.py", line 1040, in <module>
+    main()
+    ~~~~^^
+  File "D:\Latent\boxes\inject_aw_eval.py", line 1036, in main
+    run(a.run, [p_ for p_ in a.parts.split(",") if p_], a.device, a.eval_bs); print("DONE", a.run, flush=True)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\inject_aw_eval.py", line 1007, in run
+    r_ = {"acc": lambda: part_acc(m, g, sets, a, dev, bs), "lp5": lambda: part_lp5(m, g, sets, a, dev, bs, ds), "mean_s": lambda: part_mean_s(m, g, sets, a, dev, bs),
+    ...<6 lines>...
+          "halt": lambda: part_halt(m, g, sets, a, dev, bs), "halthead": lambda: part_halthead(m, g, sets, a, dev, bs),
+          "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs)}[p_]()
+  File "D:\Latent\boxes\inject_aw_eval.py", line 1007, in <lambda>
+    r_ = {"acc": lambda: part_acc(m, g, sets, a, dev, bs), "lp5": lambda: part_lp5(m, g, sets, a, dev, bs, ds), "mean_s": lambda: part_mean_s(m, g, sets, a, dev, bs),
+                         ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_aw_eval.py", line 105, in part_acc
+    P = answers_by_kprime(m, g, T[d], KMAX if m is not None else 0, dev, bs); y = np.array([it["ans"] for it in T[d]]); km = K if m is not None else 0
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_aw_eval.py", line 90, in answers_by_kprime
+    o, _ = passes(m, items, dev, bs, set(range(kmax + 1))); return np.stack([o[k] for k in range(kmax + 1)], 1)
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_aw_eval.py", line 65, in passes
+    msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)
+                                               ~~~~~~~^^^
+  File "D:\Latent\boxes\nested170.py", line 243, in lower
+    return self.DM.gpt_lower(self.g, self.g.embed(x), self.mem.layer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\deltamem.py", line 268, in gpt_lower
+    h = _block(g, i, h, hd)
+  File "D:\Latent\boxes\deltamem.py", line 259, in _block
+    m = F.gelu(a @ g.w(pre + "mlp.c_fc.weight") + g.w(pre + "mlp.c_fc.bias"), approximate="tanh")
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+RuntimeError: CUDA driver error: out of memory
+The CUDA driver logged these messages, which may provide useful details:
+Returning 2 (CUDA_ERROR_OUT_OF_MEMORY) from cuMemSetAccess
+
+2026-10-30 09:28:46 rc 1 re rcb_plaw4_s1
