@@ -337,6 +337,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
 | 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **NO-TRANSFER both 10-30 (249-3): TRANSFER d 1-4 0.54 / 0.45 / 0.35 / 0.27 vs 1.000 in-frame; frame 7 d 1 1.000, frame 6 d 1 0.064 (CD-AN 0.971): the pass does not parse frame 6; $0.** **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
 | 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **FAIL 10-30 (250-2): s1 MEMO, s2 LP0-FAIL (would be MEMO); trained new frames 1.000, held-out 12-15 barely move (GEN 0/4); H-MEMO; $2.82.** **Stage 0 10-30 (250-1): all 4 held-out frames FAILING (d 2 0.12-0.56) in both -> Stage 1 admitted; score_fd.py 8/8.** **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
+| 251 | ANSWER-EXTEND (roadmap #1, Theory's choice): from the P-2 seed (aw_plaw2_s1), §237's REG d ~ U{1..4} 16k recipe with aux only on d <= 2 (AEX, --aux_d_max 2) or aux off after the seed (AEX0, --aux_fade 0,0) vs CTRL rcb_plaw4 (re-eval); binding d 4-centred (ACC4, NOT-DECODER K' 2, SWAP-MID d 4 t 2, LP5-D4); AE_v1.md | registered | **REGISTERED 08:40 10-30; scorer score_ae.py 7/7; build (--aux_d_max + empty-aux fix) -> G-D -> 4 Vast 3090 runs; guard $4.5** |
 
 ## Live sections
 
@@ -19609,6 +19610,25 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - **NOLOSS:** TEST2 >= 0.98; §238 gates; HOLD-LONG3; retention > 0.05 named.
   - Labels GEN-PASS / MEMO / NO-GAIN / NOLOSS-FAIL / LP0-FAIL. OC P(PASS, both) ~0.15.
   - The Stage-1 scorer is written before Stage-1 output.
+
+## 251. ANSWER-EXTEND: does depth beyond the seed need hand-built per-pass targets? (C4-partial; Theory's choice under the user's 10-26 standing rules, roadmap #1; Audit approves; guard **$4.5**; pre-registered 2026-10-30 08:40 EDT, before any build or output)
+
+- **Text:** docs/research_answerextend_2026-10-30/AE_v1.md (supersedes AE_draft.md). Red team: REVIEW_AE.md (GO-with-fixes, all adopted: empty-aux crash fix, d 4-centred gates, AEX0 arm, 16k final). Scorer theory/score_ae.py (fixtures 7/7).
+- **Arms (init aw_plaw2_s1; §237 rcb_plaw4 recipe: REG, d ~ U{1..4}, 16k, same seeds; RTX 3090 only):**
+  - AEX aex_s1 / aex_s2: `--aux_d_max 2` (aux CE only on d <= 2 batches; aux := 0 on d 3-4 batches).
+  - AEX0 aex0_s1 / aex0_s2: `--aux_fade 0,0` (lambda_aux 0 from step 1: per-pass targets only in the seed).
+  - CTRL rcb_plaw4_s1 / s2, re-evaluated under the current eval module (rcb_plaw4_s{1,2}_re).
+- **G-D:** default-off bitwise vs §237's module; flag-on bitwise = CTRL until the first d >= 3 step; smoke through d 3 / d 4 steps; gradflow (aux grad 0 on d >= 3 steps, answer-CE grad nonzero on write / read at d 4); step-0 REG d 3 / d 4 = 0.028 / 0.096.
+- **Binding per seed (d 4-centred; d 3 can pass via passes 1-2 + the decoder, CTRL d 3 at K' 2 = 1.000):**
+  - ACC4 d 4 >= 0.50 and >= CD-AN + 0.25 (0.090 + 0.25);
+  - NOT-DECODER d 4 at K' 2 <= 0.20;
+  - SWAP4 SWAP-MID d 4 t 2 follow_U >= 0.50 and >= floor + 0.30;
+  - LP5-D4 drop >= 0.30;
+  - CUE-ONLY guard d 3-4; STABLE (score_ao).
+  - Labels VOID / UNSTABLE / EXTEND / EXTEND-D3-ONLY / NOT-EXTEND. Per arm: EXTEND (both) / SPLIT / FAIL.
+  - Descriptive: WS 3-4, learning curve vs CTRL, SURVIVAL.
+- **OC per seed:** AEX 0.45 vs 0.04; AEX0 0.30 vs 0.02 (answers suffice vs targets needed). Both seeds AEX ~0.25 vs ~0.003. Censoring: an unfinished run or a crashed eval is VOID-RERUN once, never scored on partial logs.
+- **Cost:** 4 x 16k at ~$1.0-1.2 + 2 CTRL re-evals, ~$4.0 expected, guard $4.5 (over the ~$3 step guide because of AEX0; within the $30 cap).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
