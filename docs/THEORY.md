@@ -336,6 +336,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
 | 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **NO-TRANSFER both 10-30 (249-3): TRANSFER d 1-4 0.54 / 0.45 / 0.35 / 0.27 vs 1.000 in-frame; frame 7 d 1 1.000, frame 6 d 1 0.064 (CD-AN 0.971): the pass does not parse frame 6; $0.** **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
+| 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
 
 ## Live sections
 
@@ -19591,6 +19592,23 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - Descriptive: d 1, d 5-6, and the drop vs TEST2-DF.
 - **OC:** both ~0.3; under frame-specific cueing P(T-ACC) ~0.05.
 - **Cost:** $0, local.
+
+## 250. FRAME-DIV: does phrasing diversity let the latent pass generalise to unseen phrasings? (Theory's choice under the user's 10-26 standing rules, on Audit's suggestion; Audit approves; staged: Stage 0 **$0**, Stage 1 guard **$5**; pre-registered 2026-10-30 00:36 EDT, before any build or output)
+
+- **Text:** docs/research_framediv_2026-10-30/FD_v1.md (templates in the file and in fd_v1_templates.json; novelty and solve check fd_v1_check.py). Red team: REVIEW_FD.md (GO-with-fixes; held-out frames rewritten, step-0 stage added). Literature narrow wording adopted.
+- **Why (249-3):** the §240 pass is frame-specific (frame 6 d 1 0.064 vs CD-AN 0.971; frame 7 1.000). Phrasing diversity is the binding limit on the task-agnostic roadmap.
+  - Not a fix loop: the binding test is on NEW held-out frames, and frame 6 is descriptive.
+- **Templates:** DIV-train 8-11; held-out 12-15 (new constructions; max masked-trigram Jaccard vs frames 0-11 = 0.16 <= 0.20). They are appended to FRAMES; FRAME_ALL is unchanged; gates G1-G4 (every existing set sha byte-identical, etc.). 0 / 5,400 solve mismatches.
+- **Stage 0 ($0):** lh_fh_s1 / s2 per-frame accuracy on frames 8-15, d 1-4.
+  - A FAILING frame = held-out with step-0 d 2 < 0.80.
+  - Stage 1 runs only with >= 2 FAILING held-out frames in both models; otherwise VACUOUS, re-author.
+  - Plus Literature's lexical check (frames 6 / 7).
+- **Stage 1 (~$3.2, guard $5):** 8k FT of lh_fh_s1 / s2, DIV (train_frames 0-5 + 8-11) vs CTRL (0-5).
+  - Same items; single-change diff; hold penalty from step 0; LP0 per the checklist.
+  - **Binding GEN:** on each FAILING frame, DIV d 2-4 >= 0.80 and >= CTRL + 0.20, plus a WS chain, on >= 2 frames.
+  - **NOLOSS:** TEST2 >= 0.98; §238 gates; HOLD-LONG3; retention > 0.05 named.
+  - Labels GEN-PASS / MEMO / NO-GAIN / NOLOSS-FAIL / LP0-FAIL. OC P(PASS, both) ~0.15.
+  - The Stage-1 scorer is written before Stage-1 output.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.

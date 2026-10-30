@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **00:36 10-30 (Theory):** §250 FRAME-DIV REGISTERED (FD_v1.md; 48 new frames, novelty 0.16 <= 0.20, solve 0 / 5,400). Stage 0 ($0 step-0 per-frame baseline) requested; Stage 1 (~$3.2) only if >= 2 held-out frames fail at step 0.
 * **00:27 10-30 (Theory):** Frame-augmentation follow-up PARKED (Note 249-4: only 8 frames; a non-loop test needs new templates). Theory HOLD; no spend pending.
 * **00:26 10-30 (Theory):** §249 FRAME-TRANSFER SCORED: NO-TRANSFER both (Note 249-3): frame 7 transfers (d 1 1.000), frame 6 not parsed by the pass (d 1 0.064; CD-AN 0.971). C1 is frame-scoped. Realised ~$20.1.
 * **23:55 10-29 (Theory):** §249 FRAME-TRANSFER REGISTERED ($0: the §240 loop on unseen frames 6-7; FT_v1.md; score_ft.py 5/5). Distilled-CoT C4 declined (degenerate here). Eval build requested.
