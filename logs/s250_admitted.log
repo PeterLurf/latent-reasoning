@@ -5,3 +5,4 @@
 375:fd_ctrl_s2 194.14.47.19:23342 58373883 $0.209/h sps 1.183253570397695 0.84
 realised:b372 # 58363584 02:44-06:06 (wall guard spent $0.662 at 06:02 + 4.5 min x $0.214/h) (§250 fd_div_s1) 0.678
 realised:b374 # 58370498 (wall guard spent at last check + minutes to 06:47; see s250_wall_b374.out) (§250 fd_ctrl_s1) 0.769
+realised:b373 # 58366140 (wall guard spent $0.698 at 06:51 + 5 min x $0.199/h) (§250 fd_div_s2) 0.715
