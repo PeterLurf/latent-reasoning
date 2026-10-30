@@ -22817,6 +22817,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Oddity, descriptive only (SWAP-K):** by_d.4.swap_k follow_U / follow_dfin / follow_ca / stay_own = 0.354 / 0.151 / 0.203 / 0.081 are identical to three decimals in aex_s1, aex_s2 and rcb_plaw4_s2, while the floors differ. Not used by any gate; flagged to Audit.
 - **Literature: NARROW; the anchor need is partly known as replay** (Lee 2502.01612 keeps gold D_0 every round; iCoT 2405.14838 fails if CoT is removed too fast; forgetting is the standard continual-learning failure). Counterexample: ATC 2609.19717 learns with no intermediate targets via a competence-gated curriculum (untested here). Adopted wording: in our recurrent-memory loop (2 seeds), answer-only depth extension (+2) succeeded only when step targets were kept on the seeded depths, acting as a replay anchor (cf. Lee's retained D_0); without them one seed forgot the seeded skill and the other never extended (LIT_STEPTOLD_2026-10-24.md). Spend: family realised $4.65 of $5.5 (incl. VOID $1.23 + BAD hosts); credit $25.67.
 
+**Note 251-4 (2026-10-30 17:42 EDT; descriptive SWAP-K oddity from Note 251-3; no gate or verdict changes).**
+- **Item-level check (eval_swap_kd items.4.swap_k, same 1,000 pairs in every run):** aex_s1, aex_s2, rcb_plaw4_s1 and rcb_plaw4_s2 agree on 100% of items. Broken models disagree: aex0_s1 0.104, aex0_s2 0.090, step-0 aw_plaw2_s1_reg_s251 0.088 agreement with aex_s1, i.e. chance.
+- **So the decode is model-dependent**, which rules out dec_with ignoring S or a cached SD; dec_with reads Sx per item (inject_aw_eval.py:243). Every working loop computes the same deterministic answer from (donor S_K, recipient prompt).
+- **Hypothesis:** under REG the decoder applies the recipient's last op to the donor's held state (CTRL d 3 at K' 2 = 1.000 shows the decoder takes a step). That value is generally neither the donor final nor cf_a(t), so U = {donor final, cf_a(t)} under-counts by design. This is a mis-specified U for decoder-step models, not a code regression.
+  - The P-4 0.791 (aw_plaw4_s1, TOPO law with a fixed final op) fits: there S_K could already hold the final value.
+- **Consequence:** SWAP-K follow_U values quoted for REG / DF loops (§236-§238 descriptive) should be read as 'not the donor final', not as 'SWAP-K not followed'. No binding gate used them.
+- **Cheap confirm ($0, Experiments / Audit):** the share of items where swap_k == the recipient's op d applied to the donor's v_{d-1} (recompute from rec_sig / don_sig). Prediction: >= 0.9 in the four working runs.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
