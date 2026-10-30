@@ -334,7 +334,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 244 | ANSWER-ONLY (Theory's choice; C4-adjacent, scoped 'AUX-FREE (askname init, d 1 foothold, plan given; DEC-STEP2)'): P-2 recipe with --aux_fade 0,0 vs aux P-2 (s1 existing, s2 new); binding LP1 / LP3 / LP5 / MEAN-STATE / STATE-USE / CUE-ONLY / STABLE; STILL-RISING one +6k extension; AO_v1.md | registered | **SPLIT 10-29 (244-5): s1 NOT-FORMED (chance); s2 AUX-FREE (plain) at 18k: d 2 0.967 vs CD 0.097, LP5 0.747, swap 0.656 (aux comparator 1.0 / 0.88 / 1.0); ~$2.0.** **APPROVED by Audit 10-29 (244-1: explicit step-0 aux-off gate; extension inside guard).** **REGISTERED 10:19 10-29; build -> G-D -> launch; scorer score_ao.py (fixtures 8/8)** |
 | 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **0/2 10-29 (245-2): both VOID (decoder-direct partial d 2 ~0.2; latent unused); AO line pauses; pooled 1/4 formed (that one with an LR re-warm); $1.44.** **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
-| 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
+| 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
 
 ## Live sections
 
@@ -22589,6 +22589,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **C5 (readout halting) not met.** Learned halting would need training (e.g. a halting head trained on per-pass correctness).
 - **Consolidated language-line status (updates Note 246-1):** C1 met (scoped); C6 met (scoped); C2 not met; C3 latency yes / FLOPs no; C4 not met; **C5 not met (readout)**; **C7 not met (edit fails; text ignored by the write path)**.
 - **Spend:** realised total unchanged, ~$20.1.
+
+**Note 248-1 (2026-10-29 22:49 EDT; Audit's approval of §248 + conditions, before any build or output.)**
+- **APPROVED** ($0).
+- **(1) Disjoint fit items:** the fit items are disjoint from TEST2-DF (by sig, replaying excl), and the halt gates read TEST2-DF only. L2 (1e-3) and tau (0.90) are fixed in HH_v1, so nothing is tuned. The val split of the fit items is only for the VOID check.
+- **(2) No peeking:** the feature at K' comes only from computation up to K'. The build computes it in a K'-truncated rollout (decoder run after exactly K' passes), and asserts that the K'-truncated feature equals the full-rollout feature at the same K'.
+- **(3) d 5-6:** halting is descriptive (out of the fit range), with the never-halt share.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
