@@ -1,0 +1,237 @@
+{
+ "section": 251,
+ "registered": "AE_v1.md",
+ "arms": {
+  "AEX": {
+   "aex_s1": {
+    "label": "EXTEND",
+    "gates": {
+     "ACC4": true,
+     "NOT-DECODER": true,
+     "SWAP4": true,
+     "LP5-D4": true
+    },
+    "d3_desc": true,
+    "acc": {
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0
+    },
+    "acc4_k2": 0.009,
+    "swap4": {
+     "follow_U": 0.872,
+     "floor": 0.097,
+     "follow_ca": 0.798,
+     "follow_cb": 0.799,
+     "stay_own": 0.012
+    },
+    "swap3_t2": {
+     "follow_U": 1.0,
+     "floor": 0.094,
+     "follow_ca": 1.0,
+     "follow_cb": 1.0,
+     "stay_own": 0.0
+    },
+    "lp5_d4": 0.788,
+    "stable": [
+     true,
+     {
+      "n_nonfinite": 0,
+      "unrecovered": []
+     }
+    ]
+   },
+   "aex_s2": {
+    "label": "EXTEND-D3-ONLY",
+    "gates": {
+     "ACC4": true,
+     "NOT-DECODER": true,
+     "SWAP4": false,
+     "LP5-D4": true
+    },
+    "d3_desc": true,
+    "acc": {
+     "2": 1.0,
+     "3": 0.999,
+     "4": 1.0
+    },
+    "acc4_k2": 0.009,
+    "swap4": {
+     "follow_U": 0.461,
+     "floor": 0.098,
+     "follow_ca": 0.428,
+     "follow_cb": 0.4,
+     "stay_own": 0.05
+    },
+    "swap3_t2": {
+     "follow_U": 1.0,
+     "floor": 0.096,
+     "follow_ca": 1.0,
+     "follow_cb": 1.0,
+     "stay_own": 0.0
+    },
+    "lp5_d4": 0.34500000000000003,
+    "stable": [
+     true,
+     {
+      "n_nonfinite": 0,
+      "unrecovered": []
+     }
+    ]
+   }
+  },
+  "AEX_overall": "SPLIT",
+  "AEX0": {
+   "aex0_s1": {
+    "label": "NOT-EXTEND",
+    "gates": {
+     "ACC4": false,
+     "NOT-DECODER": true,
+     "SWAP4": false,
+     "LP5-D4": false
+    },
+    "d3_desc": false,
+    "acc": {
+     "2": 0.101,
+     "3": 0.093,
+     "4": 0.091
+    },
+    "acc4_k2": 0.094,
+    "swap4": {
+     "follow_U": 0.103,
+     "floor": 0.103,
+     "follow_ca": 0.092,
+     "follow_cb": 0.081,
+     "stay_own": 0.088
+    },
+    "swap3_t2": {
+     "follow_U": 0.092,
+     "floor": 0.094,
+     "follow_ca": 0.092,
+     "follow_cb": 0.092,
+     "stay_own": 0.109
+    },
+    "lp5_d4": 0.0,
+    "stable": [
+     true,
+     {
+      "n_nonfinite": 0,
+      "unrecovered": []
+     }
+    ]
+   },
+   "aex0_s2": {
+    "label": "NOT-EXTEND",
+    "gates": {
+     "ACC4": false,
+     "NOT-DECODER": true,
+     "SWAP4": false,
+     "LP5-D4": false
+    },
+    "d3_desc": false,
+    "acc": {
+     "2": 1.0,
+     "3": 0.103,
+     "4": 0.089
+    },
+    "acc4_k2": 0.1,
+    "swap4": {
+     "follow_U": 0.105,
+     "floor": 0.104,
+     "follow_ca": 0.091,
+     "follow_cb": 0.094,
+     "stay_own": 0.09
+    },
+    "swap3_t2": {
+     "follow_U": 0.083,
+     "floor": 0.093,
+     "follow_ca": 0.083,
+     "follow_cb": 0.083,
+     "stay_own": 0.09
+    },
+    "lp5_d4": -0.0020000000000000018,
+    "stable": [
+     true,
+     {
+      "n_nonfinite": 0,
+      "unrecovered": []
+     }
+    ]
+   }
+  },
+  "AEX0_overall": "FAIL"
+ },
+ "ctrl": {
+  "rcb_plaw4_s1_re": {
+   "label": "EXTEND",
+   "gates": {
+    "ACC4": true,
+    "NOT-DECODER": true,
+    "SWAP4": true,
+    "LP5-D4": true
+   },
+   "d3_desc": true,
+   "acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "acc4_k2": 0.008,
+   "swap4": {
+    "follow_U": 0.985,
+    "floor": 0.124,
+    "follow_ca": 0.907,
+    "follow_cb": 0.906,
+    "stay_own": 0.0
+   },
+   "swap3_t2": {
+    "follow_U": 1.0,
+    "floor": 0.087,
+    "follow_ca": 1.0,
+    "follow_cb": 1.0,
+    "stay_own": 0.0
+   },
+   "lp5_d4": 0.911,
+   "stable": [
+    null,
+    "no loss rows"
+   ]
+  },
+  "rcb_plaw4_s2_re": {
+   "label": "EXTEND",
+   "gates": {
+    "ACC4": true,
+    "NOT-DECODER": true,
+    "SWAP4": true,
+    "LP5-D4": true
+   },
+   "d3_desc": true,
+   "acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "acc4_k2": 0.012,
+   "swap4": {
+    "follow_U": 0.985,
+    "floor": 0.106,
+    "follow_ca": 0.907,
+    "follow_cb": 0.906,
+    "stay_own": 0.0
+   },
+   "swap3_t2": {
+    "follow_U": 1.0,
+    "floor": 0.098,
+    "follow_ca": 1.0,
+    "follow_cb": 1.0,
+    "stay_own": 0.0
+   },
+   "lp5_d4": 0.911,
+   "stable": [
+    null,
+    "no loss rows"
+   ]
+  }
+ },
+ "verdict": "AEX SPLIT (EXTEND / EXTEND-D3-ONLY) | AEX0 FAIL (NOT-EXTEND / NOT-EXTEND)"
+}
