@@ -22513,6 +22513,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Status line (agreed with Audit, who checked the arithmetic to order):** "C3: latency yes (~9x fewer serial layers), FLOPs no (1.5-3x more); fix = KV-cached latent positions (unstaged)".
 - **Design implication (not registered):** a FLOPs-competitive loop must not recompute the prompt each pass. The latent state should be added as new cached positions (a KV-cached latent token per pass, Coconut-style) rather than re-reading at every prompt position. That is an architectural redesign, with retraining, beyond the current ~$10 headroom; it would be staged as its own registration.
 
+**Note 246-1 (2026-10-29 21:41 EDT; KV-LAT draft (docs/research_kvlat_2026-10-29/KV_draft.md, 8c8ec19f) not registered, deferred, after its red team (REVIEW_KV.md); no build, no spend. Theory's decision under the standing rules.)**
+- **Why deferred:**
+  - (a) FLOP parity holds only if K' <= d, which needs a recipe change (K = d); with P-2's think_k 8 KV-LAT costs ~2x text-CoT.
+  - (b) It is several changes vs P-2, not one: aux path, decoder, calibration, masks, positions.
+  - (c) Novelty is thin: Coconut plus a per-step cue, giving up P-2's narrow 'compact recurrent memory' claim. The FLOP-matched reading is arithmetic once K' is known.
+  - (d) The project's own priors on cheap passes over a cached prompt are poor (§42, §171 / §198); ~0.45 per seed.
+  - (e) A new module and its gates for a d 2 pilot, against ~$7 of remaining headroom.
+- **Kept for a future staged design:** REVIEW_KV's fixes (ln_f'd latent with a learned gain, K ~ U{d..8}, recomputing interventions, a new inject_kv.py on rs_run, fp64 cache equivalence, a FLOP counter check).
+- **Consolidated status of the language line** (all one trunk lineage, scaffolded / plan given):
+  - C1 (§237 / §238): d <= 4, incl. position-independent cross-state products; 2 data orders; §238 1 of 2 passes every gate.
+  - C6 (§240): hold to K' 128 at 1.000 with the hold-increment penalty; 1 of 2 passes every gate (s1 LP0 on one shared ramp window).
+  - C2: not met (§239 / §240 / §243). Wider-depth training extrapolates 2-3 depths, but passes past the trained budget add nothing.
+  - C4: not met (§244 / §245). Without per-pass value targets the d 2 loop formed in 1 of 4 seeds.
+  - C3: latency yes (~9x fewer serial layers); FLOPs no (1.5-3x more; Note 246-0).
+- **Spend:** realised ~$20.1 of the $30 guard line. Remaining work is held until a direction with a better value-to-cost ratio is chosen.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
