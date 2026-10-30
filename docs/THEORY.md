@@ -336,7 +336,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
 | 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **NO-TRANSFER both 10-30 (249-3): TRANSFER d 1-4 0.54 / 0.45 / 0.35 / 0.27 vs 1.000 in-frame; frame 7 d 1 1.000, frame 6 d 1 0.064 (CD-AN 0.971): the pass does not parse frame 6; $0.** **APPROVED by Audit 10-30 (249-1: frames 6-7 never-trained gate; guard / CD-AN on TRANSFER; per-frame report).** **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
-| 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
+| 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **Stage 0 10-30 (250-1): all 4 held-out frames FAILING (d 2 0.12-0.56) in both -> Stage 1 admitted; score_fd.py 8/8.** **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
 
 ## Live sections
 
@@ -22678,6 +22678,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - FRAME_ALL drives the existing test / pair sets, so the new frames would have to be added under a separate constant.
   - That is authoring work for a modest generalisation reading. It is parked until a direction needs phrasing diversity anyway (e.g. the GSM8K-path task-agnostic work).
 - **Theory holds:** realised ~$20.1; Vast credit ~$34 (Audit). Language-line status as Note 249-3.
+
+**Note 250-1 (2026-10-30 02:03 EDT; §250 Stage 0 read (lh_fh_s*/eval_frames.json; Audit G-D PASS 61945c34; 4060 fp32 bs 250; $0); Stage 1 admitted by the registered rule; Stage-1 scorer written before any Stage-1 output.)**
+- **Step-0 acc at d 2 on the held-out frames 12 / 13 / 14 / 15:** s1 0.362 / 0.124 / 0.283 / 0.505; s2 0.305 / 0.133 / 0.250 / 0.558.
+  - **All four are FAILING (< 0.80) in both models**, so Stage 1 runs and GEN binds on frames 12-15 (>= 2 of 4 needed).
+  - d 1 is mul_v-only (red team 1), hence 1.000 on frames 14 / 15 at d 1. It is not informative about the other ops.
+- **TRAIN-NEW frames 8-11 at step 0** (descriptive), d 2: s1 0.723 / 0.512 / 0.398 / 0.955; s2 0.725 / 0.515 / 0.369 / 0.808.
+- Wrap shares are ~0.80-0.84 per frame; acc_nowrap tracks acc.
+- **Stage-1 scorer:** theory/score_fd.py (fixtures 8/8). It takes FAILING frames from Stage 0 and implements GEN / MEMO / NO-GAIN / NOLOSS (TEST2 >= 0.98, §238 gates, HOLD-LONG3, retention) / LP0 (CTRL-calibrated after 1k, floor 10) as FD_v1 sec. 4.
+- **Stage-1 runs:** fd_div_s1 / s2 and fd_ctrl_s1 / s2 from lh_fh_s1 / s2; guard $5.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
