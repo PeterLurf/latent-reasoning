@@ -14,7 +14,7 @@ Scope for every line: one model lineage (GPT-2 askname init → P-2 → REG → 
 | C5, decides how long | **Partial** | §248: a post-hoc learned halt head (self-consistency labels, frozen model) halts at ~d passes with accuracy kept (≥ 0.993). The softmax alone is confidently wrong (§247). Fails out of range |
 | C3, beats text CoT at matched compute | **Split** | Note 246-0: ~9× fewer serial layers, but 1.5–3× more FLOPs (each pass recomputes the prompt). Fix = KV-cached latent positions (deferred, §246-1) |
 | C2, more thinking helps past training | **Not met** | §239 / §240 / §243: passes past the trained budget add nothing. Wider-depth training extrapolates 2–3 depths further (§243, descriptive) |
-| C4, no hand-built intermediate states | **Not met** | §244 / §245: without per-pass targets the d 2 loop formed in 1 of 4 seeds. No C4-admissible teacher exists in this setup |
+| C4, no hand-built intermediate states | **Partial** | §244 / §245: without per-pass targets the d 2 loop formed in 1 of 4 seeds. §251: with per-pass targets on d <= 2 only, d 3-4 are learned from answers (d 4 1.000 in 2/2; full causal bar 1/2); dropping all targets after the seed fails (0/2) |
 | C7, faithfully readable | **Not met** | §247: the printed values are faithful readouts, but text fed back through the write path is ignored (edits change nothing) |
 
 ## What limits it (diagnosed)
