@@ -1,0 +1,67 @@
+{
+ "seed": 4,
+ "first_d_ge3_step": 4,
+ "d_seq_head": [
+  2,
+  1,
+  1,
+  3,
+  4,
+  1,
+  2,
+  1,
+  1,
+  2,
+  3,
+  3
+ ],
+ "note": "gate-only seed 4 (d 2, 1, 1, 3, ...): the registered seeds 1 / 2 both draw d >= 3 at step 1, so the pre-S3 prefix is empty for them",
+ "pre": {
+  "rc": [
+   9,
+   9
+  ],
+  "step": [
+   3,
+   3
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0
+ },
+ "at": {
+  "rc": [
+   9,
+   9
+  ],
+  "step": [
+   4,
+   4
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [
+   "model/g.p.h_0_attn_c_attn_bias",
+   "model/g.p.h_0_attn_c_attn_weight",
+   "model/g.p.h_0_attn_c_proj_bias",
+   "model/g.p.h_0_attn_c_proj_weight",
+   "model/g.p.h_0_ln_1_bias",
+   "model/g.p.h_0_ln_1_weight",
+   "model/g.p.h_0_ln_2_bias",
+   "model/g.p.h_0_ln_2_weight",
+   "model/g.p.h_0_mlp_c_fc_bias",
+   "model/g.p.h_0_mlp_c_fc_weight",
+   "model/g.p.h_0_mlp_c_proj_bias",
+   "model/g.p.h_0_mlp_c_proj_weight",
+   "model/g.p.h_10_attn_c_attn_bias",
+   "model/g.p.h_10_attn_c_attn_weight",
+   "model/g.p.h_10_attn_c_proj_bias",
+   "model/g.p.h_10_attn_c_proj_weight",
+   "model/g.p.h_10_ln_1_bias",
+   "model/g.p.h_10_ln_1_weight",
+   "model/g.p.h_10_ln_2_bias",
+   "model/g.p.h_10_ln_2_weight"
+  ],
+  "n_mismatch": 480
+ },
+ "pass": true
+}
