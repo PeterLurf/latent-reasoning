@@ -94,9 +94,26 @@ def fixtures():
     ok = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (ok, len(res))); return ok == len(res)
 
 
+def score_hh(runs=R):
+    """§248 HALT-HEAD (HH_v1.md): §247's C5 gates on eval_halthead.json; VOID if the head's val_acc < 0.80. Labels C5-LEARNED (= §247's C5-READOUT logic) / COSTLY / NO-SIGNAL / NO-SAVING."""
+    o = {"section": 248, "registered": "HH_v1.md", "models": {}}
+    for m in MODELS:
+        e = jl(os.path.join(runs, m, "eval_halthead.json"))
+        if e is not None and (e.get("head") or {}).get("val_acc", 1.0) < 0.80:
+            o["models"][m] = {"label": "VOID", "why": "head val_acc < 0.80", "head": e.get("head")}; continue
+        r = c5(e)
+        if r["label"] == "C5-READOUT":
+            r["label"] = "C5-LEARNED"
+        r["head"] = (e or {}).get("head"); o["models"][m] = r
+    labs = [o["models"][m]["label"] for m in MODELS]
+    o["verdict"] = "HALT-HEAD %s (%s)" % ("pending" if "pending" in labs else labs[0] if len(set(labs)) == 1 else "MIXED", " / ".join(labs)); return o
+
+
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--hh", action="store_true", help="§248 HALT-HEAD")
+    a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = score(); print(o["verdict"])
-    os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
+    o = score_hh() if a.hh else score(); print(o["verdict"])
+    out = OUT.replace(".json", "_hh.json") if a.hh else OUT
+    os.makedirs(os.path.dirname(out), exist_ok=True); json.dump(o, open(out, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
