@@ -22510,6 +22510,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - on serial depth / latency the latent loop wins by ~9x;
   - on total FLOPs text-CoT wins by 1.5-3x at d 2-4, and the gap grows with d.
   - **C3 (matched compute) is therefore NOT met on FLOPs by this architecture.** The user's operative standard ('equal or better accuracy than text CoT at fewer steps / less compute') is met on steps, not on compute.
+- **Status line (agreed with Audit, who checked the arithmetic to order):** "C3: latency yes (~9x fewer serial layers), FLOPs no (1.5-3x more); fix = KV-cached latent positions (unstaged)".
 - **Design implication (not registered):** a FLOPs-competitive loop must not recompute the prompt each pass. The latent state should be added as new cached positions (a KV-cached latent token per pass, Coconut-style) rather than re-reading at every prompt position. That is an architectural redesign, with retraining, beyond the current ~$10 headroom; it would be staged as its own registration.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
