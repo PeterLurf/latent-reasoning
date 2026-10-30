@@ -22728,6 +22728,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Regularisation toward the init would not help; a broader-phrasing init (a pretrained step skill over many surface forms) would.
   - The one-pass CD-AN's better d 1 frame-6 parse (0.971) comes from its own training on full problems; it is not a general property of the init.
 - **Status unchanged:** C1 is frame-scoped. The cause is identified as init-inherited.
+- **Amendment (Audit's caveat, same day):**
+  - CD-AN, from the same askname init and trained on frames 0-5 only in the direct full-problem format, parses frame 6 at d 1 = 0.971 (§249). The loop scored 0.064 on those same items; askname's single-step ':' on frame 6 is 0.600 (a different item set: step 1 of d 2).
+  - So the same init plus frames 0-5 training CAN become phrasing-general in the direct format.
+  - **The narrowness sits in the cued-pass / askname question format** (shared by the init and the loop), not only in the init's frame exposure.
+  - The lever is therefore the pass format (e.g. a pass that answers the direct full-problem question, or a cue format trained the way CD-AN was), rather than more pretraining data. This replaces the 'broader-phrasing init' implication above.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

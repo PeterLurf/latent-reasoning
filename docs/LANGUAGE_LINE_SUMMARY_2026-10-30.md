@@ -20,12 +20,14 @@ Scope for every line: one model lineage (GPT-2 askname init → P-2 → REG → 
 ## What limits it (diagnosed)
 1. **Position priors in the data.** A fixed final op let passes take shortcuts (§234–§235). Fixed by iid op laws (§236–§238).
 2. **Steps past the trained count are never computed.** The cause is compute, not storage or text length (§241–§243).
-3. **Phrasing:** the cued step is frame-specific (§249). Adding frames teaches only those frames (§250, MEMO). The narrowness is inherited from the askname init, not caused by loop training (Note 250-4).
+3. **Phrasing:** the cued step is frame-specific (§249). Adding frames teaches only those frames (§250, MEMO).
+   - Loop training did not cause it: the askname init is already narrow in the cued question format (Note 250-4).
+   - The same init trained in the direct format (CD-AN) parses an unseen frame (0.971), so the narrowness is in the cued-pass format.
 4. **Architecture cost:** the per-pass prompt recompute makes FLOPs uncompetitive (Note 246-0).
 
 ## Most promising next directions (each a new staged design)
 - **KV-cached latent positions** (C3 FLOPs), re-using REVIEW_KV's fixes.
-- **A broader-phrasing step skill** in the init (pretrain the single-step question over many surface forms), which also unblocks task-agnostic transfer.
+- **A pass format that inherits the direct path's phrasing generality** (e.g. passes answering the direct full-problem question, or a cue format trained as CD-AN was), which would also unblock task-agnostic transfer.
 - **Learned halting jointly with the loop** (beyond the post-hoc head), and externalisation (C5).
 - **A C4 route:** RL / self-training from answer rewards, once a model can already write steps.
 
