@@ -1,7 +1,7 @@
 """§250 Note 250-3 $0 PROBE (pre-stated; eval-only): does pass 1 read v_1 under the held-out frames? -> scratch/s250_s1probe/eval_s1probe.json {model: {frame: {acc, n}}}.
 Input (one string for both models): [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_1)) + enc(' The answer is:') = the askname P1-ASK+NAME dec (ask_meta.json, X = S_1) = the
 AW pass-1 input (think_cues[0]); target v_1 (the item's values[1]); the argmax over the 11 number tokens at ':'.
-  (a) s233_askname_s1: the direct trunk (as it is evaluated: IO.direct_logits on that dec, fp32);  (b) lh_fh_s1: pass 1 only from S = 0 (pass_aw's ':' logits, colon_logits).
+  (a) s233_askname_s1: the direct trunk (IO.direct_logits on that dec, fp32); (b) lh_fh_s1 and (c, Audit) aw_plaw2_s1: pass 1 only from S = 0 (pass_aw, colon_logits).
 Items (d 2, DF law): '0-5' = TEST2-DF d 2 (every op in frames 0-5; there is no per-frame set for 0-5), 1,000; '6' / '7' = the eval-only sets of part_frames (Stream(25000 + f),
 frames (f,)), 1,000 each; '12'..'15' = build_sets(2)['framesets'][f][2], 1,000 each. Path check: (b)'s preds on TEST2-DF d 2 == lh_fh_s1's eval_ws pass-1 preds (host).
     python -B scratch/s250_s1probe.py [--device cuda:0 --bs 250]"""
@@ -56,10 +56,11 @@ def main():
     a, m, g = E.load(os.path.join(ROOT, "boxes/runs_fsq/s233_askname_s1"), dev); assert m is None, "askname is a direct run"
     out["s233_askname_s1"] = {k: {"acc": float((run_direct(g, v, dev, a_.bs) == np.array([it["values"][1] for it in v])).mean()), "n": len(v)} for k, v in items.items()}
     del g; torch.cuda.empty_cache()
-    a, m, g = E.load(os.path.join(ROOT, "boxes/runs_fsq/lh_fh_s1"), dev); res = {}; preds = {}
-    for k, v in items.items():
-        preds[k] = run_pass1(m, v, dev, a_.bs); res[k] = {"acc": float((preds[k] == np.array([it["values"][1] for it in v])).mean()), "n": len(v)}
-    out["lh_fh_s1_pass1_S0"] = res
+    for run in ("aw_plaw2_s1", "lh_fh_s1"):                                  # (c) Audit: aw_plaw2_s1 = the first loop stage (12k from askname); (b) lh_fh_s1
+        a, m, g = E.load(os.path.join(ROOT, "boxes/runs_fsq", run), dev); res = {}; preds = {}
+        for k, v in items.items():
+            preds[k] = run_pass1(m, v, dev, a_.bs); res[k] = {"acc": float((preds[k] == np.array([it["values"][1] for it in v])).mean()), "n": len(v)}
+        out[run + "_pass1_S0"] = res; del m, g; torch.cuda.empty_cache()
     ws = json.load(open(os.path.join(ROOT, "boxes/runs_fsq/lh_fh_s1/eval_ws.json")))["items"]["2"]
     assert ws["sig"] == [it["sig"] for it in s["test2"][2]], "eval_ws item order"
     out["path_check_pass1_eq_host_ws_d2"] = bool((preds["0-5"] == np.array(ws["pred_by_pass"]["1"])).all())
