@@ -1,0 +1,69 @@
+{
+ "ref": "boxes/runs_fsq/aw_plaw2_s1/args.json",
+ "diff": {
+  "aux_fade": [
+   "48000,48000",
+   "0,0"
+  ],
+  "hold_far_hi": [
+   null,
+   40
+  ],
+  "hold_far_lo": [
+   null,
+   16
+  ],
+  "hold_far_n": [
+   null,
+   16
+  ],
+  "hold_inc": [
+   null,
+   0.0
+  ],
+  "hold_log": [
+   null,
+   false
+  ],
+  "hold_start": [
+   null,
+   500
+  ],
+  "init_model": [
+   null,
+   ""
+  ],
+  "init_model_sha": [
+   null,
+   ""
+  ],
+  "inject_ow_sha256": [
+   "0695c354cc72411a70d538451a9cfb1ae2592f437207e51a9885d41f0a1e5afe",
+   "88ee59e15101b1255af43acbb53aaf1a075dac127505a09a25e0c355b8812da8"
+  ],
+  "keep_final_ckpt": [
+   null,
+   true
+  ],
+  "mul_s_p": [
+   null,
+   1
+  ],
+  "mul_s_p3": [
+   null,
+   1.0
+  ],
+  "ow_words_sha256": [
+   "f0c53df6fd89a0c7b08b327f71a1e953fb4a0a4b517b1118d681fb9f042f8383",
+   "d2497e68c61a5198e52a8c2fe0fa00680c7f22bbcb2a31dbb62101cd46dc9f93"
+  ],
+  "seed": [
+   1,
+   4
+  ],
+  "steps": [
+   12000,
+   18000
+  ]
+ }
+}
