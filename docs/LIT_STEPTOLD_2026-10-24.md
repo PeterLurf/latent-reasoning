@@ -115,3 +115,13 @@ From our own notes; all IDs verified earlier.
   - Latent multiplication baselines: iCoT 2405.14838 (multi-digit multiplication by internalised CoT). LIT_S98_MULT found no latent-loop multiplication baselines.
   - SCIT 2608.27265's templates are affine (no cross-state product).
   - **Not found:** a looped / recurrent-memory LM composing two **stored** latent states multiplicatively with a causal product-step swap.
+
+## Addendum (2026-10-30): §251 ANSWER-EXTEND: bootstrap with step targets, extend from answers only
+**Verdict: NARROW.** "Step supervision only to bootstrap, deeper steps from answers" has close priors (all IDs verified earlier):
+- **Coconut 2412.06769:** CoT bootstrap, then latents with no direct targets, trained by downstream loss.
+- **iCoT 2405.14838:** the CoT is internalised progressively until the answer is alone.
+- **ATC 2609.19717:** continuous thoughts learned with **no intermediate supervision** through a task-accuracy-gated difficulty curriculum (99.9 on shortcut-controlled reachability).
+- **Latent-GRPO 2604.27998 and Abstract-CoT 2604.22709:** a latent SFT warm start, then answer-reward RL.
+- **Lee 2502.01612:** a bootstrap, then extension by self-labels.
+
+**New:** in a recurrent-memory loop, depth extension past the supervised range from answer loss alone, with a keep-targets (AEX) vs drop-targets (AEX0) ablation. Our own §245 (answer-only formation 1 / 4 seeds) is the internal motivation.
