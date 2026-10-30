@@ -22734,6 +22734,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **The narrowness sits in the cued-pass / askname question format** (shared by the init and the loop), not only in the init's frame exposure.
   - The lever is therefore the pass format (e.g. a pass that answers the direct full-problem question, or a cue format trained the way CD-AN was), rather than more pretraining data. This replaces the 'broader-phrasing init' implication above.
 
+**Note 250-5 (2026-10-30 08:11 EDT; $0 decision probe, pre-stated before any output (Audit's lead from the summary): does the direct-format model compute v_1 across unseen phrasings? Its outcome decides whether a 'direct-format pass' pilot is registered.)**
+- **Models:**
+  - DIRECT = df_pcd4_s1 (CD-AN, DF law, d <= 4; §249 frame-6 d 1 0.971), the full-problem prompt, state at the answer position;
+  - LOOP = lh_fh_s1, pass-1 ':' state (cued format, S = 0).
+- **Items:** d 2, frames 0-5 (TEST2-DF stream; train 3,000 / val 1,000 / test 1,000) and the unseen frames 6 / 12 / 13 / 14 / 15 (1,000 each, §250 sets).
+- **Probe:** a multinomial logistic regression for v_1 (11 classes) on the last-token hidden state at each of the 12 layers (Audit's 231-1 protocol: standardised, L2 1e-3).
+  - It is fitted on frames 0-5 train only. The layer is chosen by frames 0-5 val acc (never by unseen frames).
+  - It is tested on frames 0-5 test and on each unseen frame. Layer-0 control reported.
+- **Pre-stated readings:**
+  - **DIRECT-GENERAL:** the DIRECT probe on unseen frames (mean of 6 + 12-15) >= 0.80 and >= the LOOP probe + 0.20. That registers a ~$1-2 direct-format-pass pilot (pass input = the direct full-problem prompt, its answer-position state written).
+  - **BOTH-NARROW:** DIRECT unseen mean < 0.60. The direct path does not internally compute v_1 on unseen phrasings either (its d 1 success is end-to-end only). Park the format lead.
+  - **MIXED:** otherwise.
+  - Sanity: both probes >= 0.90 on frames 0-5 test, else INVALID.
+- **Build (Experiments, local $0):** eval_v1probe.json {model: {layer_chosen, val_acc, test_0_5, unseen {frame: acc}, layer0 {..}}}.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
