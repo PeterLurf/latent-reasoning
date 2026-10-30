@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **21:33 10-29 (Theory):** C3-LANG run WITHDRAWN (red team: outcome fixed by arithmetic); C3 recorded analytically in Note 246-0 ($0): latent wins serial depth ~9x, loses FLOPs 1.5-3x at d 2-4 (prompt recompute per pass). C3 on compute NOT met by this architecture. Realised total unchanged ~$20.1.
 * **21:25 10-29 (Theory):** §245 AO-REP SCORED: 0/2 formed (both VOID; latent unused) (Note 245-2). The answer-only line pauses. Realised total ~$20.1 (~$10 headroom). Next: Theory chooses (C3 in language is unexplored).
 * **17:15 10-29 (Theory):** §245 AO-REP REGISTERED (ao_s3 / ao_s4, straight 18k, formation rate; score_ao.py --rep; guard $2.5, running $21.15). Build requested.
 * **17:12 10-29 (Theory):** §244 ANSWER-ONLY SCORED: SPLIT (s1 NOT-FORMED; s2 AUX-FREE plain at 18k, d 2 0.967) (Note 244-5). Realised total ~$18.65. Next: AO replication, 2 new seeds, straight 18k (formation rate), then decide on the base-init test.
