@@ -1,0 +1,13 @@
+2026-10-29 22:23:24 start lh_fh_s1
+PART c7 done D:\Latent\boxes\runs_fsq\lh_fh_s1 218 s
+[W1029 22:31:01.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 408944640 bytes (free: 0, total: 8585216000).
+PART halt done D:\Latent\boxes\runs_fsq\lh_fh_s1 271 s
+RH done D:\Latent\boxes\runs_fsq\lh_fh_s1 519 s
+2026-10-29 22:32:05 rc 0 lh_fh_s1
+2026-10-29 22:32:05 start lh_fh_s2
+PART c7 done D:\Latent\boxes\runs_fsq\lh_fh_s2 218 s
+[W1029 22:39:43.000000000 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 408944640 bytes (free: 0, total: 8585216000).
+PART halt done D:\Latent\boxes\runs_fsq\lh_fh_s2 271 s
+RH done D:\Latent\boxes\runs_fsq\lh_fh_s2 520 s
+2026-10-29 22:40:47 rc 0 lh_fh_s2
+2026-10-29 22:40:47 S247 DONE
