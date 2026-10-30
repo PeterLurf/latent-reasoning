@@ -10,6 +10,8 @@
 | 4 | Phrasing | $0 first: the op-dependence of the frame-6 failure (pass 1 0.52 on d 2 items vs d 1 mul_v 0.064). A design only if a single op / construction explains it. | $0 → ~$2 | 0.2 | Task-agnostic steps | low until the $0 read |
 | 5 | C7 | Non-circular text-write: train the write path to accept text-encoded values on edit types A, test on held-out edit types B. | ~$2 | 0.25 | Faithful readability | low (lowest priority; circularity risk) |
 
+**Update 10-30 (Note 251-3):** #1 done. AEX SPLIT; AEX0 FAIL. Answer-only depth +2 works only with the d <= 2 step targets kept as a replay anchor. New C4 candidate (Literature): a competence-gated depth curriculum (ATC 2609.19717) for the answer-only arm. Check its preconditions before drafting.
+
 **Order:** 1 (ANSWER-EXTEND) now. Then the $0 phrasing read (4), which is free. Then KV-LAT (2) if credit allows (≥ $8 left after 1). C2 and C7 wait for a new idea.
 
 **Why ANSWER-EXTEND first:**
