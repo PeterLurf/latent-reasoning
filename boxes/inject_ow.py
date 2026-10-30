@@ -46,6 +46,7 @@ SEED_TEST2, SEED_TRANSFER, SEED_PAIRS2, SEED_FLOOR2, SEED_PERM2 = 22960, 22961, 
 SEED_CAL, SEED_MEMCHECK = 22996, 22997                                      # g_add calibration / memory-check items (unused elsewhere, grep 10-23)
 SEED_TEST2_REG, SEED_TRANSFER_REG, SEED_PAIRS2_REG, SEED_FLOOR2_REG = 23800, 23801, 23802, 23804   # §236 REG sets (+1 of PAIRS2_REG = its stream; unused, grep 10-27)
 SEED_TEST2_DF, SEED_TRANSFER_DF, SEED_PAIRS2_DF, SEED_FLOOR2_DF = 24010, 24011, 24012, 24014       # §238 DF sets (+1 of PAIRS2_DF = its stream; unused, grep 10-27)
+SEED_FRAMESET, FRAMESET_FRAMES, FRAMESET_DS = 25000, tuple(range(8, 16)), (1, 2, 3, 4)   # §250 FRAME-DIV per-frame test sets: Stream(25000 + f, frames (f,)) (unused, grep 10-30)
 SEED_OPCLASS_DF, OPCLASS_N, OPCLASS_D = 24015, 3000, 4                       # §238 OPCLASS-DF: Stream(SEED_OPCLASS_DF, frames=FRAME_TRAIN, **OWKW, mul_s_p=2), 3,000 at d 4, no EXCL
 OWKW = {"order_mode": "topo", "dag": True}
 PAIR_DS = range(3, 9); PAIR_TRIES = 3000; PAIR_CAP = 1000; FLOOR_K = 3; TEST_DS = range(1, 13); TEST_N = 1000
@@ -156,13 +157,18 @@ def build_sets(mul_s_p=1):
     es = OW.Stream(22950, ex0, frames=OW.FRAME_TRAIN, **OWKW, **kw); ED7 = [es.draw(d) for d in range(1, 9) for _ in range(200)]
     excl = ex0 | {it["sig"] for it in ED7} | {x["sig"] for d, ps in PC6.items() for pr in ps for x in pr}
     excl |= {it["sig"] for d in test2 for it in test2[d]} | {it["sig"] for d in transfer for it in transfer[d]} | {x["sig"] for x in cand}
+    framesets = {}                                                           # §250 FRAME-DIV (FD_v1 §2 G3): per-frame test sets, frames 8-15, every op in that frame
+    for f in FRAMESET_FRAMES:
+        sf = OW.Stream(SEED_FRAMESET + f, frames=(f,), **OWKW, **kw); framesets[f] = {d: [sf.draw(d) for _ in range(TEST_N)] for d in FRAMESET_DS}
+    excl |= {it["sig"] for f in framesets for d in framesets[f] for it in framesets[f][d]}
     shas = {"test2_sha": OW.set_sha([it for d in TEST_DS for it in test2[d]]), "transfer_sha": OW.set_sha([it for d in TEST_DS for it in transfer[d]]),
             "pairs2_sha": OW.set_sha([x for d in PAIR_DS for p_ in pairs[d] for x in (p_["rec"], p_["don"])]),
             "floors2_sha": OW.set_sha([x for d in PAIR_DS for row in floors[d] for x in row if x is not None]),
             "s226_test_sha": OW.set_sha([it for d in sorted(TE6) for it in TE6[d]]), "s227_decode_sha": OW.set_sha(ED7)}
+    shas.update({"frameset%d_sha" % f: OW.set_sha([it for d in FRAMESET_DS for it in framesets[f][d]]) for f in FRAMESET_FRAMES})   # §250
     if mul_s_p != 1:
         shas["set_law"] = {0: "reg", 2: "df"}[mul_s_p]                       # §236 / §238: the law tag (absent = the default law)
-    return {"test2": test2, "transfer": transfer, "pairs": pairs, "floors": floors, "pair_stats": pst, "excl": excl, "shas": shas}
+    return {"test2": test2, "transfer": transfer, "pairs": pairs, "floors": floors, "pair_stats": pst, "excl": excl, "shas": shas, "framesets": framesets}
 
 
 def load_trunk(dev, n7args):

@@ -1,0 +1,83 @@
+{
+ "rc": 0,
+ "diff_keys": [
+  "excl_n",
+  "frameset10_sha",
+  "frameset11_sha",
+  "frameset12_sha",
+  "frameset13_sha",
+  "frameset14_sha",
+  "frameset15_sha",
+  "frameset8_sha",
+  "frameset9_sha",
+  "init_model",
+  "init_trunk",
+  "inject_ow_sha256",
+  "keep_final_ckpt",
+  "train_frames"
+ ],
+ "diff": {
+  "excl_n": [
+   177599,
+   209599
+  ],
+  "frameset10_sha": [
+   "None",
+   "4721aa432daf"
+  ],
+  "frameset11_sha": [
+   "None",
+   "01b072a63875"
+  ],
+  "frameset12_sha": [
+   "None",
+   "72fd19e788ee"
+  ],
+  "frameset13_sha": [
+   "None",
+   "ddd6c0d0f69b"
+  ],
+  "frameset14_sha": [
+   "None",
+   "443306812eac"
+  ],
+  "frameset15_sha": [
+   "None",
+   "cb1e8acfee29"
+  ],
+  "frameset8_sha": [
+   "None",
+   "7f9a5846ddee"
+  ],
+  "frameset9_sha": [
+   "None",
+   "2a11f3207254"
+  ],
+  "init_model": [
+   "boxes/runs_fsq/df_plaw4_s1/model.pt",
+   "D:/Latent/boxes/runs_fsq/df_plaw4_s1/model.pt"
+  ],
+  "init_trunk": [
+   "boxes/runs_fsq/s233_askname_s1/model.pt",
+   "D:/Latent/boxes/runs_fsq/s233_askname_s1/model.pt"
+  ],
+  "inject_ow_sha256": [
+   "88ee59e15101",
+   "1495c7b6d8e8"
+  ],
+  "keep_final_ckpt": [
+   null,
+   false
+  ],
+  "train_frames": [
+   null,
+   ""
+  ]
+ },
+ "python_processes": [
+  "C:\\Users\\peter\\AppData\\Local\\Python\\bin\\python.exe scratch/autoexclude_watch.py",
+  "C:\\Users\\peter\\AppData\\Local\\Python\\bin\\python.exe -B scratch/gate_s250.py --gates G2,G3,G4,G1,G5,G6"
+ ],
+ "unexpected_keys": [],
+ "pass": true
+}

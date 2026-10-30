@@ -1,0 +1,267 @@
+{
+ "0": {
+  "frames": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "sha_keys": [
+   "frameset10_sha",
+   "frameset11_sha",
+   "frameset12_sha",
+   "frameset13_sha",
+   "frameset14_sha",
+   "frameset15_sha",
+   "frameset8_sha",
+   "frameset9_sha"
+  ],
+  "n_per_d": {
+   "8": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "9": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "10": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "11": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "12": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "13": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "14": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "15": [
+    1000,
+    1000,
+    1000,
+    1000
+   ]
+  },
+  "frames_ok": true,
+  "all_in_excl": true,
+  "in_test2": 0,
+  "in_transfer": 0,
+  "n_unique": 32000,
+  "n": 32000,
+  "shas": {
+   "frameset8_sha": "a7d5f3032d00",
+   "frameset9_sha": "2fd76d4f71b3",
+   "frameset10_sha": "359971a0b33a",
+   "frameset11_sha": "abacccfb8dcc",
+   "frameset12_sha": "ff5e1e690c5e",
+   "frameset13_sha": "b12685d30e01",
+   "frameset14_sha": "951eadb23126",
+   "frameset15_sha": "25d2b4e99aa3"
+  }
+ },
+ "1": {
+  "frames": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "sha_keys": [
+   "frameset10_sha",
+   "frameset11_sha",
+   "frameset12_sha",
+   "frameset13_sha",
+   "frameset14_sha",
+   "frameset15_sha",
+   "frameset8_sha",
+   "frameset9_sha"
+  ],
+  "n_per_d": {
+   "8": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "9": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "10": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "11": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "12": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "13": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "14": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "15": [
+    1000,
+    1000,
+    1000,
+    1000
+   ]
+  },
+  "frames_ok": true,
+  "all_in_excl": true,
+  "in_test2": 0,
+  "in_transfer": 0,
+  "n_unique": 32000,
+  "n": 32000,
+  "shas": {
+   "frameset8_sha": "a946812aa917",
+   "frameset9_sha": "e1f36241ba79",
+   "frameset10_sha": "4504b82eb7be",
+   "frameset11_sha": "25fd5deafe7a",
+   "frameset12_sha": "9b45474e23f8",
+   "frameset13_sha": "50bc9f07f87a",
+   "frameset14_sha": "ef78988487cf",
+   "frameset15_sha": "ea0c2d7a432d"
+  }
+ },
+ "2": {
+  "frames": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "sha_keys": [
+   "frameset10_sha",
+   "frameset11_sha",
+   "frameset12_sha",
+   "frameset13_sha",
+   "frameset14_sha",
+   "frameset15_sha",
+   "frameset8_sha",
+   "frameset9_sha"
+  ],
+  "n_per_d": {
+   "8": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "9": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "10": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "11": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "12": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "13": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "14": [
+    1000,
+    1000,
+    1000,
+    1000
+   ],
+   "15": [
+    1000,
+    1000,
+    1000,
+    1000
+   ]
+  },
+  "frames_ok": true,
+  "all_in_excl": true,
+  "in_test2": 0,
+  "in_transfer": 0,
+  "n_unique": 32000,
+  "n": 32000,
+  "shas": {
+   "frameset8_sha": "7f9a5846ddee",
+   "frameset9_sha": "2a11f3207254",
+   "frameset10_sha": "4721aa432daf",
+   "frameset11_sha": "01b072a63875",
+   "frameset12_sha": "72fd19e788ee",
+   "frameset13_sha": "ddd6c0d0f69b",
+   "frameset14_sha": "443306812eac",
+   "frameset15_sha": "cb1e8acfee29"
+  }
+ },
+ "pass": true
+}

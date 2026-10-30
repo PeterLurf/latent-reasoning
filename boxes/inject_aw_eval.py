@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer")
-AW_ONLY = ("probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames")
+AW_ONLY = ("probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
 
 
 def pred_of(lg):
@@ -950,6 +950,27 @@ def part_transfer(m, g, sets, a, dev, bs):
     out["def"] = ("§249 FRAME-TRANSFER (FT_v1 §2): build_sets(law)['transfer'] (frames 6-7), d 1..6, all items; LAT acc at K' = think_k + WS per pass + cue_only d 2-4 "
                   "(cue-only passes, full-text decoder); CD acc (direct); fp32")
     return out
+
+
+@torch.no_grad()
+def part_frames(m, g, sets, a, dev, bs):
+    """§250 FRAME-DIV Stage 0 (FD_v1 §3): build_sets(law)['framesets'] (frames 8-15, every op in that frame, d 1-4, 1,000 each): per frame and d, acc at K' = think_k, WS per pass
+    (AW.ws_readout), the wrap share (items whose mod-11 chain wraps: OW's wrap_any) and acc on the wrap / no-wrap subsets (FD_v1 §1 mod-11 caveat, descriptive);
+    per item {sig, pred, ws_pred, wrap_any, ans}. -> {frame: {d: {...}}} + the frameset shas."""
+    K = a["think_k"]; out = {"frameset_shas": {str(f): sets["shas"]["frameset%d_sha" % f] for f in IO.FRAMESET_FRAMES}}
+    for f in IO.FRAMESET_FRAMES:
+        T = tokd({"test2": sets["framesets"][f]}, a, IO.FRAMESET_DS); rec = {}
+        assert all(set(it["raw"]["frames"]) == {f} for d in T for it in T[d]), ("§250: frame set", f)
+        for d in IO.FRAMESET_DS:
+            y = np.array([it["ans"] for it in T[d]]); A, _ = passes(m, T[d], dev, bs, {K}); ok = A[K] == y
+            r_, pv = AW.ws_readout(m, {d: T[d]}, dev, K, bs, per_item=True); wa = np.array([bool(it["raw"].get("wrap_any")) for it in T[d]])
+            rec[str(d)] = {"n": len(y), "acc": float(ok.mean()), "ws": r_[str(d)], "wrap_any_share": float(wa.mean()),
+                           "acc_nowrap": float(ok[~wa].mean()) if (~wa).any() else None, "acc_wrap": float(ok[wa].mean()) if wa.any() else None,
+                           "items": items_rec(T[d], {"pred": A[K].tolist(), "ws_pred": pv[str(d)], "wrap_any": wa.astype(int).tolist()})}
+        out[str(f)] = rec
+    out["def"] = ("§250 FRAME-DIV Stage 0 (FD_v1 §3): per-frame test sets (frames 8-11 DIV-train, 12-15 held out; every op in that frame; build_sets law; Stream(25000 + f)), "
+                  "d 1-4 x 1,000; acc at K' = think_k, WS per pass, wrap share + wrap / no-wrap acc; fp32")
+    return out
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
@@ -985,7 +1006,7 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "lenstep": lambda: part_lenstep(m, g, sets, a, dev, bs), "normctr": lambda: part_normctr(m, g, sets, a, dev, bs),
               "ws_long": lambda: part_ws_long(m, g, sets, a, dev, bs), "c7": lambda: part_c7(m, g, sets, a, dev, bs),
               "halt": lambda: part_halt(m, g, sets, a, dev, bs), "halthead": lambda: part_halthead(m, g, sets, a, dev, bs),
-              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs)}[p_]()
+              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs)}[p_]()
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

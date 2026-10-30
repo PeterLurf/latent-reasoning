@@ -1,0 +1,91 @@
+{
+ "sets": {
+  "0": {
+   "old_keys_equal": true,
+   "new_keys": [
+    "frameset10_sha",
+    "frameset11_sha",
+    "frameset12_sha",
+    "frameset13_sha",
+    "frameset14_sha",
+    "frameset15_sha",
+    "frameset8_sha",
+    "frameset9_sha"
+   ],
+   "excl_growth": 32000
+  },
+  "1": {
+   "old_keys_equal": true,
+   "new_keys": [
+    "frameset10_sha",
+    "frameset11_sha",
+    "frameset12_sha",
+    "frameset13_sha",
+    "frameset14_sha",
+    "frameset15_sha",
+    "frameset8_sha",
+    "frameset9_sha"
+   ],
+   "excl_growth": 32000
+  },
+  "2": {
+   "old_keys_equal": true,
+   "new_keys": [
+    "frameset10_sha",
+    "frameset11_sha",
+    "frameset12_sha",
+    "frameset13_sha",
+    "frameset14_sha",
+    "frameset15_sha",
+    "frameset8_sha",
+    "frameset9_sha"
+   ],
+   "excl_growth": 32000
+  }
+ },
+ "nw_ow_sets_equal": true,
+ "stream_old": {
+  "0": "d085eba740fbbd2a222081a5cca7ef9b04b39719b24aef626f11f7625d673463",
+  "1": "bc5050295473042e6449e30d2ce3a0a1769a6e75941d7929ac73592001384c15",
+  "2": "36f4161219800543664eafd9dacce9ceb0fac26abee20b17c67483953f6282b1"
+ },
+ "stream_new": {
+  "0": "d085eba740fbbd2a222081a5cca7ef9b04b39719b24aef626f11f7625d673463",
+  "1": "bc5050295473042e6449e30d2ce3a0a1769a6e75941d7929ac73592001384c15",
+  "2": "36f4161219800543664eafd9dacce9ceb0fac26abee20b17c67483953f6282b1"
+ },
+ "stream_equal": true,
+ "trainbit": {
+  "fh": {
+   "rc": [
+    9,
+    9
+   ],
+   "step": [
+    30,
+    30
+   ],
+   "n_model_tensors": 162,
+   "mismatch": [],
+   "n_mismatch": 0,
+   "log_equal": true,
+   "pass": true
+  },
+  "plain": {
+   "rc": [
+    9,
+    9
+   ],
+   "step": [
+    30,
+    30
+   ],
+   "n_model_tensors": 162,
+   "mismatch": [],
+   "n_mismatch": 0,
+   "log_equal": true,
+   "pass": true
+  }
+ },
+ "pass": true
+}
