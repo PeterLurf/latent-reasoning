@@ -1,0 +1,25 @@
+{
+ "rc": 0,
+ "frames": [
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "8",
+  "9"
+ ],
+ "fields_ok": true,
+ "meta": {
+  "eval_gpu": "NVIDIA GeForce RTX 4060",
+  "eval_bs": 250,
+  "eval_dtype": "fp32",
+  "law": 2,
+  "set_law": "df",
+  "think_k": 8,
+  "peak_gib": 2.6435599327087402,
+  "sec": 882
+ },
+ "pass": true
+}

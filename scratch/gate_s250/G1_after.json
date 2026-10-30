@@ -1,0 +1,73 @@
+{
+ "build_sets": {
+  "0": {
+   "shas": {
+    "test2_sha": "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+    "transfer_sha": "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+    "pairs2_sha": "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+    "floors2_sha": "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+    "s226_test_sha": "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+    "s227_decode_sha": "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea",
+    "frameset8_sha": "a7d5f3032d00fa3076c05b6b183206d9c43bd07d48a3f40f5c245b44c2f52d66",
+    "frameset9_sha": "2fd76d4f71b372a0f90edcde2c46f7c2f82569efe4a6282dc2273988ccdd9a6d",
+    "frameset10_sha": "359971a0b33af92894a44f5cf463350dfc19ed5a55df653202abd4269dcf9ac8",
+    "frameset11_sha": "abacccfb8dcc3476291981d8990154847757562d17d48abb5bcaf48ff6f20195",
+    "frameset12_sha": "ff5e1e690c5e6ce695c9a2f18e3ac987ca94344d6e382b95e7d09986c1ab7077",
+    "frameset13_sha": "b12685d30e01758111c698907e704c326137214c63e936669f2062689f0a4c01",
+    "frameset14_sha": "951eadb2312623589011d030567df5dd5d871cb4d088226455e8a191d4e47c7e",
+    "frameset15_sha": "25d2b4e99aa35ac24e07f487449f3ddf039725d04a46eb44f4bfe1ba72792c4d",
+    "set_law": "reg"
+   },
+   "excl_n": 195599
+  },
+  "1": {
+   "shas": {
+    "test2_sha": "2a51c14ba5ed4a9538adf90e75e73f6bea140ad760b4531e8200b4f71d7ed516",
+    "transfer_sha": "d4b9055d8e1d40b0b51c0669ecf565abcf24f78f2e8f19c4928aa70a8e1ef6bf",
+    "pairs2_sha": "8d8ae8187945f3ea3b979f13c1bf8880bdfd5ccef6deb05b50fc8aedd8abd8d5",
+    "floors2_sha": "86ce9be92e7938b43e7c42b01f349c412de0d71237beee5f43473729932bb49b",
+    "s226_test_sha": "93b24cacabf17f6691f7242c9b2ec41414beae5a1fafe11e21a2d965d4f9b771",
+    "s227_decode_sha": "62470881321854492848f1147a89e878314c19ef121290d00fdccb6ee00d0a50",
+    "frameset8_sha": "a946812aa9177c624709f47397edbce17b5043fec7b2444c1df55953823e9a72",
+    "frameset9_sha": "e1f36241ba7974af741b29d3cff0e924e3614e9e28ad3beaecc117a4398898e1",
+    "frameset10_sha": "4504b82eb7be9421394f295d31ee3149755bad37f7737fd7ccbea71d7d68474c",
+    "frameset11_sha": "25fd5deafe7aee4b54a36a6f86a1a912af83d4df61bfb6949ead6dcf5fb0e1c7",
+    "frameset12_sha": "9b45474e23f8ab6cca17bc7e56bd70e577f534c2f0a87a992896eae28c0646fd",
+    "frameset13_sha": "50bc9f07f87a2a77aeeed9867497568d789512f317871e4fb9fc20f3ede102f3",
+    "frameset14_sha": "ef78988487cffa990caa88a04c36e3ee2e6a3c76b37d57dd526973330be627c8",
+    "frameset15_sha": "ea0c2d7a432db0cbe451432cda31b80f2acd5181a173d653fe9a4948d49e4263"
+   },
+   "excl_n": 192598
+  },
+  "2": {
+   "shas": {
+    "test2_sha": "ec3d4858c5dcd673ed3db70aea4b1c6fc4a8800a66b40e41ea277d2e050d9edf",
+    "transfer_sha": "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6",
+    "pairs2_sha": "d1a59c2365dc8a83e8a707181623f8c220918b8b3b95a6cebfb74fa5f4ecdfcd",
+    "floors2_sha": "8f7e69c461adced7b2231828070868b88240a1e85b5d682e21c17ed520c5eba3",
+    "s226_test_sha": "037459650123824fe3ca186f50c1370468d87e320defae23442d8a26b1d006ac",
+    "s227_decode_sha": "e7e8802faf89592ec478e752aadfc0fc4a25200868711e3bbcd06e9cd9d780bc",
+    "frameset8_sha": "7f9a5846ddeea2002e22063302fa38c22ea920b8845003b4c754fdf132826601",
+    "frameset9_sha": "2a11f3207254109f759bbd9155fb33951b05c854098761746145eca597abf9cb",
+    "frameset10_sha": "4721aa432daf23a9fe16f6690ce48308039212e59ab9dc24db97eef6d74bcb2f",
+    "frameset11_sha": "01b072a63875b7e2646128a454e3582b8c486433a87a6a39d0d8a77b2b5ea08c",
+    "frameset12_sha": "72fd19e788ee5f92a90db96ec8807818c4d1554522103f9454ed4d43f454c0f7",
+    "frameset13_sha": "ddd6c0d0f69b6e5982be8b3288ff1a925e16c1ac03f2228e1790411693a3a543",
+    "frameset14_sha": "443306812eac4de6280348aae6e5515b1a4612da53c788b3301df4f2ae8e0bff",
+    "frameset15_sha": "cb1e8acfee29d0df99ac70bc962eb79849000a2f4afb24193b0ad9b56ed9455b",
+    "set_law": "df"
+   },
+   "excl_n": 195599
+  }
+ },
+ "NW_test_set": "652635f84ef07ad947dbe095139f7974ae4e65a11101d6c866de39e0f166b296",
+ "NW_pair_candidates": "d5d089c7ab582f04300068df933ce55ce39dff9487b7481ae5d5cc69aef2d7fb",
+ "OW_test_set": "3f48fac05dd69cc760479fded6627f1322c79746d72950605ec0b50c83cefc80",
+ "OW_pair_candidates": "cdf58133da9a6e952afe78d3dbfa5bfbd715ed98e465f752f3ab97b1f45e7513",
+ "files": {
+  "nested_words": "7c97588649c7fb715e5264273bf7f859ebe1dae0f6eca1ca7287918aff8831da",
+  "ow_words": "d2497e68c61a5198e52a8c2fe0fa00680c7f22bbcb2a31dbb62101cd46dc9f93",
+  "inject_ow": "1495c7b6d8e8fc8fbf90617864f88bf21e4a486df2f20fb4246c25552f006623",
+  "inject_aw": "80886f65d72cb8ea676c2271968e937d46fddccaaf84dc4ece4d8d269e124be8"
+ }
+}

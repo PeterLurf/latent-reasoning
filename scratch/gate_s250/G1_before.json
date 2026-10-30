@@ -1,0 +1,49 @@
+{
+ "build_sets": {
+  "0": {
+   "shas": {
+    "test2_sha": "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+    "transfer_sha": "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+    "pairs2_sha": "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+    "floors2_sha": "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+    "s226_test_sha": "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+    "s227_decode_sha": "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea",
+    "set_law": "reg"
+   },
+   "excl_n": 163599
+  },
+  "1": {
+   "shas": {
+    "test2_sha": "2a51c14ba5ed4a9538adf90e75e73f6bea140ad760b4531e8200b4f71d7ed516",
+    "transfer_sha": "d4b9055d8e1d40b0b51c0669ecf565abcf24f78f2e8f19c4928aa70a8e1ef6bf",
+    "pairs2_sha": "8d8ae8187945f3ea3b979f13c1bf8880bdfd5ccef6deb05b50fc8aedd8abd8d5",
+    "floors2_sha": "86ce9be92e7938b43e7c42b01f349c412de0d71237beee5f43473729932bb49b",
+    "s226_test_sha": "93b24cacabf17f6691f7242c9b2ec41414beae5a1fafe11e21a2d965d4f9b771",
+    "s227_decode_sha": "62470881321854492848f1147a89e878314c19ef121290d00fdccb6ee00d0a50"
+   },
+   "excl_n": 160598
+  },
+  "2": {
+   "shas": {
+    "test2_sha": "ec3d4858c5dcd673ed3db70aea4b1c6fc4a8800a66b40e41ea277d2e050d9edf",
+    "transfer_sha": "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6",
+    "pairs2_sha": "d1a59c2365dc8a83e8a707181623f8c220918b8b3b95a6cebfb74fa5f4ecdfcd",
+    "floors2_sha": "8f7e69c461adced7b2231828070868b88240a1e85b5d682e21c17ed520c5eba3",
+    "s226_test_sha": "037459650123824fe3ca186f50c1370468d87e320defae23442d8a26b1d006ac",
+    "s227_decode_sha": "e7e8802faf89592ec478e752aadfc0fc4a25200868711e3bbcd06e9cd9d780bc",
+    "set_law": "df"
+   },
+   "excl_n": 163599
+  }
+ },
+ "NW_test_set": "652635f84ef07ad947dbe095139f7974ae4e65a11101d6c866de39e0f166b296",
+ "NW_pair_candidates": "d5d089c7ab582f04300068df933ce55ce39dff9487b7481ae5d5cc69aef2d7fb",
+ "OW_test_set": "3f48fac05dd69cc760479fded6627f1322c79746d72950605ec0b50c83cefc80",
+ "OW_pair_candidates": "cdf58133da9a6e952afe78d3dbfa5bfbd715ed98e465f752f3ab97b1f45e7513",
+ "files": {
+  "nested_words": "cd659df8c07818abd28b5eca557288c5ff704821412fe6c658e270b91ad2170e",
+  "ow_words": "d2497e68c61a5198e52a8c2fe0fa00680c7f22bbcb2a31dbb62101cd46dc9f93",
+  "inject_ow": "88ee59e15101b1255af43acbb53aaf1a075dac127505a09a25e0c355b8812da8",
+  "inject_aw": "461458f58f793bd4076cdd8127febc0e6dd3940682113dd39dae32ed62dd3e7d"
+ }
+}

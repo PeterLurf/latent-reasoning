@@ -190,6 +190,7 @@ def main(argv=None):
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
     ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1, 2], help="§236: 0 = REG law (no forced mul_s); §238: 2 = DF (per-step mul_s, q_t); 1 = unchanged - on every stream / set (new eval seeds)")
+    ap.add_argument("--train_frames", default="", help="§250: the training stream's frames, e.g. 0-5,8-11 ('' = OW.FRAME_TRAIN, unchanged)")
     ap.add_argument("--keep_final_ckpt", action="store_true", help="§244: keep the final ckpt_last.pt as ckpt_final.pt (fetched by the drain) instead of deleting it")
     ap.add_argument("--hold_inc", type=float, default=0.0, help="§240: lambda of L_inc (HOLD-INC; 0 = off)"); ap.add_argument("--hold_start", type=int, default=500)
     ap.add_argument("--hold_far_n", type=int, default=16); ap.add_argument("--hold_far_lo", type=int, default=16); ap.add_argument("--hold_far_hi", type=int, default=40)
@@ -220,7 +221,9 @@ def main(argv=None):
     t_sets = time.time()
     if a.src == "ow":
         SETS = build_sets(mul_s_p=a.mul_s_p); EXCL = SETS["excl"] | (reg_excl(a, SETS["excl"]) if a.mul_s_p != 1 else set())   # §236 / §238: + the eval-own sets of the run law
-        stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # §235 / §236: training stream
+        TRAIN_FR = tuple(x for p_ in a.train_frames.split(",") for x in (range(int(p_.split("-")[0]), int(p_.split("-")[1]) + 1) if "-" in p_ else (int(p_),))) if a.train_frames else OW.FRAME_TRAIN
+        assert all(f_ in range(len(OW.FRAMES["add_c"])) for f_ in TRAIN_FR) and len(set(TRAIN_FR)) == len(TRAIN_FR), ("§250 --train_frames", TRAIN_FR)
+        stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=TRAIN_FR, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # §235 / §236: training stream; §250: --train_frames
     else:                                                                   # gate only: nested170's TE / SPOOL exclusion and item law
         TE = N7.test_set(1000); EXCL = {tuple(it["syms"]) for it in TE}; r_sp = np.random.default_rng(17300)
         for _ in range(2200):

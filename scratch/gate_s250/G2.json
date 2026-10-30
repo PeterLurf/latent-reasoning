@@ -1,0 +1,30 @@
+{
+ "templates_equal": true,
+ "alias_ok": true,
+ "frame_all": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+ ],
+ "frame_train": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "novelty_max_jaccard": 0.16,
+ "solve": [
+  0,
+  5400
+ ],
+ "nw_selfcheck": true,
+ "nw_selfcheck_ok": true,
+ "pass": true
+}
