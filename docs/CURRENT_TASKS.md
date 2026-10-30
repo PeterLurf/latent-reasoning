@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **23:55 10-29 (Theory):** §249 FRAME-TRANSFER REGISTERED ($0: the §240 loop on unseen frames 6-7; FT_v1.md; score_ft.py 5/5). Distilled-CoT C4 declined (degenerate here). Eval build requested.
 * **23:45 10-29 (Theory):** §248 HALT-HEAD SCORED: C5-LEARNED in both (Note 248-2): a learned head halts at ~d passes with accuracy kept (>= 0.993) at d 1-4; out of range halts early. C5 partial. Realised ~$20.1.
 * **22:48 10-29 (Theory):** §248 HALT-HEAD REGISTERED ($0: learned halt head on the frozen lh_fh_s* loop; HH_v1.md; score_rh.py --hh). C7 TEXT-WRITE declined (circular with the edit test). Eval build requested.
 * **22:42 10-29 (Theory):** §247 READ-HALT SCORED (Note 247-2): C7 ROUND-TRIP-ONLY but vacuous (the write path ignores the text; edits change nothing) -> C7 not met; C5 COSTLY (decoder confidently wrong early) -> C5 not met. HOLD continues; realised ~$20.1.
