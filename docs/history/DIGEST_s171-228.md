@@ -84,6 +84,7 @@ Scope: D:\Latent\docs\THEORY.md §171 through §228 plus their Notes (status tab
 | 248 | HALT-HEAD | Can a post-hoc halt head (self-consistency labels) give learned halting? ($0) | C5-LEARNED both seeds (C5-partial) | head val_acc 0.98; mean K′_halt 0/1.2/2.2/3.2 at d1–4; acc at halt ≥ 0.993; d5–6 early halts cost acc | Halting ~d passes instead of 8 in range; post-hoc head on a frozen loop, not trained into the loop. | C5 |
 | 249 | FRAME-TRANSFER | Does the language chain survive unseen phrasings (frames 6–7)? ($0) | NO-TRANSFER both | d1–4 0.54/0.45/0.35/0.27 vs 1.000 in-frame; d1 frame 7 1.000 but frame 6 0.064 (CD gets 0.971) | The loop's per-pass step read is frame-specific although the trunk parses the frame; C1 is phrasing-scoped. | C1 |
 | 250 | FRAME-DIV | Does training on 4 more frames make the per-pass step generalise to held-out new frames? | FD FAIL (s1 MEMO; s2 LP0 transient, else MEMO) | trained frames 8–11 → 1.000; held-out 12–15 d2 DIV ≈ CTRL (e.g. 0.20 vs 0.12; 0.24 vs 0.33); ~$2.8 | Frame diversity 6→10 is memorised, not generalised; the cued pass stays phrasing-specific while the direct path parses unseen frames. | C1 |
+| 251 | ANSWER-EXTEND | With per-pass targets only on d≤2, does the chain extend to d3–4 from answers? | AEX SPLIT (s1 EXTEND, s2 EXTEND-D3-ONLY: SWAP4 0.461 < 0.50); AEX0 (no targets) FAIL | d4 1.000 both, d4@K′2 0.009; s1 SWAP4 0.872, LP5-D4 0.788; ~$5.3 incl. OOM reruns | Depth 3–4 learnable from answers once a d≤2 foothold has targets; first C4-partial. | C4 |
 
 ## What worked
 
