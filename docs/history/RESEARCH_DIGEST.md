@@ -16,8 +16,8 @@ Each digest was condensed from section headers, result blocks and Notes, not fro
 | C4 scalable supervision on a pretrained LM | not met (strict); answer-only formed in 1/4 seeds (§244–§245) | self-labelled chains (§215–§219); short-label foothold (§96, §112) | strict C4 barrier from final answers alone (§103–§117); CoT warm start forgotten (§202) |
 | C2 more thinking helps past training | not met | written-state / restart length generalisation in toys (§26, §71, §92); in-support self-depth (§215, §216) | boundary still binds (§216 LIT-C2-2 0.018); depth limited by pass count / basin entry |
 | C3 competitive with text CoT | MET in scope (synthetic); language: latency ~9× better, FLOPs 1.5–3× worse (Note 246-0) | §225: within 0.02, ~20–50x fewer steps, ~0.65x FLOPs; §159 0.80x FLOPs; CODI 0.379 GSM8K at published budget (§210) | language untested; GSM8K latent still below text at our budget (§200) |
-| C5 decides how long to think | partial | learned halt stops overthinking 7/7 in range (§201) | answer-settling halts early (§173); premature at the edge |
-| C7 readable | weak | pointer/written-state readouts (§2, §45, §71); probes on VB | readings decode-dependent out of range (§213); §221 context-bound |
+| C5 decides how long to think | partial (synthetic §201); language readout halting fails (§247) | learned halt stops overthinking 7/7 in range (§201) | answer-settling halts early (§173); premature at the edge |
+| C7 readable | weak; language per-pass readout faithful but not editable via text (§247) | pointer/written-state readouts (§2, §45, §71); probes on VB | readings decode-dependent out of range (§213); §221 context-bound |
 
 ## What worked (cross-era)
 
