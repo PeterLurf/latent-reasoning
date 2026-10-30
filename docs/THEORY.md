@@ -22497,6 +22497,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Status:** C4 (and the narrower AUX-FREE) is not met. The pre-named base-init test does not run.
 - **Spend:** realised total ~$20.1. Retention: the ao_s1 / s3 / s4 / aux_s2 ckpts can go; keep ao_s2_ext's model.pt (the one formed AO model) until a design names a use or Audit says otherwise.
 
+**Note 246-0 (2026-10-29 21:33 EDT; C3 in language, analytic, $0; the C3-LANG draft (docs/research_c3lang_2026-10-29/C3L_draft.md, 148d3682) is withdrawn unregistered after its red team (REVIEW_C3L.md); no run, no spend.)**
+- **Why withdrawn:** the red team showed the matched-compute outcome is fixed by the architecture's arithmetic. A $3 run would only check whether text-CoT reaches ceiling (§227 already shows text-CoT learning serial steps on these programs).
+- **Compute per item at the cheapest config reaching 1.000** (TEST2-DF; LAT = the §240 loop at K' = d - 1; TEXT = a KV-cached GPT-2 chain of 5d + 6 tokens):
+  - **Executed FLOPs, LAT vs TEXT:** d 2 18.6 vs 12.0 G; d 3 35.6 vs 15.5 G; d 4 57.5 vs 19.1 G. Counting the cue-shared lower-block prefix once: d 2 ~14 vs 12, d 4 36 vs 19.
+    - Cause: every latent pass reruns blocks 6-11 over the whole prompt, reading the memory at every position (inject_aw.py:47-51). Text-CoT pays the prompt once and then one cached token per step.
+  - **Serial layers (latency), LAT vs TEXT:** d 2 24 vs 204; d 3 30 vs 264; d 4 36 vs 324.
+  - Formulas (REVIEW_C3L 2), with blk(T) = 24 D^2 T + 2 D T (T + 1):
+    - F_LAT = min(K', d) 6 blk(L) + K' (6 blk(L) + 8 D^2 L) + 12 blk(L - 7) + 8 D^2 (L - 7) + head;
+    - F_TEXT = 12 blk(P) + sum_i [12 (24 D^2 + 4 D (P + i)) + head].
+- **C3 reading (analytic, given TEXT at ceiling):**
+  - on serial depth / latency the latent loop wins by ~9x;
+  - on total FLOPs text-CoT wins by 1.5-3x at d 2-4, and the gap grows with d.
+  - **C3 (matched compute) is therefore NOT met on FLOPs by this architecture.** The user's operative standard ('equal or better accuracy than text CoT at fewer steps / less compute') is met on steps, not on compute.
+- **Design implication (not registered):** a FLOPs-competitive loop must not recompute the prompt each pass. The latent state should be added as new cached positions (a KV-cached latent token per pass, Coconut-style) rather than re-reading at every prompt position. That is an architectural redesign, with retraining, beyond the current ~$10 headroom; it would be staged as its own registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
