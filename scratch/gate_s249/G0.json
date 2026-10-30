@@ -1,0 +1,265 @@
+{
+ "runs": {
+  "lh_fh_s1": {
+   "trainer": "boxes/_inject_aw_s240.py",
+   "ow_words": "boxes/ow_words.py",
+   "train_stream_line": [
+    "stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # \u00a7235 / \u00a7236: training stream"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true,
+    "mul_s_p3": 1.0,
+    "mul_s_p": 2
+   },
+   "ok": true
+  },
+  "lh_fh_s2": {
+   "trainer": "boxes/_inject_aw_s240.py",
+   "ow_words": "boxes/ow_words.py",
+   "train_stream_line": [
+    "stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # \u00a7235 / \u00a7236: training stream"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true,
+    "mul_s_p3": 1.0,
+    "mul_s_p": 2
+   },
+   "ok": true
+  },
+  "df_plaw4_s1": {
+   "trainer": "boxes/_inject_aw_s238.py",
+   "ow_words": "boxes/ow_words.py",
+   "train_stream_line": [
+    "stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # \u00a7235 / \u00a7236: training stream"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true,
+    "mul_s_p3": 1.0,
+    "mul_s_p": 2
+   },
+   "ok": true
+  },
+  "df_plaw4_s2": {
+   "trainer": "boxes/_inject_aw_s238.py",
+   "ow_words": "boxes/ow_words.py",
+   "train_stream_line": [
+    "stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # \u00a7235 / \u00a7236: training stream"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true,
+    "mul_s_p3": 1.0,
+    "mul_s_p": 2
+   },
+   "ok": true
+  },
+  "rcb_plaw4_s1": {
+   "trainer": "boxes/_inject_aw_s237.py",
+   "ow_words": "boxes/_ow_words_s237.py",
+   "train_stream_line": [
+    "stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # \u00a7235 / \u00a7236: training stream"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true,
+    "mul_s_p3": 1.0,
+    "mul_s_p": 0
+   },
+   "ok": true
+  },
+  "rcb_plaw4_s2": {
+   "trainer": "boxes/_inject_aw_s237.py",
+   "ow_words": "boxes/_ow_words_s237.py",
+   "train_stream_line": [
+    "stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW)   # \u00a7235 / \u00a7236: training stream"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true,
+    "mul_s_p3": 1.0,
+    "mul_s_p": 0
+   },
+   "ok": true
+  },
+  "aw_plaw2_s1": {
+   "trainer": "boxes/_inject_aw_p2.py",
+   "ow_words": "boxes/_ow_words_s234.py",
+   "train_stream_line": [
+    "SETS = build_sets(); EXCL = SETS[\"excl\"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, **OWKW)"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true
+   },
+   "ok": true
+  },
+  "s233_askname_s1": {
+   "trainer": "boxes/_inject_ow_s235.py",
+   "ow_words": "boxes/_ow_words_s234.py",
+   "train_stream_line": [
+    "SETS = build_sets(); EXCL = SETS[\"excl\"]; stream = OW.Stream(OW.SEED_TRAIN, EXCL, frames=OW.FRAME_TRAIN, **OWKW)"
+   ],
+   "frames_arg_is_FRAME_TRAIN": true,
+   "FRAME_TRAIN": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_draws": 20000,
+   "replay_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "replay_kw": {
+    "order_mode": "topo",
+    "dag": true
+   },
+   "ok": true
+  }
+ },
+ "transfer_sha": "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6",
+ "transfer_sha_eq_build_sets": true,
+ "transfer_sha_eq_args": {
+  "lh_fh_s1": true,
+  "lh_fh_s2": true,
+  "df_pcd4_s1": true
+ },
+ "transfer_frames_in_6_7": true,
+ "pass": true
+}
