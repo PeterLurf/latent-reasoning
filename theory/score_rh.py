@@ -45,7 +45,17 @@ def c5(e):
     harder = all(k[i] < k[i + 1] for i in range(3))
     saving = all(h[d]["mean_khalt"] <= d + 1 for d in h)
     lab = "COSTLY" if not acc_ok else "NO-SIGNAL" if not harder else "C5-READOUT" if saving else "NO-SAVING"
+    def never(dd):          # Note 247-1: censored items (max-prob never >= 0.90 by K' max 8) count at K' 8 with the K' 8 answer; share + event-only mean reported
+        hist = (e.get(str(dd)) or {}).get("khalt_hist") or {}
+        tot = sum(hist.values()) if hist else 0
+        if not tot:
+            return None
+        nev = (e[str(dd)].get("never_halt_n") if e[str(dd)].get("never_halt_n") is not None else None)
+        ev = {int(k): v for k, v in hist.items()}
+        return {"never_share": (nev / tot) if nev is not None else None,
+                "event_only_mean": (sum(k * v for k, v in ev.items() if not (nev and k == 8)) / max(1, tot - (nev or 0)))}
     return {"label": lab, "mean_khalt": dict(zip((1, 2, 3, 4), k)), "acc": {d: (h[d]["acc_halt"], h[d]["acc_k8"]) for d in h},
+            "censoring": {dd: never(dd) for dd in (1, 2, 3, 4, 5, 6)},
             "desc_d5_6": {d: e.get(str(d)) and {x: e[str(d)].get(x) for x in ("acc_halt", "acc_k8", "mean_khalt")} for d in (5, 6)}}
 
 
