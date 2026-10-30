@@ -132,3 +132,4 @@ From our own notes (LIT_DIVERSITY_THRESHOLD_2026-10-02, LIT_PARAPHRASE_OPS_2026-
 
 **Suggested NARROW wording:** "Template held-out transfer of the latent loop's per-pass step computation, as a function of training frame count (6 → 10). Diversity-threshold effects are known in general (2306.15063, 2311.04420), and GSM-Symbolic 2410.05229 reports template sensitivity in LLMs; not reported for latent reasoning."
 - Pre-state which lexical or structural features the 4 held-out frames share with the training frames (2212.10769).
+- **Outcome (§249 / §250):** the per-pass step is frame-specific (unseen frame 0.06 vs one-pass 0.97). Training on 10 frames instead of 6 learns each added frame (1.000) but transfers to 0 of 4 held-out constructions. **Negative result, filed under the NARROW wording above.** It is consistent with lexical / structural exposure (2212.10769) and with diversity-threshold accounts (2306.15063), which predict a much larger frame count than 10.
