@@ -26,3 +26,7 @@ PART lp5h done 99 s
 REG-EVAL DONE D:\Latent\boxes\runs_fsq\fd_div_s2_reg
 2026-10-30 07:44:34 rc 0 reg fd_div_s2
 2026-10-30 07:44:34 LAND DONE fd_div_s2
+2026-10-30 07:44:48 start long fd_ctrl_s2
+LONG done boxes/runs_fsq/fd_ctrl_s2 eval_long_k128.json 896 s
+2026-10-30 07:59:46 rc 0 long fd_ctrl_s2
+2026-10-30 07:59:46 LAND DONE fd_ctrl_s2
