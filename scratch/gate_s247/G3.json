@@ -1,0 +1,25 @@
+{
+ "rc": 0,
+ "c7_fields_ok": true,
+ "c7_n": {
+  "d3t1": 1000,
+  "d3t2": 1000,
+  "d4t2": 1000,
+  "d4t3": 1000
+ },
+ "x_edit_ne_x_hat": true,
+ "halt_fields_ok": true,
+ "meta": {
+  "eval_gpu": "NVIDIA GeForce RTX 4060",
+  "eval_bs": 250,
+  "eval_dtype": "fp32",
+  "law": 2,
+  "set_law": "df",
+  "think_k": 8,
+  "peak_gib": 1.9029712677001953,
+  "sec": 217
+ },
+ "halt_sec": 271,
+ "score_rh_runs": true,
+ "pass": true
+}
