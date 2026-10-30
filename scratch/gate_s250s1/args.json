@@ -1,0 +1,29 @@
+{
+ "fd_div_s1": {
+  "rc": 0,
+  "train_frames": "0,1,2,3,4,5,8,9,10,11",
+  "hold_start": 0
+ },
+ "fd_div_s2": {
+  "rc": 0,
+  "train_frames": "0,1,2,3,4,5,8,9,10,11",
+  "hold_start": 0
+ },
+ "fd_ctrl_s1": {
+  "rc": 0,
+  "train_frames": "",
+  "hold_start": 0
+ },
+ "fd_ctrl_s2": {
+  "rc": 0,
+  "train_frames": "",
+  "hold_start": 0
+ },
+ "div_vs_ctrl_s1": [
+  "train_frames"
+ ],
+ "div_vs_ctrl_s2": [
+  "train_frames"
+ ],
+ "pass": true
+}
