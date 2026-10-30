@@ -1,0 +1,88 @@
+{
+ "lat": {
+  "rc": 0,
+  "ds": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "n": {
+   "1": 1000,
+   "2": 1000,
+   "3": 1000,
+   "4": 1000,
+   "5": 1000,
+   "6": 1000
+  },
+  "meta": {
+   "eval_gpu": "NVIDIA GeForce RTX 4060",
+   "eval_bs": 250,
+   "eval_dtype": "fp32",
+   "law": 2,
+   "set_law": "df",
+   "think_k": 8,
+   "arm": "inject",
+   "peak_gib": 3.2071151733398438,
+   "sec": 217,
+   "transfer_sha": "195f6756ab7940e3bfe4a4735a97b8eb098c3a78b915f0824f17309d33fa62e6"
+  },
+  "by_frame_keys": [
+   "6",
+   "7",
+   "mixed"
+  ],
+  "by_frame_n_d3": {
+   "6": 134,
+   "7": 123,
+   "mixed": 743
+  }
+ },
+ "cd": {
+  "rc": 0,
+  "ds": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ],
+  "n": {
+   "1": 1000,
+   "2": 1000,
+   "3": 1000,
+   "4": 1000,
+   "5": 1000,
+   "6": 1000
+  },
+  "meta": {
+   "eval_gpu": "NVIDIA GeForce RTX 4060",
+   "eval_bs": 100,
+   "eval_dtype": "fp32",
+   "law": 0,
+   "set_law": "reg",
+   "think_k": 0,
+   "arm": "direct",
+   "peak_gib": 3.15030574798584,
+   "sec": 18,
+   "transfer_sha": "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c"
+  },
+  "by_frame_keys": [
+   "6",
+   "7",
+   "mixed"
+  ],
+  "by_frame_n_d3": {
+   "6": 118,
+   "7": 124,
+   "mixed": 758
+  }
+ },
+ "lat_fields_ok": true,
+ "cd_fields_ok": true,
+ "score_ft_one_runs": true,
+ "pass": true
+}
