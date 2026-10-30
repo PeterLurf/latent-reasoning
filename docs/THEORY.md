@@ -335,6 +335,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 245 | AO-REP (Theory's choice; replication of §244 AO): ao_s3 / ao_s4, P-2 recipe with --aux_fade 0,0 and a straight --steps 18000 (no LR re-warm); score_ao gates, final at 18k; formation rate k/2 | registered | **0/2 10-29 (245-2): both VOID (decoder-direct partial d 2 ~0.2; latent unused); AO line pauses; pooled 1/4 formed (that one with an LR re-warm); $1.44.** **APPROVED by Audit 10-29 (245-1: diff vs ao_s2 = seed + steps; s3 / s4 a cleaner recipe, not pooled with s2 uncaveated).** **REGISTERED 17:15 10-29; build -> G-D -> launch; score_ao.py --rep** |
 | 247 | READ-HALT ($0, eval-only; Theory's choice on Audit's suggestion): C7 round-trip + edit by re-encoding the printed step value through the model's own write path (d 3-4 mid-chain cells); C5 readout halting (max-prob >= 0.90, fixed a priori) on lh_fh_s1 / s2; RH_v1.md | registered | **C7 ROUND-TRIP-ONLY (vacuous: edits ignored, edit == intact 0.94-1.0) / C5 COSTLY (confidently wrong at K' 0-1) 10-29 (247-2); $0.** **APPROVED by Audit 10-29 (247-1: censored at K' 8; never-halt share + event-only mean reported).** **REGISTERED 21:43 10-29; eval build -> G-D -> local eval; scorer score_rh.py (fixtures 7/7)** |
 | 248 | HALT-HEAD ($0; Theory's choice of Audit's option 1): a logistic halt head on the frozen lh_fh_s* decoder answer-position states, self-consistency labels (pred(K') == pred(8)), halt at p >= 0.90; §247's C5 gates; HH_v1.md | registered | **C5-LEARNED both 10-30 (248-2): head val_acc 0.98; mean K'_halt 0 / 1.2 / 2.2 / 3.2 at d 1-4, acc at halt >= 0.993 vs 1.000; out-of-range d 5-6 halts too early; $0.** **APPROVED by Audit 10-29 (248-1: disjoint fit, K'-truncated features, d 5-6 descriptive).** **REGISTERED 22:48 10-29; eval build -> G-D -> local run; scorer score_rh.py --hh** |
+| 249 | FRAME-TRANSFER ($0; Theory's choice; Audit's distilled-CoT C4 step declined as degenerate here): lh_fh_s1 / s2 on TRANSFER-DF (frames 6-7, never trained), d 1-6; binding T-ACC (d 2-4 >= 0.80, >= CD-AN + 0.25) + T-CHAIN (WS >= 0.50 at passes 2..d) + T-GUARD; FT_v1.md | registered | **REGISTERED 23:55 10-29; eval build -> G-D -> local run; scorer score_ft.py (fixtures 5/5)** |
 
 ## Live sections
 
@@ -19576,6 +19577,20 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **OC:** per model ~0.42, both ~0.3; under a K'-independent head P(HARDER-MORE) ~0.04.
 - **Censoring:** missing parts mean pending.
 - **Cost:** $0.
+
+## 249. FRAME-TRANSFER: does the language loop's chain transfer to unseen sentence frames? (Theory's choice under the user's 10-26 standing rules; Audit approves; eval-only, **$0**; pre-registered 2026-10-29 23:55 EDT, before any build or output)
+
+- **Text:** docs/research_frametransfer_2026-10-30/FT_v1.md.
+- **Why:** every C1 / C5 / C6 reading so far uses training frames 0-5. TRANSFER-DF (frames 6-7) tests whether the latent chain survives new phrasings of the same operations, a step toward task-agnostic use.
+- **Declined (Audit's distilled-CoT C4 step):** in this synthetic setup a text-CoT teacher either cannot emit steps (answers-only training) or reproduces the simulator's steps (step-sentence training), which equal the existing aux targets. It adds nothing over P-2.
+- **Binding** (theory/score_ft.py; fixtures 5/5), per model (lh_fh_s1 / s2; CD-AN df_pcd4_s1 on the same set):
+  - T-ACC: d 2-4 each >= 0.80 and >= CD-AN + 0.25;
+  - T-CHAIN: WS >= 0.50 at every pass 2..d, d 3-4;
+  - T-GUARD: cue-only <= max(majority, CD-AN) + 0.05, else VOID.
+  - Labels VOID / TRANSFER / ACC-ONLY / NO-TRANSFER; overall both, else MIXED.
+  - Descriptive: d 1, d 5-6, and the drop vs TEST2-DF.
+- **OC:** both ~0.3; under frame-specific cueing P(T-ACC) ~0.05.
+- **Cost:** $0, local.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
