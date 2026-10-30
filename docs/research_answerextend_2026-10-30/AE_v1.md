@@ -6,6 +6,7 @@
 - §237: from the P-2 seed (aw_plaw2_s1: d ≤ 2, per-pass aux), REG training with aux at **all** depths reached d 3–4 at 1.000.
 - Do passes 3–4 need hand-built per-pass targets, or do final answers suffice once the loop exists at d ≤ 2?
 - C4-partial at best: the seed itself used simulator targets.
+- **Literature (10-30): NARROW.** Priors Coconut 2412.06769, iCoT 2405.14838, ATC 2609.19717, Latent-GRPO 2604.27998, Lee 2502.01612 (LIT_STEPTOLD_2026-10-24.md). Narrow claim only: answer-only depth extension past the supervised range in a recurrent-memory loop, with the AEX / AEX0 target-keep ablation.
 
 ## 2. Arms (init aw_plaw2_s1, §237's rcb_plaw4 recipe: REG law, d ~ U{1..4}, 16k, the same seeds and data orders; RTX 3090 only)
 | Arm | Runs | Change vs §237 | What it tests |
