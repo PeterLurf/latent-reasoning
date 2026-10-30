@@ -1,5 +1,6 @@
 """§250 Note 250-5 $0 PROBE (pre-stated; eval-only): is v_1 linearly decodable layer by layer, and does the decodability transfer to unseen frames?
--> scratch/s250_v1probe/eval_v1probe.json {model: {layer_chosen, val_acc, test_0_5, unseen {frame: acc}, layer0 {test_0_5, unseen}, per_layer {...}}}.
+-> scratch/s250_v1probe/eval_v1probe.json {model: {positions: {position: {layer_chosen, val_acc, test_0_5, unseen {frame}, layer0 {...}, per_layer}}, chosen_position}}
+(Note 250-5 amended: DIRECT also at the end of S_1's question cue; (position, layer) chosen by frames 0-5 val acc; the LEXICAL rule is Theory's scorer).
   DIRECT = df_pcd4_s1 (CD-AN): its own dec (tok_aw cue all = the full problem + every cue + ' The answer is:'), the last real token's hidden at layers 0..12;
   LOOP   = lh_fh_s1: the pass-1 input (think_cues[0]: text + QUESTION(u, S_1) + ' The answer is:'), S = 0, the ':' hidden at layers 0..12 (read_fixed at mem.layer as pass_aw).
   Layer 0 = embedding + wpe; layer i = after block i - 1 (pre ln_f); blocks via DM._block (pass_aw's / gpt_lower's code). Path check: ln_f(layer 12) -> logits argmax == the
@@ -30,19 +31,44 @@ SEED_ITEMS, SEED_FIT, L2 = 25100, 25101, 1e-3
 
 
 @torch.no_grad()
-def layer_states(g, seqs, dev, bs, mem=None):
-    """-> (H (N, L + 1, D) fp32 at each item's last real token, final logits (N, V) via ln_f). mem: the LOOP path (read_fixed(mem, h, S = 0) entering block mem.layer)."""
-    D = g.w("wte.weight").shape[1]; hd = D // g.H; Hs, LG = [], []
+def layer_states(g, seqs, dev, bs, mem=None, extra=None):
+    """-> ({'last': H (N, L + 1, D) fp32 at each item's last real token, 'extra': the same at extra[i] (a token index per item) if given}, final logits (N, V) at the last
+    token via ln_f). mem: the LOOP path (read_fixed(mem, h, S = 0) entering block mem.layer)."""
+    D = g.w("wte.weight").shape[1]; hd = D // g.H; Hs, He, LG = [], [], []
     for i in range(0, len(seqs), bs):
         ch = seqs[i:i + bs]; ids_, _ = pad(ch); x = torch.tensor(ids_, device=dev); B, T = x.shape
         pos = torch.tensor([len(q) - 1 for q in ch], device=dev); ar = torch.arange(B, device=dev)
-        h = g.embed(x) + DM.wpe_slice(g, T)[None]; st = [h[ar, pos]]; S = mem.zero_state(B, dev) if mem is not None else None
+        pe = torch.tensor(extra[i:i + bs], device=dev) if extra is not None else None
+        h = g.embed(x) + DM.wpe_slice(g, T)[None]; st = [h[ar, pos]]; se = [h[ar, pe]] if pe is not None else None; S = mem.zero_state(B, dev) if mem is not None else None
         for li in range(g.L):
             if mem is not None and li == mem.layer:
                 h = DM.read_fixed(mem, h, S)
             h = DM._block(g, li, h, hd); st.append(h[ar, pos])
+            if se is not None:
+                se.append(h[ar, pe])
         Hs.append(torch.stack(st, 1).float().cpu()); hf = Fn.layer_norm(h, (D,), g.w("ln_f.weight"), g.w("ln_f.bias")); LG.append(g.logits(hf[ar, pos]).float().cpu())
-    return torch.cat(Hs).numpy(), torch.cat(LG)
+        if se is not None:
+            He.append(torch.stack(se, 1).float().cpu())
+    o = {"last": torch.cat(Hs).numpy()}
+    if extra is not None:
+        o["extra"] = torch.cat(He).numpy()
+    return o, torch.cat(LG)
+
+
+def cue1_end(it, dec):
+    """DIRECT second position (Note 250-5 amendment): the index of the last token of S_1's question cue in the CD dec ([EOT] + enc(' ' + text + ' ' + cue_1 + ' ' + cue_2 ...))."""
+    pre = [E.EOT] + IO.ENC.encode(" " + it["raw"]["text"] + " " + E.ST.cue_str(it["raw"], 1)); assert dec[:len(pre)] == pre, "cue-1 prefix"; return len(pre) - 1
+
+
+def probe_layers(H, y, keys):
+    per = {}
+    for li in range(H["train"].shape[1]):
+        mdl = fit(H["train"][:, li], y["train"])
+        per[str(li)] = {"train": acc(mdl, H["train"][:, li], y["train"]), "val": acc(mdl, H["val"][:, li], y["val"]), "test_0_5": acc(mdl, H["test"][:, li], y["test"]),
+                        "unseen": {k: acc(mdl, H["u" + k][:, li], y["u" + k]) for k in keys}}
+    best = max(range(len(per)), key=lambda i: (per[str(i)]["val"], -i))
+    return {"layer_chosen": best, "val_acc": per[str(best)]["val"], "test_0_5": per[str(best)]["test_0_5"], "unseen": per[str(best)]["unseen"],
+            "layer0": {"val": per["0"]["val"], "test_0_5": per["0"]["test_0_5"], "unseen": per["0"]["unseen"]}, "per_layer": per}
 
 
 def fit(X, y):
@@ -75,14 +101,14 @@ def main():
         unseen[str(f)] = s["framesets"][f][2]
     sets_ = dict(splits, **{"u" + k: v for k, v in unseen.items()}); out = {"def": __doc__.split("\n")[0], "items_sha": {k: OW.set_sha(v) for k, v in sets_.items()}, "bs": a_.bs}
     for name, run in (("DIRECT", "df_pcd4_s1"), ("LOOP", "lh_fh_s1")):
-        a, m, g = E.load(os.path.join(ROOT, "boxes/runs_fsq", run), dev); H = {}; pc = {}
+        a, m, g = E.load(os.path.join(ROOT, "boxes/runs_fsq", run), dev); H = {}; HX = {}; pc = {}
         for k, its in sets_.items():
             T = [AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for it in its]
             if m is None:
-                seqs = [t["dec"] for t in T]; H[k], lg = layer_states(g, seqs, dev, a_.bs); own = E.answers_by_kprime(None, g, T, 0, dev, a_.bs)[:, 0]
-                pc[k] = bool((E.pred_of(lg) == own).all())
+                seqs = [t["dec"] for t in T]; st_, lg = layer_states(g, seqs, dev, a_.bs, extra=[cue1_end(t, t["dec"]) for t in T]); H[k], HX[k] = st_["last"], st_["extra"]
+                own = E.answers_by_kprime(None, g, T, 0, dev, a_.bs)[:, 0]; pc[k] = bool((E.pred_of(lg) == own).all())
             else:
-                seqs = [t["think_cues"][0] for t in T]; H[k], _ = layer_states(m.g, seqs, dev, a_.bs, mem=m.mem); num = torch.tensor(NUM_IDS, device=dev); own = []
+                seqs = [t["think_cues"][0] for t in T]; st_, _ = layer_states(m.g, seqs, dev, a_.bs, mem=m.mem); H[k] = st_["last"]; num = torch.tensor(NUM_IDS, device=dev); own = []
                 with torch.no_grad():
                     for i in range(0, len(seqs), a_.bs):
                         ids_, mk = pad(seqs[i:i + a_.bs]); x = torch.tensor(ids_, device=dev); msk = torch.tensor(mk, device=dev)
@@ -90,14 +116,12 @@ def main():
                 Dm = m.g.w("wte.weight").shape[1]; hf = torch.tensor(H[k][:, -1]).to(dev)
                 lg = m.g.logits(Fn.layer_norm(hf, (Dm,), m.g.w("ln_f.weight"), m.g.w("ln_f.bias"))).float()
                 pc[k] = bool((lg[:, NUM_IDS].argmax(-1).cpu().numpy() == np.array(own)).all())
-        y = {k: np.array([int(it["values"][1]) for it in v]) for k, v in sets_.items()}; per = {}
-        for li in range(H["train"].shape[1]):
-            mdl = fit(H["train"][:, li], y["train"])
-            per[str(li)] = {"train": acc(mdl, H["train"][:, li], y["train"]), "val": acc(mdl, H["val"][:, li], y["val"]), "test_0_5": acc(mdl, H["test"][:, li], y["test"]),
-                            "unseen": {k: acc(mdl, H["u" + k][:, li], y["u" + k]) for k in unseen}}
-        best = max(range(len(per)), key=lambda i: (per[str(i)]["val"], -i))
-        out[name] = {"run": run, "layer_chosen": best, "val_acc": per[str(best)]["val"], "test_0_5": per[str(best)]["test_0_5"], "unseen": per[str(best)]["unseen"],
-                     "layer0": {"test_0_5": per["0"]["test_0_5"], "unseen": per["0"]["unseen"]}, "per_layer": per, "path_check_all_items": pc}
+        y = {k: np.array([int(it["values"][1]) for it in v]) for k, v in sets_.items()}
+        pos_ = {"last_token": probe_layers(H, y, unseen)} if m is None else {"pass1_colon": probe_layers(H, y, unseen)}
+        if m is None:
+            pos_["cue1_end"] = probe_layers(HX, y, unseen)                   # Note 250-5 amendment: DIRECT's second position
+        chosen = max(pos_, key=lambda p: (pos_[p]["val_acc"], -pos_[p]["layer_chosen"]))
+        out[name] = {"run": run, "positions": pos_, "chosen_position": chosen, "path_check_all_items": pc}
         del m, g; torch.cuda.empty_cache()
     out["majority_test_0_5"] = float(np.bincount(np.array([int(it["values"][1]) for it in splits["test"]]), minlength=11).max() / 1000)
     os.makedirs(os.path.join(ROOT, "scratch/s250_v1probe"), exist_ok=True)
