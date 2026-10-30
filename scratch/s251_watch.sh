@@ -2,6 +2,10 @@
 # §251 session watch (Monitor source; read-only): filler / chain / post-admit events, the b378-b381 drain logs, and every 5 min each admitted cell's host queue log
 # (a run line's rc / QUEUE_DONE / an OOM) for the cells in logs/s251_admitted.log with n >= 378 and no realised line. Prints new lines only.
 cd "$(dirname "$0")/.." || exit 2
+PF=scratch/_tmp/s251_watch.pid                                                     # an expired Monitor leaves the previous instance running: stop it by its exact pid
+if [ -f $PF ]; then op=$(cat $PF); if ps -ef | awk -v p="$op" '$2 == p' | grep -q "s251_watch.sh"; then
+  for c in $(ps -ef | awk -v p="$op" '$3 == p {print $2}'); do for g in $(ps -ef | awk -v p="$c" '$3 == p {print $2}'); do kill "$g" 2>/dev/null; done; kill "$c" 2>/dev/null; done; kill "$op" 2>/dev/null; fi; fi
+echo $$ > $PF
 ( tail -n0 -F logs/fill_s251.out logs/gen_deploy.log logs/auto_drain_gen_b378.out logs/auto_drain_gen_b379.out logs/auto_drain_gen_b380.out logs/auto_drain_gen_b381.out 2>/dev/null \
   | grep --line-buffered -E "fill_s251.*(ADMIT|NOT admitted|did not start|refusing|REFUSED|HOLD|CAP:|VANISHED)|chain:|s251_post.*(POSTCHECK|FAIL|BAD|MISMATCH)|Traceback|s251.*(ALERT|STOP)|ALL_DRAINED|DRAIN FAILED|NEW FAILURE|STALLED|UNREACHABLE" ) &
 seen=""
