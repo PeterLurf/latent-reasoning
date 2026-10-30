@@ -22654,6 +22654,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Consolidated language-line status:** C1 met (scoped to training frames; it transfers to frame 7, not frame 6); C6 met (scoped); C5 partial; C3 latency yes / FLOPs no; C2, C4, C7 not met.
 - **Spend:** realised total unchanged, ~$20.1.
 
+**Note 249-4 (2026-10-30 00:27 EDT; frame-augmentation follow-up parked; no registration, no spend.)**
+- **Audit's framing (adopted):** training on 0-5 + 7 and testing on frame 6 would be a fix loop. The non-loop version is a generalisation test, training with added diversity and testing on two new unseen frames.
+- **Why parked:** the generator has only 8 frames (nested_words.FRAME_ALL = range(8)). Two new held-out frames would need new hand-written templates in the shared generator.
+  - FRAME_ALL drives the existing test / pair sets, so the new frames would have to be added under a separate constant.
+  - That is authoring work for a modest generalisation reading. It is parked until a direction needs phrasing diversity anyway (e.g. the GSM8K-path task-agnostic work).
+- **Theory holds:** realised ~$20.1; Vast credit ~$34 (Audit). Language-line status as Note 249-3.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
