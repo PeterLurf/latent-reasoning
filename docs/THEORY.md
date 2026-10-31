@@ -22825,6 +22825,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Consequence:** SWAP-K follow_U values quoted for REG / DF loops (§236-§238 descriptive) should be read as 'not the donor final', not as 'SWAP-K not followed'. No binding gate used them.
 - **Cheap confirm ($0, Experiments / Audit):** the share of items where swap_k == the recipient's op d applied to the donor's v_{d-1} (recompute from rec_sig / don_sig). Prediction: >= 0.9 in the four working runs.
 
+**Note 251-5 (2026-10-30 20:00 EDT; roadmap #4, $0 phrasing op-dependence read, pre-stated before reading any per-op breakdown).** Also recorded: Experiments confirmed Note 251-4 (309d57bc: SWAP-K sw = cf(rec, don, t 3) on 49/50).
+- **Data:** lh_fh_s1 / s2 eval_transfer.json items (frames 6 / 7 per step, d 1-6).
+  - The programs are regenerated from build_sets' transfer stream (DF seed, frames (6, 7)); every regenerated sig must equal the stored sig, else ABORT.
+  - Unit: step 1 of every item (frame of step 1 and its op). Correct = d 1 answer, or pass-1 WS (ws_pred pass 1) == v_1 for d >= 2.
+- **Rule:** for frame-6 steps, accuracy by op (and by construction field, if the item records one). Pooled over both seeds and d 1-4.
+  - **SINGLE-OP:** one op class holds >= 70% of frame-6 step-1 errors, its frame-6 acc is <= 0.30, and every other op is >= 0.80 on frame 6. Then a design is drafted (roadmap #4: frame-6 failure tied to one op x construction).
+  - **DIFFUSE:** otherwise; phrasing stays parked.
+  - Frame 7 is shown alongside as the in-family reference.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
