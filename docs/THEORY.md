@@ -23033,6 +23033,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - GPT-2 base and askname are reported alongside: a PERM collapse in askname reproduces Note 251-16 at pass 1.
 - **Disclosed deviation (recorded before reading; Audit):** the few-shot uses the first 3 *no-wrap* d 1 draws of the disjoint stream (the first raw draw wrapped, 9x9 -> 4, and a mod-11 example would bias the no-wrap probe); text in scratch/s252_scale0/gate.json fewshot_text. D1 had 195 no-wrap TEST2 items and was extended to 300 from the replayed TEST2 stream (gate.json perm_info.extended).
 
+**Note 252-4 (2026-10-31 07:36 EDT; reads Note 252-3's SCALE stage 0; driver a01e3d24, Audit G-D PASS; scratch/s252_scale0/probe.json; no-wrap items; n CHAIN 402 / PERM 402 / D1 300); plus a new $0 stage pre-stated.**
+- **Acc, CHAIN / PERM / D1:**
+  - Qwen2.5-0.5B few-shot: 0.100 / 0.107 / 0.337;
+  - GPT-2 base few-shot: 0.124 / 0.109 / 0.280;
+  - **s233_askname_s1: 1.000 / 0.095 / 1.000.**
+- **Verdict by the rule: POSITION-BOUND (Qwen PERM < 0.50), so SCALE is parked at 0.5B.**
+  - Disclosed: the probe cannot separate name from position for Qwen, since Qwen is at chance on CHAIN too (few-shot it does not do the step at all). The park rests on 'no evidence for scale here', not on a measured positional bias in Qwen.
+- **The informative row is askname:** the GPT-2 init the loop was built on answers the S_1 question by position. CHAIN 1.000 vs PERM 0.095, chance; this is pass 1 with no loop.
+  - **Cause (ST_v1 P1-ASK+NAME):** its one-hop training classes were (i) S_1 in chain order and (iv) S_2 with S_1's sentence replaced by a given. In both, the asked entity's defining sentence is the first op sentence.
+  - So 'answer from the first op sentence' fit all its one-hop data. The positional loop (251-16) was inherited from this init.
+- **New $0 stage, ASKNAME-PERM (local; the s233 recipe, 8k on the 4060 as originally trained; one change):**
+  - Training texts get their op sentences permuted (dependency-violating) with p 0.5, and the same four question classes are kept.
+  - The permutation seed family is disjoint from TEST-PERM, with text disjointness asserted (252-1 condition 2).
+  - Eval on the probe's sets (CHAIN / PERM / D1), plus the full TEST2 d 1 and ST_v1's four classes.
+- **Rule:**
+  - **INIT-LOOKUP** if PERM >= 0.90, CHAIN >= 0.98 and D1 >= 0.98. Then a loop rebuild from this init may be drafted (P-2 -> REG d <= 4 with perm training, TEST-PERM binding; cloud).
+  - **INIT-POSITION** if PERM < 0.50. Then GPT-2 small does not learn name lookup even for one hop; the language C1 scope stays as 251-16.
+  - Otherwise descriptive.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
