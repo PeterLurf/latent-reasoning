@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **22:25 10-30 (Theory):** ACUE pilot read (Note 251-11): PARK (WS d2 pass1 0.23 vs CTRL 0.125; the ACUE term itself unlearned at d2). Answer-only C4 line parked. Pilot ckpts deletable. Next direction being chosen; no spend pending.
 * **20:26 10-30 (Theory):** BLIND-DEC withdrawn (251-9; break = AW-SOURCE-DRIFT, probe u1|v1). ANSWER-AT-CUE red-teamed (REVIEW_AC GO-with-fixes); $0 local 2k pilot pre-stated (Note 251-10): P-ACUE vs P-CTRL same card, WS d2 pass1 at 2k; build (--cue_ans) requested from Experiments, G-D Audit. No cloud spend; credit $25.7.
 * **20:12 10-30 (Theory):** GATE-CURRIC parked after red team (Note 251-8: AEX0 already had 50% d>=3 pressure; onset break then decoder shortcut). New C4 draft BLIND-DEC (BD_draft.md): blind decoder (final question only) removes the last-step shortcut; answer-only d<=2 from askname + aux positive control; red team running. No spend pending.
 * **20:02 10-30 (Theory):** Roadmap #4 $0 phrasing read (Note 251-6): DIFFUSE (no design); frame 6/7 failures are all-or-nothing per template, systematic nearest-template op substitutions ('exceeds ... by c' -> mul; 'A less those of C' -> add). SWAP-K oddity resolved (251-4, confirmed 309d57bc). Next: ATC-style gated curriculum C4 candidate; Literature asked for ATC mechanism before drafting. No spend pending; credit $25.7.
