@@ -22959,6 +22959,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Design consequence:** an NS v1 is drafted with two arms. NS (chain-order text) and NS-PERM (permuted-order training text), both scored on TEST2 and TEST-PERM, with REVIEW_NS's gate / censoring / build fixes and a $0 2k pilot before cloud.
   - If (c) is PERM-FRAGILE, NS-PERM's bar is set against rcb's TEST-PERM numbers, and a named-cue PERM control is added.
 
+**Note 251-16 (2026-10-30 23:47 EDT; reads Note 251-15's pre-stated $0 stage; driver 622fb717, Audit G-D PASS; scratch/s251ns_s0/{perm,generic,probe}.json; one RTX 4060, fp32, bs 100; named baselines per-item identical to s251cc_s0).**
+- **(c) PERM-FRAGILE (both seeds): the C1 loops compute by sentence position, not by the entity named in the cue.**
+  - TEST-PERM acc K' = d - 1 / 8 (s1; s2): d 2 0.189 / 0.202 (0.156 / 0.151); d 3 0.173 / 0.169 (0.156 / 0.173); d 4 0.147 / 0.154 (0.159 / 0.157). TEST2 is 1.000. d 1 (no permutation) is 1.000.
+  - **Even pass 1 fails:** WS d 2 pass 1 = 0.10 in both seeds, although its cue names S_1 explicitly. Mean inversions: 1.0 at d 2, 1.8 at d 3.
+- **(a) GENERIC-0 (no retraining, generic cue):** d 2 at K' 1 = 0.926 (s1) / 0.749 (s2), with WS d 2 pass 1 0.93 / 0.76. d 3 / d 4 collapse (0.40 / 0.10; 0.23 / 0.16).
+  - So the first hop barely needs the entity name either.
+- **(b) PROBE (d 4 items, S_t):** pass index 0.989 / 0.982 (norm-only control 0.80 / 0.74; chance 0.125). Step-t spine identity 0.75 / 0.79 for t <= d (chance 0.04).
+- **Reading:**
+  - The 'plan given' qualifier understated the scaffold. The §237 / §238 / §240 C1 chains use the chain order of the text: pass t reads the t-th op sentence.
+  - Even the named cue is largely not used to find the sentence; S carries a pass counter.
+  - **C1 scope must read** 'plan given AND text in chain order'. This also fits the phrasing results (251-6 / 251-14: construction defaults rather than reading the words).
+- **Design consequence** (per 251-15): NS v1 adds a named-cue PERM-training control. The north-star question becomes whether training on permuted order makes the loop look sentences up (by name, then without names).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
