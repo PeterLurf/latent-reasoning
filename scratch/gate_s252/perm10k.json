@@ -1,0 +1,11 @@
+{
+ "n": 10000,
+ "bad": {
+  "inv": 0,
+  "slots": 0,
+  "tp": 0
+ },
+ "mean_inversions": 1.9698,
+ "solve_asserted_inside": true,
+ "pass": true
+}

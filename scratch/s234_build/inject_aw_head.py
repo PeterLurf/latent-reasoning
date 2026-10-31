@@ -31,6 +31,7 @@ if ROOT not in sys.path:
 import boxes.deltamem as DM  # noqa: E402
 import boxes.nested170 as N7  # noqa: E402
 import boxes.ow_words as OW  # noqa: E402
+import boxes.perm_render as PR  # noqa: E402
 from boxes.nested170 import AUX_W, EOT, NUM_IDS, pad  # noqa: E402
 from boxes.inject_ow import (ENC, SFX, SEED_D, SEED_CAL, SEED_MEMCHECK, OWKW, META, tok_ow, tok_nested, direct_logits, sha_file, build_sets,  # noqa: E402, F401
                              InjectOW, load_trunk)
@@ -61,11 +62,19 @@ class InjectAW(InjectOW):
         return self.g.logits(hf[torch.arange(h.shape[0], device=h.device), pos]).float()
 
 
+GEN_CUE, GEN_LEN = " What is the next value?", 6                         # §252 GP (NS_v1 §2): the plan-free cue (+ SFX), 6 tokens (inject_st's CUE_LEN 7 is the named cue's)
+
+
 def tok_aw(it, aux_target="value", cue="none", write_src="all"):
-    """tok_st, then (write_src answer) " The answer is:" appended to every pass input; the decoder / aux untouched."""
-    o = tok_st(it, aux_target, cue)
+    """tok_st, then (write_src answer) " The answer is:" appended to every pass input; the decoder / aux untouched. §252 cue generic: tok_st's cue step
+    items with every think cue := [EOT] + enc(' ' + text + GEN_CUE) (the same input at every pass; o['cue'] = 'generic' arms passes()' PLAN-FREE assert)."""
+    o = tok_st(it, aux_target, "step" if cue == "generic" else cue)
+    if cue == "generic":
+        gt = ENC.encode(GEN_CUE); assert len(gt) == GEN_LEN, ("GEN-CUE", gt)
+        o["think_cues"] = [[EOT] + ENC.encode(" " + it["text"] + GEN_CUE) for _ in o["think_cues"]]; o["cue"] = "generic"
+        assert all(q[:len(o["think"])] == o["think"] and q[len(o["think"]):] == gt for q in o["think_cues"]), "GEN-CUE: the text rows precede the cue"
     if write_src == "answer":
-        assert cue == "step" and "think_cues" in o, "AW: --write_src answer needs --cue step"
+        assert cue in ("step", "generic") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic"
         o["think_cues"] = [q + SFX for q in o["think_cues"]]
         assert all(q[-1] == COLON for q in o["think_cues"]) and o["dec"] == o["think"] + SFX, "AW: inputs / decoder"
     return o

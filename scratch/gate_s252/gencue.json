@@ -1,0 +1,9 @@
+{
+ "n": 4000,
+ "bad": 0,
+ "cue_tokens": 6,
+ "planfree_positive_silent": true,
+ "planfree_negative_fires": true,
+ "planfree_negative_msg": "PLAN-FREE: generic-cue pass inputs differ across t",
+ "pass": true
+}

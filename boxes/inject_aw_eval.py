@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames")
-AW_ONLY = ("probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm")
+AW_ONLY = ("test_perm", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
 
 
 def pred_of(lg):
@@ -62,6 +62,8 @@ def passes(m, items, dev, bs, kset, seqs_of_t=seq_std, Td=None, edit=None, aux_t
         for t in range(1, Td + 1):
             ids_, mk = pad([seqs_of_t(it, t) for it in ch]); assert m0 is None or (mk == m0).all(), "one padding across passes"; m0 = mk
             xs.append(torch.tensor(ids_, device=dev))
+        if seqs_of_t is seq_std and any(it.get("cue") == "generic" for it in ch):   # §252 PLAN-FREE (NS_v1 §3): GP items read one identical input at every pass
+            assert all(it.get("cue") == "generic" for it in ch) and all(torch.equal(x_, xs[0]) for x_ in xs), "PLAN-FREE: generic-cue pass inputs differ across t"
         msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)
         if 0 in kset:
             out[0][sl] = pred_of(m.dec_logits(S, ch, dev))
@@ -737,7 +739,10 @@ RH_TAU, RH_KMAX = 0.90, 8                                                   # §
 
 def rh_input(it, t, aug):
     """pass t's input (tok_aw, cue step, write_src answer) with aug inserted right after the problem text; aug '' gives the original tokens (asserted by the caller)."""
-    raw = it["raw"]; return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + " " + ST.cue_str(raw, t)) + IO.SFX
+    raw = it["raw"]
+    if it.get("cue") == "generic":                                          # §252 GP (REVIEW_NS #3): the plan-free cue at every pass
+        return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + AW.GEN_CUE) + IO.SFX
+    return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + " " + ST.cue_str(raw, t)) + IO.SFX
 
 
 def rh_sent(it, t, x):
@@ -1031,6 +1036,36 @@ def read_mask(m, items, keep_all=False):
         yield RM_STATS
     finally:
         hd.remove(); del m.pass_aw; del m.dec_logits
+
+
+@torch.no_grad()
+def part_test_perm(m, g, sets, a, dev, bs):
+    """§252 TEST-PERM (NS_v1 §2-§3; the 622fb717 renderer = boxes.perm_render, seeds 25150 + d): TEST2 d 1..min(4, d_max) re-rendered with the op sentences in a
+    dependency-violating order (>= 1 inversion, d >= 2; d 1 unchanged); acc at K' {d - 1, d, think_k}, WS per pass 1..think_k; LP5-D4-style MEAN-AT-2 on TEST-PERM d 4
+    (S after pass 2 := the TEST-PERM d 4 mean of S_2, the other passes on their own inputs; answers at K' {4, think_k}, + the intact answers). Per item."""
+    import boxes.perm_render as PR
+    K = a["think_k"]; ds = list(range(1, min(4, a["d_max"]) + 1)); P_, info = PR.test_perm_sets({d: sets["test2"][d] for d in ds}, ds)
+    T = tokd({"test2": P_}, a, ds); out = {"info": info, "by_d": {}, "items": {}}
+    for d in ds:
+        its = T[d]; y = np.array([it["ans"] for it in its]); ks = sorted({d - 1, d, K})
+        A, _ = passes(m, its, dev, bs, set(ks)); r_, pv = AW.ws_readout(m, {d: its}, dev, K, bs, per_item=True)
+        out["by_d"][str(d)] = {"n": len(its), "acc_kprime": {str(k): float((A[k] == y).mean()) for k in ks}, "ws": r_[str(d)]}
+        out["items"][str(d)] = items_rec(its, {"ans_kprime": {str(k): A[k].tolist() for k in ks}, "ws_pred": pv[str(d)], "order": [it["raw"]["order"] for it in its]})
+    if 4 in ds:
+        t = 2; its = T[4]; acc_ = {"sum": None}; y = np.array([it["ans"] for it in its]); ks = sorted({4, K})
+
+        def grab(t_, S, sl):
+            if t_ == t:
+                s_ = S.float().sum(0); acc_["sum"] = s_ if acc_["sum"] is None else acc_["sum"] + s_
+        passes(m, its, dev, bs, {t}, on_state=grab); mean_t = acc_["sum"] / len(its)
+        I, _ = passes(m, its, dev, bs, set(ks))
+        M, _ = passes(m, its, dev, bs, set(ks), edit=lambda t_, S, sl: mean_t.to(S.dtype)[None].expand(S.shape[0], *S.shape[1:]).contiguous() if t_ == t else None)
+        out["mean_at_2_d4"] = {"intact": {str(k): float((I[k] == y).mean()) for k in ks}, "mean_at_t": {str(k): float((M[k] == y).mean()) for k in ks},
+                               "mean_state_norm": float(mean_t.norm())}
+        out["items"]["4"]["mean_at_2"] = {"intact": {str(k): I[k].tolist() for k in ks}, "mean_at_t": {str(k): M[k].tolist() for k in ks}}
+    out["def"] = ("§252 TEST-PERM: TEST2 d 1-4 with the op sentences S_1..S_d reassigned over their slots by default_rng(25150 + d) (>= 1 inversion d >= 2; OW.solve "
+                  "== answer asserted; boxes.perm_render = 622fb717's renderer); acc_kprime {d-1, d, K}, WS per pass; mean_at_2_d4 = LP5-D4 style on TEST-PERM d 4")
+    return out
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
@@ -1052,6 +1087,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
         parts = [p_ for p_ in parts if p_ == "acc"]
     if a.get("write_src", "all") != "answer":
         parts = [p_ for p_ in parts if p_ not in AW_ONLY]
+    if a.get("cue") == "generic":   # §252 GP (REVIEW_NS #3): CUE-ONLY / CUE-WRONG are named-cue builders - dropped
+        parts = [p_ for p_ in parts if p_ not in ("cue_only", "cue_wrong")]
     meta = {"eval_dtype": "fp32", "eval_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "eval_bs": bs, "arm": a["arm"], "cue": a.get("cue", "none"), "write_src": a.get("write_src", "all"),
             "think_k": a["think_k"], "ds": ds, "module_sha256": IO.sha_file(os.path.abspath(__file__))}
     for p_ in parts:
@@ -1066,7 +1103,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "lenstep": lambda: part_lenstep(m, g, sets, a, dev, bs), "normctr": lambda: part_normctr(m, g, sets, a, dev, bs),
               "ws_long": lambda: part_ws_long(m, g, sets, a, dev, bs), "c7": lambda: part_c7(m, g, sets, a, dev, bs),
               "halt": lambda: part_halt(m, g, sets, a, dev, bs), "halthead": lambda: part_halthead(m, g, sets, a, dev, bs),
-              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs)}[p_]()
+              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs),
+              "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs)}[p_]()
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

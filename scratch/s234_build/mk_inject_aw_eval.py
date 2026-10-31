@@ -17,9 +17,13 @@ scratch/s234_build/mk_inject_aw_eval.py (inject_st_eval.py stays byte-identical)
     python -m boxes.inject_aw_eval --run boxes/runs_fsq/<run> --parts acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws [--device cuda:0 --eval_bs 100]"""
 '''
 E = [
+('        msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)\n',
+ '        if seqs_of_t is seq_std and any(it.get("cue") == "generic" for it in ch):   # §252 PLAN-FREE (NS_v1 §3): GP items read one identical input at every pass\n'
+ '            assert all(it.get("cue") == "generic" for it in ch) and all(torch.equal(x_, xs[0]) for x_ in xs), "PLAN-FREE: generic-cue pass inputs differ across t"\n'
+ '        msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)\n'),
 ('from boxes import inject_st as ST  # noqa: E402\n',
  'from boxes import inject_st as ST  # noqa: E402\nfrom boxes import inject_aw as AW  # noqa: E402\nimport boxes.deltamem as DM  # noqa: E402\nimport boxes.ow_words as OW  # noqa: E402\n'),
-('PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong")', 'PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames")\nAW_ONLY = ("probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")'),
+('PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong")', 'PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm")\nAW_ONLY = ("test_perm", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")'),
 ('import json\n', 'import json\nimport math\n'),
 ('    return {d: [ST.tok_st(it, a.get("aux_target", "value"), a.get("cue", "none")) for it in sets[key][d]] for d in ds}',
  '    return {d: [AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for it in sets[key][d]] for d in ds}'),
@@ -30,7 +34,7 @@ E = [
 ('    ns = argparse.Namespace(**a); torch.manual_seed(a["seed"]); m, g, params = IO.build_model(ns, dev)',
  '    ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight'),
 ('    if m is None:\n        parts = [p_ for p_ in parts if p_ == "acc"]',
- '    if m is None:\n        parts = [p_ for p_ in parts if p_ == "acc"]\n    if a.get("write_src", "all") != "answer":\n        parts = [p_ for p_ in parts if p_ not in AW_ONLY]'),
+ '    if m is None:\n        parts = [p_ for p_ in parts if p_ == "acc"]\n    if a.get("write_src", "all") != "answer":\n        parts = [p_ for p_ in parts if p_ not in AW_ONLY]\n    if a.get("cue") == "generic":   # §252 GP (REVIEW_NS #3): CUE-ONLY / CUE-WRONG are named-cue builders - dropped\n        parts = [p_ for p_ in parts if p_ not in ("cue_only", "cue_wrong")]'),
 ('"cue": a.get("cue", "none"),\n            "think_k"', '"cue": a.get("cue", "none"), "write_src": a.get("write_src", "all"),\n            "think_k"'),
 ('              "cue_only": lambda: part_cue_only(m, g, sets, a, dev, bs, ds), "cue_wrong": lambda: part_cue_wrong(m, g, sets, a, dev, bs, ds)}[p_]()',
  '              "cue_only": lambda: part_cue_only(m, g, sets, a, dev, bs, ds), "cue_wrong": lambda: part_cue_wrong(m, g, sets, a, dev, bs, ds),\n'
@@ -40,7 +44,7 @@ E = [
  '              "lenstep": lambda: part_lenstep(m, g, sets, a, dev, bs), "normctr": lambda: part_normctr(m, g, sets, a, dev, bs),\n'
  '              "ws_long": lambda: part_ws_long(m, g, sets, a, dev, bs), "c7": lambda: part_c7(m, g, sets, a, dev, bs),\n'
  '              "halt": lambda: part_halt(m, g, sets, a, dev, bs), "halthead": lambda: part_halthead(m, g, sets, a, dev, bs),\n'
- '              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs)}[p_]()'),   # §241-§243, §247 READ-HALT, §248 HALT-HEAD, §249 FRAME-TRANSFER
+ '              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs),\n              "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs)}[p_]()'),   # §241-§243, §247 READ-HALT, §248 HALT-HEAD, §249 FRAME-TRANSFER
 ('        assert a.get(k_) in (None, v_), ("§233: set sha mismatch vs args.json", k_)', '        assert a.get(k_) in (None, v_), ("§234: set sha mismatch vs args.json", k_)'),
 ('    if sets is None:\n        sets = IO.build_sets()', '    if sets is None:\n        sets = IO.build_sets(mul_s_p=law(a))   # §236 / §238: the run\'s law (law() raises on unknown values)'),
 # §239 LONG-RUN: the --kprime_list CLI option (default '' = the unchanged run() path) -> run_long (eval_long.json only)
