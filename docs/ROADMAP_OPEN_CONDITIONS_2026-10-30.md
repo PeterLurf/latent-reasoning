@@ -12,6 +12,8 @@
 
 **Update 10-30 (Note 251-3):** #1 done. AEX SPLIT; AEX0 FAIL. Answer-only depth +2 works only with the d <= 2 step targets kept as a replay anchor. New C4 candidate (Literature): a competence-gated depth curriculum (ATC 2609.19717) for the answer-only arm. Check its preconditions before drafting.
 
+**Update 10-30 (Notes 251-6..251-9):** #4 phrasing read DIFFUSE (nearest-template op substitution). GATE-CURRIC parked; BLIND-DEC withdrawn. The answer-only C4 line pauses: the seeded writes break at onset; only per-pass targets keep them.
+
 **Order:** 1 (ANSWER-EXTEND) now. Then the $0 phrasing read (4), which is free. Then KV-LAT (2) if credit allows (≥ $8 left after 1). C2 and C7 wait for a new idea.
 
 **Why ANSWER-EXTEND first:**

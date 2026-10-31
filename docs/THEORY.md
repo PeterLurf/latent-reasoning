@@ -22871,6 +22871,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **GATE-CURRIC parked** (expected-information low: a FAIL is predicted by AEX0). Other red-team blockers if revived: STABLE trips on stage switches; censoring wording; backtrack thrash.
   - Cheap entry if ever revived: a $0 local 2-3k pilot from aex0_s2 at 90% d 3, logging ws d 3 pass 2.
 
+**Note 251-9 (2026-10-30 20:18 EDT; BLIND-DEC draft (docs/research_blinddec_2026-10-30/BD_draft.md) WITHDRAWN after its red team (REVIEW_BD.md, NO-GO); the answer-only C4 line is closed for now; no build, no spend).**
+- **Red team, adopted:** the shortcut was not what blocked §244 / §245.
+  - In the 3 failing AO seeds, d 2 is at chance at every K' (ao_s1 K' 1 0.084; s3 / s4 ~0.2 = K' 0, i.e. the decoder reading the text).
+  - What fails is pass 1's ':' readout of v_1 on d 2 items, 1.000 at step 0 (G-AW0). ws_readout d 2 pass 1 at 1k is 0.22 / 0.09 / 0.16 / 0.27, final <= 0.13 except s2 (0.65), while d 1 pass 1 stays 1.0 and aw_plaw2_s1 (aux) keeps it.
+  - The one AO formation (ao_s2_ext) formed *through* the decoder shortcut (d 2 K' 1 0.88). A blind decoder would also turn d 1 items into a blind S -> v_1 target (pass-1 aux in disguise), so it is not a single change, and three of its gates were vacuous.
+- **Consolidated answer-only finding (§244 / §245 / §251, scoped: askname / P-2 lineage, plan given):**
+  - Without per-pass targets, the seeded writes break at training onset and the answer loss re-forms them, if at all, only via the decoder's last-step shortcut (AO 1/4; AEX0 0/2).
+  - Keeping per-pass targets on the seeded depths lets new depths come from answers (AEX 2/2 at d 4 acc, 1/2 full causal bar).
+  - Descriptive: answer-only-extended depths do not extrapolate. aex_s1 d 5 / d 6 = 0.20 / 0.11 vs CTRL rcb_plaw4_s1 0.86 / 0.35 and lh_fh_s1 0.86 / 0.41.
+  - Two consecutive answer-only fix drafts (GATE-CURRIC, BLIND-DEC) were mis-targeted, so the line pauses rather than loop. Re-entry needs a new idea for preventing the onset break: the $0 S_1-probe read (REVIEW_BD #7a) would locate it, write vs readout.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
