@@ -23100,6 +23100,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Family worst case: $2.01 + 2 x $1.20 = $4.41 <= $5. Same GPU class (RTX 3090), same args.
 - **Censoring unchanged:** host refusals are not runs; an unfinished admitted run is VOID-RERUN once.
 - **Disclosed cell overrun (b385 lbr_s1):** admitted at $0.1885/h (projected $0.97). Its cell and wall guards were restarted at $1.12 after the refused hosts, which are not runs. Including the refused hosts the cell is ~$0.85 run + $0.29 refused, about $1.14 vs $1.12 (Audit OK). b386 gets the same treatment. The family stays <= $5.
+- **b386 lbr_s2:** admitted under the fallback (admit $1.20 / guard $1.30) after 3 refusals at $1.05; projected $1.05; guards restarted at $1.30 (Audit pre-approval). Rejected-host spend: b385 $0.29, b386 $0.21 (not runs). Family ~$4.2 of $5 projected.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
