@@ -22947,6 +22947,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The cheap designs on the current GPT-2-small cued-pass harness are largely exhausted.
   - Theory HOLD on new registrations until a direction changes a premise (data source, format, or scale), rather than another fix on the same harness. See CURRENT_TASKS.
 
+**Note 251-15 (2026-10-30 23:04 EDT; UNSCAFFOLDED (docs/research_unscaffolded_2026-10-30/NS_draft.md) after its red team (REVIEW_NS.md, GO-with-fixes); a $0 stage pre-stated before any build or output; Audit's candidate (2)).**
+- **Scope learned:** REG op sentences are always in chain order in the text (1.000 of items, d 2-4). A generic cue alone therefore tests a counter, not an entity pointer. The north-star test is a text whose statement order is permuted against the dependencies (TEST-PERM).
+- **$0 stage (local; rcb_plaw4_s1 / s2; REG TEST2 d 1-4; acc_kprime d - 1 / 8 and WS per pass):**
+  - **(c) PERM-NAMED:** the existing named-cue loops on TEST-PERM (TEST2 items re-rendered with op sentences in a dependency-violating order: a random order with >= 1 inversion for d >= 2; the same programs and answers).
+  - **(a) GENERIC-0:** the same models with every think cue replaced by the generic cue ' What is the next value? The answer is:' (decoder unchanged). This is the step-0 reference for NS.
+  - **(b) PROBE:** a linear probe of S_t (pass-t state, d 4 items) for the pass index and the spine identity of step t (Audit 231-1 protocol), descriptive.
+- **Pre-stated readings:**
+  - (c) PERM-ROBUST if d 2-4 acc >= 0.90 in both seeds (the named loop finds sentences by name, not position). PERM-FRAGILE if any d 2-4 < 0.60.
+  - (a) is descriptive; it shows whether the loop already runs an implicit order.
+  - **Design consequence:** an NS v1 is drafted with two arms. NS (chain-order text) and NS-PERM (permuted-order training text), both scored on TEST2 and TEST-PERM, with REVIEW_NS's gate / censoring / build fixes and a $0 2k pilot before cloud.
+  - If (c) is PERM-FRAGILE, NS-PERM's bar is set against rcb's TEST-PERM numbers, and a named-cue PERM control is added.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
