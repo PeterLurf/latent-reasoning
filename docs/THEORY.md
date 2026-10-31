@@ -22859,6 +22859,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - A gated arm would put ~90% of batches on d 3, which can only be solved with a pass-2 write; the 50%-d <= 2 batches that reward the shortcut would drop to 10% rehearsal. So it is a test of whether pressure, not targets, restores the write.
   - Prior (Theory): ~0.2-0.25 per seed. Not drafted yet; ranked against KV-LAT in the roadmap.
 
+**Note 251-8 (2026-10-30 20:10 EDT; amends Note 251-7's mechanism after the GATE-CURRIC red team, docs/research_gatecurric_2026-10-30/REVIEW_GT.md; GATE-CURRIC NOT registered, parked).**
+- **Correction to 251-7:** the decoder shortcut is right (d 2 at K' 1 ~1.00 everywhere), but the write is not slowly eroded. It breaks at onset in every arm (log.jsonl):
+  - aex0_s2: aux_vacc d 2 pass 2 = 0.13 and ws_readout d 2 pass 2 = 0.48 by 1k;
+  - aex0_s1: loses pass 1 itself on d >= 2 items (ws d 2 pass 1 0.11 at 1k), which the shortcut cannot explain;
+  - aex_s1 dips to ws d 2 pass 2 = 0.57 at 2k even with aux;
+  - gradient norm ~7-9 in the first bin in all four runs (REG-law shift, fresh AdamW, warmup).
+  - AEX restores the writes through the aux. AEX0 s2 re-learns d 2 from answers via the 1-pass shortcut.
+- **Depth pressure was already high in AEX0:** d 3 + d 4 were 50% of steps (not 25% each as 251-7 implied of d 3 alone), clipped at grad norm 5-9 throughout with CE flat at 2.47 -> 2.37, and with zero d 3 learning in 16k. Solved d <= 2 batches gave ~0 gradient late (gn d 2 0.00 at 16k).
+- **Amended reading:** after the onset break, answer-only re-learning lands on the decoder shortcut; ~8k unit-norm updates on depths that need the pass-2 write did not re-form it. So 'more pressure' has largely been tested.
+  - **GATE-CURRIC parked** (expected-information low: a FAIL is predicted by AEX0). Other red-team blockers if revived: STABLE trips on stage switches; censoring wording; backtrack thrash.
+  - Cheap entry if ever revived: a $0 local 2-3k pilot from aex0_s2 at 90% d 3, logging ws d 3 pass 2.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
