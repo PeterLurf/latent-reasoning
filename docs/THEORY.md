@@ -23078,6 +23078,10 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Next:** a loop rebuild from s252_askperm_s1, drafted for red team. It follows §237's two-stage path with perm training (P-2 d <= 2, then REG d <= 4), binding on TEST-PERM plus TEST2 retention with the causal gates (252-1). This is a cloud design.
 - **Incident (Experiments):** a third unreproduced low-level fault on the local box today (OverflowError in pad; a segfault). Re-runs completed and were cross-checked. Noted as possible host memory trouble.
 
+**Note 253-1 (2026-10-31 09:04 EDT; §253 step-0 gate read by theory/score_lb.py --stage step0: STEP0-OK; lb_step0 = the trainer at lr 0 for 1 step under p2p_s1's args, with trunk == s252_askperm_s1 (148 / 148); 4060, fp32, eval_bs 250; local micro 8 at lr 0 is disclosed and has no effect).**
+- TEST-PERM d 2 (full 1,000, wrap included): ws['1'] = **0.996** (gate >= 0.95). Passes 2-8 are 0.023 and acc K' 1 / 2 / 8 is 0.022, as expected before any loop training. d 1 is 1.000.
+- Stage 1 (p2p_s1 / p2p_s2 / p2p_old_s1) may launch on Audit's G-D PASS.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
