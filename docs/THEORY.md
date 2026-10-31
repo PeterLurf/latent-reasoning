@@ -22934,6 +22934,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Reading:** a cached-prompt loop is not available by masking a trained loop; it would need an S1 fine-tune to re-route hops >= 3 through cue-row reads. The FLOP gain over the most compressed text CoT would be ~parity at best.
   - CC parked. Recorded C3 status: latency yes; FLOPs no for the current architecture; parity at best for the cached redesign vs value-only text.
 
+**Note 251-14 (2026-10-30 22:58 EDT; PARA-GRAMMAR draft (docs/research_paragrammar_2026-10-30/PG_draft.md) WITHDRAWN after its red team (REVIEW_PG.md, NO-GO); it also overrode Note 251-5's pre-stated 'DIFFUSE -> parked' without saying so; phrasing stays parked).**
+- **Descriptive, refines 251-6** (red-team reads theory/read_s251_pg_*.py; Theory re-ran the word table):
+  - Training content words are not op-pure: 'more' / 'fewer' 0.50 / 0.50 add / sub (frame 4 inverts roles), 'than' 0.45 / 0.55, 'as many' spread over add / sub / mul.
+  - Only operator words are pure, and the failures ignore them (f6 'less those of C' computes add although P(sub | less) = 1.0).
+  - The cued step applies a **construction default** (skeleton -> op) and ignores the operator lexeme and argument order.
+- **§250's DIV models already show decorrelation re-routing cues, not composing:**
+  - 'exceeds ... by c' stays mul (s1) or flips to sub (s2);
+  - 'once' (sub_v frame 8 only) drives held-out mul_v to sub (f12 1.00, f14 0.59 / 0.70);
+  - f6 is unchanged.
+- **Today's tally:** GATE-CURRIC parked, BLIND-DEC withdrawn, ACUE pilot PARK, CACHED-CUE S0 PARK, PARA-GRAMMAR withdrawn.
+  - The cheap designs on the current GPT-2-small cued-pass harness are largely exhausted.
+  - Theory HOLD on new registrations until a direction changes a premise (data source, format, or scale), rather than another fix on the same harness. See CURRENT_TASKS.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
