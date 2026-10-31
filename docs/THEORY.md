@@ -22846,6 +22846,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Reading:** the cued pass selects the op by nearest trained construction (lexical / structural match), not by composing word meanings. This is consistent with §250 (new frames memorised, held-out frames unmoved) and Note 250-4 (narrowness already in the askname init's cued format).
   - Scope: two seeds of one lineage, 8 frames. Literature not yet checked; no novelty claim.
 
+**Note 251-7 (2026-10-30 20:04 EDT; descriptive mechanism of AEX vs AEX0 from existing evals, plus the ATC 2609.19717 precondition check; no verdict changes).**
+- **Why AEX0 does not extend (eval_acc acc_kprime + eval_ws):**
+  - Every model solves d 2 at K' 1: the decoder takes the last step (aw_plaw2 init 1.00, CTRL 1.00, AEX 1.00, AEX0 s2 0.99). So d <= 2 answers never require pass 2 to write v_2.
+  - With aux on d <= 2 the pass-2 write stays readable: WS d 2 at pass 2 = 1.00 in the init, CTRL and AEX. In AEX0 s2 it erodes to **0.22**, though d 2 acc stays 1.00 via 1 pass + decoder.
+  - d 3 needs S_2 to hold v_2 (CTRL d 3 at K' 2 = 1.00), so with the pass-2 write gone AEX0 s2 has nothing to extend (d 3 0.10 at every K').
+  - Train curve: all arms dip at d 2 at 1k (REG law vs the seed's law); AEX re-forms with aux, AEX0 s2 re-forms d 2 from answers by 2k (via the shortcut), and AEX0 s1 never does.
+  - Refines Note 251-3: the anchor's job is to keep the seeded passes *writing* readable values, which the answer loss alone does not reward when the decoder can shortcut the last step.
+- **ATC precondition check (Literature 10-30, LIT_STEPTOLD_2026-10-24.md):** ATC uses a competence gate (held-out acc > 0.9 for 5 evals), rehearsal lambda 0.1, backtracking, thought count tied to depth (d - 1), answer CE only, a 2-layer GPT-2 from scratch, Coconut-style thoughts. No curriculum gives 47.8, ATC 99.9.
+  - Its mechanism is exposure scheduling: each new depth gets most of the batch once the previous one is mastered.
+  - Our AEX0 failure is **erosion** of an existing write under a decoder shortcut, which exposure scheduling does not directly target.
+  - A gated arm would put ~90% of batches on d 3, which can only be solved with a pass-2 write; the 50%-d <= 2 batches that reward the shortcut would drop to 10% rehearsal. So it is a test of whether pressure, not targets, restores the write.
+  - Prior (Theory): ~0.2-0.25 per seed. Not drafted yet; ranked against KV-LAT in the roadmap.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
