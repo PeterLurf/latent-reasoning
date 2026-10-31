@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **07:36 10-31 (Theory):** SCALE parked (Note 252-4; Qwen few-shot at chance even on CHAIN). Askname init is position-bound (CHAIN 1.000 / PERM 0.095): its one-hop training data always put the asked sentence first. $0 ASKNAME-PERM local retrain requested (INIT-LOOKUP gate PERM >= 0.90). No spend; credit $25.7.
 * **07:19 10-31 (Theory):** REAL-DATA (GSM8K-Aug AW) deferred (Note 252-3: prior GSM8K DeltaMem loops one-pass; our mechanism needs named cues + chain order). SCALE $0 probe pre-stated: Qwen2.5-0.5B few-shot pass-1 question on TEST-PERM d2 vs CHAIN (no-wrap items); requested. No spend; credit $25.7.
 * **07:15 10-31 (Theory):** §252 pilot PARK both (Note 252-2; perm d2 pass1 NP 0.10, GP 0.09; GP breaks the chain) -> closed $0; pilot ckpts deletable. Next: REAL-DATA (Audit cand. 1, GSM8K-Aug) design. Credit $25.7.
 * **23:49 10-30 (Theory):** Note 251-16: C1 loops are POSITION-BOUND (TEST-PERM d2-4 ~0.15-0.20, pass 1 0.10 despite the named cue); C1 scope = plan given + chain-ordered text. §252 PERM-LOOKUP REGISTERED (NS_v1: NP --perm_p 0.5; GP + generic cue; warm from rcb; guard $5); build + $0 2k pilot requested; Audit approval pending.
