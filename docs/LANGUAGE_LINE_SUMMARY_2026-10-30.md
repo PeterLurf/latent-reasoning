@@ -23,7 +23,9 @@ Scope for every line: one model lineage (GPT-2 askname init → P-2 → REG → 
 3. **Phrasing:** the cued step is frame-specific (§249). Adding frames teaches only those frames (§250, MEMO).
    - Loop training did not cause it: the askname init is already narrow in the cued question format (Note 250-4).
    - The same init trained in the direct format (CD-AN) parses an unseen frame (0.971), so the narrowness is in the cued-pass format.
-4. **Architecture cost:** the per-pass prompt recompute makes FLOPs uncompetitive (Note 246-0).
+   - Note 251-6: the cued step picks its op from the nearest trained template; unseen phrasings fail all-or-nothing with systematic op substitutions ("exceeds ... by c" computes mul).
+4. **Answer-only training (C4):** the seeded pass codes drift at onset on items whose answer is not the current step (probe u1|v1 0.11-0.25). Only per-pass targets hold them (Notes 251-8, 251-9, 251-11); depth beyond the seed can come from answers if the seeded passes stay anchored (§251 AEX).
+5. **Architecture cost:** the per-pass prompt recompute makes FLOPs uncompetitive (Note 246-0).
 
 ## Most promising next directions (each a new staged design)
 - **KV-cached latent positions** (C3 FLOPs), re-using REVIEW_KV's fixes.
