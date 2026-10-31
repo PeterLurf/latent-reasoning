@@ -1,0 +1,26 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "test_perm": {
+   "file": "eval_test_perm.json",
+   "sec": 54
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 4060",
+ "eval_bs": 250,
+ "write_src": "answer",
+ "ds": [
+  2
+ ],
+ "module_sha256": "a71015314a4a7bd261678c6bf825965a7f873fafceb9544c7499c9c9acad4cfb",
+ "train": {
+  "step": 0,
+  "how": "inject_aw 1 step at --lr 0 under P2P's flags (seed 1): the init + g_add calibration; AdamW at lr 0 updates nothing",
+  "source_ckpt": "D:/Latent/scratch/_tmp/s253/step0_train/ckpt_last.pt"
+ }
+}

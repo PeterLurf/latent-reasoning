@@ -1,0 +1,11 @@
+{
+ "rc": [
+  0,
+  0
+ ],
+ "ws_equal": true,
+ "new_field": true,
+ "test_perm_equal_minus_new": false,
+ "old_has_no_k2": true,
+ "pass": false
+}
