@@ -23031,6 +23031,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **POSITION-BOUND (Qwen):** PERM < 0.50 or PERM < CHAIN - 0.30. Then SCALE is parked at 0.5B.
   - Otherwise descriptive.
   - GPT-2 base and askname are reported alongside: a PERM collapse in askname reproduces Note 251-16 at pass 1.
+- **Disclosed deviation (recorded before reading; Audit):** the few-shot uses the first 3 *no-wrap* d 1 draws of the disjoint stream (the first raw draw wrapped, 9x9 -> 4, and a mod-11 example would bias the no-wrap probe); text in scratch/s252_scale0/gate.json fewshot_text. D1 had 195 no-wrap TEST2 items and was extended to 300 from the replayed TEST2 stream (gate.json perm_info.extended).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
