@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "D:\Latent\scratch\s251ns_s0.py", line 204, in <module>
+    r = fns[p_](o_.device, o_.bs); json.dump(r, open(os.path.join(OUT, p_ + ".json"), "w", newline="\n"), indent=1, default=str)
+  File "D:\Latent\scratch\s251ns_s0.py", line 127, in perm
+    o[run] = {"test2": run_eval(m, T, dev, bs), "test_perm": run_eval(m, TP, dev, bs), "perm_info": info, "bs": bs, "dtype": "fp32", "gpu": torch.cuda.get_device_name(0),
+                       ~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\Latent\scratch\s251ns_s0.py", line 91, in run_eval
+    A, _ = E.passes(m, its, dev, bs, set(ks)); r_, pv = AW.ws_readout(m, {d: its}, dev, K, bs, per_item=True)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\peter\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\torch\utils\_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "D:\Latent\boxes\inject_aw_eval.py", line 63, in passes
+    ids_, mk = pad([seqs_of_t(it, t) for it in ch]); assert m0 is None or (mk == m0).all(), "one padding across passes"; m0 = mk
+               ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Latent\boxes\nested170.py", line 169, in pad
+    ids[r, :len(q)] = q; m[r, :len(q)] = True
+    ~~~^^^^^^^^^^^^
+OverflowError: int too big to convert
+rc 1
