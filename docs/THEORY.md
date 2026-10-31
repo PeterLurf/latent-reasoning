@@ -22899,6 +22899,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **PARK** the answer-only line if P-ACUE <= 0.3.
   - Otherwise **INCONCLUSIVE:** Theory may run the 2-3k variant from aex0_s2 (REG d <= 4; read WS d 3 pass 2) once before deciding.
 
+**Note 251-11 (2026-10-30 22:25 EDT; reads Note 251-10's pre-stated ACUE pilot; build 3c68ab38, Audit G-D PASS; pac_acue_s1 / pac_ctrl_s1, same RTX 4060, micro 4, --stop_at 2000; predictive only).**
+- **Verdict: PARK** (rule: P-ACUE WS d 2 pass 1 <= 0.3).
+  - ws_readout['2']['1'] at 1k / 2k: P-ACUE 0.195 / **0.230**; P-CTRL 0.110 / 0.125 (+0.105 at 2k, below the +0.3 bar). d 1 pass 1 stays 1.0 in both.
+  - The ACUE term itself is not learned at d 2: acue_by_d['2'].acc 0.093 / 0.094 (CE 2.62 -> 2.39), while d 1 is 0.992 / 0.997. Train d 2 answer acc 0.092 / 0.094 in both cells.
+- **Reading:** a depth-matched answer CE at the write source does not stop the pass-1 code drift on d 2 items in the first 2k steps, and does not itself form a working pass 2.
+  - With Notes 251-8 / 251-9 this closes the current answer-only C4 attempts (AO 1/4, AEX0 0/2, GATE-CURRIC parked, BLIND-DEC withdrawn, ACUE pilot PARK).
+  - In this harness, per-pass value targets on the seeded passes remain necessary. The answer-only line is parked until a new idea addresses the onset drift of the pass-t code on d > t items.
+- The pilot checkpoints are not needed (Experiments may delete them); logs and args are kept. $0.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
