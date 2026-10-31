@@ -23094,6 +23094,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Prediction (before Stage 2 output):** P(LOOKUP-C1 per seed) is lowered from 0.5 to ~0.15. The most likely labels are NOT-FORMED or PARTIAL (d 2 via the decoder; d 3-4 fail).
   - Stage 2 is still run as registered (~$1.6). It is the clean test of whether d 3-4 pressure plus the pass-2 aux forms the chain from a lookup pass 1.
 
+**Note 253-3 (2026-10-31 13:48 EDT; Stage 2 host admission; no output read; the family guard stays $5).**
+- b385 lbr_s1 had 3 refused hosts: projections $1.10 / $1.22 vs the $1.05 cell cap, plus one slow host. BAD spend $0.31, so the family has realised $2.01.
+- **Ruling:** first relaunch with the stricter price filter (<= $0.21/h, ~$1.00 projected), no cap change. If no admissible host is found within the filler's normal search, the per-cell admit cap may rise to $1.20.
+  - Family worst case: $2.01 + 2 x $1.20 = $4.41 <= $5. Same GPU class (RTX 3090), same args.
+- **Censoring unchanged:** host refusals are not runs; an unfinished admitted run is VOID-RERUN once.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
