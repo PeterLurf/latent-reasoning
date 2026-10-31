@@ -1,0 +1,102 @@
+{
+ "run": "rcb_plaw4_s1",
+ "n_per_d": 200,
+ "a_answers_ws_equal": true,
+ "a_bitwise": [
+  {
+   "d": 1,
+   "S8_equal": true,
+   "dec_logits_equal": true
+  },
+  {
+   "d": 2,
+   "S8_equal": true,
+   "dec_logits_equal": true
+  },
+  {
+   "d": 3,
+   "S8_equal": true,
+   "dec_logits_equal": true
+  },
+  {
+   "d": 4,
+   "S8_equal": true,
+   "dec_logits_equal": true
+  }
+ ],
+ "a_stats": {
+  "rows_masked": 0,
+  "rows_kept": 914864,
+  "calls_pass": 128,
+  "calls_dec": 16
+ },
+ "b_rows": [
+  {
+   "d": 1,
+   "think_prompt_rows_zero": true,
+   "think_cue_rows_unchanged": true,
+   "think_unmasked_prompt_rows_nonzero": true,
+   "dec_prompt_rows_zero": true,
+   "dec_cue_rows_unchanged": true,
+   "dec_unmasked_prompt_rows_nonzero": true,
+   "n_reads_captured": [
+    2,
+    2
+   ],
+   "cue_rows_think_mean": 11.0,
+   "cue_rows_dec_mean": 11.0
+  },
+  {
+   "d": 2,
+   "think_prompt_rows_zero": true,
+   "think_cue_rows_unchanged": true,
+   "think_unmasked_prompt_rows_nonzero": true,
+   "dec_prompt_rows_zero": true,
+   "dec_cue_rows_unchanged": true,
+   "dec_unmasked_prompt_rows_nonzero": true,
+   "n_reads_captured": [
+    2,
+    2
+   ],
+   "cue_rows_think_mean": 11.0,
+   "cue_rows_dec_mean": 11.0
+  },
+  {
+   "d": 3,
+   "think_prompt_rows_zero": true,
+   "think_cue_rows_unchanged": true,
+   "think_unmasked_prompt_rows_nonzero": true,
+   "dec_prompt_rows_zero": true,
+   "dec_cue_rows_unchanged": true,
+   "dec_unmasked_prompt_rows_nonzero": true,
+   "n_reads_captured": [
+    2,
+    2
+   ],
+   "cue_rows_think_mean": 11.0,
+   "cue_rows_dec_mean": 11.0
+  },
+  {
+   "d": 4,
+   "think_prompt_rows_zero": true,
+   "think_cue_rows_unchanged": true,
+   "think_unmasked_prompt_rows_nonzero": true,
+   "dec_prompt_rows_zero": true,
+   "dec_cue_rows_unchanged": true,
+   "dec_unmasked_prompt_rows_nonzero": true,
+   "n_reads_captured": [
+    2,
+    2
+   ],
+   "cue_rows_think_mean": 11.0,
+   "cue_rows_dec_mean": 11.0
+  }
+ ],
+ "c_stats": {
+  "rows_masked": 43270,
+  "rows_kept": 11000,
+  "calls_pass": 8,
+  "calls_dec": 2
+ },
+ "pass": true
+}

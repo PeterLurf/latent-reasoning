@@ -977,6 +977,60 @@ def part_frames(m, g, sets, a, dev, bs):
     out["def"] = ("§250 FRAME-DIV Stage 0 (FD_v1 §3): per-frame test sets (frames 8-11 DIV-train, 12-15 held out; every op in that frame; build_sets law; Stream(25000 + f)), "
                   "d 1-4 x 1,000; acc at K' = think_k, WS per pass, wrap share + wrap / no-wrap acc; fp32")
     return out
+
+
+RM_STATS = {"rows_masked": 0, "rows_kept": 0, "calls_pass": 0, "calls_dec": 0}   # Note 251-12 read_mask counters (reset per context)
+
+
+@contextlib.contextmanager
+def read_mask(m, items, keep_all=False):
+    """Note 251-12 CACHED-CUE S0 (eval only; default off = nothing installed): DeltaMem read_fixed contributions zeroed at every prompt row, kept only at the cue rows -
+    each think input: the rows of ' ' + QUESTION(S_t) + ' The answer is:' after [EOT] + enc(' ' + text); the decoder input: enc(' ' + final question) + ' The answer is:'
+    after [EOT] + enc(' ' + text minus its final question). Implemented as a forward hook on mem.wo (inside these paths used only by read_fixed: contribution x keep, exact
+    at keep 1) armed per call by instance wrappers of m.pass_aw (m.write / ws_readout) and m.dec_logits; a read with no armed keep raises. keep_all: every row kept (the
+    bitwise G-D). Asserted per item: both prefixes are token prefixes of the run's own inputs, and the decoder suffix is exactly enc(' ' + question) + SFX."""
+    PT, PD = {}, {}
+    for it in items:
+        raw = it["raw"]; q = raw["question"]; assert raw["text"].endswith(q), "read_mask: text must end with the final question"
+        pt = [EOT] + IO.ENC.encode(" " + raw["text"]); pd = [EOT] + IO.ENC.encode(" " + raw["text"][:-len(q)].rstrip())
+        assert all(c[:len(pt)] == pt and len(c) > len(pt) for c in it["think_cues"]), "read_mask: think prefix"
+        assert it["dec"][:len(pd)] == pd and it["dec"][len(pd):] == IO.ENC.encode(" " + q) + AW.SFX, "read_mask: decoder split"
+        for c in it["think_cues"]:
+            assert PT.get(tuple(c), len(pt)) == len(pt); PT[tuple(c)] = len(pt)
+        PD[id(it)] = len(pd)
+    cur = [None]; o_pass, o_dec = m.pass_aw, m.dec_logits
+    for k_ in RM_STATS:
+        RM_STATS[k_] = 0
+
+    def keep_of(P, T, L, dev):
+        kp = torch.ones(len(P), T, device=dev) if keep_all else (torch.arange(T, device=dev)[None] >= torch.tensor(P, device=dev)[:, None]).float()
+        RM_STATS["rows_masked"] += int(sum(min(p_, l_) for p_, l_ in zip(P, L))) if not keep_all else 0; RM_STATS["rows_kept"] += int(sum(l_ - (0 if keep_all else min(p_, l_)) for p_, l_ in zip(P, L)))
+        return kp
+
+    def hook(mod, inp, out):
+        assert cur[0] is not None and out.dim() == 3 and tuple(out.shape[:2]) == tuple(cur[0].shape), "read_mask: an un-armed / mismatched read"
+        return out * cur[0][..., None].to(out.dtype)
+
+    def pass_aw(S, x, mask, h_low=None):
+        L = mask.long().sum(1).tolist(); P = [PT[tuple(x[b, :L[b]].tolist())] for b in range(x.shape[0])]
+        cur[0] = keep_of(P, x.shape[1], L, x.device); RM_STATS["calls_pass"] += 1
+        try:
+            return o_pass(S, x, mask, h_low)
+        finally:
+            cur[0] = None
+
+    def dec_logits(S, its, dev):
+        L = [len(it["dec"]) for it in its]; P = [PD[id(it)] for it in its]
+        cur[0] = keep_of(P, max(L), L, dev); RM_STATS["calls_dec"] += 1
+        try:
+            return o_dec(S, its, dev)
+        finally:
+            cur[0] = None
+    hd = m.mem.wo.register_forward_hook(hook); m.pass_aw = pass_aw; m.dec_logits = dec_logits
+    try:
+        yield RM_STATS
+    finally:
+        hd.remove(); del m.pass_aw; del m.dec_logits
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
