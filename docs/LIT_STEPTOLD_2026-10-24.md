@@ -133,3 +133,22 @@ From our own notes; all IDs verified earlier.
     - forgetting of the seeded skill is the standard continual-learning failure that replay prevents.
   - **Counterexample to "needed":** ATC 2609.19717 learns latents with no intermediate targets at all, from scratch, with a competence-gated curriculum.
   - **Suggested wording:** "In our recurrent-memory loop (2 seeds), answer-only depth extension (+2) succeeded only when step targets were kept on the seeded depths, which act as a replay anchor (cf. Lee 2502.01612's retained D_0); without them, one seed forgot the seeded skill and the other never extended. A competence-gated curriculum (ATC 2609.19717) is the untested alternative."
+
+## Addendum (2026-10-30): ATC 2609.19717's exact mechanism (read in its HTML; for a C4 design)
+1. **Gate:** advance when held-out **answer accuracy at the current difficulty > τ = 0.9 for m = 5 consecutive evaluations**.
+   - **Rehearsal:** each stage mixes λ = 0.1 of examples from earlier difficulties.
+   - **Backtracking:** on regression, the curriculum returns to the earliest failed difficulty ("rehearsal is preventive, backtracking corrective"); the default uses both.
+2. **Difficulty = both.** At stage s, a depth-d instance becomes a question of depth min(s + 1, d) and gets min(s, d − 1) continuous thoughts. So the latent count is tied to stage and depth (d − 1 thoughts eventually; at most 16, one per stage).
+3. **Architecture:** Coconut-style continuous thoughts (hidden states fed back as tokens), **not** a recurrent memory. Truncated-backprop variants (b = 2 / 5) are studied.
+4. **Init:** **from scratch.** A two-layer GPT-2 (8 heads, width 768) on reachability. A 1-layer / 1-head model on parity, for the theorem's setting.
+5. **Loss:** **answer CE only**, with no intermediate or reconstruction term. One augmentation: the two candidate answers are hidden on ρ = 0.75 of examples, to stop shortcutting to a candidate. AdamW at constant lr 3e-5.
+6. **Seeds:**
+   - Parity: 20 seeds per condition.
+   - Reachability: the intervention probes report ± 1 sd over n = 20 seeds.
+   - **No explicit failure count found in the parts read.** Table 1 gives ATC 99.9 % (51 epochs to 0.95) vs Coconut-gated 99.9 (132), Coconut-fixed 97.6 (468), and no-curriculum 47.8.
+
+**Note 251-6 pointer (nearest-template op substitution):**
+- McCoy, Pavlick & Linzen 1902.01007 (NLI models adopt lexical-overlap heuristics);
+- Kim, Linzen & Smolensky 2212.10769 (lexical exposure);
+- GSM-Symbolic 2410.05229 (template sensitivity).
+- Not found for latent CoT specifically.
