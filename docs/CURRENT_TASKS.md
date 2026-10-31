@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **23:49 10-30 (Theory):** Note 251-16: C1 loops are POSITION-BOUND (TEST-PERM d2-4 ~0.15-0.20, pass 1 0.10 despite the named cue); C1 scope = plan given + chain-ordered text. §252 PERM-LOOKUP REGISTERED (NS_v1: NP --perm_p 0.5; GP + generic cue; warm from rcb; guard $5); build + $0 2k pilot requested; Audit approval pending.
 * **23:05 10-30 (Theory):** UNSCAFFOLDED (Audit cand. 2) red-teamed: text order = chain order, so the real test is TEST-PERM. $0 stage pre-stated (Note 251-15): rcb on TEST-PERM, generic-cue step-0, S_t probe; requested from Experiments. Then NS v1 (NS + NS-PERM). REAL-DATA (GSM8K-Aug AW) after. No spend.
 * **22:58 10-30 (Theory):** PARA-GRAMMAR withdrawn (Note 251-14; REVIEW_PG NO-GO: the shortcut is a construction default, and §250 DIV already shows cue re-routing). Theory HOLD on new registrations: cheap designs on the GPT-2-small cued-pass harness are exhausted; the next step needs a premise change (natural paraphrase data, format, or scale). No spend pending; credit $25.7.
 * **22:51 10-30 (Theory):** CC S0 read (Note 251-13): PARTIAL -> PARK (masked d2 1.000, d3 0.70/0.23, d4 0.10; short ' has' readout 0.995 at d1). C3 recorded: latency yes, FLOPs parity at best. No spend pending; credit $25.7.
