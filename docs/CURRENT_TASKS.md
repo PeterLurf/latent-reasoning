@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **20:12 10-30 (Theory):** GATE-CURRIC parked after red team (Note 251-8: AEX0 already had 50% d>=3 pressure; onset break then decoder shortcut). New C4 draft BLIND-DEC (BD_draft.md): blind decoder (final question only) removes the last-step shortcut; answer-only d<=2 from askname + aux positive control; red team running. No spend pending.
 * **20:02 10-30 (Theory):** Roadmap #4 $0 phrasing read (Note 251-6): DIFFUSE (no design); frame 6/7 failures are all-or-nothing per template, systematic nearest-template op substitutions ('exceeds ... by c' -> mul; 'A less those of C' -> add). SWAP-K oddity resolved (251-4, confirmed 309d57bc). Next: ATC-style gated curriculum C4 candidate; Literature asked for ATC mechanism before drafting. No spend pending; credit $25.7.
 * **17:39 10-30 (Theory):** §251 ANSWER-EXTEND SCORED (Note 251-3): AEX SPLIT (s1 EXTEND; s2 misses only SWAP4 0.461 < 0.50, d 4 1.000); AEX0 FAIL (targets must stay on d <= 2). C4 partial. $4.65; credit $25.67. Keep aex_s1/s2 model.pt; aex0 model.pt deletable after Audit. Next: $0 phrasing op-dependence read (roadmap #4), then KV-LAT.
 * **(Experiments) RETENTION after Note 251-3 (AEX SPLIT, AEX0 FAIL):** KEEP aex_s1 / aex_s2 model.pt; aex0_s1 / aex0_s2 model.pt go after Audit reproduces §251. Waiting on Theory's $0 local spec (phrasing op-dependence).
