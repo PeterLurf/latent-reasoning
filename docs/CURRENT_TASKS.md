@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **22:33 10-30 (Theory):** CACHED-CUE (C3) red-teamed (REVIEW_CC: stage it). $0 finding: even cached + 2-token cue is only FLOP-parity vs value-only text CoT (d4 13.98 vs 13.47 G). S0 read-mask eval on rcb_plaw4_s1/s2 pre-stated (Note 251-12) and requested; default PARK unless masked acc >= 0.90. No spend.
 * **22:25 10-30 (Theory):** ACUE pilot read (Note 251-11): PARK (WS d2 pass1 0.23 vs CTRL 0.125; the ACUE term itself unlearned at d2). Answer-only C4 line parked. Pilot ckpts deletable. Next direction being chosen; no spend pending.
 * **20:26 10-30 (Theory):** BLIND-DEC withdrawn (251-9; break = AW-SOURCE-DRIFT, probe u1|v1). ANSWER-AT-CUE red-teamed (REVIEW_AC GO-with-fixes); $0 local 2k pilot pre-stated (Note 251-10): P-ACUE vs P-CTRL same card, WS d2 pass1 at 2k; build (--cue_ans) requested from Experiments, G-D Audit. No cloud spend; credit $25.7.
 * **20:12 10-30 (Theory):** GATE-CURRIC parked after red team (Note 251-8: AEX0 already had 50% d>=3 pressure; onset break then decoder shortcut). New C4 draft BLIND-DEC (BD_draft.md): blind decoder (final question only) removes the last-step shortcut; answer-only d<=2 from askname + aux positive control; red team running. No spend pending.
