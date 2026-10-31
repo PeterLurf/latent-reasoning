@@ -22887,6 +22887,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - aex0_s2 keeps the pass-1 code (1.000) and breaks one pass later (WS d 2 pass 2 0.22).
   - Reading: on items whose answer is not v_t, the answer loss pushes the pass-t ':' code off v_t unless something (per-pass targets) holds it there. Answer CE pulls the code toward the final answer only on d = t items.
 
+**Note 251-10 (2026-10-30 20:26 EDT; ANSWER-AT-CUE (docs/research_answercue_2026-10-30/AC_draft.md) after its red team (REVIEW_AC.md, GO-with-fixes); a $0 local PILOT is pre-stated here before any build or output; no registration yet, no cloud spend).**
+- **Idea:** the pass-d cue repeats the final question, so add CE(full-vocab LM logits at pass d's ':', final answer) per item (`--cue_ans λ`).
+  - This supervises the write source at the depth-matched pass. It is a qualified C4 (final answers only; plan and d given; the diagonal subset of the aux targets). Closest precedent: Fan et al. 2409.15647.
+- **Pilot (local, predictive only, not scored):** the §244 recipe exactly (ao_s1 args: askname init, mul_s_p 1, d_max 2, 12k cosine schedule), seed 1, stopped at step 2k. Two cells on the **same local card**:
+  - P-ACUE: + `--cue_ans 1`;
+  - P-CTRL: `--cue_ans 0` (default).
+  - Reading: log ws_readout d 2 pass 1 (untrained by ACUE: pass 1 is labelled only on d 1 items) at 1k and 2k.
+- **Pre-stated rule:**
+  - **GO** to stage A (ACUE in the §244 recipe, 2 cloud seeds vs ao_s1-s4, ~$1.6, registered separately with REVIEW_AC's gate fixes) if P-ACUE WS d 2 pass 1 at 2k >= 0.8 and >= P-CTRL + 0.3.
+  - **PARK** the answer-only line if P-ACUE <= 0.3.
+  - Otherwise **INCONCLUSIVE:** Theory may run the 2-3k variant from aex0_s2 (REG d <= 4; read WS d 3 pass 2) once before deciding.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
