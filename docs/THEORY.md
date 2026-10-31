@@ -23009,6 +23009,29 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The rising NP pass-2 readout is logged as the one open sign; it is not acted on (the gate is pre-stated).
   - Language-line C1 stays 'plan given AND chain-order text'. Pilot checkpoints are deletable.
 
+**Note 252-3 (2026-10-31 07:18 EDT; Theory's direction decision after §252: Audit's candidate (1) REAL-DATA deferred with reasons; candidate (3) SCALE gets a $0 stage 0, pre-stated here before any build or output).**
+- **(1) REAL-DATA (the AW recipe on GSM8K-Aug) is deferred.** Survey of §200-§210 (bench/data/gsm8k_aug; boxes/gsm8k_stepaux.py, gsm8k_factor.py, gsm8k_jcot.py):
+  - Every DeltaMem loop on GSM8K stayed one-pass (~0.14 at 4 epochs; §207 INPUT-FOLLOW 0.87-0.93, CARRIED <= 0.005; §208 ONSET = 1).
+  - Its string step-aux was satisfiable without the memory (§204 D1).
+  - The language loop's working mechanism needs a named per-pass cue and chain-ordered text (Notes 251-16, 252-2). GSM8K has neither: no named intermediates, text not in solution order.
+  - So the transfer would remove both of the loop's known supports at once. Prior < 0.05 for more than one-pass behaviour; not worth ~$5-9.
+- **(3) SCALE, stage 0 ($0, local; a mechanism read):** does a larger base model locate a step by its *name* where the GPT-2 lineage reads by position?
+  - **Models:**
+    - Qwen2.5-0.5B base (§231's revision), few-shot: 3 d 1 examples from a disjoint stream, in the cued format;
+    - GPT-2 small base, the same few-shot (scale reference);
+    - s233_askname_s1 (GPT-2 fine-tuned on this format; zero-shot as trained).
+  - **Items:** REG, the pass-1 question 'How many <u> does <S_1> have? The answer is:' after the full text. Three sets:
+    - CHAIN: TEST2 d 2 (op sentences in chain order);
+    - PERM: TEST-PERM d 2 (S_2's sentence before S_1's; driver 622fb717);
+    - D1: TEST2 d 1.
+  - **Only the no-wrap stratum is scored:** the raw step-1 value lies in 0..10 before mod 11, so a base model's ordinary arithmetic is correct. Scoring is the argmax over the 11 candidate strings ' 0'..' 10' by summed log-prob of the continuation (Qwen splits digits; ' 1' vs ' 10' are not first-token-separable).
+  - n reported per set; >= 300 required, else draw more items from the same streams.
+- **Pre-stated rule:**
+  - **NAME-LOOKUP (Qwen):** PERM >= 0.80 and PERM >= CHAIN - 0.10. Then a Qwen AW pilot (the §237 recipe ported, with TEST-PERM binding) may be drafted.
+  - **POSITION-BOUND (Qwen):** PERM < 0.50 or PERM < CHAIN - 0.30. Then SCALE is parked at 0.5B.
+  - Otherwise descriptive.
+  - GPT-2 base and askname are reported alongside: a PERM collapse in askname reproduces Note 251-16 at pass 1.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
