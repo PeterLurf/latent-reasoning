@@ -339,6 +339,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **FAIL 10-30 (250-2): s1 MEMO, s2 LP0-FAIL (would be MEMO); trained new frames 1.000, held-out 12-15 barely move (GEN 0/4); H-MEMO; $2.82.** **Stage 0 10-30 (250-1): all 4 held-out frames FAILING (d 2 0.12-0.56) in both -> Stage 1 admitted; score_fd.py 8/8.** **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
 | 251 | ANSWER-EXTEND (roadmap #1, Theory's choice): from the P-2 seed (aw_plaw2_s1), §237's REG d ~ U{1..4} 16k recipe with aux only on d <= 2 (AEX, --aux_d_max 2) or aux off after the seed (AEX0, --aux_fade 0,0) vs CTRL rcb_plaw4 (re-eval); binding d 4-centred (ACC4, NOT-DECODER K' 2, SWAP-MID d 4 t 2, LP5-D4); AE_v1.md | registered | **SCORED 10-30 (251-3): AEX SPLIT (s1 EXTEND; s2 EXTEND-D3-ONLY: d 4 1.000, K' 2 0.009, LP5-D4 0.345, SWAP4 0.461 < 0.50); AEX0 FAIL (s1 lost the seed, s2 no d 3-4). Depth from answers works with the d <= 2 anchor; C4 partial; $4.65.** **251-2: AEX OOM (auto micro 1) -> VOID-RERUN both at --micro 2 (= CTRL); guard $4.5 -> $5.5 APPROVED by Audit (incl. $1.21 void + $0.33 BAD hosts).** **251-1: step-0 refs match; CTRL_re EXTEND both (positive control); aex0_s1 cell overrun ~$0.03 disclosed.** **APPROVED by Audit 10-30 (guard $4.5; d 4-centred binding; AEX0 informative).** **REGISTERED 08:40 10-30; scorer score_ae.py 7/7; build (--aux_d_max + empty-aux fix) -> G-D -> 4 Vast 3090 runs; guard $4.5** |
 | 252 | UNSCAFFOLDED / PERM-LOOKUP (Theory's choice, Audit candidate 2): warm from rcb_plaw4, REG, 16k; NP (--perm_p 0.5, named cues) and GP (+ --cue generic); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5-D4) + TEST2 RETAIN / SWAP4; $0 2k pilot gate per arm; NS_v1.md | registered | **PILOT PARK both 10-31 (252-2): ws perm d 2 pass 1 NP 0.10 / GP 0.09 at 2k; GP also breaks the chain on chain-order items; closed, $0.** **APPROVED by Audit 10-30 (252-1: pilot scorer committed; perm seed disjoint; RETAIN + SWAP4 / LP5).** **REGISTERED 10-30 (after Note 251-16: C1 loops are position-bound, TEST-PERM ~0.15-0.20); build -> G-D -> pilot -> cloud; guard $5; scorer score_ns.py before cloud output** |
+| 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
 
 ## Live sections
 
@@ -19647,6 +19648,23 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **OC per seed:** NP 0.5 vs 0.03; GP 0.3 vs 0.02 (lookup learnable vs position-bound). Censoring: VOID-RERUN once; a pilot-PARKed arm is not run.
 - **Scope disclosed:** the aux targets name step t's entity, so GP means 'no plan input at test'.
 - **Cost:** <= 4 x 16k, ~$3.5-4.6, guard $5.
+
+## 253. LOOKUP-REBUILD: a C1 loop that finds its steps by name (Theory's choice under the user's 10-26 standing rules; Audit approves; guard **$5**; pre-registered 2026-10-31, before any build or output)
+
+- **Text:** docs/research_lookuprebuild_2026-10-31/LB_v1.md. Red team REVIEW_LB.md (GO-with-fixes, adopted). Scorer theory/score_lb.py (fixtures 9/9).
+- **Why:** the C1 loops are position-bound (251-16); the cause is the askname init's data (252-4); the retrained init s252_askperm_s1 looks up one hop by name (PERM 0.988; 252-5).
+- **Stages:**
+  - **Step-0 gate:** TEST-PERM d 2 ws['1'] >= 0.95 at step 0 (full set).
+  - **Stage 1 P2P:** p2p_s1 / s2 run aw_plaw2_s1's args with the askperm init + --perm_p 0.5, d <= 2, 12k; p2p_old_s1 is the askname-init attribution arm. Gate per seed: NOT-FORMED (TEST2 d 2 < 0.90) / POSITION-REEMERGED (TEST-PERM d 2 K' 8 or ws['1'] < 0.80) / SEED-OK.
+  - **Stage 2 LBR:** lbr_s1 / s2 run rcb_plaw4's args from the P2P seeds + --perm_p 0.5, REG d <= 4, 16k final.
+- **Binding (Stage 2, per seed):**
+  - TEST-PERM: acc_kprime['8'] >= 0.90 d 2-4; NOT-DECODER d 4 K' 2 <= 0.20; LP5P >= 0.30;
+  - RETAIN: TEST2 d 1-4 >= 0.98 + SWAP4 + LP5-D4;
+  - guards: CUE-ONLY; STABLE.
+  - Labels VOID / UNSTABLE / NOT-FORMED / DECODER / LOOKUP-C1 / LOOKUP-NOCAUSAL / PARTIAL / ORDER-ONLY. Per arm PASS / SPLIT / FAIL.
+- **OC:** both seeds LOOKUP-C1 ~0.25 (lookup survives) vs ~0.003 (position re-emerges). Censoring: VOID-RERUN once; no extensions. Binding evals come from the cloud only.
+- **Scope:** plan given, any trained order (test orders are trained orders).
+- **Cost:** ~$3.6-4.5, guard $5.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
