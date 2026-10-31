@@ -1,0 +1,23 @@
+{
+ "seeds": {
+  "p2p_s1": {
+   "label": "SEED-OK",
+   "test2_d2": 1.0,
+   "perm_d2_k8": 1.0,
+   "perm_ws_d2_p1": 1.0
+  },
+  "p2p_s2": {
+   "label": "SEED-OK",
+   "test2_d2": 1.0,
+   "perm_d2_k8": 1.0,
+   "perm_ws_d2_p1": 1.0
+  }
+ },
+ "attribution_old": {
+  "label": "NOT-FORMED",
+  "test2_d2": 0.097,
+  "perm_d2_k8": 0.076,
+  "perm_ws_d2_p1": 0.10200000554323196
+ },
+ "verdict": "SEED 2/2 | SEED-OK / SEED-OK"
+}
