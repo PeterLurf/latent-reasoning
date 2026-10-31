@@ -1,0 +1,10 @@
+{
+ "check": "Note 252-4 ASKNAME-PERM (s233_askname_s1 recipe + permuted training texts p 0.5)",
+ "wrapper": "scratch/s252_askperm.py",
+ "base_wrapper_sha256": "0695c354cc72411a70d538451a9cfb1ae2592f437207e51a9885d41f0a1e5afe",
+ "seeds": {
+  "perm": 25162,
+  "coin": 25163
+ },
+ "p": 0.5
+}
