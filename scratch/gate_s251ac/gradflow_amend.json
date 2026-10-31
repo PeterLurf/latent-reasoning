@@ -1,0 +1,33 @@
+{
+ "source": "scratch/gate_s251ac/gradflow.json (the same records; the as-stated gate FAILED: write grads are 0 on d 1 calls and on the step-1 d 2 calls)",
+ "why": "mem.wo is zero-initialised (boxes/deltamem.py:72): at step 1 nothing flows through the read into S, so no write-param grad; d 1 items' pass 1 reads S_0 = 0 (no write param upstream)",
+ "criterion": "amended: trunk grad > 0 on every call; the write params (qkv / gate / ln_w) > 0 on every d >= 2 call after step 1; == 0 (or None) on d 1 calls",
+ "steps_d": [
+  [
+   1,
+   2
+  ],
+  [
+   2,
+   1
+  ],
+  [
+   3,
+   1
+  ],
+  [
+   4,
+   2
+  ]
+ ],
+ "n_eligible": 8,
+ "trunk_all": true,
+ "write_eligible_all": true,
+ "write_d1_zero": true,
+ "eligible_write_norms_first": {
+  "mem.qkv.weight": 1.4775209820072632e-06,
+  "mem.gate.weight": 9.452293738831941e-07,
+  "mem.ln_w.weight": 4.876869184045063e-07
+ },
+ "pass": true
+}
