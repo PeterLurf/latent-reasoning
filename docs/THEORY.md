@@ -23082,6 +23082,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - TEST-PERM d 2 (full 1,000, wrap included): ws['1'] = **0.996** (gate >= 0.95). Passes 2-8 are 0.023 and acc K' 1 / 2 / 8 is 0.022, as expected before any loop training. d 1 is 1.000.
 - Stage 1 (p2p_s1 / p2p_s2 / p2p_old_s1) may launch on Audit's G-D PASS.
 
+**Note 253-2 (2026-10-31 12:47 EDT; §253 Stage 1 SCORED by theory/score_lb.py --stage 1: 'SEED 2/2 | SEED-OK / SEED-OK'; p2p_s1 82edd955, p2p_s2 57d3c6f7, p2p_old_s1 0aa4ab67; family $1.70 realised; Stage 2 prediction recorded here before launch).**
+- **Gate fields:** p2p_s1 / s2 TEST2 d 2 1.000 / 1.000; TEST-PERM d 2 K' 8 1.000 / 1.000; TEST-PERM ws d 2 pass 1 1.000 / 1.000. So SEED-OK in both, and Stage 2 launches as registered.
+- **Attribution (descriptive):** p2p_old_s1 (askname init + perm 0.5) is NOT-FORMED: TEST2 d 2 0.097, TEST-PERM d 2 0.076, ws pass 1 0.10.
+  - With the old init, permuted training stops even d 2 from forming within 12k. With the lookup init it forms. The init matters for Stage 1.
+- **Caveat the gate did not test: the pass-2 write never formed in P2P.**
+  - Final aux_vacc d 2 pass 2 is 0.131 / 0.149 (aw_plaw2_s1: 0.9999).
+  - WS d 2 pass 2 is 0.017 on TEST2 and 0.02 on TEST-PERM (aw_plaw2_s1: 0.998). Below chance, i.e. pass 2's ':' does not hold v_2.
+  - d 2 is solved by 1 pass + the decoder's step (TEST-PERM K' 1 0.933 / 0.802).
+  - So P2P is a 'pass 1 by name, decoder step 2' seed, not a 2-pass chain. Stage 2 must form passes >= 2 under REG d <= 4 with aux, which failed cold in §236. AEX / §237 started from a seed whose pass-2 write existed.
+- **Prediction (before Stage 2 output):** P(LOOKUP-C1 per seed) is lowered from 0.5 to ~0.15. The most likely labels are NOT-FORMED or PARTIAL (d 2 via the decoder; d 3-4 fail).
+  - Stage 2 is still run as registered (~$1.6). It is the clean test of whether d 3-4 pressure plus the pass-2 aux forms the chain from a lookup pass 1.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
