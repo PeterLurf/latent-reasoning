@@ -1,0 +1,99 @@
+{
+ "rcb_plaw4_s1": {
+  "pass_index": {
+   "test_acc": 0.989375,
+   "val_acc": 0.9893749952316284,
+   "train_acc": 1.0,
+   "wd": 0.0001,
+   "n_test": 1600,
+   "n_classes": 8,
+   "chance_majority": 0.125,
+   "feature_dim": 768
+  },
+  "pass_index_norm_only": {
+   "test_acc": 0.80375,
+   "val_acc": 0.8062499761581421,
+   "train_acc": 0.8054166436195374,
+   "wd": 0.0001,
+   "n_test": 1600,
+   "n_classes": 8,
+   "chance_majority": 0.125,
+   "feature_dim": 1
+  },
+  "spine_id_t_le_d": {
+   "test_acc": 0.75375,
+   "val_acc": 0.7524999976158142,
+   "train_acc": 1.0,
+   "wd": 0.0001,
+   "n_test": 800,
+   "n_classes": 40,
+   "chance_majority": 0.0375,
+   "feature_dim": 768
+  },
+  "spine_id_min_t_d": {
+   "test_acc": 0.453125,
+   "val_acc": 0.44437500834465027,
+   "train_acc": 1.0,
+   "wd": 0.0001,
+   "n_test": 1600,
+   "n_classes": 40,
+   "chance_majority": 0.03875,
+   "feature_dim": 768
+  },
+  "n_items": 1000,
+  "split_items": [
+   600,
+   200,
+   200
+  ]
+ },
+ "rcb_plaw4_s2": {
+  "pass_index": {
+   "test_acc": 0.981875,
+   "val_acc": 0.9818750023841858,
+   "train_acc": 1.0,
+   "wd": 0.001,
+   "n_test": 1600,
+   "n_classes": 8,
+   "chance_majority": 0.125,
+   "feature_dim": 768
+  },
+  "pass_index_norm_only": {
+   "test_acc": 0.738125,
+   "val_acc": 0.7462499737739563,
+   "train_acc": 0.721666693687439,
+   "wd": 0.0001,
+   "n_test": 1600,
+   "n_classes": 8,
+   "chance_majority": 0.125,
+   "feature_dim": 1
+  },
+  "spine_id_t_le_d": {
+   "test_acc": 0.7925,
+   "val_acc": 0.7762500047683716,
+   "train_acc": 1.0,
+   "wd": 0.0001,
+   "n_test": 800,
+   "n_classes": 40,
+   "chance_majority": 0.0375,
+   "feature_dim": 768
+  },
+  "spine_id_min_t_d": {
+   "test_acc": 0.40375,
+   "val_acc": 0.3737500011920929,
+   "train_acc": 1.0,
+   "wd": 0.0001,
+   "n_test": 1600,
+   "n_classes": 40,
+   "chance_majority": 0.03875,
+   "feature_dim": 768
+  },
+  "n_items": 1000,
+  "split_items": [
+   600,
+   200,
+   200
+  ]
+ },
+ "def": "Note 251-15 (b) PROBE (descriptive): REG TEST2 d 4 x 1,000, feature per pass t = the pre-W_o read [oa || od] at the decoder ':' from S_t (part_probe's read1), Audit 231-1 protocol (fit_probe with C classes), item-sig splits 60 / 20 / 20 (seed 0) shared by every pass; pass index (8 classes; control ||S_t|| only), spine identity = the name of S_t (t <= 4) / S_min(t, 4) (t = 1..8), 40 names"
+}
