@@ -22889,7 +22889,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 
 **Note 251-10 (2026-10-30 20:26 EDT; ANSWER-AT-CUE (docs/research_answercue_2026-10-30/AC_draft.md) after its red team (REVIEW_AC.md, GO-with-fixes); a $0 local PILOT is pre-stated here before any build or output; no registration yet, no cloud spend).**
 - **Idea:** the pass-d cue repeats the final question, so add CE(full-vocab LM logits at pass d's ':', final answer) per item (`--cue_ans λ`).
-  - This supervises the write source at the depth-matched pass. It is a qualified C4 (final answers only; plan and d given; the diagonal subset of the aux targets). Closest precedent: Fan et al. 2409.15647.
+  - This supervises the write source at the depth-matched pass. It is a qualified C4 (final answers only; plan and d given; the diagonal subset of the aux targets). Closest precedent: Fan et al. 2409.15647. **Literature 10-30: NARROW;** cite Fan + ATC 2609.19717 (answer CE after exactly min(s, d-1) thoughts, depth-matched); Chen 2603.21676 (answer CE at every step, not depth-matched); TRM / HRM deep supervision. Not found: depth-matched answer CE at a recurrent-memory write source used against code drift.
 - **Pilot (local, predictive only, not scored):** the §244 recipe exactly (ao_s1 args: askname init, mul_s_p 1, d_max 2, 12k cosine schedule), seed 1, stopped at step 2k. Two cells on the **same local card**:
   - P-ACUE: + `--cue_ans 1`;
   - P-CTRL: `--cue_ans 0` (default).
