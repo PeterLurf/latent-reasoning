@@ -23052,6 +23052,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **INIT-POSITION** if PERM < 0.50. Then GPT-2 small does not learn name lookup even for one hop; the language C1 scope stays as 251-16.
   - Otherwise descriptive.
 
+**Note 252-5 (2026-10-31 08:32 EDT; reads Note 252-4's ASKNAME-PERM stage; s252_askperm_s1 = the s233 recipe + perm_p 0.5 (49.9% of d >= 2 items permuted), 8k, RTX 4060; Audit G-D PASS; scratch/s252_askperm/probe.json).**
+- **Verdict: INIT-LOOKUP.** CHAIN / PERM / D1 = 1.000 / **0.988** / 1.000 (n 402 / 402 / 300). The s233 baseline is 1.000 / 0.095 / 1.000; its per-item preds equal the scale0 probe's.
+  - Full TEST2 d 1: 1.000 for both. ST_v1 classes i-iv at d 1-2: 1.000 for both.
+- **Reading:** GPT-2 small learns to find a one-hop step by the entity's name as soon as its data stops rewarding the first-sentence shortcut. Retraining the init removed the positional bias at pass 1 at no cost to the original classes.
+  - So the position-bound C1 loops (251-16) trace to the init's training data, not to a GPT-2-small capacity limit.
+- **Next:** a loop rebuild from s252_askperm_s1, drafted for red team. It follows §237's two-stage path with perm training (P-2 d <= 2, then REG d <= 4), binding on TEST-PERM plus TEST2 retention with the causal gates (252-1). This is a cloud design.
+- **Incident (Experiments):** a third unreproduced low-level fault on the local box today (OverflowError in pad; a segfault). Re-runs completed and were cross-checked. Noted as possible host memory trouble.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
