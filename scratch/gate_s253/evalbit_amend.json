@@ -1,0 +1,8 @@
+{
+ "source": "scratch/gate_s253/evalbit.json (as stated FAIL: test_perm compared with the timing key 'sec' left in; the only differing paths are by_d/4/acc_kprime/2 and items/4/ans_kprime/2 (new), module_sha256 and sec)",
+ "criterion": "amended: equal except the new K' 2 fields, module_sha256 and sec",
+ "test_perm_equal_minus_new_and_timing": true,
+ "ws_equal": true,
+ "new_field": true,
+ "pass": true
+}

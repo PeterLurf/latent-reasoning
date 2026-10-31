@@ -1,0 +1,29 @@
+{
+ "tp_info": {
+  "1": {
+   "n": 1000,
+   "min_inversions": 0,
+   "mean_inversions": 0.0,
+   "changed_text_share": 0.0
+  },
+  "2": {
+   "n": 1000,
+   "min_inversions": 1,
+   "mean_inversions": 1.0,
+   "changed_text_share": 1.0
+  }
+ },
+ "seed1": {
+  "items": 51200,
+  "permuted": 12877,
+  "no_inversion": 0,
+  "tp_text_hits": 0
+ },
+ "seed2": {
+  "items": 51200,
+  "permuted": 13353,
+  "no_inversion": 0,
+  "tp_text_hits": 0
+ },
+ "pass": true
+}

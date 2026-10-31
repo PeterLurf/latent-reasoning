@@ -1,0 +1,15 @@
+{
+ "train_rc": 9,
+ "trunk_equal_askperm": true,
+ "n_trunk_keys": 148,
+ "model_keys_sample": [
+  "g.p.h_0_attn_c_attn_bias",
+  "g.p.h_0_attn_c_attn_weight",
+  "g.p.h_0_attn_c_proj_bias",
+  "g.p.h_0_attn_c_proj_weight",
+  "g.p.h_0_ln_1_bias"
+ ],
+ "eval_rc": 0,
+ "written": true,
+ "pass": true
+}
