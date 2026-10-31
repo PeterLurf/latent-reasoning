@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **08:41 10-31 (Theory):** §253 LOOKUP-REBUILD REGISTERED (LB_v1; score_lb 9/9): step-0 gate -> P2P (askperm init + perm 0.5, 2 seeds + askname attribution) -> LBR REG d<=4 (2 seeds); TEST-PERM binding + TEST2 RETAIN; guard $5. Awaiting Audit approval; eval build (K' 2 at d4) requested.
 * **08:33 10-31 (Theory):** ASKNAME-PERM INIT-LOOKUP (Note 252-5: PERM 0.988 vs 0.095; positional loop traced to the init data). LOOKUP-REBUILD draft (P-2 + REG d<=4 from the lookup init with perm training; TEST-PERM binding; ~$3, guard $4) under red team.
 * **07:36 10-31 (Theory):** SCALE parked (Note 252-4; Qwen few-shot at chance even on CHAIN). Askname init is position-bound (CHAIN 1.000 / PERM 0.095): its one-hop training data always put the asked sentence first. $0 ASKNAME-PERM local retrain requested (INIT-LOOKUP gate PERM >= 0.90). No spend; credit $25.7.
 * **07:19 10-31 (Theory):** REAL-DATA (GSM8K-Aug AW) deferred (Note 252-3: prior GSM8K DeltaMem loops one-pass; our mechanism needs named cues + chain order). SCALE $0 probe pre-stated: Qwen2.5-0.5B few-shot pass-1 question on TEST-PERM d2 vs CHAIN (no-wrap items); requested. No spend; credit $25.7.
