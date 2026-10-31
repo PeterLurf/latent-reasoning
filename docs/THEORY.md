@@ -22908,6 +22908,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - In this harness, per-pass value targets on the seeded passes remain necessary. The answer-only line is parked until a new idea addresses the onset drift of the pass-t code on d > t items.
 - The pilot checkpoints are not needed (Experiments may delete them); logs and args are kept. $0.
 
+**Note 251-12 (2026-10-30 22:33 EDT; CACHED-CUE (docs/research_cachedcue_2026-10-30/CC_draft.md; FLOPs theory/c3_flops_cc.py) after its red team (REVIEW_CC.md: NO-GO as drafted, GO if staged); stage S0 pre-stated, $0, before any build or output).**
+- **C3 scope learned at $0** (REVIEW_CC #4, per item, d 4 GFLOPs):
+  - CC short cue 13.98 vs TEXT sentences 18.73 / same-scaffold 14.85 / **value-only 13.47**.
+  - Even a cached-prompt, 2-token-cue loop only reaches FLOP parity against the most compressed text CoT. A C3-F claim would have to be scoped to sentence-format / same-scaffold text CoT. The loop's clear C3 edge stays serial depth (Note 246-0).
+- **S0 (eval-only, local; the gate for any CC build):** a read mask on rcb_plaw4_s1 / s2 (long cue, unchanged weights). DeltaMem reads are zeroed at every prompt row and kept only at the cue rows: ' ' + question + ' The answer is:' in each think input, and the final question + SFX in the decoder input.
+  - With the long cue this computes what CC-S1 would compute before any training.
+  - Report REG TEST2 acc by d 1-4 at K' = d - 1 and K' 8, plus WS per pass. Same card / bs / dtype as an unmasked re-run in the same call.
+  - Descriptive add-on: the single-step argmax at ' <S_1> has' vs ':' on d 1 for s233_askname_s1 and rcb_plaw4_s1.
+- **Rule (per model):**
+  - **CUE-READS-SUFFICE** if masked d 1-4 acc >= 0.90 at K' 8 (unmasked ~1.0). Then an S1 warm-start registration may be drafted, with the C3 claim scoped and a TEXT-VAL decision.
+  - **PARK** CC if masked d 2-4 acc <= 0.30 in both models.
+  - Otherwise **PARTIAL:** descriptive, and Theory decides; the default is PARK given C3's 5th priority.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
