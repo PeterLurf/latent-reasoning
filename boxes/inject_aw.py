@@ -190,6 +190,7 @@ def main(argv=None):
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
     ap.add_argument("--mul_s_p", type=int, default=1, choices=[0, 1, 2], help="§236: 0 = REG law (no forced mul_s); §238: 2 = DF (per-step mul_s, q_t); 1 = unchanged - on every stream / set (new eval seeds)")
+    ap.add_argument("--cue_ans", type=float, default=0.0, help="Note 251-10: + λ CE(full-vocab LM logits at pass d's ':', the answer token) (0 = off, unchanged)")
     ap.add_argument("--aux_d_max", type=int, default=0, help="§251: the aux CE only on items with d <= aux_d_max (0 = every item, unchanged)")
     ap.add_argument("--train_frames", default="", help="§250: the training stream's frames, e.g. 0-5,8-11 ('' = OW.FRAME_TRAIN, unchanged)")
     ap.add_argument("--keep_final_ckpt", action="store_true", help="§244: keep the final ckpt_last.pt as ckpt_final.pt (fetched by the drain) instead of deleting it")
@@ -260,13 +261,23 @@ def main(argv=None):
             lg = direct_logits(g, items, dev, ac); la = Fn.cross_entropy(lg, tgt); loss = la
         else:
             from torch.utils.checkpoint import checkpoint
-            xs, msk = cue_inputs(m, items, dev); per = [[] for _ in items]; vok = {}   # §233: pass t reads xs[min(t, len(xs)) - 1] (cue none: one input)
+            xs, msk = cue_inputs(m, items, dev); per = [[] for _ in items]; vok = {}; per_c = {}   # Note 251-10: per_c = {item: the ACUE CE}   # §233: pass t reads xs[min(t, len(xs)) - 1] (cue none: one input)
             with ac():
                 S = m.mem.zero_state(len(items), dev); hls = [m.lower(x_) for x_ in xs] if a.cache_lower else None   # the lower cache per distinct input
                 Ssv = [S.detach()] if (HOLD and stat is not None) else None   # §240: S_0..S_K detached (the penalty's inputs / the hold stats)
                 for t in range(1, K + 1):
                     i_ = min(t, len(xs)) - 1; x = xs[i_]; hl = hls[i_] if hls is not None else None
-                    S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk, hl)
+                    cidx = [i for i, it in enumerate(items) if it["d"] == t] if a.cue_ans else []   # Note 251-10 --cue_ans: pass t == d -> the ':' LM logits vs the answer
+                    if cidx:
+                        assert not a.ckpt_passes and a.write_src == "answer", "--cue_ans: needs --write_src answer (pass_aw), no --ckpt_passes"
+                        S, h_c, pos_c = m.pass_aw(S, x, msk, hl); lg_c = m.colon_logits(h_c[cidx], pos_c[cidx])
+                        y_c = torch.tensor(NUM_IDS[[items[i]["ans"] for i in cidx]], device=dev); ce_c = Fn.cross_entropy(lg_c, y_c, reduction="none")
+                        for r_, i in enumerate(cidx):
+                            per_c[i] = ce_c[r_]
+                        if stat is not None:
+                            stat.setdefault("acue", []).append((str(t), int((lg_c.detach().argmax(-1) == y_c).sum()), len(cidx), float(ce_c.detach().sum())))
+                    else:
+                        S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk, hl)
                     if Ssv is not None:
                         Ssv.append(S.detach())
                     idx = [i for i, it in enumerate(items) if len(it["aux"]) >= t and (not a.aux_d_max or it["d"] <= a.aux_d_max)]   # §251 --aux_d_max
@@ -283,6 +294,8 @@ def main(argv=None):
             la = Fn.cross_entropy(lg, tgt)
             aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean() if any(per) else la * 0.0   # §251: no qualifying item -> an in-graph zero
             loss = la + lam_now[0] * aux
+            if a.cue_ans:                                                   # Note 251-10: + λ · mean CE over the items whose pass d ran (an in-graph zero if none)
+                acue = torch.stack([per_c[i] for i in sorted(per_c)]).mean() if per_c else la * 0.0; loss = loss + a.cue_ans * acue
             if stat is not None:
                 stat["aux"] = stat.get("aux", 0.0) + float(aux.detach()) * len(items); stat.setdefault("vacc", []).append((vok, len(items)))
                 stat.setdefault("vacc_d", []).append((str(items[0]["d"]), vok, len(items)))   # §233 aux_vacc_by_d_pass (one d per step)
@@ -354,6 +367,7 @@ def main(argv=None):
     if a.args_only:
         print("ARGS_ONLY", a.out, flush=True); return 0
     opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_log = []; aux_hist = []
+    acbin = {}                                                              # Note 251-10: {d: [correct, n, ce sum]} (the open 1k bin; not in the resume ckpt)
     expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
     if a.resume:
@@ -415,6 +429,8 @@ def main(argv=None):
         dk = str(its[0]["d"]) if a.src == "ow" else "mix"; expo[dk] = expo.get(dk, 0) + 1
         b_ = binacc.setdefault(dk, [0, 0.0, 0.0, 0]); b_[0] += 1; b_[1] += acc_; b_[2] += la_; b_[3] += float(gn) > 1.0
         gb_ = gnbin.setdefault(dk, [0.0, 0]); gb_[0] += float(gn); gb_[1] += 1   # §237: pre-clip grad norm per d (emitted under --init_model)
+        for dd_, c_, n_, s_ in st_.get("acue", []):                        # Note 251-10: ACUE acc / CE by d (per 1k bin)
+            ab_ = acbin.setdefault(dd_, [0, 0, 0.0]); ab_[0] += c_; ab_[1] += n_; ab_[2] += s_
         for vok, _n in st_.get("vacc", []):
             for t_, v_ in vok.items():
                 vb_ = vbin.setdefault(str(t_), [0.0, 0]); vb_[0] += v_; vb_[1] += 1
@@ -452,6 +468,8 @@ def main(argv=None):
             if vbin_d:                                                      # §233 LP2 key (+ the per-cell counts: G10 pools them back to aux_vacc_by_pass)
                 br["aux_vacc_by_d_pass"] = {d_: {k_: v_[0] / v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
+            if acbin:                                                       # Note 251-10 --cue_ans
+                br["acue_by_d"] = {k_: {"acc": v_[0] / v_[1], "ce": v_[2] / v_[1], "n": v_[1]} for k_, v_ in sorted(acbin.items())}
             if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back
                 br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)
             if a.mul_s_p3 < 1.0 and stream is not None:                    # §235: cumulative accepted d 3 training items with a mul_s step / all d 3 items
@@ -465,7 +483,7 @@ def main(argv=None):
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
