@@ -22834,6 +22834,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **DIFFUSE:** otherwise; phrasing stays parked.
   - Frame 7 is shown alongside as the in-family reference.
 
+**Note 251-6 (2026-10-30 20:01 EDT; reads Note 251-5's pre-stated $0 op-dependence check; script theory/read_s251_opdep.py; regenerated sigs equal stored in all 8 run x d sets).**
+- **Verdict: DIFFUSE** under the registered rule. On frame 6, three op templates fail at chance: mul_v 0.074 (error share 0.58), sub_v 0.070 (0.22), add_c 0.081 (0.20). add_v / mul_c / sub_c are 1.000. No single op holds >= 70% of errors, so phrasing stays parked; no design.
+- **Descriptive, the stronger fact:** the failure is per template, all or nothing. Each (frame, op) template is either 1.000 or at chance.
+  - Frame 7: add_c 0.201 and sub_c 0.091 fail; the other four are 1.000.
+  - **Failures are systematic op substitutions** that follow surface overlap with trained templates (step 1, pooled seeds, d 1-4):
+    - f6 mul_v 'For each of {C}'s {u}, {B} has as many {u} as {A}' computes **add** on 1.000 of items (cf. trained add_v 'as many {u} as {A} and {C} together');
+    - f6 sub_v '{B} holds the {u} of {A} less those of {C}' computes **add** 0.92 (cf. f6 add_v '... plus those of {C}', 1.000: 'less' vs 'plus' is ignored);
+    - f7 add_c / sub_c '... exceeds {A}'s by {c}' compute **mul** 0.82 / 0.83 (cf. trained mul_c 'multiplied by {c}', 'Multiply ... by {c}');
+    - f6 add_c '... {c} {u} beyond what {A} holds' is mixed (sub 0.30, reverse-sub 0.25; cf. trained sub_v f4 'beyond').
+- **Reading:** the cued pass selects the op by nearest trained construction (lexical / structural match), not by composing word meanings. This is consistent with §250 (new frames memorised, held-out frames unmoved) and Note 250-4 (narrowness already in the askname init's cued format).
+  - Scope: two seeds of one lineage, 8 frames. Literature not yet checked; no novelty claim.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
