@@ -22881,6 +22881,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Keeping per-pass targets on the seeded depths lets new depths come from answers (AEX 2/2 at d 4 acc, 1/2 full causal bar).
   - Descriptive: answer-only-extended depths do not extrapolate. aex_s1 d 5 / d 6 = 0.20 / 0.11 vs CTRL rcb_plaw4_s1 0.86 / 0.35 and lh_fh_s1 0.86 / 0.41.
   - Two consecutive answer-only fix drafts (GATE-CURRIC, BLIND-DEC) were mis-targeted, so the line pauses rather than loop. Re-entry needs a new idea for preventing the onset break: the $0 S_1-probe read (REVIEW_BD #7a) would locate it, write vs readout.
+- **Addendum (same day, $0; existing eval_probe.json, d 2 items, Audit 231-1 protocol): the break is at the write source.** u1|v1 (pass-1 ':' code) / read1|v1 (read from S_1) / l0|v1 control, test acc:
+  - ao_s1 0.125 / 0.108; ao_s3 0.250 / 0.242; ao_s4 0.182 / 0.172; aex0_s1 0.108 / 0.102. Formed or anchored: ao_s2_ext 0.842 / 0.830; aex0_s2, aex_s1 and aw_plaw2_s1 1.000 / 1.000. l0 ~0.09 everywhere.
+  - So in every failed answer-only run the pass-1 ':' code on d 2 items stops carrying v_1 (AW-SOURCE-DRIFT; G-AW0 1.000 at init), while d 1 items keep it (WS d 1 pass 1 = 1.0). Storage and readout follow the code (read1 = u1).
+  - aex0_s2 keeps the pass-1 code (1.000) and breaks one pass later (WS d 2 pass 2 0.22).
+  - Reading: on items whose answer is not v_t, the answer loss pushes the pass-t ':' code off v_t unless something (per-pass targets) holds it there. Answer CE pulls the code toward the final answer only on d = t items.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
