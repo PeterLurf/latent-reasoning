@@ -1,0 +1,21 @@
+{
+ "rc": 0,
+ "written": {
+  "acc": true,
+  "ws": true,
+  "c7": true,
+  "transfer": true,
+  "test_perm": true,
+  "lp5h": true,
+  "swap_kd": true,
+  "cue_only": false,
+  "cue_wrong": false
+ },
+ "read_mask_stats": {
+  "rows_masked": 17780,
+  "rows_kept": 2550,
+  "calls_pass": 4,
+  "calls_dec": 1
+ },
+ "pass": true
+}

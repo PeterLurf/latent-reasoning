@@ -1,0 +1,17 @@
+{
+ "rc": [
+  0,
+  0
+ ],
+ "equal": {
+  "acc": false,
+  "acc_keys_differ": [
+   "module_sha256"
+  ],
+  "c7": false,
+  "c7_keys_differ": [
+   "module_sha256"
+  ]
+ },
+ "pass": false
+}

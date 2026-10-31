@@ -1,0 +1,13 @@
+{
+ "source": "scratch/gate_s252/evaloff.json (as stated FAIL: the only differing key is module_sha256, the eval module's own sha, which differs by construction)",
+ "criterion": "amended: every eval_<part>.json equal except module_sha256 and timing keys",
+ "equal": {
+  "acc": true,
+  "c7": true
+ },
+ "module_sha256": [
+  "c76c946722efc77ea6391cad57ab1bffe7f87cebd10e9a263793e6cf50cc2d83",
+  "414997ea853489730ada92fcd2f468248a5b7e8de3aba320d396dc77142e07ff"
+ ],
+ "pass": true
+}

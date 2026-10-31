@@ -31,6 +31,7 @@ if ROOT not in sys.path:
 import boxes.deltamem as DM  # noqa: E402
 import boxes.nested170 as N7  # noqa: E402
 import boxes.ow_words as OW  # noqa: E402
+import boxes.perm_render as PR  # noqa: E402
 from boxes.nested170 import AUX_W, EOT, NUM_IDS, pad  # noqa: E402
 from boxes.inject_ow import (ENC, SFX, SEED_D, SEED_CAL, SEED_MEMCHECK, OWKW, META, tok_ow, tok_nested, direct_logits, sha_file, build_sets,  # noqa: E402, F401
                              InjectOW, load_trunk)
@@ -61,11 +62,19 @@ class InjectAW(InjectOW):
         return self.g.logits(hf[torch.arange(h.shape[0], device=h.device), pos]).float()
 
 
+GEN_CUE, GEN_LEN = " What is the next value?", 6                         # §252 GP (NS_v1 §2): the plan-free cue (+ SFX), 6 tokens (inject_st's CUE_LEN 7 is the named cue's)
+
+
 def tok_aw(it, aux_target="value", cue="none", write_src="all"):
-    """tok_st, then (write_src answer) " The answer is:" appended to every pass input; the decoder / aux untouched."""
-    o = tok_st(it, aux_target, cue)
+    """tok_st, then (write_src answer) " The answer is:" appended to every pass input; the decoder / aux untouched. §252 cue generic: tok_st's cue step
+    items with every think cue := [EOT] + enc(' ' + text + GEN_CUE) (the same input at every pass; o['cue'] = 'generic' arms passes()' PLAN-FREE assert)."""
+    o = tok_st(it, aux_target, "step" if cue == "generic" else cue)
+    if cue == "generic":
+        gt = ENC.encode(GEN_CUE); assert len(gt) == GEN_LEN, ("GEN-CUE", gt)
+        o["think_cues"] = [[EOT] + ENC.encode(" " + it["text"] + GEN_CUE) for _ in o["think_cues"]]; o["cue"] = "generic"
+        assert all(q[:len(o["think"])] == o["think"] and q[len(o["think"]):] == gt for q in o["think_cues"]), "GEN-CUE: the text rows precede the cue"
     if write_src == "answer":
-        assert cue == "step" and "think_cues" in o, "AW: --write_src answer needs --cue step"
+        assert cue in ("step", "generic") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic"
         o["think_cues"] = [q + SFX for q in o["think_cues"]]
         assert all(q[-1] == COLON for q in o["think_cues"]) and o["dec"] == o["think"] + SFX, "AW: inputs / decoder"
     return o
@@ -185,7 +194,8 @@ def main(argv=None):
     ap.add_argument("--time_steps", type=int, default=0); ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default="")
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--eval_parts", default="acc"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
-    ap.add_argument("--cue", default="none", choices=["none", "step", "all"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
+    ap.add_argument("--perm_p", type=float, default=0.0, help="§252: P(a d >= 2 training item is re-rendered dependency-violating) (0 = off, unchanged)")
+    ap.add_argument("--cue", default="none", choices=["none", "step", "all", "generic"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
@@ -210,9 +220,10 @@ def main(argv=None):
     else:
         assert a.think_k >= 1 and a.aux_step > 0, "§228 inject: K >= 1 with the step aux"
     assert a.src == "ow" or a.d_max == 8, "--src nested: n ~ U{1..n_max_train} per item (nested170's law)"
-    assert a.cue != "step" or (a.arm == "inject" and not a.ckpt_passes and a.src == "ow"), "--cue step: LAT-ST (inject, OW, no ckpt_passes)"
+    assert a.cue not in ("step", "generic") or (a.arm == "inject" and not a.ckpt_passes and a.src == "ow"), "--cue step / generic: LAT-ST (inject, OW, no ckpt_passes)"
+    assert not a.perm_p or (a.src == "ow" and a.arm == "inject" and a.write_src == "answer" and not a.ckpt_passes), "--perm_p: LAT-AW (inject, OW, write_src answer)"
     assert a.cue != "all" or (a.arm == "direct" and a.src == "ow"), "--cue all: CUED-DIRECT (direct, OW)"
-    assert a.write_src != "answer" or (a.arm == "inject" and a.cue == "step"), "--write_src answer: LAT-AW (inject, --cue step)"
+    assert a.write_src != "answer" or (a.arm == "inject" and a.cue in ("step", "generic")), "--write_src answer: LAT-AW (inject, --cue step / generic)"
     assert bool(a.init_trunk) == bool(a.init_sha), "--init_trunk needs --init_sha (G12)"
     assert 1 <= a.d_max <= 8 and a.bs % a.micro == 0
     K = a.think_k if a.arm == "inject" else 0
@@ -235,7 +246,7 @@ def main(argv=None):
     assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"
     assert a.mul_s_p == 1 or (a.mul_s_p3 == 1.0 and a.src == "ow"), "--mul_s_p 0: OW only, mul_s_p3 must be 1"
     HOLD = a.hold_inc > 0 or a.hold_log                                     # §240: keep the detached states (penalty and / or the hold stats)
-    assert not HOLD or (a.arm == "inject" and a.cue == "step" and not a.ckpt_passes and a.src == "ow" and a.think_k >= 3), "--hold_*: LAT (inject, cue step)"
+    assert not HOLD or (a.arm == "inject" and a.cue in ("step", "generic") and not a.ckpt_passes and a.src == "ow" and a.think_k >= 3), "--hold_*: LAT (inject, cue step)"
     m, g, params = build_aw(a, dev)
     assert bool(a.init_model) == bool(a.init_model_sha), "--init_model needs --init_model_sha"
     if a.init_model:                                                        # §237: the full model state, strict; the sha logged (init_model_sha256)
@@ -249,9 +260,18 @@ def main(argv=None):
         return a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc))
     lam_now = [lam_at(1)]
 
+    TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets({d_: SETS["test2"][d_] for d_ in range(1, a.d_max + 1)}, range(1, a.d_max + 1))[0].items()
+                for it in its_} if a.perm_p else set()                     # §252 Note 252-1: the TEST-PERM texts (622fb717's family) for the disjointness assert
+
     def draw_items(d):
         if a.src == "nested":
             return [tok_nested(it) for it in N7.train_items(rng, a.bs, a.n_max_train, EXCL)]
+        if a.perm_p:                                                        # §252 --perm_p: per-item seeded coin / permutation (d >= 2), solve + disjointness asserted
+            raws = [stream.draw(d) for _ in range(a.bs)]
+            raws = [PR.train_perm(r_, a.seed, step, k_) if (d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p) else r_
+                    for k_, r_ in enumerate(raws)]
+            assert not any(r_["text"] in TP_TEXTS for r_ in raws), "§252: a training text equals a TEST-PERM text"
+            return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in raws]
         return [tok_aw(stream.draw(d), a.aux_target, a.cue, a.write_src) for _ in range(a.bs)]
 
     def loss_items(items, stat=None):
@@ -276,8 +296,15 @@ def main(argv=None):
                             per_c[i] = ce_c[r_]
                         if stat is not None:
                             stat.setdefault("acue", []).append((str(t), int((lg_c.detach().argmax(-1) == y_c).sum()), len(cidx), float(ce_c.detach().sum())))
+                    elif a.perm_p:                                          # §252: pass_aw (S = m.write's) keeps h for the split WS readout
+                        S, h_c, pos_c = m.pass_aw(S, x, msk, hl)
                     else:
                         S = checkpoint(m.write, S, x, msk, hl, use_reentrant=False) if (a.ckpt_passes and torch.is_grad_enabled()) else m.write(S, x, msk, hl)
+                    if a.perm_p and stat is not None:                       # §252 ws_readout_perm / _chain on the step's own training items (no_grad, never fed back)
+                        with torch.no_grad():
+                            pw_ = m.colon_logits(h_c.detach(), pos_c)[:, NUM_IDS].argmax(-1).tolist()
+                        for i_, it_ in enumerate(items):
+                            stat.setdefault("wsp", []).append((int(it_["raw"].get("perm", 0)), str(it_["d"]), str(t), int(pw_[i_] == int(it_["raw"]["values"][min(t, it_["d"])]))))
                     if Ssv is not None:
                         Ssv.append(S.detach())
                     idx = [i for i, it in enumerate(items) if len(it["aux"]) >= t and (not a.aux_d_max or it["d"] <= a.aux_d_max)]   # §251 --aux_d_max
@@ -357,7 +384,7 @@ def main(argv=None):
             "nested_words_sha256": sha_file(os.path.join(ROOT, "boxes", "nested_words.py")), "set_build_sec": set_sec, "excl_n": len(EXCL), "d_law": "d = default_rng(seed + 22331).integers(1, d_max + 1) per step",
             "format": {"direct": "dec = [EOT] + enc(' ' + text) + enc(' The answer is:') -> the number token (plain trunk, one pass)",
                        "inject": "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + "
-                                 "enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d"}[a.arm] + CUE_FMT[a.cue] + AW_FMT[a.write_src]}
+                                 "enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d"}[a.arm] + (CUE_FMT[a.cue] if a.cue != "generic" else " | §252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass)") + AW_FMT[a.write_src]}
     if SETS is not None:
         info.update(SETS["shas"]); info["pair_stats"] = SETS["pair_stats"]
     if a.args_ref:
@@ -367,6 +394,7 @@ def main(argv=None):
     if a.args_only:
         print("ARGS_ONLY", a.out, flush=True); return 0
     opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_log = []; aux_hist = []
+    wsbin = {}                                                              # §252: {"perm" / "chain": {d: {t: [correct, n]}}} (the open 1k bin; not in the resume ckpt)
     acbin = {}                                                              # Note 251-10: {d: [correct, n, ce sum]} (the open 1k bin; not in the resume ckpt)
     expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
@@ -429,6 +457,8 @@ def main(argv=None):
         dk = str(its[0]["d"]) if a.src == "ow" else "mix"; expo[dk] = expo.get(dk, 0) + 1
         b_ = binacc.setdefault(dk, [0, 0.0, 0.0, 0]); b_[0] += 1; b_[1] += acc_; b_[2] += la_; b_[3] += float(gn) > 1.0
         gb_ = gnbin.setdefault(dk, [0.0, 0]); gb_[0] += float(gn); gb_[1] += 1   # §237: pre-clip grad norm per d (emitted under --init_model)
+        for pp_, dd_, tt_, ok_ in st_.get("wsp", []):                      # §252: the split WS readout (per 1k bin)
+            wb_ = wsbin.setdefault("perm" if pp_ else "chain", {}).setdefault(dd_, {}).setdefault(tt_, [0, 0]); wb_[0] += ok_; wb_[1] += 1
         for dd_, c_, n_, s_ in st_.get("acue", []):                        # Note 251-10: ACUE acc / CE by d (per 1k bin)
             ab_ = acbin.setdefault(dd_, [0, 0, 0.0]); ab_[0] += c_; ab_[1] += n_; ab_[2] += s_
         for vok, _n in st_.get("vacc", []):
@@ -468,6 +498,10 @@ def main(argv=None):
             if vbin_d:                                                      # §233 LP2 key (+ the per-cell counts: G10 pools them back to aux_vacc_by_pass)
                 br["aux_vacc_by_d_pass"] = {d_: {k_: v_[0] / v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
+            for k_ in ("perm", "chain") if a.perm_p else ():                # §252 Note 252-1: ws_readout_perm / ws_readout_chain = {d: {pass: acc}} (+ _n)
+                wv_ = wsbin.get(k_, {})
+                br["ws_readout_" + k_] = {d_: {t_: v_[0] / v_[1] for t_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(wv_.items())}
+                br["ws_readout_" + k_ + "_n"] = {d_: {t_: v_[1] for t_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(wv_.items())}
             if acbin:                                                       # Note 251-10 --cue_ans
                 br["acue_by_d"] = {k_: {"acc": v_[0] / v_[1], "ce": v_[2] / v_[1], "n": v_[1]} for k_, v_ in sorted(acbin.items())}
             if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back
@@ -483,7 +517,7 @@ def main(argv=None):
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}; wsbin = {}
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
