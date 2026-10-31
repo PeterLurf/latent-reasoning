@@ -22921,6 +22921,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **PARK** CC if masked d 2-4 acc <= 0.30 in both models.
   - Otherwise **PARTIAL:** descriptive, and Theory decides; the default is PARK given C3's 5th priority.
 
+**Note 251-13 (2026-10-30 22:51 EDT; reads Note 251-12's pre-stated S0; build 8149cd3d, Audit G-D PASS; scratch/s251cc_s0/s0.json + has.json; one RTX 4060, bs 100, fp32, masked and unmasked in the same call).**
+- **Verdict: PARTIAL -> PARK** (the pre-stated default; C3 is 5th priority and the FLOP margin is thin, Note 251-12).
+- **Masked acc (prompt rows read nothing), K' = d - 1 / K' 8:** unmasked is 1.000 throughout (s1 d 4 K' 3 0.997).
+  - rcb_plaw4_s1: d 1 1.000 / 1.000; d 2 1.000 / 1.000; d 3 0.858 / 0.699; d 4 0.103 / 0.103.
+  - rcb_plaw4_s2: d 1 1.000; d 2 1.000 / 1.000; d 3 0.307 / 0.225; d 4 0.091 / 0.089.
+  - WS d 4 per pass (masked): s1 1.00 / 0.84 / 0.49 / 0.11; s2 1.00 / 1.00 / 0.17 / 0.10.
+  - So reads at the cue rows alone carry the chain for 1-2 hops, and the trained loop relies on prompt-row reads from the third hop on.
+- **Short-cue readout (descriptive, d 1):** the argmax at ' <S_1> has' = 0.995 (askname) / 0.999 (rcb) vs ':' 1.000.
+  - The literal-prefix share is 0.159 (not REVIEW_CC's 33% for TEST2 d 1), with acc 0.975 / 1.000 on literal items.
+  - So a 2-token ' has' cue is readable from the init; the copy risk is small at d 1.
+- **Reading:** a cached-prompt loop is not available by masking a trained loop; it would need an S1 fine-tune to re-route hops >= 3 through cue-row reads. The FLOP gain over the most compressed text CoT would be ~parity at best.
+  - CC parked. Recorded C3 status: latency yes; FLOPs no for the current architecture; parity at best for the cached redesign vs value-only text.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
