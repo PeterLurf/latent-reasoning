@@ -152,3 +152,4 @@ From our own notes; all IDs verified earlier.
 - Kim, Linzen & Smolensky 2212.10769 (lexical exposure);
 - GSM-Symbolic 2410.05229 (template sensitivity).
 - Not found for latent CoT specifically.
+- **ANSWER-AT-CUE (2026-10-30):** the closest priors for depth-matched answer supervision are Fan 2409.15647 (loss at the given T(n)) and **ATC 2609.19717** (answer CE after exactly min(s, d − 1) thoughts per item, i.e. depth-matched). Chen 2603.21676 applies final-answer CE at **every** step (not depth-matched); TRM / HRM use deep supervision. Not found: depth-matched answer CE at a recurrent-memory write source, used to stop intermediate-code drift. **NARROW**, cite Fan + ATC.
