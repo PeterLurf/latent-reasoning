@@ -341,6 +341,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 252 | UNSCAFFOLDED / PERM-LOOKUP (Theory's choice, Audit candidate 2): warm from rcb_plaw4, REG, 16k; NP (--perm_p 0.5, named cues) and GP (+ --cue generic); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5-D4) + TEST2 RETAIN / SWAP4; $0 2k pilot gate per arm; NS_v1.md | registered | **PILOT PARK both 10-31 (252-2): ws perm d 2 pass 1 NP 0.10 / GP 0.09 at 2k; GP also breaks the chain on chain-order items; closed, $0.** **APPROVED by Audit 10-30 (252-1: pilot scorer committed; perm seed disjoint; RETAIN + SWAP4 / LP5).** **REGISTERED 10-30 (after Note 251-16: C1 loops are position-bound, TEST-PERM ~0.15-0.20); build -> G-D -> pilot -> cloud; guard $5; scorer score_ns.py before cloud output** |
 | 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **FAIL 10-31 (253-4): PARTIAL / PARTIAL; TEST-PERM d 2 1.000 but d 3-4 chance; the pass-2 write never forms (aux 0.17-0.23); name lookup at pass 1 transferred; $3.96.** **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
 | 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **PERM-BLOCKER 10-31 (254-1): askperm + chain forms the pass-2 write (aux 0.99997 by 6k, ws 1.000); perm training is the blocker; $0.40.** **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
+| 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
 
 ## Live sections
 
@@ -19686,6 +19687,22 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Censoring:** an unfinished run or a crashed eval is VOID-RERUN once (fresh host; --keep_final_ckpt). No extension; 12k final.
 - **Cost:** ~$0.55, cell cap $1.0. §253 + §254 family <= $5.
 - **Disclosed (Audit, at launch):** vs aw_plaw2_s1, excl_n 160598 -> 192598 and the inject_ow module sha 0695 -> 1495. The later frame test sets (§250) were added to the exclusion. This is the same training pool as p2p_* / lbr_*, so the comparison with the p2p cells is exact; with aw_plaw2_s1 the pool differs slightly (non-semantic for the pass-2 write question).
+
+## 255. AEX-REP: how often does answer-only depth extension (§251 AEX) succeed? (C4 robustness; Theory's choice under the user's 10-26 standing rules, Audit's candidate 1; Audit approves; guard **$3**; pre-registered 2026-11-01, before launch)
+
+- **Why:** §251 AEX was SPLIT. s1 EXTEND; s2 reached d 4 1.000 (K' 2 0.009, LP5-D4 0.345) but missed only SWAP4 (0.461 < 0.50). C4 is 'partial' on one passing seed.
+  - **$0 diagnosis of s2** (eval_swap_kd items.4, swap_mid K' 4), share of items: s2 follows U 0.461 / 'other' 0.417 / donor final 0.072 / own 0.050; s1 0.872 / 0.096 / 0.020 / 0.012; CTRL rcb_plaw4_s2 0.985 / 0.012.
+  - s2's later passes do not take the mid state cleanly: the swapped S_2 yields unrelated answers, rather than the recipient keeping its own.
+- **Runs:** aex_s3 / aex_s4. aex_s1's args exactly, except seed 3 / 4 (new data orders): init aw_plaw2_s1, REG, d ~ U{1..4}, --aux_d_max 2, aux on otherwise, micro 2 pinned, 16k final, RTX 3090.
+  - Scope: the same init as s1 / s2, so this tests training seeds only.
+- **Scoring:** theory/score_ae.py --rep, the §251 per-seed labels unchanged (ACC4, NOT-DECODER, SWAP4, LP5-D4, CUE-ONLY, STABLE) over aex_s1..s4. Pooled verdict 'EXTEND k/4'.
+  - **Wording rule (pre-stated):**
+    - k >= 3: 'answer-only depth extension (with the d <= 2 anchor) succeeds in most data orders (k/4)';
+    - k = 2: 'half';
+    - k <= 1: 'rare'.
+- **OC (per new seed):** P(EXTEND) ~0.5 from §251's 1/2; under 'robust' ~0.8, under 'fragile' ~0.2. P(k >= 3) ~0.25 (robust 0.64, fragile 0.04 given s1 / s2 fixed).
+- **Censoring:** VOID-RERUN once (unfinished, crash, OOM as in Note 251-2); no extension; 16k final.
+- **Cost:** 2 x ~$0.85 (§251 AEX realised $0.69-0.70 + host overhead) ~$1.7-2.0, guard $3. Credit $20.42.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
