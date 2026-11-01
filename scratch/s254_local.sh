@@ -19,10 +19,19 @@ done
 [ $rc = 0 ] || { echo "STEP0 FAILED twice"; exit 3; }
 cp $d/eval_test_perm.json boxes/runs_fsq/p2pc_s1/eval_test_perm.json; rm -f $d/model.pt; echo "$(date '+%F %T') STEP0 DONE"
 RCB="--arm inject --think_k 8 --aux_step 1 --aux_fade 48000,48000 --aux_reweight --fast_add --cache_lower --d_max 4 --steps 16000 --cue step --write_src answer --init_trunk boxes/runs_fsq/s233_askname_s1/model.pt --init_sha c00f7ec0bd7977fe --write_mix_start 0 --write_mix_end 0 --mul_s_p 0"
+PF="--init_model boxes/runs_fsq/p2pc_s1/model.pt --init_model_sha fa90fc3a751c5342 --perm_p 0.5"
+M=""; PK=""                                                                 # Note 254-2 (2): --mem_check at the d 4 shape first, then pin micro (<= 6.8 GiB)
+for mi in 8 16; do
+  mc=scratch/_tmp/s254/memck_$mi; rm -rf $mc; mkdir -p $mc
+  python -B -m boxes.inject_aw $RCB $PF --micro $mi --eval_bs 50 --mem_check --device cuda:0 --out $mc > $mc/stdout.log 2>&1
+  pk=$(python -c "import json; print(json.load(open('$mc/mem_check.json'))['peak_gib_train'])" 2>/dev/null); echo "$(date '+%F %T') mem_check micro $mi train peak ${pk:-none} GiB"
+  if [ -n "$pk" ] && python -c "import sys; sys.exit(0 if float('$pk') <= 6.8 else 1)"; then M=$mi; PK=$pk; break; fi
+done
+[ -n "$M" ] || { echo "PILOT STOP: no micro fits 6.8 GiB"; exit 3; }
 for try in 1 2; do
   out=boxes/runs_fsq/pilot_cur_s1; [ $try = 2 ] && [ -d $out ] && mv $out ${out}.void_crash1
-  echo "$(date '+%F %T') pilot try $try"; python -X faulthandler -B -m boxes.inject_aw $RCB --init_model boxes/runs_fsq/p2pc_s1/model.pt --init_model_sha fa90fc3a751c5342 --perm_p 0.5 --micro 8 --eval_bs 250 --stop_at 2000 --ckpt_every 1000 --log_every 100 --device cuda:0 --out $out; rc=$?
+  echo "$(date '+%F %T') pilot try $try (micro $M)"; python -X faulthandler -B -m boxes.inject_aw $RCB $PF --micro $M --eval_bs 250 --stop_at 2000 --ckpt_every 1000 --log_every 100 --device cuda:0 --out $out; rc=$?
   echo "$(date '+%F %T') pilot rc $rc"; [ $rc = 9 ] && break
 done
 [ $rc = 9 ] || { echo "PILOT FAILED twice"; exit 3; }
-echo "{\"micro\": 8, \"gpu\": \"$(python -c 'import torch; print(torch.cuda.get_device_name(0))')\"}" > boxes/runs_fsq/pilot_cur_s1/micro.json; echo "$(date '+%F %T') S254 LOCAL DONE"
+echo "{\"micro\": $M, \"mem_check_peak_gib_train\": $PK, \"budget_gib\": 6.8, \"gpu\": \"$(python -c 'import torch; print(torch.cuda.get_device_name(0))')\"}" > boxes/runs_fsq/pilot_cur_s1/micro.json; echo "$(date '+%F %T') S254 LOCAL DONE"
