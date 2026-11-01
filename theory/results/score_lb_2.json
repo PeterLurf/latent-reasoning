@@ -1,0 +1,57 @@
+{
+ "seeds": {
+  "lbr_s1": {
+   "label": "PARTIAL",
+   "perm_k8": {
+    "2": 1.0,
+    "3": 0.109,
+    "4": 0.078
+   },
+   "nodec_k2": 0.079,
+   "lp5p": -0.0010000000000000009,
+   "retain": false,
+   "swap4": {
+    "follow_U": 0.104,
+    "floor": 0.108,
+    "follow_ca": 0.091,
+    "follow_cb": 0.086,
+    "stay_own": 0.084
+   },
+   "lp5_test2": 0.0010000000000000009,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "lbr_s2": {
+   "label": "PARTIAL",
+   "perm_k8": {
+    "2": 1.0,
+    "3": 0.097,
+    "4": 0.089
+   },
+   "nodec_k2": 0.097,
+   "lp5p": -0.0040000000000000036,
+   "retain": false,
+   "swap4": {
+    "follow_U": 0.112,
+    "floor": 0.113,
+    "follow_ca": 0.101,
+    "follow_cb": 0.1,
+    "stay_own": 0.09
+   },
+   "lp5_test2": -0.0010000000000000009,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  }
+ },
+ "verdict": "FAIL | PARTIAL / PARTIAL"
+}

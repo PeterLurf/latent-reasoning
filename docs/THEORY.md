@@ -339,7 +339,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 250 | FRAME-DIV (Theory's choice on Audit's suggestion): 48 new hand-written frames (8-15) appended to FRAMES (existing sets unchanged); Stage 0 $0 step-0 per-frame baseline decides; Stage 1 FT DIV (0-5 + 8-11) vs CTRL (0-5), GEN on >= 2 held-out frames (12-15) failing at step 0; FD_v1.md | registered | **FAIL 10-30 (250-2): s1 MEMO, s2 LP0-FAIL (would be MEMO); trained new frames 1.000, held-out 12-15 barely move (GEN 0/4); H-MEMO; $2.82.** **Stage 0 10-30 (250-1): all 4 held-out frames FAILING (d 2 0.12-0.56) in both -> Stage 1 admitted; score_fd.py 8/8.** **APPROVED by Audit 10-30 (both commits before any build; Stage 0 gate; Jaccard <= 0.20; G1 existing-set sha gate).** **REGISTERED 00:36 10-30; Stage 0 build -> G-D -> local eval** |
 | 251 | ANSWER-EXTEND (roadmap #1, Theory's choice): from the P-2 seed (aw_plaw2_s1), §237's REG d ~ U{1..4} 16k recipe with aux only on d <= 2 (AEX, --aux_d_max 2) or aux off after the seed (AEX0, --aux_fade 0,0) vs CTRL rcb_plaw4 (re-eval); binding d 4-centred (ACC4, NOT-DECODER K' 2, SWAP-MID d 4 t 2, LP5-D4); AE_v1.md | registered | **SCORED 10-30 (251-3): AEX SPLIT (s1 EXTEND; s2 EXTEND-D3-ONLY: d 4 1.000, K' 2 0.009, LP5-D4 0.345, SWAP4 0.461 < 0.50); AEX0 FAIL (s1 lost the seed, s2 no d 3-4). Depth from answers works with the d <= 2 anchor; C4 partial; $4.65.** **251-2: AEX OOM (auto micro 1) -> VOID-RERUN both at --micro 2 (= CTRL); guard $4.5 -> $5.5 APPROVED by Audit (incl. $1.21 void + $0.33 BAD hosts).** **251-1: step-0 refs match; CTRL_re EXTEND both (positive control); aex0_s1 cell overrun ~$0.03 disclosed.** **APPROVED by Audit 10-30 (guard $4.5; d 4-centred binding; AEX0 informative).** **REGISTERED 08:40 10-30; scorer score_ae.py 7/7; build (--aux_d_max + empty-aux fix) -> G-D -> 4 Vast 3090 runs; guard $4.5** |
 | 252 | UNSCAFFOLDED / PERM-LOOKUP (Theory's choice, Audit candidate 2): warm from rcb_plaw4, REG, 16k; NP (--perm_p 0.5, named cues) and GP (+ --cue generic); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5-D4) + TEST2 RETAIN / SWAP4; $0 2k pilot gate per arm; NS_v1.md | registered | **PILOT PARK both 10-31 (252-2): ws perm d 2 pass 1 NP 0.10 / GP 0.09 at 2k; GP also breaks the chain on chain-order items; closed, $0.** **APPROVED by Audit 10-30 (252-1: pilot scorer committed; perm seed disjoint; RETAIN + SWAP4 / LP5).** **REGISTERED 10-30 (after Note 251-16: C1 loops are position-bound, TEST-PERM ~0.15-0.20); build -> G-D -> pilot -> cloud; guard $5; scorer score_ns.py before cloud output** |
-| 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
+| 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **FAIL 10-31 (253-4): PARTIAL / PARTIAL; TEST-PERM d 2 1.000 but d 3-4 chance; the pass-2 write never forms (aux 0.17-0.23); name lookup at pass 1 transferred; $3.96.** **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
 
 ## Live sections
 
@@ -23101,6 +23101,28 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Censoring unchanged:** host refusals are not runs; an unfinished admitted run is VOID-RERUN once.
 - **Disclosed cell overrun (b385 lbr_s1):** admitted at $0.1885/h (projected $0.97). Its cell and wall guards were restarted at $1.12 after the refused hosts, which are not runs. Including the refused hosts the cell is ~$0.85 run + $0.29 refused, about $1.14 vs $1.12 (Audit OK). b386 gets the same treatment. The family stays <= $5.
 - **b386 lbr_s2:** admitted under the fallback (admit $1.20 / guard $1.30) after 3 refusals at $1.05; projected $1.05; guards restarted at $1.30 (Audit pre-approval). Rejected-host spend: b385 $0.29, b386 $0.21 (not runs). Family ~$4.2 of $5 projected.
+
+**Note 253-4 (2026-10-31 20:04 EDT; §253 Stage 2 SCORED by theory/score_lb.py --stage 2: 'FAIL | PARTIAL / PARTIAL'; lbr_s1 a9da5317 ($0.834), lbr_s2 5de2435b ($0.923); family $3.96 of $5 incl. BAD $0.59; credit $20.90).**
+- **Both seeds PARTIAL:**
+  - TEST-PERM K' 8, d 2 / 3 / 4: 1.000 / 0.109 / 0.078 (s1) and 1.000 / 0.097 / 0.089 (s2).
+  - TEST2: d 1-2 1.000, d 3-5 at chance (s1 0.100 / 0.079 / 0.100; s2 0.081 / 0.098 / 0.089).
+  - LP5P -0.001 / -0.004; SWAP4 at floor (0.104 vs 0.108; 0.112 vs 0.113); RETAIN fails. Stable; CUE-ONLY at majority.
+- **Mechanism (log aux_vacc_by_d_pass, final):** pass 1 0.99-1.00 at every d; **pass 2 0.17-0.23**; passes 3-4 at chance (0.09-0.10), with aux on all t <= d for 16k.
+  - The Stage-1 caveat (253-2) carried through: the pass-2 write never forms. d 2 is solved by pass 1 by name plus the decoder's step, and nothing chains past it.
+  - As predicted in 253-2 (P ~0.15, most likely PARTIAL / NOT-FORMED).
+- **What §253 shows (scoped):**
+  - Name lookup for the first step transfers from the retrained init into the loop: TEST-PERM d 2 1.000, with pass 1 at 1.000 on permuted text.
+  - The second write does not form under permuted training from that init (P2P 12k + LBR 16k), whereas the askname init in chain order formed it by 6-7k (aw_plaw2_s1).
+- **Factor table for the pass-2 write (P-2 stage, aux on):**
+  - askname + chain: FORMED (aw_plaw2_s1, 0.9999);
+  - askname + perm 0.5: NOT-FORMED even at d 2 (p2p_old_s1);
+  - askperm + perm 0.5: pass 2 0.13 / 0.15 (p2p_s1 / s2);
+  - **askperm + chain: unrun.**
+  - The missing cell separates 'permuted training blocks the write' from 'the lookup init blocks the write'.
+- **Next (proposed, its own registration):** P2P-CHAIN = the askperm init + perm_p 0, aw_plaw2_s1's args, 12k, 1 seed (~$0.55).
+  - Pre-stated: pass-2 aux >= 0.90 at 12k -> perm training is the blocker, and a curriculum (chain first, then perm) is the next design.
+  - < 0.50 -> the lookup init itself blocks the write; the LOOKUP line parks.
+  - Checkpoints: keep p2p_s1 / s2 and lbr_* model.pt until Audit reproduces, then delete lbr_* and p2p_old_s1.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
