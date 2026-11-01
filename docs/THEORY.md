@@ -340,6 +340,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 251 | ANSWER-EXTEND (roadmap #1, Theory's choice): from the P-2 seed (aw_plaw2_s1), §237's REG d ~ U{1..4} 16k recipe with aux only on d <= 2 (AEX, --aux_d_max 2) or aux off after the seed (AEX0, --aux_fade 0,0) vs CTRL rcb_plaw4 (re-eval); binding d 4-centred (ACC4, NOT-DECODER K' 2, SWAP-MID d 4 t 2, LP5-D4); AE_v1.md | registered | **SCORED 10-30 (251-3): AEX SPLIT (s1 EXTEND; s2 EXTEND-D3-ONLY: d 4 1.000, K' 2 0.009, LP5-D4 0.345, SWAP4 0.461 < 0.50); AEX0 FAIL (s1 lost the seed, s2 no d 3-4). Depth from answers works with the d <= 2 anchor; C4 partial; $4.65.** **251-2: AEX OOM (auto micro 1) -> VOID-RERUN both at --micro 2 (= CTRL); guard $4.5 -> $5.5 APPROVED by Audit (incl. $1.21 void + $0.33 BAD hosts).** **251-1: step-0 refs match; CTRL_re EXTEND both (positive control); aex0_s1 cell overrun ~$0.03 disclosed.** **APPROVED by Audit 10-30 (guard $4.5; d 4-centred binding; AEX0 informative).** **REGISTERED 08:40 10-30; scorer score_ae.py 7/7; build (--aux_d_max + empty-aux fix) -> G-D -> 4 Vast 3090 runs; guard $4.5** |
 | 252 | UNSCAFFOLDED / PERM-LOOKUP (Theory's choice, Audit candidate 2): warm from rcb_plaw4, REG, 16k; NP (--perm_p 0.5, named cues) and GP (+ --cue generic); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5-D4) + TEST2 RETAIN / SWAP4; $0 2k pilot gate per arm; NS_v1.md | registered | **PILOT PARK both 10-31 (252-2): ws perm d 2 pass 1 NP 0.10 / GP 0.09 at 2k; GP also breaks the chain on chain-order items; closed, $0.** **APPROVED by Audit 10-30 (252-1: pilot scorer committed; perm seed disjoint; RETAIN + SWAP4 / LP5).** **REGISTERED 10-30 (after Note 251-16: C1 loops are position-bound, TEST-PERM ~0.15-0.20); build -> G-D -> pilot -> cloud; guard $5; scorer score_ns.py before cloud output** |
 | 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **FAIL 10-31 (253-4): PARTIAL / PARTIAL; TEST-PERM d 2 1.000 but d 3-4 chance; the pass-2 write never forms (aux 0.17-0.23); name lookup at pass 1 transferred; $3.96.** **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
+| 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
 
 ## Live sections
 
@@ -19665,6 +19666,25 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **OC:** both seeds LOOKUP-C1 ~0.25 (lookup survives) vs ~0.003 (position re-emerges). Censoring: VOID-RERUN once; no extensions. Binding evals come from the cloud only.
 - **Scope:** plan given, any trained order (test orders are trained orders).
 - **Cost:** ~$3.6-4.5, guard $5.
+
+## 254. P2P-CHAIN: is it the permuted training or the lookup init that blocks the pass-2 write? (Theory's choice under the user's 10-26 standing rules; Audit approves; cell cap **$1.0**; pre-registered 2026-10-31, before launch)
+
+- **Why (Note 253-4):** the pass-2 write never formed under permuted training from the lookup init. The 2x2 (12k, d <= 2, final pass-2 aux) has three cells filled:
+  - old init + chain: aw_plaw2_s1, 0.9999;
+  - old init + perm 0.5: p2p_old_s1, 0.098;
+  - askperm + perm 0.5: p2p_s1 / s2, 0.13 / 0.15.
+- **Cell:** p2pc_s1, aw_plaw2_s1's args with `--init_trunk boxes/runs_fsq/s252_askperm_s1/model.pt` (+ sha) and an explicit `--perm_p 0`.
+  - Args diff = {init_trunk (+ sha), perm_p 0}. micro 1 pinned (aw_plaw2_s1's; P-2 peak 14.4 GiB on a 3090); no auto_micro. RTX 3090; seed 1; 12k.
+- **Readings (theory/score_pc.py, fixtures 6/6):** final log aux_vacc_by_d_pass['2']['2']; eval_ws by_d['2']['2']; eval_acc by_d['2'].acc.
+  - **PERM-BLOCKER:** aux >= 0.90 AND ws >= 0.90 AND TEST2 d 2 >= 0.90. Next design: a curriculum, chain order first, then permuted.
+  - **INIT-BLOCKER:** aux < 0.50 AND ws < 0.50. The LOOKUP line parks.
+  - **INCONCLUSIVE:** otherwise, including the measures disagreeing. No follow-on spend without a new Note.
+- **Prediction / OC:** the prior favours PERM-BLOCKER, because permuted training already kills the write with the old init (p2p_old_s1 0.098).
+  - P(PERM-BLOCKER | perm is the blocker) ~0.85 (aw_plaw2_s1 formed by 6-7k);
+  - P(PERM-BLOCKER | the lookup init blocks) ~0.05.
+  - Theory's prior: PERM-BLOCKER ~0.7.
+- **Censoring:** an unfinished run or a crashed eval is VOID-RERUN once (fresh host; --keep_final_ckpt). No extension; 12k final.
+- **Cost:** ~$0.55, cell cap $1.0. §253 + §254 family <= $5.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
