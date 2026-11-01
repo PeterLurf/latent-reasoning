@@ -23293,6 +23293,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (c) Gradflow; a plain-path smoke without the flag; inserts = 0 bitwise equal to the old batch builder; default off.
   - (d) mem_check at d 4 + 2 inserts on the 4060 before pinning micro.
 
+**Note 255-6 (2026-11-01 04:23 EST; local box RAM bit flips (Experiments to Audit); DISTRACT pilot moved to Vast; no output read).**
+- **Local box:** cached reads of model.pt showed single-bit flips (rcb_plaw4_s1, p2p_s2); unbuffered reads give the correct shas. Local GPU work is held until the user checks the RAM.
+- **DISTRACT pilot (Note 255-5) runs on Vast instead:** RTX 3090, same flags, --steps 16000 --stop_at 2000. The INSERT eval runs on the host on the 1k / 2k checkpoints, and the init sha is asserted on the host. Cell cap $0.5; the rule in 255-5 is unchanged.
+  - Disclosed: a 3090 instead of the 4060 (the gate is predictive only).
+- **Earlier local readings to re-verify (Audit to triage):** today's local evals or training include s252_askperm_s1 (trained locally), the SCALE / ASKNAME-PERM probes, NS stage 0, CC S0, the §252 / ACUE / curriculum pilots and INSERT.
+  - Mitigations already in place: INSERT's harness gate (clean == stored host answers 1.000); NS S0 named baselines per-item identical to CC S0; askperm's cloud use asserted its sha, and the P2P stages behaved consistently (p2pc formed like aw_plaw2).
+  - A spot re-run of the decisive local readings on a cloud host is the cheap check, if Audit wants it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
