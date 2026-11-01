@@ -1,0 +1,158 @@
+{
+ "section": 255,
+ "seeds": {
+  "aex_s1": {
+   "label": "EXTEND",
+   "gates": {
+    "ACC4": true,
+    "NOT-DECODER": true,
+    "SWAP4": true,
+    "LP5-D4": true
+   },
+   "d3_desc": true,
+   "acc": {
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0
+   },
+   "acc4_k2": 0.009,
+   "swap4": {
+    "follow_U": 0.872,
+    "floor": 0.097,
+    "follow_ca": 0.798,
+    "follow_cb": 0.799,
+    "stay_own": 0.012
+   },
+   "swap3_t2": {
+    "follow_U": 1.0,
+    "floor": 0.094,
+    "follow_ca": 1.0,
+    "follow_cb": 1.0,
+    "stay_own": 0.0
+   },
+   "lp5_d4": 0.788,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "aex_s2": {
+   "label": "EXTEND-D3-ONLY",
+   "gates": {
+    "ACC4": true,
+    "NOT-DECODER": true,
+    "SWAP4": false,
+    "LP5-D4": true
+   },
+   "d3_desc": true,
+   "acc": {
+    "2": 1.0,
+    "3": 0.999,
+    "4": 1.0
+   },
+   "acc4_k2": 0.009,
+   "swap4": {
+    "follow_U": 0.461,
+    "floor": 0.098,
+    "follow_ca": 0.428,
+    "follow_cb": 0.4,
+    "stay_own": 0.05
+   },
+   "swap3_t2": {
+    "follow_U": 1.0,
+    "floor": 0.096,
+    "follow_ca": 1.0,
+    "follow_cb": 1.0,
+    "stay_own": 0.0
+   },
+   "lp5_d4": 0.34500000000000003,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "aex_s3": {
+   "label": "NOT-EXTEND",
+   "gates": {
+    "ACC4": false,
+    "NOT-DECODER": true,
+    "SWAP4": false,
+    "LP5-D4": false
+   },
+   "d3_desc": false,
+   "acc": {
+    "2": 1.0,
+    "3": 0.088,
+    "4": 0.094
+   },
+   "acc4_k2": 0.093,
+   "swap4": {
+    "follow_U": 0.109,
+    "floor": 0.108,
+    "follow_ca": 0.091,
+    "follow_cb": 0.098,
+    "stay_own": 0.079
+   },
+   "swap3_t2": {
+    "follow_U": 0.087,
+    "floor": 0.086,
+    "follow_ca": 0.087,
+    "follow_cb": 0.087,
+    "stay_own": 0.094
+   },
+   "lp5_d4": -0.0010000000000000009,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "aex_s4": {
+   "label": "NOT-EXTEND",
+   "gates": {
+    "ACC4": false,
+    "NOT-DECODER": true,
+    "SWAP4": false,
+    "LP5-D4": false
+   },
+   "d3_desc": false,
+   "acc": {
+    "2": 1.0,
+    "3": 0.091,
+    "4": 0.096
+   },
+   "acc4_k2": 0.095,
+   "swap4": {
+    "follow_U": 0.121,
+    "floor": 0.12,
+    "follow_ca": 0.11,
+    "follow_cb": 0.107,
+    "stay_own": 0.094
+   },
+   "swap3_t2": {
+    "follow_U": 0.092,
+    "floor": 0.092,
+    "follow_ca": 0.092,
+    "follow_cb": 0.092,
+    "stay_own": 0.1
+   },
+   "lp5_d4": -0.0010000000000000009,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  }
+ },
+ "verdict": "EXTEND 1/4 (EXTEND / EXTEND-D3-ONLY / NOT-EXTEND / NOT-EXTEND)"
+}

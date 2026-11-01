@@ -341,7 +341,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 252 | UNSCAFFOLDED / PERM-LOOKUP (Theory's choice, Audit candidate 2): warm from rcb_plaw4, REG, 16k; NP (--perm_p 0.5, named cues) and GP (+ --cue generic); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5-D4) + TEST2 RETAIN / SWAP4; $0 2k pilot gate per arm; NS_v1.md | registered | **PILOT PARK both 10-31 (252-2): ws perm d 2 pass 1 NP 0.10 / GP 0.09 at 2k; GP also breaks the chain on chain-order items; closed, $0.** **APPROVED by Audit 10-30 (252-1: pilot scorer committed; perm seed disjoint; RETAIN + SWAP4 / LP5).** **REGISTERED 10-30 (after Note 251-16: C1 loops are position-bound, TEST-PERM ~0.15-0.20); build -> G-D -> pilot -> cloud; guard $5; scorer score_ns.py before cloud output** |
 | 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **FAIL 10-31 (253-4): PARTIAL / PARTIAL; TEST-PERM d 2 1.000 but d 3-4 chance; the pass-2 write never forms (aux 0.17-0.23); name lookup at pass 1 transferred; $3.96.** **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
 | 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **PERM-BLOCKER 10-31 (254-1): askperm + chain forms the pass-2 write (aux 0.99997 by 6k, ws 1.000); perm training is the blocker; $0.40.** **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
-| 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
+| 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
 
 ## Live sections
 
@@ -23203,6 +23203,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Mixed training keeps lookup at pass 1 but never forms pass 2.
   - In this harness, a multi-step latent chain and name-based step selection have not been obtained together. Language C1 stays 'plan given AND chain-order text'.
 - Pilot checkpoints and lbr_* / p2p_old_s1 model.pt are deletable (Audit reproduced). p2p_s1 / s2 / p2pc_s1 are kept as the lookup-related seeds.
+
+**Note 255-1 (2026-11-01 03:29 EST; §255 SCORED by theory/score_ae.py --rep: 'EXTEND 1/4 (EXTEND / EXTEND-D3-ONLY / NOT-EXTEND / NOT-EXTEND)'; aex_s3 15a0f352 ($0.732), aex_s4 bf476ee8 ($0.750); all RTX 3090; family $1.53; credit $18.36).**
+- **New seeds s3 / s4: NOT-EXTEND.**
+  - d 3 / d 4 acc 0.088 / 0.094 and 0.091 / 0.096 (chance); d 2 1.000.
+  - SWAP4 at floor (0.109 vs 0.108; 0.121 vs 0.120); LP5-D4 -0.001.
+- **Basin entry (first logged step with by_d d CE < 0.5, Audit condition 3):**
+  - s1: d 3 at 4k, d 4 at 5k; s2: d 3 at 3k, d 4 at 4k;
+  - s3 / s4: never in 16k (train d 3 acc 0.09-0.10 at every logged step).
+  - Outcomes are bimodal: either the new depths enter by ~5k or never. This is not a late-entry case.
+- **The anchor held in all four seeds:** aux_vacc d 2 pass 2 = 1.00 and eval ws d 2 pass 2 = 1.000 in s1-s4.
+  - So s3 / s4 failed on the extension itself (pass 3 trained only by the answer), not on erosion of the seeded passes.
+- **Swap pattern (Audit condition 4, descriptive), U / other / dfin / own:** s1 0.872 / 0.096 / 0.020 / 0.012; s2 0.461 / 0.417 / 0.072 / 0.050; s3 0.109 / 0.719 / 0.093 / 0.079; s4 0.121 / 0.692 / 0.093 / 0.094.
+- **Pre-stated wording (k <= 1):** answer-only depth extension with the d <= 2 anchor is **rare** (1/4 full; 2/4 reach d 4 accuracy).
+  - §251's AEX SPLIT was the favourable half. C4 stays 'partial'; the summary row is amended to the rate.
+  - Scope: one init (aw_plaw2_s1), training seeds only, REG word programs, plan given, chain-order text.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
