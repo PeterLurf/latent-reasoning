@@ -23410,6 +23410,9 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - the 8k FT uses a fresh AdamW, 100-step warmup and cosine over 8k from 1e-4, with the same aux schedule as dis's first 8k;
   - seeds equal dis's, so the raw item stream repeats dis's first 8k; only the inserts differ (new draw seed);
   - the step-0 insert_ho on each dis init (the NONE-control reading) runs on the host before training, with the GPU gates.
+- **Scope (Audit, at launch):** every chain-reading insert, trained and held-out, sits directly after S_j. So CONTENT-SELECTOR does not cover chain-reading inserts at non-adjacent positions.
+- **Landing check:** each fetched file's local unbuffered sha is compared with the host's host_shas.json before hand-over. Theory scores twice and compares.
+- Launched 18:43 after Audit's G-D PASS: b393 dch_s1 -> b394 dch_s2.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
