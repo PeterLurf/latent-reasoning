@@ -69,7 +69,7 @@ def main():
         p, want = x.split("="); got = blob_id(p); bl[p] = got == want; assert got == want, ("git blob", p, got, want)
     summ["steps"]["0_shas"] = {"init_sha256": s_init, "blobs_ok": bl}
     # 1. build checks on this GPU
-    env = dict(os.environ, PILOT_INIT=a.init)
+    env = dict(os.environ, PILOT_INIT=a.init, LATENT_ROOT=ROOT)   # the gate scripts default to the local D:/Latent root
     rc = subprocess.call([sys.executable, "-B", "scratch/gate_s255d.py", "offbit", "tiny", "acts", "smoke", "gradflow"], env=env, stdout=open(stage + "/gates.log", "w"), stderr=subprocess.STDOUT)
     gd = stage + "/gates"; os.makedirs(gd, exist_ok=True); gp = {}
     for p_ in ("offbit", "tiny", "acts", "smoke", "gradflow"):
