@@ -1,0 +1,62 @@
+{
+ "aex_s3": {
+  "keys": [
+   "cue_ans",
+   "keep_final_ckpt",
+   "perm_p",
+   "seed"
+  ],
+  "diff": {
+   "cue_ans": [
+    null,
+    0.0
+   ],
+   "keep_final_ckpt": [
+    false,
+    true
+   ],
+   "perm_p": [
+    null,
+    0.0
+   ],
+   "seed": [
+    1,
+    3
+   ]
+  },
+  "micro": 2,
+  "auto_micro": false,
+  "eval_bs": 250,
+  "seed": 3
+ },
+ "aex_s4": {
+  "keys": [
+   "cue_ans",
+   "keep_final_ckpt",
+   "perm_p",
+   "seed"
+  ],
+  "diff": {
+   "cue_ans": [
+    null,
+    0.0
+   ],
+   "keep_final_ckpt": [
+    false,
+    true
+   ],
+   "perm_p": [
+    null,
+    0.0
+   ],
+   "seed": [
+    1,
+    4
+   ]
+  },
+  "micro": 2,
+  "auto_micro": false,
+  "eval_bs": 250,
+  "seed": 4
+ }
+}
