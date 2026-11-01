@@ -31,7 +31,7 @@ OUT = ROOT + "/scratch/gate_s255d"; TMP = ROOT + "/scratch/_tmp/s255d"; DEV = "c
 
 
 def pilot_flags():   # PILOT_INIT: the init path (the Vast cell ships an unbuffered-read copy, boxes/runs_fsq/rcb_plaw4_s1_init/model.pt; same sha)
-    fl = list(RCB); i = fl.index("--init_model"); fl[i + 1] = os.environ.get("PILOT_INIT", "boxes/runs_fsq/rcb_plaw4_s1/model.pt"); j = fl.index("--init_model_sha"); fl[j + 1] = "67775e2492044a8a"; return fl
+    fl = list(RCB); i = fl.index("--init_model"); fl[i + 1] = os.environ.get("PILOT_INIT", "boxes/runs_fsq/rcb_plaw4_s1/model.pt"); j = fl.index("--init_model_sha"); fl[j + 1] = os.environ.get("PILOT_INIT_SHA", "67775e2492044a8a"); return fl
 
 
 def det(mod, fl, d):

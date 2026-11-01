@@ -34,7 +34,9 @@ def nobuf_bytes(p):
 
 EVAL = "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,test_perm,insert_ho,ws_deep"
 INIT = {1: ("boxes/runs_fsq/rcb_plaw4_s1_init/model.pt", "67775e2492044a8a"), 2: ("boxes/runs_fsq/rcb_plaw4_s2_init/model.pt", "a1d93d77fff86d93")}
-BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/insert_render.py", "boxes/perm_render.py", "scratch/s256_guarded.py", "scratch/s256_ho_shas.json"]
+BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/insert_render.py", "boxes/perm_render.py", "scratch/s256_guarded.py", "scratch/s256_ho_shas.json",
+        "scratch/gate_s255d.py", "scratch/gate_s228.py", "scratch/gate_s251.py", "scratch/s228_args_check.py", "scratch/s222_det_wrap.py", "boxes/_inject_aw_s252.py"]
+GSHIP = "scratch/gate_s255d.py scratch/gate_s228.py scratch/gate_s251.py scratch/s228_args_check.py scratch/s222_det_wrap.py boxes/_inject_aw_s252.py boxes/runs_fsq/aw_plaw2_s1/model.pt"
 
 
 def flags(k):
@@ -63,9 +65,9 @@ for k, n in ((1, 391), (2, 392)):
          "# HOSTPROBE\n# P=1\n"
          "boxes/runs_fsq/%s_mem boxes.inject_aw %s --mem_check\n"
          "boxes/runs_fsq/%s_gtime boxes.inject_aw %s --time_steps 60\n"
-         "%s scratch.s256_guarded --mode evalonly --blob %s --model %s=%s --args boxes/runs_fsq/rcb_plaw4_s%d/args.json --parts ws_deep,insert_ho --ship scratch/s256_ho_shas.json\n"
-         "boxes/runs_fsq/%s scratch.s256_guarded --mode train --blob %s --init %s=%s --require %s/eval_ws_deep.json %s/eval_insert_ho.json -- %s %s --args_ref "
-         "scratch/s257_args_frozen_%s.json\n") % (run, k, k, k, run, run, fs, run, fs, ev, blob, INIT[k][0], INIT[k][1], k, run, blob, INIT[k][0], INIT[k][1], ev, ev, fs,
+         "%s scratch.s256_guarded --mode evalonly --blob %s --model %s=%s --args boxes/runs_fsq/rcb_plaw4_s%d/args.json --parts ws_deep,insert_ho --gates --ship scratch/s256_ho_shas.json %s\n"
+         "boxes/runs_fsq/%s scratch.s256_guarded --mode train --blob %s --init %s=%s --require %s/eval_ws_deep.json %s/eval_insert_ho.json %s/gates_pass.json -- %s %s --args_ref "
+         "scratch/s257_args_frozen_%s.json\n") % (run, k, k, k, run, run, fs, run, fs, ev, blob, INIT[k][0], INIT[k][1], k, GSHIP, run, blob, INIT[k][0], INIT[k][1], ev, ev, ev, fs,
                                                   " ".join(tail), run)
     open("scratch/gen_q_b%d.txt" % n, "w", encoding="utf-8", newline="\n").write(q)
 json.dump(out, open("scratch/gate_s257/predeploy_args.json", "w", newline="\n"), indent=1, default=str)
