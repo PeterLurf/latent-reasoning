@@ -1,0 +1,39 @@
+{
+ "steps": {
+  "0_shas": {
+   "init_sha256": "67775e2492044a8a0f1c59c345a9a9ed8dddfd37383a1220aca413bd5e8afc03",
+   "blobs_ok": {
+    "boxes/inject_aw.py": true,
+    "boxes/inject_aw_eval.py": true,
+    "boxes/insert_render.py": true,
+    "boxes/perm_render.py": true,
+    "boxes/_inject_aw_s252.py": true,
+    "scratch/s256_distract_cell.py": true,
+    "scratch/gate_s255d.py": true,
+    "scratch/gate_s228.py": true,
+    "scratch/gate_s251.py": true,
+    "scratch/s228_args_check.py": true,
+    "scratch/s222_det_wrap.py": true
+   }
+  },
+  "1_gates": {
+   "rc": 0,
+   "pass": {
+    "offbit": true,
+    "tiny": true,
+    "acts": true,
+    "smoke": true,
+    "gradflow": true
+   }
+  },
+  "2_step0": "insert_step0.json",
+  "3_micro": {
+   "micro": 2,
+   "peak_gib_train_2insert": 15.423158273100853
+  },
+  "4_train": {
+   "rc": 9
+  }
+ },
+ "ok": true
+}
