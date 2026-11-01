@@ -24,7 +24,7 @@
 - **H-GIVPOS:** the new given at the text start, right before its op, or after S_d.
 - **Descriptive:** H-EXTEND (X1 reads S_d, X2 reads X1: looks like a d+2 chain; tests stopping by name), H-LIVE (a two-step insert chain), K3 (3 inserts).
 
-**RETAIN (TEST2):** d 1-4 ≥ 0.98; SWAP4 ≥ 0.50 and ≥ floor + 0.30; LP5-D4 ≥ 0.30.
+**RETAIN (TEST2):** d 1-4 ≥ 0.98; NOT-DECODER d 4 at K' 2 ≤ 0.20 (Audit); SWAP4 ≥ 0.50 and ≥ floor + 0.30; LP5-D4 ≥ 0.30.
 
 **C2 (TEST2, K' 8):**
 - d 5 ≥ 0.80 (retention);
