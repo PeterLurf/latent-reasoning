@@ -14,11 +14,11 @@
  "examples": {
   "clean": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
   "before_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Ron has 8 books. Val owns 1 books more than Ron does. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
-  "before_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Finn has 9 books. Nan has the number of books Finn has, plus 1. Joe has 7 books. Sam has 1 more books than Joe. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
-  "inside_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Nan has 7 books. Compared with Nan, Eve has 1 extra books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
-  "inside_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Val has 7 books. Nan owns 3 books more than Val does. Pam has 2 books. Pam has 5 fewer books than Ian. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
-  "after_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. Dan has 3 books. Hal owns 2 books more than Dan does. How many books does Cal have?",
-  "after_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. Nan has 8 books. Nan has 2 fewer books than Pam. Ian has 8 books. If you add 1 to Ian's books, you get Wes's books. How many books does Cal have?"
+  "before_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Finn has 9 books. Joe has 7 books. Nan has the number of books Finn has, plus 1. Sam has 1 more books than Joe. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "inside_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Nan has 7 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Compared with Nan, Eve has 1 extra books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "inside_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Val has 7 books. Pam has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Nan owns 3 books more than Val does. Pam has 5 fewer books than Ian. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "after_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Dan has 3 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. Hal owns 2 books more than Dan does. How many books does Cal have?",
+  "after_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Nan has 8 books. Ian has 8 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. Nan has 2 fewer books than Pam. If you add 1 to Ian's books, you get Wes's books. How many books does Cal have?"
  },
  "example_meta": {
   "clean": [],
@@ -28,7 +28,9 @@
     "X": "Val",
     "v": 8,
     "c": 1,
-    "frame": 1
+    "frame": 1,
+    "given_idx": 5,
+    "op_idx": 6
    }
   ],
   "before_k2": [
@@ -37,14 +39,18 @@
     "X": "Nan",
     "v": 9,
     "c": 1,
-    "frame": 3
+    "frame": 3,
+    "given_idx": 5,
+    "op_idx": 7
    },
    {
     "Y": "Joe",
     "X": "Sam",
     "v": 7,
     "c": 1,
-    "frame": 0
+    "frame": 0,
+    "given_idx": 6,
+    "op_idx": 8
    }
   ],
   "inside_k1": [
@@ -53,7 +59,9 @@
     "X": "Eve",
     "v": 7,
     "c": 1,
-    "frame": 2
+    "frame": 2,
+    "given_idx": 5,
+    "op_idx": 8
    }
   ],
   "inside_k2": [
@@ -62,14 +70,18 @@
     "X": "Nan",
     "v": 7,
     "c": 3,
-    "frame": 1
+    "frame": 1,
+    "given_idx": 5,
+    "op_idx": 9
    },
    {
     "Y": "Pam",
     "X": "Ian",
     "v": 2,
     "c": 5,
-    "frame": 4
+    "frame": 4,
+    "given_idx": 6,
+    "op_idx": 10
    }
   ],
   "after_k1": [
@@ -78,7 +90,9 @@
     "X": "Hal",
     "v": 3,
     "c": 2,
-    "frame": 1
+    "frame": 1,
+    "given_idx": 5,
+    "op_idx": 10
    }
   ],
   "after_k2": [
@@ -87,14 +101,18 @@
     "X": "Pam",
     "v": 8,
     "c": 2,
-    "frame": 4
+    "frame": 4,
+    "given_idx": 5,
+    "op_idx": 11
    },
    {
     "Y": "Ian",
     "X": "Wes",
     "v": 8,
     "c": 1,
-    "frame": 5
+    "frame": 5,
+    "given_idx": 6,
+    "op_idx": 12
    }
   ]
  },
@@ -106,5 +124,44 @@
   4,
   5
  ],
+ "given_block_end_ok": true,
+ "clean_vs_stored": {
+  "rcb_plaw4_s1": {
+   "n_matched": 1000,
+   "stored_eval_bs": 250,
+   "stored_dtype": "fp32",
+   "stored_gpu": "NVIDIA GeForce RTX 3090",
+   "per_kprime": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "8": 1.0
+   }
+  },
+  "rcb_plaw4_s2": {
+   "n_matched": 1000,
+   "stored_eval_bs": 250,
+   "stored_dtype": "fp32",
+   "stored_gpu": "NVIDIA GeForce RTX 3090",
+   "per_kprime": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "8": 1.0
+   }
+  },
+  "aex_s1": {
+   "n_matched": 1000,
+   "stored_eval_bs": 250,
+   "stored_dtype": "fp32",
+   "stored_gpu": "NVIDIA GeForce RTX 3090",
+   "per_kprime": {
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0,
+    "8": 1.0
+   }
+  }
+ },
  "pass": true
 }
