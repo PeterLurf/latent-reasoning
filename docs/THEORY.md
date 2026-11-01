@@ -23369,6 +23369,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - This is the language line's first C2 evidence: accuracy past the trained depth rises with passes and holds. C2 moves from 'not met' to **partial (scoped)**.
   - Step selection by name is still not obtained (Notes 253-4, 254-3).
   - No new cloud spend: credit $15.27 is at Audit's stop line. dis_s1 / s2 model.pt are kept (the best C2 models).
+- **Literature (11-01): NARROW.**
+  - Distractors are known as an evaluation stressor (GSM-IC, Shi 2302.00093) and as unnecessary parameters in iGSM (Physics of LMs 2.1, 2407.20311).
+  - The mechanism matches position randomisation for length generalisation (Ruoss 2305.16843; Abacus 2405.17399; Kuo 2606.29983).
+  - Not found: irrelevant-sentence insertion as a training device for depth extrapolation in looped / latent models.
+  - **Adopted wording:** 'distractor insertion as a slot-decorrelation device, the sentence-level analogue of randomised positions (2305.16843)'.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
