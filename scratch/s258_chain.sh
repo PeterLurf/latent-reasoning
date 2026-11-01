@@ -6,7 +6,7 @@ for c in "$@"; do
   qs=${c%%|*}; w=${c##*|}
   while ps -ef | awk '$6 ~ /bash(\.exe)?$/ && $7 ~ /s2[0-9]+_fill[a-z0-9_]*\.sh$/' | grep -q .; do sleep 30; done
   echo "$(date '+%F %T') chain: launching $qs (WALLW $w)"
-  WALLW=$w EVAL_H=0.5 CAPF=${CAPF:-4.5} QS="$qs" bash scratch/s258_fill.sh; rc=$?
+  WALLW=$w EVAL_H=${EVAL_H:-0.5} CAPF=${CAPF:-4.5} QS="$qs" bash scratch/s258_fill.sh; rc=$?
   echo "$(date '+%F %T') chain: filler rc $rc ($qs)"
   [ $rc = 0 ] || { echo "$(date '+%F %T') chain: STOPPED (filler rc $rc)"; exit 3; }
 done
