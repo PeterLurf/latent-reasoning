@@ -1,0 +1,46 @@
+{
+ "rc": [
+  9,
+  9
+ ],
+ "stream": {
+  "step": [
+   3,
+   3
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [],
+  "n_mismatch": 0
+ },
+ "model": {
+  "step": [
+   3,
+   3
+  ],
+  "n_model_tensors": 162,
+  "mismatch": [
+   "model/g.p.h_0_attn_c_attn_bias",
+   "model/g.p.h_0_attn_c_attn_weight",
+   "model/g.p.h_0_attn_c_proj_bias",
+   "model/g.p.h_0_attn_c_proj_weight",
+   "model/g.p.h_0_ln_1_bias",
+   "model/g.p.h_0_ln_1_weight",
+   "model/g.p.h_0_ln_2_bias",
+   "model/g.p.h_0_ln_2_weight",
+   "model/g.p.h_0_mlp_c_fc_bias",
+   "model/g.p.h_0_mlp_c_fc_weight",
+   "model/g.p.h_0_mlp_c_proj_bias",
+   "model/g.p.h_0_mlp_c_proj_weight",
+   "model/g.p.h_10_attn_c_attn_bias",
+   "model/g.p.h_10_attn_c_attn_weight",
+   "model/g.p.h_10_attn_c_proj_bias",
+   "model/g.p.h_10_attn_c_proj_weight",
+   "model/g.p.h_10_ln_1_bias",
+   "model/g.p.h_10_ln_1_weight",
+   "model/g.p.h_10_ln_2_bias",
+   "model/g.p.h_10_ln_2_weight"
+  ],
+  "n_mismatch": 160
+ },
+ "pass": true
+}

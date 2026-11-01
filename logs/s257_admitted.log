@@ -2,3 +2,4 @@
 391:dis_s1 125.190.184.215:30912 58660711 $0.1747/h sps 1.174168546994527 1.07
 392:dis_s2 77.48.24.203:40167 58662821 $0.1636/h sps 1.2859546224276224 1.08
 realised:b391 # 58660711 (wall guard spent $1.102 at 14:19 + 3 min x $0.1747/h) (§256 dis_s1 + rcb_plaw4_s1_ds256 eval-only) 1.111
+realised:b392 # 58662821 (wall guard spent $1.160 at 15:29 + 6.5 min x $0.1636/h to destroy at 15:35) (§256 dis_s2 + rcb_plaw4_s2_ds256 eval-only) 1.178

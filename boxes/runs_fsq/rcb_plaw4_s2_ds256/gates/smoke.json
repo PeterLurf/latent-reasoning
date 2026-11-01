@@ -1,0 +1,21 @@
+{
+ "plain": {
+  "rc": 9,
+  "n_loss": 40,
+  "finite": true,
+  "distract_n": null,
+  "ok": true
+ },
+ "distract": {
+  "rc": 9,
+  "n_loss": 40,
+  "finite": true,
+  "distract_n": {
+   "0": 892,
+   "1": 835,
+   "2": 833
+  },
+  "ok": true
+ },
+ "pass": true
+}
