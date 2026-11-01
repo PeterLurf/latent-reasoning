@@ -342,6 +342,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **FAIL 10-31 (253-4): PARTIAL / PARTIAL; TEST-PERM d 2 1.000 but d 3-4 chance; the pass-2 write never forms (aux 0.17-0.23); name lookup at pass 1 transferred; $3.96.** **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
 | 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **PERM-BLOCKER 10-31 (254-1): askperm + chain forms the pass-2 write (aux 0.99997 by 6k, ws 1.000); perm training is the blocker; $0.40.** **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
 | 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
+| 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **REGISTERED 11-01; score_ds.py 8/8; cell cap $1.4, guard $3** |
 
 ## Live sections
 
@@ -19709,6 +19710,20 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - (3) The basin-entry step (first logged step with answer loss < 0.5) is reported per seed beside the labels.
   - (4) The s2 swap pattern (U / other / dfin / own shares) is scored descriptively on s3 / s4.
   - **Args diff disclosed at build (50c58a60):** seed; auto_micro False (micro 2 pinned); keep_final_ckpt True (saving only, needed for the VOID re-eval rule); cue_ans 0.0 and perm_p 0.0 (module keys added after §251 at their inert defaults; their default-off bitwise gates passed in §252 / Note 251-10's builds). All are non-semantic.
+
+## 256. DISTRACT: does insert training turn the slot counter into a step selector, and does that buy depth past training? (C1 scope, C2; Theory's choice under the user's 10-26 standing rules, on Audit's suggestion; Audit approves; guard **$3**; pre-registered 2026-11-01, before launch)
+
+- **Text:** docs/research_distract_2026-11-01/DS_v1.md. Red team REVIEW_DS.md (GO-with-fixes, adopted). Scorer theory/score_ds.py (fixtures 8/8). Pilot Note 255-8 (GO).
+- **Arms:** dis_s1 / dis_s2 = rcb_plaw4_s{1,2}'s args + --distract_p 1 (0-2 add_c inserts per item, chain order kept), 16k final, RTX 3090, micro 2, full eval set. No CTRL arm.
+- **Binding per seed:**
+  - **HELD-OUT:** acc K' 8 >= 0.90 and min over positions >= 0.80 in each of H-OP, H-CHAINSRC and H-GIVPOS. These are host-built sets with committed shas, frames 0-5.
+  - **RETAIN:** TEST2 d 1-4 >= 0.98 + SWAP4 + LP5-D4.
+  - **C2:** d 5 >= 0.80; AMBITION d 6 >= 0.65 and >= rcb + 0.10; SELECTION-CREDIT WS d 6 passes 1-4 >= 0.90.
+  - **Guards:** CUE-ONLY; STABLE.
+  - **Labels:** VOID / UNSTABLE / NOT-CAUSAL / SELECTOR+C2 / SELECTOR / C2-ONLY / TRAINED-INSERT-ONLY / FAIL. Per arm 'SELECTOR k/2, C2 k/2'.
+- **OC:** SELECTOR 0.6 vs 0.1 (selection vs surface filter); SELECTOR+C2 given a selector 0.2-0.25. Censoring: VOID-RERUN once; 16k final.
+- **RAM:** host sha asserts and host-built sets (Note 255-6).
+- **Cost:** ~$1.0-1.3 per cell, cell cap $1.4, guard $3.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
