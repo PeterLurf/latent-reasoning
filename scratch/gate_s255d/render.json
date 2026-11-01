@@ -1,0 +1,15 @@
+{
+ "n": 10000,
+ "n_dist": {
+  "0": 3319,
+  "1": 3312,
+  "2": 3369
+ },
+ "bad": {
+  "order": 0,
+  "giv_before_op": 0,
+  "targets": 0,
+  "ins_hit": 0
+ },
+ "pass": true
+}

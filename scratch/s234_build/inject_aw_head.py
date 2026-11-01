@@ -32,6 +32,7 @@ import boxes.deltamem as DM  # noqa: E402
 import boxes.nested170 as N7  # noqa: E402
 import boxes.ow_words as OW  # noqa: E402
 import boxes.perm_render as PR  # noqa: E402
+import boxes.insert_render as IR  # noqa: E402
 from boxes.nested170 import AUX_W, EOT, NUM_IDS, pad  # noqa: E402
 from boxes.inject_ow import (ENC, SFX, SEED_D, SEED_CAL, SEED_MEMCHECK, OWKW, META, tok_ow, tok_nested, direct_logits, sha_file, build_sets,  # noqa: E402, F401
                              InjectOW, load_trunk)
