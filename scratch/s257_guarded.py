@@ -1,4 +1,4 @@
-"""§257 DISTRACT-CHAIN host wrapper (DC2_v1 §5) = scratch/s256_guarded.py with the §257 gates (scratch/gate_s257.py offbit / offbit_d / acts / smoke / gradflow,
+"""§257 DISTRACT-CHAIN host wrapper (DC2_v1 §5; + Audit G-D note 1: host_shas.json, the host sha256 of every result file, written after each mode) = scratch/s256_guarded.py with the §257 gates (scratch/gate_s257.py offbit / offbit_d / acts / smoke / gradflow,
 --pilot_k <k> -> PILOT_K; outputs scratch/gate_s257d/). §256 doc: Queue lines (the runner appends --device <d> --out <dir>, stripped from the passthrough here):
   <dir> scratch.s256_guarded --mode evalonly --blob <path>=<git blob id> ... --model <model.pt>=<sha16> --args <args.json> --parts <p1,p2> --ship <files>
         asserts the git blob ids and the model's sha256 prefix; <dir>/args.json := <args.json>, <dir>/model.pt := <model.pt>; boxes.inject_aw_eval --run <dir> --parts <...>
@@ -35,6 +35,16 @@ def multi(argv, flag, stop=("--mode", "--blob", "--model", "--init", "--args", "
     return out
 
 
+def manifest(out):
+    """Audit (§257 G-D note 1): sha256 of every result file in <out> computed ON THE HOST -> <out>/host_shas.json (+ stdout); the landing compares each local unbuffered sha."""
+    fs = sorted(f for f in os.listdir(out) if f.endswith(".json") and f != "host_shas.json") + [f for f in ("log.jsonl", "gates.log") if os.path.exists(os.path.join(out, f))]
+    m = {f: hashlib.sha256(open(os.path.join(out, f), "rb").read()).hexdigest() for f in fs}
+    for sub in ("gates",):
+        if os.path.isdir(os.path.join(out, sub)):
+            m.update({sub + "/" + f: hashlib.sha256(open(os.path.join(out, sub, f), "rb").read()).hexdigest() for f in sorted(os.listdir(os.path.join(out, sub)))})
+    json.dump(m, open(os.path.join(out, "host_shas.json"), "w"), indent=1); print("HOST_SHAS", json.dumps(m), flush=True)
+
+
 def main():
     argv = sys.argv[1:]; dev = take(argv, "--device"); out = take(argv, "--out")
     pre, post = (argv[:argv.index("--")], argv[argv.index("--") + 1:]) if "--" in argv else (argv, [])
@@ -56,11 +66,11 @@ def main():
                     shutil.copy(f, out + "/gates/%s.json" % p_); gp[p_] = json.load(open(f)).get("pass")
             if grc == 0 and all(gp.get(p_) for p_ in parts):
                 json.dump({"pass": gp}, open(out + "/gates_pass.json", "w"))
-        return rc
+        manifest(out); return rc
     ip, isha = multi(pre, "--init")[0].split("="); s = hashlib.sha256(open(ip, "rb").read()).hexdigest(); assert s.startswith(isha), ("init sha", ip, s)
     for f in multi(pre, "--require"):
         assert os.path.exists(f), ("required eval-only output missing", f)
-    return subprocess.call([sys.executable, "-u", "-B", "-m", "boxes.inject_aw"] + post + ["--device", dev, "--out", out])
+    rc = subprocess.call([sys.executable, "-u", "-B", "-m", "boxes.inject_aw"] + post + ["--device", dev, "--out", out]); manifest(out); return rc
 
 
 if __name__ == "__main__":
