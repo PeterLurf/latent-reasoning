@@ -5,7 +5,7 @@ Per arm per seed, binding (d 4-centred; d 3 can pass via passes 1-2 + the decode
   ACC4: d 4 acc (K' 8) >= 0.50 and >= CD + 0.25; NOT-DECODER: d 4 acc at K' 2 <= 0.20; SWAP4: SWAP-MID d 4 t 2 follow_U >= 0.50 and >= floor + 0.30;
   LP5-D4: lp5h d 4 drop >= 0.30; CUE-ONLY guard d 3-4 (bar = max(majority, min DIRECT bs-variant) + 0.05); STABLE (score_ao rule).
 Labels (first match): VOID / UNSTABLE / EXTEND / EXTEND-D3-ONLY (d 3 acc >= 0.60 and SWAP-MID d 3 t 2 >= 0.50 / floor + 0.30, d 4 gates fail) / NOT-EXTEND.
-Per arm overall: EXTEND (both) / SPLIT / FAIL. Descriptive: d 3 gates, WS, the learning curve (train answer acc by d), SURVIVAL vs CTRL.
+Per arm overall: EXTEND (both) / SPLIT / FAIL. --rep (§255): aex_s1..s4 pooled EXTEND k/4. Descriptive: d 3 gates, WS, the learning curve (train answer acc by d), SURVIVAL vs CTRL.
     python -B theory/score_ae.py [--fixtures]
 """
 import argparse, json, os, sys, tempfile
@@ -18,6 +18,7 @@ OUT = os.path.join(_HR, "theory", "results", "score_ae.json")
 ARMS = {"AEX": ("aex_s1", "aex_s2"), "AEX0": ("aex0_s1", "aex0_s2")}
 CTRL = ("rcb_plaw4_s1_re", "rcb_plaw4_s2_re")
 CD, DIRS = "rcb_pcd4_s1", ("s228_pdir2c_s1_reg", "s228_pdir2c_s1_reg_bs50")
+REP = ("aex_s1", "aex_s2", "aex_s3", "aex_s4")
 
 
 def jl(p):
@@ -48,6 +49,13 @@ def one(runs, run):
     return {"label": lab, "gates": gates, "d3_desc": d3, "acc": {d: acc(d) for d in ("2", "3", "4")}, "acc4_k2": acc("4", 2), "swap4": s4, "swap3_t2": s3, "lp5_d4": lp4, "stable": (sok, smsg)}
 
 
+def score_rep(runs=R):
+    """§255 AEX-REP: the same per-seed labels on aex_s1..s4 (s3 / s4 new data orders, same init aw_plaw2_s1); pooled EXTEND rate k/4."""
+    seeds = {r: one(runs, r) for r in REP}; labs = [v["label"] for v in seeds.values()]
+    k = labs.count("EXTEND")
+    return {"section": 255, "seeds": seeds, "verdict": "pending" if "pending" in labs else "EXTEND %d/4 (%s)" % (k, " / ".join(labs))}
+
+
 def score(runs=R):
     o = {"section": 251, "registered": "AE_v1.md", "arms": {}, "ctrl": {c: one(runs, c) for c in CTRL}}
     out = []
@@ -66,7 +74,7 @@ def fixtures():
         d = tempfile.mkdtemp()
         for run in (CD,) + DIRS:
             os.makedirs(os.path.join(d, run)); json.dump({"by_d": {x: {"acc": 0.09} for x in ("2", "3", "4")}}, open(os.path.join(d, run, "eval_acc.json"), "w"))
-        for run in ARMS["AEX"] + ARMS["AEX0"] + CTRL:
+        for run in ARMS["AEX"] + ARMS["AEX0"] + CTRL + REP[2:]:
             g = dict(acc4=acc4, k2=k2, f4=f4, lp4=lp4, co=co, acc3=acc3, f3=f3); g.update((per or {}).get(run, {}))
             p = os.path.join(d, run); os.makedirs(p)
             json.dump({"by_d": {"2": {"acc": 1.0, "acc_kprime": {"2": 1.0}}, "3": {"acc": g["acc3"], "acc_kprime": {"2": 1.0}}, "4": {"acc": g["acc4"], "acc_kprime": {"2": g["k2"]}}}}, open(os.path.join(p, "eval_acc.json"), "w"))
@@ -86,14 +94,17 @@ def fixtures():
     o = score(world(co=0.5)); res.append(("cue alone -> VOID", "VOID" in o["verdict"], o["verdict"]))
     o = score(world(acc4=0.3, acc3=0.3)); res.append(("nothing -> NOT-EXTEND", "NOT-EXTEND" in o["verdict"], o["verdict"]))
     o = score(world(per={"aex0_s1": {"acc4": 0.3}, "aex0_s2": {"acc4": 0.3}})); res.append(("AEX extends, AEX0 not", o["verdict"].startswith("AEX EXTEND") and "AEX0 FAIL" in o["verdict"], o["verdict"]))
+    o = score_rep(world(per={"aex_s2": {"f4": 0.3}})); res.append(("rep: 3/4", o["verdict"].startswith("EXTEND 3/4"), o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
     k = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (k, len(res))); return k == len(res)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--rep", action="store_true"); a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = score(); print(o["verdict"])
+    if a.rep:
+        OUT = OUT.replace("score_ae.json", "score_ae_rep.json")
+    o = score_rep() if a.rep else score(); print(o["verdict"])
     os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
