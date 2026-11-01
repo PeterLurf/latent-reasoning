@@ -23307,6 +23307,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - No separate ASKNAME-PERM re-run: P2P Stage 1's host TEST-PERM d 2 1.000 confirms the askperm init's lookup on cloud hardware.
   - The other local items stay provisional until the RAM is fixed.
 
+**Note 255-7 (2026-11-01 04:25 EST; RAM triage of local readings (Experiments / Audit); status labels only, no verdict changed yet).**
+- **Scans:**
+  - All 309 json / log / args files of §251-§255 and the local result dirs read identical cached vs unbuffered (scratch/ram_scan/json_scan.json).
+  - Cached model.pt copies of rcb_plaw4_s1, p2p_s2, aex_s1, fd_ctrl_s1 and fd_div_s2 read corrupted in RAM; the disk copies are intact (the scan of 385 files is still running).
+- **PROVISIONAL (re-run after the RAM fix):**
+  - p2pc_s1 step-0 TEST-PERM and pilot_cur_s1. The LOOKUP PARK (254-3) rests on them; it stays parked meanwhile, marked provisional.
+  - The §252 NP / GP pilots (252-2).
+- **LIKELY OK (cross-check later):**
+  - INSERT (255-3 / 255-4): clean answers equal the stored host answers (1.000) on all 3 models in-process, so the loaded weights behaved identically on clean items; the pattern is systematic across models. A host re-run at step 0 is in the DISTRACT cell (255-6).
+  - s252_askperm_s1: its lookup is confirmed host-side by P2P Stage 1 (TEST-PERM d 2 1.000).
+- **OK:** every cloud-computed reading (§251, §253 / §254 stages, §255).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
