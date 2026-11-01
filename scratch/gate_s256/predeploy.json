@@ -1,0 +1,52 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "868f9d90782c1f27db15541e8b239716a922e9a8",
+   "disk": "868f9d90782c1f27db15541e8b239716a922e9a8"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "29f7515c3a7e28d31ecc439e834cb3a357a5fcda",
+   "disk": "29f7515c3a7e28d31ecc439e834cb3a357a5fcda"
+  },
+  "boxes/insert_render.py": {
+   "head": "fcc40393ff57a5f9de2bd3455ebce0fd64940488",
+   "disk": "fcc40393ff57a5f9de2bd3455ebce0fd64940488"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "boxes/_inject_aw_s252.py": {
+   "head": "19f169839d37b4b6b52a820c810b62af6f861e3e",
+   "disk": "19f169839d37b4b6b52a820c810b62af6f861e3e"
+  },
+  "scratch/s256_distract_cell.py": {
+   "head": "043adfca821ff84c8b11cb68b862232cc814a36d",
+   "disk": "043adfca821ff84c8b11cb68b862232cc814a36d"
+  },
+  "scratch/gate_s255d.py": {
+   "head": "d317b6536b66ec0fc6c4075f293f7c4739d2de0b",
+   "disk": "d317b6536b66ec0fc6c4075f293f7c4739d2de0b"
+  },
+  "scratch/gate_s228.py": {
+   "head": "c0c53a5e226f0ca7e810b511030cf995f6f5ce02",
+   "disk": "c0c53a5e226f0ca7e810b511030cf995f6f5ce02"
+  },
+  "scratch/gate_s251.py": {
+   "head": "13f0abe01b9cc331c428c6603f9cca010f29eeed",
+   "disk": "13f0abe01b9cc331c428c6603f9cca010f29eeed"
+  },
+  "scratch/s228_args_check.py": {
+   "head": "7266112c31bc2c2367e445b59f385191090a7204",
+   "disk": "7266112c31bc2c2367e445b59f385191090a7204"
+  },
+  "scratch/s222_det_wrap.py": {
+   "head": "0e71a6c54fd4a58225256f37b0671e4da11ecb30",
+   "disk": "0e71a6c54fd4a58225256f37b0671e4da11ecb30"
+  }
+ },
+ "all_equal": true,
+ "init_unbuffered_sha256": "67775e2492044a8a0f1c59c345a9a9ed8dddfd37383a1220aca413bd5e8afc03",
+ "init_ok": true,
+ "aw_plaw2_s1_unbuffered_sha256": "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5"
+}
