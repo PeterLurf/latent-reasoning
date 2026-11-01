@@ -23287,6 +23287,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **PARK** if clean < 0.80 or BEFORE k2 hop 1 < 0.25;
   - otherwise **NOTE**.
   - Disclosed: the pilot trains on the same kind of insert it is tested on (held-out items and seeds, not a held-out manipulation). A cloud design would add held-out insert types.
+- **Audit's build conditions (G-D):**
+  - (a) The per-pass aux target and the cue at pass t stay the CHAIN's S_t / v_t, never the slot-t sentence; asserted on built items with inserts.
+  - (b) Distractor names are disjoint from each item's spine and givens; OW.solve == answer on every training item with inserts.
+  - (c) Gradflow; a plain-path smoke without the flag; inserts = 0 bitwise equal to the old batch builder; default off.
+  - (d) mem_check at d 4 + 2 inserts on the 4060 before pinning micro.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
