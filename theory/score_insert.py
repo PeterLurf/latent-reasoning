@@ -23,12 +23,30 @@ def label(m):
             "drop_k1": {c: d(c + "_k1") for c in ("before", "inside", "after")}}
 
 
+def after_targets(m, M=11):
+    """Descriptive (Audit 255-4): AFTER k1 final K' 8 answers, items aligned to clean by sig prefix, vs y (clean answer), y +/- c (the extra add_c applied to the
+    chain answer) and v + c (the inserted quantity's own value); chance ~1/11 each."""
+    cl, af = m["clean"].get("items"), m["after_k1"].get("items")
+    if not cl or not af:
+        return None
+    y = dict(zip([s_.split(":")[0] for s_ in cl["sig"]], cl["ans"]["8"])); n = 0; c_ = {"y": 0, "y+c": 0, "y-c": 0, "v+c": 0}
+    for sg, p, ins in zip(af["sig"], af["ans"]["8"], af["insert"]):
+        k = sg.split(":")[0]
+        if k not in y:
+            continue
+        yy, c, v = y[k], ins[0]["c"], ins[0]["v"]; n += 1
+        c_["y"] += p == yy; c_["y+c"] += p == (yy + c) % M; c_["y-c"] += p == (yy - c) % M; c_["v+c"] += p == (v + c) % M
+    return {k: v / max(1, n) for k, v in c_.items()} | {"n": n}
+
+
 def score(path=IN):
     try:
         J = json.load(open(path))
     except (OSError, ValueError):
         return {"verdict": "pending"}
     o = {m: label(v) for m, v in J.items() if isinstance(v, dict) and "clean" in v}
+    for m in list(o):
+        o[m]["after_k1_targets"] = after_targets(J[m])
     o["verdict"] = " | ".join("%s %s" % (m, o[m]["label"]) for m in sorted(k for k in o if k != "verdict")); return o
 
 
