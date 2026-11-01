@@ -1,3 +1,4 @@
 # §251 ledger (fill_s256); last field = $
 # VOID attempt1 (cost in s256_bad_cost.log): 390:pilot_dis_s1 194.14.47.19:23349 58643358 $0.209/h sps 1.2420884847640992 0.33
 390:pilot_dis_s1 125.190.184.215:31002 58644782 $0.1747/h sps 1.1767656445503234 0.27
+realised:b390 # 58644782 (wall guard spent $0.251 at 06:29 + 6 min x $0.1747/h) (Note 255-6 pilot_dis_s1, attempt 2) 0.269
