@@ -19708,6 +19708,7 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - (2) RTX 3090 only; gpu recorded per cell.
   - (3) The basin-entry step (first logged step with answer loss < 0.5) is reported per seed beside the labels.
   - (4) The s2 swap pattern (U / other / dfin / own shares) is scored descriptively on s3 / s4.
+  - **Args diff disclosed at build (50c58a60):** seed; auto_micro False (micro 2 pinned); keep_final_ckpt True (saving only, needed for the VOID re-eval rule); cue_ans 0.0 and perm_p 0.0 (module keys added after §251 at their inert defaults; their default-off bitwise gates passed in §252 / Note 251-10's builds). All are non-semantic.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
