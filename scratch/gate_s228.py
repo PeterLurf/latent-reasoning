@@ -20,7 +20,8 @@ import shutil
 import subprocess
 import sys
 
-ROOT = "D:/Latent"; sys.path.insert(0, ROOT)
+ROOT = os.environ.get("LATENT_ROOT", "D:/Latent");   # LATENT_ROOT: the Vast host (Note 255-6 cell)
+sys.path.insert(0, ROOT)
 OUT = ROOT + "/scratch/gate_s228"; TMP = ROOT + "/scratch/_tmp/s228"; DEV = "cuda:0"
 ENV = {**os.environ, "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2"}
 S184 = ["--arm", "inject", "--think_k", "8", "--aux_step", "1.0", "--aux_fade", "48000,48000", "--aux_reweight", "--fast_add"]

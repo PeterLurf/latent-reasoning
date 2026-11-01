@@ -17,7 +17,8 @@ import sys
 
 import numpy as np
 
-ROOT = "D:/Latent"; sys.path.insert(0, ROOT); sys.path.insert(0, ROOT + "/scratch"); os.chdir(ROOT)
+ROOT = os.environ.get("LATENT_ROOT", "D:/Latent");   # LATENT_ROOT: the Vast host (Note 255-6 cell)
+sys.path.insert(0, ROOT); sys.path.insert(0, ROOT + "/scratch"); os.chdir(ROOT)
 import gate_s228 as G8  # noqa: E402
 
 OUT = ROOT + "/scratch/gate_s251"; TMP = ROOT + "/scratch/_tmp/s251"; DEV = "cuda:0"
