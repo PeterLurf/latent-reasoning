@@ -343,6 +343,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **PERM-BLOCKER 10-31 (254-1): askperm + chain forms the pass-2 write (aux 0.99997 by 6k, ws 1.000); perm training is the blocker; $0.40.** **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
 | 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
 | 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **SCORED 11-01 (256-1): SELECTOR 0/2, C2 2/2 - d 6 0.98 / 0.96 vs rcb 0.35 / 0.37, d 7 0.87 / 0.81, untrained passes 5-7 compute (WS >= 0.87 / 0.78), RETAIN kept; H-CHAINSRC / H-GIVPOS fail (surface skip-rule); $2.37.** **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
+| 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **REGISTERED 11-01; score_dch.py 8/8; cell cap $1.2, guard $2.6** |
 
 ## Live sections
 
@@ -19725,6 +19726,24 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **RAM:** host sha asserts and host-built sets (Note 255-6).
 - **Cost:** ~$1.0-1.3 per cell, cell cap $1.4, **family guard $2.9** (Audit: the worst case ends at >= $15.0; no new cloud spend below $15 until a top-up).
 - **APPROVED by Audit 11-01** with the NOT-DECODER gate added to RETAIN (score_ds.py re-committed, fixtures 9/9) and the guard at $2.9.
+
+## 257. DISTRACT-CHAIN: do chain-reading distractors force the loop to select steps by content, while keeping C2? (C1 scope, C2; Theory's design at Audit's request, with the cloud stop line lowered to $12 for this design; guard **$2.6**; pre-registered 2026-11-01, before launch)
+
+- **Text:** docs/research_distractchain_2026-11-01/DC2_v1.md. Scorer theory/score_dch.py (fixtures 8/8). Basis: Note 256-1 (C2 2/2; surface skip-rule).
+- **Math:** with a chain-reading insert I_j after S_j, pass j + 1 sees two ops sourced from S_j. The positional and §256 surface rules pick I_j when it precedes S_{j+1}; only selecting the op whose subject is the cued S_{j+1} is always right. Answer CE on those items therefore favours content selection.
+- **Arms:** dch_s1 / dch_s2 = 8k FT of dis_s1 / dis_s2 (sha asserted on the host).
+  - Training inserts: 0-2 per item, uniform over the §256 type, chain-reading add_c (j uniform), and given-before-op add_c. Frames 0-5. RTX 3090, micro 2.
+- **Binding per seed:**
+  - **HELD-OUT:** H-CHAINSRC-OP (sub_c / mul_c chain-reading, never trained) and H-LIVE, each acc K' 8 >= 0.90 and min over positions >= 0.80.
+  - **TRAINED-TYPE:** H-CHAINSRC, H-GIVPOS >= 0.90.
+  - **RETAIN:** TEST2 d 1-4 >= 0.98 + NOT-DECODER + SWAP4 + LP5-D4.
+  - **C2 retention:** d 6 >= 0.90.
+  - **Guards:** CUE-ONLY; STABLE.
+  - **Labels:** VOID / UNSTABLE / NOT-CAUSAL / C2-LOST / CONTENT-SELECTOR / TRAINED-TYPE-ONLY / FAIL.
+- **Descriptive:** H-OP, H-EXTEND, K3, TEST-PERM, d 7-9, and the per-item failure reading on chain-reading items (meta carries c, v, j, op and position).
+- **OC:** CONTENT-SELECTOR 0.6 vs 0.1 (learnable vs a new surface cue); C2-LOST 0.15. Censoring: VOID-RERUN once; 8k final.
+- **RAM:** every set built on the host with committed shas; unbuffered predeploy; host sha asserts (Note 255-6).
+- **Cost:** ~$0.6-0.8 per cell, cell cap $1.2, guard $2.6 (credit $15.27 -> >= $12.6).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
