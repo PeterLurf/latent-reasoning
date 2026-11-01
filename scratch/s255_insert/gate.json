@@ -1,0 +1,110 @@
+{
+ "n": 1000,
+ "rebuild_and_solve_asserted": true,
+ "cue_tail_unchanged": true,
+ "inserted_sentences_per_cond": {
+  "clean": 0,
+  "before_k1": 2,
+  "before_k2": 4,
+  "inside_k1": 2,
+  "inside_k2": 4,
+  "after_k1": 2,
+  "after_k2": 4
+ },
+ "examples": {
+  "clean": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "before_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Ron has 8 books. Val owns 1 books more than Ron does. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "before_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Finn has 9 books. Nan has the number of books Finn has, plus 1. Joe has 7 books. Sam has 1 more books than Joe. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "inside_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Nan has 7 books. Compared with Nan, Eve has 1 extra books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "inside_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Val has 7 books. Nan owns 3 books more than Val does. Pam has 2 books. Pam has 5 fewer books than Ian. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. How many books does Cal have?",
+  "after_k1": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. Dan has 3 books. Hal owns 2 books more than Dan does. How many books does Cal have?",
+  "after_k2": "Bob has 5 books. Kim has 9 books. Jim has 9 books. Ted has 4 books. Amy has 2 books. Jim's books minus Ted's books make Fay's books. Fay's books minus Bob's books make Kate's books. Ben has the number of books Kate has, plus 4. Cal holds Ben's books multiplied by Amy's books. Nan has 8 books. Nan has 2 fewer books than Pam. Ian has 8 books. If you add 1 to Ian's books, you get Wes's books. How many books does Cal have?"
+ },
+ "example_meta": {
+  "clean": [],
+  "before_k1": [
+   {
+    "Y": "Ron",
+    "X": "Val",
+    "v": 8,
+    "c": 1,
+    "frame": 1
+   }
+  ],
+  "before_k2": [
+   {
+    "Y": "Finn",
+    "X": "Nan",
+    "v": 9,
+    "c": 1,
+    "frame": 3
+   },
+   {
+    "Y": "Joe",
+    "X": "Sam",
+    "v": 7,
+    "c": 1,
+    "frame": 0
+   }
+  ],
+  "inside_k1": [
+   {
+    "Y": "Nan",
+    "X": "Eve",
+    "v": 7,
+    "c": 1,
+    "frame": 2
+   }
+  ],
+  "inside_k2": [
+   {
+    "Y": "Val",
+    "X": "Nan",
+    "v": 7,
+    "c": 3,
+    "frame": 1
+   },
+   {
+    "Y": "Pam",
+    "X": "Ian",
+    "v": 2,
+    "c": 5,
+    "frame": 4
+   }
+  ],
+  "after_k1": [
+   {
+    "Y": "Dan",
+    "X": "Hal",
+    "v": 3,
+    "c": 2,
+    "frame": 1
+   }
+  ],
+  "after_k2": [
+   {
+    "Y": "Nan",
+    "X": "Pam",
+    "v": 8,
+    "c": 2,
+    "frame": 4
+   },
+   {
+    "Y": "Ian",
+    "X": "Wes",
+    "v": 8,
+    "c": 1,
+    "frame": 5
+   }
+  ]
+ },
+ "frames_used": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "pass": true
+}
