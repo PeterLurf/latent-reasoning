@@ -75,7 +75,7 @@
  "deltamem_sha256": "343d4e5ddda881b62b641a5b7912f744796e377b1ad9691e36e54115fe55a5e7",
  "ow_words_sha256": "d2497e68c61a5198e52a8c2fe0fa00680c7f22bbcb2a31dbb62101cd46dc9f93",
  "nested_words_sha256": "7c97588649c7fb715e5264273bf7f859ebe1dae0f6eca1ca7287918aff8831da",
- "set_build_sec": 34,
+ "set_build_sec": 35,
  "excl_n": 206599,
  "d_law": "d = default_rng(seed + 22331).integers(1, d_max + 1) per step",
  "format": "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7233 LAT-ST: think_t = [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_min(t, d))); lower cache per distinct input | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)",
