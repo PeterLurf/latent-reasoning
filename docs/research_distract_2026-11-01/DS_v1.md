@@ -55,7 +55,7 @@
 - **Censoring:** VOID-RERUN once; no extension; 16k final.
 
 ## 5. Cost and RAM
-- The pilot ran 1.09 s/step, so 16k is about 4.8 h plus the full and new evals: ~$1.0-1.3 per cell. Cell cap $1.4, guard $3.
+- The pilot ran 1.09 s/step, so 16k is about 4.8 h plus the full and new evals: ~$1.0-1.3 per cell. Cell cap $1.4, family guard $2.9 (Audit).
 - Credit $17.94 → ~$15.5 expected, ~$14.9 worst case (Audit's stop line is $15).
 - **RAM safeguards:**
   - host sha asserts on init, module, eval and render scripts against the git blobs (Note 255-6);
