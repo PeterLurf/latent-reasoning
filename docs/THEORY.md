@@ -23159,6 +23159,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - otherwise a Theory decision with a Note.
   - p2pc_s1 model.pt is kept (curriculum init).
 
+**Note 254-2 (2026-10-31 22:21 EDT; Audit reproduced §254 PERM-BLOCKER and passed G-D on Note 254-1's $0 steps with four conditions, all adopted before any pilot output).**
+- **(1)** The pilot runs as --steps 16000 --stop_at 2000, so warmup and cosine match the 16k §255 run.
+- **(2)** A --mem_check at the d 4 shape on the local card first, with micro pinned.
+- **(3)** It is read on raw logged values at 1k / 2k by committed code: theory/score_cur_pilot.py (fixtures 6/6). Fields ws_readout_chain['2']['2'] and ws_readout_perm['2']['2']. GO / PARK / NOTE as 254-1.
+- **(4)** Scope for §255: both seeds share one init (p2pc_s1, seed 1), so they test training seeds only. This goes into §255's registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
