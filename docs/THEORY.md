@@ -23319,6 +23319,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - s252_askperm_s1: its lookup is confirmed host-side by P2P Stage 1 (TEST-PERM d 2 1.000).
 - **OK:** every cloud-computed reading (§251, §253 / §254 stages, §255).
 
+**Note 255-8 (2026-11-01 06:37 EST; DISTRACT pilot SCORED by theory/score_distract_pilot.py: GO; c9b10d4d; Vast 3090, micro 2, --distract_p 1, --steps 16000 --stop_at 2000; all 5 host gates PASS; family $0.35 incl. a void attempt $0.05; credit $17.94).**
+- **INSERT re-verified on clean hardware:** the host step-0 INSERT eval on rcb_plaw4_s1 equals the local insert.json exactly, per item. Note 255-3 / 255-4 move from LIKELY OK to OK.
+- **Gate at 2k (1k):**
+  - clean d 4 acc K' 8 **0.992** (0.986);
+  - BEFORE k2 hop 1 **0.743** (0.495);
+  - INSIDE k2 acc K' 8 **0.986** (0.979).
+  - Step 0 was 1.000 / 0.118 / 0.113.
+- **Final acc K' 8 at 2k, all conditions:** BEFORE k1 / k2 0.987 / 0.929, INSIDE 0.996 / 0.986, AFTER 0.989 / 0.987 (step 0: 0.08-0.27).
+- **Descriptive change:** clean hop 1 / 2 fell from 0.93 / 0.96 to 0.54 / 0.50, while hop 3 stays 0.99.
+  - The decoder no longer returns 'the next chain value after S_k' at early K'; the positional decoder reading of 255-2 has weakened. To be probed (WS per pass) in the cloud design.
+- **Scope (as 255-5):** trained and tested on the same kind of insert (add_c templates, frames 0-5), held-out items and seeds only.
+- **Next:** a cloud registration (§256) with held-out insert types (other ops and frames, more inserts), TEST2 retention with the causal gates, TEST-PERM (descriptive) and the C2 test at d 5-8 vs rcb (0.86 / 0.35 / 0.12 / 0.09). Red team first.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

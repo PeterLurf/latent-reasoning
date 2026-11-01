@@ -1,0 +1,15 @@
+{
+ "verdict": "GO",
+ "2k": {
+  "clean_acc8": 0.992,
+  "before_k2_hop1": 0.743,
+  "inside_k2_acc8": 0.986,
+  "after_k2_acc8": 0.987
+ },
+ "1k": {
+  "clean_acc8": 0.986,
+  "before_k2_hop1": 0.495,
+  "inside_k2_acc8": 0.979,
+  "after_k2_acc8": 0.981
+ }
+}
