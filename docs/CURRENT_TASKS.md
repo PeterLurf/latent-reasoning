@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **03:33 11-01 (Theory):** C2 $0 read (Note 255-2): the decoder answers positionally (v_{K'+1}), and out-of-range depth breaks early hops too (d6 K'1 0.33 / 0.79), not only the untrained slot. No design; credit $18.36. Theory continues with $0 work only until a premise-changing idea.
 * **03:29 11-01 (Theory):** §255 AEX-REP SCORED (Note 255-1): EXTEND 1/4 (s3/s4 NOT-EXTEND, d3-4 never enter; anchor intact) -> answer-only extension is RARE; summary C4 row amended. $1.53; credit $18.36 (Audit stop line $15) -> Theory favours $0 work next. aex_s3/s4 ckpts deletable after Audit reproduces.
 * **00:18 11-01 (Theory):** §255 AEX-REP REGISTERED (Audit cand. 1, C4 robustness): aex_s3/s4, the §251 AEX recipe on new data orders; score_ae --rep; pooled EXTEND k/4; guard $3. Awaiting Audit approval. Next $0: C2 read (does pass t>4 fail because the positional pointer reaches an untrained sentence slot?).
 * **00:16 11-01 (Theory):** §253 FAIL (PARTIAL x2; pass-2 write never forms under perm). §254 PERM-BLOCKER (askperm + chain forms the write). Curriculum $0 stage (Note 254-3): chain training erased the init lookup (pass1 perm 0.996 -> 0.097); pilot NOTE -> PARK. LOOKUP line parked: chain write needs consistent order; consistent order re-teaches position. Ckpts: delete pilot_cur, lbr_*, p2p_old_s1; keep p2p_s1/s2, p2pc_s1. Theory HOLD; credit $20.42.
