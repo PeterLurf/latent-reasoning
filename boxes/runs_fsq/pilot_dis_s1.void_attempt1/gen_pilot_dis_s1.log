@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/scratch/s256_distract_cell.py", line 110, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/Latent/scratch/s256_distract_cell.py", line 79, in main
+    summ["steps"]["1_gates"] = {"rc": rc, "pass": gp}; assert rc == 0 and all(gp.get(p_) for p_ in ("offbit", "tiny", "acts", "smoke", "gradflow")), ("gates", rc, gp)
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('gates', 1, {})

@@ -1,0 +1,12 @@
+09:50:56 gpt2 bin from the HF hub: ok
+NVIDIA GeForce RTX 3090, 595.91.07
+09:51:02 modules import: boxes.inject_aw scratch.s256_distract_cell 
+HOSTCHECK PASS (5 s)
+09:53:02 HOSTPROBE 0.5275 s/step (limit 0.854; b225 reference 0.657)
+09:53:02 start boxes/runs_fsq/pilot_dis_s1_mem
+09:54:28 evaluated boxes/runs_fsq/pilot_dis_s1_mem rc 0 no-eval
+09:54:28 start boxes/runs_fsq/pilot_dis_s1_gtime
+09:56:50 evaluated boxes/runs_fsq/pilot_dis_s1_gtime rc 0
+09:56:50 start boxes/runs_fsq/pilot_dis_s1
+09:56:52 evaluated boxes/runs_fsq/pilot_dis_s1 rc 1 no-eval
+09:56:52 QUEUE_DONE
