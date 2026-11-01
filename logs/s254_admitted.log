@@ -1,0 +1,3 @@
+# §251 ledger (fill_s254); last field = $
+387:p2pc_s1 50.173.30.254:21350 58594838 $0.2014/h sps 0.4412298242251078 0.48
+realised:b387 # 58594838 (wall guard spent $0.369 at 22:10 + 9 min x $0.2014/h) (§254 p2pc_s1) 0.399
