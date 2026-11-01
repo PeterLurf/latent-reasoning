@@ -23219,6 +23219,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - §251's AEX SPLIT was the favourable half. C4 stays 'partial'; the summary row is amended to the rate.
   - Scope: one init (aw_plaw2_s1), training seeds only, REG word programs, plan given, chain-order text.
 
+**Note 255-2 (2026-11-01 03:32 EST; descriptive $0 C2 read, Audit's lead; theory/read_s255_c2_tail.py; rcb_plaw4_s1 / s2 eval_acc items, REG TEST2 regenerated with sigs asserted; per-pass WS items do not exist past d 4, so final answers by K' are used).**
+- **Answer at K' = k equals v_{k+1}** (the decoder adds one step to S_k, although its question names S_d), s1 / s2:
+  - d 4: K' 1-3 = 0.93-1.00 / 0.93-1.00;
+  - d 5: K' 1 / 2 / 3 / 4 = 0.63 / 0.83 / 0.74 / 0.76 and 0.93 / 0.75 / 0.61 / 0.86;
+  - d 6: K' 1-5 = 0.33 / 0.65 / 0.53 / 0.39 / 0.32 and 0.79 / 0.54 / 0.39 / 0.31 / 0.35.
+- **Reading:**
+  - (i) Even the decoder answers positionally: asked about S_d, it returns the next chain value after the state, consistent with Note 251-16.
+  - (ii) Past the trained depth, accuracy is lost at early passes too (s1 d 6 at K' 1 0.33), not only at pass 5 / 6. So the untrained-sentence-slot hypothesis is not the whole story: with more op sentences in the text, the early hops degrade.
+  - LEN-STEP (§241) found distractor length harmless, so the count of op sentences, not length, perturbs the positional pointer.
+- **Failing K' 8 answers:** about 25% (d 5) / 35-40% (d 6) equal some earlier chain value (5-9% exactly v_{d-1} or v_4); the rest match no chain value.
+- No design follows (credit $18.36, near Audit's $15 stop line). This refines the C2 'not met' row: out-of-range depth breaks the positional chain from its first hops.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
