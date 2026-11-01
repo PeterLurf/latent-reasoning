@@ -342,7 +342,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 253 | LOOKUP-REBUILD (Theory's choice after Note 252-5): rebuild the C1 loop from the name-lookup init s252_askperm_s1 along §237's path with --perm_p 0.5: step-0 gate, P2P d<=2 (2 seeds + askname attribution arm), LBR REG d<=4 (2 seeds); binding on TEST-PERM (ACC d 2-4, NOT-DECODER, LP5P) + TEST2 RETAIN with causal gates; LB_v1.md | registered | **FAIL 10-31 (253-4): PARTIAL / PARTIAL; TEST-PERM d 2 1.000 but d 3-4 chance; the pass-2 write never forms (aux 0.17-0.23); name lookup at pass 1 transferred; $3.96.** **APPROVED by Audit 10-31 (basis re-confirmed from probe.json; G-D: perm stream disjoint from TEST-PERM, K' 2 field + evalbit of other parts, askperm init sha asserted on host, fixed micro across arms / no auto_micro).** **REGISTERED 10-31; score_lb.py 9/9; guard $5; eval build (K' 2 at d 4) -> G-D -> step-0 -> Stage 1** |
 | 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **PERM-BLOCKER 10-31 (254-1): askperm + chain forms the pass-2 write (aux 0.99997 by 6k, ws 1.000); perm training is the blocker; $0.40.** **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
 | 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
-| 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
+| 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **SCORED 11-01 (256-1): SELECTOR 0/2, C2 2/2 - d 6 0.98 / 0.96 vs rcb 0.35 / 0.37, d 7 0.87 / 0.81, untrained passes 5-7 compute (WS >= 0.87 / 0.78), RETAIN kept; H-CHAINSRC / H-GIVPOS fail (surface skip-rule); $2.37.** **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
 
 ## Live sections
 
@@ -23347,6 +23347,28 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The decoder no longer returns 'the next chain value after S_k' at early K'; the positional decoder reading of 255-2 has weakened. To be probed (WS per pass) in the cloud design.
 - **Scope (as 255-5):** trained and tested on the same kind of insert (add_c templates, frames 0-5), held-out items and seeds only.
 - **Next:** a cloud registration (§256) with held-out insert types (other ops and frames, more inserts), TEST2 retention with the causal gates, TEST-PERM (descriptive) and the C2 test at d 5-8 vs rcb (0.86 / 0.35 / 0.12 / 0.09). Red team first.
+
+**Note 256-1 (2026-11-01 15:38 EST; §256 SCORED by theory/score_ds.py: 'SELECTOR 0/2, C2 2/2 (C2-ONLY / C2-ONLY)'; dis_s1 fa673adf ($1.111), dis_s2 c7db8d6d ($1.178); family $2.373 of $2.9; credit $15.27).**
+- **RETAIN passes in both seeds:** TEST2 d 1-4 >= 0.98, NOT-DECODER 0.013 / 0.017, SWAP4 and LP5-D4 pass. STABLE.
+- **C2 passes in both seeds:**
+  - TEST2 K' 8, dis_s1 / dis_s2 (rcb_plaw4_s1 / s2): d 5 0.993 / 0.986; **d 6 0.981 / 0.961 (0.346 / 0.368)**; d 7 0.874 / 0.809 (0.122 / 0.10); d 8 0.533 / 0.379 (0.091); d 9 0.19 / 0.14; d 10 chance.
+  - **Untrained passes compute:** WS d 6 passes 1-6 = 1.00 / 1.00 / 1.00 / 1.00 / 0.99 / 0.98 (s1) and 1.00 / 1.00 / 1.00 / 0.99 / 0.99 / 0.97 (s2).
+    - rcb_*_ds256 reach passes 5-6 at only 0.54 / 0.34 and 0.50 / 0.35.
+    - d 7 passes 5-7: 0.99 / 0.93 / 0.87 and 0.95 / 0.88 / 0.78.
+  - **Accuracy rises when the pass count reaches the depth, then holds:**
+    - d 6: 0.02 at K' 4, 0.98 / 0.97 from K' 5, flat to K' 14;
+    - d 7 jumps at K' 6; d 8 at K' 7 (0.52 / 0.37), creeping to 0.55 / 0.42 by K' 14.
+  - So passes past the trained count (d <= 4) now compute the next step, and more thinking helps up to the depth. Per-hop reliability ~0.9-0.95 past d 6 bounds d 8-9.
+- **SELECTOR fails in both seeds; the labels are C2-ONLY:**
+  - H-OP passes (0.962 / 0.954), but H-CHAINSRC fails (0.69 / 0.806; j = 2 0.32 / 0.47) and H-GIVPOS fails (0.742 / 0.843; given just before its op 0.34 / 0.65).
+  - H-LIVE inside 0.13 / 0.27; H-EXTEND 0.45 / 0.35. TEST-PERM d 2-4 stays 0.10-0.18.
+  - The inserts taught a surface skip-rule ('pass over ops that introduce a fresh name from a fresh given'), not lookup by the cued name.
+  - H-EXTEND suggests the loop runs on through any op chain hanging off S_d rather than stopping at the asked entity.
+- **Reading (scoped: one lineage, REG word programs, plan given, chain-order text, 2 seeds from the 2 rcb inits):**
+  - Breaking absolute slot counting during training, even via a surface filter, is what unlocked depth extrapolation: +2 depths at >= 0.96, +3 at 0.81-0.87.
+  - This is the language line's first C2 evidence: accuracy past the trained depth rises with passes and holds. C2 moves from 'not met' to **partial (scoped)**.
+  - Step selection by name is still not obtained (Notes 253-4, 254-3).
+  - No new cloud spend: credit $15.27 is at Audit's stop line. dis_s1 / s2 model.pt are kept (the best C2 models).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
