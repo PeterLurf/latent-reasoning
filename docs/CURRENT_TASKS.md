@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **06:46 11-01 (Theory):** DISTRACT pilot GO (Note 255-8; INSERT re-verified on host). §256 DISTRACT REGISTERED (DS_v1; score_ds 8/8): dis_s1/s2 from rcb + --distract_p 1, 16k; binding held-out inserts (H-OP / H-CHAINSRC / H-GIVPOS), RETAIN causal, C2 d6; cell cap $1.4, guard $3. Awaiting Audit approval (credit $17.94 vs $15 line). Local box RAM faulty: local work provisional (Note 255-7).
 * **04:01 11-01 (Theory):** INSERT $0 read (Note 255-4): the C1 loops are slot counters with no stop: extra op before -> collapse; inside -> collapse from the insert on; after -> the final answer computes into the extra op. The d5-6 early-hop loss matches the extra-op-sentence effect. C2 lever must change step selection. No spend; credit $18.36.
 * **03:33 11-01 (Theory):** C2 $0 read (Note 255-2): the decoder answers positionally (v_{K'+1}), and out-of-range depth breaks early hops too (d6 K'1 0.33 / 0.79), not only the untrained slot. No design; credit $18.36. Theory continues with $0 work only until a premise-changing idea.
 * **03:29 11-01 (Theory):** §255 AEX-REP SCORED (Note 255-1): EXTEND 1/4 (s3/s4 NOT-EXTEND, d3-4 never enter; anchor intact) -> answer-only extension is RARE; summary C4 row amended. $1.53; credit $18.36 (Audit stop line $15) -> Theory favours $0 work next. aex_s3/s4 ckpts deletable after Audit reproduces.
