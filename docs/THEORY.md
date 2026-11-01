@@ -23401,6 +23401,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Not found: irrelevant-sentence insertion as a training device for depth extrapolation in looped / latent models.
   - **Adopted wording:** 'distractor insertion as a slot-decorrelation device, the sentence-level analogue of randomised positions (2305.16843)'.
 
+**Note 257-1 (2026-11-01 18:01 EST; RAM re-check of scored verdicts; §257 build disclosures; no §257 output read).**
+- **Repeat-scoring check (local RAM flips under load, Experiments):**
+  - score_ds (§256), score_ae (§251) and --rep (§255), score_lb stage 2 (§253) and score_pc (§254) were each re-run 3 times in-process on the landed JSONs.
+  - All 3 runs gave an identical sha of the combined outputs (b94e542a548b427a), with the same verdicts ('SELECTOR 0/2, C2 2/2'; 'EXTEND 1/4'). The scored cloud verdicts stand.
+- **§257 init copies:** dis_s1 / s2 model.pt were written from reads matching the majority sha and ckpt_final, then checked by 3 re-reads: 35813f1a41ea8085 / a68cb45e4b4d153d. Host sha asserts on these.
+- **Disclosed by the build:**
+  - the 8k FT uses a fresh AdamW, 100-step warmup and cosine over 8k from 1e-4, with the same aux schedule as dis's first 8k;
+  - seeds equal dis's, so the raw item stream repeats dis's first 8k; only the inserts differ (new draw seed);
+  - the step-0 insert_ho on each dis init (the NONE-control reading) runs on the host before training, with the GPU gates.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
