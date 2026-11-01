@@ -1,0 +1,38 @@
+{
+ "held_out2": {
+  "H-CHAINSRC-OP-sub_c": {
+   "1": "bfe7659d62700971f40016b576ef0426bbcde416df32031505fa9db589f193fd",
+   "2": "f018b65542d3dc1a52f8eb40cb5111f8efc30d9fa167f3ed76e8e0ac2d7a941c",
+   "3": "69576a1c326922d3c254309e10bc36abdc3dbb43833089f044574c27b9d0587a"
+  },
+  "H-CHAINSRC-OP-mul_c": {
+   "1": "7e7c61ba6c8693cf6e2d2bc2411dac9a420a75533f04bd78ba647b7484dc70ac",
+   "2": "7ed7139a9652ed31297147fb5144a4c357360106c6dc7a0230135401dfcda098",
+   "3": "f0c8ed0ce0a2abbe7c0ef7cf33b1a20dd539b9a3f762e879f0674cccf99ed095"
+  },
+  "H-CHAINSRC-LIVE": {
+   "1": "3418aa0678c4234fdb178796472e3c87710a3c1c9c3bafe90770ccd54e09b59a",
+   "2": "a791ef8f175013d833f970493347aa229f65f650b5529f486edf0f3624efd50b",
+   "3": "85fbc0dea5296b43317ebf7f65f5788bc4f8df1191f103910f6c3101a1b1e3c8"
+  }
+ },
+ "meta_sha": "42bd805cb108449661f4f8729ec3f725ceb433db64fa1a3526fdda3aacb2d91f",
+ "n": {
+  "H-CHAINSRC-OP-sub_c": {
+   "1": 1000,
+   "2": 1000,
+   "3": 1000
+  },
+  "H-CHAINSRC-OP-mul_c": {
+   "1": 1000,
+   "2": 1000,
+   "3": 1000
+  },
+  "H-CHAINSRC-LIVE": {
+   "1": 1000,
+   "2": 1000,
+   "3": 1000
+  }
+ },
+ "built": "two fresh local processes, identical (gate_s257 shas)"
+}

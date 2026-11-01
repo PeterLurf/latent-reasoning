@@ -1,0 +1,9 @@
+{
+ "insert_texts_equal": true,
+ "insert_meta_equal": true,
+ "ho_texts_equal": true,
+ "ho_shas_eq_committed": true,
+ "ho_meta_superset": true,
+ "distract_mismatch": 0,
+ "pass": true
+}
