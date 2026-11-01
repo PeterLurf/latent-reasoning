@@ -3,11 +3,11 @@ Runs dch_s1 / dch_s2 (8k FT of dis_s1 / dis_s2 with chain-reading and given-befo
 Files per run (host-built): eval_insert_ho.json {"fam": {F: {"acc8": p, "by_pos": {pos: p}}}, ...}; eval_acc / eval_swap_kd / eval_lp5h / eval_cue_only (as §251).
 Binding per seed:
   HELD-OUT (never trained): H-CHAINSRC-OP (sub_c / mul_c chain-reading inserts) and H-LIVE: each acc8 >= 0.90 and min(by_pos) >= 0.80.
-  TRAINED-TYPE: H-CHAINSRC and H-GIVPOS acc8 >= 0.90.
+  TRAINED-TYPE (descriptive only, Audit 257-1): H-CHAINSRC and H-GIVPOS acc8 >= 0.90.
   RETAIN: eval_acc d 1-4 >= 0.98; NOT-DECODER by_d['4'].acc_kprime['2'] <= 0.20; SWAP4; LP5-D4.
   C2 retention: eval_acc by_d['6'].acc >= 0.90.
   Guards: CUE-ONLY d 3-4 (score_ae rule); STABLE (score_ao rule).
-Labels (first match): VOID / UNSTABLE / NOT-CAUSAL / C2-LOST / CONTENT-SELECTOR (HELD-OUT + TRAINED-TYPE) / TRAINED-TYPE-ONLY / FAIL. Per arm: CONTENT-SELECTOR k/2.
+Labels (first match): VOID / UNSTABLE / NOT-CAUSAL / C2-LOST / CONTENT-SELECTOR (HELD-OUT; cue OR reachability, not distinguished) / TRAINED-TYPE-ONLY (descriptive) / FAIL. Per arm: CONTENT-SELECTOR k/2.
     python -B theory/score_dch.py [--fixtures]
 """
 import argparse, json, os, sys, tempfile
@@ -45,7 +45,7 @@ def seed(runs, run, ref):
     retain = all(a[d]["acc"] >= 0.98 for d in ("1", "2", "3", "4")) and nodec and sw["follow_U"] >= 0.50 and sw["follow_U"] >= sw["floor"] + 0.30 and h["intact"]["4"] - h["mean_at_t"]["4"] >= 0.30
     d6 = a["6"]["acc"]; c2 = d6 >= 0.90
     lab = ("VOID" if not guard else "UNSTABLE" if sok is False else "NOT-CAUSAL" if not retain else "C2-LOST" if not c2 else
-           "CONTENT-SELECTOR" if (held and trained) else "TRAINED-TYPE-ONLY" if trained else "FAIL")
+           "CONTENT-SELECTOR" if held else "TRAINED-TYPE-ONLY" if trained else "FAIL")
     return {"label": lab, "families": fam, "trained_type": trained, "retain": retain, "nodec_k2": a["4"]["acc_kprime"]["2"], "d6": d6, "stable": (sok, smsg)}
 
 
@@ -78,7 +78,7 @@ def fixtures():
                     fh.write(json.dumps({"step": i * 100, "loss": 0.01}) + chr(10))
         return d
     for name, kw, want in (("all", {}, "CONTENT-SELECTOR 2/2"), ("held-out fails", {"ho": 0.6}, "TRAINED-TYPE-ONLY"), ("pos min fails", {"pos": 0.7}, "TRAINED-TYPE-ONLY"),
-                           ("nothing", {"ho": 0.6, "tr": 0.6}, "FAIL"), ("C2 lost", {"d6": 0.8}, "C2-LOST"), ("decoder shortcut", {"k2": 0.6}, "NOT-CAUSAL"),
+                           ("nothing", {"ho": 0.6, "tr": 0.6}, "FAIL"), ("trained-type descriptive only", {"tr": 0.6}, "CONTENT-SELECTOR 2/2"), ("C2 lost", {"d6": 0.8}, "C2-LOST"), ("decoder shortcut", {"k2": 0.6}, "NOT-CAUSAL"),
                            ("swap fails", {"sw": 0.2}, "NOT-CAUSAL"), ("cue-only", {"co": 0.6}, "VOID")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
     for r in res:
