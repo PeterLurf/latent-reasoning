@@ -23236,6 +23236,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The positional-decoder and early-hop readings above do not depend on this and stand.
 - No design follows (credit $18.36, near Audit's $15 stop line). This refines the C2 'not met' row: out-of-range depth breaks the positional chain from its first hops.
 
+**Note 255-3 (2026-11-01 03:40 EST; INSERT, a $0 eval-only C2 read on Audit's suggestion; pre-stated before any build or output; scorer theory/score_insert.py, fixtures 5/5).**
+- **Question (from 255-2):** do the early hops degrade at d 5-6 because of the count of op sentences, or because the chain is longer?
+- **Items:** REG TEST2 d 4. Insert k in {1, 2} extra op sentences about names the chain never visits (side quantities with their own given, the same templates; answers unchanged; solve asserted).
+  - Positions: BEFORE the first op sentence, INSIDE (between op sentences 2 and 3), AFTER the last op sentence.
+- **Models:** rcb_plaw4_s1 / s2 (binding); aex_s1 (descriptive).
+- **Readings:** hop[k] = share of items whose answer at K' = k equals v_{k+1} (k = 1-3), and acc at K' 8. Same card, bs and dtype; clean items in the same call.
+- **Rule per model**, on the first-hop drop vs clean at k = 2:
+  - **COUNT-DILUTION:** drop(AFTER) >= 0.20 (extra op sentences that do not move the chain's slots still hurt);
+  - **POSITION-SHIFT:** drop(BEFORE) >= 0.20 and drop(AFTER) <= 0.05 (the pointer counts op-sentence slots);
+  - **CHAIN-SPECIFIC:** all three drops <= 0.05;
+  - otherwise **MIXED**.
+  - Theory's prior: POSITION-SHIFT (Notes 251-16 / 255-2).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
