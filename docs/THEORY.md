@@ -23276,6 +23276,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Reading:** the C1 loops are slot counters with no target check (from BEFORE and INSIDE). They read op sentence t at pass t, and later op sentences disrupt both the early hops and the final read.
   - This sharpens 251-16 and the C2 'not met' row. Any C2 lever must change step selection (lookup / stopping), not the depth budget.
 
+**Note 255-5 (2026-11-01 04:03 EST; DISTRACT, Audit's suggestion: a $0 local pilot pre-stated before any build or output; gate theory/score_distract_pilot.py, fixtures 6/6).**
+- **Idea:** train with 0-2 irrelevant op sentences per item (new names with their own givens, as INSERT's design) inserted at random positions in the op block, with the chain itself kept in order.
+  - Unlike perm (which blocked the pass-2 write, §253 / §254), the chain's relative order is unchanged; only absolute slot counting stops working. So the named cue or the previous value becomes the cheaper selector.
+  - Training inserts use a seed family disjoint from the INSERT eval items, with no rendered training text equal to an eval text (asserted).
+- **Pilot:** pilot_dis_s1 = --init_model rcb_plaw4_s1, rcb_plaw4_s1's args + --distract_p (each item gets 0 / 1 / 2 inserts with p 1/3 each), --steps 16000 --stop_at 2000, local, micro pinned via mem_check.
+  - The INSERT eval (the 255-3 driver, the same items and conditions) runs on its 1k and 2k checkpoints -> scratch/s255_distract/insert_{1k,2k}.json.
+- **Rule at 2k:**
+  - **GO** to a cloud registration (C1 / C2 test incl. d 5-8) if clean d 4 acc K' 8 >= 0.95 AND BEFORE k2 hop 1 >= 0.60 AND INSIDE k2 acc K' 8 >= 0.50 (step 0: 1.000 / 0.118 / 0.113);
+  - **PARK** if clean < 0.80 or BEFORE k2 hop 1 < 0.25;
+  - otherwise **NOTE**.
+  - Disclosed: the pilot trains on the same kind of insert it is tested on (held-out items and seeds, not a held-out manipulation). A cloud design would add held-out insert types.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
