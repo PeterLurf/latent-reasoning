@@ -23248,6 +23248,9 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **CHAIN-SPECIFIC:** all three drops <= 0.05;
   - otherwise **MIXED**.
   - Theory's prior: POSITION-SHIFT (Notes 251-16 / 255-2).
+- **Design fix at G-D (Audit; recorded before output):** in every condition the new givens ('Y has v u.') sit at the end of the given block, right before S_1's sentence. Only the new op sentence moves (before S_1 / between S_2 and S_3 / after S_4), so no given is ever placed among the op sentences (REG never does that).
+  - Inserted ops use add_c templates from the training frames 0-5 (frame recorded per insert).
+  - Harness gate: clean answers equal the stored eval_acc d 4 answers at K' 1 / 2 / 3 / 8 (1.000) for all three models.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
