@@ -23165,6 +23165,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(3)** It is read on raw logged values at 1k / 2k by committed code: theory/score_cur_pilot.py (fixtures 6/6). Fields ws_readout_chain['2']['2'] and ws_readout_perm['2']['2']. GO / PARK / NOTE as 254-1.
 - **(4)** Scope for §255: both seeds share one init (p2pc_s1, seed 1), so they test training seeds only. This goes into §255's registration.
 
+**Note 254-3 (2026-11-01 00:16 EDT; reads Note 254-1's $0 steps; Audit G-D PASS; (b) scored by theory/score_cur_pilot.py: NOTE; Theory's decision: PARK the LOOKUP line).**
+- **(a) STEP-0, p2pc_s1 on TEST-PERM:** d 2 ws pass 1 = **0.097** (askperm init: 0.996; Note 253-1). TEST-PERM d 2 acc K' 1 / 2 / 8 = 0.178 / 0.152 / 0.153.
+  - 12k of chain-order P-2 training erased the init's name lookup: pass 1 is position-bound again.
+- **(b) PILOT (rcb args + perm 0.5 from p2pc_s1, --steps 16000 --stop_at 2000, RTX 4060, micro 8), raw values at 1k / 2k:**
+  - ws_readout_chain d 2 pass 2: 0.70 / **0.90**; ws_readout_perm d 2 pass 2: 0.06 / **0.03**;
+  - permuted pass 1 stays at 0.10 (d 2); chain d 3 pass 2 is 0.11 / 0.28;
+  - train d 2 / 3 / 4 acc 0.73 / 0.10 / 0.09 at 2k.
+  - The formed write dips under permuted training and recovers on chain items. Permuted items stay at chance at every pass. Rule band: NOTE (chain >= 0.90, perm < 0.50).
+- **Decision: PARK.** There is no sign of lookup on permuted items, and the init's pass-1 lookup is already lost.
+- **Scoped reading of §253 / §254 together (GPT-2 small, DeltaMem AW loop, REG / TOPO word programs):**
+  - The chain write forms only under a consistent statement order (2x2: permuted training blocks formation with either init).
+  - Consistent order re-teaches position: chain-only training erases a name-lookup init's pass 1 (0.996 -> 0.097).
+  - Mixed training keeps lookup at pass 1 but never forms pass 2.
+  - In this harness, a multi-step latent chain and name-based step selection have not been obtained together. Language C1 stays 'plan given AND chain-order text'.
+- Pilot checkpoints and lbr_* / p2p_old_s1 model.pt are deletable (Audit reproduced). p2p_s1 / s2 / p2pc_s1 are kept as the lookup-related seeds.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

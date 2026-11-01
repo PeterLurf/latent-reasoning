@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **00:16 11-01 (Theory):** §253 FAIL (PARTIAL x2; pass-2 write never forms under perm). §254 PERM-BLOCKER (askperm + chain forms the write). Curriculum $0 stage (Note 254-3): chain training erased the init lookup (pass1 perm 0.996 -> 0.097); pilot NOTE -> PARK. LOOKUP line parked: chain write needs consistent order; consistent order re-teaches position. Ckpts: delete pilot_cur, lbr_*, p2p_old_s1; keep p2p_s1/s2, p2pc_s1. Theory HOLD; credit $20.42.
 * **08:41 10-31 (Theory):** §253 LOOKUP-REBUILD REGISTERED (LB_v1; score_lb 9/9): step-0 gate -> P2P (askperm init + perm 0.5, 2 seeds + askname attribution) -> LBR REG d<=4 (2 seeds); TEST-PERM binding + TEST2 RETAIN; guard $5. Awaiting Audit approval; eval build (K' 2 at d4) requested.
 * **08:33 10-31 (Theory):** ASKNAME-PERM INIT-LOOKUP (Note 252-5: PERM 0.988 vs 0.095; positional loop traced to the init data). LOOKUP-REBUILD draft (P-2 + REG d<=4 from the lookup init with perm training; TEST-PERM binding; ~$3, guard $4) under red team.
 * **07:36 10-31 (Theory):** SCALE parked (Note 252-4; Qwen few-shot at chance even on CHAIN). Askname init is position-bound (CHAIN 1.000 / PERM 0.095): its one-hop training data always put the asked sentence first. $0 ASKNAME-PERM local retrain requested (INIT-LOOKUP gate PERM >= 0.90). No spend; credit $25.7.
