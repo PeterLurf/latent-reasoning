@@ -1,0 +1,62 @@
+{
+ "section": 256,
+ "seeds": {
+  "dis_s1": {
+   "label": "C2-ONLY",
+   "families": {
+    "H-OP": true,
+    "H-CHAINSRC": false,
+    "H-GIVPOS": false
+   },
+   "retain": true,
+   "nodec_k2": 0.013,
+   "d5": 0.993,
+   "d6": 0.981,
+   "d6_ref": 0.346,
+   "ws6_p1_4": [
+    1.0,
+    1.0,
+    1.0,
+    0.9980000257492065
+   ],
+   "credit": true,
+   "indist": true,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "dis_s2": {
+   "label": "C2-ONLY",
+   "families": {
+    "H-OP": true,
+    "H-CHAINSRC": false,
+    "H-GIVPOS": false
+   },
+   "retain": true,
+   "nodec_k2": 0.017,
+   "d5": 0.986,
+   "d6": 0.961,
+   "d6_ref": 0.368,
+   "ws6_p1_4": [
+    1.0,
+    1.0,
+    1.0,
+    0.9930000305175781
+   ],
+   "credit": true,
+   "indist": true,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  }
+ },
+ "verdict": "SELECTOR 0/2, C2 2/2 (C2-ONLY / C2-ONLY)"
+}
