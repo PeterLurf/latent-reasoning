@@ -43,13 +43,19 @@ def insert(it, cond, idx):
     if cond == "clean":
         return dict(it), []
     pos_name, k = cond.split("_k"); k = int(k); order = list(it["order"])
-    at = {"before": order.index("S1"), "inside": order.index("S2") + 1, "after": order.index("S4") + 1}[pos_name]
     rng = np.random.default_rng((SEED, CONDS.index(cond), idx)); used = set(it["names"]["spine"]) | set(it["names"]["givens"]) | set(it["names"]["distractors"])
-    free = [n for n in OW.NAMES if n not in used]; pick = rng.choice(len(free), size=2 * k, replace=False); new = []; meta = []
+    free = [n for n in OW.NAMES if n not in used]; pick = rng.choice(len(free), size=2 * k, replace=False); giv = []; ops = []; meta = []
     for j in range(k):
         Y, X = free[pick[2 * j]], free[pick[2 * j + 1]]; v = int(rng.integers(1, 10)); c = int(rng.integers(1, 11 - v)); f = int(OW.FRAME_TRAIN[int(rng.integers(0, len(OW.FRAME_TRAIN)))])
-        new += [NW.GIVEN.format(A=Y, v=v, u=it["unit"]), NW.FRAMES["add_c"][f].format(B=X, A=Y, C=None, c=c, u=it["unit"])]; meta.append({"Y": Y, "X": X, "v": v, "c": c, "frame": f})
-    text = " ".join(sents[:at] + new + sents[at:] + [q]); o = dict(it); o["text"] = text; o["sig"] = it["sig"] + ":" + cond
+        giv.append(("NG%d" % j, NW.GIVEN.format(A=Y, v=v, u=it["unit"]))); ops.append(("NO%d" % j, NW.FRAMES["add_c"][f].format(B=X, A=Y, C=None, c=c, u=it["unit"])))
+        meta.append({"Y": Y, "X": X, "v": v, "c": c, "frame": f})
+    # Audit G-D fix (1): every new GIVEN sits at the end of the given block (right before S1's sentence) in all conditions; only the new op sentences move
+    seq = list(zip(order, sents)); s1 = order.index("S1"); seq = seq[:s1] + giv + seq[s1:]
+    lab = [x[0] for x in seq]; at = {"before": lab.index("S1"), "inside": lab.index("S2") + 1, "after": lab.index("S4") + 1}[pos_name]
+    seq = seq[:at] + ops + seq[at:]; lab = [x[0] for x in seq]
+    for j, m_ in enumerate(meta):
+        m_["given_idx"] = lab.index("NG%d" % j); m_["op_idx"] = lab.index("NO%d" % j)
+    text = " ".join([x[1] for x in seq] + [q]); o = dict(it); o["text"] = text; o["sig"] = it["sig"] + ":" + cond
     assert OW.solve(text) == it["answer"], ("INSERT: solve != answer", cond, it["sig"]); return o, meta
 
 
@@ -72,7 +78,23 @@ def gate(dev, bs):
          "inserted_sentences_per_cond": {c: (0 if c == "clean" else 2 * int(c[-1])) for c in CONDS},
          "examples": {c: sets[c][0]["text"] for c in CONDS}, "example_meta": {c: metas[c][0] for c in CONDS},
          "frames_used": sorted({m["frame"] for c in CONDS for ms in metas[c] for m in ms})}
-    o["pass"] = bool(ok_cue); return o
+    o["given_block_end_ok"] = all(all(m_["given_idx"] < m_["op_idx"] for m_ in ms) for c in CONDS for ms in metas[c])
+    # Audit G-D gate (2): the clean condition reproduces each model's stored eval_acc d 4 per-K' answers (sig-matched), >= 0.98 per K' (fp32 here vs the host dtype / bs)
+    agree = {}
+    for name in MODELS:
+        if not os.path.exists("boxes/runs_fsq/%s/model.pt" % name):
+            continue
+        ev = json.load(open("boxes/runs_fsq/%s/eval_acc.json" % name)); st = ev["items"]["4"]; ix = {s_: i for i, s_ in enumerate(st["sig"])}
+        a_, m, g = E.load(ROOT + "/boxes/runs_fsq/" + name, dev); Tc = E.tokd({"test2": {4: sets["clean"]}}, a_, (4,))[4]
+        with torch.no_grad():
+            A, _ = E.passes(m, Tc, dev, bs, {1, 2, 3, 8})
+        sel = [(i, ix[it["sig"]]) for i, it in enumerate(sets["clean"]) if it["sig"] in ix]
+        agree[name] = {"n_matched": len(sel), "stored_eval_bs": ev.get("eval_bs"), "stored_dtype": ev.get("eval_dtype"), "stored_gpu": ev.get("eval_gpu"),
+                       "per_kprime": {str(k): float(np.mean([A[k][i] == st["pred"][j][k] for i, j in sel])) for k in (1, 2, 3, 8)}}
+        del m, g; torch.cuda.empty_cache()
+    o["clean_vs_stored"] = agree
+    o["pass"] = bool(ok_cue) and o["given_block_end_ok"] and bool(agree) and all(v["n_matched"] == len(raw) and min(v["per_kprime"].values()) >= 0.98 for v in agree.values())
+    return o
 
 
 def evaluate(dev, bs):
