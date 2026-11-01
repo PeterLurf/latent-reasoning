@@ -109,6 +109,8 @@ for o, n in runpy.run_path("scratch/s251ac_build/edits_ac.py")["EAC"]:   # Note 
     assert main.count(o) == 1, ("Note 251-10 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
 for o, n in runpy.run_path("scratch/s252_build/edits_s252.py")["E252"]:   # §252 UNSCAFFOLDED: --perm_p (default 0 = off), --cue generic
     assert main.count(o) == 1, ("§252 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
+for o, n in runpy.run_path("scratch/s255d_build/edits_s255d.py")["E255"]:   # Note 255-5 DISTRACT: --distract_p (default 0 = off)
+    assert main.count(o) == 1, ("Note 255-5 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
 assert "tok_st(" not in main and "inject_st_eval" not in main and "build_model(" not in main, "leftovers"
 hdr = open("scratch/s234_build/inject_aw_head.py", encoding="utf-8").read() + open("scratch/s240_build/head_s240.py", encoding="utf-8").read()   # + §240 helpers
 open("boxes/inject_aw.py", "w", encoding="utf-8", newline="\n").write(hdr + "\n\n" + main + 'if __name__ == "__main__":\n    sys.exit(main())\n')

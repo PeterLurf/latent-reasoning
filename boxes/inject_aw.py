@@ -32,6 +32,7 @@ import boxes.deltamem as DM  # noqa: E402
 import boxes.nested170 as N7  # noqa: E402
 import boxes.ow_words as OW  # noqa: E402
 import boxes.perm_render as PR  # noqa: E402
+import boxes.insert_render as IR  # noqa: E402
 from boxes.nested170 import AUX_W, EOT, NUM_IDS, pad  # noqa: E402
 from boxes.inject_ow import (ENC, SFX, SEED_D, SEED_CAL, SEED_MEMCHECK, OWKW, META, tok_ow, tok_nested, direct_logits, sha_file, build_sets,  # noqa: E402, F401
                              InjectOW, load_trunk)
@@ -194,6 +195,7 @@ def main(argv=None):
     ap.add_argument("--time_steps", type=int, default=0); ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default="")
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--eval_parts", default="acc"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--distract_p", type=float, default=0.0, help="Note 255-5: P(an item gets U{0,1,2} irrelevant new-name op sentences) (0 = off, unchanged)")
     ap.add_argument("--perm_p", type=float, default=0.0, help="§252: P(a d >= 2 training item is re-rendered dependency-violating) (0 = off, unchanged)")
     ap.add_argument("--cue", default="none", choices=["none", "step", "all", "generic"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
@@ -260,12 +262,29 @@ def main(argv=None):
         return a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc))
     lam_now = [lam_at(1)]
 
+    assert not (a.distract_p and a.perm_p), "--distract_p with --perm_p: not built"
+    INS_TEXTS = {it["text"] for its_ in IR.insert_eval_sets(SETS["test2"][4])[0].values() for it in its_} if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b)
+    DSTAT = {}                                                              # Note 255-5: {n: count} in the open 1k bin
     TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets({d_: SETS["test2"][d_] for d_ in range(1, a.d_max + 1)}, range(1, a.d_max + 1))[0].items()
                 for it in its_} if a.perm_p else set()                     # §252 Note 252-1: the TEST-PERM texts (622fb717's family) for the disjointness assert
 
     def draw_items(d):
         if a.src == "nested":
             return [tok_nested(it) for it in N7.train_items(rng, a.bs, a.n_max_train, EXCL)]
+        if a.distract_p:                                                    # Note 255-5 --distract_p: per-item seeded coin / n / draw; targets, solve, disjointness asserted
+            raws = [stream.draw(d) for _ in range(a.bs)]; out_ = []
+            for k_, r_ in enumerate(raws):
+                n_ = 0
+                if np.random.default_rng((a.seed, IR.SEED_DISTRACT_COIN, step, k_)).random() < a.distract_p:
+                    r2_, n_ = IR.distract(r_, a.seed, step, k_)
+                    if n_:
+                        t_new, t_old = tok_aw(r2_, a.aux_target, a.cue, a.write_src), tok_aw(r_, a.aux_target, a.cue, a.write_src)
+                        assert t_new["aux"] == t_old["aux"] and t_new["ans"] == t_old["ans"] and len(t_new["think_cues"]) == len(t_old["think_cues"]) and all(
+                            q1[len(t_new["think"]):] == q0[len(t_old["think"]):] for q1, q0 in zip(t_new["think_cues"], t_old["think_cues"])), "DISTRACT: targets / cues changed"
+                        r_ = r2_
+                DSTAT[n_] = DSTAT.get(n_, 0) + 1; out_.append(r_)
+            assert not any(r_["text"] in INS_TEXTS for r_ in out_), "DISTRACT: a training text equals an INSERT eval text"
+            return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in out_]
         if a.perm_p:                                                        # §252 --perm_p: per-item seeded coin / permutation (d >= 2), solve + disjointness asserted
             raws = [stream.draw(d) for _ in range(a.bs)]
             raws = [PR.train_perm(r_, a.seed, step, k_) if (d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p) else r_
@@ -335,7 +354,13 @@ def main(argv=None):
         return loss
 
     s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, mul_s_p=a.mul_s_p, **OWKW) if a.src == "ow" else None   # §236: the run's law
-    MC_TR = sorted([tok_aw(s_mc.draw(a.d_max), a.aux_target, a.cue, a.write_src) for _ in range(256)], key=lambda it: -st_len(it)) if s_mc else None
+    if a.distract_p and s_mc:                                               # Note 255-5 (d): the memory-check items carry 2 insert pairs (ops after the last op sentence)
+        def _mc2(i_):
+            r_ = s_mc.draw(a.d_max); g_, o_, m_ = IR.draw_pairs(r_, 2, np.random.default_rng((a.seed, IR.SEED_DISTRACT + 2, i_)))
+            return IR.assemble(r_, g_, [(("after", "S%d" % r_["d"]), x_) for x_ in o_], m_)
+        MC_TR = sorted([tok_aw(_mc2(i_), a.aux_target, a.cue, a.write_src) for i_ in range(256)], key=lambda it: -st_len(it))
+    else:
+        MC_TR = sorted([tok_aw(s_mc.draw(a.d_max), a.aux_target, a.cue, a.write_src) for _ in range(256)], key=lambda it: -st_len(it)) if s_mc else None
     MC_EV = sorted([tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][12]], key=lambda it: -st_len(it))[:1] if s_mc else None   # §233: TEST2's own longest d 12 (cued)
     WS_ITEMS = {d_: [tok_aw(it, a.aux_target, a.cue, a.write_src) for it in SETS["test2"][d_][:200]] for d_ in range(1, a.d_max + 1)} if a.write_src == "answer" else None   # §234 WS-READOUT (Note 234-5 c: d 1..d_max)
 
@@ -498,6 +523,8 @@ def main(argv=None):
             if vbin_d:                                                      # §233 LP2 key (+ the per-cell counts: G10 pools them back to aux_vacc_by_pass)
                 br["aux_vacc_by_d_pass"] = {d_: {k_: v_[0] / v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
+            if a.distract_p:                                                # Note 255-5: the bin's insert-count distribution
+                br["distract_n"] = {str(k_): v_ for k_, v_ in sorted(DSTAT.items())}; DSTAT.clear()
             for k_ in ("perm", "chain") if a.perm_p else ():                # §252 Note 252-1: ws_readout_perm / ws_readout_chain = {d: {pass: acc}} (+ _n)
                 wv_ = wsbin.get(k_, {})
                 br["ws_readout_" + k_] = {d_: {t_: v_[0] / v_[1] for t_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(wv_.items())}
