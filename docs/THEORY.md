@@ -23300,6 +23300,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Earlier local readings to re-verify (Audit to triage):** today's local evals or training include s252_askperm_s1 (trained locally), the SCALE / ASKNAME-PERM probes, NS stage 0, CC S0, the §252 / ACUE / curriculum pilots and INSERT.
   - Mitigations already in place: INSERT's harness gate (clean == stored host answers 1.000); NS S0 named baselines per-item identical to CC S0; askperm's cloud use asserted its sha, and the P2P stages behaved consistently (p2pc formed like aw_plaw2).
   - A spot re-run of the decisive local readings on a cloud host is the cheap check, if Audit wants it.
+- **Audit approved (cap $0.5), with conditions:**
+  - (1) The host asserts the init sha, and the module / eval / insert-script sha256 equal the git blob shas, so a page-cache flip in the tar fails loudly.
+  - (2) The build checks a-d run on the host or in the smoke.
+  - **Spot re-run in the same cell:** the host INSERT eval on rcb_plaw4_s1 at step 0, before training. If it matches the local INSERT numbers to within ~0.02, INSERT stands; it also provides the gate's step-0 references.
+  - No separate ASKNAME-PERM re-run: P2P Stage 1's host TEST-PERM d 2 1.000 confirms the askperm init's lookup on cloud hardware.
+  - The other local items stay provisional until the RAM is fixed.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
