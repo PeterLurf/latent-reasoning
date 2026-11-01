@@ -23228,7 +23228,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (i) Even the decoder answers positionally: asked about S_d, it returns the next chain value after the state, consistent with Note 251-16.
   - (ii) Past the trained depth, accuracy is lost at early passes too (s1 d 6 at K' 1 0.33), not only at pass 5 / 6. So the untrained-sentence-slot hypothesis is not the whole story: with more op sentences in the text, the early hops degrade.
   - LEN-STEP (§241) found distractor length harmless, so the count of op sentences, not length, perturbs the positional pointer.
-- **Failing K' 8 answers:** about 25% (d 5) / 35-40% (d 6) equal some earlier chain value (5-9% exactly v_{d-1} or v_4); the rest match no chain value.
+- **Failing K' 8 answers, corrected with a chance baseline (Audit):** the share equal to an earlier chain value, observed / expected under uniform wrong answers / permuted-pred control (ratio):
+  - d 5: 0.243 / 0.342 / 0.339 (0.71) and 0.248 / 0.344 / 0.341 (0.72);
+  - d 6: 0.355 / 0.402 / 0.405 (0.88) and 0.396 / 0.402 / 0.405 (0.98).
+  - '= v_4' has ratio 0.51-1.02.
+  - So failing answers are at or below chance for earlier chain values: no 'stops early' or 'holds v_4' signature. The earlier line without a baseline is withdrawn.
+  - The positional-decoder and early-hop readings above do not depend on this and stand.
 - No design follows (credit $18.36, near Audit's $15 stop line). This refines the C2 'not met' row: out-of-range depth breaks the positional chain from its first hops.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
