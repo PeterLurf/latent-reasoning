@@ -23268,10 +23268,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Decomposition (descriptive; all three models):**
   - (i) **BEFORE** collapses everything (hop 1 ~0.1): shifting the chain's op sentences by one slot breaks pass 1, the positional pointer.
   - (ii) **INSIDE** keeps the hops before the insertion (s2 hop 1 0.93) and collapses those from the insertion on: pass t reads the t-th op slot.
-  - (iii) **AFTER** leaves the chain's slots in place, yet the final answer collapses (acc 0.12-0.27): the loop has no stop at S_d and computes on into the extra op sentence.
+  - (iii) **AFTER** leaves the chain's slots in place, yet the final answer collapses (acc 0.12-0.27).
+    - **Corrected (Audit; score_insert after_k1_targets):** the AFTER k1 final answers, items aligned to clean, equal y 0.212 / 0.267 / 0.176, y + c 0.051 / 0.048 / 0.056, y - c 0.078 / 0.074 / 0.080 and the inserted quantity's v + c 0.119 / 0.165 / 0.104 (s1 / s2 / aex_s1; chance ~0.09 each).
+    - So the final answer collapses to near-chance non-chain values, with no continuation into the extra op. A later op sentence disrupts the final read; 'computes on into the extra op' is withdrawn.
   - (iv) **A count effect on top, seed-dependent:** AFTER k2 hop 1 drops 0.47 (s1) / 0.15 (s2).
 - **Link to 255-2:** the AFTER hop-1 drops match the d 6 early-hop losses in size, s1 0.46 vs d 6 K' 1 0.33 and s2 0.83 vs 0.79. So the early-hop degradation past the trained depth is consistent with the extra op sentences, not with chain length as such.
-- **Reading:** the C1 loops are slot counters with no target check. They read op sentence t at pass t, do not stop at the asked entity, and are perturbed by later op sentences.
+- **Reading:** the C1 loops are slot counters with no target check (from BEFORE and INSIDE). They read op sentence t at pass t, and later op sentences disrupt both the early hops and the final read.
   - This sharpens 251-16 and the C2 'not met' row. Any C2 lever must change step selection (lookup / stopping), not the depth budget.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
