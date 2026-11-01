@@ -19685,6 +19685,7 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - Theory's prior: PERM-BLOCKER ~0.7.
 - **Censoring:** an unfinished run or a crashed eval is VOID-RERUN once (fresh host; --keep_final_ckpt). No extension; 12k final.
 - **Cost:** ~$0.55, cell cap $1.0. §253 + §254 family <= $5.
+- **Disclosed (Audit, at launch):** vs aw_plaw2_s1, excl_n 160598 -> 192598 and the inject_ow module sha 0695 -> 1495. The later frame test sets (§250) were added to the exclusion. This is the same training pool as p2p_* / lbr_*, so the comparison with the p2p cells is exact; with aw_plaw2_s1 the pool differs slightly (non-semantic for the pass-2 write question).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
