@@ -23252,6 +23252,28 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Inserted ops use add_c templates from the training frames 0-5 (frame recorded per insert).
   - Harness gate: clean answers equal the stored eval_acc d 4 answers at K' 1 / 2 / 3 / 8 (1.000) for all three models.
 
+**Note 255-4 (2026-11-01 04:01 EST; reads Note 255-3's INSERT by theory/score_insert.py: 'aex_s1 MIXED | rcb_plaw4_s1 COUNT-DILUTION | rcb_plaw4_s2 MIXED'; 6312ab6b; harness gate clean == stored answers 1.000).**
+- **hop[1/2/3] and acc K' 8:**
+  - **rcb_plaw4_s1:**
+    - clean 0.93 / 0.96 / 1.00, 1.000;
+    - BEFORE k2 0.12 / 0.12 / 0.10, 0.114;
+    - INSIDE k2 0.34 / 0.11 / 0.11, 0.113;
+    - AFTER k2 0.46 / 0.55 / 0.50, 0.145.
+  - **rcb_plaw4_s2:**
+    - clean 0.98 / 0.93 / 1.00, 1.000;
+    - BEFORE k2 0.09 / 0.11 / 0.09, 0.081;
+    - INSIDE k1 0.93 / 0.45 / 0.21 (k2 0.79 / 0.17 / 0.11);
+    - AFTER k1 0.93 / 0.68 / 0.66, 0.267 (k2 0.83 / 0.52 / 0.43, 0.121).
+  - **aex_s1** (descriptive): BEFORE at chance; INSIDE k1 hop 1 0.87 then 0.11; AFTER k2 0.87 / 0.98, acc 0.116.
+- **Decomposition (descriptive; all three models):**
+  - (i) **BEFORE** collapses everything (hop 1 ~0.1): shifting the chain's op sentences by one slot breaks pass 1, the positional pointer.
+  - (ii) **INSIDE** keeps the hops before the insertion (s2 hop 1 0.93) and collapses those from the insertion on: pass t reads the t-th op slot.
+  - (iii) **AFTER** leaves the chain's slots in place, yet the final answer collapses (acc 0.12-0.27): the loop has no stop at S_d and computes on into the extra op sentence.
+  - (iv) **A count effect on top, seed-dependent:** AFTER k2 hop 1 drops 0.47 (s1) / 0.15 (s2).
+- **Link to 255-2:** the AFTER hop-1 drops match the d 6 early-hop losses in size, s1 0.46 vs d 6 K' 1 0.33 and s2 0.83 vs 0.79. So the early-hop degradation past the trained depth is consistent with the extra op sentences, not with chain length as such.
+- **Reading:** the C1 loops are slot counters with no target check. They read op sentence t at pass t, do not stop at the asked entity, and are perturbed by later op sentences.
+  - This sharpens 251-16 and the C2 'not met' row. Any C2 lever must change step selection (lookup / stopping), not the depth budget.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
