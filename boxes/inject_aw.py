@@ -195,6 +195,7 @@ def main(argv=None):
     ap.add_argument("--time_steps", type=int, default=0); ap.add_argument("--args_only", action="store_true"); ap.add_argument("--args_ref", default="")
     ap.add_argument("--mem_check", action="store_true"); ap.add_argument("--auto_micro", action="store_true"); ap.add_argument("--mem_budget", type=float, default=21.0)
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--eval_parts", default="acc"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
+    ap.add_argument("--distract_mix", default="", help="§257 DC2_v1: insert types drawn uniformly per insert (s256,chain,givop) under --distract_p ('' = §256 rule)")
     ap.add_argument("--distract_p", type=float, default=0.0, help="Note 255-5: P(an item gets U{0,1,2} irrelevant new-name op sentences) (0 = off, unchanged)")
     ap.add_argument("--perm_p", type=float, default=0.0, help="§252: P(a d >= 2 training item is re-rendered dependency-violating) (0 = off, unchanged)")
     ap.add_argument("--cue", default="none", choices=["none", "step", "all", "generic"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
@@ -264,8 +265,11 @@ def main(argv=None):
 
     assert not (a.distract_p and a.perm_p), "--distract_p with --perm_p: not built"
     INS_TEXTS = ({it["text"] for its_ in IR.insert_eval_sets(SETS["test2"][4])[0].values() for it in its_}
-                 | {it["text"] for d_ in IR.held_out_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}) if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b) + §256 held-out sets
+                 | {it["text"] for d_ in IR.held_out_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}
+                 | {it["text"] for d_ in IR.held_out2_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}) if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b) + §256 held-out sets
     DSTAT = {}                                                              # Note 255-5: {n: count} in the open 1k bin
+    MIXT = tuple(a.distract_mix.split(",")) if a.distract_mix else (); DTYPE = {}   # §257: the insert types; {type: count} in the open 1k bin
+    assert not MIXT or (a.distract_p > 0 and set(MIXT) <= set(IR.MIX_TYPES)), ("--distract_mix needs --distract_p and known types", MIXT)
     TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets({d_: SETS["test2"][d_] for d_ in range(1, a.d_max + 1)}, range(1, a.d_max + 1))[0].items()
                 for it in its_} if a.perm_p else set()                     # §252 Note 252-1: the TEST-PERM texts (622fb717's family) for the disjointness assert
 
@@ -277,12 +281,14 @@ def main(argv=None):
             for k_, r_ in enumerate(raws):
                 n_ = 0
                 if np.random.default_rng((a.seed, IR.SEED_DISTRACT_COIN, step, k_)).random() < a.distract_p:
-                    r2_, n_ = IR.distract(r_, a.seed, step, k_)
+                    r2_, n_ = IR.distract_mix(r_, a.seed, step, k_, MIXT) if MIXT else IR.distract(r_, a.seed, step, k_)   # §257 --distract_mix
                     if n_:
                         t_new, t_old = tok_aw(r2_, a.aux_target, a.cue, a.write_src), tok_aw(r_, a.aux_target, a.cue, a.write_src)
                         assert t_new["aux"] == t_old["aux"] and t_new["ans"] == t_old["ans"] and len(t_new["think_cues"]) == len(t_old["think_cues"]) and all(
                             q1[len(t_new["think"]):] == q0[len(t_old["think"]):] for q1, q0 in zip(t_new["think_cues"], t_old["think_cues"])), "DISTRACT: targets / cues changed"
                         r_ = r2_
+                        for t_ in r2_.get("distract_types", ()):                # §257: per-type insert counts
+                            DTYPE[t_] = DTYPE.get(t_, 0) + 1
                 DSTAT[n_] = DSTAT.get(n_, 0) + 1; out_.append(r_)
             assert not any(r_["text"] in INS_TEXTS for r_ in out_), "DISTRACT: a training text equals an INSERT eval text"
             return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in out_]
@@ -526,6 +532,8 @@ def main(argv=None):
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
             if a.distract_p:                                                # Note 255-5: the bin's insert-count distribution
                 br["distract_n"] = {str(k_): v_ for k_, v_ in sorted(DSTAT.items())}; DSTAT.clear()
+                if MIXT:                                                    # §257: the bin's insert-type distribution
+                    br["distract_types"] = dict(sorted(DTYPE.items())); DTYPE.clear()
             for k_ in ("perm", "chain") if a.perm_p else ():                # §252 Note 252-1: ws_readout_perm / ws_readout_chain = {d: {pass: acc}} (+ _n)
                 wv_ = wsbin.get(k_, {})
                 br["ws_readout_" + k_] = {d_: {t_: v_[0] / v_[1] for t_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(wv_.items())}

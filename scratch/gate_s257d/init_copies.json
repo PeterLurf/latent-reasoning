@@ -1,0 +1,18 @@
+{
+ "dis_s1": {
+  "model_vs_ckpt_final_equal": true,
+  "n_tensors": 162,
+  "sha256": "35813f1a41ea8085c0dabef1364086f3c29233a82f31a701409a34f305bd9048",
+  "attempts": 1,
+  "copy_unbuffered_sha256": "35813f1a41ea8085c0dabef1364086f3c29233a82f31a701409a34f305bd9048",
+  "copy_ok": true
+ },
+ "dis_s2": {
+  "model_vs_ckpt_final_equal": true,
+  "n_tensors": 162,
+  "sha256": "a68cb45e4b4d153d963293e80a3ceccb073a2fde1b4f34145c1d8e15cb74c9fd",
+  "attempts": 1,
+  "copy_unbuffered_sha256": "a68cb45e4b4d153d963293e80a3ceccb073a2fde1b4f34145c1d8e15cb74c9fd",
+  "copy_ok": true
+ }
+}

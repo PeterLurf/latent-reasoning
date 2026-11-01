@@ -1,0 +1,24 @@
+{
+ "n": 10000,
+ "n_dist": {
+  "0": 3279,
+  "1": 3413,
+  "2": 3308
+ },
+ "types_d2plus": {
+  "s256": 2477,
+  "chain": 2593,
+  "givop": 2441
+ },
+ "bad": {
+  "targets": 0,
+  "order": 0,
+  "chain_adjacent": 0,
+  "givop_adjacent": 0,
+  "s256_given": 0,
+  "names": 0,
+  "d1_chain": 0,
+  "ev_hit": 0
+ },
+ "pass": true
+}

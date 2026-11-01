@@ -1,0 +1,110 @@
+{
+ "insert_ho_fams": [
+  "H-CHAINSRC",
+  "H-CHAINSRC-LIVE",
+  "H-CHAINSRC-OP",
+  "H-EXTEND",
+  "H-GIVPOS",
+  "H-LIVE",
+  "H-OP",
+  "K3"
+ ],
+ "insert_ho_pos": {
+  "H-OP": [
+   "after",
+   "before",
+   "inside"
+  ],
+  "H-CHAINSRC": [
+   "1",
+   "2",
+   "3"
+  ],
+  "H-GIVPOS": [
+   "after_Sd",
+   "before_op",
+   "start"
+  ],
+  "H-EXTEND": [
+   "after_Sd"
+  ],
+  "H-LIVE": [
+   "after",
+   "before",
+   "inside"
+  ],
+  "K3": [
+   "mixed"
+  ],
+  "H-CHAINSRC-OP": [
+   "1",
+   "2",
+   "3"
+  ],
+  "H-CHAINSRC-LIVE": [
+   "1",
+   "2",
+   "3"
+  ]
+ },
+ "h_op_by_op": [
+  "add_v",
+  "mul_c",
+  "sub_c"
+ ],
+ "indist": [
+  "after_k1",
+  "after_k2",
+  "before_k1",
+  "before_k2",
+  "clean",
+  "inside_k1",
+  "inside_k2"
+ ],
+ "n_item_keys": 36,
+ "ws_deep_ds": [
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "ws_deep_passes": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "ws_items_v_len": 8,
+ "chainop_by_op": [
+  "mul_c",
+  "sub_c"
+ ],
+ "meta_keys_chainop": [
+  "c",
+  "fam",
+  "frame",
+  "j",
+  "labels",
+  "op",
+  "op_idx",
+  "pos",
+  "v"
+ ],
+ "meta_keys_chainsrc": [
+  "c",
+  "fam",
+  "frame",
+  "j",
+  "labels",
+  "op",
+  "op_idx",
+  "pos",
+  "v"
+ ],
+ "json_ok": true,
+ "pass": true
+}
