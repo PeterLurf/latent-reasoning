@@ -23,7 +23,7 @@ E = [
  '        msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)\n'),
 ('from boxes import inject_st as ST  # noqa: E402\n',
  'from boxes import inject_st as ST  # noqa: E402\nfrom boxes import inject_aw as AW  # noqa: E402\nimport boxes.deltamem as DM  # noqa: E402\nimport boxes.ow_words as OW  # noqa: E402\n'),
-('PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong")', 'PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm")\nAW_ONLY = ("test_perm", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")'),
+('PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong")', 'PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep")\nAW_ONLY = ("test_perm", "insert_ho", "ws_deep", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")'),
 ('import json\n', 'import json\nimport math\n'),
 ('    return {d: [ST.tok_st(it, a.get("aux_target", "value"), a.get("cue", "none")) for it in sets[key][d]] for d in ds}',
  '    return {d: [AW.tok_aw(it, a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for it in sets[key][d]] for d in ds}'),
@@ -44,7 +44,7 @@ E = [
  '              "lenstep": lambda: part_lenstep(m, g, sets, a, dev, bs), "normctr": lambda: part_normctr(m, g, sets, a, dev, bs),\n'
  '              "ws_long": lambda: part_ws_long(m, g, sets, a, dev, bs), "c7": lambda: part_c7(m, g, sets, a, dev, bs),\n'
  '              "halt": lambda: part_halt(m, g, sets, a, dev, bs), "halthead": lambda: part_halthead(m, g, sets, a, dev, bs),\n'
- '              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs),\n              "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs)}[p_]()'),   # §241-§243, §247 READ-HALT, §248 HALT-HEAD, §249 FRAME-TRANSFER
+ '              "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs),\n              "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs),\n              "insert_ho": lambda: part_insert_ho(m, g, sets, a, dev, bs), "ws_deep": lambda: part_ws_deep(m, g, sets, a, dev, bs)}[p_]()'),   # §241-§243, §247 READ-HALT, §248 HALT-HEAD, §249 FRAME-TRANSFER
 ('        assert a.get(k_) in (None, v_), ("§233: set sha mismatch vs args.json", k_)', '        assert a.get(k_) in (None, v_), ("§234: set sha mismatch vs args.json", k_)'),
 ('    if sets is None:\n        sets = IO.build_sets()', '    if sets is None:\n        sets = IO.build_sets(mul_s_p=law(a))   # §236 / §238: the run\'s law (law() raises on unknown values)'),
 # §239 LONG-RUN: the --kprime_list CLI option (default '' = the unchanged run() path) -> run_long (eval_long.json only)

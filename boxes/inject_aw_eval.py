@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm")
-AW_ONLY = ("test_perm", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep")
+AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
 
 
 def pred_of(lg):
@@ -1066,6 +1066,55 @@ def part_test_perm(m, g, sets, a, dev, bs):
     out["def"] = ("§252 TEST-PERM: TEST2 d 1-4 with the op sentences S_1..S_d reassigned over their slots by default_rng(25150 + d) (>= 1 inversion d >= 2; OW.solve "
                   "== answer asserted; boxes.perm_render = 622fb717's renderer); acc_kprime {d-1, d, K}, WS per pass; mean_at_2_d4 = LP5-D4 style on TEST-PERM d 4")
     return out
+
+
+S256_SHAS = "scratch/s256_ho_shas.json"                                    # §256 DS_v1 §5: set shas committed from a clean (twice-identical) local build
+
+
+@torch.no_grad()
+def part_insert_ho(m, g, sets, a, dev, bs):
+    """§256 HELD-OUT INSERT (DS_v1 §3; boxes.insert_render.held_out_sets on REG TEST2 d 4, built HERE; their shas asserted == scratch/s256_ho_shas.json). Per family: acc at
+    K' = think_k (acc8) pooled over its positions + by_pos (H-OP pooled over sub_c / mul_c / add_v, + by_op); indist = the Note 255-3 INSERT conditions' acc8. Per item."""
+    import boxes.insert_render as IR
+    assert law(a) == 0 and a["d_max"] >= 4, "insert_ho: REG, d_max >= 4"
+    K = a["think_k"]; raw = sets["test2"][4]; HO, metas = IR.held_out_sets(raw); sh = IR.set_shas(HO); ref = json.load(open(S256_SHAS))
+    assert sh == ref["held_out"], "insert_ho: held-out set shas != the committed clean build"
+    out = {"fam": {}, "indist": {}, "items": {}, "set_shas": sh}
+
+    def acc_of(its):
+        T = tokd({"test2": {4: its}}, a, (4,))[4]; A, _ = passes(m, T, dev, bs, {K}); y = np.array([it["ans"] for it in T]); return (A[K] == y), A[K]
+    res = {}
+    for fam, d in HO.items():
+        for pos, its in d.items():
+            ok, pr = acc_of(its); res[(fam, pos)] = ok; out["items"]["%s:%s" % (fam, pos)] = {"sig": [it["sig"] for it in its], "pred": pr.tolist(), "meta": metas[fam][pos]}
+    fams = {}
+    for (fam, pos), ok in res.items():
+        top = "H-OP" if fam.startswith("H-OP-") else fam; fams.setdefault(top, {}).setdefault(pos, []).append((fam, ok))
+    for top, d in fams.items():
+        by_pos = {p: float(np.concatenate([ok for _, ok in L]).mean()) for p, L in d.items()}; allok = np.concatenate([ok for L in d.values() for _, ok in L])
+        out["fam"][top] = {"acc8": float(allok.mean()), "by_pos": by_pos}
+        if top == "H-OP":
+            out["fam"][top]["by_op"] = {f[len("H-OP-"):]: {"acc8": float(np.concatenate([res[(f, p)] for p in IR.HO_FAMS[f]]).mean()),
+                                                           "by_pos": {p: float(res[(f, p)].mean()) for p in IR.HO_FAMS[f]}} for f in IR.HO_FAMS if f.startswith("H-OP-")}
+    ins, _ = IR.insert_eval_sets(raw)
+    for c in IR.CONDS:
+        ok, pr = acc_of(ins[c]); out["indist"][c] = {"acc8": float(ok.mean())}; out["items"]["indist:" + c] = {"pred": pr.tolist()}
+    out["def"] = ("§256 HELD-OUT INSERT (DS_v1 §3): families H-OP (sub_c / mul_c / add_v; before / inside / after), H-CHAINSRC (X = S_j + c after S_j, j 1-3, no new given), "
+                  "H-GIVPOS (the op after S2; its given at the text start / right before the op / after S4), H-EXTEND (X1 = S4 + c, X2 = X1 + c after S4), H-LIVE (Y; X1 = Y + c; "
+                  "X2 = X1 + c at before / inside / after), K3 (3 add_c pairs, random gaps); frames 0-5; acc8 = acc at K' think_k; indist = Note 255-3's conditions")
+    return out
+
+
+@torch.no_grad()
+def part_ws_deep(m, g, sets, a, dev, bs):
+    """§256 WS-DEEP (DS_v1 §3 SELECTION-CREDIT): WS per pass 1..think_k on TEST2 d 5-8 (1,000 each; set shas asserted == scratch/s256_ho_shas.json 'ws_deep'); per item the
+    pass argmax and v_min(t, d)."""
+    K = a["think_k"]; ds = (5, 6, 7, 8); ref = json.load(open(S256_SHAS))
+    assert {str(d): OW.set_sha(sets["test2"][d]) for d in ds} == ref["ws_deep"], "ws_deep: TEST2 d 5-8 shas != the committed build"
+    T = tokd(sets, a, ds); r_, pv = AW.ws_readout(m, T, dev, K, bs, per_item=True)
+    return {"by_d": r_, "items": {str(d): items_rec(T[d], {"ws_pred": pv[str(d)], "v": [[int(it["raw"]["values"][min(t, d)]) for t in range(1, K + 1)] for it in T[d]]})
+                                  for d in T},
+            "def": "§256 WS-DEEP: the trunk's argmax over the 11 number tokens at ':' of pass t vs v_min(t, d), TEST2 d 5-8, fp32"}
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
@@ -1104,7 +1153,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "ws_long": lambda: part_ws_long(m, g, sets, a, dev, bs), "c7": lambda: part_c7(m, g, sets, a, dev, bs),
               "halt": lambda: part_halt(m, g, sets, a, dev, bs), "halthead": lambda: part_halthead(m, g, sets, a, dev, bs),
               "transfer": lambda: part_transfer(m, g, sets, a, dev, bs), "frames": lambda: part_frames(m, g, sets, a, dev, bs),
-              "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs)}[p_]()
+              "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs),
+              "insert_ho": lambda: part_insert_ho(m, g, sets, a, dev, bs), "ws_deep": lambda: part_ws_deep(m, g, sets, a, dev, bs)}[p_]()
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

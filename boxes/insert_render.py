@@ -4,6 +4,8 @@ A pair = a new GIVEN "Y has v u." (NW.GIVEN) + an op FRAMES["add_c"][f] "X ... c
 the item's spine / givens / distractors. Every new given sits at the end of the given block (right before S1's sentence); the new op sentences go where the caller says.
 Seed families: INSERT eval default_rng((25190, cond index, item index)); training (--distract_p) coin / k default_rng((seed, 25196, step, k)) and the draw
 default_rng((seed, 25195, step, k)) - disjoint."""
+import hashlib
+
 import numpy as np
 
 import boxes.nested_words as NW
@@ -71,6 +73,96 @@ def insert_eval_sets(raw):
             o, m = insert_eval(it, c, i); its.append(o); ms.append(m)
         sets[c] = its; metas[c] = ms
     return sets, metas
+
+
+SEED_HO = 25200                                                             # §256 held-out families (DS_v1 §3): default_rng((25200, family index, position index, item))
+HO_FAMS = {"H-OP-sub_c": ["before", "inside", "after"], "H-OP-mul_c": ["before", "inside", "after"], "H-OP-add_v": ["before", "inside", "after"],
+           "H-CHAINSRC": ["1", "2", "3"], "H-GIVPOS": ["start", "before_op", "after_Sd"], "H-EXTEND": ["after_Sd"], "H-LIVE": ["before", "inside", "after"], "K3": ["mixed"]}
+GAP = {"before": ("before", "S1"), "inside": ("after", "S2"), "after": ("after", "S4")}
+
+
+def _names(it, rng, n):
+    used = set(it["names"]["spine"]) | set(it["names"]["givens"]) | set(it["names"]["distractors"]); free = [x for x in OW.NAMES if x not in used]
+    return [free[i] for i in rng.choice(len(free), size=n, replace=False)]
+
+
+def _frame(rng):
+    return int(OW.FRAME_TRAIN[int(rng.integers(0, len(OW.FRAME_TRAIN)))])
+
+
+def _seq(it):
+    sents, q = statements(it); assert " ".join(sents + [q]) == it["text"], "insert_render: clean rebuild"; return list(zip(it["order"], sents)), q
+
+
+def _put(seq, x, side, label):
+    lab = [y[0] for y in seq]; at = lab.index(label) + (1 if side == "after" else 0); return seq[:at] + x + seq[at:]
+
+
+def _finish_ho(it, seq, q, meta, tag):
+    lab = [x[0] for x in seq]; o = dict(it); o["text"] = " ".join([x[1] for x in seq] + [q]); o["insert_labels"] = lab; o["sig"] = it["sig"] + ":" + tag
+    assert OW.solve(o["text"]) == it["answer"], ("held-out insert: solve != answer", tag, it["sig"]); meta["labels"] = lab; return o
+
+
+def held_out(it, fam, pos, idx):
+    """§256 DS_v1 §3 held-out insert families on a d = 4 item (answers unchanged; solve asserted). New givens go at the end of the given block unless the family moves them."""
+    fi = list(HO_FAMS).index(fam); pi = HO_FAMS[fam].index(pos); rng = np.random.default_rng((SEED_HO, fi, pi, idx)); u = it["unit"]; sp = it["names"]["spine"]
+    seq, q = _seq(it); s1 = [x[0] for x in seq].index("S1"); meta = {"fam": fam, "pos": pos}
+    if fam.startswith("H-OP"):
+        op = fam[len("H-OP-"):]; f = _frame(rng)
+        if op == "add_v":
+            Y, Z, X = _names(it, rng, 3); vy, vz = int(rng.integers(1, 10)), int(rng.integers(1, 10))
+            giv = [("NG0", NW.GIVEN.format(A=Y, v=vy, u=u)), ("NG1", NW.GIVEN.format(A=Z, v=vz, u=u))]; txt = NW.FRAMES["add_v"][f].format(B=X, A=Y, C=Z, u=u)
+        else:
+            Y, X = _names(it, rng, 2); vy = int(rng.integers(1, 10)); c = int(rng.integers(2, 10)) if op == "mul_c" else int(rng.integers(1, 10))
+            giv = [("NG0", NW.GIVEN.format(A=Y, v=vy, u=u))]; txt = NW.FRAMES[op][f].format(B=X, A=Y, C=None, c=c, u=u)
+        seq = seq[:s1] + giv + seq[s1:]; seq = _put(seq, [("NO0", txt)], *GAP[pos]); meta.update(frame=f)
+    elif fam == "H-CHAINSRC":
+        j = int(pos); (X,) = _names(it, rng, 1); f = _frame(rng); c = int(rng.integers(1, 10))
+        seq = _put(seq, [("NO0", NW.FRAMES["add_c"][f].format(B=X, A=sp[j], C=None, c=c, u=u))], "after", "S%d" % j); meta.update(frame=f, j=j)
+    elif fam == "H-GIVPOS":
+        Y, X = _names(it, rng, 2); f = _frame(rng); vy = int(rng.integers(1, 10)); c = int(rng.integers(1, 10))
+        g = [("NG0", NW.GIVEN.format(A=Y, v=vy, u=u))]; op = [("NO0", NW.FRAMES["add_c"][f].format(B=X, A=Y, C=None, c=c, u=u))]
+        seq = _put(seq, op, *GAP["inside"])                                # the op is fixed after S2; only the given moves
+        if pos == "start":
+            seq = g + seq
+        elif pos == "before_op":
+            seq = _put(seq, g, "before", "NO0")
+        else:
+            seq = _put(seq, g, "after", "S4")
+        meta.update(frame=f)
+    elif fam == "H-EXTEND":
+        X1, X2 = _names(it, rng, 2); f1, f2 = _frame(rng), _frame(rng); c1, c2 = int(rng.integers(1, 10)), int(rng.integers(1, 10))
+        ops = [("NO0", NW.FRAMES["add_c"][f1].format(B=X1, A=sp[4], C=None, c=c1, u=u)), ("NO1", NW.FRAMES["add_c"][f2].format(B=X2, A=X1, C=None, c=c2, u=u))]
+        seq = _put(seq, ops, "after", "S4"); meta.update(frames=[f1, f2])
+    elif fam == "H-LIVE":
+        Y, X1, X2 = _names(it, rng, 3); f1, f2 = _frame(rng), _frame(rng); vy = int(rng.integers(1, 10)); c1, c2 = int(rng.integers(1, 10)), int(rng.integers(1, 10))
+        seq = seq[:s1] + [("NG0", NW.GIVEN.format(A=Y, v=vy, u=u))] + seq[s1:]
+        ops = [("NO0", NW.FRAMES["add_c"][f1].format(B=X1, A=Y, C=None, c=c1, u=u)), ("NO1", NW.FRAMES["add_c"][f2].format(B=X2, A=X1, C=None, c=c2, u=u))]
+        seq = _put(seq, ops, *GAP[pos]); meta.update(frames=[f1, f2])
+    elif fam == "K3":
+        giv, ops, m3 = draw_pairs(it, 3, rng); gaps = [("before", "S1")] + [("after", "S%d" % t) for t in range(1, 5)]
+        seq = seq[:s1] + giv + seq[s1:]
+        for op in ops:
+            seq = _put(seq, [op], *gaps[int(rng.integers(0, len(gaps)))])
+        meta.update(pairs=m3)
+    return _finish_ho(it, seq, q, meta, "%s:%s" % (fam, pos)), meta
+
+
+def held_out_sets(raw):
+    """{fam: {pos: [items]}} + metas on TEST2 d 4 (1,000 per (family, position))."""
+    sets = {}; metas = {}
+    for fam, poss in HO_FAMS.items():
+        for p in poss:
+            its = []; ms = []
+            for i, it in enumerate(raw):
+                o, m = held_out(it, fam, p, i); its.append(o); ms.append(m)
+            sets.setdefault(fam, {})[p] = its; metas.setdefault(fam, {})[p] = ms
+    return sets, metas
+
+
+def set_shas(sets):
+    """sha256 over the texts of each (family, position) set (DS_v1 §5: committed from a clean build, asserted on the host)."""
+    return {fam: {p: hashlib.sha256("\n".join(x["text"] for x in its).encode()).hexdigest() for p, its in d.items()} for fam, d in sets.items()}
 
 
 def distract(it, seed, step, k):

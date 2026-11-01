@@ -27,7 +27,8 @@ E255 = [
         if a.perm_p:                                                        # §252 --perm_p: per-item seeded coin / permutation (d >= 2), solve + disjointness asserted'''),
 (r'''    TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets(''',
  r'''    assert not (a.distract_p and a.perm_p), "--distract_p with --perm_p: not built"
-    INS_TEXTS = {it["text"] for its_ in IR.insert_eval_sets(SETS["test2"][4])[0].values() for it in its_} if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b)
+    INS_TEXTS = ({it["text"] for its_ in IR.insert_eval_sets(SETS["test2"][4])[0].values() for it in its_}
+                 | {it["text"] for d_ in IR.held_out_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}) if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b) + §256 held-out sets
     DSTAT = {}                                                              # Note 255-5: {n: count} in the open 1k bin
     TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets('''),
 (r'''    MC_TR = sorted([tok_aw(s_mc.draw(a.d_max), a.aux_target, a.cue, a.write_src) for _ in range(256)], key=lambda it: -st_len(it)) if s_mc else None''',
