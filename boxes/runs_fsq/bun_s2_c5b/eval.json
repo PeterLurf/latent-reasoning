@@ -1,0 +1,28 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 4,
+ "seed": 2,
+ "parts": {
+  "halt_inc": {
+   "file": "eval_halt_inc.json",
+   "sec": 298
+  },
+  "halthead2": {
+   "file": "eval_halthead2.json",
+   "sec": 362
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_bs": 250,
+ "write_src": "answer",
+ "ds": [
+  2,
+  3,
+  4
+ ],
+ "module_sha256": "dd5df5a61832bb1df38bc7dd34277af42056bd736f23fe69a05e8003104595ad",
+ "train": null
+}
