@@ -1,3 +1,5 @@
 # §251 ledger (fill_s262); last field = $
 # VOID attempt1 (train line refused on the host: scratch/s256_ho_shas.json not shipped; realised line kept): 402:bun_s1 82.178.70.231:42114 58796879 $0.207/h sps 1.3032795111338298 steps 8000 0.93
 realised:b402 # 58796879 (wall guard spent $0.065 at 04:26:42 + 7 min x $0.207/h to destroy at 04:33:26) (§259 bun_s1 attempt 1: the train line refused - the --blob sha jsons not shipped) 0.089
+402:bun_s1 82.178.70.231:42061 58802109 $0.207/h sps 1.3056787292162577 steps 8000 0.93
+# NOTE 2026-11-02 06:16:31 b403-b405: PMAX 0.25 (RTX 3090 only), admit $1.20 / guard $1.30, CAPF $5.0 (Audit option (a): no 3090 <= $0.21 for 1 h; the admit projection incl. setup + eval tail at $0.25 is ~$1.12); restarted via env at the retry boundary
