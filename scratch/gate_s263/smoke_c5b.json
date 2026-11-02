@@ -1,0 +1,47 @@
+{
+ "hi_ds": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7"
+ ],
+ "hi_fields": [
+  "acc_halt",
+  "acc_k8",
+  "items",
+  "khalt_hist",
+  "mean_khalt",
+  "mean_passes_run",
+  "n",
+  "never_halt_n"
+ ],
+ "tau_type": "float",
+ "fit_law": "reg",
+ "rel_inc_len": 14,
+ "h2_ds": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7"
+ ],
+ "h2_fields": [
+  "acc_halt",
+  "acc_k14",
+  "acc_k8",
+  "items",
+  "khalt_hist",
+  "mean_khalt",
+  "n",
+  "never_halt_n"
+ ],
+ "h2_kmax": 14,
+ "h2_hist_keys": 15,
+ "json_ok": true,
+ "pass": true
+}
