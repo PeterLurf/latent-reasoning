@@ -39,7 +39,11 @@ q = ("# THEORY Note 257-2 eval-only (score_hx): halthead (REG fit, TEST2 d 1..7)
      "boxes/runs_fsq/dch_s1_hx259_gtime boxes.inject_aw %s --time_steps 60\n") % (fs, fs)   # the filler cell = dch_s1_hx259 (post-admit checks its args.json)
 import shutil  # noqa: E402
 shutil.copy("boxes/runs_fsq/dch_s1/args.json", "scratch/s261_args_frozen_dch_s1_hx259.json")   # the eval-only line copies dch_s1's args.json into the cell dir
-for k in (1, 2):
-    q += ("boxes/runs_fsq/dch_s%d_hx259 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args boxes/runs_fsq/dch_s%d/args.json --parts halthead "
-          "--long 8,64,128:1,2,3,4,5,6:eval_long_k128.json --ship scratch/s256_ho_shas.json scratch/s257_ho_shas.json\n") % (k, blob, INIT[k][0], INIT[k][1], k)
+# b395 lesson (dis_s2_hx259 rc 1: FileNotFoundError): a '--model <path>=<sha>' token is NOT shipped (auto_ship takes plain paths); every model now also rides --ship as a
+# plain path. + the dis_s2 line b395 lost (its registered cell, the same command with the model shipped), so one host covers both.
+DIS2 = ("boxes/runs_fsq/dis_s2_init/model.pt", "a68cb45e4b4d153d"); d2 = [sha_nobuf(os.path.abspath(DIS2[0])) for _ in range(3)]
+assert sum(x.startswith(DIS2[1]) for x in d2) >= 2, ("dis_s2 init", d2)
+for tag, k, (mp, ms) in (("dch", 1, INIT[1]), ("dch", 2, INIT[2]), ("dis", 2, DIS2)):
+    q += ("boxes/runs_fsq/%s_s%d_hx259 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args boxes/runs_fsq/%s_s%d/args.json --parts halthead "
+          "--long 8,64,128:1,2,3,4,5,6:eval_long_k128.json --ship scratch/s256_ho_shas.json scratch/s257_ho_shas.json %s\n") % (tag, k, blob, mp, ms, tag, k, mp)
 open("scratch/gen_q_b400.txt.hold", "w", encoding="utf-8", newline="\n").write(q); print("b400 written; pre-deploy OK")

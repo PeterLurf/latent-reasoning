@@ -41,5 +41,5 @@ import shutil  # noqa: E402
 shutil.copy("boxes/runs_fsq/dis_s1/args.json", "scratch/s261_args_frozen_dis_s1_hx259.json")   # the eval-only line copies dis_s1's args.json into the cell dir
 for k in (1, 2):
     q += ("boxes/runs_fsq/dis_s%d_hx259 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args boxes/runs_fsq/dis_s%d/args.json --parts halthead "
-          "--long 8,64,128:1,2,3,4,5,6:eval_long_k128.json --ship scratch/s256_ho_shas.json scratch/s257_ho_shas.json\n") % (k, blob, INIT[k][0], INIT[k][1], k)
+          "--long 8,64,128:1,2,3,4,5,6:eval_long_k128.json --ship scratch/s256_ho_shas.json scratch/s257_ho_shas.json %s\n") % (k, blob, INIT[k][0], INIT[k][1], k, INIT[k][0])   # b395 lesson: ship the model as a plain path
 open("scratch/gen_q_b395.txt.hold", "w", encoding="utf-8", newline="\n").write(q); print("b395 written; pre-deploy OK")
