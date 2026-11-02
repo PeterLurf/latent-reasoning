@@ -23518,6 +23518,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **EXTEND** (one +6k, run p2m_s1_ext, cap $1.5) if 0.50 <= ws12 < 0.90, or ws12 < 0.50 with ws12 - ws6 >= 0.10 (rising). The extension continues the cosine schedule to 18k (resume from the 12k ckpt), disclosed. The same SEED-OK gate applies at 18k, final, with no second extension;
   - otherwise **NO-SEED** (STOP).
 
+**Note 259-2 (2026-11-02 03:33 EST; Note 257-2 / 259-1 L1 + L2 SCORED by theory/score_hx.py (dis) and --dch, each run twice with identical verdicts: dis 'L1 C5-IN-RANGE / C5-IN-RANGE | L2 DRIFT / DRIFT'; dch the same; b395 / b400, family $0.408; dis_s1 / dis_s2 evaluated on different 3090 hosts, disclosed).**
+- **L1 (post-hoc halt head, fit d <= 4), (acc_k8, acc_halt, mean_khalt):**
+  - In range (d 1-4), all four models pass (acc_halt >= 0.99; mean_khalt = d - 1 + 0.05-0.40; increasing).
+  - **Out of range, accuracy is lost when halting:**
+    - dch_s1: d 5 0.991 / 0.961 / 4.24; d 6 0.971 / 0.905 / 5.29; d 7 0.900 / 0.791 / 6.08;
+    - dch_s2: d 6 0.963 / 0.930; d 7 0.889 / 0.796;
+    - dis_s1: d 6 0.981 / 0.826; d 7 0.874 / 0.505.
+  - mean_khalt <= d holds and grows with d (offset vs d - 1 up to +0.44). The never-halt share is <= 0.055.
+  - So the head scales its pass count with depth, but halts too early on a share of the deep items (acc_halt < acc_k8 - 0.02 at d 5-7). C5 stays partial: a learned halt in range, depth-sensitive but lossy out of range.
+- **L2 (K' 128 hold): DRIFT in all four, at every d 1-6.**
+  - dch_s1 acc K' 8 / 64 / 128: d 1 1.00 / 0.44 / 0.18; d 4 1.00 / 1.00 / 0.63; d 6 0.97 / 0.96 / 0.78.
+  - dch_s2: d 4 1.00 / 0.98 / 0.43.
+  - ||S|| ratio K' 128 / 8 = 10-17x (cf. §240: 15x untreated vs 1.1x with the penalty).
+  - As predicted (no hold-increment penalty in the rcb / dis / dch lineage). C6 is not met on the C2 models.
+- **§259 BUNDLE is triggered (Note 259-1 condition: L2 DRIFT on dch):** both dch seeds get BUN + BUN-CTRL arms. Scorer theory/score_bu.py (fixtures 9/9) is committed before launch, for Audit's G-D.
+  - Prediction: C6 likely restored (§240); C2 retention ~0.6 (REVIEW_BU B3); C5-EXTRAP unlikely unless the halt head's out-of-range loss changes with the hold (its in-range halting is already fine).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

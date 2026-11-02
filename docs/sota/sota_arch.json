@@ -65,13 +65,13 @@
   },
   {
    "c": "C6",
-   "status": "pending on dch",
-   "evidence": "K'128 hold eval running (Note 257-2 / 259-1); §240 showed the hold penalty works on an earlier lineage"
+   "status": "not met on dch",
+   "evidence": "K'128 drift at every d (dch_s1 d4 K'128 0.63, d6 0.78; ||S|| x10-17); §259 bundle (hold penalty) triggered (Note 259-2)"
   },
   {
    "c": "C5",
-   "status": "pending on dch",
-   "evidence": "post-hoc halt head out-of-range test running (Note 259-1)"
+   "status": "partial",
+   "evidence": "post-hoc halt head: in range (d1-4) halts at ~d-1 with accuracy kept; out of range depth-sensitive but lossy (d6 0.905 / 0.930 vs 0.971 / 0.963) (Note 259-2)"
   },
   {
    "c": "C4",
