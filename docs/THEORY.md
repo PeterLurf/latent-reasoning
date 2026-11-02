@@ -344,6 +344,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
 | 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **SCORED 11-01 (256-1): SELECTOR 0/2, C2 2/2 - d 6 0.98 / 0.96 vs rcb 0.35 / 0.37, d 7 0.87 / 0.81, untrained passes 5-7 compute (WS >= 0.87 / 0.78), RETAIN kept; H-CHAINSRC / H-GIVPOS fail (surface skip-rule); $2.37.** **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
 | 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
+| 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
+| 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 
 ## Live sections
 
@@ -19751,6 +19753,37 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
     - Separating the cue from full reachability would need a distractor reachable from the question, which changes the answer. Out of scope.
   - (2) The 8k FT restarts warmup + cosine at lr 1e-4 from a converged model (disclosed in the args diff). NONE-control reading: dis_s* §256 numbers are step 0. TRAINED-TYPE is descriptive only (held-out items, not held-out structure).
   - RAM: dis_s* ckpts copied from an unbuffered read, sha-asserted on the host; every set built on the host.
+
+## 258. LARGER-BASE DISTRACT: does the §256 recipe hold, and improve, on GPT-2 medium? (user via Audit, larger bases approved; Theory's design; Audit approves; guard **$20**; pre-registered 2026-11-01, before any build or output)
+
+- **Text:** docs/research_largebase2_2026-11-01/LB2_v1.md. Red team REVIEW_LB2.md (GO-with-fixes, adopted).
+- **Stages:**
+  - **B BRIDGE (small):** aw_plaw2_s1 -> REG d <= 4 + distract, 16k (de-risks the merge; small comparator).
+  - **S0:** --base gpt2-medium install; bitwise gate on small; G-TIME / mem at the S3 shape; projection stop above $14.
+  - **S1 ASKNAME-M:** the s233 recipe exactly, LR bracket {3e-5, 1e-4}. Gate: P1-ASK+NAME >= 0.98, TEST2 d 1 >= 0.98.
+  - **S2 P2-M:** 12k. Gate on TEST2 d 2 >= 0.90 AND eval WS d 2 pass 2 >= 0.90; read at 6k / 12k, one +6k extension.
+  - **S3 DIS-M:** REG d <= 4 + distract 16k (two stages if B fails).
+- **S3 binding:**
+  - RETAIN (incl. NOT-DECODER, SWAP4, LP5-D4, CUE-ONLY, STABLE);
+  - HOLDS: d 6 >= 0.90, d 7 >= 0.80, WS d 6 passes 1-6 >= 0.90;
+  - IMPROVES: d 8 >= 0.70 or d 7 >= 0.95 vs B and dis_s*.
+  - Labels MEDIUM-C2-IMPROVES / -HOLDS / MEDIUM-C1-ONLY / FAIL (PILOT, 1 seed). Seed 2 runs before any scale claim. GPT-2 large is a separate registration, only if IMPROVES.
+- **OC:** see LB2_v1 §3. Censoring: VOID-RERUN once per stage. Disclosed: GPU class, 1 seed.
+- **Cost:** ~$11-17, guard $20.
+
+## 259. BUNDLE: one model meeting the C1, C2, C6 and C5 gates (scoped) (Theory's discretion; conditional on Note 257-2 L2 = DRIFT; Audit approves; guard **$4**; pre-registered 2026-11-01, before any output)
+
+- **Text:** docs/research_bundle_2026-11-01/BU_v1.md. Red team REVIEW_BU.md (GO-with-fixes, adopted).
+- **Condition:** it runs only on dis seeds that L2 reads as DRIFT. If both HOLD, it is eval-only at $0 (dis_s* + L1's head).
+- **Arms:** BUN = dis_s<k> + --hold_inc 1.6 --hold_log, keeping distract, 8k, hold_start 500. BUN-CTRL = the same without the penalty. Post-hoc halt head on frozen BUN (§248 procedure, d 1-7).
+- **Binding:**
+  - C1 RETAIN;
+  - C2 retention vs dis (d 6 / 7 >= dis - 0.05; WS d 6 passes 5-6 >= 0.90);
+  - C6 (K' 64 / 128 >= K' 8 - 0.02 at d 1-6; norm guard one-sided vs BUN-CTRL at 1.25x; LP0-W on CTRL windows; SEED-VAR);
+  - C5 (score_hx C5-EXTRAP with censoring); STABLE.
+  - Label BUNDLE-PASS (scoped). Scope: plan given; chain order; REG frames 0-5; one lineage; per-pass aux (no C4); C2 within K = 8 (K' > K untested).
+- **OC:** C6 0.6; C2 retained 0.6. Censoring: FAIL at final, VOID-RERUN once.
+- **Cost:** <= ~$3.4, guard $4. Scorer theory/score_bu.py before launch.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
