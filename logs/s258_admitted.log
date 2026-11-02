@@ -4,3 +4,4 @@
 394:dch_s2 190.49.110.192:5123 58739762 $0.2174/h sps 1.3702577074368796 0.92
 # NOTE 2026-11-01 22:08:19 b393 cell + wall guards restarted at $1.20 (Audit v2 (1): BAD spend family-only; was $1.1467); b393 / b394 wall guards priced at dph_total 0.1817 / 0.2243 (Audit)
 realised:b393 # 58735080 (wall guard spent $0.938 at 00:09:35 at dph_total $0.1817/h + 0.6 min to destroy at 00:10:10) (§257 dch_s1 + dis_s1_dc257 eval-only + host gates) 0.940
+realised:b394 # 58739762 (wall guard spent $1.139 at 00:39:46 at dph_total $0.2243/h + 0.6 min to destroy at 00:40:20) (§257 dch_s2 + dis_s2_dc257 eval-only + host gates) 1.141
