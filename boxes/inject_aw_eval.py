@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh")
-AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab")
+AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
 
 
 def pred_of(lg):
@@ -1274,6 +1274,18 @@ def part_stab_fresh(m, g, sets, a, dev, bs):
     out["def"] = ("Note 259-11 C5-STABLE FRESH: a new REG draw (Stream(25311), d 1..8 x 1,000, sigs disjoint from TEST2, the halthead / halthead2 / halt_inc fit sets and "
                   "the training exclusion = the eval sets; no within-draw duplicates); per item the decoder's pred at K' 0..14 (seq_std passes, S from zero), ans, sig; fp32")
     return out
+
+
+@torch.no_grad()
+def part_stab(m, g, sets, a, dev, bs):
+    """Note 260-3 (score_gbf, the descriptive r = 3 halt): per item of REG TEST2 d 1..7 the decoder's pred at K' 0..14 (hh_dump_inc, the run's own inputs - the generic cue
+    for a generic-cue run), ans, sig; per d the TEST2 set sha. Layout as eval_stab_fresh.json. No halting decisions."""
+    out = {"set_shas": {str(d): OW.set_sha(sets["test2"][d]) for d in range(1, 8)}}; T = tokd(sets, a, range(1, 8))
+    for d in range(1, 8):
+        _, P, _ = hh_dump_inc(m, T[d], dev, bs, SF_KMAX)
+        out[str(d)] = {"n": len(T[d]), "items": {"pred": P.tolist(), "ans": [it["ans"] for it in T[d]], "sig": [it["raw"]["sig"] for it in T[d]]}}
+    out["def"] = "Note 260-3 STAB: REG TEST2 d 1..7, per item the decoder's pred at K' 0..14 (the run's own pass inputs, S from zero), ans, sig; fp32"
+    return out
 def load(run, dev):
     a = json.load(open(os.path.join(run, "args.json"))); import boxes.deltamem as DM; DM.FAST_ADD = bool(a.get("fast_add"))
     ns = argparse.Namespace(**{**a, "init_trunk": "", "init_sha": ""}); torch.manual_seed(a["seed"]); m, g, params = AW.build_aw(ns, dev)   # model.pt holds every weight
@@ -1315,7 +1327,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "test_perm": lambda: part_test_perm(m, g, sets, a, dev, bs),
               "insert_ho": lambda: part_insert_ho(m, g, sets, a, dev, bs), "ws_deep": lambda: part_ws_deep(m, g, sets, a, dev, bs),
               "halt_inc": lambda: part_halt_inc(m, g, sets, a, dev, bs), "halthead2": lambda: part_halthead2(m, g, sets, a, dev, bs),
-              "stab_fresh": lambda: part_stab_fresh(m, g, sets, a, dev, bs)}[p_]()
+              "stab_fresh": lambda: part_stab_fresh(m, g, sets, a, dev, bs),
+              "stab": lambda: part_stab(m, g, sets, a, dev, bs)}[p_]()
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

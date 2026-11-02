@@ -1,0 +1,32 @@
+{
+ "planfree_rc": 0,
+ "gates_pass": {
+  "plan_free": true,
+  "cue_identical_all_passes": true,
+  "cue_has_no_entity_name": true,
+  "items_checked": 200,
+  "think_k": 8,
+  "cue": "generic",
+  "passes_assert": "armed (inject_aw_eval.passes, \u00a7252)"
+ },
+ "stab_ds": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7"
+ ],
+ "stab_pred_len": 15,
+ "full_test2_shas": {
+  "1": "94b5fc7cbff8e13470d7be82223a77a0aed7758b5184122fb41f242ba6fa678b",
+  "2": "eee814d4ffb2e3c7adc3ff22dd7bb6ea0fb8c89063ee2e427ffcb2c6fe88d431",
+  "3": "7b525a572e81b8a304a7e061b4f5d03f2ff5fcdaad38ab253f0bb236cf019e33",
+  "4": "0a345c77b86aa3150e68479837231fb993699c3711f39d5d073462552e27f924",
+  "5": "d0c30fcc5a6d2d2943f0c92346d25756f17dc73866ff5c3c27de69e90014a70e",
+  "6": "845efd42d977d40b331563ee8cb410fd7c8538f5a564916a4b2d7dd0adfdfb7d",
+  "7": "caedd0b7866d220908ee6ef38bdde616b7d4da99674ee12de43d3c2e048f861a"
+ },
+ "pass": true
+}
