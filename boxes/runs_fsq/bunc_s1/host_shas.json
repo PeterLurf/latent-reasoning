@@ -1,0 +1,10 @@
+{
+ "args.json": "e28ced2a03c9b4369bf730d5d3577acb7c1186211993c9283cb36514d1e5d907",
+ "args_diff.json": "38f5daf08a08b84873a439f50a1806a87f7782e562a2de9f47373f07b48b16ea",
+ "eval.json": "12eefff24cd3bf46b9b99c36f14fe25975232dc495426438f60540c4cb87fcbe",
+ "eval_acc.json": "5253c4111195a463df236dba8a3d520ddc348f5cb2ee3f2ba9f60cc9f21a893a",
+ "eval_long_k128.json": "28cd1b275d887dacce33472a87f772a12b653e018757f61110cd482dd8c6e88e",
+ "eval_ws_deep.json": "3e9250b9115f6eaf95aa39cb7c4cacc4dc794b903e099234af1acea4e76ba8b0",
+ "train_summary.json": "b50ffca2822f87161d1a6b60a743adb30bad4fd4c6ed3a69dd8a9c4f26b81419",
+ "log.jsonl": "33e80f0ecf2b29af24e18d252841712186ab921ce6df208f6f6cdc1bc841ba62"
+}

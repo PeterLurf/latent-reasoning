@@ -8,3 +8,4 @@ realised:b402 # 58796879 (wall guard spent $0.065 at 04:26:42 + 7 min x $0.207/h
 404:bunc_s1 59.127.5.172:11981 58816122 $0.215/h sps 1.292875385284424 steps 8000 0.96
 405:bunc_s2 50.7.159.181:20900 58819803 $0.1817/h sps 1.280760665734609 steps 8000 0.81
 realised:b402 # 58802109 (wall guard spent $0.968 at 09:30:56 at dph_total $0.207/h + 6.5 min to destroy at 09:37:29) (§259 bun_s1 attempt 2) 0.990
+realised:b404 # 58816122 (wall guard spent $0.791 at 10:39:58 at dph_total $0.215/h + 3.7 min to destroy at 10:43:39) (§259 bunc_s1) 0.804
