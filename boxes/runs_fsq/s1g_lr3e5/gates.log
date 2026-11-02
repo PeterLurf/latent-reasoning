@@ -1,19 +1,5 @@
 offbit_aw pass True
 offbit_ow pass True
-Traceback (most recent call last):
-  File "/workspace/Latent/scratch/gate_s258m.py", line 156, in <module>
-    r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)
-        ^^^^^^^^^^^
-  File "/workspace/Latent/scratch/gate_s258m.py", line 86, in step0
-    HP = [EV.hh_dump(m, T[dd], DEV, 50) for dd in (1, 2, 3, 4)]; H = np.concatenate([x[0] for x in HP]); P = np.concatenate([x[1] for x in HP])   # one d per batch (as part_halthead)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/Latent/scratch/gate_s258m.py", line 86, in <listcomp>
-    HP = [EV.hh_dump(m, T[dd], DEV, 50) for dd in (1, 2, 3, 4)]; H = np.concatenate([x[0] for x in HP]); P = np.concatenate([x[1] for x in HP])   # one d per batch (as part_halthead)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/conda/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/Latent/boxes/inject_aw_eval.py", line 843, in hh_dump
-    hd, pr = hh_hidden(m, S, ch, dev); H[sl, 0] = hd.cpu().numpy(); P[sl, 0] = pr
-                                                                    ~^^^^^^^
-TypeError: 'int' object does not support item assignment
+step0 pass True
+smoke_aw pass True
+smoke_ow pass True

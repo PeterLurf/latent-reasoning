@@ -13,3 +13,4 @@ realised:b398 # 58762685 (wall guard spent $0.215 at 23:35 + 5 min x $0.4167/h t
 399:askm_lr1e4 38.29.145.10:40965 58767989 $0.4167/h sps 0.2512490709622701 steps 8000 0.65
 398:askm_lr3e5 38.29.145.13:40974 58770320 $0.4167/h sps 0.25401532649993896 steps 8000 0.65
 realised:b399 # 58767989 (wall guard spent $0.638 at 01:17:28 at dph_total $0.4167/h + 6.5 min to destroy at 01:24) (§258 S1 askm_lr1e4 + host gates s1g_lr1e4 PASS) 0.683
+realised:b398 # 58770320 (wall guard spent $0.567 at 01:25:46 at dph_total $0.4167/h + 7 min to destroy at 01:32:49) (§258 S1 askm_lr3e5 attempt 2 + host gates s1g_lr3e5 PASS) 0.616

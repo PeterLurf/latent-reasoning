@@ -3,8 +3,8 @@
  "think_k": 0,
  "d_max": 2,
  "steps_timed": 60,
- "sec_per_step": 0.25223248402277626,
- "est_hours_steps": 0.560516631161725,
+ "sec_per_step": 0.25401532649993896,
+ "est_hours_steps": 0.5644785033331977,
  "gpu": "NVIDIA RTX A6000",
  "micro": 2,
  "peak_gib": 8.707521915435791

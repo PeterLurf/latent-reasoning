@@ -1,0 +1,7 @@
+{
+ "args.json": "5387906a2f592207d93a11f6794e2463f3459658317c78b07b1f480b73ca8f1a",
+ "eval.json": "67ddfec04886cac00257fb8595d5bd4bb5dd7ac6bfb3d188047f3a5b24a6de39",
+ "eval_halthead.json": "ffe7459d96e32d86edcc0bbb340701ddbb0e3d613ea6a228a996ec4fef016ad9",
+ "eval_long_k128.json": "06194fefe3927b9b40db80031b9fc2b8f095ad52fb06a87df4da2bc43a5fb967",
+ "log.jsonl": "71216577089f4e41c677258d9b2a4be185cbb0a22a84384449627e4d43d5ccdc"
+}
