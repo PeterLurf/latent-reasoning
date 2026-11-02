@@ -49,7 +49,9 @@ def seed(runs, bun, ctrl, ref):
     sok, smsg = AO.stable(runs, bun); st = sok is not False
     crit = {"C1": c1, "C2": c2, "C6": c6, "C5": c5, "STABLE": st}
     fail = [k for k, v in crit.items() if not v]
-    return {"label": "BUNDLE-PASS (scoped)" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "hold": hl, "norm_guard": (ng_ok, ng), "lp0": (lp_ok, lp),
+    bl = jl(os.path.join(runs, ctrl, "eval_long_k128.json"))     # Note 259-3: BUN-CTRL hold, descriptive (attribution of a C6 HOLD to the penalty)
+    bunc_hold = HX.hold(bl)["label"] if bl is not None else None
+    return {"label": "BUNDLE-PASS (scoped)" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "hold": hl, "bunc_hold_desc": bunc_hold, "norm_guard": (ng_ok, ng), "lp0": (lp_ok, lp),
             "c5": c5r.get("label"), "d6": a["6"]["acc"], "d7": a["7"]["acc"], "acc128": {d: f["eval_long_k128"]["by_d"][d]["acc"]["128"] for d in f["eval_long_k128"]["by_d"]}}
 
 

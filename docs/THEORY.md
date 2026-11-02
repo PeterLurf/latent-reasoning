@@ -23535,6 +23535,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **§259 BUNDLE is triggered (Note 259-1 condition: L2 DRIFT on dch):** both dch seeds get BUN + BUN-CTRL arms. Scorer theory/score_bu.py (fixtures 9/9) is committed before launch, for Audit's G-D.
   - Prediction: C6 likely restored (§240); C2 retention ~0.6 (REVIEW_BU B3); C5-EXTRAP unlikely unless the halt head's out-of-range loss changes with the hold (its in-range halting is already fine).
 
+**Note 259-3 (2026-11-02 03:51 EST; §259 kit G-D'd by Audit with two changes, recorded before launch).**
+- **(1)** BUN-CTRL also runs run_long K' 128 and ws_deep, so a C6 HOLD in BUN can be attributed to the penalty rather than to 8k more training.
+  - score_bu.py reports BUNC's hold label descriptively beside BUN's (bunc_hold_desc; fixtures 9/9). Binding gates are unchanged.
+- **(2)** The family cap rises from $4.0 to **$4.8** (4 cells x admit $1.10-1.20 could exceed $4.0); projection ~$3.4.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
