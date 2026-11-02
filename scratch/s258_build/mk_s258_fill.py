@@ -10,6 +10,7 @@ import subprocess
 src = open("scratch/s257_fill.sh", encoding="utf-8").read().replace("s257", "s258")
 src = re.sub(r"(?m)^# §256 DISTRACT runs filler.*$", "# s258 filler template (= s257_fill.sh + Audit 11-01 guard fixes: WALLW count refusal, family guard over every cell, guard-health check after ADMIT).", src)
 E = [
+    ("PMAX=${PMAX:-0.25};", "PMAX=${PMAX:-0.21};"),                    # Audit 11-01 (b394 at $0.2174/h): the practice PMAX 0.21 as the template default
     ('''  [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }\n''',
      '''  [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
   nlq=$(grep -vc '^#' "scratch/gen_q_b$n.txt"); nw=$(echo "$WALLW" | tr ',' '\\n' | grep -c .)   # Audit 11-01 (1): one wall-guard weight per queue line
