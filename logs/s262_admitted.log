@@ -5,3 +5,6 @@ realised:b402 # 58796879 (wall guard spent $0.065 at 04:26:42 + 7 min x $0.207/h
 # NOTE 2026-11-02 06:16:31 b403-b405: PMAX 0.25 (RTX 3090 only), admit $1.20 / guard $1.30, CAPF $5.0 (Audit option (a): no 3090 <= $0.21 for 1 h; the admit projection incl. setup + eval tail at $0.25 is ~$1.12); restarted via env at the retry boundary
 403:bun_s2 190.49.110.192:5124 58811979 $0.2243/h sps 1.3582380533218383 steps 8000 1.04
 # NOTE 2026-11-02 06:58:45 ALERT b402 at 06:58 = attempt 1's post_admit (not stopped at its void; waited 150 min for args.json on the destroyed host 58796879): its HOLD touched the stop file (removed at once, b404 deploying unaffected) and vdestroyed the already-gone 58796879; attempt 2 (58802109) and its drain untouched
+404:bunc_s1 59.127.5.172:11981 58816122 $0.215/h sps 1.292875385284424 steps 8000 0.96
+405:bunc_s2 50.7.159.181:20900 58819803 $0.1817/h sps 1.280760665734609 steps 8000 0.81
+realised:b402 # 58802109 (wall guard spent $0.968 at 09:30:56 at dph_total $0.207/h + 6.5 min to destroy at 09:37:29) (§259 bun_s1 attempt 2) 0.990
