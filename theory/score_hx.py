@@ -1,8 +1,10 @@
 """THEORY Note 257-2: L1 HALT-EXTRAP (C5) + L2 HOLD-DIS (C6) on the §256 C2 models (eval-only on a host; committed before output; Theory is the only scorer).
 Runs dis_s1 / dis_s2. Files:
   eval_halthead.json (§248 procedure on the REG stream: head fit on d U{1..4} items, features = the decoder's answer-position hidden at K' 0..8,
-    y = [pred(K') == pred(8)], halt at the first K' with p >= 0.90 else 8; TEST2 d 1..7): per d {acc_k8, acc_halt, mean_khalt}; head.val_acc.
-  eval_long_k128.json (§240 run_long): by_d[d].acc[K'] for K' in 8 / 64 / 128, d 1..6.
+    y = [pred(K') == pred(8)], halt at the first K' with p >= 0.90 else 8; TEST2 d 1..7): per d {acc_k8, acc_halt, mean_khalt, khalt_hist, never_halt_n, n}; head.val_acc.
+  Censoring (Audit 257-2): a never-halting item counts as halting at K' 8 (its K' 8 answer in acc_halt, 8 in mean_khalt), as the eval does; the never-halt share and the
+  event-only mean are reported beside it, as is mean_khalt - (d - 1) (the decoder adds one hop, so the efficient halt is d - 1).
+  eval_long_k128.json (§240 run_long): by_d[d].acc[K'] for K' in 8 / 64 / 128, d 1..6; by_d[d].s_norm[K'] if present (||S|| ratio K' 128 / 8 reported, descriptive).
 L1 per seed (VOID if head val_acc < 0.80): IN-RANGE d 1-4 = §247 C5 gates (acc_halt >= acc_k8 - 0.02; mean_khalt increasing; mean_khalt <= d + 1);
   EXTRAP d 5-7: acc_halt >= acc_k8 - 0.02 each d, and mean_khalt <= d each d, and mean_khalt strictly increasing over d 1..7.
   Labels: C5-EXTRAP (IN-RANGE + EXTRAP) / C5-IN-RANGE (IN-RANGE only) / NO-SIGNAL.
@@ -34,14 +36,21 @@ def halt(e):
     inr = ok_acc(range(1, 5)) and inc(list(range(1, 5))) and all(g(d, "mean_khalt") <= d + 1 for d in range(1, 5))
     ext = ok_acc(range(5, 8)) and all(g(d, "mean_khalt") <= d for d in range(5, 8)) and inc(list(range(1, 8)))
     lab = "C5-EXTRAP" if (inr and ext) else "C5-IN-RANGE" if inr else "NO-SIGNAL"
-    return {"label": lab, "by_d": {d: {k: g(d, k) for k in ("acc_k8", "acc_halt", "mean_khalt")} for d in range(1, 8)}}
+    def extra(d):
+        r = e[str(d)]; n = r.get("n"); nh = r.get("never_halt_n", 0); hist = r.get("khalt_hist") or {}
+        ev = None
+        if n and hist and n > nh:
+            ev = (sum(int(k) * v for k, v in hist.items()) - 8 * nh) / (n - nh)
+        return {"never_halt_share": (nh / n) if n else None, "event_only_mean": ev, "offset_vs_d_minus_1": r["mean_khalt"] - (d - 1)}
+    return {"label": lab, "by_d": {d: {**{k: g(d, k) for k in ("acc_k8", "acc_halt", "mean_khalt")}, **extra(d)} for d in range(1, 8)}}
 
 
 def hold(e):
     if e is None:
         return {"label": "pending"}
     b = e["by_d"]; bad = [d for d in ("1", "2", "3", "4", "5", "6") if any(b[d]["acc"][k] < b[d]["acc"]["8"] - 0.02 for k in ("64", "128"))]
-    return {"label": "HOLD" if not bad else "DRIFT", "failing_d": bad, "acc": {d: b[d]["acc"] for d in b}}
+    ratio = {d: (b[d]["s_norm"]["128"] / b[d]["s_norm"]["8"]) for d in b if isinstance(b[d].get("s_norm"), dict) and b[d]["s_norm"].get("8")}
+    return {"label": "HOLD" if not bad else "DRIFT", "failing_d": bad, "acc": {d: b[d]["acc"] for d in b}, "s_norm_ratio_128_8": ratio}
 
 
 def score(runs=R):
@@ -53,19 +62,22 @@ def score(runs=R):
 def fixtures():
     res = []
 
-    def world(acc_drop=0.0, k_ext=None, drift=False, val=0.95):
+    def world(acc_drop=0.0, k_ext=None, drift=False, val=0.95, never=0.0):
         d = tempfile.mkdtemp()
         for r in RUNS:
             p = os.path.join(d, r); os.makedirs(p)
             hh = {"head": {"val_acc": val}}
             for dd in range(1, 8):
                 kh = dd - 0.8 if (k_ext is None or dd < 5) else k_ext
-                hh[str(dd)] = {"acc_k8": 1.0, "acc_halt": 1.0 - (acc_drop if dd >= 5 else 0), "mean_khalt": kh}
+                if never and dd >= 5:
+                    kh = (1 - never) * kh + never * 8.0
+                hh[str(dd)] = {"acc_k8": 1.0, "acc_halt": 1.0 - (acc_drop if dd >= 5 else 0), "mean_khalt": kh, "n": 1000, "never_halt_n": int(never * 1000) if dd >= 5 else 0,
+                               "khalt_hist": {str(max(0, dd - 1)): 1000 - (int(never * 1000) if dd >= 5 else 0), "8": int(never * 1000) if dd >= 5 else 0}}
             json.dump(hh, open(os.path.join(p, "eval_halthead.json"), "w"))
             json.dump({"by_d": {str(dd): {"acc": {"8": 1.0, "64": 0.9 if (drift and dd == 6) else 1.0, "128": 1.0}} for dd in range(1, 7)}}, open(os.path.join(p, "eval_long_k128.json"), "w"))
         return d
     for name, kw, want in (("extrap + hold", {}, "L1 C5-EXTRAP / C5-EXTRAP | L2 HOLD / HOLD"), ("acc lost out of range", {"acc_drop": 0.1}, "L1 C5-IN-RANGE / C5-IN-RANGE"),
-                           ("halts late", {"k_ext": 8.0}, "L1 C5-IN-RANGE / C5-IN-RANGE"), ("drift", {"drift": True}, "L2 DRIFT / DRIFT"), ("void head", {"val": 0.7}, "L1 VOID / VOID")):
+                           ("halts late", {"k_ext": 8.0}, "L1 C5-IN-RANGE / C5-IN-RANGE"), ("drift", {"drift": True}, "L2 DRIFT / DRIFT"), ("void head", {"val": 0.7}, "L1 VOID / VOID"), ("30% never halt", {"never": 0.3}, "L1 C5-IN-RANGE / C5-IN-RANGE")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
     o = score(tempfile.mkdtemp()); res.append(("pending", "pending" in o["verdict"], o["verdict"]))
     for r in res:

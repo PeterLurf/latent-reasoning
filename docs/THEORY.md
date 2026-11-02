@@ -23426,6 +23426,10 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Rule:** HOLD if every d has acc(64), acc(128) >= acc(8) - 0.02; else DRIFT (failing d named).
   - Prior: DRIFT is likely, because the rcb / dis lineage never had §240's hold-increment penalty (§239: ||S|| grows ~linearly; drift at K' 64 in one seed).
 - **Cost:** ~$0.3 total, on a host; launch after §257 lands (credit then ~$12.7, above $12). Both are read before any combined C2 + C5 / C6 claim.
+- **APPROVED by Audit with three fixes (score_hx.py re-committed, fixtures 7/7):**
+  - (1) Censoring: a never-halting item counts as halting at K' 8 (its K' 8 answer in acc_halt, 8 in mean_khalt). The never-halt share and the event-only mean are reported (fixture: 30% never halt -> fails EXTRAP).
+  - (2) mean_khalt - (d - 1) is reported per d: the decoder adds a hop, so the efficient halt is d - 1. The bar stays mean_khalt <= d.
+  - (3) HOLD-DIS reports the ||S|| ratio K' 128 / K' 8 beside accuracy.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
