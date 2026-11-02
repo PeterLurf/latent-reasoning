@@ -1,0 +1,204 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "ec16d42a2c5b7342573026a478ae2b63db9a826d",
+   "disk": "ec16d42a2c5b7342573026a478ae2b63db9a826d"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "b2ebe7ca5d7859c13b8f2193486028c95a13f5b8",
+   "disk": "b2ebe7ca5d7859c13b8f2193486028c95a13f5b8"
+  },
+  "boxes/insert_render.py": {
+   "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
+   "disk": "eb2c1c8f81c19b843451c207e97c051db91bf792"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s258m_host.py": {
+   "head": "8943b267c2de9fb45ca718f28e6b0fb7a9c895c5",
+   "disk": "8943b267c2de9fb45ca718f28e6b0fb7a9c895c5"
+  },
+  "scratch/gate_s258m.py": {
+   "head": "57c9848f44f99cb841fe5b8a1e37199aa4ba1f5c",
+   "disk": "57c9848f44f99cb841fe5b8a1e37199aa4ba1f5c"
+  },
+  "scratch/s258_askname.py": {
+   "head": "d205680070025fc4a1bc2148ce2962277f7b61b5",
+   "disk": "d205680070025fc4a1bc2148ce2962277f7b61b5"
+  },
+  "scratch/s258s2_ws6k.py": {
+   "head": "6a4ffa319d22fd99da1ab12a36be013e639a9fa6",
+   "disk": "6a4ffa319d22fd99da1ab12a36be013e639a9fa6"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  },
+  "scratch/s258m_ref.tar": {
+   "head": "57fa6eff1c28d101128efee3a92cf1ddc0f185b1",
+   "disk": "57fa6eff1c28d101128efee3a92cf1ddc0f185b1"
+  }
+ },
+ "init_unbuffered_sha256_x3": [
+  "5e39be608cc4bf0f8261f24a6753fb280e25de4e7f518e35122061f2ce461acd",
+  "5e39be608cc4bf0f8261f24a6753fb280e25de4e7f518e35122061f2ce461acd",
+  "5e39be608cc4bf0f8261f24a6753fb280e25de4e7f518e35122061f2ce461acd"
+ ],
+ "predeploy_ok": true,
+ "diff_vs_aw_plaw2_s1": {
+  "aux_d_max": [
+   null,
+   0
+  ],
+  "base": [
+   null,
+   "gpt2-medium"
+  ],
+  "cue_ans": [
+   null,
+   0.0
+  ],
+  "distract_mix": [
+   null,
+   ""
+  ],
+  "distract_p": [
+   null,
+   0.0
+  ],
+  "excl_n": [
+   160598,
+   192598
+  ],
+  "frameset10_sha": [
+   null,
+   "4504b82eb7be9421394f295d31ee3149755bad37f7737fd7ccbea71d7d68474c"
+  ],
+  "frameset11_sha": [
+   null,
+   "25fd5deafe7aee4b54a36a6f86a1a912af83d4df61bfb6949ead6dcf5fb0e1c7"
+  ],
+  "frameset12_sha": [
+   null,
+   "9b45474e23f8ab6cca17bc7e56bd70e577f534c2f0a87a992896eae28c0646fd"
+  ],
+  "frameset13_sha": [
+   null,
+   "50bc9f07f87a2a77aeeed9867497568d789512f317871e4fb9fc20f3ede102f3"
+  ],
+  "frameset14_sha": [
+   null,
+   "ef78988487cffa990caa88a04c36e3ee2e6a3c76b37d57dd526973330be627c8"
+  ],
+  "frameset15_sha": [
+   null,
+   "ea0c2d7a432db0cbe451432cda31b80f2acd5181a173d653fe9a4948d49e4263"
+  ],
+  "frameset8_sha": [
+   null,
+   "a946812aa9177c624709f47397edbce17b5043fec7b2444c1df55953823e9a72"
+  ],
+  "frameset9_sha": [
+   null,
+   "e1f36241ba7974af741b29d3cff0e924e3614e9e28ad3beaecc117a4398898e1"
+  ],
+  "hold_far_hi": [
+   null,
+   40
+  ],
+  "hold_far_lo": [
+   null,
+   16
+  ],
+  "hold_far_n": [
+   null,
+   16
+  ],
+  "hold_inc": [
+   null,
+   0.0
+  ],
+  "hold_log": [
+   null,
+   false
+  ],
+  "hold_start": [
+   null,
+   500
+  ],
+  "init_model": [
+   null,
+   ""
+  ],
+  "init_model_sha": [
+   null,
+   ""
+  ],
+  "init_sha": [
+   "c00f7ec0bd7977fe",
+   "5e39be608cc4bf0f"
+  ],
+  "init_sha256": [
+   "c00f7ec0bd7977fea3ffc4d1ab296e16c6f7bf668fc0e16db583fece3233aed2",
+   "5e39be608cc4bf0f8261f24a6753fb280e25de4e7f518e35122061f2ce461acd"
+  ],
+  "init_trunk": [
+   "boxes/runs_fsq/s233_askname_s1/model.pt",
+   "boxes/runs_fsq/askm_lr1e4_init/model.pt"
+  ],
+  "inject_ow_sha256": [
+   "0695c354cc72411a70d538451a9cfb1ae2592f437207e51a9885d41f0a1e5afe",
+   "f34c75d0c8ff488f9b6e072e7367e00e08707162f53084f96bd9e177686eb55e"
+  ],
+  "keep_final_ckpt": [
+   null,
+   true
+  ],
+  "mul_s_p": [
+   null,
+   1
+  ],
+  "mul_s_p3": [
+   null,
+   1.0
+  ],
+  "perm_p": [
+   null,
+   0.0
+  ],
+  "train_frames": [
+   null,
+   ""
+  ]
+ }
+}
