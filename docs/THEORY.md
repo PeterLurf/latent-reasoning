@@ -23540,6 +23540,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - score_bu.py reports BUNC's hold label descriptively beside BUN's (bunc_hold_desc; fixtures 9/9). Binding gates are unchanged.
 - **(2)** The family cap rises from $4.0 to **$4.8** (4 cells x admit $1.10-1.20 could exceed $4.0); projection ~$3.4.
 
+**Note 258-5 (2026-11-02 04:07 EST; §258 B SCORED by theory/score_lb2.py --stage B, run twice: BRIDGE-OK; bridge_s1 ($1.410, host shas OK); RTX 3090).**
+- **The merged one-stage recipe works on small** (aw_plaw2_s1 -> REG d <= 4 + distract, 16k):
+  - RETAIN passes (TEST2 d 1-4 1.000; NOT-DECODER 0.013; SWAP4, LP5-D4 pass);
+  - d 5 / 6 / 7 / 8 / 9 = 0.990 / **0.949** / 0.789 / 0.485 / 0.202 (dis_s1, two-stage: 0.993 / 0.981 / 0.874 / 0.533 / 0.19);
+  - WS d 6 passes 1-6 = 1.00 / 1.00 / 1.00 / 1.00 / 0.98 / 0.95.
+  - So S3 at medium runs as **one stage**, per LB2_v1 §2.
+  - Descriptive (§256-type training only): H-OP 0.922, H-GIVPOS 0.976, H-CHAINSRC 0.625, H-CHAINSRC-OP 0.445, H-LIVE 0.689, H-EXTEND 0.689. Like dis, a surface filter.
+- **Same-class anchor (descriptive):** training loss at 500 / 1k / 1.5k / 2k is 1.817 / 1.634 / 0.999 / 0.364 on the 3090 vs 1.816 / 1.707 / 1.365 / 0.546 on the A6000 (anchor_a6000_eqA, same flags).
+  - The A6000 replay enters the basin later in the first 2k. GPU class shifts the trajectory, so small-vs-medium comparisons carry this disclosed confound. S1-S3 are all on A6000.
+- **Note for S3:** the medium run uses the §256 insert mix as registered. The §257 chain-reading mix (the current SOTA recipe) is not in §258's design; a medium §257-mix stage would need a new registration.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
