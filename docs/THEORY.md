@@ -23498,6 +23498,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - It still needs the text in chain order: no free lookup.
 - Keep dch_s1 / s2 model.pt: they are now the best C1 / C2 models.
 
+**Note 259-1 (2026-11-02 00:42 EST; amends §259 before any §259 output, agreed with Audit; also extends Note 257-2's L1 / L2 to the §257 models; no output read).**
+- **§259 init:** dch_s1 / dch_s2 (§257, CONTENT-SELECTOR 2/2; the best C1 / C2 models) replace dis_s*.
+  - BUN = dch_s<k> + --hold_inc 1.6 --hold_log (keeping the §257 insert mix); BUN-CTRL = the same without the penalty.
+  - The C2 retention gate is vs dch (d 6 / 7 >= dch - 0.05; WS d 6 passes 5-6 >= 0.90). Every other §259 gate is unchanged.
+- **Condition:** L2 is now read on dch_s* (L2 = DRIFT on a dch seed triggers that seed's BUN arm). The C5 head for the bundle is the dch L1 head.
+- **L1 / L2 on dch (eval-only, ~$0.3, b395's s261 family):** the same rules and scorer: theory/score_hx.py --dch (fixtures 7/7; RUNS_DCH = dch_s1 / dch_s2). b395 on dis stays as registered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

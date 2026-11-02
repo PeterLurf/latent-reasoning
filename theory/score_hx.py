@@ -16,6 +16,7 @@ _HR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_hx.json")
 RUNS = ("dis_s1", "dis_s2")
+RUNS_DCH = ("dch_s1", "dch_s2")   # Note 259-1: the same L1 / L2 rules on the §257 models (the bundle init)
 
 
 def jl(p):
@@ -53,10 +54,10 @@ def hold(e):
     return {"label": "HOLD" if not bad else "DRIFT", "failing_d": bad, "acc": {d: b[d]["acc"] for d in b}, "s_norm_ratio_128_8": ratio}
 
 
-def score(runs=R):
-    o = {"halt": {r: halt(jl(os.path.join(runs, r, "eval_halthead.json"))) for r in RUNS},
-         "hold": {r: hold(jl(os.path.join(runs, r, "eval_long_k128.json"))) for r in RUNS}}
-    o["verdict"] = "L1 %s | L2 %s" % (" / ".join(o["halt"][r]["label"] for r in RUNS), " / ".join(o["hold"][r]["label"] for r in RUNS)); return o
+def score(runs=R, which=RUNS):
+    o = {"halt": {r: halt(jl(os.path.join(runs, r, "eval_halthead.json"))) for r in which},
+         "hold": {r: hold(jl(os.path.join(runs, r, "eval_long_k128.json"))) for r in which}}
+    o["verdict"] = "L1 %s | L2 %s" % (" / ".join(o["halt"][r]["label"] for r in which), " / ".join(o["hold"][r]["label"] for r in which)); return o
 
 
 def fixtures():
@@ -86,8 +87,9 @@ def fixtures():
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--dch", action="store_true", help="Note 259-1: dch_s1 / dch_s2"); a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = score(); print(o["verdict"])
-    os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
+    o = score(which=RUNS_DCH if a.dch else RUNS); print(o["verdict"])
+    out = OUT.replace(".json", "_dch.json") if a.dch else OUT
+    os.makedirs(os.path.dirname(out), exist_ok=True); json.dump(o, open(out, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
