@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **17:44 11-02 (Theory):** §258 S2b NO-SEED (Note 258-9) -> GPT-2 medium line PARKED (WS d2 pass2 0.015; but aux shows the write formed by ~10k at lr 1e-4 - gate/aux divergence recorded as a lead). §258 ~$10.4. §260 full stage (gb_s1/s2) launching after Audit.
 * **14:27 11-02 (Theory):** C5-STABLE FRESH PASS (Note 259-12): r=3 answer-stability halting C5-EXTRAP in both bun seeds on a fresh draw (d7 0.880/0.875 vs 0.883/0.881) -> C5 met, scoped. SOTA bun now C1+C2(partial)+C6+C5. §259 family $4.12. §258 S2b running.
 * **12:51 11-02 (Theory):** C5-STABLE (Note 259-8, $0): training-free "answer unchanged for 2 passes" halting extrapolates to d5-7 in bun_s1 (within 0.02), s2 loses 0.03-0.04 -> C5 partial, 1/2 out of range. SOTA C5 row updated. §258 S2b running.
 * **12:49 11-02 (Theory):** C5-BUN scored (Note 259-6): H-INC (halting from the trained hold signal) fails out of range (halts at ~4 passes for any d; untrained-pass increments too small rel. to ||S||); H-HEAD2 in range only (d7 lossy). C5 stays partial. $0.20. §258 S2b running.
