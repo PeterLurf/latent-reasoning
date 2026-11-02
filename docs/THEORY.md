@@ -23634,6 +23634,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Why it may work:** under the hold penalty pred(K') is constant from the solving pass on (C6), while before that the answer changes almost every pass (chance repeat ~1/11; r = 2 ~1%).
 - **Caveat stated now:** after §256 the decoder is no longer purely positional (Note 255-8), so early answers may repeat more than chance. The rule's out-of-range result decides.
 
+**Note 259-8 (2026-11-02 12:50 EST; C5-STABLE SCORED by theory/score_c5c.py, run twice with identical output: 'r1 NO-SIGNAL / NO-SIGNAL | r2 C5-EXTRAP / C5-IN-RANGE'; $0, stored predictions).**
+- **r = 2 (answer unchanged for 2 further passes), (acc_k8, acc_halt, mean_khalt):**
+  - **bun_s1 C5-EXTRAP:** d 5 0.991 / 0.982 / 3.94; d 6 0.972 / 0.955 / 4.89; d 7 0.857 / 0.838 / 5.88. All within 0.02, mean_khalt <= d, increasing over d 1-7.
+  - **bun_s2 C5-IN-RANGE:** d 5 0.988 / 0.973; d 6 0.956 / **0.928** (-0.028); d 7 0.852 / **0.811** (-0.041).
+  - In range both are exact (khalt = d - 1 to within 0.06, acc_halt >= 0.987).
+  - passes_run - (d - 1) = +1.7-2.0: confirming stability costs ~2 passes.
+- **r = 1: NO-SIGNAL in both.** Early answers repeat once by more than chance (d 7 acc_halt 0.61 / 0.55), consistent with the caveat that the decoder is not purely positional after §256.
+- **Reading:** a training-free rule on the model's own outputs (stop when the answer has been stable for 2 passes) makes halting extrapolate to d 5-7 in 1 of 2 seeds. It stops at ~d - 1 + 2 passes and keeps accuracy within 0.02 in s1; s2 loses 0.03-0.04 at d 6-7.
+  - This is the best C5 out-of-range result so far (H-HEAD2: d 7 within 0.02 in neither seed; H-INC fails). C5 status: **partial, improved** (EXTRAP 1/2, training-free).
+  - It relies on the C6 hold (the answer stays fixed after solving), so it is a property of the bundle model.
+- **SOTA json:** C5 evidence updated in this commit.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

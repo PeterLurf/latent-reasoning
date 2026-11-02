@@ -1,0 +1,289 @@
+{
+ "runs": {
+  "bun_s1": {
+   "r1": {
+    "label": "NO-SIGNAL",
+    "by_d": {
+     "1": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.0,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": 0.0
+     },
+     "2": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.919,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.08099999999999996
+     },
+     "3": {
+      "acc_k8": 1.0,
+      "acc_halt": 0.92,
+      "mean_khalt": 1.812,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.18799999999999994
+     },
+     "4": {
+      "acc_k8": 1.0,
+      "acc_halt": 0.867,
+      "mean_khalt": 2.622,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.3780000000000001
+     },
+     "5": {
+      "acc_k8": 0.991,
+      "acc_halt": 0.827,
+      "mean_khalt": 3.407,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.593
+     },
+     "6": {
+      "acc_k8": 0.972,
+      "acc_halt": 0.73,
+      "mean_khalt": 3.962,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -1.0379999999999998
+     },
+     "7": {
+      "acc_k8": 0.857,
+      "acc_halt": 0.612,
+      "mean_khalt": 4.545,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -1.455
+     }
+    },
+    "passes_minus_eff": {
+     "1": 1.0,
+     "2": 0.919,
+     "3": 0.8119999999999998,
+     "4": 0.6219999999999999,
+     "5": 0.40700000000000003,
+     "6": -0.038000000000000256,
+     "7": -0.45500000000000007
+    }
+   },
+   "r2": {
+    "label": "C5-EXTRAP",
+    "by_d": {
+     "1": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.0,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": 0.0
+     },
+     "2": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.919,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.08099999999999996
+     },
+     "3": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 1.972,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.028000000000000025
+     },
+     "4": {
+      "acc_k8": 1.0,
+      "acc_halt": 0.987,
+      "mean_khalt": 2.938,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.06199999999999983
+     },
+     "5": {
+      "acc_k8": 0.991,
+      "acc_halt": 0.982,
+      "mean_khalt": 3.939,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.06099999999999994
+     },
+     "6": {
+      "acc_k8": 0.972,
+      "acc_halt": 0.955,
+      "mean_khalt": 4.895,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.10500000000000043
+     },
+     "7": {
+      "acc_k8": 0.857,
+      "acc_halt": 0.838,
+      "mean_khalt": 5.878,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.12199999999999989
+     }
+    },
+    "passes_minus_eff": {
+     "1": 2.0,
+     "2": 1.919,
+     "3": 1.972,
+     "4": 1.9379999999999997,
+     "5": 1.939,
+     "6": 1.8949999999999996,
+     "7": 1.8780000000000001
+    }
+   }
+  },
+  "bun_s2": {
+   "r1": {
+    "label": "NO-SIGNAL",
+    "by_d": {
+     "1": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.0,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": 0.0
+     },
+     "2": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.915,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.08499999999999996
+     },
+     "3": {
+      "acc_k8": 1.0,
+      "acc_halt": 0.925,
+      "mean_khalt": 1.824,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.17599999999999993
+     },
+     "4": {
+      "acc_k8": 1.0,
+      "acc_halt": 0.855,
+      "mean_khalt": 2.566,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.43400000000000016
+     },
+     "5": {
+      "acc_k8": 0.988,
+      "acc_halt": 0.77,
+      "mean_khalt": 3.177,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.823
+     },
+     "6": {
+      "acc_k8": 0.956,
+      "acc_halt": 0.671,
+      "mean_khalt": 3.65,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -1.35
+     },
+     "7": {
+      "acc_k8": 0.852,
+      "acc_halt": 0.547,
+      "mean_khalt": 4.002,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -1.9980000000000002
+     }
+    },
+    "passes_minus_eff": {
+     "1": 1.0,
+     "2": 0.915,
+     "3": 0.8239999999999998,
+     "4": 0.5659999999999998,
+     "5": 0.1769999999999996,
+     "6": -0.34999999999999964,
+     "7": -0.9980000000000002
+    }
+   },
+   "r2": {
+    "label": "C5-IN-RANGE",
+    "by_d": {
+     "1": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.0,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": 0.0
+     },
+     "2": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 0.915,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.08499999999999996
+     },
+     "3": {
+      "acc_k8": 1.0,
+      "acc_halt": 1.0,
+      "mean_khalt": 1.974,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.026000000000000023
+     },
+     "4": {
+      "acc_k8": 1.0,
+      "acc_halt": 0.989,
+      "mean_khalt": 2.946,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.053999999999999826
+     },
+     "5": {
+      "acc_k8": 0.988,
+      "acc_halt": 0.973,
+      "mean_khalt": 3.932,
+      "never_halt_share": 0.001,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.06800000000000006
+     },
+     "6": {
+      "acc_k8": 0.956,
+      "acc_halt": 0.928,
+      "mean_khalt": 4.851,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.14900000000000002
+     },
+     "7": {
+      "acc_k8": 0.852,
+      "acc_halt": 0.811,
+      "mean_khalt": 5.685,
+      "never_halt_share": 0.0,
+      "event_only_mean": null,
+      "offset_vs_d_minus_1": -0.3150000000000004
+     }
+    },
+    "passes_minus_eff": {
+     "1": 2.0,
+     "2": 1.915,
+     "3": 1.9740000000000002,
+     "4": 1.9459999999999997,
+     "5": 1.9299999999999997,
+     "6": 1.851,
+     "7": 1.6849999999999996
+    }
+   }
+  }
+ },
+ "verdict": "r1 NO-SIGNAL / NO-SIGNAL | r2 C5-EXTRAP / C5-IN-RANGE"
+}

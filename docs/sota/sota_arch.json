@@ -74,8 +74,8 @@
   },
   {
    "c": "C5",
-   "status": "partial",
-   "evidence": "post-hoc halt head: in range kept; out of range lossy (d6 0.937 / 0.942 vs 0.972 / 0.956; d7 0.74 / 0.77) (Note 259-4)"
+   "status": "partial (out-of-range halting 1/2 seeds)",
+   "evidence": "training-free rule 'stop when the answer is unchanged for 2 passes' (uses the C6 hold): s1 extrapolates to d5-7 within 0.02 (d7 0.838 vs 0.857), s2 loses 0.03-0.04 at d6-7; costs ~2 extra passes (Note 259-8). Learned heads: in range only (Note 259-6)."
   },
   {
    "c": "C4",
