@@ -1,0 +1,192 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "ec16d42a2c5b7342573026a478ae2b63db9a826d",
+   "disk": "ec16d42a2c5b7342573026a478ae2b63db9a826d"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "61e29fa48e7640c27a3b943269adf095ab29c8c1",
+   "disk": "61e29fa48e7640c27a3b943269adf095ab29c8c1"
+  },
+  "boxes/insert_render.py": {
+   "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
+   "disk": "eb2c1c8f81c19b843451c207e97c051db91bf792"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s258_guarded.py": {
+   "head": "659a84fbd69548b6620dd7261991bebac3ae6af1",
+   "disk": "659a84fbd69548b6620dd7261991bebac3ae6af1"
+  },
+  "scratch/s258m_host.py": {
+   "head": "8943b267c2de9fb45ca718f28e6b0fb7a9c895c5",
+   "disk": "8943b267c2de9fb45ca718f28e6b0fb7a9c895c5"
+  },
+  "scratch/gate_s258m.py": {
+   "head": "260332fa5f9a405ac6aa5bc84caf5a35f7bbb705",
+   "disk": "260332fa5f9a405ac6aa5bc84caf5a35f7bbb705"
+  },
+  "scratch/s258_askname.py": {
+   "head": "d205680070025fc4a1bc2148ce2962277f7b61b5",
+   "disk": "d205680070025fc4a1bc2148ce2962277f7b61b5"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  },
+  "scratch/s258m_ref.tar": {
+   "head": "57fa6eff1c28d101128efee3a92cf1ddc0f185b1",
+   "disk": "57fa6eff1c28d101128efee3a92cf1ddc0f185b1"
+  }
+ },
+ "predeploy_ok": true,
+ "args": {
+  "askm_lr3e5": {
+   "keys": [
+    "base",
+    "excl_n",
+    "frameset10_sha",
+    "frameset11_sha",
+    "frameset12_sha",
+    "frameset13_sha",
+    "frameset14_sha",
+    "frameset15_sha",
+    "frameset8_sha",
+    "frameset9_sha",
+    "lr"
+   ],
+   "diff": {
+    "base": [
+     null,
+     "gpt2-medium"
+    ],
+    "excl_n": [
+     160598,
+     192598
+    ],
+    "frameset10_sha": [
+     null,
+     "4504b82eb7be9421394f295d31ee3149755bad37f7737fd7ccbea71d7d68474c"
+    ],
+    "frameset11_sha": [
+     null,
+     "25fd5deafe7aee4b54a36a6f86a1a912af83d4df61bfb6949ead6dcf5fb0e1c7"
+    ],
+    "frameset12_sha": [
+     null,
+     "9b45474e23f8ab6cca17bc7e56bd70e577f534c2f0a87a992896eae28c0646fd"
+    ],
+    "frameset13_sha": [
+     null,
+     "50bc9f07f87a2a77aeeed9867497568d789512f317871e4fb9fc20f3ede102f3"
+    ],
+    "frameset14_sha": [
+     null,
+     "ef78988487cffa990caa88a04c36e3ee2e6a3c76b37d57dd526973330be627c8"
+    ],
+    "frameset15_sha": [
+     null,
+     "ea0c2d7a432db0cbe451432cda31b80f2acd5181a173d653fe9a4948d49e4263"
+    ],
+    "frameset8_sha": [
+     null,
+     "a946812aa9177c624709f47397edbce17b5043fec7b2444c1df55953823e9a72"
+    ],
+    "frameset9_sha": [
+     null,
+     "e1f36241ba7974af741b29d3cff0e924e3614e9e28ad3beaecc117a4398898e1"
+    ],
+    "lr": [
+     0.0001,
+     3e-05
+    ]
+   }
+  },
+  "askm_lr1e4": {
+   "keys": [
+    "base",
+    "excl_n",
+    "frameset10_sha",
+    "frameset11_sha",
+    "frameset12_sha",
+    "frameset13_sha",
+    "frameset14_sha",
+    "frameset15_sha",
+    "frameset8_sha",
+    "frameset9_sha"
+   ],
+   "diff": {
+    "base": [
+     null,
+     "gpt2-medium"
+    ],
+    "excl_n": [
+     160598,
+     192598
+    ],
+    "frameset10_sha": [
+     null,
+     "4504b82eb7be9421394f295d31ee3149755bad37f7737fd7ccbea71d7d68474c"
+    ],
+    "frameset11_sha": [
+     null,
+     "25fd5deafe7aee4b54a36a6f86a1a912af83d4df61bfb6949ead6dcf5fb0e1c7"
+    ],
+    "frameset12_sha": [
+     null,
+     "9b45474e23f8ab6cca17bc7e56bd70e577f534c2f0a87a992896eae28c0646fd"
+    ],
+    "frameset13_sha": [
+     null,
+     "50bc9f07f87a2a77aeeed9867497568d789512f317871e4fb9fc20f3ede102f3"
+    ],
+    "frameset14_sha": [
+     null,
+     "ef78988487cffa990caa88a04c36e3ee2e6a3c76b37d57dd526973330be627c8"
+    ],
+    "frameset15_sha": [
+     null,
+     "ea0c2d7a432db0cbe451432cda31b80f2acd5181a173d653fe9a4948d49e4263"
+    ],
+    "frameset8_sha": [
+     null,
+     "a946812aa9177c624709f47397edbce17b5043fec7b2444c1df55953823e9a72"
+    ],
+    "frameset9_sha": [
+     null,
+     "e1f36241ba7974af741b29d3cff0e924e3614e9e28ad3beaecc117a4398898e1"
+    ]
+   }
+  }
+ }
+}
