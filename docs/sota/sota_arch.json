@@ -1,48 +1,103 @@
 {
-  "as_of": "2026-11-02",
-  "name": "DISTRACT-CHAIN loop (dch)",
-  "section": "257",
-  "best_runs": ["dch_s1", "dch_s2"],
-  "verdict": "CONTENT-SELECTOR 2/2 (Note 257-3); C2 retained",
-  "base": {"model": "GPT-2 small", "layers": 12, "width": 768, "heads": 12, "params": "124M"},
-  "memory": {
-    "name": "DeltaMem",
-    "read_at": "entering block 6 (after blocks 0-5)",
-    "read": "x <- x + W_o [additive || delta heads](LN(x)); W_o = 0 at init",
-    "additive_heads": "6: S <- S + phi(k) v^T (phi = elu + 1), read phi(q)^T S",
-    "delta_heads": "6 gated-delta: S <- alpha S (I - beta k k^T) + beta v k^T, read S q",
-    "write_from": "final-layer state at the ':' of ' The answer is:' (one token per pass)"
+ "as_of": "2026-11-02",
+ "name": "DISTRACT-CHAIN loop (dch)",
+ "section": "257",
+ "best_runs": [
+  "dch_s1",
+  "dch_s2"
+ ],
+ "verdict": "CONTENT-SELECTOR 2/2 (Note 257-3); C2 retained",
+ "base": {
+  "model": "GPT-2 small",
+  "layers": 12,
+  "width": 768,
+  "heads": 12,
+  "params": "124M"
+ },
+ "memory": {
+  "name": "DeltaMem",
+  "read_at": "entering block 6 (after blocks 0-5)",
+  "read": "x <- x + W_o [additive || delta heads](LN(x)); W_o = 0 at init",
+  "additive_heads": "6: S <- S + phi(k) v^T (phi = elu + 1), read phi(q)^T S",
+  "delta_heads": "6 gated-delta: S <- alpha S (I - beta k k^T) + beta v k^T, read S q",
+  "write_from": "final-layer state at the ':' of ' The answer is:' (one token per pass)"
+ },
+ "pass": {
+  "count": "K = 8 think passes (accuracy appears once K' >= d - 1 and holds to K' 14)",
+  "input": "[EOT] + problem text + 'How many <unit> does S_t have?' + ' The answer is:'",
+  "cue": "per-pass step cue names the step's subject S_t (the plan is given)",
+  "lower_cache": "blocks 0-5 computed once per distinct input and reused"
+ },
+ "decoder": "a final direct-format pass reads the memory S_K (read-only) and answers; it adds one hop itself",
+ "aux": "training only: per pass t <= d, '[EOT] Step t :' + the step's value, read-only on S_t (aux_step 1, reweighted)",
+ "training_lineage": [
+  {
+   "stage": "s233 askname",
+   "what": "GPT-2 small fine-tuned to answer 'How many u does X have?' from the text"
   },
-  "pass": {
-    "count": "K = 8 think passes (accuracy appears once K' >= d - 1 and holds to K' 14)",
-    "input": "[EOT] + problem text + 'How many <unit> does S_t have?' + ' The answer is:'",
-    "cue": "per-pass step cue names the step's subject S_t (the plan is given)",
-    "lower_cache": "blocks 0-5 computed once per distinct input and reused"
+  {
+   "stage": "aw_plaw2 (P-2)",
+   "what": "loop + answer-write, d <= 2, 12k"
   },
-  "decoder": "a final direct-format pass reads the memory S_K (read-only) and answers; it adds one hop itself",
-  "aux": "training only: per pass t <= d, '[EOT] Step t :' + the step's value, read-only on S_t (aux_step 1, reweighted)",
-  "training_lineage": [
-    {"stage": "s233 askname", "what": "GPT-2 small fine-tuned to answer 'How many u does X have?' from the text"},
-    {"stage": "aw_plaw2 (P-2)", "what": "loop + answer-write, d <= 2, 12k"},
-    {"stage": "rcb_plaw4", "what": "REG law, d ~ U{1..4}, 16k"},
-    {"stage": "dis (§256)", "what": "+ 0-2 irrelevant op sentences per item (new names), 16k"},
-    {"stage": "dch (§257)", "what": "+ chain-reading and given-before-op distractors, 8k fine-tune"}
-  ],
-  "scorecard": [
-    {"c": "C1", "status": "met, scoped", "evidence": "TEST2 d1-4 1.000; NOT-DECODER 0.023 / 0.015; held-out chain-reading distractors 0.95 / 0.96; still order-bound (TEST-PERM ~0.1)"},
-    {"c": "C2", "status": "partial, scoped", "evidence": "trained d<=4: d6 0.971 / 0.963, d7 0.900 / 0.889, d8 0.655 / 0.637"},
-    {"c": "C6", "status": "pending on dch", "evidence": "K'128 hold eval running (Note 257-2 / 259-1); §240 showed the hold penalty works on an earlier lineage"},
-    {"c": "C5", "status": "pending on dch", "evidence": "post-hoc halt head out-of-range test running (Note 259-1)"},
-    {"c": "C4", "status": "not in this model", "evidence": "per-pass value targets used; answer-only extension is rare (§255, 1/4)"},
-    {"c": "C3", "status": "split", "evidence": "~9x fewer serial layers, 1.5-3x more FLOPs (prompt recomputed each pass)"},
-    {"c": "C7", "status": "not met", "evidence": "text fed back through the write is ignored (§247); untested on dch"}
-  ],
-  "limits": [
-    "Plan given by the step cue",
-    "Sentences must be in chain order",
-    "Templated word programs (REG frames 0-5), values mod 11",
-    "Chain-reading distractors tested only right after the step they read",
-    "GPT-2 small only (GPT-2 medium in progress, §258)"
-  ],
-  "next": ["§258 GPT-2 medium (S1 running)", "§259 bundle C2 + C6 + C5 on dch (pending the hold result)"]
+  {
+   "stage": "rcb_plaw4",
+   "what": "REG law, d ~ U{1..4}, 16k"
+  },
+  {
+   "stage": "dis (§256)",
+   "what": "+ 0-2 irrelevant op sentences per item (new names), 16k"
+  },
+  {
+   "stage": "dch (§257)",
+   "what": "+ chain-reading and given-before-op distractors, 8k fine-tune"
+  }
+ ],
+ "scorecard": [
+  {
+   "c": "C1",
+   "status": "met, scoped",
+   "evidence": "TEST2 d1-4 1.000; NOT-DECODER 0.023 / 0.015; held-out chain-reading distractors 0.95 / 0.96; still order-bound (TEST-PERM ~0.1)"
+  },
+  {
+   "c": "C2",
+   "status": "partial, scoped",
+   "evidence": "trained d<=4: d6 0.971 / 0.963, d7 0.900 / 0.889, d8 0.655 / 0.637"
+  },
+  {
+   "c": "C6",
+   "status": "pending on dch",
+   "evidence": "K'128 hold eval running (Note 257-2 / 259-1); §240 showed the hold penalty works on an earlier lineage"
+  },
+  {
+   "c": "C5",
+   "status": "pending on dch",
+   "evidence": "post-hoc halt head out-of-range test running (Note 259-1)"
+  },
+  {
+   "c": "C4",
+   "status": "not in this model",
+   "evidence": "per-pass value targets used; answer-only extension is rare (§255, 1/4)"
+  },
+  {
+   "c": "C3",
+   "status": "split",
+   "evidence": "~9x fewer serial layers, 1.5-3x more FLOPs (prompt recomputed each pass)"
+  },
+  {
+   "c": "C7",
+   "status": "not met",
+   "evidence": "text fed back through the write is ignored (§247); untested on dch"
+  }
+ ],
+ "limits": [
+  "Plan given by the step cue",
+  "Sentences must be in chain order",
+  "Templated word programs (REG frames 0-5), values mod 11",
+  "Chain-reading distractors tested only right after the step they read",
+  "GPT-2 small only (GPT-2 medium in progress, §258)"
+ ],
+ "next": [
+  "§258 GPT-2 medium (S1 running)",
+  "§259 bundle C2 + C6 + C5 on dch (pending the hold result)"
+ ]
 }
