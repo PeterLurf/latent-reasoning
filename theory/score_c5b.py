@@ -7,7 +7,8 @@ Two halting arms, each tested on TEST2 d 1..7, fit / calibrated on d <= 4 items 
 Rule per arm per seed (censoring as Note 257-2: never-halt counts at K'max):
   IN-RANGE d 1-4: acc_halt >= acc_k8 - 0.02; mean_khalt increasing; mean_khalt <= d + 1.
   EXTRAP d 5-7: acc_halt >= acc_k8 - 0.02 each d; mean_khalt <= d each d; mean_khalt strictly increasing over d 1-7.
-  H-INC also reports mean_passes_run (= khalt + 1; the price of detecting the fixed point), descriptive.
+  H-INC also reports mean_passes_run (= khalt + 1; the price of detecting the fixed point), descriptive. Both arms report passes_run - (d - 1) per d (Audit 259-5 (4)).
+  H-INC K' cap = 14: never dropping below tau by t = 14 -> halt at 14 with the K' 14 answer (never-halt share reported).
   Labels C5-EXTRAP / C5-IN-RANGE / NO-SIGNAL (VOID if H-HEAD2 val_acc < 0.80).
     python -B theory/score_c5b.py [--fixtures]
 """
@@ -35,7 +36,11 @@ def score(runs=R):
         o["inc"][r] = HX.halt(e) if e is not None else {"label": "pending"}
         if e is not None:
             o["inc"][r]["tau"] = e.get("tau"); o["inc"][r]["passes_run"] = {d: e[str(d)].get("mean_passes_run") for d in range(1, 8)}
-        o["head2"][r] = HX.halt(jl(os.path.join(runs, r, "eval_halthead2.json")))
+            o["inc"][r]["passes_minus_eff"] = {d: (e[str(d)].get("mean_passes_run") - (d - 1)) if e[str(d)].get("mean_passes_run") is not None else None for d in range(1, 8)}
+        h2 = jl(os.path.join(runs, r, "eval_halthead2.json"))
+        o["head2"][r] = HX.halt(h2)
+        if h2 is not None and o["head2"][r]["label"] not in ("pending", "VOID"):   # Note 259-5 (4): head passes_run = khalt
+            o["head2"][r]["passes_minus_eff"] = {d: h2[str(d)]["mean_khalt"] - (d - 1) for d in range(1, 8)}
     o["verdict"] = "H-INC %s | H-HEAD2 %s" % (" / ".join(o["inc"][r]["label"] for r in RUNS), " / ".join(o["head2"][r]["label"] for r in RUNS)); return o
 
 

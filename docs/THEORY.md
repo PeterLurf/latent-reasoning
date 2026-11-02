@@ -23608,6 +23608,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Rule per arm and seed:** score_hx's C5 rule on khalt (IN-RANGE d 1-4; EXTRAP d 5-7: acc_halt >= acc_k8 - 0.02, mean_khalt <= d, increasing over d 1-7), with Note 257-2's censoring.
   - Labels C5-EXTRAP / C5-IN-RANGE / NO-SIGNAL.
   - Prediction: H-INC C5-EXTRAP is likely (P ~0.6) if the increment signal is clean; H-HEAD2 ~0.35.
+- **APPROVED by Audit with conditions (score_c5b.py re-committed, fixtures 4/4):**
+  - (1) tau is calibrated on a fresh REG d <= 4 stream disjoint from TEST2 (sigs asserted, as part_halthead), never TEST2.
+  - (2) H-INC K' cap = 14: items never below tau by t = 14 halt at 14 with the K' 14 answer; the never-halt share is reported (Note 257-2 censoring).
+  - (3) **Scope label:** H-INC is 'halting from the trained hold signal', a readout of the model's own memory dynamics whose signal was created by a penalty trained knowing d. It is not a learned halting decision. Its extrapolation to d 5-7 would still be a C5 result.
+  - (4) Both arms report passes_run - (d - 1) per d (H-INC passes_run = khalt + 1; H-HEAD2 = khalt).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
