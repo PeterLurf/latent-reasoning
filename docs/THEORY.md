@@ -345,7 +345,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **SCORED 11-01 (256-1): SELECTOR 0/2, C2 2/2 - d 6 0.98 / 0.96 vs rcb 0.35 / 0.37, d 7 0.87 / 0.81, untrained passes 5-7 compute (WS >= 0.87 / 0.78), RETAIN kept; H-CHAINSRC / H-GIVPOS fail (surface skip-rule); $2.37.** **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
 | 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **SCORED 11-02 (257-3): CONTENT-SELECTOR 2/2 - held-out chain-reading sub_c / mul_c 0.95 / 0.96, H-LIVE 0.99, H-EXTEND 0.92 / 0.89, RETAIN kept, C2 d 6 0.97 / 0.96, d 8 0.66 / 0.64; TEST-PERM still order-bound; $2.13.** **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **S2 NO-SEED at lr 3e-5 (258-7); S2b at lr 1e-4 registered (258-8; NO-SEED parks the medium line): medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
-| 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
+| 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 
 ## Live sections
 
@@ -23578,6 +23578,24 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - SEED-OK -> S3 (dism_s1, one stage, from p2m_s1b at lr 1e-4) as registered;
   - **NO-SEED (incl. after an extension) parks the medium line.**
 - **Cost:** ~$3 (+$1.5 extension). §258 total stays within the $20 guard ($6.22 spent; S3 ~$6).
+
+**Note 259-4 (2026-11-02 11:35 EST; §259 SCORED by theory/score_bu.py, run twice: 'BUNDLE 0/2 (FAIL: C5 / FAIL: C5)'; bun_s1 798f9259 ($0.990), bun_s2 714ef682 ($1.143), bunc_s1 a37717b6 ($0.804), bunc_s2 43fd341c ($0.692); family $3.747 of $4.8 (incl. a failed attempt $0.089, BAD $0.029); host shas OK).**
+- **C1 passes in both:** TEST2 d 1-4 1.000, NOT-DECODER 0.020 / 0.019, SWAP4, LP5-D4, CUE-ONLY.
+- **C2 retained in both** (vs dch, within 0.05):
+  - d 6 0.972 / 0.956 (dch 0.971 / 0.963); d 7 0.857 / 0.852 (dch 0.900 / 0.889); WS d 6 passes 5-6 >= 0.90.
+  - d 8 fell to 0.467 / 0.593 (dch 0.655 / 0.637; descriptive). BUNC d 6 / 7 / 8 = 0.971 / 0.896 / 0.565 and 0.978 / 0.859 / 0.476.
+- **C6 passes in both:**
+  - acc K' 128 = K' 8 at every d 1-6 (e.g. d 4 1.000 / 1.000 / 1.000; d 6 0.972 -> 0.972, 0.956 -> 0.958);
+  - **||S|| ratio K' 128 / 8 = 1.02-1.14** (dch 10-17x);
+  - norm guard passes (ratios 0.22-0.75, shrink only; no inflation); LP0 0 over the cap; SEED-VAR passes.
+  - **Attribution:** BUN-CTRL (the same 8k without the penalty) DRIFTs in both seeds, so the hold is due to the penalty.
+- **C5 fails in both** (C5-IN-RANGE only): halting keeps accuracy at d 1-5, but at d 6 / 7 acc_halt is 0.937 / 0.738 (acc K' 8 0.972 / 0.857) and 0.942 / 0.766 (0.956 / 0.852). mean_khalt <= d and increasing.
+- **Reading (scoped: plan given; chain-order text; REG frames 0-5; one rcb lineage; per-pass aux, no C4; C2 within K = 8):**
+  - **one model (bun_s1 / s2) meets C1 + C2 (partial, retained) + C6** together: depth extrapolation to d 6-7, content step selection on held-out distractors (inherited from dch, not re-scored here), and a hold to K' 128 with ||S|| flat.
+  - C5 stays in range only: the post-hoc head halts early on a share of out-of-range items.
+  - Label per the registered rule: FAIL: C5 (BUNDLE 0/2).
+- **SOTA:** bun_s1 / s2 replace dch as the best model (adds C6; C2 slightly lower at d 7-8). sota_arch.json is updated in this commit.
+- Keep bun_s1 / s2 model.pt. bunc_* ckpt_finals and model.pt may be deleted after Audit reproduces; bun_* ckpt_finals too.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

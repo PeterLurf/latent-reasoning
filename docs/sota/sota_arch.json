@@ -1,12 +1,12 @@
 {
  "as_of": "2026-11-02",
- "name": "DISTRACT-CHAIN loop (dch)",
- "section": "257",
+ "name": "BUNDLE loop (dch + hold penalty)",
+ "section": "259",
  "best_runs": [
-  "dch_s1",
-  "dch_s2"
+  "bun_s1",
+  "bun_s2"
  ],
- "verdict": "CONTENT-SELECTOR 2/2 (Note 257-3); C2 retained",
+ "verdict": "C1 + C2 (retained) + C6 in one model; C5 in range only (Note 259-4: BUNDLE 0/2, FAIL: C5)",
  "base": {
   "model": "GPT-2 small",
   "layers": 12,
@@ -50,28 +50,32 @@
   {
    "stage": "dch (§257)",
    "what": "+ chain-reading and given-before-op distractors, 8k fine-tune"
+  },
+  {
+   "stage": "bun (§259)",
+   "what": "+ hold-increment penalty (lambda 1.6, from step 500), 8k from dch"
   }
  ],
  "scorecard": [
   {
    "c": "C1",
    "status": "met, scoped",
-   "evidence": "TEST2 d1-4 1.000; NOT-DECODER 0.023 / 0.015; held-out chain-reading distractors 0.95 / 0.96; still order-bound (TEST-PERM ~0.1)"
+   "evidence": "TEST2 d1-4 1.000; NOT-DECODER 0.020 / 0.019; SWAP4 / LP5 pass; content step selection inherited from dch (held-out distractors 0.95 / 0.96, §257); still order-bound"
   },
   {
    "c": "C2",
    "status": "partial, scoped",
-   "evidence": "trained d<=4: d6 0.971 / 0.963, d7 0.900 / 0.889, d8 0.655 / 0.637"
+   "evidence": "trained d<=4: d6 0.972 / 0.956, d7 0.857 / 0.852, d8 0.47 / 0.59 (Note 259-4)"
   },
   {
    "c": "C6",
-   "status": "not met on dch",
-   "evidence": "K'128 drift at every d (dch_s1 d4 K'128 0.63, d6 0.78; ||S|| x10-17); §259 bundle (hold penalty) triggered (Note 259-2)"
+   "status": "met, scoped",
+   "evidence": "acc K'128 = K'8 at d1-6 (d6 0.972 / 0.958); ||S|| ratio 1.02-1.14x; no-penalty control drifts (Note 259-4)"
   },
   {
    "c": "C5",
    "status": "partial",
-   "evidence": "post-hoc halt head: in range (d1-4) halts at ~d-1 with accuracy kept; out of range depth-sensitive but lossy (d6 0.905 / 0.930 vs 0.971 / 0.963) (Note 259-2)"
+   "evidence": "post-hoc halt head: in range kept; out of range lossy (d6 0.937 / 0.942 vs 0.972 / 0.956; d7 0.74 / 0.77) (Note 259-4)"
   },
   {
    "c": "C4",
@@ -94,10 +98,11 @@
   "Sentences must be in chain order",
   "Templated word programs (REG frames 0-5), values mod 11",
   "Chain-reading distractors tested only right after the step they read",
-  "GPT-2 small only (GPT-2 medium in progress, §258)"
+  "GPT-2 small only (§258 medium: no pass-2 write at lr 3e-5; lr 1e-4 retry running)",
+  "Content selection not re-scored on bun (inherited from dch)"
  ],
  "next": [
-  "§258 GPT-2 medium (S1 running)",
-  "§259 bundle C2 + C6 + C5 on dch (pending the hold result)"
+  "§258 S2b medium at lr 1e-4",
+  "C5: halting that keeps accuracy out of range"
  ]
 }
