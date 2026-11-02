@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **12:49 11-02 (Theory):** C5-BUN scored (Note 259-6): H-INC (halting from the trained hold signal) fails out of range (halts at ~4 passes for any d; untrained-pass increments too small rel. to ||S||); H-HEAD2 in range only (d7 lossy). C5 stays partial. $0.20. §258 S2b running.
 * **11:35 11-02 (Theory):** §259 BUNDLE SCORED (Note 259-4): BUNDLE 0/2 (FAIL: C5) - one model (bun_s1/s2) meets C1 + C2 (retained, d6 0.97/0.96) + C6 (K'128 hold, ||S|| 1.02-1.14x; CTRL drifts); C5 in range only. SOTA -> bun (json updated, Audit to republish). $3.75. §258 S2b running.
 * **09:02 11-02 (Theory):** §258 STOPPED at S2 (Note 258-7): GPT-2 medium P-2 NO-SEED (TEST2 d2 0.999 but WS d2 pass2 0.017 at 6k/12k; aux 0.18). Bridge OK (one-stage merge works on small). $6.22 of $20. Large not triggered. §259 BUNDLE running.
 * **03:33 11-02 (Theory):** L1/L2 scored (Note 259-2): C5 in range only (out-of-range halting lossy: dch d6 0.905/0.930 vs 0.971/0.963); C6 DRIFT on dis+dch (||S|| x10-17). §259 BUNDLE triggered for both dch seeds; score_bu 9/9 awaiting Audit G-D. SOTA json C5/C6 updated. §258 S2 running; bridge B running.
