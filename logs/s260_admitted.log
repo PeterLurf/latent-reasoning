@@ -8,3 +8,5 @@
 # NOTE 2026-11-01 22:47:41 s260fam guard restarted with per-cell steps (396:16000, 397 anchor:2000): the template's ALLC used this filler's STEPS (100) for every ledger cell
 398:askm_lr3e5 38.29.145.28:40714 58762685 $0.4167/h sps 0.25223248402277626 steps 8000 0.65
 realised:b397 # 58757928 (wall guard spent $0.455 at 23:27 + 3.5 min x $0.4167/h dph_total to destroy at 23:30) (§258 S0: gates line FAILED on the ref-tree setup bug, fixed 1a02ac43; mem / G-TIME medium; anchor 2k) 0.479
+realised:b398 # 58762685 (wall guard spent $0.215 at 23:35 + 5 min x $0.4167/h to destroy at 23:40) (§258 S1 askm_lr3e5: host gates offbit_aw / offbit_ow PASS, step0 crashed - the hh_dump inline-comment bug, fixed - so the training line refused, gates_pass.json absent) 0.250
+# NOTE 2026-11-01 23:43:03 b399 (askm_lr1e4) destroyed by Experiments during deploy (its queue carried the hh_dump bug); BAD-log $0.0738 is that deploy, the host is not at fault (exclusion voided)

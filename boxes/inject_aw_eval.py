@@ -837,7 +837,7 @@ def hh_hidden(m, S, ch, dev):
 @torch.no_grad()
 def hh_dump(m, T, dev, bs, K=HH_KMAX):
     """passes 1..K (seq_std inputs, one padding per pass, S from zero, pass_aw writes); the decoder's answer-position hidden + pred at every K' 0..K -> (H (N, K+1, 768), P (N, K+1))."""
-    N = len(T); H = np.zeros((N, K + 1, m.g.D), dtype=np.float32)   # §258 S0: the model's width (was 768); P = np.zeros((N, K + 1), dtype=np.int64)
+    N = len(T); H = np.zeros((N, K + 1, m.g.D), dtype=np.float32); P = np.zeros((N, K + 1), dtype=np.int64)   # §258 S0: the model's width (was 768)
     for i in range(0, N, bs):
         ch = T[i:i + bs]; sl = slice(i, i + len(ch)); S = m.mem.zero_state(len(ch), dev)
         hd, pr = hh_hidden(m, S, ch, dev); H[sl, 0] = hd.cpu().numpy(); P[sl, 0] = pr

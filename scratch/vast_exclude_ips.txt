@@ -75,3 +75,65 @@ oid:48757313 # §210 3090 113.161.85.72
 151.237.25.16 # §215 refused (projection) 2026-10-17 15:16:44
 89.221.67.137 # §218 refused (no-gtime) 2026-10-18 19:50:28
 171.5.184.14 # §218 b316 HOST-LOST (instance vanished 0.6 h after create) 2026-10-18
+82.178.70.10 # §218 b316 attempt 2 BAD HOST (STUCK_LOADING) 2026-10-20 22:51 (Experiments, by hand; autoexclude_watch was not relaunched after the outage)
+oid:56931743 # §218 b316 82.178.70.10 STUCK_LOADING 2026-10-20
+82.178.70.10 # §218 refused (projection) 2026-10-20 23:13:23
+171.5.182.162 # §224 refused (hostprobe) 2026-10-22 07:14:49
+77.29.9.173 # §224 b331 FAILED upload x2 (10:05, 10:45 10-22; autoexclude misses 'FAILED upload') 2026-10-22 10:49:59
+oid:32750800 # §224 permanent: BAD HOST b265 / b274 (10-12) + FAILED upload x2 b331 (10-22) 2026-10-22 10:50:19
+190.22.33.220 # §224 refused (hostprobe) 2026-10-22 13:52:38
+178.223.71.173 # §224 b333 instance vanished Vast-side 10-22 15:00 2026-10-22 15:01:58
+oid:51946764 # §224 b333 vanished 10-22 2026-10-22 15:01:58
+50.40.161.201 # §224 refused (projection) 2026-10-22 22:57:47
+149.40.242.200 # §224 refused (projection) 2026-10-23 10:53:03
+85.90.17.171 # §233 refused (hostprobe) 2026-10-24 15:46:20
+142.127.90.36 # §233 refused (hostprobe) 2026-10-24 15:52:24
+77.48.24.250 # §233 refused (projection) 2026-10-24 16:12:24
+190.22.60.176 # §233 refused (hostprobe) 2026-10-24 16:21:41
+85.30.169.224 # §233 refused (projection) 2026-10-24 16:35:26
+70.30.86.247 # §232s3 refused (hostprobe) 2026-10-24 18:23:34
+38.114.84.170 # §232s3 refused (projection) 2026-10-24 18:32:48
+5.199.239.202 # §232s3 refused (projection) 2026-10-24 18:39:07
+181.93.117.192 # §235 refused (hostprobe) 2026-10-26 15:08:44
+81.51.81.232 # §234 refused (projection) 2026-10-26 23:50:06
+110.169.142.50 # §237 b354 upload stalled (~25 KB/s, 1.4 GB tarball) 2026-10-27 13:11:22
+181.94.150.102 # §237 refused (projection) 2026-10-27 13:24:15
+45.42.128.201 # §237 refused (projection) 2026-10-27 13:40:48
+95.86.5.33 # §237 refused (projection) 2026-10-27 14:16:44
+181.99.244.111 # §237 refused (projection) 2026-10-27 14:37:29
+185.188.217.123 # §237 refused (projection) 2026-10-27 14:50:05
+190.137.253.2 # §240 refused (projection) 2026-10-28 07:56:17
+186.128.136.213 # §240 refused (projection) 2026-10-28 08:11:15
+116.102.78.26 # §240 refused (hostprobe) 2026-10-28 08:53:12
+194.26.196.162 # §240 refused (projection) 2026-10-28 09:34:46
+38.145.234.214 # §240 refused (projection) 2026-10-28 10:47:52
+187.127.86.34 # §240 refused (hostprobe) 2026-10-28 12:02:56
+149.200.53.205 # §240 refused (hostprobe) 2026-10-28 13:49:09
+116.109.104.17 # §243 refused (hostprobe) 2026-10-29 01:56:53
+65.7.12.94 # §244 refused (projection) 2026-10-29 15:15:10
+194.26.196.171 # §244 refused (projection) 2026-10-29 15:39:02
+27.64.61.104 # §245 refused (hostprobe) 2026-10-29 17:31:33
+83.195.111.70 # §251 refused (hostprobe) 2026-10-30 09:42:55
+61.71.33.195 # §251 refused (projection) 2026-10-30 10:13:53
+oid:57685672 # §251 vanished 2026-10-30 11:14:53
+77.235.123.82 # §251 refused (vanished) 2026-10-30 11:14:55
+1.34.114.64 # §251 refused (projection) 2026-10-30 11:51:20
+83.194.85.234 # §251 refused (projection) 2026-10-30 12:46:50
+194.26.196.157 # §251 refused (projection) 2026-10-31 10:01:04
+101.108.153.134 # §251 refused (projection) 2026-10-31 13:06:42
+24.196.244.156 # §251 refused (projection) 2026-10-31 13:18:00
+220.135.0.171 # §251 refused (hostprobe) 2026-10-31 13:47:23
+46.63.50.129 # §251 refused (projection) 2026-10-31 14:05:02
+87.106.223.150 # §251 refused (projection) 2026-10-31 14:43:21
+174.94.107.181 # §251 refused (projection) 2026-10-31 14:55:33
+79.117.116.147 # §251 refused (projection) 2026-10-31 15:11:21
+171.5.178.57 # §251 refused (projection) 2026-10-31 15:28:18
+94.27.143.59 # §251 refused (hostprobe) 2026-10-31 20:20:38
+83.27.149.210 # §251 refused (hostprobe) 2026-11-01 07:40:32
+115.246.55.146 # §251 refused (hostprobe) 2026-11-01 18:59:50
+194.14.47.19 # §251 refused (projection) 2026-11-01 20:39:04
+51.89.50.15 # auto 1793585833 BAD_HOST b396 offer 58579877
+oid:58579877 # auto 1793585833 BAD_HOST b396 offer 58579877
+209.137.198.14 # §251 refused (hostprobe) 2026-11-01 22:21:45
+# VOID oid:45242025 (b399: destroyed by Experiments - its queue carried the hh_dump bug - not a host fault)
+# VOID 38.29.145.10 (same: deliberate destroy, not a host fault)
