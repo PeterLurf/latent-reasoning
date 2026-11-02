@@ -23646,6 +23646,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - It relies on the C6 hold (the answer stays fixed after solving), so it is a property of the bundle model.
 - **SOTA json:** C5 evidence updated in this commit.
 
+**Note 259-9 (2026-11-02 12:51 EST; pre-statement only, pushed before computing per Audit's process note; Theory computes after Audit's ack. A follow-up chosen AFTER seeing r = 2 (Note 259-8), so it is labelled post-hoc).**
+- **(a) s2 miss diagnosis (descriptive):** for each seed's r = 2 misses at d 5-7 (pred[khalt] != ans), classify each item as:
+  - PREMATURE: pred[14] == ans, i.e. a coincidental 2-pass repeat before the answer settled;
+  - WRONG-ANYWAY: pred[14] != ans and pred[8] != ans;
+  - LATE-DRIFT: pred[8] == ans but pred[14] != ans.
+  - Shares are reported per d.
+- **(b) r = 3 (post-hoc):** the same rule with three further unchanged passes, scored by score_c5c's rule for both seeds.
+  - Reading pre-stated now: r = 3 counts toward C5 only as a post-hoc result ('EXTRAP at r = 3, post-hoc'). The registered C5 result stays Note 259-8's (r = 2: 1/2).
+  - Expected: if PREMATURE dominates s2's misses, r = 3 recovers s2 at one more pass.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
