@@ -23505,6 +23505,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Condition:** L2 is now read on dch_s* (L2 = DRIFT on a dch seed triggers that seed's BUN arm). The C5 head for the bundle is the dch L1 head.
 - **L1 / L2 on dch (eval-only, ~$0.3, b395's s261 family):** the same rules and scorer: theory/score_hx.py --dch (fixtures 7/7; RUNS_DCH = dch_s1 / dch_s2). b395 on dis stays as registered.
 
+**Note 258-3 (2026-11-02 01:35 EST; §258 S1 SCORED by theory/score_lb2.py --stage S1, run twice: 'S1-OK winner askm_lr3e5'; askm_lr3e5 d7bc5d81 ($0.616), askm_lr1e4 97104511 ($0.683); RTX A6000; all 5 S0 gates passed on each host before training; files == host shas).**
+- **Both arms pass:** ST_v1 classes i-iv = 1.000 / 1.000 / 1.000 / 1.000 and TEST2 d 1 1.000 in each.
+  - The pre-stated tie-break picks lr 3e-5 (equal means). S2 (p2m_s1) is built on askm_lr3e5 at lr 3e-5, aw_plaw2's args, 12k, A6000, off-host ckpt + tested resume.
+- Disclosed: askname-arm eval_acc by d (1.000 to d 12 here, ~1.0 for s233 too) reads the askname-format items, not multi-step final answers. It is not a direct-path depth reading.
+- **Note 257-2 L1 / L2 status:** dis_s1's files landed (b395, $0.177, sha == host). dis_s2's line died because its init was not shipped; it now runs with b400 on a different 3090 than dis_s1's (disclosed; eval-only).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

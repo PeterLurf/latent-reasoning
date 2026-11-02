@@ -1,0 +1,13 @@
+{
+ "verdict": "S1-OK winner askm_lr3e5",
+ "arms": {
+  "askm_lr3e5": {
+   "pass": true,
+   "mean": 1.0
+  },
+  "askm_lr1e4": {
+   "pass": true,
+   "mean": 1.0
+  }
+ }
+}
