@@ -83,15 +83,16 @@ def tok_aw(it, aux_target="value", cue="none", write_src="all"):
 
 def build_aw(a, dev):
     """inject_ow.build_model with --init_trunk: GPT-2 loaded strict (sha asserted) BEFORE DeltaMem is built; InjectAW for --write_src answer."""
-    g = load_trunk(dev, {"scratch": ""})
+    g = load_trunk(dev, {"scratch": "", "base": getattr(a, "base", "gpt2")})   # §258 S0: --base
     if getattr(a, "init_trunk", ""):
         sha = hashlib.sha256(open(a.init_trunk, "rb").read()).hexdigest(); assert not a.init_sha or sha.startswith(a.init_sha), ("init sha", sha, a.init_sha)
         g.load_state_dict(torch.load(a.init_trunk, map_location=dev, weights_only=True), strict=True); a.init_sha256 = sha
     if a.arm == "direct":
         return None, g, g
     cls = InjectAW if getattr(a, "write_src", "all") == "answer" else InjectOW
-    m = cls(g, 6, a.mem_write, 6, 6, None).to(dev); m.nopass = False
-    assert torch.equal(m.mem.qkv.weight.detach(), g.w("h.6.attn.c_attn.weight").detach().float().T), "G12: DeltaMem qkv = the loaded block-6 c_attn"
+    lm, hm = g.L // 2, g.D // 128                                          # §258 S0: DeltaMem at L // 2, D / 128 + D / 128 heads of 64 (small: 6, 6 + 6)
+    m = cls(g, lm, a.mem_write, hm, hm, None).to(dev); m.nopass = False
+    assert torch.equal(m.mem.qkv.weight.detach(), g.w("h.%d.attn.c_attn.weight" % lm).detach().float().T), "G12: DeltaMem qkv = the loaded block-L/2 c_attn"
     return m, g, m
 
 
@@ -181,6 +182,7 @@ def hold_mean(hb):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=["direct", "inject"]); ap.add_argument("--think_k", type=int, default=0); ap.add_argument("--d_max", type=int, default=8)
+    ap.add_argument("--base", default="gpt2", choices=["gpt2", "gpt2-medium"], help="§258 S0: the pretrained trunk; DeltaMem at layer L // 2 with D / 128 + D / 128 heads of 64 (small: 6, 6 + 6)")
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true"); ap.add_argument("--mem_write", default="top", choices=["top"])
     ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000); ap.add_argument("--cache_lower", action="store_true")

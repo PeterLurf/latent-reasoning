@@ -1,0 +1,33 @@
+{
+ "missing": [],
+ "unexpected": [
+  "h.0.attn.bias",
+  "h.1.attn.bias",
+  "h.2.attn.bias",
+  "h.3.attn.bias",
+  "h.4.attn.bias"
+ ],
+ "prompts": [
+  {
+   "n_tok": 10,
+   "max_abs_delta": 0.0001678466796875
+  },
+  {
+   "n_tok": 20,
+   "max_abs_delta": 0.000125885009765625
+  },
+  {
+   "n_tok": 5,
+   "max_abs_delta": 0.00012969970703125
+  },
+  {
+   "n_tok": 12,
+   "max_abs_delta": 9.918212890625e-05
+  }
+ ],
+ "small_equal": true,
+ "small_max_abs_delta_floor": 0.0001220703125,
+ "argmax_equal_all": true,
+ "max_abs_delta": 0.0001678466796875,
+ "pass": true
+}

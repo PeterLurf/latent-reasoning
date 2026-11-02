@@ -641,7 +641,7 @@ def hh_hidden(m, S, ch, dev):
 @torch.no_grad()
 def hh_dump(m, T, dev, bs, K=HH_KMAX):
     """passes 1..K (seq_std inputs, one padding per pass, S from zero, pass_aw writes); the decoder's answer-position hidden + pred at every K' 0..K -> (H (N, K+1, 768), P (N, K+1))."""
-    N = len(T); H = np.zeros((N, K + 1, 768), dtype=np.float32); P = np.zeros((N, K + 1), dtype=np.int64)
+    N = len(T); H = np.zeros((N, K + 1, m.g.D), dtype=np.float32)   # §258 S0: the model's width (was 768); P = np.zeros((N, K + 1), dtype=np.int64)
     for i in range(0, N, bs):
         ch = T[i:i + bs]; sl = slice(i, i + len(ch)); S = m.mem.zero_state(len(ch), dev)
         hd, pr = hh_hidden(m, S, ch, dev); H[sl, 0] = hd.cpu().numpy(); P[sl, 0] = pr
@@ -691,19 +691,19 @@ def part_halthead(m, g, sets, a, dev, bs):
     s_ = OW.Stream(SEED_HH_FIT + 1, excl=sets["excl"], **kw); ds = rng.integers(1, 5, size=HH_N)
     F = [AW.tok_aw(s_.draw(int(d)), a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for d in ds]
     t2sig = {it["sig"] for d in sets["test2"] for it in sets["test2"][d]}; assert not any(it["raw"]["sig"] in t2sig for it in F), "§248: a fit item is in TEST2-DF"
-    Hf = np.zeros((HH_N, HH_KMAX + 1, 768), dtype=np.float32); Pf = np.zeros((HH_N, HH_KMAX + 1), dtype=np.int64)
+    Hf = np.zeros((HH_N, HH_KMAX + 1, m.g.D), dtype=np.float32); Pf = np.zeros((HH_N, HH_KMAX + 1), dtype=np.int64)
     for d in range(1, 5):                                                   # one d per batch (cue inputs share one padding)
         idx = np.where(ds == d)[0]; Hd, Pd = hh_dump(m, [F[i] for i in idx], dev, bs); Hf[idx] = Hd; Pf[idx] = Pd
     perm = rng.permutation(HH_N); nv = int(round(HH_VAL * HH_N)); va, tr = perm[:nv], perm[nv:]
     lab = (Pf == Pf[:, [HH_KMAX]]).astype(np.float64)
-    Xtr, ytr = Hf[tr].reshape(-1, 768), lab[tr].reshape(-1); Xva, yva = Hf[va].reshape(-1, 768), lab[va].reshape(-1)
+    Xtr, ytr = Hf[tr].reshape(-1, m.g.D), lab[tr].reshape(-1); Xva, yva = Hf[va].reshape(-1, m.g.D), lab[va].reshape(-1)
     mu, sd, w, b = hh_fit(Xtr, ytr); ptr, pva = hh_prob(Xtr, mu, sd, w, b), hh_prob(Xva, mu, sd, w, b)
     out = {"head": {"train_acc": float(((ptr >= 0.5) == (ytr == 1)).mean()), "val_acc": float(((pva >= 0.5) == (yva == 1)).mean()), "val_auc": hh_auc(pva, yva),
                     "train_rows": int(len(ytr)), "val_rows": int(len(yva)), "train_items": int(len(tr)), "val_items": int(len(va)), "y_rate_train": float(ytr.mean()),
                     "fit_d_counts": {str(d): int((ds == d).sum()) for d in range(1, 5)}, "w_norm": float(np.linalg.norm(w)), "b": b}}
     T = tokd(sets, a, range(1, 7))
     for d in range(1, 7):
-        y = np.array([it["ans"] for it in T[d]]); Hd, Pd = hh_dump(m, T[d], dev, bs); p = hh_prob(Hd.reshape(-1, 768), mu, sd, w, b).reshape(len(y), HH_KMAX + 1)
+        y = np.array([it["ans"] for it in T[d]]); Hd, Pd = hh_dump(m, T[d], dev, bs); p = hh_prob(Hd.reshape(-1, m.g.D), mu, sd, w, b).reshape(len(y), HH_KMAX + 1)
         hit = p >= HH_TAU; kh = np.where(hit.any(1), hit.argmax(1), HH_KMAX); ah = Pd[np.arange(len(y)), kh]
         out[str(d)] = {"n": len(y), "acc_k8": float((Pd[:, HH_KMAX] == y).mean()), "acc_halt": float((ah == y).mean()), "mean_khalt": float(kh.mean()),
                        "khalt_hist": {str(k): int((kh == k).sum()) for k in range(HH_KMAX + 1)}, "never_halt_n": int((~hit.any(1)).sum()),

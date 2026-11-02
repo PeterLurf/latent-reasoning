@@ -413,7 +413,7 @@ def make_trunk(a, dev):
     run's seed; GPT-2 tokenizer / vocab / 1024 positions). The local memory cap is applied either way. a: the run's args (dict)."""
     from boxes import s5
     if not a.get("scratch"):
-        return s5.load_gpt2(dev)
+        return s5.load_gpt2(dev, a.get("base") or "gpt2")                   # §258 S0: --base
     from boxes import core as bc
     try:
         from boxes import memcap

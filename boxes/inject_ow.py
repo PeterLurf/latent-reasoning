@@ -177,10 +177,11 @@ def load_trunk(dev, n7args):
 
 def build_model(a, dev):
     """-> (m or None, g, params). torch.manual_seed(a.seed) must precede (nested170's init order: seed, trunk, DeltaMem)."""
-    g = load_trunk(dev, {"scratch": ""})
+    g = load_trunk(dev, {"scratch": "", "base": getattr(a, "base", "gpt2")})   # §258 S0: --base
     if a.arm == "direct":
         return None, g, g
-    m = InjectOW(g, 6, a.mem_write, 6, 6, None).to(dev); m.nopass = False; return m, g, m
+    lm, hm = g.L // 2, g.D // 128                                          # §258 S0: DeltaMem geometry (small: 6, 6 + 6)
+    m = InjectOW(g, lm, a.mem_write, hm, hm, None).to(dev); m.nopass = False; return m, g, m
 
 
 META = {"device", "train_gpu", "train_driver", "torch_version", "cuda_version", "cudnn_version", "python_version", "image_tag", "hostprobe_sps", "micro", "accumulation",
@@ -191,6 +192,7 @@ META = {"device", "train_gpu", "train_driver", "torch_version", "cuda_version", 
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", required=True, choices=["direct", "inject"]); ap.add_argument("--think_k", type=int, default=0); ap.add_argument("--d_max", type=int, default=8)
+    ap.add_argument("--base", default="gpt2", choices=["gpt2", "gpt2-medium"], help="§258 S0: the pretrained trunk; DeltaMem at layer L // 2 with D / 128 + D / 128 heads of 64 (small: 6, 6 + 6)")
     ap.add_argument("--steps", type=int, default=48000); ap.add_argument("--bs", type=int, default=64); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--micro", type=int, default=1); ap.add_argument("--ckpt_passes", action="store_true"); ap.add_argument("--mem_write", default="top", choices=["top"])
     ap.add_argument("--write_mix_start", type=int, default=2000); ap.add_argument("--write_mix_end", type=int, default=6000); ap.add_argument("--cache_lower", action="store_true")

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# s260 filler template (= s257_fill.sh + Audit 11-01 guard fixes: WALLW count refusal, family guard over every cell, guard-health check after ADMIT).
+# s260 template v2 (Audit 11-01: BAD spend family-only, guard >= admit + 0.05, GPU class, dph_total) on the s258 filler template (= s257_fill.sh + Audit 11-01 guard fixes: WALLW count refusal, family guard over every cell, guard-health check after ADMIT).
 # §251 ANSWER-EXTEND filler (AE_v1 §6; guard $4.5 over the design; non-580 RTX 3090s). A mechanical copy of scratch/s250_fill.sh (sed: s250 -> s260; with the
 # fam() once-per-cell fix e0a987e4). One filler run per host, chained by scratch/s260_chain.sh.
 #   WALLW=0.1,0.1,4.0 EVAL_H=0.5 CAPF=4.5 QS="376:aex_s1:<admit>:<guard>:16000:<est>" nohup bash scratch/s260_fill.sh >> logs/fill_s260.out 2>&1 &
 #   360 lh_ctrl_s1:0.60:1.40, 361 lh_ctrl_s2:0.60:1.40)
 cd "$(dirname "$0")/.."
-WALLW=${WALLW:-0.1,0.1,6.0,0.5}; PMAX=${PMAX:-0.21}; CAPF=${CAPF:-}; SETUP_H=0.4; EVAL_H=${EVAL_H:-1.0}; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s260_bad_cost.log; ADMLOG=logs/s260_admitted.log
+WALLW=${WALLW:-0.1,0.1,6.0,0.5}; PMAX=${PMAX:-0.21}; CAPF=${CAPF:-}; SETUP_H=0.4; EVAL_H=${EVAL_H:-1.0}; BADN=${BAD0:-0}; BADMAX=4; HOSTMAX=${HOSTMAX:-3}; BADLOG=logs/s260_bad_cost.log; ADMLOG=logs/s260_admitted.log; GPU=${GPU:-RTX_3090}   # s260 template v2 (3)
 BADSPENDMAX=${BADSPENDMAX:-1.00}; VAST=${VAST:-C:/Users/peter/.local/vastai/vast.sh}
 FAMGUARD_LOG=${FAMGUARD_LOG:-logs/s260fam_guard.out}
 QS="${QS:-}"
@@ -72,6 +72,7 @@ log "start: QS $QS; family \$$CAPF; SETUP_H $SETUP_H; EVAL_H $EVAL_H; inject_aw 
 FAMC=""; for c_ in $QS; do IFS=: read -r n_ r_ a_ g_ s_ e_ <<<"$c_"; FAMC="$FAMC $n_:$r_:$e_:$s_"; done   # unstarted cells project at their ESTIMATE
 for cell in $QS; do
   IFS=: read -r n run CAPC GSTOP STEPS EST <<<"$cell"; tries=0; export EXTRA_120=""; NE=1; GM=$(marks "$STEPS")
+  python -c "import sys; sys.exit(0 if $GSTOP >= $CAPC + 0.05 - 1e-9 else 1)" || { log "REFUSED b$n: guard \$$GSTOP < admit cap \$$CAPC + 0.05 (Audit 11-01 v2 (2))"; exit 2; }
   grep -q "^$n:$run " "$ADMLOG" 2>/dev/null && { log "b$n: $run already admitted - next"; continue; }
   [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
   nlq=$(grep -vc '^#' "scratch/gen_q_b$n.txt"); nw=$(echo "$WALLW" | tr ',' '\n' | grep -c .)   # Audit 11-01 (1): one wall-guard weight per queue line
@@ -83,9 +84,9 @@ for cell in $QS; do
     bt=$(awk '!/^#/ {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0)
     if python -c "import sys; sys.exit(0 if $bt > $BADSPENDMAX else 1)"; then log "CAP: §251 BAD-host spend \$$bt > \$$BADSPENDMAX - held; tell Audit"; exit 3; fi
     [ "$tries" -ge "$HOSTMAX" ] && { log "b$n: $run NOT RUN - no admitting host in $HOSTMAX tries; tell Audit / Theory"; continue 2; }
-    r_=$(GPU_NAME=RTX_3090 python scratch/offer_pick.py - "$PMAX"); o=""; ip=""; dph=""; read -r o ip dph <<<"$r_"
-    if [ -z "${o:-}" ]; then log "b$n: no RTX_3090 offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
-    log "b$n: deploying $run on offer $o ($ip, RTX_3090, \$$dph/h)"; t0=$(date +%s); bash scratch/gen_deploy_120_s253.sh "$o $n"
+    r_=$(GPU_NAME=$GPU python scratch/offer_pick.py - "$PMAX"); o=""; ip=""; dph=""; read -r o ip dph <<<"$r_"
+    if [ -z "${o:-}" ]; then log "b$n: no $GPU offer (non-580, <= \$$PMAX); retry in 10 min"; sleep 600; continue; fi
+    log "b$n: deploying $run on offer $o ($ip, $GPU, \$$dph/h)"; t0=$(date +%s); bash scratch/gen_deploy_120_s253.sh "$o $n"
     line=$(grep "gen host b$n offer $o:" logs/gen_deploy.log | tail -1)
     if ! echo "$line" | grep -q STARTED; then
       mins=$(( ($(date +%s) - t0) / 60 + 1 )); c=$(python -c "print(round($mins / 60 * $dph, 4))"); BADN=$((BADN + 1))
@@ -107,15 +108,18 @@ for cell in $QS; do
     sps=$(echo "$gt" | python -c "import json,sys; print(json.load(sys.stdin)['sec_per_step'])" 2>/dev/null)
     am=$(echo "$gt" | python -c "import json,sys; print('micro', json.load(sys.stdin)['micro'])" 2>/dev/null)
     if [ -z "$sps" ]; then log "b$n: no G-TIME timing.json after 45 min on $h:$p ($(sq "$h" "$p" "tail -n 3 /workspace/Latent/logs/gen_${run}_gtime.log" | tr '\n' ' ' | cut -c1-300)) - refusing"; refuse "$h" "$p" "$iid" "$o" "$ip" "$dph" "$t0" "no-gtime"; continue; fi
+    da=$(bash "$VAST" show instance "$iid" --raw 2>/dev/null | python -c "import json,sys; print(json.load(sys.stdin).get('dph_total') or 0)" 2>/dev/null || echo 0)   # v2 (4)
+    dph=$(python -c "print(round(max($dph, float('${da:-0}' or 0)), 4))")
     proj=$(python -c "print(round(($sps * $STEPS / 3600 + $SETUP_H + $EVAL_H * $NE) * $dph, 2))"); fs=$(fam)
     log "b$n: K7 mem_check $mc; G-TIME $sps s/step ($am) -> cell projection \$$proj ($STEPS steps, $NE x $EVAL_H h eval / tail; cap \$$CAPC); family so far \$$fs (admitted + BAD) of \$$CAPF"
     if python -c "import sys; sys.exit(0 if $proj <= $CAPC and $fs + $proj <= $CAPF else 1)"; then
       echo "$n:$run $h:$p $iid \$$dph/h sps $sps $proj" >> "$ADMLOG"; log "b$n: ADMIT $run on $h:$p (instance $iid): \$$proj"
       evh=$(python -c "print(round(max(0.25, 1000 * $sps / 3600), 2))")       # the mirror every ~1k steps (ckpt_every 1000)
       nohup python scratch/ckpt_mirror.py "$n:$run" --every_h "$evh" --optional log.jsonl,args.json > "logs/ckpt_mirror_b$n.out" 2>&1 &
-      cb=$(awk -v n="b$n" '!/^#/ && $3 == n {s += $NF} END {printf "%.4f", s + 0}' "$BADLOG" 2>/dev/null || echo 0); gl=$(python -c "print(round($GSTOP - $cb, 4))")
+      gl=$GSTOP                                                             # v2 (1): BAD-host spend is a family cost, never deducted from a cell
+      python -c "import sys; sys.exit(0 if $gl >= $proj + 0.05 - 1e-9 else 1)" || { log "HOLD b$n: guard \$$gl < projection \$$proj + 0.05 - guards NOT started; tell Audit"; exit 3; }
       GUARD_STOP=1 GUARD_MARKS=$GM nohup python scratch/cost_guard.py "s260_b$n" "$gl" "$STEPS" "$n:$run:$proj:$STEPS" > "logs/s260_guard_b$n.out" 2>&1 &
-      log "b$n: ckpt mirror (every $evh h) + cell guard (\$$GSTOP - rejected-host \$$cb = \$$gl, GUARD_STOP=1, marks $GM) started"
+      log "b$n: ckpt mirror (every $evh h) + cell guard (\$$gl = the approved cell guard; BAD spend is family, v2 (1); GUARD_STOP=1, marks $GM) started"
       nl=$(grep -vc '^#' "scratch/gen_q_b$n.txt.norequeue")
       GUARD_STOP=1 GUARD_WEIGHTS="$WALLW" nohup python scratch/s232_wall_guard.py "s260_wall_b$n" "$gl" "$iid" "$h" "$p" "$dph" "$t0" "gen_b$n" "$nl" "$EST" > "logs/s260_wall_b$n.out" 2>&1 &
       log "b$n: wall guard over the host (\$$gl from the create, $nl lines, weights $WALLW, GUARD_STOP=1) started"
