@@ -1,0 +1,10 @@
+# §251 ledger (fill_s260); last field = $
+# NOTE 2026-11-01 20:54:49 b396 caps raised to admit $1.45 / guard $1.55 (Audit; 3090 offers $0.19-0.21/h); filler restarted after the 51.89.50.15 verdict with a fresh refusal count
+396:bridge_s1 82.178.70.231:42092 58751330 $0.2001/h sps 1.3067963202794393 1.4
+# NOTE 2026-11-01 21:38:09 b396 cell + wall guards restarted at $1.55 (Audit's approved guard): the template's rejected-host deduction left $1.3633 < the $1.40 admit projection (would have destroyed at mark 500)
+# NOTE 2026-11-01 22:08:19 b396 wall guard priced at dph_total 0.207 (Audit)
+# NOTE 2026-11-01 22:22:49 A6000 class HOSTPROBE limit 1.15 s/step (Audit; the 3090-calibrated 0.854 refused 209.137.198.14 at 0.987); in b397's header (s258m_mkq)
+397:anchor_a6000_eqA 38.29.145.13:40663 58757928 $0.4167/h sps 2.9064438740412393 0.78
+# NOTE 2026-11-01 22:47:41 s260fam guard restarted with per-cell steps (396:16000, 397 anchor:2000): the template's ALLC used this filler's STEPS (100) for every ledger cell
+398:askm_lr3e5 38.29.145.28:40714 58762685 $0.4167/h sps 0.25223248402277626 steps 8000 0.65
+realised:b397 # 58757928 (wall guard spent $0.455 at 23:27 + 3.5 min x $0.4167/h dph_total to destroy at 23:30) (§258 S0: gates line FAILED on the ref-tree setup bug, fixed 1a02ac43; mem / G-TIME medium; anchor 2k) 0.479

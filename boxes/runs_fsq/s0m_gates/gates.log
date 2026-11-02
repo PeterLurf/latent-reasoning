@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/workspace/Latent/scratch/gate_s258m.py", line 150, in <module>
+    r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)
+        ^^^^^^^^^^^
+  File "/workspace/Latent/scratch/gate_s258m.py", line 62, in offbit_aw
+    return _offbit("boxes/inject_aw.py", RCB + COM + ["--ckpt_every", "100", "--log_every", "10", "--stop_at", "100"], "offaw")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/scratch/gate_s258m.py", line 55, in _offbit
+    da, db = TMP + "/%s_ref" % tag, TMP + "/%s_new" % tag; o = {"rc": [det_in(ref_tree(), mod, fl, da), det_in(ROOT, mod, fl, db)]}
+                                                                              ^^^^^^^^^^
+  File "/workspace/Latent/scratch/gate_s258m.py", line 45, in ref_tree
+    os.symlink(ROOT + "/prosqa", REFT + "/prosqa"); os.symlink(ROOT + "/boxes/runs_fsq", REFT + "/boxes/runs_fsq")
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileExistsError: [Errno 17] File exists: '/workspace/Latent/boxes/runs_fsq' -> '/workspace/Latent/scratch/_ref258m/boxes/runs_fsq'
