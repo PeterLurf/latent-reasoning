@@ -23724,6 +23724,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Binding: C1 plan-free (d 1-4 >= 0.95, NOT-DECODER, SWAP4, LP5-D4, PLAN-FREE host assert), CONTENT (H-CHAINSRC-OP >= 0.85), C2 (d 6 >= 0.80), C6 (K' 64 hold d 1-4), STABLE. CUE-ONLY is not used (vacuous under a generic cue).
   - The pilot's 2k ckpt may be deleted (the full stage starts from bun).
 
+**Note 260-3 (2026-11-02 17:39 EST; the full §260 stage APPROVED by Audit within the $3 guard, with three scorer changes committed before any output; theory/score_gbf.py fixtures 8/8).**
+- **(1) C6 uses bun's bar:** K' 64 and K' 128 >= K' 8 - 0.02 at d 1-6.
+- **(2) CONTENT:** H-CHAINSRC-OP acc8 >= 0.85 AND min over positions >= 0.80.
+- **(3) Descriptive:** C2 deltas vs bun_s<k> (d 6 / 7), and the C5 r = 3 answer-stability halt (score_c5c rule) on eval_stab.json (per-item pred at K' 0..14) on gb.
+- **Host 'plan_free' assert, as defined:** every think cue is byte-identical across passes and contains none of the item's entity names.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
