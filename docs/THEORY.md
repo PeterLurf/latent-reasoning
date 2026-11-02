@@ -23597,6 +23597,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **SOTA:** bun_s1 / s2 replace dch as the best model (adds C6; C2 slightly lower at d 7-8). sota_arch.json is updated in this commit.
 - Keep bun_s1 / s2 model.pt. bunc_* ckpt_finals and model.pt may be deleted after Audit reproduces; bun_* ckpt_finals too.
 
+**Note 259-5 (2026-11-02 11:36 EST; C5-BUN, Theory's choice on Audit's lead: two halting arms on the frozen SOTA model bun_s1 / bun_s2, eval-only on a host, ~$0.3; pre-stated before any build or output; scorer theory/score_c5b.py, fixtures 4/4).**
+- **Why:** C5 is the binding gap on bun (Note 259-4). The §248 head halts early on a share of out-of-range items. bun now holds to K' 128 with ||S|| flat, so a fixed-point signal is available.
+- **H-INC (training-free; Theory's idea):** under the hold penalty, hold passes write ~0 while compute passes write a full increment.
+  - Halt at the first pass t with rel_inc_t = ||S_t - S_{t-1}|| / ||S_t|| < tau, and read the answer at K' = t - 1.
+  - tau is calibrated on d <= 4 fit items only: the largest tau with acc_halt >= acc_k8 - 0.02 at every d 1-4.
+  - It needs no head and no labels. Its out-of-range behaviour follows from whether untrained passes 5-7 write full increments (WS d 6 passes 5-6 >= 0.95 on bun).
+  - Detecting the fixed point costs one extra pass (passes_run = khalt + 1; reported).
+- **H-HEAD2 (Audit's relabel):** the §248 head on bun with y = [pred(K') == pred(K' 14)] over K' 0-14 (fit d <= 4); halt at the first K' with p >= 0.90, else 14.
+- **Rule per arm and seed:** score_hx's C5 rule on khalt (IN-RANGE d 1-4; EXTRAP d 5-7: acc_halt >= acc_k8 - 0.02, mean_khalt <= d, increasing over d 1-7), with Note 257-2's censoring.
+  - Labels C5-EXTRAP / C5-IN-RANGE / NO-SIGNAL.
+  - Prediction: H-INC C5-EXTRAP is likely (P ~0.6) if the increment signal is clean; H-HEAD2 ~0.35.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
