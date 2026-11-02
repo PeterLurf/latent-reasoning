@@ -1,0 +1,65 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "ec16d42a2c5b7342573026a478ae2b63db9a826d",
+   "disk": "ec16d42a2c5b7342573026a478ae2b63db9a826d"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "67084e7edfabc7a31629156012e3a9e5f1629174",
+   "disk": "67084e7edfabc7a31629156012e3a9e5f1629174"
+  },
+  "boxes/insert_render.py": {
+   "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
+   "disk": "eb2c1c8f81c19b843451c207e97c051db91bf792"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "scratch/s259_guarded.py": {
+   "head": "d12bcd6c88c8e2e916b527a3007ee2fa5a7316c4",
+   "disk": "d12bcd6c88c8e2e916b527a3007ee2fa5a7316c4"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  }
+ },
+ "init_unbuffered_sha256_x3": {
+  "1": [
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+  ],
+  "2": [
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac",
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac",
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac"
+  ]
+ },
+ "predeploy_ok": true
+}
