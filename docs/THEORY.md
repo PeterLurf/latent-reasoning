@@ -23414,6 +23414,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Landing check:** each fetched file's local unbuffered sha is compared with the host's host_shas.json before hand-over. Theory scores twice and compares.
 - Launched 18:43 after Audit's G-D PASS: b393 dch_s1 -> b394 dch_s2.
 
+**Note 257-2 (2026-11-01 19:39 EST; Audit's research pass: Theory picks L1 + L2, two eval-only host reads on the §256 C2 models; pre-stated before any build or output; scorer theory/score_hx.py, fixtures 6/6).**
+- **L1 HALT-EXTRAP (C5).** The §248 halt-head procedure on dis_s1 / dis_s2 (frozen), REG stream:
+  - head fit on d U{1..4} items only;
+  - features = the decoder's answer-position hidden at K' 0..8; y = [pred(K') == pred(8)]; halt at the first K' with p >= 0.90.
+  - Tested on TEST2 d 1-7.
+  - **Rule per seed:** IN-RANGE = §247's C5 gates at d 1-4. EXTRAP at d 5-7 = acc_halt >= acc_k8 - 0.02, mean_khalt <= d, and mean_khalt strictly increasing over d 1-7.
+  - Labels C5-EXTRAP / C5-IN-RANGE / NO-SIGNAL (VOID if head val_acc < 0.80).
+  - §248 failed out of range only because the lh_fh models failed past d 4; dis_s* solve d 5-7.
+- **L2 HOLD-DIS (C6).** §240's run_long at K' 8 / 64 / 128 on dis_s1 / s2, d 1-6.
+  - **Rule:** HOLD if every d has acc(64), acc(128) >= acc(8) - 0.02; else DRIFT (failing d named).
+  - Prior: DRIFT is likely, because the rcb / dis lineage never had §240's hold-increment penalty (§239: ||S|| grows ~linearly; drift at K' 64 in one seed).
+- **Cost:** ~$0.3 total, on a host; launch after §257 lands (credit then ~$12.7, above $12). Both are read before any combined C2 + C5 / C6 claim.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
