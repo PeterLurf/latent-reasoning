@@ -10,3 +10,4 @@ realised:b402 # 58796879 (wall guard spent $0.065 at 04:26:42 + 7 min x $0.207/h
 realised:b402 # 58802109 (wall guard spent $0.968 at 09:30:56 at dph_total $0.207/h + 6.5 min to destroy at 09:37:29) (§259 bun_s1 attempt 2) 0.990
 realised:b404 # 58816122 (wall guard spent $0.791 at 10:39:58 at dph_total $0.215/h + 3.7 min to destroy at 10:43:39) (§259 bunc_s1) 0.804
 realised:b405 # 58819803 (wall guard spent $0.680 at 11:10:05 at dph_total $0.1817/h + 4 min to destroy at 11:14:09) (§259 bunc_s2) 0.692
+realised:b403 # 58811979 (wall guard spent $1.119 at 11:26:52 at dph_total $0.2243/h + 6.3 min to destroy at 11:33:12) (§259 bun_s2) 1.143
