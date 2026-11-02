@@ -13,3 +13,5 @@ realised:b405 # 58819803 (wall guard spent $0.680 at 11:10:05 at dph_total $0.18
 realised:b403 # 58811979 (wall guard spent $1.119 at 11:26:52 at dph_total $0.2243/h + 6.3 min to destroy at 11:33:12) (§259 bun_s2) 1.143
 407:bun_s1_c5b 59.127.5.172:11543 58852252 $0.215/h sps 1.2905332128206888 steps 100 0.35
 realised:b407 # 58852252 (wall guard spent $0.188 at 12:43:46 at dph_total $0.215/h + 4 min to destroy at 12:47:46) (Note 259-5 C5-BUN eval-only bun_s1_c5b + bun_s2_c5b) 0.202
+408:bun_s1_sf 77.48.24.203:40315 58862222 $0.1806/h sps 1.2859031319618226 steps 100 0.26
+realised:b408 # 58862222 (wall guard spent $0.158 at 14:21:08 at dph_total $0.1806/h + 4.6 min to destroy at 14:25:45) (Note 259-11 C5-STABLE FRESH bun_s1_sf + bun_s2_sf) 0.172
