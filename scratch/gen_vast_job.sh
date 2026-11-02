@@ -62,7 +62,7 @@ if grep -q "^# HOSTPROBE" "$q"; then                                    # Audit 
   python -c "import sys; sys.exit(0 if float(sys.argv[1]) <= float(sys.argv[2]) else 1)" "$sps" "$lim" || { echo "$(date +%T) HOSTPROBE_SLOW rc 9 ($sps > $lim s/step)" >> $log; echo "$(date +%T) QUEUE_DONE" >> $log; exit 1; }
 fi
 grep -v '^#' "$q" | grep -v '^$' | while read -r out mod rest; do n=$(basename $out)
-  echo "echo \"\$(date +%T) start $out\" >> $log; python -u -m $mod $rest --device $dev --out $out > logs/gen_$n.log 2>&1; rc=\$?; [ -s $out/eval.json ] || rc=\"\$rc no-eval\"; echo \"\$(date +%T) evaluated $out rc \$rc\" >> $log"
+  echo "echo \"\$(date +%T) start $out\" >> $log; echo \"=== \$(date +%T) $mod\" >> logs/gen_$n.log; python -u -m $mod $rest --device $dev --out $out >> logs/gen_$n.log 2>&1; rc=\$?; [ -s $out/eval.json ] || rc=\"\$rc no-eval\"; echo \"\$(date +%T) evaluated $out rc \$rc\" >> $log"
 done > /tmp/gen_cmds.txt
 xargs -d '\n' -P $P -I{} bash -c '{}' < /tmp/gen_cmds.txt
 echo "$(date +%T) QUEUE_DONE" >> $log
