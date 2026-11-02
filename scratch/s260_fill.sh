@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# s260 template v2 (Audit 11-01: BAD spend family-only, guard >= admit + 0.05, GPU class, dph_total) on the s258 filler template (= s257_fill.sh + Audit 11-01 guard fixes: WALLW count refusal, family guard over every cell, guard-health check after ADMIT).
+# s260 template v3 (per-cell steps in the ledger / family guard) + v2 (Audit 11-01: BAD spend family-only, guard >= admit + 0.05, GPU class, dph_total) on the s258 filler template (= s257_fill.sh + Audit 11-01 guard fixes: WALLW count refusal, family guard over every cell, guard-health check after ADMIT).
 # §251 ANSWER-EXTEND filler (AE_v1 §6; guard $4.5 over the design; non-580 RTX 3090s). A mechanical copy of scratch/s250_fill.sh (sed: s250 -> s260; with the
 # fam() once-per-cell fix e0a987e4). One filler run per host, chained by scratch/s260_chain.sh.
 #   WALLW=0.1,0.1,4.0 EVAL_H=0.5 CAPF=4.5 QS="376:aex_s1:<admit>:<guard>:16000:<est>" nohup bash scratch/s260_fill.sh >> logs/fill_s260.out 2>&1 &
@@ -113,7 +113,7 @@ for cell in $QS; do
     proj=$(python -c "print(round(($sps * $STEPS / 3600 + $SETUP_H + $EVAL_H * $NE) * $dph, 2))"); fs=$(fam)
     log "b$n: K7 mem_check $mc; G-TIME $sps s/step ($am) -> cell projection \$$proj ($STEPS steps, $NE x $EVAL_H h eval / tail; cap \$$CAPC); family so far \$$fs (admitted + BAD) of \$$CAPF"
     if python -c "import sys; sys.exit(0 if $proj <= $CAPC and $fs + $proj <= $CAPF else 1)"; then
-      echo "$n:$run $h:$p $iid \$$dph/h sps $sps $proj" >> "$ADMLOG"; log "b$n: ADMIT $run on $h:$p (instance $iid): \$$proj"
+      echo "$n:$run $h:$p $iid \$$dph/h sps $sps steps $STEPS $proj" >> "$ADMLOG"   # v3: the cell's steps recorded (the family guard reads them); log "b$n: ADMIT $run on $h:$p (instance $iid): \$$proj"
       evh=$(python -c "print(round(max(0.25, 1000 * $sps / 3600), 2))")       # the mirror every ~1k steps (ckpt_every 1000)
       nohup python scratch/ckpt_mirror.py "$n:$run" --every_h "$evh" --optional log.jsonl,args.json > "logs/ckpt_mirror_b$n.out" 2>&1 &
       gl=$GSTOP                                                             # v2 (1): BAD-host spend is a family cost, never deducted from a cell
@@ -126,7 +126,7 @@ for cell in $QS; do
       # Audit 11-01 (2): the family guard over EVERY cell (admitted: the ledger at their projection; unadmitted QS cells: their estimate), restarted at each ADMIT
       for fp in $(ps -ef | awk '$7 == "scratch/cost_guard.py" && $8 == "s260fam" {print $2}'); do kill "$fp"; done
       [ -f "$FAMGUARD_LOG" ] && mv "$FAMGUARD_LOG" "${FAMGUARD_LOG%.out}.part$(date +%H%M%S).out"
-      ALLC=$(awk -v S="$STEPS" '!/^#/ && /^[0-9]+:/ {split($1, a, ":"); print a[1] ":" a[2] ":" $NF ":" S}' "$ADMLOG" | tr '\n' ' ')
+      ALLC=$(python scratch/ledger_steps.py "$ADMLOG") || { log "ALERT b$n: ledger_steps could not resolve a cell's steps - HOLD (family guard not restarted); tell Audit"; exit 3; }   # v3 (Audit)
       for c_ in $FAMC; do grep -q "^${c_%%:*}:" "$ADMLOG" || ALLC="$ALLC $c_"; done
       fcap=$(python -c "print(round($CAPF - $(outside), 4))")
       GUARD_STOP=1 GUARD_MARKS=$GM nohup python scratch/cost_guard.py s260fam "$fcap" "$STEPS" $ALLC > "$FAMGUARD_LOG" 2>&1 &
