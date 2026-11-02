@@ -1,0 +1,42 @@
+{
+ "section": 257,
+ "seeds": {
+  "dch_s1": {
+   "label": "CONTENT-SELECTOR",
+   "families": {
+    "H-CHAINSRC-OP": true,
+    "H-LIVE": true
+   },
+   "trained_type": true,
+   "retain": true,
+   "nodec_k2": 0.023,
+   "d6": 0.971,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "dch_s2": {
+   "label": "CONTENT-SELECTOR",
+   "families": {
+    "H-CHAINSRC-OP": true,
+    "H-LIVE": true
+   },
+   "trained_type": true,
+   "retain": true,
+   "nodec_k2": 0.015,
+   "d6": 0.963,
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  }
+ },
+ "verdict": "CONTENT-SELECTOR 2/2 (CONTENT-SELECTOR / CONTENT-SELECTOR)"
+}

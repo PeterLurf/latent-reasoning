@@ -343,7 +343,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 254 | P2P-CHAIN (Theory's choice; completes the pass-2-write 2x2 of Note 253-4): aw_plaw2_s1's args + init_trunk s252_askperm_s1 + explicit perm_p 0, d<=2, 12k, 1 seed; PERM-BLOCKER / INIT-BLOCKER / INCONCLUSIVE on final pass-2 aux + eval ws pass 2 + TEST2 d 2 | registered | **PERM-BLOCKER 10-31 (254-1): askperm + chain forms the pass-2 write (aux 0.99997 by 6k, ws 1.000); perm training is the blocker; $0.40.** **APPROVED by Audit 10-31 (cell cap $1.0; middle band INCONCLUSIVE, no follow-on without a Note). REGISTERED 10-31; score_pc.py 6/6** |
 | 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
 | 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **SCORED 11-01 (256-1): SELECTOR 0/2, C2 2/2 - d 6 0.98 / 0.96 vs rcb 0.35 / 0.37, d 7 0.87 / 0.81, untrained passes 5-7 compute (WS >= 0.87 / 0.78), RETAIN kept; H-CHAINSRC / H-GIVPOS fail (surface skip-rule); $2.37.** **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
-| 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
+| 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **SCORED 11-02 (257-3): CONTENT-SELECTOR 2/2 - held-out chain-reading sub_c / mul_c 0.95 / 0.96, H-LIVE 0.99, H-EXTEND 0.92 / 0.89, RETAIN kept, C2 d 6 0.97 / 0.96, d 8 0.66 / 0.64; TEST-PERM still order-bound; $2.13.** **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 
@@ -23479,6 +23479,24 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Same-class anchor:** anchor_a6000_eqA (bridge_s1's flags, --stop_at 2000, A6000) has landed. It is compared with bridge_s1's first 2k on the 3090 once b396 lands (descriptive, for the GPU-class disclosure).
 - **Disclosed:** S0's s0m_gates did not run (a setup bug: the ref tar held runs_fsq dirs). Fixed. The gates now run first on every S1 host and training requires gates_pass.json; on b398's host offbit_aw (small bitwise) already passes.
 - **Card class pinned for S1-S3:** RTX A6000.
+
+**Note 257-3 (2026-11-02 00:42 EST; §257 SCORED by theory/score_dch.py, run twice with identical verdicts: 'CONTENT-SELECTOR 2/2'; dch_s1 f5813255 ($0.940), dch_s2 91d34572 ($1.141); host shas verified on landing; family $2.134 of $2.6).**
+- **HELD-OUT (never trained), acc K' 8 (min over positions), dch_s1 / dch_s2; step 0 = dis_s* on the same sets:**
+  - H-CHAINSRC-OP **0.952 (0.92) / 0.958 (0.92)**; step 0 0.578 (0.21) / 0.679 (0.32).
+  - H-LIVE **0.990 (0.98) / 0.994 (0.99)**; step 0 0.627 (0.13) / 0.658 (0.27).
+- **Descriptive:**
+  - H-CHAINSRC-LIVE 1.000 / 0.999 (step 0 0.465 / 0.482): the one-step 'subject read nowhere' heuristic is excluded; cue vs full reachability is not distinguished.
+  - H-EXTEND 0.919 / 0.893 (step 0 0.45 / 0.35): the loop now stops at the asked entity when an op chain hangs off S_d.
+  - H-OP 0.971 / 0.979; K3 0.995 / 0.999. Trained types: H-CHAINSRC 1.000 / 1.000, H-GIVPOS 0.997 / 0.997.
+- **RETAIN passes in both:** TEST2 d 1-4 >= 0.98, NOT-DECODER 0.023 / 0.015, SWAP4 and LP5-D4 pass, CUE-ONLY at majority. STABLE.
+- **C2 retained and slightly extended:** d 5 / 6 / 7 / 8 / 9 = 0.991 / 0.971 / 0.900 / 0.655 / 0.265 (s1) and 0.988 / 0.963 / 0.889 / 0.637 / 0.249 (s2).
+  - dis_s1 / s2: d 6 0.981 / 0.961, d 7 0.874 / 0.809, d 8 0.533 / 0.379.
+- **TEST-PERM stays order-bound:** d 2-4 0.09-0.17.
+- **Reading (scoped per 257-1: adjacent chain-reading inserts; REG frames 0-5; plan given; chain-order text; one rcb lineage; per-pass aux):**
+  - With chain-reading distractors in training, the loop selects each step's sentence by content, by cue or reachability (not distinguished), and stops at the asked entity.
+  - It does so on held-out ops and two-step distractor chains, while keeping C1's causal gates and extending C2 (d 8 0.64-0.66).
+  - It still needs the text in chain order: no free lookup.
+- Keep dch_s1 / s2 model.pt: they are now the best C1 / C2 models.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
