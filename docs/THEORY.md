@@ -23511,6 +23511,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - Disclosed: askname-arm eval_acc by d (1.000 to d 12 here, ~1.0 for s233 too) reads the askname-format items, not multi-step final answers. It is not a direct-path depth reading.
 - **Note 257-2 L1 / L2 status:** dis_s1's files landed (b395, $0.177, sha == host). dis_s2's line died because its init was not shipped; it now runs with b400 on a different 3090 than dis_s1's (disclosed; eval-only).
 
+**Note 258-4 (2026-11-02 01:40 EST; S2 6k / extension rules pre-stated before any S2 output, at Audit's request; theory/score_lb2.py stage_s2 re-committed, fixtures 14/14).**
+- **(a)** The 6k read (p2m_s1_ws6k/eval_ws.json, WS d 2 pass 2) is **descriptive only**; there is no early park. At small, the write formed abruptly at 4-6k, and medium may be later.
+- **(b) At 12k (p2m_s1):**
+  - **SEED-OK** if TEST2 d 2 >= 0.90 AND WS d 2 pass 2 >= 0.90;
+  - **EXTEND** (one +6k, run p2m_s1_ext, cap $1.5) if 0.50 <= ws12 < 0.90, or ws12 < 0.50 with ws12 - ws6 >= 0.10 (rising). The extension continues the cosine schedule to 18k (resume from the 12k ckpt), disclosed. The same SEED-OK gate applies at 18k, final, with no second extension;
+  - otherwise **NO-SEED** (STOP).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
