@@ -1,0 +1,157 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "ec16d42a2c5b7342573026a478ae2b63db9a826d",
+   "disk": "ec16d42a2c5b7342573026a478ae2b63db9a826d"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "9a45551963843466b7a94d81fd7a8d42859bf3ad",
+   "disk": "9a45551963843466b7a94d81fd7a8d42859bf3ad"
+  },
+  "boxes/insert_render.py": {
+   "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
+   "disk": "eb2c1c8f81c19b843451c207e97c051db91bf792"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s262_long.py": {
+   "head": "a18d9b509be1f33873967ba10fb1c6c2fa9017fa",
+   "disk": "a18d9b509be1f33873967ba10fb1c6c2fa9017fa"
+  },
+  "scratch/s266_planfree.py": {
+   "head": "22083c826395466c88605296986dfd5fa973515a",
+   "disk": "22083c826395466c88605296986dfd5fa973515a"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  }
+ },
+ "init_unbuffered_sha256_x3": {
+  "1": [
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+  ],
+  "2": [
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac",
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac",
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac"
+  ]
+ },
+ "predeploy_ok": true,
+ "args": {
+  "gb_s1": {
+   "keys": [
+    "cue",
+    "eval_parts",
+    "format",
+    "init_model",
+    "init_model_sha",
+    "init_model_sha256",
+    "keep_final_ckpt"
+   ],
+   "diff": {
+    "cue": [
+     "step",
+     "generic"
+    ],
+    "eval_parts": [
+     "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+     "acc,swap_kd,lp5h,insert_ho,ws,ws_deep,stab"
+    ],
+    "format": [
+     "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7233 LAT-ST: think_t = [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_min(t, d))); lower cache per distinct input | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)",
+     "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass) | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)"
+    ],
+    "init_model": [
+     "boxes/runs_fsq/dch_s1_init/model.pt",
+     "boxes/runs_fsq/bun_s1_init/model.pt"
+    ],
+    "init_model_sha": [
+     "0badc805792215b3",
+     "1ad3517b7635fddf"
+    ],
+    "init_model_sha256": [
+     "0badc805792215b3ece962477a6397491f2d4f7284ba71a9f9734308f31fb5d4",
+     "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+    ],
+    "keep_final_ckpt": [
+     true,
+     false
+    ]
+   }
+  },
+  "gb_s2": {
+   "keys": [
+    "cue",
+    "eval_parts",
+    "format",
+    "init_model",
+    "init_model_sha",
+    "init_model_sha256",
+    "keep_final_ckpt"
+   ],
+   "diff": {
+    "cue": [
+     "step",
+     "generic"
+    ],
+    "eval_parts": [
+     "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+     "acc,swap_kd,lp5h,insert_ho,ws,ws_deep,stab"
+    ],
+    "format": [
+     "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7233 LAT-ST: think_t = [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_min(t, d))); lower cache per distinct input | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)",
+     "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass) | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)"
+    ],
+    "init_model": [
+     "boxes/runs_fsq/dch_s2_init/model.pt",
+     "boxes/runs_fsq/bun_s2_init/model.pt"
+    ],
+    "init_model_sha": [
+     "d759f9a2d1014f21",
+     "09337f63aec57959"
+    ],
+    "init_model_sha256": [
+     "d759f9a2d1014f21490af2066417431a399963dc4eb9f17656c260f50de53748",
+     "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac"
+    ],
+    "keep_final_ckpt": [
+     true,
+     false
+    ]
+   }
+  }
+ }
+}
