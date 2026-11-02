@@ -2,6 +2,7 @@
 Runs (boxes/runs_fsq): bridge_s1 (small, aw_plaw2_s1 -> REG d<=4 + distract); askm_lr3e5 / askm_lr1e4 (S1); p2m_s1 (S2); dism_s1 (S3). Refs dis_s1 / dis_s2.
   B:  RETAIN (TEST2 d 1-4 >= 0.98, NOT-DECODER by_d['4'].acc_kprime['2'] <= 0.20, SWAP4, LP5-D4) and d 6 >= 0.90 -> BRIDGE-OK else BRIDGE-FAIL (S3 in two stages).
   S1: eval_st_classes.json {"pooled": {cls: {"acc": p}}} classes i-iv >= 0.98 and eval_acc by_d['1'].acc >= 0.98; winner = passing arm with higher mean class acc (tie: lr 3e-5).
+  S2b (Note 258-8): stage_s2 on run p2m_s1b (askm_lr1e4 init, lr 1e-4), the same gate / extension rule.
   S2 (Note 258-4): 6k WS descriptive; 12k SEED-OK (TEST2 d 2 >= 0.90 and WS d 2 p 2 >= 0.90) / EXTEND (0.50 <= ws < 0.90, or < 0.50 rising >= 0.10 from 6k; +6k once, cap $1.5) / NO-SEED.
   S3: RETAIN (as B, + CUE-ONLY + STABLE); HOLDS d 6 >= 0.90 and d 7 >= 0.80 and eval_ws_deep by_d['6'] passes 1-6 >= 0.90;
       IMPROVES d 8 >= 0.70 or d 7 >= 0.95. Labels MEDIUM-C2-IMPROVES / MEDIUM-C2-HOLDS / MEDIUM-C1-ONLY / FAIL (PILOT, 1 seed).
@@ -66,17 +67,17 @@ def ws_d2p2(runs, run):
     return None if w is None else (w.get("by_d", w))["2"]["2"]
 
 
-def stage_s2(runs=R):
+def stage_s2(runs=R, run="p2m_s1"):
     """Note 258-4: 6k read (p2m_s1_ws6k/eval_ws.json) is DESCRIPTIVE only (no early park). At 12k (p2m_s1): SEED-OK if TEST2 d 2 >= 0.90 and WS d 2 pass 2 >= 0.90;
     EXTEND (one +6k, cap $1.5, run p2m_s1_ext) if 0.50 <= ws12 < 0.90, or ws12 < 0.50 with ws12 - ws6 >= 0.10 (rising); else NO-SEED.
     After an extension the same SEED-OK gate is applied to p2m_s1_ext (18k), final (no second extension)."""
-    a = jl(os.path.join(runs, "p2m_s1", "eval_acc.json")); ws12 = ws_d2p2(runs, "p2m_s1"); ws6 = ws_d2p2(runs, "p2m_s1_ws6k")
+    a = jl(os.path.join(runs, run, "eval_acc.json")); ws12 = ws_d2p2(runs, run); ws6 = ws_d2p2(runs, run + "_ws6k")
     if a is None or ws12 is None:
         return {"verdict": "pending", "ws6k": ws6}
     acc = a["by_d"]["2"]["acc"]
     if acc >= 0.90 and ws12 >= 0.90:
         return {"verdict": "SEED-OK", "test2_d2": acc, "ws_d2_p2": ws12, "ws6k": ws6}
-    ext = jl(os.path.join(runs, "p2m_s1_ext", "eval_acc.json")); wse = ws_d2p2(runs, "p2m_s1_ext")
+    ext = jl(os.path.join(runs, run + "_ext", "eval_acc.json")); wse = ws_d2p2(runs, run + "_ext")
     rising = ws6 is not None and ws12 - ws6 >= 0.10
     if 0.50 <= ws12 < 0.90 or (ws12 < 0.50 and rising):
         if ext is None or wse is None:
@@ -103,7 +104,7 @@ def stage_s3(runs=R):
 def fixtures():
     res = []
 
-    def world(t2=1.0, k2=0.05, sw=0.9, d6=0.95, d7=0.85, d8=0.5, ws=0.95, cls=0.99, ws2=0.95, co=0.1, ws6=None, ext=None):
+    def world(t2=1.0, k2=0.05, sw=0.9, d6=0.95, d7=0.85, d8=0.5, ws=0.95, cls=0.99, ws2=0.95, co=0.1, ws6=None, ext=None, s2b=None):
         d = tempfile.mkdtemp()
         for run in DIRS:
             os.makedirs(os.path.join(d, run)); json.dump({"by_d": {x: {"acc": 0.09} for x in ("3", "4")}}, open(os.path.join(d, run, "eval_acc.json"), "w"))
@@ -121,6 +122,9 @@ def fixtures():
             with open(os.path.join(p, "log.jsonl"), "w") as fh:
                 for i in range(1, 81):
                     fh.write(json.dumps({"step": i * 100, "loss": 0.01}) + chr(10))
+        if s2b is not None:
+            q = os.path.join(d, "p2m_s1b"); os.makedirs(q)
+            json.dump(acc, open(os.path.join(q, "eval_acc.json"), "w")); json.dump({"by_d": {"2": {"2": s2b}}}, open(os.path.join(q, "eval_ws.json"), "w"))
         if ws6 is not None:
             os.makedirs(os.path.join(d, "p2m_s1_ws6k")); json.dump({"by_d": {"2": {"2": ws6}}}, open(os.path.join(d, "p2m_s1_ws6k", "eval_ws.json"), "w"))
         if ext is not None:
@@ -131,6 +135,7 @@ def fixtures():
              ("S1 fail", stage_s1, {"cls": 0.9}, "S1-FAIL"), ("S2 ok", stage_s2, {}, "SEED-OK"), ("S2 write missing", stage_s2, {"ws2": 0.02}, "NO-SEED"),
              ("S2 mid -> extend", stage_s2, {"ws2": 0.7}, "EXTEND"), ("S2 low but rising -> extend", stage_s2, {"ws2": 0.3, "ws6": 0.1}, "EXTEND"),
              ("S2 extension ok", stage_s2, {"ws2": 0.7, "ext": 0.95}, "SEED-OK (after extension)"), ("S2 extension fails", stage_s2, {"ws2": 0.7, "ext": 0.6}, "NO-SEED (after extension)"),
+             ("S2b reads p2m_s1b", lambda d: stage_s2(d, run="p2m_s1b"), {"s2b": 0.95}, "SEED-OK"),
              ("S3 holds", stage_s3, {}, "MEDIUM-C2-HOLDS"), ("S3 improves", stage_s3, {"d8": 0.75}, "MEDIUM-C2-IMPROVES"),
              ("S3 c1 only", stage_s3, {"d6": 0.5}, "MEDIUM-C1-ONLY"), ("S3 decoder", stage_s3, {"k2": 0.6}, "FAIL"))
     for name, fn, kw, want in cases:
@@ -141,8 +146,8 @@ def fixtures():
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--stage", default="S3", choices=("B", "S1", "S2", "S3")); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--fixtures", action="store_true"); ap.add_argument("--stage", default="S3", choices=("B", "S1", "S2", "S2b", "S3")); a = ap.parse_args()
     if a.fixtures:
         sys.exit(0 if fixtures() else 1)
-    o = {"B": stage_b, "S1": stage_s1, "S2": stage_s2, "S3": stage_s3}[a.stage](); print(o["verdict"])
+    o = {"B": stage_b, "S1": stage_s1, "S2": stage_s2, "S2b": lambda: stage_s2(run="p2m_s1b"), "S3": stage_s3}[a.stage](); print(o["verdict"])
     os.makedirs(os.path.dirname(OUT), exist_ok=True); json.dump(o, open(OUT % a.stage, "w", encoding="utf-8", newline=chr(10)), indent=1, default=str)
