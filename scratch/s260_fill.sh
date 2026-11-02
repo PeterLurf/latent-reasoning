@@ -77,6 +77,7 @@ for cell in $QS; do
   [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
   nlq=$(grep -vc '^#' "scratch/gen_q_b$n.txt"); nw=$(echo "$WALLW" | tr ',' '\n' | grep -c .)   # Audit 11-01 (1): one wall-guard weight per queue line
   [ "$nlq" = "$nw" ] || { log "REFUSED b$n: WALLW has $nw weights, the queue $nlq lines"; exit 2; }
+  sc_=$(python scratch/check_queue_ships.py "scratch/gen_q_b$n.txt") || { log "REFUSED b$n: $sc_ (template v4, Audit 11-02)"; exit 2; }   # template v4
   while true; do
     [ -f scratch/fill_s260.stop ] && { log "stopped (scratch/fill_s260.stop)"; exit 0; }
     famcheck "the loop top (b$n)"
