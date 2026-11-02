@@ -23614,6 +23614,18 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (3) **Scope label:** H-INC is 'halting from the trained hold signal', a readout of the model's own memory dynamics whose signal was created by a penalty trained knowing d. It is not a learned halting decision. Its extrapolation to d 5-7 would still be a C5 result.
   - (4) Both arms report passes_run - (d - 1) per d (H-INC passes_run = khalt + 1; H-HEAD2 = khalt).
 
+**Note 259-6 (2026-11-02 12:49 EST; C5-BUN SCORED by theory/score_c5b.py, run twice: 'H-INC NO-SIGNAL / C5-IN-RANGE | H-HEAD2 C5-IN-RANGE / C5-IN-RANGE'; 318f47af, $0.202; frozen bun_s1 / s2; fresh REG fit stream).**
+- **H-INC (halting from the trained hold signal; tau 0.417 / 0.359): fails out of range.**
+  - In range it halts exactly (khalt = d - 1 at d 2-4, acc_halt >= 0.988; d 1 needs one detection pass, so khalt 1).
+  - At d 5 / 6 / 7 it halts at ~3.7-4.1 passes whatever d is: acc_halt 0.738 / 0.107 / 0.088 (s1) and 0.830 / 0.174 / 0.080 (s2).
+  - s1 is NO-SIGNAL by rule (khalt 1.0 at both d 1 and 2, not strictly increasing).
+  - **Mechanism:** the untrained compute passes 5-7 write increments small relative to ||S||, below the in-range tau, although their WS is correct (>= 0.95). So the fixed-point signal is not depth-invariant: rel_inc falls with pass index or ||S|| growth, not only with being done.
+- **H-HEAD2 (relabel y = [pred(K') == pred(K' 14)]):** IN-RANGE in both, close to EXTRAP.
+  - acc_halt (acc K' 8): d 5 0.975 (0.991) / 0.982 (0.988), within 0.02; d 6 0.926 (0.972) / 0.944 (0.956), s2 within; d 7 0.707 (0.857) / 0.774 (0.852), both fail.
+  - mean_khalt - (d - 1) = +0.07-0.45, increasing; never-halt <= 0.009.
+  - Slightly better than the §248-label head on bun (Note 259-4: d 6 0.937 / 0.942, d 7 0.738 / 0.766), but still lossy at d 7.
+- **Reading:** C5 stays partial (learned halt in range; out of range the head is depth-sensitive and efficient but loses accuracy at d 7). The hold signal itself does not extrapolate as a halting cue. No C-status change; the SOTA json is unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -1,0 +1,307 @@
+{
+ "inc": {
+  "bun_s1": {
+   "label": "NO-SIGNAL",
+   "by_d": {
+    "1": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 1.0,
+     "offset_vs_d_minus_1": 1.0
+    },
+    "2": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 1.0,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "3": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 2.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 2.0,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "4": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.99,
+     "mean_khalt": 2.988,
+     "never_halt_share": 0.0,
+     "event_only_mean": 2.988,
+     "offset_vs_d_minus_1": -0.01200000000000001
+    },
+    "5": {
+     "acc_k8": 0.991,
+     "acc_halt": 0.738,
+     "mean_khalt": 3.724,
+     "never_halt_share": 0.0,
+     "event_only_mean": 3.724,
+     "offset_vs_d_minus_1": -0.2759999999999998
+    },
+    "6": {
+     "acc_k8": 0.972,
+     "acc_halt": 0.107,
+     "mean_khalt": 3.868,
+     "never_halt_share": 0.0,
+     "event_only_mean": 3.868,
+     "offset_vs_d_minus_1": -1.1320000000000001
+    },
+    "7": {
+     "acc_k8": 0.857,
+     "acc_halt": 0.088,
+     "mean_khalt": 3.896,
+     "never_halt_share": 0.0,
+     "event_only_mean": 3.896,
+     "offset_vs_d_minus_1": -2.104
+    }
+   },
+   "tau": 0.4171581683321669,
+   "passes_run": {
+    "1": 2.0,
+    "2": 2.0,
+    "3": 3.0,
+    "4": 3.988,
+    "5": 4.724,
+    "6": 4.868,
+    "7": 4.896
+   },
+   "passes_minus_eff": {
+    "1": 2.0,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 0.988,
+    "5": 0.7240000000000002,
+    "6": -0.13199999999999967,
+    "7": -1.104
+   }
+  },
+  "bun_s2": {
+   "label": "C5-IN-RANGE",
+   "by_d": {
+    "1": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 1.0,
+     "offset_vs_d_minus_1": 1.0
+    },
+    "2": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.001,
+     "never_halt_share": 0.0,
+     "event_only_mean": 1.001,
+     "offset_vs_d_minus_1": 0.0009999999999998899
+    },
+    "3": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 2.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 2.0,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "4": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.988,
+     "mean_khalt": 2.987,
+     "never_halt_share": 0.0,
+     "event_only_mean": 2.987,
+     "offset_vs_d_minus_1": -0.0129999999999999
+    },
+    "5": {
+     "acc_k8": 0.988,
+     "acc_halt": 0.83,
+     "mean_khalt": 3.827,
+     "never_halt_share": 0.0,
+     "event_only_mean": 3.827,
+     "offset_vs_d_minus_1": -0.17300000000000004
+    },
+    "6": {
+     "acc_k8": 0.956,
+     "acc_halt": 0.174,
+     "mean_khalt": 4.035,
+     "never_halt_share": 0.0,
+     "event_only_mean": 4.035,
+     "offset_vs_d_minus_1": -0.9649999999999999
+    },
+    "7": {
+     "acc_k8": 0.852,
+     "acc_halt": 0.08,
+     "mean_khalt": 4.093,
+     "never_halt_share": 0.0,
+     "event_only_mean": 4.093,
+     "offset_vs_d_minus_1": -1.907
+    }
+   },
+   "tau": 0.35903587417053806,
+   "passes_run": {
+    "1": 2.0,
+    "2": 2.001,
+    "3": 3.0,
+    "4": 3.987,
+    "5": 4.827,
+    "6": 5.035,
+    "7": 5.093
+   },
+   "passes_minus_eff": {
+    "1": 2.0,
+    "2": 1.001,
+    "3": 1.0,
+    "4": 0.9870000000000001,
+    "5": 0.827,
+    "6": 0.03500000000000014,
+    "7": -0.907
+   }
+  }
+ },
+ "head2": {
+  "bun_s1": {
+   "label": "C5-IN-RANGE",
+   "by_d": {
+    "1": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 0.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 0.0,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "2": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.071,
+     "never_halt_share": 0.001,
+     "event_only_mean": 1.0640640640640642,
+     "offset_vs_d_minus_1": 0.07099999999999995
+    },
+    "3": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.998,
+     "mean_khalt": 2.105,
+     "never_halt_share": 0.0,
+     "event_only_mean": 2.105,
+     "offset_vs_d_minus_1": 0.10499999999999998
+    },
+    "4": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.995,
+     "mean_khalt": 3.196,
+     "never_halt_share": 0.001,
+     "event_only_mean": 3.191191191191191,
+     "offset_vs_d_minus_1": 0.19600000000000017
+    },
+    "5": {
+     "acc_k8": 0.991,
+     "acc_halt": 0.975,
+     "mean_khalt": 4.183,
+     "never_halt_share": 0.002,
+     "event_only_mean": 4.175350701402806,
+     "offset_vs_d_minus_1": 0.18299999999999983
+    },
+    "6": {
+     "acc_k8": 0.972,
+     "acc_halt": 0.926,
+     "mean_khalt": 5.182,
+     "never_halt_share": 0.004,
+     "event_only_mean": 5.170682730923695,
+     "offset_vs_d_minus_1": 0.18200000000000038
+    },
+    "7": {
+     "acc_k8": 0.857,
+     "acc_halt": 0.707,
+     "mean_khalt": 5.897,
+     "never_halt_share": 0.0,
+     "event_only_mean": 5.897,
+     "offset_vs_d_minus_1": -0.10299999999999976
+    }
+   },
+   "passes_minus_eff": {
+    "1": 0.0,
+    "2": 0.07099999999999995,
+    "3": 0.10499999999999998,
+    "4": 0.19600000000000017,
+    "5": 0.18299999999999983,
+    "6": 0.18200000000000038,
+    "7": -0.10299999999999976
+   }
+  },
+  "bun_s2": {
+   "label": "C5-IN-RANGE",
+   "by_d": {
+    "1": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 0.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": 0.0,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "2": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.996,
+     "mean_khalt": 1.04,
+     "never_halt_share": 0.0,
+     "event_only_mean": 1.04,
+     "offset_vs_d_minus_1": 0.040000000000000036
+    },
+    "3": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.998,
+     "mean_khalt": 2.099,
+     "never_halt_share": 0.0,
+     "event_only_mean": 2.099,
+     "offset_vs_d_minus_1": 0.0990000000000002
+    },
+    "4": {
+     "acc_k8": 1.0,
+     "acc_halt": 0.995,
+     "mean_khalt": 3.271,
+     "never_halt_share": 0.0,
+     "event_only_mean": 3.271,
+     "offset_vs_d_minus_1": 0.2709999999999999
+    },
+    "5": {
+     "acc_k8": 0.988,
+     "acc_halt": 0.982,
+     "mean_khalt": 4.386,
+     "never_halt_share": 0.003,
+     "event_only_mean": 4.375125376128385,
+     "offset_vs_d_minus_1": 0.3860000000000001
+    },
+    "6": {
+     "acc_k8": 0.956,
+     "acc_halt": 0.944,
+     "mean_khalt": 5.454,
+     "never_halt_share": 0.009,
+     "event_only_mean": 5.43087790110999,
+     "offset_vs_d_minus_1": 0.45399999999999974
+    },
+    "7": {
+     "acc_k8": 0.852,
+     "acc_halt": 0.774,
+     "mean_khalt": 6.24,
+     "never_halt_share": 0.008,
+     "event_only_mean": 6.225806451612903,
+     "offset_vs_d_minus_1": 0.2400000000000002
+    }
+   },
+   "passes_minus_eff": {
+    "1": 0.0,
+    "2": 0.040000000000000036,
+    "3": 0.0990000000000002,
+    "4": 0.2709999999999999,
+    "5": 0.3860000000000001,
+    "6": 0.45399999999999974,
+    "7": 0.2400000000000002
+   }
+  }
+ },
+ "verdict": "H-INC NO-SIGNAL / C5-IN-RANGE | H-HEAD2 C5-IN-RANGE / C5-IN-RANGE"
+}
