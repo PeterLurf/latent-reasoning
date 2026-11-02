@@ -1,0 +1,37 @@
+{
+ "full_set_shas": {
+  "1": "450bd20eeedf482745dd5787916b4cad136f689aaa2631f525c101bf3ef9d82e",
+  "2": "451d1cdd67aaceee73d2f9a5324e43c9017a949f478ca09cb76205a0a01f8936",
+  "3": "385b2754f6ffc7fceda8afc64ee1208ef77d36107a96a20a2544ae3071643557",
+  "4": "195c6527e460fbd4a4474a268cd9ad0b31914a30de3f3191eda457800287ce17",
+  "5": "d4c71149c31af94d8551114978a9e8b39360a0baf1ea2e0725ab4ebce8b4e442",
+  "6": "272445c09ecfbeff2597457db74a59d6d2df93da5d3aff5f40872c204f1f1ba1",
+  "7": "234d1522de49b5d964a5f4cfbfd9d5b740a742536ed01cb87f73eb4033f51fa5",
+  "8": "8b24989b6dc2b6e5c5b8039f4e8c746f400ba0338a1c30ebba2dcc3991690391"
+ },
+ "full_n": {
+  "1": 1000,
+  "2": 1000,
+  "3": 1000,
+  "4": 1000,
+  "5": 1000,
+  "6": 1000,
+  "7": 1000,
+  "8": 1000
+ },
+ "excl_n": 205599,
+ "fit_sigs_n": 10000,
+ "smoke_ds": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "pred_len": 15,
+ "json_ok": true,
+ "pass": true
+}
