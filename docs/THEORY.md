@@ -23676,6 +23676,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Scored with score_c5c's C5 rule: IN-RANGE d 1-4; EXTRAP d 5-7 (acc_halt >= acc_k8 - 0.02, mean_khalt <= d, increasing over d 1-7).
 - **PASS = C5-EXTRAP in both bun seeds.** Then C5 reads 'met, scoped' with the label: training-free answer-stability halting; relies on the C6 hold; +3 passes over d - 1.
 - Otherwise C5 stays 'partial' (Note 259-8).
+- **Scope (Audit, before data):** the fresh draw excludes the eval and fit sets but not training items. d 1-4 items may have been seen in training (the IN-RANGE component); d 5-7, the binding EXTRAP test, are unseen by construction (training drew d <= 4).
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
