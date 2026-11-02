@@ -38,7 +38,7 @@ ok = all(v["head"] == v["disk"] for v in pre.values()) and sum(s_.startswith(BF.
 os.makedirs("scratch/gate_s258m", exist_ok=True); json.dump({"blobs": pre, "init_unbuffered_sha256_x3": inits, "predeploy_ok": ok}, open("scratch/gate_s258m/predeploy_b397.json", "w", newline="\n"), indent=1)
 assert ok, ("pre-deploy", pre, inits)
 blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); mf = " ".join(GM.medium_flags() + ["--distract_p", "1", "--auto_micro", "--mem_budget", "44", "--eval_bs", "100"])
-af = " ".join(BF.flags() + ["--ckpt_every", "1000", "--stop_at", "2000", "--eval_parts", "acc"])
+af = " ".join(BF.flags() + ["--keep_final_ckpt", "--ckpt_every", "1000", "--stop_at", "2000", "--eval_parts", "acc"])
 q = ("# THEORY §258 S0 INSTALL (LB2_v1 §2 + Note 258-1; RTX A6000 = the S1-S3 class): medium mem / G-TIME at the S3 shape, the host gates (bitwise small, step-0, medium smokes), "
      "the same-class 2k anchor of bridge_s1.\n# HOSTPROBE\n# P=1\n"
      "boxes/runs_fsq/s0m_mem boxes.inject_aw %s --mem_check\n"
@@ -51,5 +51,5 @@ d = G8.fresh(ROOT + "/scratch/_tmp/s258m/args_anchor"); rc = G8.sh([sys.executab
                                                                    d + "/stdout.log"); assert rc == 0, rc
 dif = {k: v for k, v in C.diff(json.load(open("scratch/s260_args_frozen_bridge_s1.json")), json.load(open(d + "/args.json"))).items() if k != "pair_stats"}
 json.dump({"anchor_vs_bridge_frozen": dif}, open("scratch/gate_s258m/anchor_args_diff.json", "w", newline="\n"), indent=1, default=str)
-assert set(dif) <= {"stop_at", "eval_parts", "base"}, ("anchor != bridge_s1 beyond stop_at / eval_parts / the new base key", sorted(dif))
+assert set(dif) <= {"stop_at", "eval_parts", "base", "inject_ow_sha256"}, ("anchor != bridge_s1 beyond stop_at / eval_parts / the new base key / the §258 S0 inject_ow sha", sorted(dif))
 open("scratch/gen_q_b397.txt.hold", "w", encoding="utf-8", newline="\n").write(q); print("b397 written; pre-deploy OK; anchor diff", sorted(dif))
