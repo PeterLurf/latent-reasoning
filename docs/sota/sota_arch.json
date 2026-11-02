@@ -6,7 +6,7 @@
   "bun_s1",
   "bun_s2"
  ],
- "verdict": "C1 + C2 (retained) + C6 in one model; C5 in range only (Note 259-4: BUNDLE 0/2, FAIL: C5)",
+ "verdict": "C1 + C2 (partial) + C6 + C5 (training-free halting) in one model (Notes 259-4, 259-12)",
  "base": {
   "model": "GPT-2 small",
   "layers": 12,
@@ -74,8 +74,8 @@
   },
   {
    "c": "C5",
-   "status": "partial (out-of-range halting 1/2 seeds)",
-   "evidence": "training-free rule 'stop when the answer is unchanged for 2 passes' (uses the C6 hold): s1 extrapolates to d5-7 within 0.02 (d7 0.838 vs 0.857), s2 loses 0.03-0.04 at d6-7; costs ~2 extra passes (Note 259-8). Learned heads: in range only (Note 259-6). Post-hoc r = 3: both seeds keep accuracy to within 0.007 at d5-7 for a fixed +3 passes (Note 259-10; needs a fresh-data confirmation)."
+   "status": "met, scoped",
+   "evidence": "training-free answer-stability halting (stop when the answer is unchanged for 3 passes; relies on the C6 hold; +3 passes over d-1): on a fresh draw, halts at d-1 with accuracy kept at unseen d5-7 in both seeds (d7 0.880 / 0.875 vs 0.883 / 0.881) (Notes 259-11 / 259-12)"
   },
   {
    "c": "C4",
@@ -103,6 +103,6 @@
  ],
  "next": [
   "§258 S2b medium at lr 1e-4",
-  "C5: halting that keeps accuracy out of range"
+  "C4 / C3 / C7 remain; §258 medium S2b running"
  ]
 }

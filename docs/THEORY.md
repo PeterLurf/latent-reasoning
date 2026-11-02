@@ -23678,6 +23678,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - Otherwise C5 stays 'partial' (Note 259-8).
 - **Scope (Audit, before data):** the fresh draw excludes the eval and fit sets but not training items. d 1-4 items may have been seen in training (the IN-RANGE component); d 5-7, the binding EXTRAP test, are unseen by construction (training drew d <= 4).
 
+**Note 259-12 (2026-11-02 14:27 EST; Note 259-11 FRESH confirmation SCORED by theory/score_c5c.py --fresh, run twice: 'r3 C5-EXTRAP / C5-EXTRAP' -> PASS; $0.172; one fresh REG draw, n 1,000 per d, disjoint from TEST2, all fit sets and EXCL, identical for both seeds).**
+- **(acc_k8, acc_halt, mean_khalt), bun_s1 / bun_s2:**
+  - d 5: 0.992 / 0.991 / 3.97 and 0.989 / 0.987 / 3.96;
+  - d 6: 0.978 / 0.978 / 4.98 and 0.973 / 0.973 / 4.97;
+  - d 7: 0.883 / 0.880 / 5.99 and 0.881 / 0.875 / 5.95.
+  - d 1-4: acc_halt = acc_k8 (>= 0.999); khalt = d - 1 within 0.1. Never-halt 0 at d 1-7.
+  - passes_run - (d - 1) = +2.9-3.0. d 8 (descriptive): acc_k8 0.474 / 0.605, acc_halt 0.466 / 0.598, khalt 7.08 / 7.04.
+- **C5: met, scoped.** Label: training-free answer-stability halting (stop when the answer is unchanged for 3 passes). It relies on the C6 hold, costs +3 passes over d - 1, and halts at the efficient pass with accuracy kept on unseen depths 5-7, in both seeds.
+  - Scope: the same as the bundle model (plan given; chain-order text; REG frames 0-5; one lineage; per-pass aux). d 1-4 items may overlap training; d 5-7 are unseen by construction.
+- **The bundle model (bun_s1 / s2) now carries:** C1 (scoped), C2 (partial: +2-3 depths), C6 (met), C5 (met, scoped). SOTA json updated in this commit.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
