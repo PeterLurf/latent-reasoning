@@ -1,0 +1,22 @@
+{
+ "checks": [
+  {
+   "kind": "train",
+   "micro": 2,
+   "eval_bs": 250,
+   "peak_gib": 20.91020168364048
+  },
+  {
+   "kind": "eval",
+   "micro": 2,
+   "eval_bs": 250,
+   "peak_gib": 7.59030294418335
+  }
+ ],
+ "micro": 2,
+ "eval_bs": 250,
+ "peak_gib_train": 20.91020168364048,
+ "peak_gib_eval": 7.59030294418335,
+ "train": "the longest bs / micro of 256 d = 2 items (SEED_MEMCHECK) at K = 8, + AdamW states",
+ "eval": "the longest of 256 d = 12 items x eval_bs at K' 0..14 (fp32, no optimiser state)"
+}

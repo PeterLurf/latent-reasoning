@@ -19,3 +19,6 @@ realised:b398 # 58770320 (wall guard spent $0.567 at 01:25:46 at dph_total $0.41
 realised:b396 # 58751330 (wall guard: spent ~$1.410 at dph_total $0.207/h, destroyed by the drain 04:05:58) (§258 B bridge_s1; ckpt_final.pt deleted after the host-sha check, Audit 11-02) 1.410
 # NOTE 2026-11-02 08:55:44 b401 wall guard raised to $3.80 (Audit): queue done 08:10, the drain fetching p2m_s1_ws6k + p2m_s1 (medium model.pt + ckpt_final ~4 GB) at $2.945+
 realised:b401 # 58781953 (wall guard spent $3.000 at 08:55:40 at dph_total $0.4167/h + 4.6 min to destroy at 09:00:15) (§258 S2 p2m_s1 12k in two segments + WS-6k + host gates s2g incl. resume PASS) 3.032
+406:p2m_s1b 68.248.142.190:40237 58839619 $0.475/h sps 1.3468485752741495 steps 12000 3.04
+# NOTE 2026-11-02 15:53:08 b406 wall guard raised to $4.20 (Audit): S2b at 10.5k / 12k, $2.65 spent; the full medium eval + model / ckpt_final drain would approach $3.80
+realised:b406 # 58839619 (wall guard spent $3.481 at 17:33:47 at $0.475/h + 9.2 min to destroy at 17:43:01) (§258 S2b p2m_s1b 12k in two segments + WS-6k + host gates s2bg incl. resume) 3.554

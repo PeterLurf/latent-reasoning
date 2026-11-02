@@ -1,0 +1,65 @@
+{
+ "train_sec": 15127,
+ "last_step": 12000,
+ "n_nonfinite": 0,
+ "entry_d1": 216,
+ "futility": null,
+ "clip_rate": 0.25825,
+ "grad_norm_preclip": {
+  "median": 0.020371447317302227,
+  "p90": 6.800256299972535
+ },
+ "write_grad_spikes_floor": [
+  {
+   "step": 4400,
+   "mean": 0.10050580168124724,
+   "max": 1.809186339378357,
+   "median_prev_1k": 0.017556392587721348,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 4600,
+   "mean": 0.07566689837527975,
+   "max": 5.058315277099609,
+   "median_prev_1k": 0.011487328913062811,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 4700,
+   "mean": 0.10376848176551903,
+   "max": 2.159912586212158,
+   "median_prev_1k": 0.006645794725045562,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 5100,
+   "mean": 0.0876409575082198,
+   "max": 2.2675423622131348,
+   "median_prev_1k": 0.004648213274776936,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 5400,
+   "mean": 0.062480506589317884,
+   "max": 1.846014142036438,
+   "median_prev_1k": 0.005905021447688341,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 7300,
+   "mean": 0.059381747654465473,
+   "max": 2.4567785263061523,
+   "median_prev_1k": 0.0005123012815602124,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 7700,
+   "mean": 0.07682167433872564,
+   "max": 1.4533357620239258,
+   "median_prev_1k": 0.00813283957540989,
+   "spike_100x_floor": true
+  }
+ ],
+ "micro": 2,
+ "train_gpu": "NVIDIA RTX A6000"
+}
