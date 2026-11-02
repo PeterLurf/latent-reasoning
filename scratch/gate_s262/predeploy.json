@@ -176,7 +176,7 @@
     ],
     "eval_parts": [
      "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,test_perm,insert_ho,ws_deep",
-     "acc"
+     "acc,ws_deep"
     ],
     "hold_log": [
      false,
@@ -217,7 +217,7 @@
     ],
     "eval_parts": [
      "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,test_perm,insert_ho,ws_deep",
-     "acc"
+     "acc,ws_deep"
     ],
     "hold_log": [
      false,

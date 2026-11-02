@@ -34,7 +34,7 @@
  "auto_micro": false,
  "mem_budget": 21.0,
  "eval_bs": 250,
- "eval_parts": "acc",
+ "eval_parts": "acc,ws_deep",
  "device": "cpu",
  "out": "D:/Latent/scratch/_tmp/s262/args_bunc_s2",
  "distract_mix": "s256,chain,givop",
