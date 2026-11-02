@@ -346,6 +346,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **SCORED 11-02 (257-3): CONTENT-SELECTOR 2/2 - held-out chain-reading sub_c / mul_c 0.95 / 0.96, H-LIVE 0.99, H-EXTEND 0.92 / 0.89, RETAIN kept, C2 d 6 0.97 / 0.96, d 8 0.66 / 0.64; TEST-PERM still order-bound; $2.13.** **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **S2 NO-SEED at lr 3e-5 (258-7); S2b at lr 1e-4 registered (258-8; NO-SEED parks the medium line): medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
+| 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3** |
 
 ## Live sections
 
@@ -19784,6 +19785,23 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - Label BUNDLE-PASS (scoped). Scope: plan given; chain order; REG frames 0-5; one lineage; per-pass aux (no C4); C2 within K = 8 (K' > K untested).
 - **OC:** C6 0.6; C2 retained 0.6. Censoring: FAIL at final, VOID-RERUN once.
 - **Cost:** <= ~$3.4, guard $4. Scorer theory/score_bu.py before launch.
+
+## 260. GENERIC-BUN: can the content-selecting bundle model run without the plan in its cue? (C1 scope; Theory's choice under the user's 10-26 standing rules and priority C1 > C6 > C4 = C2 > C3 > C5 > C7; Audit approves; guard **$3**; pre-registered 2026-11-02, before any build or output)
+
+- **Why:** every language C1 claim is scoped 'plan given': the per-pass cue names S_t. §252's generic-cue pilot (GP) broke the chain on the *positional* rcb loop (Note 252-2). bun / dch now select each step's sentence by content, cue or reachability (Note 257-3).
+  - If reachability is used (the op that reads the last computed entity), a generic cue ('What is the next value? The answer is:') should suffice. If the cue's name was the key, it will not.
+- **Pilot (cloud RTX 3090, ~$0.3):** pilot_gb_s1 = --init_model bun_s1, bun_s1's args (incl. the hold penalty and the §257 insert mix) + --cue generic, --steps 8000 --stop_at 2000.
+  - Host evals under the generic cue at 2k: eval_acc (TEST2 d 1-6) and eval_ws.
+  - Step-0 reference pilot_gb_s1_step0: the bun_s1 init evaluated under the generic cue.
+  - **Gate (theory/score_gb.py):** GO if TEST2 d 2 / 3 / 4 >= 0.50 each and WS d 3 passes 2-3 >= 0.50; PARK if d 3 < 0.20; else NOTE.
+- **Full (only on GO; ~$2, its scorer committed before launch):** gb_s1 / gb_s2 = bun_s1 / s2 + --cue generic, 8k, the same build.
+  - Binding:
+    - plan-free C1 (TEST2 d 1-4 >= 0.95, NOT-DECODER, SWAP4, LP5-D4, PLAN-FREE assert in passes());
+    - content under the generic cue (held-out H-CHAINSRC-OP >= 0.85);
+    - C2 retention (d 6 >= 0.80);
+    - C6 hold (K' 64 >= K' 8 - 0.02, d 1-4).
+- **Scope:** the per-pass aux targets still name step t's entity, so the plan is supervised in training: this tests 'no plan input at test'. Text stays in chain order.
+- **OC:** P(GO) ~0.35 (reachability used) vs ~0.05 (cue-name keyed); P(full pass | GO) ~0.5. Censoring: VOID-RERUN once.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
