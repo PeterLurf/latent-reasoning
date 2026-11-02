@@ -2,8 +2,8 @@
   <run>_mem / _gtime  K7 mem_check (WITH the penalty + the §257 distract mix: the 2-insert memory items) + G-TIME (the filler's admit measure; a crash refuses the host);
   <run>               scratch.s257_guarded --mode train (git blobs + the dch_s<k> init copy's sha asserted on the host): dch_s<k>'s flags (gate_s257.dch_flags: dis_s<k>'s +
                       --distract_mix s256,chain,givop, --steps 8000) with --init_model the unbuffered dch_s<k> copy + BUN: --hold_inc 1.6 --hold_log (hold_start 500) |
-                      BUNC: --hold_log only; --keep_final_ckpt; eval_parts BUN acc,swap_kd,lp5h,cue_only,ws_deep,halthead | BUNC acc;
-  <run> (BUN only)    scratch.s262_long: run_long K' 8 / 64 / 128 on d 1-6 -> eval_long_k128.json (acc + s_norm).
+                      BUNC: --hold_log only; --keep_final_ckpt; eval_parts BUN acc,swap_kd,lp5h,cue_only,ws_deep,halthead | BUNC acc,ws_deep (Audit);
+  <run> (both arms)   scratch.s262_long: run_long K' 8 / 64 / 128 on d 1-6 -> eval_long_k128.json (acc + s_norm).
 Fresh AdamW, 100-step warm-up + cosine over 8k, mem.fade re-ramp over 500 steps (as dis -> dch; disclosed). Frozen args + diff vs dch_s<k>/args.json.
 Pre-deploy: unbuffered blob ids == HEAD; the init copies' unbuffered sha (majority of 3); every path=sha model shipped (check_queue_ships).
     python -B scratch/s262_mkq.py"""
@@ -23,7 +23,7 @@ from nobuf_sha import sha_nobuf  # noqa: E402
 INIT = {1: ("boxes/runs_fsq/dch_s1_init/model.pt", "0badc805792215b3"), 2: ("boxes/runs_fsq/dch_s2_init/model.pt", "d759f9a2d1014f21")}
 BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/insert_render.py", "boxes/perm_render.py", "boxes/s5.py", "boxes/nested170.py", "boxes/inject_ow.py",
         "boxes/deltamem.py", "boxes/core.py", "scratch/s257_guarded.py", "scratch/s262_long.py", "scratch/s256_ho_shas.json", "scratch/s257_ho_shas.json"]
-EV_BUN = "acc,swap_kd,lp5h,cue_only,ws_deep,halthead"; EV_BUNC = "acc"
+EV_BUN = "acc,swap_kd,lp5h,cue_only,ws_deep,halthead"; EV_BUNC = "acc,ws_deep"   # Audit G-D change 1: BUNC + ws_deep + the long line (C2 / C6 attribution)
 
 
 def nobuf_blob(p):
@@ -52,7 +52,7 @@ for n, run, k, bun in ((402, "bun_s1", 1, True), (403, "bun_s2", 2, True), (404,
          "%s_gtime boxes.inject_aw %s --time_steps 60\n"
          "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s -- %s %s --args_ref scratch/s262_args_frozen_%s.json\n") % (
         run, k, "+ --hold_inc 1.6 --hold_log" if bun else "+ --hold_log (no penalty)", run, W, fs, W, fs, W, blob, INIT[k][0], INIT[k][1], INIT[k][0], fs, " ".join(tail), run)
-    if bun:
+    if True:                                                                # Audit G-D change 1: the long line on BOTH arms
         q += "%s scratch.s262_long --kprime_list 8,64,128 --long_ds 1,2,3,4,5,6 --long_name eval_long_k128.json\n" % W
     open("scratch/gen_q_b%d.txt.hold" % n, "w", encoding="utf-8", newline="\n").write(q)
     assert subprocess.call([sys.executable, "scratch/check_queue_ships.py", "scratch/gen_q_b%d.txt.hold" % n]) == 0
