@@ -68,6 +68,19 @@ def offbit_aw():
     return _offbit("boxes/inject_aw.py", RCB + COM + ["--ckpt_every", "100", "--log_every", "10", "--stop_at", "100"], "offaw")
 
 
+def resume():
+    """§258 S2 / S3 (Note 258-1 (3) tested resume): GPT-2 small RCB, det + fp32 + micro 8: A = 60 steps straight (ckpt_every 30); B = --stop_at 30, then --resume
+    B/ckpt_last.pt --stop_at 60 in the same dir; ckpt_last at step 60: model / opt / rngs / stream equal (the per-bin log stats are not in the ckpt, so logs are not compared)."""
+    fl = RCB + COM + ["--ckpt_every", "30", "--log_every", "10"]; da, db = TMP + "/res_a", TMP + "/res_b"
+    ra = det_in(ROOT, "boxes/inject_aw.py", fl + ["--stop_at", "60"], da); rb1 = det_in(ROOT, "boxes/inject_aw.py", fl + ["--stop_at", "30"], db)
+    rb2 = subprocess.call([sys.executable, "-B", "-m", "scratch.s222_det_wrap", "boxes/inject_aw.py"] + fl + ["--stop_at", "60", "--resume", db + "/ckpt_last.pt", "--device", DEV,
+                          "--out", db], cwd=ROOT, env=G8.ENV, stdout=open(db + "/stdout_resume.log", "w"), stderr=subprocess.STDOUT)
+    o = {"rc": [ra, rb1, rb2]}
+    if os.path.exists(da + "/ckpt_last.pt") and os.path.exists(db + "/ckpt_last.pt"):
+        o.update(G8.ck_equal(da + "/ckpt_last.pt", db + "/ckpt_last.pt", keys=KEYS))
+    o["pass"] = o["rc"] == [9, 9, 9] and o.get("n_mismatch") == 0; return o
+
+
 def offbit_ow():
     return _offbit("boxes/inject_ow.py", ["--arm", "direct", "--d_max", "2", "--steps", "8000"] + COM + ["--ckpt_every", "30", "--log_every", "10", "--stop_at", "30"], "offow")
 
@@ -151,6 +164,6 @@ def hfref():
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True); os.makedirs(TMP, exist_ok=True)
-    fns = {k: globals()[k] for k in ("hfref", "offbit_aw", "offbit_ow", "step0", "smoke_aw", "smoke_ow")}
+    fns = {k: globals()[k] for k in ("hfref", "offbit_aw", "offbit_ow", "step0", "smoke_aw", "smoke_ow", "resume")}
     for part in [x for x in sys.argv[1:] if x in fns]:
         r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)
