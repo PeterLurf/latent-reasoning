@@ -75,7 +75,7 @@
   {
    "c": "C5",
    "status": "partial (out-of-range halting 1/2 seeds)",
-   "evidence": "training-free rule 'stop when the answer is unchanged for 2 passes' (uses the C6 hold): s1 extrapolates to d5-7 within 0.02 (d7 0.838 vs 0.857), s2 loses 0.03-0.04 at d6-7; costs ~2 extra passes (Note 259-8). Learned heads: in range only (Note 259-6)."
+   "evidence": "training-free rule 'stop when the answer is unchanged for 2 passes' (uses the C6 hold): s1 extrapolates to d5-7 within 0.02 (d7 0.838 vs 0.857), s2 loses 0.03-0.04 at d6-7; costs ~2 extra passes (Note 259-8). Learned heads: in range only (Note 259-6). Post-hoc r = 3: both seeds keep accuracy to within 0.007 at d5-7 for a fixed +3 passes (Note 259-10; needs a fresh-data confirmation)."
   },
   {
    "c": "C4",

@@ -1,0 +1,192 @@
+{
+ "bun_s1": {
+  "r2_miss_classes": {
+   "5": {
+    "n_miss": 18,
+    "PREMATURE": 0.5,
+    "WRONG-ANYWAY": 0.5,
+    "LATE-DRIFT": 0.0,
+    "other": 0.0
+   },
+   "6": {
+    "n_miss": 45,
+    "PREMATURE": 0.37777777777777777,
+    "WRONG-ANYWAY": 0.6222222222222222,
+    "LATE-DRIFT": 0.0,
+    "other": 0.0
+   },
+   "7": {
+    "n_miss": 162,
+    "PREMATURE": 0.12962962962962962,
+    "WRONG-ANYWAY": 0.8703703703703703,
+    "LATE-DRIFT": 0.0,
+    "other": 0.0
+   }
+  },
+  "r3": {
+   "label": "C5-EXTRAP",
+   "by_d": {
+    "1": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 0.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "2": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 0.919,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.08099999999999996
+    },
+    "3": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.972,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.028000000000000025
+    },
+    "4": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 2.977,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.02300000000000013
+    },
+    "5": {
+     "acc_k8": 0.991,
+     "acc_halt": 0.991,
+     "mean_khalt": 3.983,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.016999999999999904
+    },
+    "6": {
+     "acc_k8": 0.972,
+     "acc_halt": 0.972,
+     "mean_khalt": 4.984,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.016000000000000014
+    },
+    "7": {
+     "acc_k8": 0.857,
+     "acc_halt": 0.858,
+     "mean_khalt": 5.991,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.009000000000000341
+    }
+   },
+   "passes_minus_eff": {
+    "1": 3.0,
+    "2": 2.919,
+    "3": 2.9720000000000004,
+    "4": 2.9770000000000003,
+    "5": 2.9829999999999997,
+    "6": 2.984,
+    "7": 2.9909999999999997
+   }
+  }
+ },
+ "bun_s2": {
+  "r2_miss_classes": {
+   "5": {
+    "n_miss": 27,
+    "PREMATURE": 0.5185185185185185,
+    "WRONG-ANYWAY": 0.4444444444444444,
+    "LATE-DRIFT": 0.037037037037037035,
+    "other": 0.0
+   },
+   "6": {
+    "n_miss": 72,
+    "PREMATURE": 0.3888888888888889,
+    "WRONG-ANYWAY": 0.6111111111111112,
+    "LATE-DRIFT": 0.0,
+    "other": 0.0
+   },
+   "7": {
+    "n_miss": 189,
+    "PREMATURE": 0.21693121693121692,
+    "WRONG-ANYWAY": 0.783068783068783,
+    "LATE-DRIFT": 0.0,
+    "other": 0.0
+   }
+  },
+  "r3": {
+   "label": "C5-EXTRAP",
+   "by_d": {
+    "1": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 0.0,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": 0.0
+    },
+    "2": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 0.915,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.08499999999999996
+    },
+    "3": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 1.974,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.026000000000000023
+    },
+    "4": {
+     "acc_k8": 1.0,
+     "acc_halt": 1.0,
+     "mean_khalt": 2.979,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.020999999999999908
+    },
+    "5": {
+     "acc_k8": 0.988,
+     "acc_halt": 0.986,
+     "mean_khalt": 3.981,
+     "never_halt_share": 0.001,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.019000000000000128
+    },
+    "6": {
+     "acc_k8": 0.956,
+     "acc_halt": 0.955,
+     "mean_khalt": 4.989,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.01100000000000012
+    },
+    "7": {
+     "acc_k8": 0.852,
+     "acc_halt": 0.845,
+     "mean_khalt": 5.928,
+     "never_halt_share": 0.0,
+     "event_only_mean": null,
+     "offset_vs_d_minus_1": -0.07200000000000006
+    }
+   },
+   "passes_minus_eff": {
+    "1": 3.0,
+    "2": 2.915,
+    "3": 2.974,
+    "4": 2.979,
+    "5": 2.9779999999999998,
+    "6": 2.989,
+    "7": 2.928000000000001
+   }
+  }
+ }
+}

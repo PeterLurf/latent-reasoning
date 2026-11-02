@@ -23656,6 +23656,19 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Reading pre-stated now: r = 3 counts toward C5 only as a post-hoc result ('EXTRAP at r = 3, post-hoc'). The registered C5 result stays Note 259-8's (r = 2: 1/2).
   - Expected: if PREMATURE dominates s2's misses, r = 3 recovers s2 at one more pass.
 
+**Note 259-10 (2026-11-02 12:52 EST; reads Note 259-9 after Audit's ack, POST-HOC; theory/read_s259_c5_r3.py, run twice with identical output).**
+- **(a) r = 2 misses at d 5 / 6 / 7, (n_miss; PREMATURE / WRONG-ANYWAY / LATE-DRIFT):**
+  - s1: 18 (0.50 / 0.50 / 0); 45 (0.38 / 0.62 / 0); 162 (0.13 / 0.87 / 0).
+  - s2: 27 (0.52 / 0.44 / 0.04); 72 (0.39 / 0.61 / 0); 189 (0.22 / 0.78 / 0).
+  - So most d 6-7 misses are items the model gets wrong anyway. The halting loss is the PREMATURE share: coincidental 2-pass repeats before the answer settles.
+- **(b) r = 3 (post-hoc): C5-EXTRAP in both seeds:**
+  - acc_halt equals acc_k8 to within 0.007 at every d 1-7 (s1 d 6 / 7 0.972 / 0.858 vs 0.972 / 0.857; s2 0.955 / 0.845 vs 0.956 / 0.852);
+  - mean_khalt = d - 1 to within 0.08 at every d (exact efficient answer pass);
+  - passes_run - (d - 1) = +2.9-3.0 (three confirmation passes).
+- **Reading:** waiting for the answer to stay unchanged for 3 passes recovers essentially all of K' 8's accuracy out of range in both seeds, at a fixed +3-pass cost.
+  - It is a training-free halting rule on the model's own outputs, depending on the C6 hold.
+  - **Registered C5 status stays Note 259-8's (r = 2: EXTRAP 1/2).** r = 3 is post-hoc and is reported as 'EXTRAP 2/2 at r = 3, post-hoc'. A fresh-data confirmation (new TEST draws or new seeds, r = 3 pre-stated) would make it registered.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
