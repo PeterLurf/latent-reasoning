@@ -94,7 +94,10 @@ def stage_s3(runs=R):
     w6 = w["by_d"]["6"]; holds = a["6"]["acc"] >= 0.90 and a["7"]["acc"] >= 0.80 and all(w6[str(t)] >= 0.90 for t in range(1, 7))
     imp = a["8"]["acc"] >= 0.70 or a["7"]["acc"] >= 0.95
     lab = ("FAIL" if not ok else "MEDIUM-C2-IMPROVES" if (holds and imp) else "MEDIUM-C2-HOLDS" if holds else "MEDIUM-C1-ONLY")
-    return {"verdict": lab + " (PILOT, 1 seed)", "retain": ok, "d6": a["6"]["acc"], "d7": a["7"]["acc"], "d8": a["8"]["acc"], "ws6": [w6[str(t)] for t in range(1, 7)], "stable": (sok, smsg)}
+    br = jl(os.path.join(runs, "bridge_s1", "eval_acc.json"))   # Note 258-6: same one-stage recipe on small, descriptive reference (medium - bridge)
+    ref = {d: a[d]["acc"] - br["by_d"][d]["acc"] for d in ("6", "7", "8") if br and d in br["by_d"]} if br else None
+    return {"verdict": lab + " (PILOT, 1 seed)", "retain": ok, "d6": a["6"]["acc"], "d7": a["7"]["acc"], "d8": a["8"]["acc"], "ws6": [w6[str(t)] for t in range(1, 7)], "stable": (sok, smsg),
+            "vs_bridge_desc": ref}
 
 
 def fixtures():

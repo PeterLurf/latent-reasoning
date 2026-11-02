@@ -23551,6 +23551,11 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The A6000 replay enters the basin later in the first 2k. GPU class shifts the trajectory, so small-vs-medium comparisons carry this disclosed confound. S1-S3 are all on A6000.
 - **Note for S3:** the medium run uses the §256 insert mix as registered. The §257 chain-reading mix (the current SOTA recipe) is not in §258's design; a medium §257-mix stage would need a new registration.
 
+**Note 258-6 (2026-11-02 04:07 EST; S3 reading clarified before any S3 output, at Audit's request; score_lb2.py re-committed, fixtures 14/14).**
+- **The S3 bars stay absolute as registered:** HOLDS = d 6 >= 0.90, d 7 >= 0.80, WS d 6 passes 1-6 >= 0.90; IMPROVES = d 8 >= 0.70 or d 7 >= 0.95.
+- **Stated plainly:** the same one-stage recipe on small (bridge_s1) has d 7 0.789, just under 0.80. So HOLDS at d 7 implies medium at least matches and slightly exceeds small's same recipe; a d 7 miss by < 0.02 is not evidence that scale hurts.
+- **Added descriptive reference** (vs_bridge_desc): medium - bridge_s1 at d 6 / 7 / 8 (bridge 0.949 / 0.789 / 0.485), with the A6000-vs-3090 anchor lag (Note 258-5) as a disclosed confound.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
