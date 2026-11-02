@@ -41,7 +41,7 @@ assert ok, ("pre-deploy", pre, inits)
 blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); mf = " ".join(GM.medium_flags() + ["--distract_p", "1", "--auto_micro", "--mem_budget", "44", "--eval_bs", "100"])
 af = " ".join(BF.flags() + ["--keep_final_ckpt", "--ckpt_every", "1000", "--stop_at", "2000", "--eval_parts", "acc"])
 q = ("# THEORY §258 S0 INSTALL (LB2_v1 §2 + Note 258-1; RTX A6000 = the S1-S3 class): medium mem / G-TIME at the S3 shape, the host gates (bitwise small, step-0, medium smokes), "
-     "the same-class 2k anchor of bridge_s1.\n# HOSTPROBE\n# P=1\n"
+     "the same-class 2k anchor of bridge_s1.\n# HOSTPROBE 1.15\n# P=1\n"   # the A6000 limit (b397 attempt 1: 0.987 s/step vs the 3090-calibrated 0.854; A6000 = GA102 at lower clocks)
      "boxes/runs_fsq/anchor_a6000_eqA_mem boxes.inject_aw %s --mem_check\n"
      "boxes/runs_fsq/anchor_a6000_eqA_gtime boxes.inject_aw %s --time_steps 60\n"
      "boxes/runs_fsq/s0m_gates scratch.s258m_host --blob %s --gates offbit_aw,offbit_ow,step0,smoke_aw,smoke_ow --ship %s\n"
