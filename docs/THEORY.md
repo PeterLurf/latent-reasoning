@@ -23626,6 +23626,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Slightly better than the §248-label head on bun (Note 259-4: d 6 0.937 / 0.942, d 7 0.738 / 0.766), but still lossy at d 7.
 - **Reading:** C5 stays partial (learned halt in range; out of range the head is depth-sensitive and efficient but loses accuracy at d 7). The hold signal itself does not extrapolate as a halting cue. No C-status change; the SOTA json is unchanged.
 
+**Note 259-7 (2026-11-02 12:50 EST; C5-STABLE, $0, Audit's suggestion: training-free answer-stability halting from bun_s1 / s2's stored per-item predictions (eval_halthead2 items, pred at K' 0-14); pre-stated and scorer committed before computing; theory/score_c5c.py, fixtures 3/3).**
+- **Rule (r in {1, 2}):** halt at the first K' where the decoder's answer stays unchanged for r further passes (pred[K'] = ... = pred[K' + r]). Answer = pred[K']; khalt = K'; passes_run = K' + r.
+  - Censoring: no such K' by the K' 14 cap -> khalt 14 with pred[14].
+  - There is no fit on any items; it uses only the model's own outputs.
+- **Score:** score_hx's C5 rule on khalt per seed and r (IN-RANGE d 1-4; EXTRAP d 5-7: acc_halt >= acc_k8 - 0.02, mean_khalt <= d, increasing over d 1-7). passes_run - (d - 1) is reported. Run twice for identity (local RAM).
+- **Why it may work:** under the hold penalty pred(K') is constant from the solving pass on (C6), while before that the answer changes almost every pass (chance repeat ~1/11; r = 2 ~1%).
+- **Caveat stated now:** after §256 the decoder is no longer purely positional (Note 255-8), so early answers may repeat more than chance. The rule's out-of-range result decides.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
