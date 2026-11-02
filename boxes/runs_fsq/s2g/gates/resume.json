@@ -1,0 +1,15 @@
+{
+ "rc": [
+  9,
+  9,
+  9
+ ],
+ "step": [
+  60,
+  60
+ ],
+ "n_model_tensors": 162,
+ "mismatch": [],
+ "n_mismatch": 0,
+ "pass": true
+}

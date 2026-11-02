@@ -17,3 +17,5 @@ realised:b398 # 58770320 (wall guard spent $0.567 at 01:25:46 at dph_total $0.41
 401:p2m_s1 38.29.145.13:40228 58781953 $0.4167/h sps 1.431363614400228 steps 12000 2.78
 # NOTE 2026-11-02 03:56:03 b396 wall guard raised to $1.75 (Audit pre-approval): queue done 03:25, the drain's fetch (model.pt + ckpt_final) still running at $1.357; the cell cost guard had already exited
 realised:b396 # 58751330 (wall guard: spent ~$1.410 at dph_total $0.207/h, destroyed by the drain 04:05:58) (§258 B bridge_s1; ckpt_final.pt deleted after the host-sha check, Audit 11-02) 1.410
+# NOTE 2026-11-02 08:55:44 b401 wall guard raised to $3.80 (Audit): queue done 08:10, the drain fetching p2m_s1_ws6k + p2m_s1 (medium model.pt + ckpt_final ~4 GB) at $2.945+
+realised:b401 # 58781953 (wall guard spent $3.000 at 08:55:40 at dph_total $0.4167/h + 4.6 min to destroy at 09:00:15) (§258 S2 p2m_s1 12k in two segments + WS-6k + host gates s2g incl. resume PASS) 3.032

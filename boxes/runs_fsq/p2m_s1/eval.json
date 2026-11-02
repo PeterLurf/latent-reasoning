@@ -1,0 +1,104 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 1528
+  },
+  "lp5": {
+   "file": "eval_lp5.json",
+   "sec": 42
+  },
+  "mean_s": {
+   "file": "eval_mean_s.json",
+   "sec": 656
+  },
+  "cue_only": {
+   "file": "eval_cue_only.json",
+   "sec": 6
+  },
+  "cue_wrong": {
+   "file": "eval_cue_wrong.json",
+   "sec": 55
+  },
+  "swap_k": {
+   "file": "eval_swap_k.json",
+   "sec": 36
+  },
+  "swap_1": {
+   "file": "eval_swap_1.json",
+   "sec": 24
+  },
+  "probe": {
+   "file": "eval_probe.json",
+   "sec": 35
+  },
+  "ws": {
+   "file": "eval_ws.json",
+   "sec": 22
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA RTX A6000",
+ "eval_bs": 250,
+ "write_src": "answer",
+ "ds": [
+  2
+ ],
+ "module_sha256": "79c01e8911bb4e4a330adce38452d9628ce04cac90c99d49ab9ec8aef42b15d8",
+ "train": {
+  "train_sec": 16257,
+  "last_step": 12000,
+  "n_nonfinite": 0,
+  "entry_d1": 216,
+  "futility": null,
+  "clip_rate": 0.28575,
+  "grad_norm_preclip": {
+   "median": 0.5553234219551086,
+   "p90": 23.376121330261235
+  },
+  "write_grad_spikes_floor": [
+   {
+    "step": 1200,
+    "mean": 0.13549429739825428,
+    "max": 1.6021065711975098,
+    "median_prev_1k": 0.008184843696653843,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 4400,
+    "mean": 0.1118996595210956,
+    "max": 1.5417208671569824,
+    "median_prev_1k": 0.010751666035503149,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 4800,
+    "mean": 0.0939095131738486,
+    "max": 1.397398829460144,
+    "median_prev_1k": 0.006779857445508242,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 5000,
+    "mean": 0.04299867429398546,
+    "max": 1.0037707090377808,
+    "median_prev_1k": 0.0031724247382953763,
+    "spike_100x_floor": true
+   },
+   {
+    "step": 7100,
+    "mean": 0.016040582179375634,
+    "max": 1.1524473428726196,
+    "median_prev_1k": 0.0034008983056992292,
+    "spike_100x_floor": true
+   }
+  ],
+  "micro": 2,
+  "train_gpu": "NVIDIA RTX A6000"
+ }
+}

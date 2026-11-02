@@ -1,0 +1,11 @@
+{
+ "arm": "inject",
+ "think_k": 8,
+ "d_max": 2,
+ "steps_timed": 60,
+ "sec_per_step": 1.431363614400228,
+ "est_hours_steps": 4.771212048000759,
+ "gpu": "NVIDIA RTX A6000",
+ "micro": 2,
+ "peak_gib": 22.080275058746338
+}

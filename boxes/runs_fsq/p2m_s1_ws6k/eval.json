@@ -1,0 +1,26 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 2,
+ "seed": 1,
+ "parts": {
+  "acc": {
+   "file": "eval_acc.json",
+   "sec": 1511
+  },
+  "ws": {
+   "file": "eval_ws.json",
+   "sec": 22
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA RTX A6000",
+ "eval_bs": 250,
+ "write_src": "answer",
+ "ds": [
+  2
+ ],
+ "module_sha256": "79c01e8911bb4e4a330adce38452d9628ce04cac90c99d49ab9ec8aef42b15d8",
+ "train": null
+}

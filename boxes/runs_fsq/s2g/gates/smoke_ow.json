@@ -1,0 +1,7 @@
+{
+ "rc": 9,
+ "n_loss": 20,
+ "finite": true,
+ "base": "gpt2-medium",
+ "pass": true
+}

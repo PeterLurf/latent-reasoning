@@ -1,0 +1,51 @@
+{
+ "train_sec": 16257,
+ "last_step": 12000,
+ "n_nonfinite": 0,
+ "entry_d1": 216,
+ "futility": null,
+ "clip_rate": 0.28575,
+ "grad_norm_preclip": {
+  "median": 0.5553234219551086,
+  "p90": 23.376121330261235
+ },
+ "write_grad_spikes_floor": [
+  {
+   "step": 1200,
+   "mean": 0.13549429739825428,
+   "max": 1.6021065711975098,
+   "median_prev_1k": 0.008184843696653843,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 4400,
+   "mean": 0.1118996595210956,
+   "max": 1.5417208671569824,
+   "median_prev_1k": 0.010751666035503149,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 4800,
+   "mean": 0.0939095131738486,
+   "max": 1.397398829460144,
+   "median_prev_1k": 0.006779857445508242,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 5000,
+   "mean": 0.04299867429398546,
+   "max": 1.0037707090377808,
+   "median_prev_1k": 0.0031724247382953763,
+   "spike_100x_floor": true
+  },
+  {
+   "step": 7100,
+   "mean": 0.016040582179375634,
+   "max": 1.1524473428726196,
+   "median_prev_1k": 0.0034008983056992292,
+   "spike_100x_floor": true
+  }
+ ],
+ "micro": 2,
+ "train_gpu": "NVIDIA RTX A6000"
+}
