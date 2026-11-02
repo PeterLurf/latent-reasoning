@@ -14,3 +14,6 @@ realised:b398 # 58762685 (wall guard spent $0.215 at 23:35 + 5 min x $0.4167/h t
 398:askm_lr3e5 38.29.145.13:40974 58770320 $0.4167/h sps 0.25401532649993896 steps 8000 0.65
 realised:b399 # 58767989 (wall guard spent $0.638 at 01:17:28 at dph_total $0.4167/h + 6.5 min to destroy at 01:24) (§258 S1 askm_lr1e4 + host gates s1g_lr1e4 PASS) 0.683
 realised:b398 # 58770320 (wall guard spent $0.567 at 01:25:46 at dph_total $0.4167/h + 7 min to destroy at 01:32:49) (§258 S1 askm_lr3e5 attempt 2 + host gates s1g_lr3e5 PASS) 0.616
+401:p2m_s1 38.29.145.13:40228 58781953 $0.4167/h sps 1.431363614400228 steps 12000 2.78
+# NOTE 2026-11-02 03:56:03 b396 wall guard raised to $1.75 (Audit pre-approval): queue done 03:25, the drain's fetch (model.pt + ckpt_final) still running at $1.357; the cell cost guard had already exited
+realised:b396 # 58751330 (wall guard: spent ~$1.410 at dph_total $0.207/h, destroyed by the drain 04:05:58) (§258 B bridge_s1; ckpt_final.pt deleted after the host-sha check, Audit 11-02) 1.410
