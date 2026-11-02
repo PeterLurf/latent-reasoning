@@ -28,6 +28,8 @@ def main():
         if os.path.exists(f):
             shutil.copy(f, out + "/gates/%s.json" % p_); gp[p_] = json.load(open(f)).get("pass")
     ok = rc == 0 and all(gp.get(p_) is True for p_ in parts); json.dump({"gates": gp, "all_pass": ok, "gate_rc": rc}, open(out + "/eval.json", "w"))
+    if ok:                                                                  # S1+ train lines --require <dir>/gates_pass.json (written only when every part passed)
+        json.dump({"pass": gp}, open(out + "/gates_pass.json", "w"))
     json.dump({"gates_only": True, "parts": parts}, open(out + "/args.json", "w")); open(out + "/log.jsonl", "w").write(json.dumps({"gates_only": True}) + "\n")
     import torch                                                            # the drain's done marker / need list (s224_done_marker: model.pt + eval.json + log.jsonl + args.json)
     torch.save({"placeholder": "gates-only dir, no model"}, out + "/model.pt")

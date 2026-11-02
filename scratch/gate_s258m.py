@@ -42,7 +42,13 @@ strip = lambda p, drop=(): [{k: v for k, v in r.items() if k != "sec" and k not 
 def ref_tree():
     if not os.path.isdir(REFT + "/boxes"):
         os.makedirs(REFT, exist_ok=True); tarfile.open(ROOT + "/scratch/s258m_ref.tar").extractall(REFT)
-        os.symlink(ROOT + "/prosqa", REFT + "/prosqa"); os.symlink(ROOT + "/boxes/runs_fsq", REFT + "/boxes/runs_fsq")
+    for sub in ("prosqa", "boxes/runs_fsq"):                                # b397 attempt 1: the tar carried boxes/runs_fsq/*.py dirs -> a real dir where the link goes
+        q = REFT + "/" + sub
+        if os.path.isdir(q) and not os.path.islink(q):
+            import shutil
+            shutil.rmtree(q)
+        if not os.path.islink(q):
+            os.symlink(ROOT + "/" + sub, q)
     return REFT
 
 
