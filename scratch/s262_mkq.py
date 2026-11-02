@@ -50,7 +50,8 @@ for n, run, k, bun in ((402, "bun_s1", 1, True), (403, "bun_s2", 2, True), (404,
          "Frozen args scratch/s262_args_frozen_%s.json.\n# HOSTPROBE\n# P=1\n"
          "%s_mem boxes.inject_aw %s --mem_check\n"
          "%s_gtime boxes.inject_aw %s --time_steps 60\n"
-         "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s -- %s %s --args_ref scratch/s262_args_frozen_%s.json\n") % (
+         "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s scratch/s256_ho_shas.json scratch/s257_ho_shas.json -- %s %s --args_ref "
+         "scratch/s262_args_frozen_%s.json\n") % (   # b402 attempt 1: the sha jsons rode only as --blob path=hash (not shipped) -> the host blob assert failed
         run, k, "+ --hold_inc 1.6 --hold_log" if bun else "+ --hold_log (no penalty)", run, W, fs, W, fs, W, blob, INIT[k][0], INIT[k][1], INIT[k][0], fs, " ".join(tail), run)
     if True:                                                                # Audit G-D change 1: the long line on BOTH arms
         q += "%s scratch.s262_long --kprime_list 8,64,128 --long_ds 1,2,3,4,5,6 --long_name eval_long_k128.json\n" % W
