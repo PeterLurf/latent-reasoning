@@ -1,0 +1,16 @@
+{
+ "anchor_vs_bridge_frozen": {
+  "base": [
+   null,
+   "gpt2"
+  ],
+  "eval_parts": [
+   "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,test_perm,insert_ho,ws_deep",
+   "acc"
+  ],
+  "inject_ow_sha256": [
+   "1495c7b6d8e8fc8fbf90617864f88bf21e4a486df2f20fb4246c25552f006623",
+   "f34c75d0c8ff488f9b6e072e7367e00e08707162f53084f96bd9e177686eb55e"
+  ]
+ }
+}
