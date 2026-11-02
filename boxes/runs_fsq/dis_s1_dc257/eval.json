@@ -1,0 +1,24 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 4,
+ "seed": 1,
+ "parts": {
+  "insert_ho": {
+   "file": "eval_insert_ho.json",
+   "sec": 555
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_bs": 250,
+ "write_src": "answer",
+ "ds": [
+  2,
+  3,
+  4
+ ],
+ "module_sha256": "6c8cda8f3e0951556510cfdd46e2d906112c830415c5944a0c62e437a24bb37a",
+ "train": null
+}

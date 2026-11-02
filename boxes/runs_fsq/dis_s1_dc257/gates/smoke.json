@@ -1,0 +1,16 @@
+{
+ "rc": 9,
+ "n_loss": 40,
+ "finite": true,
+ "distract_n": {
+  "0": 900,
+  "1": 818,
+  "2": 842
+ },
+ "distract_types": {
+  "chain": 639,
+  "givop": 912,
+  "s256": 951
+ },
+ "pass": true
+}
