@@ -346,7 +346,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **SCORED 11-02 (257-3): CONTENT-SELECTOR 2/2 - held-out chain-reading sub_c / mul_c 0.95 / 0.96, H-LIVE 0.99, H-EXTEND 0.92 / 0.89, RETAIN kept, C2 d 6 0.97 / 0.96, d 8 0.66 / 0.64; TEST-PERM still order-bound; $2.13.** **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **S2 NO-SEED at lr 3e-5 (258-7); S2b at lr 1e-4 registered (258-8; NO-SEED parks the medium line): medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
-| 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3** |
+| 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3** |
 
 ## Live sections
 
@@ -23706,6 +23706,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **C5: met, scoped.** Label: training-free answer-stability halting (stop when the answer is unchanged for 3 passes). It relies on the C6 hold, costs +3 passes over d - 1, and halts at the efficient pass with accuracy kept on unseen depths 5-7, in both seeds.
   - Scope: the same as the bundle model (plan given; chain-order text; REG frames 0-5; one lineage; per-pass aux). d 1-4 items may overlap training; d 5-7 are unseen by construction.
 - **The bundle model (bun_s1 / s2) now carries:** C1 (scoped), C2 (partial: +2-3 depths), C6 (met), C5 (met, scoped). SOTA json updated in this commit.
+
+**Note 260-1 (2026-11-02 14:29 EST; §260 APPROVED by Audit, guard $3; the pilot launches; the full stage only on GO, with its scorer G-D'd first).**
+- **Audit's two conditions for the full design are already binding there:**
+  - (1) RETAIN incl. NOT-DECODER (d 4 at K' 2 <= 0.20), since under a generic cue the decoder could find the chain from the question's name alone;
+  - (2) SWAP-MID (SWAP4 >= 0.50 and >= floor + 0.30), so the passes' state is shown to be causally used.
+  - The full scorer will bind both, plus LP5-D4 and the PLAN-FREE assert.
+- **Scope:** no plan input at test; the aux names steps in training; chain-order text.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
