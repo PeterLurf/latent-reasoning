@@ -23473,6 +23473,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Each stage gate is read by theory/score_lb2.py before the next stage's spend.
 - **(3)** Off-host checkpoints with a tested resume for S2 / S3; the $14 projection stop is kept.
 
+**Note 258-2 (2026-11-01 23:32 EST; §258 S0 landed (35a28e97, $0.479, host shas verified); projection read, gates rerouted; no stage output read).**
+- **G-TIME (RTX A6000):** medium at the S3 shape (REG d 4 + 2 inserts, micro 2) runs 2.906 s/step, so S3 16k ≈ $5.9. The S1 direct arm runs 0.252 s/step (~$0.65 per 8k arm).
+  - Projected S1-S3: 2 x $0.65 + S2 (~12k at the d <= 2 shape, est. ~$3-4) + S3 $5.9 ≈ $10-11, under the $14 stop. Proceed.
+- **Same-class anchor:** anchor_a6000_eqA (bridge_s1's flags, --stop_at 2000, A6000) has landed. It is compared with bridge_s1's first 2k on the 3090 once b396 lands (descriptive, for the GPU-class disclosure).
+- **Disclosed:** S0's s0m_gates did not run (a setup bug: the ref tar held runs_fsq dirs). Fixed. The gates now run first on every S1 host and training requires gates_pass.json; on b398's host offbit_aw (small bitwise) already passes.
+- **Card class pinned for S1-S3:** RTX A6000.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
