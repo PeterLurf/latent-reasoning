@@ -65,7 +65,7 @@ def fixtures():
 
     def world(acc_drop=0.0, k_ext=None, drift=False, val=0.95, never=0.0):
         d = tempfile.mkdtemp()
-        for r in RUNS:
+        for r in RUNS + RUNS_DCH:
             p = os.path.join(d, r); os.makedirs(p)
             hh = {"head": {"val_acc": val}}
             for dd in range(1, 8):
@@ -80,6 +80,7 @@ def fixtures():
     for name, kw, want in (("extrap + hold", {}, "L1 C5-EXTRAP / C5-EXTRAP | L2 HOLD / HOLD"), ("acc lost out of range", {"acc_drop": 0.1}, "L1 C5-IN-RANGE / C5-IN-RANGE"),
                            ("halts late", {"k_ext": 8.0}, "L1 C5-IN-RANGE / C5-IN-RANGE"), ("drift", {"drift": True}, "L2 DRIFT / DRIFT"), ("void head", {"val": 0.7}, "L1 VOID / VOID"), ("30% never halt", {"never": 0.3}, "L1 C5-IN-RANGE / C5-IN-RANGE")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
+    o = score(world(drift=True), which=RUNS_DCH); res.append(("--dch reads dch_s1 / dch_s2", o["verdict"] == "L1 C5-EXTRAP / C5-EXTRAP | L2 DRIFT / DRIFT" and set(o["hold"]) == set(RUNS_DCH), o["verdict"]))
     o = score(tempfile.mkdtemp()); res.append(("pending", "pending" in o["verdict"], o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])
