@@ -53,8 +53,8 @@ q = ("# THEORY §260 GENERIC-BUN pilot (score_gb): pilot_gb_s1 = bun_s1 (streami
      "step-0 and 2k evals (acc + ws) under the generic cue. Frozen args scratch/s265_args_frozen_pilot_gb_s1.json.\n# HOSTPROBE\n# P=1\n"
      "%s_mem boxes.inject_aw %s --mem_check\n"
      "%s_gtime boxes.inject_aw %s --time_steps 60\n"
-     "%s_step0 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args scratch/s265_args_frozen_%s_step0.json --parts acc,ws --ship %s scratch/s265_args_frozen_%s_step0.json\n"
-     "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s -- %s %s --args_ref scratch/s265_args_frozen_%s.json\n"
+     "%s_step0 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args scratch/s265_args_frozen_%s_step0.json --parts acc,ws --ship %s scratch/s265_args_frozen_%s_step0.json scratch/s256_ho_shas.json scratch/s257_ho_shas.json\n"
+     "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s scratch/s256_ho_shas.json scratch/s257_ho_shas.json -- %s %s --args_ref scratch/s265_args_frozen_%s.json\n"
      "%s_2k scratch.s258s2_ws6k --run %s --step 2000\n") % (W, fs, W, fs, W, blob, INIT[0], INIT[1], run, INIT[0], run, W, blob, INIT[0], INIT[1], INIT[0], fs, " ".join(tail), run, W, W)
 open("scratch/gen_q_b409.txt.hold", "w", encoding="utf-8", newline="\n").write(q)
 assert subprocess.call([sys.executable, "scratch/check_queue_ships.py", "scratch/gen_q_b409.txt.hold"]) == 0
