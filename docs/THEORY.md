@@ -23430,6 +23430,7 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (1) Censoring: a never-halting item counts as halting at K' 8 (its K' 8 answer in acc_halt, 8 in mean_khalt). The never-halt share and the event-only mean are reported (fixture: 30% never halt -> fails EXTRAP).
   - (2) mean_khalt - (d - 1) is reported per d: the decoder adds a hop, so the efficient halt is d - 1. The bar stays mean_khalt <= d.
   - (3) HOLD-DIS reports the ||S|| ratio K' 128 / K' 8 beside accuracy.
+  - Field note: s_norm is the mean ||S|| (Frobenius), §239 / §240's existing readout, not a median. eval_halthead tests d 1..7 with the fit unchanged. Outputs come from one host cell (b395), sha-checked, then copied into dis_s<k>/.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
