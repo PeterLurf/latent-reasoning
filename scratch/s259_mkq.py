@@ -17,7 +17,7 @@ from nobuf_sha import sha_nobuf  # noqa: E402
 
 INIT = {1: ("boxes/runs_fsq/dis_s1_init/model.pt", "35813f1a41ea8085"), 2: ("boxes/runs_fsq/dis_s2_init/model.pt", "a68cb45e4b4d153d")}
 BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/insert_render.py", "boxes/perm_render.py", "scratch/s259_guarded.py", "scratch/s256_ho_shas.json",
-        "scratch/s257_ho_shas.json"]
+        "scratch/s257_ho_shas.json", "boxes/s5.py", "boxes/nested170.py", "boxes/inject_ow.py", "boxes/deltamem.py", "boxes/core.py"]   # + the §258-edited load path
 
 
 def nobuf_blob(p):
@@ -35,8 +35,10 @@ assert ok, ("pre-deploy", pre, inits)
 blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); fs = " ".join(G7.dch_flags(1, *INIT[1]))
 q = ("# THEORY Note 257-2 eval-only (score_hx): halthead (REG fit, TEST2 d 1..7) + run_long K' 8 / 64 / 128 d 1..6 on dis_s1 / dis_s2 (the unbuffered-read init copies, "
      "sha asserted on the host); scratch.s259_guarded; host_shas.json per dir.\n# HOSTPROBE\n# P=1\n"
-     "boxes/runs_fsq/hx259_mem boxes.inject_aw %s --mem_check\n"
-     "boxes/runs_fsq/hx259_gtime boxes.inject_aw %s --time_steps 60\n") % (fs, fs)
+     "boxes/runs_fsq/dis_s1_hx259_mem boxes.inject_aw %s --mem_check\n"
+     "boxes/runs_fsq/dis_s1_hx259_gtime boxes.inject_aw %s --time_steps 60\n") % (fs, fs)   # the filler cell = dis_s1_hx259 (post-admit checks its args.json)
+import shutil  # noqa: E402
+shutil.copy("boxes/runs_fsq/dis_s1/args.json", "scratch/s261_args_frozen_dis_s1_hx259.json")   # the eval-only line copies dis_s1's args.json into the cell dir
 for k in (1, 2):
     q += ("boxes/runs_fsq/dis_s%d_hx259 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args boxes/runs_fsq/dis_s%d/args.json --parts halthead "
           "--long 8,64,128:1,2,3,4,5,6:eval_long_k128.json --ship scratch/s256_ho_shas.json scratch/s257_ho_shas.json\n") % (k, blob, INIT[k][0], INIT[k][1], k)

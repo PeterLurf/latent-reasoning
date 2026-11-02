@@ -686,7 +686,7 @@ def hh_prob(H, mu, sd, w, b):
 def part_halthead(m, g, sets, a, dev, bs):
     """§248 HALT-HEAD (HH_v1 §2-4): 6,000 fresh DF-stream items (Stream(SEED_HH_FIT + 1, excl = the eval sets incl. TEST2-DF), d ~ U{1..4} (rng SEED_HH_FIT)), the decoder's
     answer-position hidden at K' 0..8, label y = [pred(K') == pred(8)] pooled over K'; a logistic head (hh_fit) on 80% of the fit items (item-level split, seed), val on 20%;
-    TEST2-DF d 1..6: halt at the first K' with p >= 0.90, else 8 (censored at K' 8 with the K' 8 answer). Output in eval_halt's format + head {train_acc, val_acc, val_auc}."""
+    TEST2-DF d 1..7 (Note 257-2; was 1..6): halt at the first K' with p >= 0.90, else 8 (censored at K' 8 with the K' 8 answer). Output in eval_halt's format + head {train_acc, val_acc, val_auc}."""
     rng = np.random.default_rng(SEED_HH_FIT); kw = dict(frames=OW.FRAME_TRAIN, mul_s_p=law(a), **IO.OWKW)
     s_ = OW.Stream(SEED_HH_FIT + 1, excl=sets["excl"], **kw); ds = rng.integers(1, 5, size=HH_N)
     F = [AW.tok_aw(s_.draw(int(d)), a.get("aux_target", "value"), a.get("cue", "none"), a.get("write_src", "all")) for d in ds]
@@ -700,9 +700,9 @@ def part_halthead(m, g, sets, a, dev, bs):
     mu, sd, w, b = hh_fit(Xtr, ytr); ptr, pva = hh_prob(Xtr, mu, sd, w, b), hh_prob(Xva, mu, sd, w, b)
     out = {"head": {"train_acc": float(((ptr >= 0.5) == (ytr == 1)).mean()), "val_acc": float(((pva >= 0.5) == (yva == 1)).mean()), "val_auc": hh_auc(pva, yva),
                     "train_rows": int(len(ytr)), "val_rows": int(len(yva)), "train_items": int(len(tr)), "val_items": int(len(va)), "y_rate_train": float(ytr.mean()),
-                    "fit_d_counts": {str(d): int((ds == d).sum()) for d in range(1, 5)}, "w_norm": float(np.linalg.norm(w)), "b": b}}
-    T = tokd(sets, a, range(1, 7))
-    for d in range(1, 7):
+                    "fit_d_counts": {str(d): int((ds == d).sum()) for d in range(1, 5)}, "fit_law": {0: "reg", 1: "default", 2: "df"}[law(a)], "fit_mul_s_p": law(a), "w_norm": float(np.linalg.norm(w)), "b": b}}
+    T = tokd(sets, a, range(1, 8))                                       # Note 257-2: d 1..7
+    for d in range(1, 8):
         y = np.array([it["ans"] for it in T[d]]); Hd, Pd = hh_dump(m, T[d], dev, bs); p = hh_prob(Hd.reshape(-1, m.g.D), mu, sd, w, b).reshape(len(y), HH_KMAX + 1)
         hit = p >= HH_TAU; kh = np.where(hit.any(1), hit.argmax(1), HH_KMAX); ah = Pd[np.arange(len(y)), kh]
         out[str(d)] = {"n": len(y), "acc_k8": float((Pd[:, HH_KMAX] == y).mean()), "acc_halt": float((ah == y).mean()), "mean_khalt": float(kh.mean()),

@@ -1,0 +1,57 @@
+{
+ "halthead_ds": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7"
+ ],
+ "halthead_fields_d7": [
+  "acc_halt",
+  "acc_k8",
+  "items",
+  "khalt_hist",
+  "mean_khalt",
+  "n",
+  "never_halt_n"
+ ],
+ "head_keys": [
+  "b",
+  "fit_d_counts",
+  "fit_law",
+  "fit_mul_s_p",
+  "train_acc",
+  "train_items",
+  "train_rows",
+  "val_acc",
+  "val_auc",
+  "val_items",
+  "val_rows",
+  "w_norm",
+  "y_rate_train"
+ ],
+ "fit_law": "reg",
+ "long_ds": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6"
+ ],
+ "long_fields": [
+  "acc",
+  "nonfinite",
+  "s_cos",
+  "s_norm"
+ ],
+ "long_kp": [
+  "8",
+  "64",
+  "128"
+ ],
+ "json_ok": true,
+ "pass": true
+}
