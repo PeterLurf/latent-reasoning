@@ -23669,6 +23669,14 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - It is a training-free halting rule on the model's own outputs, depending on the C6 hold.
   - **Registered C5 status stays Note 259-8's (r = 2: EXTRAP 1/2).** r = 3 is post-hoc and is reported as 'EXTRAP 2/2 at r = 3, post-hoc'. A fresh-data confirmation (new TEST draws or new seeds, r = 3 pre-stated) would make it registered.
 
+**Note 259-11 (2026-11-02 12:53 EST; C5-STABLE FRESH confirmation, APPROVED by Audit (eval-only, ~$0.2, cap $0.4); pre-stated before any data; scorer theory/score_c5c.py --fresh, fixtures 4/4).**
+- **Data:** a NEW TEST draw (fresh REG seed) with sigs asserted disjoint from TEST2, every fit set and the training exclusion. n >= 1,000 per d at d 1-7 (d 8 descriptive).
+  - For each item, store the decoder's pred at K' 0..14 and the label, in eval_stab_fresh.json (per d {'items': {'pred', 'ans'}}).
+- **Rule:** r = 3 (halt at the first K' with pred[K'] = pred[K'+1] = pred[K'+2] = pred[K'+3]; answer pred[K']; khalt = K'; passes_run = K' + 3; cap 14 with censoring).
+  - Scored with score_c5c's C5 rule: IN-RANGE d 1-4; EXTRAP d 5-7 (acc_halt >= acc_k8 - 0.02, mean_khalt <= d, increasing over d 1-7).
+- **PASS = C5-EXTRAP in both bun seeds.** Then C5 reads 'met, scoped' with the label: training-free answer-stability halting; relies on the C6 hold; +3 passes over d - 1.
+- Otherwise C5 stays 'partial' (Note 259-8).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
