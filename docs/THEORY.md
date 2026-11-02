@@ -23714,6 +23714,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The full scorer will bind both, plus LP5-D4 and the PLAN-FREE assert.
 - **Scope:** no plan input at test; the aux names steps in training; chain-order text.
 
+**Note 260-2 (2026-11-02 17:38 EST; §260 pilot SCORED by theory/score_gb.py, run twice: GO; b409, $0.442; RTX 3090; host shas OK; the drain's 'DRAIN FAILED' is a stop_at marker mismatch, with no data loss).**
+- **Under the generic cue at 2k (step 0 in brackets):**
+  - TEST2 d 1-6 = 1.000 / 0.995 / 0.989 / 0.991 / 0.948 / 0.659 (1.000 / 0.149 / 0.090 / 0.093 / 0.098 / 0.091);
+  - WS d 3 passes 1-3 = 0.99 / 0.99 / 0.99 (0.15 / 0.10 / 0.10); WS d 4 passes 1-4 all 0.99;
+  - d 4 at K' 2 = 0.026, so the decoder is not doing two steps.
+- **Reading:** bun, which selects steps by content, re-adapts to a plan-free cue within 2k steps. In contrast, §252's positional rcb lost passes >= 2 under the same cue (Note 252-2). This is consistent with reachability-based selection, not name-keyed selection.
+- **Full stage:** gb_s1 / gb_s2 = bun_s1 / s2 + --cue generic, 8k. The scorer theory/score_gbf.py (fixtures 7/7) is committed before the launch, for Audit's G-D.
+  - Binding: C1 plan-free (d 1-4 >= 0.95, NOT-DECODER, SWAP4, LP5-D4, PLAN-FREE host assert), CONTENT (H-CHAINSRC-OP >= 0.85), C2 (d 6 >= 0.80), C6 (K' 64 hold d 1-4), STABLE. CUE-ONLY is not used (vacuous under a generic cue).
+  - The pilot's 2k ckpt may be deleted (the full stage starts from bun).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
