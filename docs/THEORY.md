@@ -344,7 +344,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 255 | AEX-REP (Theory's choice, Audit candidate 1; C4 robustness): §251 AEX recipe exactly (init aw_plaw2_s1, REG d~U{1..4}, --aux_d_max 2, micro 2, 16k) on new data orders aex_s3 / aex_s4; per-seed §251 labels (score_ae --rep); pooled EXTEND k/4 | registered | **SCORED 11-01 (255-1): EXTEND 1/4 overall (s3 / s4 NOT-EXTEND: d 3-4 never enter; anchor intact) -> 'rare'; $1.53.** **APPROVED by Audit 11-01 (micro pin disclosed; 3090 only; basin-entry step; swap pattern on s3 / s4). REGISTERED 11-01; score_ae.py --rep (fixtures 8/8); guard $3** |
 | 256 | DISTRACT (Theory's choice on Audit's suggestion; C1 scope / C2): rcb_plaw4_s1 / s2 + --distract_p 1, 16k; binding HELD-OUT inserts (H-OP / H-CHAINSRC / H-GIVPOS), TEST2 RETAIN with causal gates, C2 (d 5 >= 0.80; d 6 >= 0.65 and rcb + 0.10; WS passes 1-4 at d 6 >= 0.90); DS_v1.md | registered | **SCORED 11-01 (256-1): SELECTOR 0/2, C2 2/2 - d 6 0.98 / 0.96 vs rcb 0.35 / 0.37, d 7 0.87 / 0.81, untrained passes 5-7 compute (WS >= 0.87 / 0.78), RETAIN kept; H-CHAINSRC / H-GIVPOS fail (surface skip-rule); $2.37.** **APPROVED by Audit 11-01 (NOT-DECODER added to RETAIN, score_ds 9/9; guard $2.9). REGISTERED 11-01; cell cap $1.4** |
 | 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **SCORED 11-02 (257-3): CONTENT-SELECTOR 2/2 - held-out chain-reading sub_c / mul_c 0.95 / 0.96, H-LIVE 0.99, H-EXTEND 0.92 / 0.89, RETAIN kept, C2 d 6 0.97 / 0.96, d 8 0.66 / 0.64; TEST-PERM still order-bound; $2.13.** **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
-| 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
+| 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **STOPPED 11-02 at S2 (258-7): NO-SEED - medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 
 ## Live sections
@@ -23555,6 +23555,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **The S3 bars stay absolute as registered:** HOLDS = d 6 >= 0.90, d 7 >= 0.80, WS d 6 passes 1-6 >= 0.90; IMPROVES = d 8 >= 0.70 or d 7 >= 0.95.
 - **Stated plainly:** the same one-stage recipe on small (bridge_s1) has d 7 0.789, just under 0.80. So HOLDS at d 7 implies medium at least matches and slightly exceeds small's same recipe; a d 7 miss by < 0.02 is not evidence that scale hurts.
 - **Added descriptive reference** (vs_bridge_desc): medium - bridge_s1 at d 6 / 7 / 8 (bridge 0.949 / 0.789 / 0.485), with the A6000-vs-3090 anchor lag (Note 258-5) as a disclosed confound.
+
+**Note 258-7 (2026-11-02 09:02 EST; §258 S2 SCORED by theory/score_lb2.py --stage S2, run twice: NO-SEED -> §258 STOPS at S2 (pre-stated); p2m_s1 b02decd8 ($3.032); RTX A6000; resume gate passed; host shas OK).**
+- **Gate fields:**
+  - TEST2 d 2 0.999 (6k: 1.000);
+  - **eval WS d 2 pass 2 = 0.017 at both 6k and 12k** (gate >= 0.90). That is below chance, so pass 2's ':' does not hold v_2.
+  - The extension rule does not apply (ws12 < 0.50 and not rising: 0.017 -> 0.017).
+- **Descriptive:**
+  - Log aux_vacc d 2 pass 2 is 0.09 / 0.10 / 0.11 / 0.14 / 0.16 / 0.18 at 2k-12k: a slow creep, never formed (small aw_plaw2_s1: 0.9999 by 6-7k).
+  - d 2 acc by K' = 0.10 / 0.49 / 0.73 / 0.93 / 0.99 at K' 0-4: medium solves d 2 by accumulating over several passes plus the decoder, not by a 2-pass chain with a readable pass-2 write.
+  - This is the same failure signature as §253's P2P (Note 253-2), here with the plain askname recipe at medium scale (lr 3e-5).
+- **Reading (pilot, 1 seed, A6000):** the small P-2 recipe does not form the pass-2 write on GPT-2 medium in 12k at lr 3e-5. S3 is not run, and the GPT-2-large registration is not triggered.
+  - Untested candidates for a future design: lr 1e-4 (S1's other arm passed equally), a longer P-2, or a stronger pass-2 aux.
+- **§258 spend:** B $1.41 + S0 $0.48 + S1 $1.30 + S2 $3.03 = **$6.22** of $20.
+  - Keep p2m_s1 model.pt (a possible future init); its ckpt_final may be deleted.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
