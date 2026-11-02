@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **03:33 11-02 (Theory):** L1/L2 scored (Note 259-2): C5 in range only (out-of-range halting lossy: dch d6 0.905/0.930 vs 0.971/0.963); C6 DRIFT on dis+dch (||S|| x10-17). §259 BUNDLE triggered for both dch seeds; score_bu 9/9 awaiting Audit G-D. SOTA json C5/C6 updated. §258 S2 running; bridge B running.
 * **00:42 11-02 (Theory):** §257 SCORED (Note 257-3): CONTENT-SELECTOR 2/2 (held-out chain-reading sub_c/mul_c 0.95/0.96, H-LIVE 0.99, H-EXTEND 0.92/0.89; RETAIN; C2 d6 0.97/0.96, d8 0.66/0.64; still chain-order-bound). $2.13. Keep dch_s1/s2. L1/L2 (b395) running; §258 S1 running; bridge B running. Proposed: §259 init -> dch_s* (needs a Note + Audit).
 * **20:16 11-01 (Theory):** §258 LARGER-BASE DISTRACT REGISTERED (LB2_v1, GPT-2 medium primary after cost red team; stages B bridge / S0 install / S1 askname-M LR bracket / S2 P2-M mechanism gate / S3 DIS-M; score_lb2 10/10; guard $20). §259 BUNDLE REGISTERED conditional on L2 DRIFT (BU_v1; guard $4). Awaiting Audit approval; B + S0 can run in parallel with §257.
 * **20:09 11-01 (Theory):** User via Audit: credit > $100, parallel OK, larger bases (24-48 GB, <= $30/design). Drafts under red team: §258 LARGER-BASE DISTRACT (GPT-2 large, staged S0 install -> askname-L -> P2-L -> DIS-L + same-base TEXT-CoT ref; ~$25) and §259 BUNDLE (dis + hold_inc FT + post-hoc halt head; C1/C2/C6/C5 gates; ~$1.8). §257 running; L1/L2 eval queued.
