@@ -6,7 +6,10 @@
 # NOTE 2026-11-01 22:22:49 A6000 class HOSTPROBE limit 1.15 s/step (Audit; the 3090-calibrated 0.854 refused 209.137.198.14 at 0.987); in b397's header (s258m_mkq)
 397:anchor_a6000_eqA 38.29.145.13:40663 58757928 $0.4167/h sps 2.9064438740412393 0.78
 # NOTE 2026-11-01 22:47:41 s260fam guard restarted with per-cell steps (396:16000, 397 anchor:2000): the template's ALLC used this filler's STEPS (100) for every ledger cell
-398:askm_lr3e5 38.29.145.28:40714 58762685 $0.4167/h sps 0.25223248402277626 steps 8000 0.65
+# VOID attempt1 (gates step0 bug, training refused; realised line kept): 398:askm_lr3e5 38.29.145.28:40714 58762685 $0.4167/h sps 0.25223248402277626 steps 8000 0.65
 realised:b397 # 58757928 (wall guard spent $0.455 at 23:27 + 3.5 min x $0.4167/h dph_total to destroy at 23:30) (§258 S0: gates line FAILED on the ref-tree setup bug, fixed 1a02ac43; mem / G-TIME medium; anchor 2k) 0.479
 realised:b398 # 58762685 (wall guard spent $0.215 at 23:35 + 5 min x $0.4167/h to destroy at 23:40) (§258 S1 askm_lr3e5: host gates offbit_aw / offbit_ow PASS, step0 crashed - the hh_dump inline-comment bug, fixed - so the training line refused, gates_pass.json absent) 0.250
 # NOTE 2026-11-01 23:43:03 b399 (askm_lr1e4) destroyed by Experiments during deploy (its queue carried the hh_dump bug); BAD-log $0.0738 is that deploy, the host is not at fault (exclusion voided)
+399:askm_lr1e4 38.29.145.10:40965 58767989 $0.4167/h sps 0.2512490709622701 steps 8000 0.65
+398:askm_lr3e5 38.29.145.13:40974 58770320 $0.4167/h sps 0.25401532649993896 steps 8000 0.65
+realised:b399 # 58767989 (wall guard spent $0.638 at 01:17:28 at dph_total $0.4167/h + 6.5 min to destroy at 01:24) (§258 S1 askm_lr1e4 + host gates s1g_lr1e4 PASS) 0.683

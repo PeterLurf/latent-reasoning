@@ -1,0 +1,5 @@
+offbit_aw pass True
+offbit_ow pass True
+step0 pass True
+smoke_aw pass True
+smoke_ow pass True

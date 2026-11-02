@@ -1,0 +1,14 @@
+{
+ "shape": {
+  "L": 24,
+  "D": 1024,
+  "H": 16,
+  "mem_layer": 12,
+  "h_add": 8,
+  "h_del": 8
+ },
+ "n": 200,
+ "max_abs_delta_hidden_vs_k0": 0.0,
+ "preds_equal_all_k": true,
+ "pass": true
+}
