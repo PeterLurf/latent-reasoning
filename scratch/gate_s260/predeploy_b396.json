@@ -1,0 +1,195 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "01d255cf896ef41e2ebc70e260d7343b67bfad5b",
+   "disk": "01d255cf896ef41e2ebc70e260d7343b67bfad5b"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "3c33a9f3c2e6322cc34c1fe22d73db47ae747967",
+   "disk": "3c33a9f3c2e6322cc34c1fe22d73db47ae747967"
+  },
+  "boxes/insert_render.py": {
+   "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
+   "disk": "eb2c1c8f81c19b843451c207e97c051db91bf792"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  }
+ },
+ "init_unbuffered_sha256_x3": [
+  "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+  "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+  "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5"
+ ],
+ "predeploy_ok": true,
+ "diff_vs_dis_s1": {
+  "keys": [
+   "distract_mix",
+   "init_model",
+   "init_model_sha",
+   "init_model_sha256"
+  ],
+  "diff": {
+   "distract_mix": [
+    null,
+    ""
+   ],
+   "init_model": [
+    "boxes/runs_fsq/rcb_plaw4_s1_init/model.pt",
+    "boxes/runs_fsq/aw_plaw2_s1_init/model.pt"
+   ],
+   "init_model_sha": [
+    "67775e2492044a8a",
+    "484dab1eab9e2c12"
+   ],
+   "init_model_sha256": [
+    "67775e2492044a8a0f1c59c345a9a9ed8dddfd37383a1220aca413bd5e8afc03",
+    "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5"
+   ]
+  }
+ },
+ "diff_vs_rcb_plaw4_s1": {
+  "keys": [
+   "aux_d_max",
+   "cue_ans",
+   "distract_mix",
+   "distract_p",
+   "eval_parts",
+   "excl_n",
+   "frameset10_sha",
+   "frameset11_sha",
+   "frameset12_sha",
+   "frameset13_sha",
+   "frameset14_sha",
+   "frameset15_sha",
+   "frameset8_sha",
+   "frameset9_sha",
+   "hold_far_hi",
+   "hold_far_lo",
+   "hold_far_n",
+   "hold_inc",
+   "hold_log",
+   "hold_start",
+   "init_model",
+   "inject_ow_sha256",
+   "keep_final_ckpt",
+   "perm_p",
+   "train_frames"
+  ],
+  "diff": {
+   "aux_d_max": [
+    null,
+    0
+   ],
+   "cue_ans": [
+    null,
+    0.0
+   ],
+   "distract_mix": [
+    null,
+    ""
+   ],
+   "distract_p": [
+    null,
+    1.0
+   ],
+   "eval_parts": [
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd",
+    "acc,lp5,mean_s,cue_only,cue_wrong,swap_k,swap_1,probe,ws,lp5h,swap_kd,test_perm,insert_ho,ws_deep"
+   ],
+   "excl_n": [
+    174599,
+    206599
+   ],
+   "frameset10_sha": [
+    null,
+    "359971a0b33af92894a44f5cf463350dfc19ed5a55df653202abd4269dcf9ac8"
+   ],
+   "frameset11_sha": [
+    null,
+    "abacccfb8dcc3476291981d8990154847757562d17d48abb5bcaf48ff6f20195"
+   ],
+   "frameset12_sha": [
+    null,
+    "ff5e1e690c5e6ce695c9a2f18e3ac987ca94344d6e382b95e7d09986c1ab7077"
+   ],
+   "frameset13_sha": [
+    null,
+    "b12685d30e01758111c698907e704c326137214c63e936669f2062689f0a4c01"
+   ],
+   "frameset14_sha": [
+    null,
+    "951eadb2312623589011d030567df5dd5d871cb4d088226455e8a191d4e47c7e"
+   ],
+   "frameset15_sha": [
+    null,
+    "25d2b4e99aa35ac24e07f487449f3ddf039725d04a46eb44f4bfe1ba72792c4d"
+   ],
+   "frameset8_sha": [
+    null,
+    "a7d5f3032d00fa3076c05b6b183206d9c43bd07d48a3f40f5c245b44c2f52d66"
+   ],
+   "frameset9_sha": [
+    null,
+    "2fd76d4f71b372a0f90edcde2c46f7c2f82569efe4a6282dc2273988ccdd9a6d"
+   ],
+   "hold_far_hi": [
+    null,
+    40
+   ],
+   "hold_far_lo": [
+    null,
+    16
+   ],
+   "hold_far_n": [
+    null,
+    16
+   ],
+   "hold_inc": [
+    null,
+    0.0
+   ],
+   "hold_log": [
+    null,
+    false
+   ],
+   "hold_start": [
+    null,
+    500
+   ],
+   "init_model": [
+    "boxes/runs_fsq/aw_plaw2_s1/model.pt",
+    "boxes/runs_fsq/aw_plaw2_s1_init/model.pt"
+   ],
+   "inject_ow_sha256": [
+    "b31ce7b39c757fcddad1732dd56186dd0f77abd714afea025a0d3b56be47ae0e",
+    "1495c7b6d8e8fc8fbf90617864f88bf21e4a486df2f20fb4246c25552f006623"
+   ],
+   "keep_final_ckpt": [
+    null,
+    true
+   ],
+   "perm_p": [
+    null,
+    0.0
+   ],
+   "train_frames": [
+    null,
+    ""
+   ]
+  }
+ }
+}

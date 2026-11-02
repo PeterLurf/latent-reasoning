@@ -1,0 +1,11 @@
+{
+ "want": "484dab1eab9e2c12",
+ "attempts": 3,
+ "sha256": "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+ "copy_reads": [
+  "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+  "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5",
+  "484dab1eab9e2c12f0e3b537a029e266cdd520ed4932ed03f182dfbf274db0c5"
+ ],
+ "ok": true
+}
