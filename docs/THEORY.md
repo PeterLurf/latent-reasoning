@@ -354,7 +354,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
-| 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_ls.py 10/10; guard $8** |
+| 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
 
 ## Live sections
@@ -19983,7 +19983,7 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
     - tx_s1 / tx_s2: sentence steps "<S_t> has <v_t> <u>." for t = 1..d, then " The answer is <v_d>." + EOS;
     - txv_s1: value-only steps " <v_t>" with the same answer suffix.
   - **Disclosed asymmetry:** bun's lineage had more task training and an askname init. Text gets the pretrained init. This favours bun in-range, and is why the verdict reads the extrapolation depths.
-  - **Eval part text** (eval_text.json): free greedy decode on TEST2 d 1-10 (n 1000), max new tokens 6d + 8. Reported: final-answer acc, parsed share, generated tokens.
+  - **Eval part text** (eval_textcot.json): free greedy decode on TEST2 d 1-10 (n 1000), max new tokens 6d + 8. Reported: final-answer acc, parsed share, generated tokens.
 - **X5 ONE-HOP-PIPELINE (eval part pipeline on bun_s1 / s2; descriptive framing):** for t = 1..d:
   1. Render the item with S_t-1's op sentence replaced by the stated given "S_t-1 has v^_t-1 <u>." (v^ is the pipeline's own previous answer). Sentence slot kept; other sentences unchanged; render asserted to re-solve.
   2. Ask S_t: bun at K' 1 with the cue S_t (acc_bun). Also s233_askname_s1, one pass (acc_ask, descriptive).
@@ -20085,7 +20085,7 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Arm:** seed 3 at every stage. Each stage uses its s1 stage's args (--args_ref) except the seed and the init paths, on RTX 3090 throughout.
   - Disclosed: askname_s1 trained on a 4060, and the GPU class can change the basin.
   - Stage evals use the parts each s1 stage ran.
-- **Stage gates (theory/score_ls.py, fixtures 10/10). Stop at the first failure and label BREAKS-AT-<stage>:**
+- **Stage gates (theory/score_x7.py, fixtures 10/10). Stop at the first failure and label BREAKS-AT-<stage>:**
   - askname: d 1 >= 0.98;
   - aw_plaw2: d 2 >= 0.95 AND pass-2 WS d 2 >= 0.90 (gated on the mechanism, per §253);
   - rcb_plaw4 and dis: d 1-4 >= 0.95;
@@ -24372,6 +24372,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   2. The prefix / sub-question uses only information the model receives at test time; at present that is the plan cue S_k.
   3. A pre-registered log of target accuracy vs the true v_k, reported. It may be high, but it must be model-derived.
   - This differs from K3 (prefix answers from the solution graph / simulator, NOT eligible) because the supervision source is the model itself.
+
+**Note 269-5 (2026-11-03 17:28 EST; Audit SCORER_BUGS.md fixes in 22993b99, all pre-output for §264-§268; no recorded verdict flips).**
+- **HIGH: score_ls.py restored.** §268 had overwritten §241's LEN-STEP scorer.
+  - theory/score_ls.py is restored from 927e7e45 (fixtures 6/6).
+  - §268 now lives in **theory/score_x7.py** (own OUT score_x7.json; fixtures 10/10).
+  - bun_s3's eval_parts include insert_ho, as in the §268 build spec.
+- **MED-1:** score_ao.stable returns None on a missing or blank log. All 9 callers (ae, bu, dch, dd, ds, gbf, lb, lb2, of) now treat None as **pending**. A blank-log fixture was added to score_of (11/11) and score_dd (13/13).
+- **MED-2:** score_lh.norm_guard returns None when the control lacks any of the run's bins. score_bu treats None norm_guard / lp0 as pending, not 'FAIL: C6'.
+- **MED-3:** score_ds C2-ONLY now also requires the d 5 and WS-credit gates.
+- **MED-5:** score_tx adds a VOID-RERUN censor (parsed < 0.9 at d 1-4) and the part is renamed eval_textcot.json (§266 text updated). Fixtures 17/17.
+- **MED-6:** score_em uses NA for CTRL cells without swap_v / mem_ablate; it is pending if an em cell lacks them. Fixtures 11/11.
+- **MED-7:** score_dg's s2 rule is explicit: s2 agreeing confirms; '(s2 pending)' if s2 is missing; MIXED on disagreement. Fixtures 16/16.
+- **MED-8:** score_lb2 marks a missing 6k read 'pending', not NO-SEED; the fixture was updated and a pending case added. Fixtures 16/16.
+- **Re-scored, unchanged:** §256 ds SELECTOR 0/2, C2 2/2 (C2-ONLY / C2-ONLY); §257 dch CONTENT-SELECTOR 2/2; §259 bu BUNDLE 0/2 (FAIL: C5 / FAIL: C5); §258 lb2 S2 / S2b NO-SEED.
+- **Other fixture counts:** ae 8/8, bu 9/9, dch 9/9, ds 9/9, gbf 8/8, lb 9/9, lh 10/10.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
