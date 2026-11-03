@@ -346,7 +346,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 257 | DISTRACT-CHAIN (Theory's design at Audit's request; C1 scope / C2): 8k FT of dis_s1 / dis_s2 with chain-reading (X = S_j + c after S_j) and given-before-op add_c inserts added to the §256 mix; binding HELD-OUT H-CHAINSRC-OP (sub_c / mul_c) + H-LIVE, TRAINED-TYPE, RETAIN with NOT-DECODER, C2 retention d 6 >= 0.90; DC2_v1.md | registered | **SCORED 11-02 (257-3): CONTENT-SELECTOR 2/2 - held-out chain-reading sub_c / mul_c 0.95 / 0.96, H-LIVE 0.99, H-EXTEND 0.92 / 0.89, RETAIN kept, C2 d 6 0.97 / 0.96, d 8 0.66 / 0.64; TEST-PERM still order-bound; $2.13.** **APPROVED by Audit 11-01 (label = CONTENT-SELECTOR, cue OR reachability; + H-CHAINSRC-LIVE descriptive; LR restart disclosed; TRAINED-TYPE descriptive; score_dch 9/9). REGISTERED 11-01; cell cap $1.2, guard $2.6** |
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **PARKED 11-02 (258-9): S2b NO-SEED at lr 1e-4 too (WS d 2 p 2 0.015); aux shows the write formed by ~10k but the ':' readout never shows v_2; ~$10.4.** **S2 NO-SEED at lr 3e-5 (258-7); S2b at lr 1e-4 registered (258-8; NO-SEED parks the medium line): medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
-| 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
+| 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **SCORED 11-03 (260-5): PLAN-FREE-C1 1/2 - plan-free causal chaining on clean d 1-4 in both; s2 fails CONTENT (min pos 0.75) + C2 (d 6 0.44); without the plan the loop follows reachability and does not stop (H-EXTEND 0.08 / 0.02); $2.23.** **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
 
 ## Live sections
 
@@ -23743,6 +23743,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 **Note 260-4 (2026-11-02 17:53 EST; §260 family guard raised from $3 to **$3.5**, Audit-approved, within the $30 line; no output read).**
 - **Reason:** the per-cell projection at bun's measured 1.65 s/step is ~$1.18, so a $1.20 admit would refuse most hosts.
 - Launched caps $1.40 / $1.50 plus the pilot's $0.44 give a worst case of ~$3.34, which fits $3.5.
+
+**Note 260-5 (2026-11-03 00:41 EST; §260 full SCORED by theory/score_gbf.py, run twice: 'PLAN-FREE-C1 1/2 (PLAN-FREE-C1 / FAIL: CONTENT,C2)'; gb_s1 b867ea78 ($0.822), gb_s2 ($0.965); host shas OK; plan_free assert true on both hosts; family $2.23 of $3.5).**
+- **Plan-free C1 holds in both seeds:** TEST2 d 1-4 1.000; NOT-DECODER 0.009 / 0.010; SWAP4 0.985 / 0.985; LP5-D4 0.923 / 0.922.
+  - C6 holds in both (K' 128 = K' 8 at d 1-6).
+  - The C5 r = 3 halt is C5-EXTRAP in both (descriptive).
+- **Seed 2 fails CONTENT and C2:**
+  - H-CHAINSRC-OP 0.882 (min pos 0.81) / 0.858 (**min pos 0.75**);
+  - d 6 0.851 / **0.441** (bun 0.972 / 0.956); d 7 0.246 / 0.066 (bun 0.857 / 0.852).
+- **What the plan bought (descriptive insert families, s1 / s2; bun-lineage dch levels in brackets):**
+  - H-EXTEND 0.081 / 0.019 (0.92 / 0.89);
+  - H-LIVE 0.396 / 0.408 (0.99);
+  - H-CHAINSRC-LIVE 0.058 / 0.414 (1.00).
+  - Trained types stay high (H-CHAINSRC 1.000, H-GIVPOS 0.99).
+- **Reading (scoped: aux still names steps in training; chain-order text; REG frames 0-5):**
+  - Without the plan in the cue, the loop still chains causally through clean d 1-4 programs in both seeds.
+  - But it selects the next step by forward reachability ('an op that reads the last value'). So it follows any chain of reads hanging off the answer or off a chain value (H-EXTEND, H-LIVE, CHAINSRC-LIVE collapse) and does not stop at the asked entity.
+  - Depth past training largely goes (d 7 0.07-0.25).
+  - So the cue's name is what lets bun stop at S_d and reject live distractor chains. Plan-free C1 is shown on clean chains (1 / 2 full pass); content selection and C2 depend on the plan.
+- **SOTA:** unchanged (bun remains best; gb is a scope probe). Keep gb_s1 / s2 model.pt.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

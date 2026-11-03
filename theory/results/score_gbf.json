@@ -1,0 +1,70 @@
+{
+ "section": 260,
+ "seeds": {
+  "gb_s1": {
+   "label": "PLAN-FREE-C1",
+   "crit": {
+    "C1": true,
+    "CONTENT": true,
+    "C2": true,
+    "C6": true,
+    "STABLE": true
+   },
+   "d4_k2": 0.009,
+   "d6": 0.851,
+   "c2_delta_vs_bun_desc": {
+    "6": -0.121,
+    "7": -0.611
+   },
+   "c5_r3_desc": "C5-EXTRAP",
+   "chainsrc_op": 0.8821666666666667,
+   "swap4": {
+    "follow_U": 0.985,
+    "floor": 0.108,
+    "follow_ca": 0.907,
+    "follow_cb": 0.906,
+    "stay_own": 0.0
+   },
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  },
+  "gb_s2": {
+   "label": "FAIL: CONTENT,C2",
+   "crit": {
+    "C1": true,
+    "CONTENT": false,
+    "C2": false,
+    "C6": true,
+    "STABLE": true
+   },
+   "d4_k2": 0.01,
+   "d6": 0.441,
+   "c2_delta_vs_bun_desc": {
+    "6": -0.5149999999999999,
+    "7": -0.786
+   },
+   "c5_r3_desc": "C5-EXTRAP",
+   "chainsrc_op": 0.858,
+   "swap4": {
+    "follow_U": 0.985,
+    "floor": 0.099,
+    "follow_ca": 0.907,
+    "follow_cb": 0.906,
+    "stay_own": 0.0
+   },
+   "stable": [
+    true,
+    {
+     "n_nonfinite": 0,
+     "unrecovered": []
+    }
+   ]
+  }
+ },
+ "verdict": "PLAN-FREE-C1 1/2 (PLAN-FREE-C1 / FAIL: CONTENT,C2)"
+}
