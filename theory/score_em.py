@@ -46,6 +46,7 @@ def rows(p):
 
 
 def wilson(p, n, z=1.96):
+    n = n or 1   # ZeroDivision guard (statlib review)
     c = (p + z * z / (2 * n)) / (1 + z * z / n); h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n); return (c - h, c + h)
 
 

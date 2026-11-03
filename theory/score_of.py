@@ -29,6 +29,18 @@ def jl(p):
         return None
 
 
+SIGMA_SEED = 0.090   # Note 269-1 / 269-2: d 6 seed spread
+
+
+def c2_row(value, bar, n=1000, z=1.96):
+    """Note 269-2 (3), descriptive / additive (binding crit unchanged): a C2 row within one sigma_seed of its bar is NEAR-SEED (claimed neither way).
+    Wilson 95% CI on the reading; n from the eval (default 1000)."""
+    n = n or 1
+    c = (value + z * z / (2 * n)) / (1 + z * z / n); h = z * (value * (1 - value) / n + z * z / (4 * n * n)) ** 0.5 / (1 + z * z / n)
+    lab = "NEAR-SEED" if abs(value - bar) < SIGMA_SEED else ("PASS" if value >= bar else "FAIL")
+    return {"value": value, "bar": bar, "margin": value - bar, "ci95": (c - h, c + h), "label": lab}
+
+
 def seed(runs, run, ref):
     f = {x: jl(os.path.join(runs, run, x + ".json")) for x in ("eval_acc", "eval_test_perm", "eval_late_premise", "eval_swap_kd", "eval_lp5h", "eval_long_k128", "eval_insert_ho")}
     rf = jl(os.path.join(runs, ref, "eval_acc.json"))
@@ -48,7 +60,9 @@ def seed(runs, run, ref):
     crit = {"ORDER-FREE": of, "RETAIN": retain, "C2": c2, "C6": c6, "CONTENT": content, "STABLE": sok is not False}
     fail = [k for k, v in crit.items() if not v]
     ns = jl(os.path.join(runs, run, "eval_name_swap.json")); gr = jl(os.path.join(runs, run, "eval_shuffle_graded.json"))
-    return {"label": "ORDER-FREE-C1" if not fail else "FAIL: " + ",".join(fail), "crit": crit,
+    c2rows = {"d6": c2_row(a["6"]["acc"], r["6"]["acc"] - 0.05), "d7": c2_row(a["7"]["acc"], r["7"]["acc"] - 0.05)}
+    return {"label": "ORDER-FREE-C1" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "c2_rows": c2rows,
+            "c2_claim": "NEAR-SEED" if any(v["label"] == "NEAR-SEED" for v in c2rows.values()) else ("PASS" if c2 else "FAIL"),
             "test_perm": {d: tp[d]["acc_kprime"]["8"] for d in ("2", "3", "4")}, "late_premise": {d: lp[d]["acc"] for d in ("2", "3", "4")},
             "d6": a["6"]["acc"], "d7": a["7"]["acc"], "bun_d6": r["6"]["acc"], "bun_d7": r["7"]["acc"], "name_swap_desc": ns, "graded_desc": gr, "stable": (sok, smsg)}
 
@@ -56,7 +70,8 @@ def seed(runs, run, ref):
 def score(runs=R):
     o = {"section": 263, "seeds": {r: seed(runs, r, ref) for r, ref in RUNS.items()}}
     labs = [v["label"] for v in o["seeds"].values()]
-    o["verdict"] = "pending" if "pending" in labs else "ORDER-FREE-C1 %d/2 (%s)" % (labs.count("ORDER-FREE-C1"), " / ".join(labs)); return o
+    o["verdict"] = "pending" if "pending" in labs else "ORDER-FREE-C1 %d/2 (%s); C2 claim %s" % (labs.count("ORDER-FREE-C1"), " / ".join(labs),
+                                                                                         "/".join(v.get("c2_claim", "?") for v in o["seeds"].values())); return o
 
 
 def fixtures():
@@ -81,7 +96,8 @@ def fixtures():
         return d
     for name, kw, want in (("all", {}, "ORDER-FREE-C1 2/2"), ("perm fails", {"tp": 0.6}, "FAIL: ORDER-FREE"), ("late premise fails", {"lp": 0.6}, "FAIL: ORDER-FREE"),
                            ("decoder", {"k2": 0.6}, "FAIL: RETAIN"), ("swap", {"sw": 0.2}, "FAIL: RETAIN"), ("c2 d6", {"d6": 0.85}, "FAIL: C2"), ("c2 d7", {"d7": 0.7}, "FAIL: C2"),
-                           ("c6", {"hold": 0.5}, "FAIL: C6"), ("content", {"co": 0.6}, "FAIL: CONTENT"), ("content pos", {"pos": 0.7}, "FAIL: CONTENT"), ("blank log is pending (MED-1)", {"nolog": True}, "pending")):
+                           ("c6", {"hold": 0.5}, "FAIL: C6"), ("content", {"co": 0.6}, "FAIL: CONTENT"), ("content pos", {"pos": 0.7}, "FAIL: CONTENT"), ("blank log is pending (MED-1)", {"nolog": True}, "pending"), ("C2 within sigma_seed is NEAR-SEED", {"d6": 0.95}, "C2 claim NEAR-SEED/NEAR-SEED"),
+                           ("C2 far below bar is FAIL claim", {"d6": 0.80, "d7": 0.70}, "C2 claim FAIL/FAIL")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])

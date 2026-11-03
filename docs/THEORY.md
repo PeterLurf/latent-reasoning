@@ -24388,6 +24388,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Re-scored, unchanged:** §256 ds SELECTOR 0/2, C2 2/2 (C2-ONLY / C2-ONLY); §257 dch CONTENT-SELECTOR 2/2; §259 bu BUNDLE 0/2 (FAIL: C5 / FAIL: C5); §258 lb2 S2 / S2b NO-SEED.
 - **Other fixture counts:** ae 8/8, bu 9/9, dch 9/9, ds 9/9, gbf 8/8, lb 9/9, lh 10/10.
 
+**Note 269-6 (2026-11-03 17:30 EST; Note 269-2 (3) implemented before §263 / §265 output, as additive descriptive cells; binding crit unchanged; flagged by the wave-4 statlib review).**
+- score_of (§263) and score_dd (§265) now report c2_rows per seed: value, bar, margin, Wilson 95% CI, and label PASS / FAIL / NEAR-SEED.
+  - A row is NEAR-SEED when |value - bar| < sigma_seed = 0.090.
+  - A seed-level c2_claim is NEAR-SEED if any C2 row is, else PASS or FAIL. The verdict line appends 'C2 claim …'.
+  - Registered labels (ORDER-FREE-C1, DENSE-C2) still come only from the registered bars.
+  - Fixtures: of 13/13, dd 13/13.
+- Closed form (statlib review): under sigma 0.09, a recipe truly equal to bun reads NEAR-SEED on a §263 C2 row about 61% of the time. So C2 claims from §263 / §265 will usually be 'NEAR-SEED' unless the margin is large; that is the honest reading.
+- ZeroDivision guards were added to the wilson() copies in score_dd / score_em / score_x7.
+- **statlib:** the full stdlib listing is in docs/design_wave4_2026-11-03/12_statlib_spec.md (60/60 closed-form fixtures; 0 legacy mismatches). It lands as theory/statlib.py after an independent review. §270+ scorers import it.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

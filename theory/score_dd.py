@@ -49,6 +49,7 @@ def ok7(ws):
 
 
 def wilson(p, n, z=1.96):
+    n = n or 1   # ZeroDivision guard (statlib review)
     c = (p + z * z / (2 * n)) / (1 + z * z / n); h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n); return (c - h, c + h)
 
 
@@ -71,6 +72,18 @@ def pilot(runs):
     return {"verdict": "GO" if go else "PARK", "gain_d8": gd8, "gain_ok7": g7, "seeds": rows}
 
 
+SIGMA_SEED = 0.090   # Note 269-1 / 269-2: d 6 seed spread
+
+
+def c2_row(value, bar, n=1000, z=1.96):
+    """Note 269-2 (3), descriptive / additive (binding crit unchanged): a C2 row within one sigma_seed of its bar is NEAR-SEED (claimed neither way).
+    Wilson 95% CI on the reading; n from the eval (default 1000)."""
+    n = n or 1
+    c = (value + z * z / (2 * n)) / (1 + z * z / n); h = z * (value * (1 - value) / n + z * z / (4 * n * n)) ** 0.5 / (1 + z * z / n)
+    lab = "NEAR-SEED" if abs(value - bar) < SIGMA_SEED else ("PASS" if value >= bar else "FAIL")
+    return {"value": value, "bar": bar, "margin": value - bar, "ci95": (c - h, c + h), "label": lab}
+
+
 def full_seed(runs, run, ref):
     f = {x: jl(os.path.join(runs, run, x + ".json")) for x in ("eval_acc", "eval_swap_kd", "eval_lp5h", "eval_long_k128", "eval_insert_ho", "eval_ws_deep")}
     rf = jl(os.path.join(runs, ref, "eval_acc.json"))
@@ -86,7 +99,9 @@ def full_seed(runs, run, ref):
     if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
         return {"label": "pending", "stable": (sok, smsg)}
     crit = {"C2-EXT": c2, "RETAIN": retain, "C6": c6, "CONTENT": content, "STABLE": sok is not False}; fail = [k for k, v in crit.items() if not v]
-    return {"label": "DENSE-C2" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "d7": a["7"]["acc"], "d8": a["8"]["acc"], "bun_d7": r["7"]["acc"],
+    c2rows = {"d8": c2_row(a["8"]["acc"], 0.75), "d7": c2_row(a["7"]["acc"], r["7"]["acc"] - 0.02)}
+    return {"label": "DENSE-C2" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "c2_rows": c2rows,
+            "c2_claim": "NEAR-SEED" if any(v["label"] == "NEAR-SEED" for v in c2rows.values()) else ("PASS" if c2 else "FAIL"), "d7": a["7"]["acc"], "d8": a["8"]["acc"], "bun_d7": r["7"]["acc"],
             "bun_d8": r["8"]["acc"], "rel7": rel7(f["eval_ws_deep"]), "d8_ci": wilson(a["8"]["acc"], 1000), "d8_near_075": near(a["8"]["acc"], 1000, 0.75), "d9_12": {d: a[d]["acc"] for d in ("9", "10", "11", "12") if d in a}, "stable": (sok, smsg)}
 
 
@@ -117,7 +132,8 @@ def fade_seed(runs, run):
 def score(runs=R):
     o = {"section": 265, "pilot": pilot(runs), "full": {r: full_seed(runs, r, ref) for r, ref in FULL.items()}, "fade": {r: fade_seed(runs, r) for r in BASE}}
     labs = [v["label"] for v in o["full"].values()]
-    o["full_verdict"] = "pending" if "pending" in labs else "DENSE-C2 %d/2 (%s)" % (labs.count("DENSE-C2"), " / ".join(labs))
+    o["full_verdict"] = "pending" if "pending" in labs else "DENSE-C2 %d/2 (%s); C2 claim %s" % (labs.count("DENSE-C2"), " / ".join(labs),
+                                                                                               "/".join(v.get("c2_claim", "?") for v in o["full"].values()))
     fd = list(o["fade"].values())
     o["fade_verdict"] = "pending" if any(x is None for x in fd) else ("FADING" if all(x["fading"] for x in fd) else "NOT-FADING" if not any(x["fading"] for x in fd) else "MIXED")
     o["verdict"] = "pilot %s; full %s; D1a %s" % (o["pilot"]["verdict"], o["full_verdict"], o["fade_verdict"]); return o
@@ -166,7 +182,7 @@ def fixtures():
                 okv = [i % 2 for i in range(n)]; conds["d8"]["7"] = [att(0.3) for _ in range(n)]
             put("bun_s" + s, "eval_attn_fade.json", {"conds": conds, "ws_ok_d8_t7": okv})
         return dd
-    for name, kw, want in (("all", {}, "pilot GO; full DENSE-C2 2/2 (DENSE-C2 / DENSE-C2); D1a FADING"),
+    for name, kw, want in (("all", {}, "pilot GO; full DENSE-C2 2/2 (DENSE-C2 / DENSE-C2); C2 claim NEAR-SEED/NEAR-SEED; D1a FADING"), ("C2 clear pass claim", {"full_d8": 0.95, "d7": 0.99}, "C2 claim PASS/PASS"),
                            ("pilot d8 gain small", {"d8D": 0.6}, "pilot PARK"), ("pilot rel7 gain small", {"r7D": 0.75}, "pilot PARK"),
                            ("pilot retain", {"ret": 0.95}, "pilot PARK"), ("pilot shortcut guard", {"pco": 0.7}, "pilot PARK"),
                            ("full d8", {"full_d8": 0.7}, "FAIL: C2-EXT"), ("full d7", {"d7": 0.8}, "FAIL: C2-EXT"), ("full d7 within tolerance", {"d7": 0.85}, "DENSE-C2 2/2"),
