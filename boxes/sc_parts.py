@@ -140,7 +140,7 @@ def _spans(o, think):
 
 @torch.no_grad()
 def part_attn_fade(m, g, sets, a, dev, bs):
-    """§265 D1a ATTENTION-FADING (read-only): per condition (d4k0 TEST2 d 4, passes 2-4; d4k6 TEST2 d 4 + 6 inserts (distract_mix n = 6, seed 26420), pass 4; d8 TEST2 d 8,
+    """§265 D1a ATTENTION-FADING (read-only): per condition (d4k0 TEST2 d 4, passes 2-4; d4k6 TEST2 d 4 + 6 given+op insert pairs all after S_4 (insert_render.draw_pairs / assemble, seed 26430), pass 4; d8 TEST2 d 8,
     passes 4 / 7; the first 500 items), at the pass-t ':' query of every layer x head: the fp32 softmax attention mass on S_t's op-sentence token span (q / k recomputed
     from the block input exactly as deltamem._block does; the block output itself is untouched). Read-only asserted: the decoder logits after the condition's last pass are
     bitwise equal with and without the capture. + ws_ok_d8_t7: per d 8 item 1 / 0 (pass-7 WS ok) when passes 1-6 WS are all ok, else None."""
@@ -217,5 +217,5 @@ def part_attn_fade(m, g, sets, a, dev, bs):
     finally:
         DM._block = orig
     out["def"] = ("§265 D1a ATTN-FADE: conds = the TARGET SHARE (Note 265-2) = fp32 softmax mass of the pass-t ':' query on S_t's op-sentence tokens / its mass on every op-sentence token (S_1..S_d + inserted ops), layer x head [L][H]; conds_mass = the raw mass; d4k0 (TEST2 d 4, t 2-4), d4k6 "
-                  "(d 4 + 6 inserts, seed 26420, t 4), d8 (TEST2 d 8, t 4 / 7); first 500 items; read-only asserted; ws_ok_d8_t7 = pass-7 WS ok given passes 1-6 ok")
+                  "(d 4 + 6 given+op insert pairs, all placed after S_4: insert_render.draw_pairs / assemble, seed 26430; t 4), d8 (TEST2 d 8, t 4 / 7); first 500 items; read-only asserted; ws_ok_d8_t7 = pass-7 WS ok given passes 1-6 ok")
     return out

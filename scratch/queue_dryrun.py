@@ -29,7 +29,8 @@ def blob_id(p):
 
 
 def build(q, tag):
-    T = ROOT + "/scratch/_tmp/qdry/" + tag; shutil.rmtree(T, ignore_errors=True); os.makedirs(T)
+    import tempfile                                                         # a unique tree per run (Audit 11-03: a leftover tree raised FileExistsError)
+    os.makedirs(ROOT + "/scratch/_tmp/qdry", exist_ok=True); T = tempfile.mkdtemp(prefix=tag + "_", dir=ROOT + "/scratch/_tmp/qdry").replace("\\", "/")
     files = subprocess.check_output([sys.executable, "scratch/auto_ship.py", q]).decode().split() + FIXED + [q]
     files += [os.path.join(dp, f).replace("\\", "/") for dp, _, fs in os.walk("latent") for f in fs if "__pycache__" not in dp]
     for f in sorted(set(files)):
