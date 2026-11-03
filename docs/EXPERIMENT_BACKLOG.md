@@ -63,7 +63,23 @@ Standing statistics rules (Audit 11-03):
 
 | # | ID | Experiment | $ | Status |
 |---|---|---|---|---|
-| D1 | PROSQA-OOD | port to ProsQA's structural OOD splits (SubLAT 2610.40283: best GPT-2 7/8-hop 77%, DAG 59%, Dense 72%, vs CoT-SFT ~11%). Same base, 3 seeds, own-run CoT / No-CoT / Coconut / CODI arms, FLOPs + wall-clock, K' curves, NOT-DECODER gates (Audit EXTERNAL_SOTA) | ~5-8 | to design |
+| D1 | PROSQA-OOD | port to ProsQA's structural OOD splits (Audit PROSQA_OOD_PORT.md; LIT_SUBLAT_PROSQA_OOD_2026-11-03.md).
+  - **SubLAT 2610.40283** GPT-2 Table 2, test / 7h / 8h / DAG / Dense:
+    - CoT-SFT 71.9 / 11.6 / 10.5 / 36.4 / 22.0;
+    - Coconut 98.0 / 73.3 / 72.5 / 58.7 / 65.7;
+    - CODI 82.5 / 69.9 / 70.1 / 59.3 / 65.8;
+    - SubLAT 88.9 / 77.0 / 77.2 / 50.7 / 72.5.
+  - **No generator, data or licence is released,** so the splits are regenerated from Coconut's Alg. 1 with our pre-stated knobs. Only own-run same-split baselines are comparable, so SubLAT's numbers are context only.
+  - **Port:**
+    - state = the gold-path node (§191 STEP-AUX form, 0.950);
+    - cue = the question (plan-free, §261 form);
+    - aux = text steps via the prosqa168s2 decoder;
+    - reuse prosqa168s2.py, the Coconut harness + 3 trained seeds and the kept s191 models; ~750 new lines.
+  - **Stages:**
+    - Stage 0 ($0, a GO / REDESIGN gate): s191 A / B / Coconut on the regenerated splits.
+    - Stage 1: ~$2 pilot.
+    - Stage 2: ~$25 (3 seeds; own-run CoT / No-CoT / Coconut; FLOPs; zero-latent / noise arms). The cost basis is ~7 s/step on ProsQA.
+  - **Main risk:** whether a one-token write can hold a frontier on DAG / Dense, where branching needs backtracking. | S0 $0 / ~2 / ~25 | Stage 0 after §263 / §264 read |
 | D2 | N1 / B4 | SHUFFLED OBJECTS depth split (BBH tracking; step-index cue = no entity plan) with text CoT / pause / Coconut arms | ~3-4 | queued |
 | D3 | NUM-100 | mod 11 → integers 0-99, still one token per value (GSM8K ladder N1) | 0.3 | queued |
 | D4 | BRANCH-DAG | parallel branches + merge in mod 11 (GSM8K ladder T1). Recency vs named retrieval | 0.35 | after §263 |
