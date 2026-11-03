@@ -60,6 +60,34 @@
    "head": "839f7d3a2cc83a8a6436d29ff9506cb8983cd36f",
    "disk": "839f7d3a2cc83a8a6436d29ff9506cb8983cd36f"
   },
+  "scratch/s268_gates.py": {
+   "head": "2a87be4d0a64747deef83199529e0f3f27aa7945",
+   "disk": "2a87be4d0a64747deef83199529e0f3f27aa7945"
+  },
+  "scratch/gate_s268.py": {
+   "head": "a8ac4876ba8edf5930090672bea142c8bf985819",
+   "disk": "a8ac4876ba8edf5930090672bea142c8bf985819"
+  },
+  "scratch/gate_s257.py": {
+   "head": "a36b4a0164c315eb55a869f66be7831d914fd995",
+   "disk": "a36b4a0164c315eb55a869f66be7831d914fd995"
+  },
+  "scratch/gate_s251.py": {
+   "head": "d2a22107a3b5614f98bea5a41e92363dec3ada3d",
+   "disk": "d2a22107a3b5614f98bea5a41e92363dec3ada3d"
+  },
+  "scratch/gate_s228.py": {
+   "head": "be6edcefa1a13d0c38e4be05f2954cf7505f04e3",
+   "disk": "be6edcefa1a13d0c38e4be05f2954cf7505f04e3"
+  },
+  "scratch/s222_det_wrap.py": {
+   "head": "0e71a6c54fd4a58225256f37b0671e4da11ecb30",
+   "disk": "0e71a6c54fd4a58225256f37b0671e4da11ecb30"
+  },
+  "scratch/s268_ref.tar": {
+   "head": "28d090a6986761c9d405f41947e0908306c5da28",
+   "disk": "28d090a6986761c9d405f41947e0908306c5da28"
+  },
   "scratch/s256_ho_shas.json": {
    "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
    "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
