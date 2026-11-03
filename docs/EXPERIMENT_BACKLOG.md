@@ -773,6 +773,14 @@ CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO
     - Make it standard in the ProsQA-OOD port's C1 panel.
   - **QUERY-HANDOFF patch** (2610.34639, 2609.39892, 2609.24635): patch the ':' queries from a cue run into a plan-free run. This tests whether the plan-free failure is query formation. It runs before P1 SELF-CUE (Lane C), and uses the free-running runner (design doc 06).
   - **DATA-ONLY re-format arm** (2610.39016): re-format facts to match the second-hop circuit; this closed the OOD gap at GPT-2 scale with no architecture change. A cheap control for MC3 / T-lane.
+- **Sweep, final arms** (latent-CoT training; depth extrapolation):
+  - **PAR NORM DRIFT** (2610.27628): log ||h_t|| per pass on bun at d <= 4 vs d 8. If the failing passes 7+ coincide with norm drift from pass 1, a per-pass RMS re-anchor is the lever (PAR ablation: 2x -> 16x). Pre-state it; the read can ride on §269 alphahold.
+  - **STAIRCASE PROBE** (2610.24135): the decoded hop index per pass on d 8. A flat staircase after pass 6 means a stalled walk (hold interference), not a wrong read. Pairs with §269 triage.
+  - **D1a scale choice:** the gap-count statistic of 2605.12697 picks the logit-scale exponent (log n vs log^2 n) before any SSMax arm; 2611.01472 gives a per-head distant-mass statistic.
+  - **C4:** WIDER 2609.07406 (rank-collapse penalty on latents; targets onset drift) and SpaRLax 2610.27220 (entmax write + answer-only RL).
+  - **Seeds:** 2610.26974 (two competing basins, init-steerable) suggests an early basin predictor for d 8 reliability, matching Note 269-1's sigma_seed.
+  - **FEW LONG STRINGS** (2610.35715): add 1-5% higher-op-count items at the same depth as an X4 / D1 arm. This is a cheap sibling of §265.
+- **Wave-4 note:** 2 of 20 design docs have landed (01 MC3, 14 paper outline). The required red-team sub-agents could not spawn under the 20-concurrent-agent limit, so the docs' red-team sections are self-reviews marked PENDING. An independent red team is required before any wave-4 doc is registered.
 - **REDTEAM_BUN (Audit):**
   - bun was never evaluated on insert_ho; now in §269 part 6.
   - The C1 gates stop at d 4; queued in §269b.
