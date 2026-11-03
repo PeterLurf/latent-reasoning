@@ -62,6 +62,13 @@ for n, run, nk in CELLS:
          "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --require %s_gates/gates_pass.json --ship %s %s -- %s %s --args_ref scratch/s269_args_frozen_%s.json\n"
          "%s scratch.s268_stopland --step 2000 --parts %s\n") % (run, " + the NK head (--nk 1)" if nk else " (CTRL: no NK head)", run, W, fs, W, fs, W, blob, GSHIP,
                                                                   W, blob, INIT[0], INIT[1], W, INIT[0], SH, fs, " ".join(tail), run, W, PARTS)
+    if os.environ.get("S269_NO_GATES") == "1":                               # Audit 11-03 (b414 CTRL rerun): no gates line; TRAIN --require's b413's landed gates_pass.json (same blobs)
+        GP = "boxes/runs_fsq/pilot_nk_s1_gates/gates_pass.json"; assert os.path.exists(GP)
+        ls_ = [l_ for l_ in q.split("\n") if " scratch.s269_gates " not in l_]; assert len(q.split("\n")) - len(ls_) == 1
+        q = "\n".join(ls_).replace("--require %s_gates/gates_pass.json --ship " % W, "--require %s --ship %s " % (GP, GP)); assert q.count("--require %s --ship %s " % (GP, GP)) == 1
+        q = q.replace("host gates first (gates_pass.json required)", "no gates line: TRAIN requires b413's gates_pass.json (same blobs; Audit 11-03 CTRL rerun)")
+    if os.environ.get("S269_ONLY") and str(n) != os.environ["S269_ONLY"]:
+        continue
     open("scratch/gen_q_b%d.txt.hold" % n, "w", encoding="utf-8", newline="\n").write(q)
     assert subprocess.call([sys.executable, "scratch/check_queue_ships.py", "scratch/gen_q_b%d.txt.hold" % n]) == 0
 os.makedirs("scratch/gate_s269", exist_ok=True); json.dump(out, open("scratch/gate_s269/predeploy.json", "w", newline="\n"), indent=1, default=str)
