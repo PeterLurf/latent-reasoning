@@ -48,7 +48,8 @@ def files_of(q):
     toks = [t for ln in open(q, encoding="utf-8") if ln.strip() and not ln.startswith("#") for t in ln.split()]
     fs = set(glob.glob("boxes/*.py"))
     for t in toks:
-        t = t.split("=")[0]
+        if "=" in t:                                                        # a '<path>=<sha>' blob / init token does not ship (auto_ship takes plain tokens only)
+            continue
         if re.match(r"^(scratch|boxes)\.[A-Za-z0-9_]+$", t):
             fs.add(t.replace(".", "/") + ".py")
         elif t.endswith(".py") and os.path.exists(t):

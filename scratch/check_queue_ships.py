@@ -15,6 +15,16 @@ for ln in lines:
             flag = t; continue
         if re.match(r"^[^=]+=[0-9a-f]{8,}$", t) and (flag in ("--model", "--init") or (flag == "--blob" and not t.split("=")[0].endswith(".py"))):
             need.add(t.split("=")[0])
+sys.path.insert(0, "scratch")                                               # Audit 11-03 (b412 attempt 5: scratch/s259_guarded.py was --blob'd by the gates line but no line
+import check_py311 as P3  # noqa: E402                                      # ran or imported it after the step-0 line was dropped -> FileNotFoundError on the host)
+shipped = set(P3.files_of(sys.argv[1]))
+for ln in lines:
+    flag = None
+    for t in ln:
+        if t.startswith("--"):
+            flag = t; continue
+        if flag == "--blob" and re.match(r"^scratch/[^=]+\.py=[0-9a-f]{8,}$", t) and t.split("=")[0] not in shipped and t.split("=")[0] not in plain:
+            need.add(t.split("=")[0])
 miss = sorted(need - plain)
 if miss:
     print("NOT SHIPPED (path=sha only):", " ".join(miss)); sys.exit(1)

@@ -32,6 +32,8 @@ BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/insert_render.py
 GSHIP = ("scratch/s268_ref.tar scratch/gate_s268.py scratch/gate_s257.py scratch/gate_s251.py scratch/gate_s228.py scratch/s228_args_check.py scratch/s222_det_wrap.py "
          "scratch/s257_guarded.py boxes/runs_fsq/bun_s1_init/model.pt scratch/s256_ho_shas.json scratch/s257_ho_shas.json")
 PARTS = "acc,ws,insert_ho"
+if os.environ.get("S268_NO_STEP0") == "1":                                   # attempt 5's bug: s259_guarded ran only the step-0 line, so without it the file never shipped
+    BLOB.remove("scratch/s259_guarded.py")
 
 
 def nobuf_blob(p):
