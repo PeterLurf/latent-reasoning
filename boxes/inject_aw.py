@@ -63,19 +63,29 @@ class InjectAW(InjectOW):
         return self.g.logits(hf[torch.arange(h.shape[0], device=h.device), pos]).float()
 
 
+TGT_FMT = " To find how many {u} {X} has, what is the next value?"            # §261 TC: the target cue (S_d = the asked entity, u = the unit), every pass
+
+
+def tgt_cue(raw):
+    return TGT_FMT.format(u=raw["unit"], X=raw["names"]["spine"][-1])
+
+
 GEN_CUE, GEN_LEN = " What is the next value?", 6                         # §252 GP (NS_v1 §2): the plan-free cue (+ SFX), 6 tokens (inject_st's CUE_LEN 7 is the named cue's)
 
 
 def tok_aw(it, aux_target="value", cue="none", write_src="all"):
     """tok_st, then (write_src answer) " The answer is:" appended to every pass input; the decoder / aux untouched. §252 cue generic: tok_st's cue step
     items with every think cue := [EOT] + enc(' ' + text + GEN_CUE) (the same input at every pass; o['cue'] = 'generic' arms passes()' PLAN-FREE assert)."""
-    o = tok_st(it, aux_target, "step" if cue == "generic" else cue)
+    o = tok_st(it, aux_target, "step" if cue in ("generic", "target") else cue)
     if cue == "generic":
         gt = ENC.encode(GEN_CUE); assert len(gt) == GEN_LEN, ("GEN-CUE", gt)
         o["think_cues"] = [[EOT] + ENC.encode(" " + it["text"] + GEN_CUE) for _ in o["think_cues"]]; o["cue"] = "generic"
         assert all(q[:len(o["think"])] == o["think"] and q[len(o["think"]):] == gt for q in o["think_cues"]), "GEN-CUE: the text rows precede the cue"
+    if cue == "target":                                                     # §261 TC: the target cue at every pass (byte-identical)
+        tt = ENC.encode(tgt_cue(it)); o["think_cues"] = [[EOT] + ENC.encode(" " + it["text"] + tgt_cue(it)) for _ in o["think_cues"]]; o["cue"] = "target"
+        assert all(q[:len(o["think"])] == o["think"] and q[len(o["think"]):] == tt for q in o["think_cues"]), "TGT-CUE: the text rows precede the cue"
     if write_src == "answer":
-        assert cue in ("step", "generic") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic"
+        assert cue in ("step", "generic", "target") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic / target"
         o["think_cues"] = [q + SFX for q in o["think_cues"]]
         assert all(q[-1] == COLON for q in o["think_cues"]) and o["dec"] == o["think"] + SFX, "AW: inputs / decoder"
     return o
@@ -200,7 +210,7 @@ def main(argv=None):
     ap.add_argument("--distract_mix", default="", help="§257 DC2_v1: insert types drawn uniformly per insert (s256,chain,givop) under --distract_p ('' = §256 rule)")
     ap.add_argument("--distract_p", type=float, default=0.0, help="Note 255-5: P(an item gets U{0,1,2} irrelevant new-name op sentences) (0 = off, unchanged)")
     ap.add_argument("--perm_p", type=float, default=0.0, help="§252: P(a d >= 2 training item is re-rendered dependency-violating) (0 = off, unchanged)")
-    ap.add_argument("--cue", default="none", choices=["none", "step", "all", "generic"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
+    ap.add_argument("--cue", default="none", choices=["none", "step", "all", "generic", "target"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
     ap.add_argument("--init_trunk", default="", help="§234: GPT-2 loaded strict from this file before DeltaMem is built"); ap.add_argument("--init_sha", default="", help="its sha256 prefix (asserted)")
     ap.add_argument("--mul_s_p3", type=float, default=1.0, help="§235: P(forced mul_s | d 3) on the TRAINING stream only (1.0 = unchanged)")
@@ -225,10 +235,10 @@ def main(argv=None):
     else:
         assert a.think_k >= 1 and a.aux_step > 0, "§228 inject: K >= 1 with the step aux"
     assert a.src == "ow" or a.d_max == 8, "--src nested: n ~ U{1..n_max_train} per item (nested170's law)"
-    assert a.cue not in ("step", "generic") or (a.arm == "inject" and not a.ckpt_passes and a.src == "ow"), "--cue step / generic: LAT-ST (inject, OW, no ckpt_passes)"
+    assert a.cue not in ("step", "generic", "target") or (a.arm == "inject" and not a.ckpt_passes and a.src == "ow"), "--cue step / generic: LAT-ST (inject, OW, no ckpt_passes)"
     assert not a.perm_p or (a.src == "ow" and a.arm == "inject" and a.write_src == "answer" and not a.ckpt_passes), "--perm_p: LAT-AW (inject, OW, write_src answer)"
     assert a.cue != "all" or (a.arm == "direct" and a.src == "ow"), "--cue all: CUED-DIRECT (direct, OW)"
-    assert a.write_src != "answer" or (a.arm == "inject" and a.cue in ("step", "generic")), "--write_src answer: LAT-AW (inject, --cue step / generic)"
+    assert a.write_src != "answer" or (a.arm == "inject" and a.cue in ("step", "generic", "target")), "--write_src answer: LAT-AW (inject, --cue step / generic)"
     assert bool(a.init_trunk) == bool(a.init_sha), "--init_trunk needs --init_sha (G12)"
     assert 1 <= a.d_max <= 8 and a.bs % a.micro == 0
     K = a.think_k if a.arm == "inject" else 0
@@ -251,7 +261,7 @@ def main(argv=None):
     assert a.mul_s_p3 == 1.0 or a.src == "ow", "--mul_s_p3: OW only"
     assert a.mul_s_p == 1 or (a.mul_s_p3 == 1.0 and a.src == "ow"), "--mul_s_p 0: OW only, mul_s_p3 must be 1"
     HOLD = a.hold_inc > 0 or a.hold_log                                     # §240: keep the detached states (penalty and / or the hold stats)
-    assert not HOLD or (a.arm == "inject" and a.cue in ("step", "generic") and not a.ckpt_passes and a.src == "ow" and a.think_k >= 3), "--hold_*: LAT (inject, cue step)"
+    assert not HOLD or (a.arm == "inject" and a.cue in ("step", "generic", "target") and not a.ckpt_passes and a.src == "ow" and a.think_k >= 3), "--hold_*: LAT (inject, cue step)"
     m, g, params = build_aw(a, dev)
     assert bool(a.init_model) == bool(a.init_model_sha), "--init_model needs --init_model_sha"
     if a.init_model:                                                        # §237: the full model state, strict; the sha logged (init_model_sha256)
@@ -418,7 +428,7 @@ def main(argv=None):
             "nested_words_sha256": sha_file(os.path.join(ROOT, "boxes", "nested_words.py")), "set_build_sec": set_sec, "excl_n": len(EXCL), "d_law": "d = default_rng(seed + 22331).integers(1, d_max + 1) per step",
             "format": {"direct": "dec = [EOT] + enc(' ' + text) + enc(' The answer is:') -> the number token (plain trunk, one pass)",
                        "inject": "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + "
-                                 "enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d"}[a.arm] + (CUE_FMT[a.cue] if a.cue != "generic" else " | §252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass)") + AW_FMT[a.write_src]}
+                                 "enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d"}[a.arm] + (CUE_FMT[a.cue] if a.cue not in ("generic", "target") else {"generic": " | §252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass)", "target": " | §261 TC: think_t = [EOT] + enc(' ' + text + ' To find how many <u> <S_d> has, what is the next value?') (every pass)"}[a.cue]) + AW_FMT[a.write_src]}
     if SETS is not None:
         info.update(SETS["shas"]); info["pair_stats"] = SETS["pair_stats"]
     if a.args_ref:

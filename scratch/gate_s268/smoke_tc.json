@@ -1,0 +1,47 @@
+{
+ "args_rc": 0,
+ "args_cue": "target",
+ "args_stop_at": 2000,
+ "args_steps": 8000,
+ "target_rc": 0,
+ "gates_pass": {
+  "target_only": true,
+  "cue_identical_all_passes": true,
+  "cue_has_sd": true,
+  "cue_has_no_other_entity": true,
+  "items_checked": 300,
+  "think_k": 8,
+  "cue": "target",
+  "ds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "passes_assert": "armed (inject_aw_eval.passes, \u00a7252 / \u00a7261)"
+ },
+ "ho_items": 29000,
+ "ho_bad": [],
+ "ho_n_bad": 0,
+ "ho_fams": [
+  "H-CHAINSRC",
+  "H-CHAINSRC-LIVE",
+  "H-CHAINSRC-OP-mul_c",
+  "H-CHAINSRC-OP-sub_c",
+  "H-EXTEND",
+  "H-GIVPOS",
+  "H-LIVE",
+  "H-OP-add_v",
+  "H-OP-mul_c",
+  "H-OP-sub_c",
+  "K3"
+ ],
+ "stopland_rc_eval_skipped": 0,
+ "stopland_model": 507296299,
+ "stopland_ckpt_json": true,
+ "stopland_host_shas": true,
+ "stopland_second_call_refused": true,
+ "pass": true
+}

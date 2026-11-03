@@ -546,6 +546,8 @@ def rh_input(it, t, aug):
     raw = it["raw"]
     if it.get("cue") == "generic":                                          # §252 GP (REVIEW_NS #3): the plan-free cue at every pass
         return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + AW.GEN_CUE) + IO.SFX
+    if it.get("cue") == "target":                                           # §261 TC: the target cue at every pass
+        return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + AW.tgt_cue(raw)) + IO.SFX
     return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + " " + ST.cue_str(raw, t)) + IO.SFX
 
 

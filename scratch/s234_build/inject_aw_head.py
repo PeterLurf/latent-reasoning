@@ -63,19 +63,29 @@ class InjectAW(InjectOW):
         return self.g.logits(hf[torch.arange(h.shape[0], device=h.device), pos]).float()
 
 
+TGT_FMT = " To find how many {u} {X} has, what is the next value?"            # §261 TC: the target cue (S_d = the asked entity, u = the unit), every pass
+
+
+def tgt_cue(raw):
+    return TGT_FMT.format(u=raw["unit"], X=raw["names"]["spine"][-1])
+
+
 GEN_CUE, GEN_LEN = " What is the next value?", 6                         # §252 GP (NS_v1 §2): the plan-free cue (+ SFX), 6 tokens (inject_st's CUE_LEN 7 is the named cue's)
 
 
 def tok_aw(it, aux_target="value", cue="none", write_src="all"):
     """tok_st, then (write_src answer) " The answer is:" appended to every pass input; the decoder / aux untouched. §252 cue generic: tok_st's cue step
     items with every think cue := [EOT] + enc(' ' + text + GEN_CUE) (the same input at every pass; o['cue'] = 'generic' arms passes()' PLAN-FREE assert)."""
-    o = tok_st(it, aux_target, "step" if cue == "generic" else cue)
+    o = tok_st(it, aux_target, "step" if cue in ("generic", "target") else cue)
     if cue == "generic":
         gt = ENC.encode(GEN_CUE); assert len(gt) == GEN_LEN, ("GEN-CUE", gt)
         o["think_cues"] = [[EOT] + ENC.encode(" " + it["text"] + GEN_CUE) for _ in o["think_cues"]]; o["cue"] = "generic"
         assert all(q[:len(o["think"])] == o["think"] and q[len(o["think"]):] == gt for q in o["think_cues"]), "GEN-CUE: the text rows precede the cue"
+    if cue == "target":                                                     # §261 TC: the target cue at every pass (byte-identical)
+        tt = ENC.encode(tgt_cue(it)); o["think_cues"] = [[EOT] + ENC.encode(" " + it["text"] + tgt_cue(it)) for _ in o["think_cues"]]; o["cue"] = "target"
+        assert all(q[:len(o["think"])] == o["think"] and q[len(o["think"]):] == tt for q in o["think_cues"]), "TGT-CUE: the text rows precede the cue"
     if write_src == "answer":
-        assert cue in ("step", "generic") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic"
+        assert cue in ("step", "generic", "target") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic / target"
         o["think_cues"] = [q + SFX for q in o["think_cues"]]
         assert all(q[-1] == COLON for q in o["think_cues"]) and o["dec"] == o["think"] + SFX, "AW: inputs / decoder"
     return o

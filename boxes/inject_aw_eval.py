@@ -62,8 +62,8 @@ def passes(m, items, dev, bs, kset, seqs_of_t=seq_std, Td=None, edit=None, aux_t
         for t in range(1, Td + 1):
             ids_, mk = pad([seqs_of_t(it, t) for it in ch]); assert m0 is None or (mk == m0).all(), "one padding across passes"; m0 = mk
             xs.append(torch.tensor(ids_, device=dev))
-        if seqs_of_t is seq_std and any(it.get("cue") == "generic" for it in ch):   # §252 PLAN-FREE (NS_v1 §3): GP items read one identical input at every pass
-            assert all(it.get("cue") == "generic" for it in ch) and all(torch.equal(x_, xs[0]) for x_ in xs), "PLAN-FREE: generic-cue pass inputs differ across t"
+        if seqs_of_t is seq_std and any(it.get("cue") in ("generic", "target") for it in ch):   # §252 PLAN-FREE (NS_v1 §3) / §261 TC: one identical input at every pass
+            assert all(it.get("cue") in ("generic", "target") for it in ch) and all(torch.equal(x_, xs[0]) for x_ in xs), "PLAN-FREE: generic / target-cue pass inputs differ across t"
         msk = torch.tensor(m0, device=dev); hls = [m.lower(x) for x in xs]; S = m.mem.zero_state(len(ch), dev)
         if 0 in kset:
             out[0][sl] = pred_of(m.dec_logits(S, ch, dev))
@@ -742,6 +742,8 @@ def rh_input(it, t, aug):
     raw = it["raw"]
     if it.get("cue") == "generic":                                          # §252 GP (REVIEW_NS #3): the plan-free cue at every pass
         return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + AW.GEN_CUE) + IO.SFX
+    if it.get("cue") == "target":                                           # §261 TC: the target cue at every pass
+        return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + AW.tgt_cue(raw)) + IO.SFX
     return [EOT] + IO.ENC.encode(" " + raw["text"] + aug + " " + ST.cue_str(raw, t)) + IO.SFX
 
 
@@ -1307,7 +1309,7 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
         parts = [p_ for p_ in parts if p_ == "acc"]
     if a.get("write_src", "all") != "answer":
         parts = [p_ for p_ in parts if p_ not in AW_ONLY]
-    if a.get("cue") == "generic":   # §252 GP (REVIEW_NS #3): CUE-ONLY / CUE-WRONG are named-cue builders - dropped
+    if a.get("cue") in ("generic", "target"):   # §252 GP (REVIEW_NS #3) / §261 TC: CUE-ONLY / CUE-WRONG are named-cue builders - dropped
         parts = [p_ for p_ in parts if p_ not in ("cue_only", "cue_wrong")]
     meta = {"eval_dtype": "fp32", "eval_gpu": torch.cuda.get_device_name(dev) if dev.startswith("cuda") else "cpu", "eval_bs": bs, "arm": a["arm"], "cue": a.get("cue", "none"), "write_src": a.get("write_src", "all"),
             "think_k": a["think_k"], "ds": ds, "module_sha256": IO.sha_file(os.path.abspath(__file__))}

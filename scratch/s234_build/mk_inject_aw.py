@@ -115,6 +115,8 @@ for o, n in runpy.run_path("scratch/s257d_build/edits_s257.py")["E257"]:   # §2
     assert main.count(o) == 1, ("§257 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
 for o, n in runpy.run_path("scratch/s258m_build/edits_s258m.py")["E258M"]:   # §258 S0: --base (default gpt2 = unchanged)
     assert main.count(o) == 1, ("§258 S0 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
+for o, n in runpy.run_path("scratch/s268_build/edits_s268m.py")["E268"]:   # §261 TC: --cue target
+    assert main.count(o) == 1, ("§261 edit not applied exactly once", main.count(o), o[:90]); main = main.replace(o, n)
 assert "tok_st(" not in main and "inject_st_eval" not in main and "build_model(" not in main, "leftovers"
 hdr = open("scratch/s234_build/inject_aw_head.py", encoding="utf-8").read() + open("scratch/s240_build/head_s240.py", encoding="utf-8").read()   # + §240 helpers
 open("boxes/inject_aw.py", "w", encoding="utf-8", newline="\n").write(hdr + "\n\n" + main + 'if __name__ == "__main__":\n    sys.exit(main())\n')
