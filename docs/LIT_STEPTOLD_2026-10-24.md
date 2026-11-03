@@ -154,3 +154,13 @@ From our own notes; all IDs verified earlier.
 - Not found for latent CoT specifically.
 - **ANSWER-AT-CUE (2026-10-30):** the closest priors for depth-matched answer supervision are Fan 2409.15647 (loss at the given T(n)) and **ATC 2609.19717** (answer CE after exactly min(s, d − 1) thoughts per item, i.e. depth-matched). Chen 2603.21676 applies final-answer CE at **every** step (not depth-matched); TRM / HRM use deep supervision. Not found: depth-matched answer CE at a recurrent-memory write source, used to stop intermediate-code drift. **NARROW**, cite Fan + ATC.
 - **§256 / Note 256-1 (2026-11-01):** distractor training improves depth extrapolation. **NARROW.** Distractors are known as an evaluation stressor that hurts accuracy (GSM-IC, Shi et al. 2302.00093, verified). iGSM in Physics of LMs 2.1 (2407.20311) includes unnecessary parameters. The **mechanism** (breaking absolute-slot counting) has its analogue in position randomisation for length generalisation: Ruoss 2305.16843, Abacus offsets 2405.17399, Kuo 2606.29983 (loop-count decorrelation). Not found: irrelevant-sentence insertion as a training device for depth extrapolation in looped / latent models.
+
+## Addendum (2026-11-03): ARCH_UPGRADES top 2
+- **(1) NAME-KEYED MEMORY: NARROW.**
+  - Entity-keyed slots exist: **EntNet 1612.03969** (dynamic memory whose slot keys can be tied to entity embeddings, for tracking world state), key-value memory networks 1606.03126, end-to-end memory networks 1503.08895, NTM content addressing 1410.5401, binding IDs 2310.17191.
+  - **Not found inside latent CoT or looped transformers** for multi-step arithmetic. The nearest latent memory, AGCLR 2606.07720, has one gated vector.
+  - Wording: "EntNet-style name-keyed writes / reads inside a latent reasoning loop".
+- **(2) DECAY-GATED STATE: NARROW.**
+  - Decay or gating on recurrent state is standard: RetNet 2307.08621, Mamba 2312.00752, Gated DeltaNet 2412.06464, fast-weight decay 1610.06258. It is motivated by length extrapolation and recall.
+  - **Not found** for hop-count / depth extrapolation of a latent reasoning loop. Our §240 increment penalty is the internal neighbour.
+- All IDs verified 2026-11-03 (or earlier for 2412.06464 / 1610.06258 / 2310.17191 / 2606.07720).
