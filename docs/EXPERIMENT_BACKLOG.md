@@ -765,6 +765,14 @@ CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO
 - **Looped Transformers as Optimizers** (2609.37379) and **Kronecker delta** (2610.26834): a delta-step write with learned decay / step and a bounded state norm without the hold penalty.
   - beta_t -> 0 gives a halt signal independent of the repeated cue, which addresses the §264 plan-clock worry. Pairs with D10 / D11.
 - **Other references:** G-MemLLM 2602.00015 (gated slot bank on GPT-2 124M; a sanity bar for A3); DAMI 2610.41994 (gate-init timescales; may relate to seed basin variance).
+- **Binding / entity-tracking arm of the sweep (Audit):**
+  - **PERM-SNR** (2609.28442): a descriptive permutation-SNR read of pass-t latents, of_s* vs bun, so that 'order-free' is not misread as 'order-blind'. Runs on §263's landed models; descriptive (Note 263-3 to pre-state).
+  - **PIN k vs k+4** (2610.19768): pin the pass-d latent to its pass-d vs pass-(d+3) value for the later passes. A large gap means the C6 'fixed point' is a post-cue freeze. Added to §269b.
+  - **REPLACE-CONTENT arm** (2610.21182: readable latents are not evidence of reasoning). Swap pass-t latents with another same-depth item's.
+    - bun's SWAP-MID already does this at d 4.
+    - Make it standard in the ProsQA-OOD port's C1 panel.
+  - **QUERY-HANDOFF patch** (2610.34639, 2609.39892, 2609.24635): patch the ':' queries from a cue run into a plan-free run. This tests whether the plan-free failure is query formation. It runs before P1 SELF-CUE (Lane C), and uses the free-running runner (design doc 06).
+  - **DATA-ONLY re-format arm** (2610.39016): re-format facts to match the second-hop circuit; this closed the OOD gap at GPT-2 scale with no architecture change. A cheap control for MC3 / T-lane.
 - **REDTEAM_BUN (Audit):**
   - bun was never evaluated on insert_ho; now in §269 part 6.
   - The C1 gates stop at d 4; queued in §269b.
