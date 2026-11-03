@@ -14,12 +14,13 @@ cd "$(dirname "$0")/.."
 S="ssh -o ConnectTimeout=20 -o ServerAliveInterval=15 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 . scratch/s267_done_marker.sh || { echo "FETCH_INCOMPLETE $ID (scratch/s267_done_marker.sh)"; exit 1; }
 REM="$(cat scratch/s267_done_marker.sh)"$'\n'"cd /workspace/Latent || exit 3; L=logs/queue_${TAG}.out; [ -f \$L ] || exit 4
-grep -h '^# NOFETCH ' scratch/gen_q_b${TAG#gen_b}.txt* 2>/dev/null | awk '{print \"NOFETCH\", \$3}' | sort -u; echo QD=\$(tail -n 1 \$L | grep -c QUEUE_DONE); echo PROCS=\$(ps -eo args | grep -a -c -E '^[^ ]*python[^ ]* -u -m ')
+s267_nofetch ${TAG#gen_b}; echo QD=\$(tail -n 1 \$L | grep -c QUEUE_DONE); echo PROCS=\$(ps -eo args | grep -a -c -E '^[^ ]*python[^ ]* -u -m ')
 for j in \$(grep -h ' evaluated ' \$L | awk '{print \$3}' | sort -u); do echo \$(s267_mark \$j) \$j; done; echo END_OK"
 st=$($S "$REM" 2>/dev/null)
 echo "$st" | grep -q "^END_OK$" || { echo "FETCH_INCOMPLETE $ID (status)"; exit 1; }
 [ "$(echo "$st" | sed -n 's/^QD=//p')" = 1 ] && [ "$(echo "$st" | sed -n 's/^PROCS=//p')" = 0 ] || { echo "NOT_FINISHED $ID"; exit 1; }
 runs=$(echo "$st" | sed -n 's/^RUN //p'); bad=$(echo "$st" | sed -n 's/^BADM\{0,1\} //p')
+echo "$st" | grep '^NOFETCH_REFUSED ' | sed 's/^/ALERT /'   # refused NOFETCH paths are kept and fetched (Audit (a) / (b))
 nof=$(echo "$st" | sed -n 's/^NOFETCH //p'); [ -n "$nof" ] && $S "cd /workspace/Latent && rm -f $(echo $nof)" 2>/dev/null   # gen10 (1): NOFETCH deleted on the host
 nfx=""; for f_ in $nof; do nfx="$nfx --exclude=$f_"; done
 mkdir -p logs/vast_${H}_${P}

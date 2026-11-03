@@ -25,11 +25,14 @@ edit("scratch/s224_done_marker.sh", "scratch/s267_done_marker.sh", [
     ("  elif [ -s \"$1/log.jsonl\" ] && grep -q '\"step\": 1200,' \"$1/log.jsonl\"; then echo RUN\n",
      "  elif case \"$1\" in *_eqA|*_eqB) true;; *) false;; esac && [ -s \"$1/log.jsonl\" ] && grep -q '\"step\": 1200,' \"$1/log.jsonl\"; then echo RUN   # gen10: G-FH-EQ dirs only\n")],
      sub=(("s224_mark", "s267_mark"), ("s224_need", "s267_need"), ("s224_check_fetched", "s267_check_fetched"), ("s224_resume_ckpt", "s267_resume_ckpt")))
+open("scratch/s267_done_marker.sh", "a", encoding="utf-8", newline="\n").write(open("scratch/s267_build/nofetch_fn.sh", encoding="utf-8").read())   # Audit 11-02 (a) / (b)
+assert subprocess.run(["bash", "-n", "scratch/s267_done_marker.sh"]).returncode == 0
 edit("scratch/drain_gen_partial_s224.sh", "scratch/drain_gen_partial_s267.sh", [
     ("echo QD=\\$(tail -n 1 \\$L | grep -c QUEUE_DONE);",
-     "grep -h '^# NOFETCH ' scratch/gen_q_b${TAG#gen_b}.txt* 2>/dev/null | awk '{print \\\"NOFETCH\\\", \\$3}' | sort -u; echo QD=\\$(tail -n 1 \\$L | grep -c QUEUE_DONE);"),
+     "s267_nofetch ${TAG#gen_b}; echo QD=\\$(tail -n 1 \\$L | grep -c QUEUE_DONE);"),   # Audit (a) / (b): the host-side resolver (s267_done_marker.sh)
     ("runs=$(echo \"$st\" | sed -n 's/^RUN //p'); bad=$(echo \"$st\" | sed -n 's/^BADM\\{0,1\\} //p')\n",
      "runs=$(echo \"$st\" | sed -n 's/^RUN //p'); bad=$(echo \"$st\" | sed -n 's/^BADM\\{0,1\\} //p')\n"
+     "echo \"$st\" | grep '^NOFETCH_REFUSED ' | sed 's/^/ALERT /'   # refused NOFETCH paths are kept and fetched (Audit (a) / (b))\n"
      "nof=$(echo \"$st\" | sed -n 's/^NOFETCH //p'); [ -n \"$nof\" ] && $S \"cd /workspace/Latent && rm -f $(echo $nof)\" 2>/dev/null   # gen10 (1): NOFETCH deleted on the host\n"
      "nfx=\"\"; for f_ in $nof; do nfx=\"$nfx --exclude=$f_\"; done\n"),
     ("mkdir -p /d/drain_tmp\nfor j in $runs; do n=$(echo $j | tr '/' '_')\n",
