@@ -354,7 +354,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
-| 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **REGISTERED 11-03; score_ls.py 10/10; guard $8** |
+| 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_ls.py 10/10; guard $8** |
 
 ## Live sections
 
@@ -24236,6 +24236,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Exact forward-DP marginalisation over discrete latent sequences is classic: HMMs (our §76), neural HMM LMs 2011.04640, latent alignment 1807.03756 / 1702.00887, Correia 2007.01919 and DeepProbLog.
   - Latent CoT has been done only by sampling (TRICE 2312.02179) or amortisation (2310.04363).
   - Wording: 'an exact (forward-DP) counterpart of TRICE's latent-CoT EM, made tractable by an 11-value per-pass alphabet in a recurrent latent loop'.
+
+**Note 268-1 (2026-11-03 16:43 EST; §268 APPROVED by Audit, guard $8; build conditions; one estimate corrected).**
+- **(1) Time corrected:** at measured rates (askname ~0.4, P-2 ~0.6, rcb ~1.2, dis 1.6, dch / bun ~1.7 s/step), the 68k steps take ≈ **22-23 h**, not ~12 h. Cost is still ≈ $5-6.
+- **(2) One cell per stage:**
+  - The landed model.pt is the next stage's init, via a streaming copy with a sha check.
+  - Stage gates are read between cells. Weights persist off-host, and no single host carries 23 h.
+  - Each cell keeps model.pt only; there is no final ckpt unless a resume is needed.
+- **(3)** train_gpu is recorded per stage. The askname 4060 -> 3090 change is disclosed.
+- **(4)** Seed-3 data order at every stage. Each stage's args differ from its s1 args_ref only in seed / init / out; an args diff per stage is committed with the cell.
+- **Queue:** interleaves with §267.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
