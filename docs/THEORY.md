@@ -24010,6 +24010,22 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **attn_fade is read-only:** decoder logits are asserted equal with and without the hooks on a batch.
 - **Order:** queues after §264.
 
+**Note 264-2 (2026-11-03 16:28 EST; Theory-side PREDICTIONS for §264, stated before any §264 build or output; from the wave-2 halting-theory research pass; no rule change).**
+- **Mechanics** (code: deltamem.py write_seq; inject_aw.py hold_step):
+  - Additive heads under a repeated cue add phi(k) v^T every pass (phi = elu + 1 > 0, no decay). They are stable only if v -> 0, and with aligned re-writes ||S_a(K')|| ~ (K'/d) ||S_a(d)||. That fits CTRL's 10-17x drift at K' 128.
+  - Gated-delta heads are idempotent under identical (k, v) by projection, up to (1 - alpha).
+  - The hold penalty must therefore switch v_add off on passes >= d + 3, from S alone; text and cue are byte-identical.
+  - Two hypotheses for that switch: **CC (content check)**, 'the asked entity is already answered in S', prior 0.65; **PC (pass marker)**, a counter stamped by passes d+1 / d+2, prior 0.35.
+- **Predictions** (both seeds):
+  - **ER: PLAN** (P 0.65). er_acc_at_halt ≈ P(v_{d-2} == v_d) ≈ 0.09-0.15, i.e. a confident pre-target answer.
+  - **LF: CUE** (P 0.6). New absent names are unanswered, so writes continue. acc at K' 24 is within 0.10 of STD at most depths, because fresh keys are near-orthogonal and the decoder asks by name.
+  - **CY: FIXED** at >= 3 / 4 depths (P 0.6). d 3 is the risk depth: with PC, two extra additive writes give a norm ratio up to 1 + 2/d.
+  - **Family split:** all norm growth is additive; delta-family ratio <= ~1.2 under every schedule.
+  - **STD d 7-8 at K' 12 / 16 / 24:** flat vs K' 8 (P 0.85). So the registered C2 construct 'K' > K helps' is predicted NOT to hold for bun.
+  - **Modal outcome:** C5 PLAN-CLOCKED + C6 unchanged. ER PLAN + CY FIXED with additive ratio ≈ 1 at K' = 2d supports CC. ER COMP with additive growth under CY supports PC.
+- **Why H-INC failed (259-6) is algebraic:** with bounded write norm w, an additive accumulator has rel_inc_t in [1/(t-1), 1/sqrt(t-1)] whether or not the step is done. A fixed tau is therefore depth-correlated by construction.
+- These predictions are scored descriptively against §264's output. They are not binding.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
