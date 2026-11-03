@@ -296,3 +296,91 @@ No 2026 paper found reporting new ProsQA/ProntoQA numbers for GPT-2 beyond those
 - associative memory / delta-rule / linear-attention memory — sub-agent running; interim: 2610.07907 Continuous Memory Machines (Oct 2026, verified in listing only, abs not fetched).
 
 When the four reports land they should be appended under this heading; their scratchpad files are topic_latentcot.md, topic_extrap.md, topic_binding.md, topic_memory.md in the lead agent's scratchpad.
+
+
+## Pending arm landed: associative memory / delta rule / TTT memory
+
+# Literature sweep — associative memory / delta rule / TTT memory (2026-11-03)
+
+Window: arXiv 2609.*–2611.* plus major 2601–2608 papers missing from the bibliography. All ids below were verified by fetching https://arxiv.org/abs/<id> (title + v1 date) and grepped against known_ids.txt (none present). Note: export.arxiv.org Atom API returned HTTP 429 for every query this session (rate-limited); the arxiv.org/search listing pages were used instead, plus WebSearch.
+
+### 2609.39740 — LatentHarness: Learning Latent Actions for Memory and Reasoning via Counterfactual Policy Distillation (Sep 2026)
+- Claim: A 1.4B model picks, at every internal step, one of three latent actions: think further, recall from a fast-weight memory that stores input evidence AND intermediate reasoning states, or exit and emit the token. The policy is trained by counterfactual distillation: branch one step on each action and score its effect on the emitted token. Beats the strongest baselines by 2.8-10% relative on six reasoning / long-context benchmarks, 5.9x faster. Work in progress.
+- Why it matters to us: C5 (learned halting and when to write) and C1; A7 TITANS/TTT MLP head; H1 IN-PASS HALT; the recall action is a text->state path missing for C7.
+- Lead: Add a per-pass 3-way latent action head (write / hold / exit) to the GPT-2 loop and train it with their one-step counterfactual signal: branch the pass under each action, measure the answer-logit delta, distil the argmax. This gives a halt that is a decision rather than the C6 hold, and a write that is gated by whether writing changes the answer. Cheap: K=8 passes x 3 branches at eval-only cost for the label.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2610.36794 — Select-TTT: Query-Conditioned Selective Fast Weight Updates for In-Place Test-Time Training (Oct 2026)
+- Claim: In-place TTT (MLP down-projection as fast weights) loses its gains on realistic long-context QA because every chunk is written with equal strength. Select-TTT scales each chunk's write learning rate by the probability mass the chunk's hidden states put on the query tokens under the frozen output head; no new parameters, no supervision; consistent gains on two backbones.
+- Why it matters to us: C7 (the write ignores text, 247-2) and C5 (when to write); R6 TOKEN-WRITE; P4 SOFT-WRITE.
+- Lead: Make the additive per-pass write text-conditioned without new parameters: multiply the pass-t write by a temperature-softmaxed score = LM-head probability that the current op-sentence's hidden states assign to the cue / S_t tokens. An edit to the op sentence then changes the write strength directly, which is exactly the path the §247 edit test found absent. Measure the C7 edit test and the §247 readout on bun with this one change (args diff: one flag).
+- Verified: abs page fetched yes; already in bib: no
+
+### 2609.37379 — Looped Transformers as Optimizers (Sep 2026)
+- Claim: Treats the looped hidden state as a fast weight updated across depth: each loop transition = projection + local objective + optimizer step toward an implicit target. Existing loop designs have transition/projection mismatches; aligning them lowers loss, and OperLoop (explicit weight decay, adaptive step size, delta objective) beats looped and non-looped baselines at matched FLOPs.
+- Why it matters to us: C6 (stable fixed point), C2; A6 WRITE TOKENS + DeltaProduct; D8 NORMED RECALL READ; H1 SCALE-FREE CONVERGENCE EXIT.
+- Lead: Our per-pass write is s_{t+1} = s_t + f(x, s_t), a plain additive step. Re-parameterise it as a delta step s_{t+1} = (1 - lambda_t) s_t + beta_t (target_t - read(s_t)) with learned scalar decay lambda_t and step beta_t, i.e. write only the residual the read gets wrong. The adaptive step beta_t -> 0 at convergence gives a halt signal that does not depend on the repeated cue (X1/X2). Compare the hold-penalty C6 result (259-4) against this decay-only variant at K'128.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2610.13073 — Double-Take: Improving Capacity, Binding, and Selectivity In Long-Context Within Bidirectional Memory (Oct 2026)
+- Claim: In large-chunk TTT, single-step writes pile up interference (capacity) and self-associative writes cannot form bindings across positions. Multi-step unpinned updates + cross-position mixing + change-sensitive bidirectional writes fix this: capacity alone leaves end-to-end recall at chance (0.10); adding binding raises it to 0.92. Shown on genomic contexts to 1 Mb.
+- Why it matters to us: C7 and C1; diagnoses the §247 failure mode: a write whose key and value both come from the state is self-associative and cannot bind text to state. D1 DENSE-DISTRACT; R6 TOKEN-WRITE.
+- Lead: Split the write into key-from-text / value-from-state: key = projection of the current op-sentence tokens (cross-position), value = the loop state's update. A text edit then changes which address is written. Run their ablation ladder on REG d<=4: (a) capacity-only (more state dims), (b) + text-keyed binding, (c) + change-sensitive write; expect (a) to leave the C7 edit test null and (b) to move it.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2609.07816 — Kalman Delta Networks: Uncertainty-aware Associative Memory (Sep 2026)
+- Claim: Models the associative memory as a linear-Gaussian state-space system that tracks a memory estimate and its uncertainty; the write strength is a Kalman gain that weighs accumulated evidence against observation reliability. DeltaNet / Gated DeltaNet / KDA fall out as the isotropic-covariance special case. Diagonal and isotropic variants run as associative scans; gains at 750M and 1.3B.
+- Why it matters to us: C6, C5 (when to write); A6 WRITE TOKENS + DeltaProduct; A5 ROUTED MULTI-SLOT gated-delta.
+- Lead: Replace the fixed per-pass write gate with a per-channel Kalman gain driven by a tracked uncertainty vector (O(d) extra state). Once a slot has been written consistently its gain collapses, so later passes stop overwriting S_d, and the gain vector itself is a halt readout (sum of gains -> 0). Test against the cue-driven freeze question in §264 X1: if gains fall without the cue, the fixed point belongs to the loop.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2610.02816 — Gated Slot Attention-2: Two-Sided Associative Memory Correction in Linear Attention (Oct 2026)
+- Claim: Combines delta-rule value correction with slot-based two-stage key/value memory: Gated Oja Rule-2 (key side, separate erase and write controls) plus Gated Delta Rule-2 (value side) through shared latent slots; chunkwise parallel algorithm; beats strong linear-attention baselines.
+- Why it matters to us: A5 ROUTED MULTI-SLOT gated-delta; A3 GATED CROSS-ATTENTION EPISODIC SLOTS; D8 NORMED RECALL READ.
+- Lead: Give the latent loop a small bank of M shared slots (M = max depth, 4-8) with the GSA-2 two-sided rule: text keys address slots (Oja side keeps keys normalised), the pass-t state writes the slot value with separate erase and write gates. Read = query over slots. The erase gate gives a native "overwrite S_t with S_{t+1}" operation; the slot index is a cheap C1 probe (does pass t write slot t).
+- Verified: abs page fetched yes; already in bib: no
+
+### 2602.00015 — G-MemLLM: Gated Latent Memory Augmentation for Long-Context Reasoning in Large Language Models (Jan 2026; major 2026 paper missing from bib)
+- Claim: Frozen LLM backbone + trainable latent memory bank of fixed learnable slots; a GRU-style gate decides per slot whether it is updated, preserved, or overwritten, to keep bridge entities across multi-hop chains. Evaluated from GPT-2 124M to Llama-3.1-8B on HotpotQA and ZsRE (+8.56 Answer-F1 for GPT-2 on HotpotQA).
+- Why it matters to us: A3 GATED CROSS-ATTENTION EPISODIC SLOTS almost verbatim, at our base size; C7 (slots are written from text hidden states, so text edits reach the state); N4 TWO-HOP.
+- Lead: Implement A3 as their slot bank on the frozen GPT-2 loop: slots updated by a GRU gate from the pass's text hidden states, read by cross-attention before the write. Their GPT-2 numbers give a sanity bar. Check the C7 edit test first: with a text-written slot bank the edit path exists by construction.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2610.26834 — Kronecker Delta Rule for Long Context Linear Attention (Oct 2026)
+- Claim: KronLSTM (Hochreiter group) revises an associative matrix memory along a single direction per update (Kronecker delta rule), which interferes less with stored associations than the full delta rule. Memory dynamics form a Markov chain whose expected memory norm stays bounded over the whole sequence, so no extra normalisation is needed. Competitive with / better than (Gated) DeltaNet, strongest on long context.
+- Why it matters to us: C6 (bounded state norm without a hold penalty); D8 NORMED RECALL READ; D11 RMS-MIX READ.
+- Lead: Our additive write has no norm bound (the hold penalty supplies one). Swap the write to a single-direction Kronecker-delta revision and drop the hold penalty; measure state norm across K'128 passes (C6) and whether the fixed point survives cue removal (X2). Their bounded-norm argument is the math backing the user asks for before an architecture change.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2610.41994 — DAMI: Dual-Axis Memory Initialization for Enhanced Long-Context Retrieval in Gated Linear Attention (Oct 2026)
+- Claim: In Gated DeltaNet the decay-gate parameters stay strongly correlated with their initial values after training, so initialisation decides memory timescale. DAMI assigns different timescales per head and a low-high-low input-sensitivity profile across layers, calibrated from a small activation sample; +5.3 to +16.7 points on RULER retrieval across GDN, KDA, GDN2, Mamba-2, RWKV-7 with no new parameters.
+- Why it matters to us: D6 RANDOM-START MEMORY (how the memory starts matters more than expected); C6; also the basin-entry sensitivity we already see (seed and card flip the basin).
+- Lead: Before training, calibrate the loop's write/decay gate so that different state channels have different effective timescales (some persist across all K passes, some reset each pass), using a few hundred activations. Compare basin entry rate over seeds against the current init; if gate init pins timescales, the seed-1 drift (basin-entry mechanism) may be an init artefact.
+- Verified: abs page fetched yes; already in bib: no
+
+### 2611.03094 — A Fine-Grained Hierarchy and Benchmark for State Tracking in Language Models (Nov 2026)
+- Claim: Petty, Merrill, Sabharwal give a four-tier hierarchy of word problems (r-trivial immutable assignment; aperiodic mutable assignment; soluble self-referential assignment; general finite-state). Transformers' length-generalisable class excludes some aperiodic problems; GDN with positive eigenvalues expresses all aperiodic problems. StateBench: long-horizon benchmark; no pretrained hybrid or frontier model reliably solves even the soluble tier.
+- Why it matters to us: B2 HELD-OUT STRUCTURE eval, N1 SHUFFLED OBJECTS, N2 BOXES; C2 depth extrapolation. Our REG word programs are mutable assignment (aperiodic tier) so the hierarchy places them precisely and gives a harder next tier (soluble: self-referential assignment) within the same template family.
+- Lead: Port StateBench tier 2 (aperiodic) and tier 3 (soluble) items into the REG template at d<=4 and run the trained bun lineage eval-only; a tier-3 failure with tier-2 pass is a clean statement of what the loop computes, and it is a $0 read.
+- Verified: abs page fetched yes; already in bib: no
+
+## Also verified (in window, lower relevance; one line each)
+- 2610.38578 Dual DeltaNet (Oct 2026): value-side delta rule reorganises where a value is stored (KDA extension). A6.
+- 2609.32312 Delayed Supervision for Test-Time Language Models (Sep 2026): simulator-grounded questions asked after a delay on disposable branches; retain vs revise; +5.5 BABILong for LaCT. Training-signal idea for D4 CORRUPT-AND-RECOVER; note it uses simulator-grounded questions (C4 caveat).
+- 2610.16268 Error Correction in Trained TTT Layers (Oct 2026): the prediction-derived component of the TTT inner gradient cancels at the released init; ablations on real checkpoints. Audit-style lesson for A7: check the write actually uses the prediction error.
+- 2610.33025 Can Language Models Learn While They Think? (Oct 2026): gradient adaptation while reading captures style, not retrieval; storing facts via NTP memorises format; distilling own conclusions into a LoRA works. Negative result relevant to A7 TITANS/TTT at small scale.
+- 2610.08553 DeltaTTT (Oct 2026): sequential TTT does not help nonlinear memories; layerwise local targets with a state-dependent delta rule do. A7 MLP head design.
+- 2610.15185 DeltaNet-PC (Oct 2026): predictive-coding derivation of DeltaNet-style updates; perfect key-value recall without BPTT. A7.
+- 2610.37645 MERLIN: Multi-State Linear Attention with second-order routing (Oct 2026): routes queries over per-segment memory states using key mean+variance. A5 ROUTED MULTI-SLOT.
+- 2609.39034 Switching Linear Attention (Sep 2026): state update as online EM over a mixture of linear regressions; per-dimension component selection. A5.
+- 2611.01909 Who Asks, Who Answers (Nov 2026): in GDN/Mamba hybrids the linear-attention state builds the retrieval query; transplanting it redirects retrieval 0.97-0.99. Mechanistic template for an R-bundle read (which part of our state carries the "which S_t" pointer; P5 POINTER HEAD).
+- 2610.19210 Titan-Llama (Oct 2026): retrofit of Llama-3.2-1B with test-time-trained hierarchical memory. S-lane / A7 on a pretrained base.
+- 2610.20582 Latent Compaction with TTT (Oct 2026): document-specific compact KV cache trained at test time with frozen weights. C3 cached-prompt redesign (251-12).
+- 2610.41291 Agentic Soft-Token Compression (Oct 2026): training-free; uses GDN recurrent dynamics to decide what has been absorbed and carries it as soft tokens. A4 COCONUT HYBRID adjacent.
+- 2610.18809 Depth Memory (Oct 2026): cross-layer mixing as recursive-least-squares associative memory over depth. Loop-depth read design.
+- 2610.06516 Bayesian Cheatsheet (Oct 2026): HDP-GMM memory of reasoning behaviours adapted at test time. Verbal-strategy memory, not latent; low relevance.
+- 2605.27686 Tensor Memory (May 2026, outside window): fixed-size recurrent 3D memory tensor with soft write and gated read. Mostly vision.
+
+Queries tried: WebSearch: "arXiv 2026 delta rule linear attention gated delta reasoning"; "arXiv October 2026 test-time training memory language model Titans"; "arXiv 2026 associative memory transformer multi-step reasoning Hopfield"; "arXiv 2026 fast weights working memory latent reasoning language model"; "arXiv 2026 memory slots episodic working memory transformer multi-step reasoning write gating"; "arXiv 2026 DeltaProduct state tracking recurrent memory in-context binding"; "arxiv.org 2610 OR 2609 test-time memory language model recurrent reasoning associative recall"; "Learning State-Tracking from Code linear RNN arXiv 2026"; "recurrent memory transformer OR memory tokens multi-step reasoning latent state write gate". arXiv Atom API (export.arxiv.org): 10 query strings ("delta rule", "associative memory" AND transformer, "test-time training", "gated delta", "fast weights", "linear attention" AND memory, "working memory" AND reasoning AND transformer, "memory slots" AND reasoning, Titans AND memory AND "test-time", "state space" AND binding AND "in-context") — all returned HTTP 429 this session. arxiv.org/search listings (sorted by submitted date): "delta rule" attention; "associative memory" transformer; "test-time training" memory; DeltaNet OR DeltaProduct OR "gated delta"; "fast weight" OR "fast weights"; "working memory" reasoning transformer; "memory slots" OR "memory tokens" reasoning; "linear attention" memory recall; "memory tokens" reasoning; "episodic memory" "language model" reasoning; Hopfield transformer reasoning; "latent reasoning" memory recurrent.
+
+Candidates rejected as already-known: 2609.16183 (Anatomy of Associative Recall), 2609.33093 (How Linear Attention Remembers), 2605.30343 (Reasoning in Memory), 2605.22791 (Gated DeltaNet-2), 2606.07720 (AGCLR), 2603.08391 (Adaptive Loops and Memory), 2602.14814 (State-Tracking from Code).
