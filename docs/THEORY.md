@@ -347,7 +347,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **PARKED 11-02 (258-9): S2b NO-SEED at lr 1e-4 too (WS d 2 p 2 0.015); aux shows the write formed by ~10k but the ':' readout never shows v_2; ~$10.4.** **S2 NO-SEED at lr 3e-5 (258-7); S2b at lr 1e-4 registered (258-8; NO-SEED parks the medium line): medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 | 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **SCORED 11-03 (260-5): PLAN-FREE-C1 1/2 - plan-free causal chaining on clean d 1-4 in both; s2 fails CONTENT (min pos 0.75) + C2 (d 6 0.44); without the plan the loop follows reachability and does not stop (H-EXTEND 0.08 / 0.02); $2.23.** **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
-| 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
+| 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **APPROVED by Audit 11-03 (261-1).** **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
 
 ## Live sections
 
@@ -23781,6 +23781,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Depth past training largely goes (d 7 0.07-0.25).
   - So the cue's name is what lets bun stop at S_d and reject live distractor chains. Plan-free C1 is shown on clean chains (1 / 2 full pass); content selection and C2 depend on the plan.
 - **SOTA:** unchanged (bun remains best; gb is a scope probe). Keep gb_s1 / s2 model.pt.
+
+**Note 261-1 (2026-11-03 00:42 EST; §261 APPROVED by Audit, guard $3.5; pilot ~$0.3; the full stage only on GO, with its scorer G-D'd first).**
+- The target cue adds no information beyond the question (S_d is already named there), so a pass is plan-free with only the target.
+- **Build conditions:**
+  - (1) --cue target is new trainer / eval code: full host gates (offbit with the flag off, smoke, gradflow) and the 'target_only' assert (the cue names exactly one entity, S_d, byte-identical across passes);
+  - (2) bun_s1's recipe (hold + §257 mix), --steps 8000 --stop_at 2000, with the step-0 ref under the target cue;
+  - (3) the gen10 drain (s267 family) with NOFETCH on the extract dirs.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
