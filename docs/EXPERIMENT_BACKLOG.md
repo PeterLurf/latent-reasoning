@@ -498,7 +498,248 @@ The full ladder is ~$45-70, so the GSM8K-scale stage needs its own approval.
 - **P3 EMBED-WRITE** ($1-1.5): W_w LN(wte[decoded]), straight-through. Only if P1 fails.
 - **P4 SOFT-WRITE.**
 
+## 13. Wave 3 (11-03): 21 Fable research agents
+
+Twenty themes not covered by waves 1-2, plus one late C4 agent. Every agent was read-only, computed nothing from stored outputs, and fetched every arXiv id it cites.
+
+### 13.0 Findings that change framing
+
+- **Expressivity theory.** Mod-11 programs are an affine-group word problem plus pointer chasing. A single 12-layer pass can express d up to about 64.
+  - So "the loop is needed" is a learnability and extrapolation claim (C2), not an expressivity claim.
+  - The loop is provably forced only for non-solvable value groups: S5 / shuffled objects (N1). N1 is therefore the "loop is necessary" task for the paper.
+  - Prediction: §264's K' curve is a step at K' = d - 1, not a ramp.
+- **Memory capacity.** Raw capacity is not the limit (6 delta heads x DH 64). Addressability is.
+  - One ':' write per pass, plus the hold penalty, probably makes the keys value-driven rather than entity-driven.
+  - The additive heads (phi > 0) are a single-value accumulator.
+  - Retrieval by name (needed for DAG merges and GSM8K) is untested. MC1 / MC2 test it first.
+- **History taxonomy (sections 0-268).** The recurring failure modes are:
+  - shortcuts that pass the gate (~14 sections);
+  - gates on accuracy rather than mechanism;
+  - treating a seed lottery as a recipe (6 mechanism rescues failed, ~$40);
+  - build bugs (~10);
+  - uninformative controls;
+  - gamed one-sided targets;
+  - no learnability pilot before a new task.
+  - Tried 3+ times without success: strict C4 (10 attempts), learned halting (5), seed rescue (6), paraphrase transfer (5), extra passes as a depth lever (4).
+- **Process rules adopted for the registration template:**
+  1. A shortcut-exclusion arm from the start.
+  2. Gate on the mechanism at the claimed depth.
+  3. Try a budget increase or LR re-warm before a redesign; redesign after three nulls at the same wall.
+  4. Select across seeds; no mechanism-targeted seed rescues.
+  5. A learnability pilot before any new task or base.
+  6. Controls are exposed, and every new flag gets a p = 0 equivalence gate.
+  7. Two-sided bars for targets on dynamics.
+  8. Zero-init pathways get a usage monitor and a non-zero-init arm.
+- **Scaling.** Medium's decoder shortcut is the general failure the literature predicts: latent models often skip the latent (2604.04902). The scaling question is the base's direct hop capacity vs d_max, not parameter count.
+  - The predictor to test is SC2 SHORTCUT-PROPENSITY.
+- **C3 / efficiency.**
+  - Eval runs in pure fp32, with no tensor cores.
+  - There is no torch.compile and no length bucketing.
+  - Data generation is serial on the training thread.
+  - Expected saving is 30-45% per cell (EF0 profile first).
+- **Statistics.**
+  - Seed variance, not item variance, is the binding uncertainty.
+  - Compare recipes on continuous per-seed margins, never on pass counts.
+  - A 0.02 bar is powered only on paired items.
+  - Proposed: one stdlib theory/statlib.py.
+
+### 13.1 Wave-3 shortlist: cheap, decision-changing items
+
+Each costs <= $0.2, mostly as cloud eval parts on bun. Each needs a pre-statement and Audit's ack. Most can share the §264 host.
+
+| ID | What it decides | $ |
+|---|---|---|
+| I5 PASS-7-AT-D8 TRIAGE | Is each late-pass error selection, memory or computation? This picks between D1b, a memory redesign and computation fixes | 0.2 |
+| I2 READ-USE MAP | Which positions consume the block-6 read. Re-prices C3 cached designs (E3) and explains §263 | 0.1 |
+| TH2 MIRROR-PAIR | Can a forward plan-free policy work at all (bound: prod 1/b), or only question-conditioned planning? Decides P1 vs P2 / P4 / TH5 | 0.15 |
+| MC1 KEY-GEOMETRY | Are write keys name-, value- or constant-keyed? Gates multi-value / DAG work | 0.1 |
+| RB3 PASS-TOKEN-OCCLUSION | The causal footprint of each pass; leakage > 20% rewords C1 | 0.15 |
+| RB2 STATE-NOISE-RADIUS | sigma_50 per pass. Is the late-pass basin narrower? | 0.1 |
+| CG1 SUB_S ZERO-SHOT / CG5 OPEN-VOCAB | Is the step factorised (operator x source) or a template lookup? Does selection work on multi-token or overlapping names? | 0.1 |
+| TS3 TTA-VOTE / TS1 SC-LATENT | Are d 7-8 errors recoverable by voting (oracle@N), or systematic? | 0.2 |
+| D12 + TH4 | Delta alpha / beta by pass type; does the additive hold write vanish or drift at O(t)? | 0.1 |
+| FD1 FORMATION-CENSUS | Onset t* across all stored logs; does an early marker predict never-formers? ($0 read) | 0 |
+| ST2 SEED-VARIANCE | sigma_seed vs item SE: sets the seeds-vs-items budget rule ($0 read) | 0 |
+| EF0 STEP-PROFILE | Where a bun step's time goes; orders the speedups | 0.1 |
+| AP6 NAR CEILING | Does a graph processor extrapolate to d 16 where the single-slot memory dies at d 8? Capacity vs algorithm ($0 CPU) | 0 |
+
+### 13.2 Wave-3 training pilots worth registering (<= $1.5 first stage)
+
+- **C4 lane:**
+  - CA1 SG-WRITE and CA2 ONSET-FREEZE ($0.3 each; they localise the onset drift);
+  - CA3 MULTI-LEAF and CA4 SHARED-STEP SIAMESE (C4-clean data and self-supervision);
+  - AP1 HRM / TRM deep supervision ($0.3).
+- **Plan lane:**
+  - P9 CUE-FADE ($0.5);
+  - H8 ANSWERABLE-NOW head ($0.25);
+  - P8 CONFIDENCE-GAIN SELECTION (stage 1 $0.1);
+  - TH5 DATAFLOW-ALL-WRITE ($0.4);
+  - AP5 latent search ($0.15).
+- **Lineage:**
+  - LC5 BRIDGE2 2-stage recipe ($1.3);
+  - LC4 STATE-DISTILL ($0.8; also the medium port);
+  - HX1 SEED-FARM-2K ($2.4).
+- **Public benchmarks:**
+  - BM1 PRONTOQA-DEPTH ($2-3; pairs with ProsQA-OOD for headline H2);
+  - BM2 WEB-OF-LIES ($1.5);
+  - BM3 VT / VARS (a published 0.5B latent comparator).
+- **Multi-task (north star):** MT1 JOINT-4 ($4.5) -> MT4 cross-task swap ($0.3). §174 was never launched; RELAY 2502.08482 calls the question open.
+- **Scale:**
+  - SC2 SHORTCUT-PROPENSITY INDEX ($1);
+  - SC1 LOOP-vs-DEPTH ISO-SERIAL ($1.5);
+  - SC3 TRUNCATED-MEDIUM ($1.5).
+- **RL** (pass@64 pre-checks first):
+  - RL2 RL-HALT ($1; the learned C5 if §264 reads PLAN-CLOCKED);
+  - RL1 RL-DEPTH ($1.2) with the RL3 mechanism guard.
+- **Hybrid:**
+  - HY0 complementarity read ($0 on §266 outputs);
+  - HY1 TPLV 2x2 (= P1 with a crossover gate).
+
+### 13.3 Detail registry (condensed agent entries)
+
+#### plan-free stopping (Fable)
+H8 ANSWERABLE-NOW HEAD: 1-logit on ':' predicts whether decoder correct now (labels from own decoder, stop-grad); halt p>=0.5; from gb_s1 2k ($0.25 frozen / $0.4); GO halt-at-S_d>=0.8 H-EXTEND & Spearman(khalt,d)>0.8; park AUC<0.7 d5-6 | 2107.05407, 1603.08983, 2207.07061, 2402.06457 V-STaR
+P7 GOAL-DISTANCE VALUE (TD V(S_t)=1+V(S_t+1), terminal from H8); halt + off-chain null write; $0 TD fit on stored gb dumps (pre-state) AUC>=0.8 -> 2k $0.4 | 1707.01495 HER, 2110.06169 IQL, 2201.08299, 2305.10601 ToT
+P8 CONFIDENCE-GAIN SELECTION -> Q-SELECT critic: masked-sentence search picking the sentence raising decoder max-prob, STOP if none; distil to critic; stage1 $0.1 eval GO H-EXTEND & H-LIVE>=0.6 on gb | 2312.08935 Math-Shepherd, 2403.09629, 2305.10601, 2110.14168
+P9 CUE-FADE: mask cue name with rising p 0->1 (late passes first) + self-distil to plan-cued EMA teacher; from bun_s1 4k $0.5 (+no-distil arm $0.4); GO generic cue d2-4>=0.9, H-EXTEND/H-LIVE>=0.6, d6>=0.8 | 2405.14838, 1511.03643, 2207.07061
+P10 LATENT SUBGOAL TOKEN (VQ codebook M=16 in cue slot, STOP code) $0.45 | 1609.05140, 1711.00937
+#### multi-task (Fable): §174 (mult+nested, no flag) registered 10-09 never launched; RELAY 2502.08482 says multi-task in one looped model is open. No SO/KIN generator exists.
+MT1 JOINT-4 (WP + shuffled objects + ProsQA + kinship-lite; shared vs per-task cue; per-family aux gate; grad cosine) ~$4.5 | 1807.03819, 2209.11142 CLRS, 2502.08482
+MT2 LEAVE-ONE-FAMILY-OUT (zero-shot + 1k adaptation sample-efficiency ratio vs bun) ~$5 | 2110.14056, 2604.07822
+MT3 SEQUENTIAL-ADD (naive / replay / replay+memory freeze) ~$4 | 2007.07400, 2308.13320, 2001.06782 PCGrad
+MT4 CROSS-TASK STATE SWAP + head-necessity matrix + task-id probe $0.3 eval (after MT1)
+MT5 COMPOSED cross-family items $0.7
+MT6 TASK-ID FLAG control $2.4 conditional
+#### memory capacity (Fable): raw capacity not binding (delta 6x64 orthogonal = 384 pairs); limit is ADDRESSABILITY: one ':' write/pass, hold penalty likely makes keys VALUE-driven -> no retrieval by name. Additive heads (phi>0) = one-value accumulator. write_seq already accepts T>1 + mask.
+MC1 KEY-GEOMETRY $0.1 eval (Gram of write keys by entity/value; NAME/VALUE/CONSTANT-KEYED) | 2102.11174, 2310.17191 binding IDs, 2501.12352
+MC2 KEEP-k RECALL (MQAR for the loop; stage0 eval $0.1; stage1 FT j<d question $0.6) | 2312.04927 MQAR, 2402.18668, 2406.06484, 2504.18574 — precondition of BRANCH-DAG
+MC3 ENTITY-KEYED MULTI-WRITE (pass-1 writes at each given sentence end; ':' write becomes by-name update) $1.3 | 2011.07831, 2412.06464, 2305.02363
+MC4 HEAD-TYPE CAPACITY ABLATION (12 add vs 12 delta) $1.2 | 2008.02217, 2111.05498, 2402.01032
+MC5 RECENCY vs NAME CUE (alpha decay as alternative explanation of op-count degradation) $0.4 | 2506.05233 MesaNet
+#### statistics (Fable): unpaired 0.02 bar at p~0.95 needs n~1900/arm; paired (5% discordance) n~1000 ok. k/k seeds CP lower bounds 0.22 (2/2), 0.37 (3/3), 0.55 (5/5), 0.72 (9/9). Compare recipes on continuous per-seed margins (~6 seeds/arm), never pass counts.
+ST1 STATLIB theory/statlib.py (stdlib): wilson, clopper_pearson, margin_se, paired_diff (McNemar), cluster_boot, seed_rate, n_items_for, conf_seq, sprt, e-values, holm/bh, conj_label NEAR-k | 2411.00640 Miller, 2108.13264 rliable, 1904.06979, 1606.04316
+ST2 SEED-VARIANCE-COMPONENTS ($0 pre-stated read of s1/s2 per-item arrays) -> "met" = 5/5 seeds from 2 P-2 models | 1806.08295, 2103.03098, 2304.01315
+ST3 SEQ-STOP confidence sequences / SPRT for pilot futility + sequential evals; $0 retrospective replay | 1810.08240, 1906.07801, 2402.14992 tinyBenchmarks
+ST4 PAIRED-ARMS (sig join, common seeds; paired diff + McNemar) $0
+ST5 MULTIPLICITY (NEAR-k conjunction labels; BH for grids; looks ledger; e-value seed pooling) $0
+#### history taxonomy (Fable): failure modes: shortcut passes gate (~14 sections), gate on accuracy not mechanism, seed lottery (6 mechanism rescues failed ~$40), build bugs (~10), uninformative controls, gamed one-sided targets, post-hoc drift, no learnability pilot, budget mistaken for architecture (2-3x budget fixed 5 nulls). Worked: per-step supervision; break implicit counters; reader/copy from step 0; warm start; footholds; normalised reads; training-free rules > learned halts (learned halts failed 6x). 3+x failures: strict C4 (10x), learned halting (5), seed rescue (6), identical-input final-only (8), paraphrase transfer (5), extra passes as depth lever (4).
+Process rules: shortcut-exclusion arm from start; gate on mechanism at claimed depth; budget/LR-rewarm before redesign, redesign after 3 same-wall nulls; no mechanism seed rescues (selection instead); learnability pilot before new task/base; exposed controls + delivery gates; two-sided bars for dynamics; zero-init pathways need usage monitor + non-zero-init arm.
+HX1 SEED-FARM-2K (6-8 seeds x 2k, marker, successive halving) $2.4 | 1603.06560 Hyperband, 2002.10365
+HX2 MARKOV-CONT (continuous reset-at-write; range principle on language loop) pilot 2k $0.2 | 2412.06464, 2411.12537
+HX3 PIPELINE-DISTILL (X5 pipeline as deeper teacher, d5-9 labels) $0.8 | 1810.08575, 2203.14465, 2305.02301
+HX4 GATE-USAGE ARM (zero-init channels: gate magnitude log + non-zero-init arm + DeltaMem dropout) template rule
+#### C7 verbalizer (Fable): reader must see cue-only prompt (no op sentences); faithful-to-model test on bun's own errors; input-only control 2509.13316.
+V1 STATE-SENTENCE VERBALIZER + content ladder (subject/value/op/operand) ~$0.5 | 2412.08686, 2512.15674, 2605.25903 UAV, 2509.13316, 2607.15495, 2401.06102
+V2 FAITHFULNESS: counterfactual simulatability + claim-flip audit $0 | 2307.08678, 2607.20379, 2609.33702, 2502.14829
+V3 READER-GRADIENT EDIT $0.3 | 2403.10949, 2602.08783, 2609.21662
+V4 SELF-VERBALIZATION TRAINING $1.5 (low)
+V5 VERBALIZER AS FAILURE DIAGNOSTIC (permuted / late-pass / idle passes) $0 on V1 dumps, EV 4
+#### lineage compression (Fable): REG d<=4 from askname never forms pass 2 (§236 0/2); §258 BRIDGE (aw -> REG+distract 16k) = BRIDGE-OK (d6 0.949/d7 0.789). Stage restarts of warmup+cosine may matter.
+LC1 ONE-RUN SCHEDULE (36k ramp; arm B SGDR restarts) pilot 0-20k $1.5 | 1608.03983, 1904.03626, 2412.06769
+LC2 SELF-PACED DEPTH WEIGHTS (w_t = WS_{t-1}^2 + per-bin clipping) $0.8 | 1711.02257
+LC3 SKIP-ASKNAME (one-hop co-training inside aw stage) $1.0 | 2410.05464, 2502.21074
+LC4 STATE-DISTILL bun -> fresh student (& -> medium; progressive arm) $0.8 / medium $3 | 1503.02531, 1805.04770, 2410.05464
+LC5 LEAVE-ONE-STAGE-OUT: BRIDGE2 aw -> REG+mix+hold 16k $1.3 (2-stage recipe) EV high
+#### numbers (Fable): bun aux is sequence-scored (multi-token OK); 12 heads separable.
+NR1 NUM-CODE-PROBE (Fourier vs digit code R2, error histogram, ablation use test) $0.2 after NUM-100 | 2406.03445, 2502.00873, 2410.11781, 2605.01148, 2301.05217
+NR2 FONE-AUX (Fourier-feature aux T 10/100/1000) $0.7 | 2502.09741, 2006.10739
+NR3 DIGIT-HEAD WRITE + per-digit swap gate $0.7 | 2405.17399, 2310.13121
+NR4 R2L-SPACED VALUE FORMAT (prereq >99) $0.6 | 2307.03381, 2402.14903, 2410.21272
+NR5 CARRY-STRATIFIED read + CARRY-SAVE arm (log carry count now) | 2510.00184
+Not recommended: xVal/NALU scalar.
+#### hybrid text/latent (Fable): bun is already a hybrid (text plan in cue, latent value); missing: interleaved runner (same as P1/P2).
+HY0 COMPLEMENTARITY READ $0 on §266 outputs (oracle union latent vs text per item; dead lane if union - max < 0.03) | 2110.14168, 2505.13379 Thinkless
+HY1 TPLV text-plan/latent-value 2x2 {clean, permuted} x {d<=4, d6-8} $0.6 (= P1 with crossover gate) | 2502.03275, 2509.20317, 2205.10625, 2210.03350
+HY2 LATENT SUB-CALL as calculator (NUM-100 2-digit x) $1.5 | 2302.04761, 2211.10435, 2211.12588, 2505.18962
+HY3 MODE ROUTER (Thinkless-style) $2 low | 2505.18454, 2505.16552
+HY4 SOCRATIC SELF-CUE GSM8K-Aug $2
+HY5 CONFIDENCE FALLBACK (bun unstable -> text CoT) $0.2
+#### RL post-training (Fable): RLVR sharpens, not creates (2504.13837) -> pass@64 pre-checks; S-only decoder reward; RLOO/Dr.GRPO.
+RL1 (K13) RL-DEPTH RLOO on d5-6 gold answers; pass@64 precheck $0.1; 1k steps $1.2 + random-reward CTRL | 2606.10184 Dropout-GRPO, 2607.19691 SLPO, 2604.17892, 2402.14740, 2402.03300, 2506.10947
+RL2 (H8') RL-HALT STOP action, reward - lambda*passes $1 | 2502.04463, 2503.04697, 2505.13379, 2503.20783, 2607.20519
+RL3 (X8) RL-MECH-GUARD every 200 steps (frozen readout, SWAP-V, KL; random-reward + 1%-mask arms) | 2511.08567, 2602.01599, 2505.11711, 2509.04259
+RL4 (K14) RL-ROBUST on permuted/paraphrase items (pass@64 >= 0.3 precheck) $1.2
+RL5 (P7') RL-SELF-CUE (name policy by answer reward, S-only decoder) $1.3 | 2604.22709
+#### alternative paradigms (Fable)
+AP1 (A8) DEEP-SUPERVISED RECURSION HRM/TRM (final-answer CE each pass, detach, inner micro-passes, q halt) from bun 2k $0.3 | 2506.21734, 2510.04871, 2211.09961, 2202.05826
+AP2 (A9) IMPLICIT-PASS DEQ (JFB; $0 path-independence read first) | 1909.01377, 2103.12803, 2111.05177, 2609.26487
+AP3 (A10) ENERGY-DESCENT WRITE (IRED/EBT) $0.4 | 2406.11179, 2206.15448, 2507.02092, 2605.12466
+AP4 (A11) DENOISING over step slots (DoT/LLaDA; C3 serial ceiling) $0.3 | 2402.07754, 2502.09992, 2510.04573, 2502.01567
+AP5 (A12) LATENT PLANNING BY SEARCH over op choices (beam 3, stability+logp verifier) $0.15 eval EV 6 | 1811.04551, 2301.04104
+AP6 (A13) NAR PROCESSOR CEILING (CLRS MPNN on generator DAGs, $0 CPU; TransNAR stage 2) EV 8 | 2205.15659, 2406.09308
+#### efficiency (Fable): eval pure fp32 no tensor cores; no compile/CUDA graphs/TF32; data gen serial on main thread; hold recomputes lower; far pass T_far 16-40 no-grad.
+EF0 STEP-PROFILE $0.1 first
+EF1 COMPILE-PASS (torch.compile + CUDA graphs; not bitwise -> new recipe flag) 1.2-1.5x | 2205.14135
+EF2 BUCKET-PAD (sort by length within micro chunks; pad to x16) 1.1-1.4x $0.05 | 2107.02027
+EF3 EVAL-BF16-SWEEP for descriptive parts only, fp32 re-check flips (eval-law change; Audit ruling) 3-5x | 1710.03740
+EF4 PREFETCH-ITEMS background data gen 1.05-1.3x
+EF5 HOLD-SHARED-LOWER ~5%
+#### robustness (Fable): cue corruption exists (part_cue_wrong).
+RB1 NOOP-CLAUSE (in-sentence irrelevant number / same-name other-unit) $0.1 eval + $0.6 FT | 2410.05229, 2302.00093, 2402.19255, 2109.05925
+RB2 STATE-NOISE-RADIUS sigma_50 per pass (+ write-noise / Jacobian-norm contraction arms) $0.1 eval EV 9 | 2106.14342, 1805.01500
+RB3 PASS-TOKEN-OCCLUSION FOOTPRINT (causal per-pass dependence; leakage >20% -> C1 "selection with leakage") $0.15 EV 11 | 2202.05262, 1711.02173, 2309.01686
+RB4 INVARIANT-STATE CONSISTENCY on structural twins (R-Drop/SimCSE at state level) $1 | 2106.14448, 2104.08821, 2402.08939
+RB5 ADV-DISTRACT (mined inserts, FreeLB-style in input space) $1.3 | 1909.11764
+RB6 B2+ ROBUST-TABLE protocol (50 templates x 20 instantiations; perturbation rows w/ CIs vs text CoT & pause) $0.3
+Prediction: bun CLAUSE-READ; late passes narrower basin; footprint spreads with op count.
+#### scaling (Fable): post-hoc latent CoT loses above ~1B (2506.18582, 2606.31779); looping scales (Ouro, Huginn, MoR, Relaxed Recursive, PonderLM 2505.20674); loop laws: Parcae 2604.12946 (loops+data together), 2604.21106 (1 recurrence ~0.46 param doubling), 2609.40316; 2604.04902 latent models often skip latents (decoder shortcut general). Scaling question = base's direct hop capacity vs d_max.
+SC1 (S14) LOOP-VS-DEPTH ISO-SERIAL: medium direct K=1 vs bun on d6-8 $1.5 | 2502.17416, 2604.21106, 2409.15647, 2310.19956
+SC2 (S15) SHORTCUT-PROPENSITY INDEX: 2k direct FT per base, SPI(d) predicts write formation ~$1 EV 3
+SC3 (S16) TRUNCATED-MEDIUM (12x1024) depth vs width of shortcut $1.5 | 2410.20672
+SC4 (S17) PYTHIA SHAPE LADDER 160M/410M $2.1 | 2304.01373
+SC5 (S18) PRETRAINING-DATA AXIS (Pythia ckpts 20k/70k/143k) $3
+SC6 (S19) D_MAX x K LADDER on small (d_max 2,6; K=d_max+4) $1.6
+#### test-time scaling (Fable): bun deterministic at eval; edit/on_state hooks exist.
+TS1 SC-LATENT noise/MC-dropout rollouts vote@N/oracle@N $0.1 EV 4 | 2510.07745, 2505.11484, 2203.11171
+TS2 NOISE-TRAIN-SC $1.2
+TS3 TTA-VOTE over distractor re-renderings (permutations after §263) $0.1 EV 4.8 | 2402.08939
+TS4 LRM-SELECT latent reward head best-of-N $0.3 | 2505.13308, 2606.17524
+TS5 RE-SWEEP-TRAIN self-correction sweep $1.2 low | 2501.19393, 2409.12917, 2511.08577 Think-at-Hard
+TS6 SELECTIVE SCALING fold-in
+#### compositional (Fable): ops = {add,sub,mul}x{c,v} + {add,mul}x{s}; frames 0-5 train, 6-7 held, 8-11 DIV-train, 12-15 DIV-held.
+CG1 SUB_S ZERO-SHOT (empty cell of operator x source grid) $0.1 eval EV 4.2 | 2305.18654, 2301.10884, 2311.12997, 2108.04378, 1908.08351
+CG2 OP x CONSTRUCTION COGS split on DIV frames 8-11 $0.4 | 2010.05465 COGS, 1711.00350 SCAN, 2108.12284, 2210.03050, 2307.05596
+CG3 NONCE-OP IN-CONTEXT DEFINITION (zork = +3; flipped-definition test) $0.6 EV 2.5 | 1906.05381, 2303.03846, 2205.05055, 2310.17191, 2210.03350
+CG4 CONSTANT-PRIMITIVE HOLDOUT (SCAN-jump on Z_11; needs lineage rebuild) $0.6 | 2306.17844, 2210.10749, 2310.16028
+CG5 OPEN-VOCABULARY ENTITIES (multi-token names, overlapping names, noun-phrase entities) $0 eval EV 5.4
+#### mech interp (Fable): nothing in backlog does head-level circuits on bun; linear-attention state = exact per-head patchable.
+I1 OP-SELECT HEADS (path patching at ':' and cue-name; pattern vs OV split; d4 vs d8) $0.2 | 2211.00593, 2304.05969, 2305.00586, 2402.11917, 2604.11791
+I2 READ-USE MAP (which positions consume block-6 read; per memory head; EAP-IG) $0.1 — re-prices E3 / C3 | 2404.03646, 2404.05971, 2602.22719, 2602.00449
+I3 VALUE CIRCUIT 7-11 (algorithm vs heuristics; pass-invariant faithfulness) $0.2 | 2305.15054, 2410.21272, 2406.11944, 2403.19647, 2310.08744, 2312.09230
+I4 CROSS-PASS EAP (unrolled graph incl. 12 memory edges; mechanism figure) $0.2-0.5 | 2304.14997, 2310.10348, 2403.17806, 2406.16778, 2403.00824, 2604.05876
+I5 PASS-7-AT-D8 TRIAGE (selection / memory / computation error census via patching) $0.2 EV high — run before D1b / memory redesign | 2402.16837, 2406.12775
+#### public benchmark scout (Fable)
+BM1 PRONTOQA-DEPTH (linear is-a chains; Apache-2.0 generator; no GPT-2 OOD-depth latent number; pairs with ProsQA for H2) $2-3 EV 2.0 | 2210.01240, 2305.15269, 2412.06769, 2610.40283
+BM2 WEB-OF-LIES-DEPTH (BBH; Z2 chain keep/negate; first sub-1B number) $1.5 | 2210.09261, 2206.04301, 2602.08332 Thinking States
+BM3 VT (RULER variable tracking) then VARS (Thinking States: 0.5B 33.8 vs CoT 6.8) $1.5 + $3 | 2602.08332, 2404.06654, 2404.08819
+BM4 MODGRAPH-23 (Altabaa: latent recursion + step supervision + discrete bottleneck generalises 4x; fold into T5) $3 | 2510.14095, 2603.21676 (per-step supervision hurt there — counter-claim)
+BM5 CONNECTIVITY-DIAM $1.5 | 2510.19753, 2406.04229 CLRS-Text
+BM6 ADD-CHAIN / BBH MULTISTEP after NUM-100 $4 | 2409.15647
+Rejected: Sudoku/Maze (HRM/TRM cost), bAbI, Dyck, logical deduction, date, flip-flop, list functions, CRUXEval.
+#### formation dynamics (Fable): AdamW wd 0.01 all params, lr 1e-4, 100-step warmup, cosine; no wd/noise/attn-norm arm at P-2 ever. Plateau = partial solution (v_1 echo).
+FD1 FORMATION-CENSUS + PROGRESS MEASURE ($0 pre-stated; onset t* across all stored logs; markers lead >=1k?) EV 8 | 2506.13688, 2604.20923 ILDR, 2306.13253, 2301.05217, 2002.06305
+FD2 FORMATION-LOTTERY n=4 seeds at P-2 with early stop (rate + Wilson CI; bar for fixes) $3.2 | 1912.05671, 2607.20594
+FD3 NEW-MODULE WEIGHT DECAY (0.3/1.0 on DeltaMem + write/read only) $2.4 | 2201.02177, 2210.01117, 2311.18817, 1802.01483
+FD4 EUREKA-NORM (QK-LayerNorm / logit temperature on selecting layers during formation) $2.4 | 2310.12956, 2505.17863, 2404.07129, 2312.03002
+FD5 NOISE-DOSE (bs 16 vs 256; fp32-softmax arm) $2.4 | 2306.04251, 2501.04697, 2410.23922, 1910.08475
+FD6 COMPONENT-SHAPING (oracle memory emb(v_1) annealed 1->0 at P-2; formation tool) $1.2 | 2402.18361, 2310.17561, 2406.06467, 2402.11004
+#### expressivity theory (Fable): mod-11 programs = affine AGL(1,11) word problem (solvable -> ACC0 subset TC0) + pointer chasing O(log d) layers -> one pass expresses d<=~64; "loop needed" is a learnability / length-generalisation claim (C2), not expressivity. Only non-solvable value groups (S5) force the loop (NC1-complete).
+TH1 EXPRESSIVITY-MEMO (3 props: no forcing; register bound K+h; memory transition irrelevant) $0; prediction: K'-curve is a step at K'=d-1 (small) | 2207.00729, 2402.12875, 2310.07923, 2305.15408, 2210.10749, 2402.09268, 2503.03961, 2505.18948, 2502.17416, 2404.08819, 2411.12537, 2502.10297, 2301.13196
+TH2 MIRROR-PAIR branch test (forward-only plan-free policy <= prod 1/b_t; question-conditioned can reach 1) $0.15 EV 16 — decides P1 vs P2/P4 | 2505.12514
+TH3 SELECTION-MARGIN LAW (error linear in competing keys mentioning chain entities, not tokens; SSMax removes n-dependence) $0 on §265 outputs EV 11
+TH4 HOLD FIXED-POINT predictions (delta contracts at |alpha(1-beta)|; additive grows O(t) unless writes vanish) rider on D12 EV 10.8
+TH5 DATAFLOW-ALL-WRITE (write (entity,value) at every resolvable sentence; passes = DAG depth; plan-free; halt = question key resolved) $0.4 EV 6 | 2505.12514
+TH6 NON-SOLVABLE VALUE GROUP (S5; N1 as the "loop is necessary" task) $0.6
+#### C4 with accumulating memory (Fable): AO fails at one site (pass-t ':' code on d>t items drifts at onset).
+CA1 (K13) SG-WRITE: detach ':' write source for t<d (answer grad reaches pass-t only via shared weights) — localises drift path vs weight interference; Note 251-10 harness 2k $0.3 | 2502.05171, 2506.21734, 2510.04871
+CA2 (K14) ONSET-FREEZE (LP-FT two-timescale) + EMA write source $0.3-0.6 | 2202.10054, 2006.07733, 1703.01780
+CA3 (K15) MULTI-LEAF QUESTIONS (same text, sibling leaf finals co-batched; ancestor never a target) $0.6 — Audit flag | 2407.20311
+CA4 (K16) SHARED-STEP SIAMESE (S_1 consistency across pairs sharing S_0,S_1 sentences; VICReg variance) $0.5 | 2011.10566, 2105.04906, 2006.07733
+CA5 (K17) IDENTITY-SUFFIX UPWEIGHT — needs Audit ruling $0.4
+CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO; DISTILL-TO-DM sub-arm needs ruling) ~$2 after §267 | 2402.14740
+
 ## Changelog
+- 2026-11-03 16:56: wave 3 merged (21 Fable agents: interpretability, formation dynamics, lineage compression, efficiency, statistics, memory capacity, compositional generalisation, verbalizer, test-time scaling, hybrid, expressivity theory, benchmark scouting, history taxonomy, robustness, alternative paradigms, multi-task, RL post-training, number representation, plan-free stopping, scaling, C4 with accumulating memory). Shortlist in §13.1; process rules in §13.0.
 - 2026-11-03 16:34: wave 2 merged (9 agents + Audit NORTH_STAR_GAP / VALIDITY_STATS / C7_EDITABLE / EXTERNAL_SOTA). Queue re-ranked into lanes A-E. §264 / §265 amended pre-output (Notes 264-3 / 265-2); Theory's §264 predictions committed (Note 264-2); §266 SAME-DATA BASELINES registered. M1 struck; the C2 bundle absorbed into §264; K1 -> K1a (OPS_CHAIN); E3 top-k de-ranked.
 - 2026-11-03: created from 11 research passes (~95 entries; merges noted inline). §263 ORDER-FREE running.
 - 2026-11-03 16:17: Audit leads L1 (attention fading: D1a diagnostic + D1b SSMax) and L2 (M8 decoder text-dropout) added. Next registration: D1 + D1a (§265), then P1 / P2 after §263.
