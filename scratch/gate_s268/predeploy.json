@@ -1,12 +1,12 @@
 {
  "blobs": {
   "boxes/inject_aw.py": {
-   "head": "bfe7437d21a30db7eea18540e0129523f9066c06",
-   "disk": "bfe7437d21a30db7eea18540e0129523f9066c06"
+   "head": "3e6f17b2dbcfdada7fe58de799cde054da03d84e",
+   "disk": "3e6f17b2dbcfdada7fe58de799cde054da03d84e"
   },
   "boxes/inject_aw_eval.py": {
-   "head": "8c339c2cb00f2cb6c4e427a50a6426290d1b567d",
-   "disk": "8c339c2cb00f2cb6c4e427a50a6426290d1b567d"
+   "head": "030c31e7b84ef95fd37e0acae3c5aaecb2dc8c99",
+   "disk": "030c31e7b84ef95fd37e0acae3c5aaecb2dc8c99"
   },
   "boxes/insert_render.py": {
    "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
@@ -65,8 +65,8 @@
    "disk": "2a87be4d0a64747deef83199529e0f3f27aa7945"
   },
   "scratch/gate_s268.py": {
-   "head": "a8ac4876ba8edf5930090672bea142c8bf985819",
-   "disk": "a8ac4876ba8edf5930090672bea142c8bf985819"
+   "head": "a648f13caabc36962e2025305f3a063b6ea0c4e8",
+   "disk": "a648f13caabc36962e2025305f3a063b6ea0c4e8"
   },
   "scratch/gate_s257.py": {
    "head": "a36b4a0164c315eb55a869f66be7831d914fd995",
@@ -104,6 +104,14 @@
  ],
  "predeploy_ok": true,
  "diff_vs_bun_s1": {
+  "ask_p": [
+   null,
+   0.0
+  ],
+  "ask_perm_p": [
+   null,
+   0.5
+  ],
   "cue": [
    "step",
    "target"
@@ -131,6 +139,10 @@
   "keep_final_ckpt": [
    true,
    false
+  ],
+  "nk": [
+   null,
+   0
   ]
  }
 }
