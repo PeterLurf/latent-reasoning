@@ -354,6 +354,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
+| 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **REGISTERED 11-03; score_ls.py 10/10; guard $8** |
 
 ## Live sections
 
@@ -20065,6 +20066,47 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - P(PARK) ~0.2.
   - Censoring: VOID-RERUN once on a build failure.
 - **Cost:** em 2 x ~$1.5 + 3 CTRLs x ~$1 ≈ $6; guard **$8**.
+
+## 268. LINEAGE-SEED: does bun's scorecard replicate from an independent seed of the whole lineage? (X7 / B3; Audit standing rule 2 and VALIDITY_STATS; lane A3; Theory's design; Audit approves; guard **$8**; pre-registered 2026-11-03 16:42 EST, before any build or output)
+
+- **Why (Audit VALIDITY_STATS):**
+  - Every "2/2" in §251-§265 descends from one lineage. rcb_plaw4_s1 / s2 and later stages all start from aw_plaw2_s1 + s233_askname_s1.
+  - The 95% lower bound on per-seed success is ~0.22, and §255 already went from 2/2 to 1/4.
+  - Until an independent seed exists, every claim is scoped "one lineage".
+- **Lineage, traced from the args.json files:**
+  - s233_askname (8k, d_max 2, ow_topo, RTX 4060)
+  - -> aw_plaw2 (P-2, 12k, d <= 2, from askname)
+  - -> rcb_plaw4 (16k, d <= 4)
+  - -> dis (16k, distract p 1.0)
+  - -> dch (8k, §257 mix)
+  - -> bun (8k, hold_inc 1.6).
+  - Total 68k steps.
+- **Arm:** seed 3 at every stage. Each stage uses its s1 stage's args (--args_ref) except the seed and the init paths, on RTX 3090 throughout.
+  - Disclosed: askname_s1 trained on a 4060, and the GPU class can change the basin.
+  - Stage evals use the parts each s1 stage ran.
+- **Stage gates (theory/score_ls.py, fixtures 10/10). Stop at the first failure and label BREAKS-AT-<stage>:**
+  - askname: d 1 >= 0.98;
+  - aw_plaw2: d 2 >= 0.95 AND pass-2 WS d 2 >= 0.90 (gated on the mechanism, per §253);
+  - rcb_plaw4 and dis: d 1-4 >= 0.95;
+  - dch: d 1-4 >= 0.98.
+- **Final binding on bun_s3 (the §259 bars):**
+  - **RETAIN:** d 1-4 >= 0.98, NOT-DECODER <= 0.20, SWAP4, LP5-D4.
+  - **C2:** d 6 >= mean(bun_s1, s2 d 6) - 0.05 and d 7 >= mean(bun d 7) - 0.05.
+  - **C6:** the K' 64 / 128 hold.
+  - **CONTENT:** H-CHAINSRC-OP >= 0.85, min pos >= 0.80.
+  - Wilson CIs + NEAR on d 6 / d 7.
+- **Labels and consequences:**
+  - **LINEAGE-REPLICATES:** the scope becomes "two independent lineages (3 seeds)" for the bun scorecard.
+  - **LINEAGE-PARTIAL:** the failing rows are scoped "one lineage; not replicated" in sota_arch.json.
+  - **BREAKS-AT-<stage>:** seed sensitivity is disclosed at that stage, and every 2/2 stays "one lineage". A break is itself a finding: it localises the fragile stage.
+- **Scope:** one extra lineage. A fully independent replication would need a second generator draw; the generator seeds are part of the args and stay the same.
+- **OC:**
+  - P(REPLICATES) ~0.5 (basin entry is seed- and GPU-sensitive).
+  - P(BREAKS-AT-aw_plaw2) ~0.2.
+  - Censoring: a stage crash gets VOID-RERUN once; a NO-SEED at P-2 is a result, not a void.
+- **Cost:** 6 stages ≈ $5 + evals ≈ $0.6; guard **$8**. Sequential, ~12 h; one filler at a time.
+  - It can interleave with §266 / §267 hosts.
+  - Each stage's model.pt is mirrored off-host (it is the next stage's init).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.

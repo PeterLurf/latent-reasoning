@@ -41,7 +41,7 @@ Standing statistics rules (Audit 11-03):
 |---|---|---|---|---|
 | A1 | §264 | SCORECARD-CHECK: ER / LFI / CY cue schedules; are C5 / C6 plan-clocked? (+ op_count; Theory predictions in Note 264-2) | ~0.5 | approved; amended 264-3 |
 | A2 | §266 | SAME-DATA BASELINES: X3 text CoT (sentence x2 + value-only); X5 one-hop pipeline; C7 TEXT-SUBSTITUTE | ~4 | registered |
-| A3 | X7 / B3 | one fresh FULL-LINEAGE seed (new askname + P-2 seed). Makes every "2/2" honest | ~5 | to register |
+| A3 | X7 / B3 | one fresh FULL-LINEAGE seed (new askname + P-2 seed). Makes every "2/2" honest | ~5 | **§268 registered** |
 | A4 | E0 | C3 RE-SCOPE + G-TIME: serial depth is only 1.2-1.6x better than value-only text; FLOPs 2.4-9.1x worse; bs64 slower | ~0.1 | to register (descriptive) |
 
 **Lane B: restriction 2 (C4), in parallel with A**
