@@ -350,6 +350,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **APPROVED by Audit 11-03 (261-1).** **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
 | 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **PILOT PARK 11-03 (262-3): NK ablation drop 0.004 (binding unused); but CTRL (perm + one-hop ':'-CE co-training) fixes order-bound selection (pass-1 perm WS 0.98 / 0.96, conditional 0.95-0.97); ~$1.73.** **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
 | 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **APPROVED by Audit 11-03 (263-1: CONTENT binding).** **REGISTERED 11-03; score_of.py 10/10; guard $4** |
+| 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
 
 ## Live sections
 
@@ -19865,6 +19866,66 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Scope:** plan given (the cue names S_t); the aux names steps in training; REG frames 0-5; one lineage.
 - **OC:** P(ORDER-FREE-C1 per seed) ~0.5 (the pilot's selection fix is strong; the C2 retention is the risk) vs ~0.05 if the 2k gain was pilot-only. Censoring: VOID-RERUN once.
 - **Cost:** 2 x ~$1.1-1.3 + evals ≈ $2.8, guard $4.
+
+## 264. SCORECARD-CHECK: are bun's C5 halt and C6 hold the model's own, or clocked by the given plan? (C5 / C6 scope; red-team X1 / X2 from docs/EXPERIMENT_BACKLOG.md; eval-only; Theory's choice, Audit-agreed bundle; guard **$1.5**; pre-registered 2026-11-03, before any build or output)
+
+- **Why (backlog red team X1 / X2):** the pass-t cue is S_min(t, d), so after pass d it repeats S_d.
+  - The hold penalty was trained on exactly those repeated-cue passes, and the C5 rule (answer unchanged for 3 passes, Note 259-11) halts once the answer stops changing.
+  - "Halt when the cue repeats" would give khalt = d - 1 with no model decision at all.
+  - The current scorecard cannot separate "the model stopped computing" from "the plan stopped changing".
+- **Model:** bun_s1 / bun_s2 (§259) as stored. Eval only: no training and no trainer code. The new eval parts use the existing `passes(..., seqs_of_t, Td, on_state)` hooks (boxes/inject_aw_eval.py:55). Binding evals run on a cloud host (local RAM rule).
+- **Part `cue_clock`:** REG TEST2, all items, fp32, K' 0..24. For each schedule the pass-t input is the run's own cue input with the cue's entity token swapped. The token sits 6 before ':' (`CUE_NAME_OFF`, as in §263's name_swap), and the original token is asserted before the swap.
+  - **STD** (d 3-8): the run's cue S_min(t, d).
+  - **ER EARLY-REPEAT** (d 3-6): S_min(t, d - 2). The plan stops two steps early and then repeats.
+  - **LF LATE-FRESH** (d 3-6): S_t for t <= d. After that, at each pass, a name absent from the item, a new one per pass, drawn without replacement from the 40-name set minus the item's names (default_rng((26400, d, i)); cycle if exhausted).
+  - **CY CYCLE** (d 3-6): S_((t - 1) mod d) + 1. The plan is re-run, which is also the backlog's D5 RE-SWEEP.
+  - Stored per item:
+    - pred at every K' (the decoder answer);
+    - rel_inc_t = ||S_t - S_t-1|| / ||S_t-1|| (Frobenius over every state tensor, t 2..24);
+    - ||S_t||;
+    - the same split by head family (additive / gated-delta; descriptive);
+    - for STD d 6-8, the 11-way decoder logits at K' 0..12 (4 dp; for the descriptive contrast-decode read).
+- **Part `op_count` (descriptive; backlog D1 S0):** TEST2 d 4 with k in {0, 2, 4, 6} extra inserts (IR.distract_mix, types s256 / chain / givop, seed 26410; answer unchanged, asserted). Measure acc at K' 8 and WS per pass, to compare the op-sentence count at fixed depth with d 8.
+- **Binding for SCOPE wording (theory/score_sc.py, fixtures 7/7):** per seed and d 3-6, with c = the median STD rel_inc over compute passes 2..d, h = the median over hold passes d+2..d+6, CONTRAST iff c >= 3h, and tau = sqrt(c h).
+  - **ER** (r = d - 2):
+    - PLAN = the ER rel_inc over passes r+2..r+4 < tau AND P(r = 3 halt at khalt <= r + 1) >= 0.8. The hold and the halt follow the cue repeat even though the asked entity was never reached.
+    - COMP = the ER increments stay above tau or the early halt <= 0.2.
+    - Anything else is MIXED.
+  - **LF:**
+    - COMPLETION = the LF rel_inc over passes d+2..d+6 < tau AND acc at K' 24 >= STD - 0.02. The model holds after finishing even though the cue keeps changing.
+    - CUE = the increments stay above tau or acc at K' 24 <= STD - 0.10.
+  - **CY:**
+    - FIXED = acc at every K' = k d >= acc(d) - 0.02 AND the median ||S_24|| / ||S_d|| <= 1.5. Re-running the plan leaves the answer: the writes are idempotent.
+    - FREEZE = some acc(k d) < acc(d) - 0.05 or the ratio > 1.5.
+  - **Per seed:** a schedule's label is the label held at >= 3 of the 4 depths. VALIDITY: STD acc at K' 8 is within 0.015 of the stored eval_acc, else VOID.
+  - **Consequences (both seeds must agree; otherwise MIXED and no change, disclosed):**
+    - ER PLAN -> **C5 PLAN-CLOCKED**: SOTA C5 goes from "met, scoped" to "partial (the stop follows the given plan's end)". C5 work then moves to plan-free settings (backlog P1 / P2 + H2).
+    - ER COMP -> C5 unchanged.
+    - (LF COMPLETION or CY FIXED) -> C6 unchanged.
+    - (LF CUE and CY FREEZE) -> **C6 SCOPED**: "holds under a repeated cue".
+- **Descriptive:**
+  - STD d 7-8 acc at K' 8 / 12 / 16 / 24 (does more thinking past K = 8 help?);
+  - CY flips between K' d and 2d (wrong -> right, right -> wrong);
+  - acc by K' and rel_inc by t per schedule;
+  - the family split;
+  - the contrast-decode grid on STD d 6-8 logits, argmax(logits(S_d) - a logits(S_d-r)), a in {0.25, 0.5, 1}, r in {1, 2, 3}. This is descriptive only, and any gain needs a fresh draw before a claim.
+- **(b) $0 reads on stored outputs (pre-stated in theory/read_s264_stored.py; computed only after Audit's ack; descriptive):**
+  - **X4a FIRST-ERROR:** bun eval_ws_deep d 5-8, the first pass whose ':' readout != v_t.
+    - UNTRAINED-PASS if >= 0.6 of first errors at d 7-8 fall at t >= 5;
+    - EARLY if >= 0.4 at t 1-2;
+    - else ACCUMULATE.
+    - The next C2 lever (pass training vs selection / length) follows from this.
+  - **M1 ECHO split:** p2m_s1 / p2m_s1b eval_swap_k (d 2, S_2 := donor's).
+    - follow_dfin = S_2's v_2 is used; follow_ca = the decoder recomputes from v_1 + text.
+    - Validity: P(dfin == ca) <= 0.5. Readings: USED-V2 / V1+TEXT / NEITHER.
+    - Context: the stored pass-2 ':' readout == v_1 on 0.837 / 1.000 of TEST2 d 2. This was read post-hoc by the §258 research agent and is descriptive.
+- **Deferred to a later cell:** backlog X5 ONE-HOP-PIPELINE and R5 TEXT-CHECKPOINT RESTART. Both need a render that turns S_t's op sentence into a stated given, so they will share one build. D3 CENTROID-SNAP is also deferred: the write carries a pass counter (251-16), so its centroids need a per-pass design.
+- **Scope:** bun only; plan given; REG frames 0-5.
+- **OC:**
+  - P(C5 PLAN-CLOCKED) ~0.7: bun was never trained on a cue that repeats early, and the hold was trained on the repeat.
+  - P(C6 unchanged) ~0.5: gated-delta heads can be idempotent, but additive heads add on every re-write.
+  - Either outcome changes how the scorecard is worded. Censoring: a VOID reruns once.
+- **Cost:** two eval cells on a 3090, ~15 min each, ≈ $0.3-0.5; guard $1.5. Queues after the s270 chain's filler exits (one filler at a time; Audit 11-03).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.

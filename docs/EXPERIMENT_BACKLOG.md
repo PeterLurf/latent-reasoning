@@ -22,7 +22,7 @@ Started 2026-11-03 from 11 parallel research passes:
 
 | # | ID | Experiment | Targets | First stage, $ | Score | Depends on | Status |
 |---|---|---|---|---|---|---|---|
-| 1 | X1+X2 | CUE-CLOCK + FREEZE-vs-FIXED-POINT: are C5 / C6 plan-clocked? | C5, C6 scope | eval $0.2 | 12.6 | – | queued |
+| 1 | X1+X2 | CUE-CLOCK + FREEZE-vs-FIXED-POINT: are C5 / C6 plan-clocked? | C5, C6 scope | eval $0.2 | 12.6 | – | **§264 registered** |
 | 2 | X5 | ONE-HOP-PIPELINE baseline + swap-at-t curve | C1 framing | eval $0.2 | 10.0 | askname ckpt | queued |
 | 3 | X4+D3+D5+E1+H5 | C2 diagnostic bundle: first-error pass, length-matched d4, K′12/16, centroid snap, re-sweep, contrast decode, latent beam | C2 | eval $0.3 | 8.0 | – | queued |
 | 4 | M1 | ECHO-GATE: medium's pass-2 write vs echo (re-gate §258) | scale, C1 | eval $0.3 | 6.7 | p2m_s1b model.pt | queued |
@@ -49,7 +49,7 @@ Key fact: the per-pass cue is spine[min(t, d)], so after pass d the cue repeats 
 - **X1 CUE-CLOCK** — C5, C6, C1.
   - Feed EARLY-REPEAT cues (S_1, S_2, S_2, …) and LATE-FRESH cues (a new distractor name each pass after S_d). Read rel_inc, ‖S‖ and pred per pass.
   - If the freeze follows the cue, C5 / C6 are re-scoped to "under a repeated cue".
-  - Prior: 2607.20519 (halting readouts vs trajectory), 2606.29983 (spurious loop-length correlation), 2310.02226 (pause tokens). Cost $0.2.
+  - Prior: 2607.20519 (halting readouts vs trajectory), 2606.29983 (spurious loop-length correlation), 2310.02226 (pause tokens), 1603.08983 (ACT), 1807.03819 (Universal Transformers), 2606.18206 (Fixed-Point Reasoners, convergence halting), 2608.18222 (settle / drift; an answer-only freeze fails at depth; key for X2) (Literature 11-03). Cost $0.2. **Registered as §264.**
 - **X2 FREEZE-vs-FIXED-POINT** — C6.
   - Cycle the cues S_1..S_d repeatedly to K′64. Idempotent writes mean C6 is a property of the loop; collapse or ‖S‖ growth means it is a freeze. Bar: ≥ K′8 − 0.02.
   - 2509.23314, 2409.15647. Same cell as X1.
@@ -121,7 +121,7 @@ Structural gift: 11 is prime, so every op (+c, ×c with c ≠ 0) is a bijection 
     - The gradient is posterior − prior, and at init the posterior equals the prior (v_1), so there is no onset drift.
     - Because the ops are bijections, the posterior collapses inductively.
   - Qualifier: the state space is designed (no per-item labels, but not a task-agnostic state).
-  - 2312.02179 (TRICE), 2512.20169, 1805.10872, 2212.12393, 2503.18866.
+  - 2312.02179 (TRICE), 2512.20169, 1805.10872, 2212.12393, 2503.18866; closest method prior 2007.01919 (exact marginalisation of discrete latents via sparsity); 2310.04363 (amortised GFlowNet posterior over CoT); 1807.02322 (MAPO) (Literature 11-03).
   - Pilot:
     - Stage A, the AO-REP recipe at d_max 2 with 2 seeds: WS d 2 pass 1 ≥ 0.8 at 1k / 2k (AO 0.09–0.27), with the K′1-vs-K′2 shortcut exclusion. Cost ~$2.
     - Stage B: d ≤ 4 extrapolation. Cost ~$10.
@@ -226,7 +226,7 @@ Entries:
 Lesson from NK: any pathway added beside DeltaMem needs DeltaMem-head dropout (p 0.3–0.5) during training and an ablation gate; otherwise a negative result can't be read.
 - **A2 MULTI-SITE READ** at blocks 2 / 6 / 10, each with zero-init W_o. 2002.09402, 2401.02412, 2207.06881. Cost $1.
 - **A3 GATED CROSS-ATTENTION EPISODIC SLOTS**: one slot per pass, softmax read, tanh gate at 0.
-  - 2204.14198, 2008.02217, 2203.08913, 2407.04841.
+  - 2204.14198 (Flamingo: its tanh-gated, zero-init cross-attention), 2008.02217, 2203.08913, 2407.04841.
   - Pilot: d 8 ≥ 0.75 and slot ablation ≥ 0.3. Cost $1.2. Sibling of ARCH #2.
 - **A4 COCONUT HYBRID latent tokens**: 2412.06769, 2502.21074, 2310.02226. Cost $1.2.
 - **A5 ROUTED MULTI-SLOT gated-delta (RIM)**: 1909.10893, 1907.05242, 2412.09764, 2405.06394. Cost $1; prior lowered after NK.
@@ -247,7 +247,7 @@ Published GSM8K numbers (2506.18582 Table 1):
 
 Entries:
 - **M1 ECHO-GATE** ($0.3): a pass-2 SWAP on d 3 + aux + echo rate, on p2m_s1b.
-  - 2303.08112, 2406.12775, 2310.04625.
+  - 2303.08112, 2406.12775, 2310.04625 (copy suppression: the v_1 echo may be a copy head, the opposite of a suppression head).
   - PASS if follow ≥ 0.90 and aux ≥ 0.95; PARK if < 0.5.
 - **M2 COLON-CE** ($1.3): CE on the ':' logits at pass t (generalised --ask_p). 2309.05605.
 - **M3 SHORTCUT-PRESSURE** ($4): d_max 3 and / or an S-only decoder. 2402.16837, 2411.16353, 2405.15071.
@@ -280,3 +280,4 @@ Entries:
 
 ## Changelog
 - 2026-11-03: created from 11 research passes (~95 entries; merges noted inline). §263 ORDER-FREE running.
+- 2026-11-03: Literature spot-check (docs/LIT_BACKLOG_SPOTCHECK_2026-11-03.md): all 160 ids resolve; missed priors added to X1 / K1. X1 + X2 (+ op_count, X4a, M1 stored reads) registered as §264 SCORECARD-CHECK; X5, R5 and D3 deferred to a later cell.
