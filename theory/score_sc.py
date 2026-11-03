@@ -17,7 +17,7 @@ Per seed, d 3-6 (binding for SCOPE wording, Audit 11-03):
 Verdict (both seeds must agree):
   C5: ER PLAN in both -> 'C5 PLAN-CLOCKED' (SOTA C5 -> partial: the stop follows the given plan's end); ER COMP in both -> 'C5 unchanged'; else 'C5 MIXED'.
   C6: (LF COMPLETION or CY FIXED) in both -> 'C6 unchanged'; (LF CUE and CY FREEZE) in both -> 'C6 SCOPED (holds under a repeated cue)'; else 'C6 MIXED'.
-Descriptive: STD d 7-8 acc at K' 8 / 12 / 16 / 24; CY flips K' d -> 2 d (wrong->right, right->wrong); ER / LF / CY acc by K'; per-schedule median rel_inc by t.
+Descriptive: ER accuracy at the r = 3 halt point (Note 264-1, Audit: does an early halt return a pre-target answer); STD d 7-8 acc at K' 8 / 12 / 16 / 24; CY flips K' d -> 2 d (wrong->right, right->wrong); ER / LF / CY acc by K'; per-schedule median rel_inc by t.
     python -B theory/score_sc.py [--fixtures]
 """
 import argparse, json, math, os, sys, tempfile
@@ -90,7 +90,8 @@ def seed(runs, run):
     per = {str(d): at_d(I, d) for d in DS}
     desc = {"std_long": {str(d): {str(k): acc(I["STD"][str(d)], k) for k in (8, 12, 16, 24)} for d in (7, 8) if str(d) in I["STD"]},
             "acc_by_k": {s: {str(d): [acc(I[s][str(d)], k) for k in range(KM + 1)] for d in DS} for s in ("ER", "LF", "CY")},
-            "rel_inc_by_t": {s: {str(d): [med_t(I[s][str(d)], t) for t in range(2, KM + 1)] for d in DS} for s in ("STD", "ER", "LF", "CY")}}
+            "rel_inc_by_t": {s: {str(d): [med_t(I[s][str(d)], t) for t in range(2, KM + 1)] for d in DS} for s in ("STD", "ER", "LF", "CY")},
+            "er_acc_at_halt": {str(d): sum(p[halt_k(p)] == y for p, y in zip(I["ER"][str(d)]["pred"], I["ER"][str(d)]["ans"])) / len(I["ER"][str(d)]["ans"]) for d in DS}}   # Note 264-1 (Audit)
     return {"label": "VOID" if not valid else "ok", "valid": valid, "per_d": per, "ER": agg(per, "ER"), "LF": agg(per, "LF"), "CY": agg(per, "CY"), "desc": desc}
 
 

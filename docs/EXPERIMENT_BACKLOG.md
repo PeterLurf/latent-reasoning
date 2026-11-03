@@ -25,7 +25,7 @@ Started 2026-11-03 from 11 parallel research passes:
 | 1 | X1+X2 | CUE-CLOCK + FREEZE-vs-FIXED-POINT: are C5 / C6 plan-clocked? | C5, C6 scope | eval $0.2 | 12.6 | – | **§264 registered** |
 | 2 | X5 | ONE-HOP-PIPELINE baseline + swap-at-t curve | C1 framing | eval $0.2 | 10.0 | askname ckpt | queued |
 | 3 | X4+D3+D5+E1+H5 | C2 diagnostic bundle: first-error pass, length-matched d4, K′12/16, centroid snap, re-sweep, contrast decode, latent beam | C2 | eval $0.3 | 8.0 | – | queued |
-| 4 | M1 | ECHO-GATE: medium's pass-2 write vs echo (re-gate §258) | scale, C1 | eval $0.3 | 6.7 | p2m_s1b model.pt | queued |
+| 4 | M1 | ECHO-GATE: medium's pass-2 write vs echo (re-gate §258) | scale, C1 | eval $0.3 | 2.0 | p2m_s1b model.pt | **demoted (Note 264-1: decoder computes the last hop from v_1 + text, follow_ca 1.00); M3 / M2 next for medium** |
 | 5 | D1-S1 | DENSE-DISTRACT: 0–8 inserts decouple op-sentence count from depth | C2, C1 | 2k $0.2 | 6.4 | – | queued |
 | 6 | P1 | SELF-CUE: the loop names its next entity (plan-free at test) | C1, C5, C7 | 2k $0.35 | 5.0 | §263 read | after §263 |
 | 7 | K3-S0 | PREFIX-KL: the model's own d = t prefix answer anchors the onset code | C4 | 2k $0.3 | 4.7 | prefix builder | queued |
@@ -280,4 +280,5 @@ Entries:
 
 ## Changelog
 - 2026-11-03: created from 11 research passes (~95 entries; merges noted inline). §263 ORDER-FREE running.
+- 2026-11-03 16:15: Note 264-1 stored reads: X4a UNTRAINED-PASS (no first errors at passes 1-2; pass 7 reliability 0.91 at d 7 vs 0.59 / 0.80 at d 8, so later passes degrade with the op-sentence count, which favours D1 DENSE-DISTRACT); M1 V1+TEXT (medium's decoder ignores S's v_2; M1 demoted, M3 SHORTCUT-PRESSURE / M2 COLON-CE up).
 - 2026-11-03: Literature spot-check (docs/LIT_BACKLOG_SPOTCHECK_2026-11-03.md): all 160 ids resolve; missed priors added to X1 / K1. X1 + X2 (+ op_count, X4a, M1 stored reads) registered as §264 SCORECARD-CHECK; X5, R5 and D3 deferred to a later cell.

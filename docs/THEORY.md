@@ -23942,6 +23942,25 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 **Note 263-2 (2026-11-03 16:08 EST; scope caveat recorded before any §263 output; Audit-requested).**
 - **ORDER-FREE is not a C4 route.** The one-hop ':'-CE co-training items for later steps ("How many <u> does S_2 have?" with S_1 rewritten as a stated given) are built with simulator values, so they are hand-built intermediate states, like the per-pass aux. A pass of §263 would extend C1's scope (order-free) only; C4 stays not met. A C4 version would need targets from the model's own shorter problems (backlog K3 PREFIX-KL). Source: the C1/C4 backlog research pass (docs/EXPERIMENT_BACKLOG.md).
 
+**Note 264-1 (2026-11-03 16:15 EST; §264 APPROVED by Audit, guard $1.5; one descriptive addition; the pre-stated $0 reads, run twice with byte-identical output).**
+- **Audit addition (descriptive):** report ER accuracy at the r = 3 halt point. This shows whether a plan-clocked early halt returns a wrong, pre-target answer, which is the user-visible cost. It is in score_sc.py (`er_acc_at_halt`), fixtures 7/7. The cell needs no change because pred is stored at every K'.
+- **X4a FIRST-ERROR (stored bun eval_ws_deep d 5-8): UNTRAINED-PASS in both seeds.**
+  - No first error falls at passes 1-2 (share 0.000 / 0.002 at d 8).
+  - Share of first errors at passes >= 5: 0.94 / 0.91 at d 7 and 0.99 / 0.97 at d 8.
+  - Conditional per-pass reliability P(ok at t | ok before):
+    - passes 1-5 >= 0.97 at every d;
+    - pass 6: 0.98 / 0.97 at d 6, 0.92 / 0.95 at d 7, 0.93 / 0.95 at d 8;
+    - pass 7: 0.91 / 0.91 at d 7 but **0.59 / 0.80 at d 8**;
+    - pass 8 at d 8: 0.69 / 0.70.
+  - Descriptive reading, post-hoc: the same pass index is less reliable when the item has more op sentences (pass 7 at d 8 vs d 7). This fits §241 (the op-sentence count hurts) and favours backlog D1 DENSE-DISTRACT over a pure pass-index fix.
+- **M1 ECHO split (stored p2m_s1 / p2m_s1b eval_swap_k, d 2, S_K := donor's S_K at K = 8): V1+TEXT in both learning rates.**
+  - follow_ca 1.000 / 1.000; follow_dfin 0.000 / 0.000; floor 0.17 / 0.19; P(dfin == ca) 0.000.
+  - With the donor's state, medium's decoder always applies the recipient's own op 2 to the donor's v_1. The v_2 content that the aux decodes from S is never used.
+  - Together with the pass-2 ':' == v_1 echo (0.84 / 1.00), the final hop is computed by the decoder from v_1 + text, not by pass 2.
+  - Disclosure: this swap is at K = 8 (the whole state), not a pass-2 swap. A pass-2 SWAP gate (backlog M1) would separate 'pass 2 writes v_2' from 'the decoder ignores it'. The stored aux = 1.00 says the write is decodable, and this read says the decoder does not use it.
+  - Consequence for the backlog: M2 COLON-CE (train the ':' readout at pass t) and M3 SHORTCUT-PRESSURE (an S-only decoder) target exactly this decoder shortcut. M1's pass-2 swap is now less informative than M3.
+- **Citation (Literature, docs/LIT_HALTING_DEFS_2026-11-03.md):** §264's rel_inc / tau rule is a relative-increment settle criterion in the spirit of FPRM's residual halting (2606.18206: r = ||z - f(z)||inf / ||f(z)||inf, fixed tau 0.1). Here tau is set per model as sqrt(c h). It is NOT Viakhirev's 'settle' (2608.18222), which needs a lambda_max reading. Viakhirev's Prop. 1(b), that a finite constant window certifies nothing, is why LF / CY pair rel_inc with the K' 24 accuracy condition.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
