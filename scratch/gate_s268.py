@@ -1,5 +1,5 @@
 """§261 TARGET-CUE host gates (Audit G-D b412 condition (1)) -> scratch/gate_s268/<part>.json ("pass"); run on the pilot's host by scratch.s268_gates (the b412 gates line).
-The pilot flags = gate_s257.dch_flags(1, the bun_s1 copy) + --hold_inc 1.6 --hold_log (bun_s1's recipe; its own cue is 'step'); det + fp32 + micro 1 for the bitwise parts.
+The pilot flags = gate_s257.dch_flags(1, the bun_s1 copy) + --hold_inc 1.6 --hold_log (bun_s1's recipe; its own cue is 'step'); det + fp32 + micro 8 (--micro = the chunk count: 8 chunks of bs / 8; micro 1 OOMed 24 GB on b413) for the bitwise parts.
   offbit_aw   flags-off bitwise: the pre-§261 code (scratch/s268_ref.tar = git archive cd814732^ boxes/*.py (top level) + scratch/s222_det_wrap.py, run from its own tree
               scratch/_ref268 with prosqa/ and boxes/runs_fsq/ linked) vs the new tree, boxes/inject_aw with the pilot flags at bun's cue (step), 60 steps: ckpt
               (model / opt / rngs / stream) and logs equal.
@@ -24,7 +24,7 @@ import gate_s228 as G8  # noqa: E402
 import gate_s251 as G1  # noqa: E402
 import gate_s257 as G7  # noqa: E402
 
-OUT = ROOT + "/scratch/gate_s268"; TMP = ROOT + "/scratch/_tmp/s268g"; DEV = os.environ.get("G268_DEV", "cuda:0"); KEYS = G1.KEYS; COM = ["--fp32", "--micro", "1"]
+OUT = ROOT + "/scratch/gate_s268"; TMP = ROOT + "/scratch/_tmp/s268g"; DEV = os.environ.get("G268_DEV", "cuda:0"); KEYS = G1.KEYS; COM = ["--fp32", "--micro", "8"]
 ST = int(os.environ.get("G268_STOP", "0"))                                   # local CPU smoke only: every part stops at ST steps
 OUT = OUT if not ST else ROOT + "/scratch/_tmp/s268g_local"                   # the local smoke never writes the shipped scratch/gate_s268/<part>.json
 REFT = ROOT + "/scratch/_ref268"; INIT = ("boxes/runs_fsq/bun_s1_init/model.pt", "1ad3517b7635fddf")

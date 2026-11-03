@@ -1,6 +1,6 @@
 """§262 NAME-KEYED MEMORY host gates (NK_v1 §7 G-D + Note 262-1) -> scratch/gate_s269/<part>.json ("pass"); run on each pilot host by scratch.s269_gates.
 Flags: BUN = gate_s257.dch_flags(1, the bun_s1 copy) + --hold_inc 1.6 --hold_log (bun's recipe: cue step, --distract_p 1 --distract_mix); PILOT = BUN + --perm_p 0.5
---ask_p 0.25 (+ --nk 1 for the NK arm). det + fp32 + micro 1 for the bitwise parts (s222_det_wrap).
+--ask_p 0.25 (+ --nk 1 for the NK arm). det + fp32 + micro 8 (--micro = the chunk count: 8 chunks of bs / 8; micro 1 OOMed 24 GB on b413) for the bitwise parts (s222_det_wrap).
   offbit_aw    flags-off bitwise: the pre-§262 code (scratch/s269_ref.tar = git archive <pre-§262> boxes/*.py (top level) + scratch/s222_det_wrap.py, its own tree
                scratch/_ref269 with prosqa/ and boxes/runs_fsq/ linked) vs the new tree, BUN, 60 steps: ckpt (model / opt / rngs / stream) and logs equal.
   offbit_perm  the same on the --perm_p-only path (BUN without the distract flags + --perm_p 0.5).
@@ -30,7 +30,7 @@ import gate_s228 as G8  # noqa: E402
 import gate_s251 as G1  # noqa: E402
 import gate_s257 as G7  # noqa: E402
 
-OUT = ROOT + "/scratch/gate_s269"; TMP = ROOT + "/scratch/_tmp/s269g"; DEV = os.environ.get("G269_DEV", "cuda:0"); KEYS = G1.KEYS; COM = ["--fp32", "--micro", "1"]
+OUT = ROOT + "/scratch/gate_s269"; TMP = ROOT + "/scratch/_tmp/s269g"; DEV = os.environ.get("G269_DEV", "cuda:0"); KEYS = G1.KEYS; COM = ["--fp32", "--micro", "8"]
 ST = int(os.environ.get("G269_STOP", "0"))                                  # local CPU smoke only: every training part stops at ST steps
 OUT = OUT if not ST else ROOT + "/scratch/_tmp/s269g_local"                 # the local smoke never writes the shipped scratch/gate_s269/<part>.json
 REFT = ROOT + "/scratch/_ref269"; INIT = ("boxes/runs_fsq/bun_s1_init/model.pt", "1ad3517b7635fddf")
