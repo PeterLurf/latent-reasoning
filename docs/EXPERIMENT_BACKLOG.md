@@ -48,7 +48,7 @@ Standing statistics rules (Audit 11-03):
 
 | # | ID | Experiment | $ | Status |
 |---|---|---|---|---|
-| B1 | K1a | EXACT-EM-11, RESET-DM. Answer-only via the exact forward-DP marginal over Z_11 with no decoder in the loss. Stage A on OPS_CHAIN (the REG add_s DAG steps break Markov-ness; red team), d_max 2→3, with SWAP-V / MEM-ABLATE gates + CTRLs (noise-GRPO, em_hard, TOKEN-INJECT) | ~5 | design memo done; to register |
+| B1 | K1a | EXACT-EM-11, RESET-DM. Answer-only via the exact forward-DP marginal over Z_11 with no decoder in the loss. Stage A on OPS_CHAIN (the REG add_s DAG steps break Markov-ness; red team), d_max 2→3, with SWAP-V / MEM-ABLATE gates + CTRLs (noise-GRPO, em_hard, TOKEN-INJECT) | ~5 | **§267 registered** |
 | B2 | K3 S0 | PREFIX-KL. **Audit ruling 11-03 (Note 266-1): NOT C4** (prefix answers = per-step targets by proxy + the solution graph); descriptive / mechanistic only | 0.6 | demoted |
 
 **Lane C: restriction 1 (plan), after §263 reads**

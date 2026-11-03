@@ -353,6 +353,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **APPROVED by Audit 11-03 (264-1; $0 reads X4a UNTRAINED-PASS, M1 V1+TEXT).** **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
+| 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **REGISTERED 11-03; score_em.py 9/9; guard $8** |
 
 ## Live sections
 
@@ -20010,6 +20011,60 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - P(C7-EDIT) ~0.3: later passes may recompute S_t from the original text.
   - Censoring: a text cell with parsed < 0.9 at d <= 4 is a build bug (VOID-RERUN once).
 - **Cost:** 3 × ~$1.2 text runs + ~$0.3 bun evals ≈ $4; guard **$6**. The bun evals can share §264's host.
+
+## 267. EXACT-EM-11 stage A: does exact marginal likelihood over the Z_11 step values form a multi-pass loop from answers only, without the onset drift? (C4; backlog K1a, lane B; Theory's choice, Audit's lane order; Audit approves; guard **$8**; pre-registered 2026-11-03 16:39 EST, before any build or output)
+
+- **Why:**
+  - **C4** (no hand-built intermediate states) has had no passing line in 266 sections.
+  - The measured failure (Notes 251-8..11): answer CE through the continuous write pulls the pass-t ':' code off v_t on d > t items at onset.
+  - Audit's ruling (Note 266-1): any C4 claim must come from a route in which no step value enters the loss.
+  - **The fix:** make the pass state a categorical value and marginalise it exactly. Every op is a bijection on Z_11 (11 is prime; ow_words ops add / sub / mul by constants and givens), so the gradient on pass t's logits is posterior - prior. At the askname init, pass 1 already reads v_1 (G-AW0 1.000), so its posterior equals its prior and there is no drift. Once pass d reads memory, the posterior collapses onto the true path (wave-2 design memo, backlog §12.2).
+- **Model (new module boxes/inject_em.py; --em 0 must be bitwise inject_aw):** GPT-2 small + DeltaMem; askname init (s233_askname_s1, the AO-REP recipe via --args_ref aw_plaw2_s1).
+  - The step cue gives the plan. Each pass's ':' output is an 11-way categorical over NUM_IDS.
+  - **RESET-DM:** S_t = write_seq(emb(v_t)) on the zero state, with gamma = 1 (so u = LN_w(emb(v_t))). There are exactly 11 possible states and the chain is Markov in v_t-1.
+  - **Loss:** -log p(a) by the forward DP over v_1..v_d-1, in log space. a is read from pass d's categorical. No decoder pass and no aux are in the loss; both are asserted off.
+  - **Cost:** 1 + 11 (d - 1) upper-half forwards per item, with the 11 conditionals tiled into one batch.
+  - **Task:** OPS_CHAIN word programs (ow_words dag=False: every step reads S_t-1 plus a constant or given; no add_s). The red team found that REG's add_s steps read v_j with j <= t-2, which breaks the Markov state. d_max 3, frames 0-5, no distractors, 12k steps.
+- **Cells (RTX 3090):**
+  - em_s1 / em_s2: K1a.
+  - Descriptive CTRLs:
+    - emh_s1: --em_hard 1, max instead of logsumexp;
+    - emt_s1: TOKEN-INJECT-11, the previous value appended as text with the same exact enumeration and no DeltaMem (upper bound);
+    - aoc_s1: the AO recipe, answer CE through the continuous loop, on the same OPS_CHAIN d_max 3 stream. This shows the drift on the same data.
+- **Gates for the build:**
+  - flags-off bitwise vs inject_aw;
+  - an fp64 check that the DP equals the explicit 11^(d-1) path sum at d 3 on 4 items;
+  - gradflow_check (read from the decorators down);
+  - mem_check at the d 3 shape with micro pinned;
+  - a 200-step smoke at full data scale.
+- **Eval part em (eval_em.json), TEST2-chain d 1-5, n 1000:**
+  - acc: the pass-d greedy readout;
+  - ws: the pass-t readout == v_t;
+  - swap_v (d 3): pass 1's write is replaced by write(v'), with v' != v_1 seeded default_rng((26700, i)). follow = the final answer equals the program recomputed with v_1 := v'; floor = P(the intact final equals that answer).
+  - mem_ablate (d 3): pass 3 is run on the zero state.
+  - log.jsonl rows carry ws_readout {d: {t: acc}} at every 1k bin (first 200 TEST2-chain items).
+- **Binding per em seed (theory/score_em.py, fixtures 9/9, Wilson CIs + NEAR):**
+  - **ONSET:** ws_readout d 3 pass 1 >= 0.80 at steps 1000 and 2000. AO showed 0.09-0.27 at these steps.
+  - **FORM:** final ws d 3 passes 1-2 >= 0.90; acc d 2 >= 0.90 and d 3 >= 0.80.
+  - **USE:** swap_v follow >= 0.80 and >= floor + 0.30; mem_ablate d 3 acc <= 0.30, so pass 3 cannot recompute the chain from the text alone.
+  - Label **EM-C4** per seed. **PARK** if ws d 3 pass 1 <= 0.30 at 2k in both seeds.
+  - Descriptive: d 4-5 with given cues; the CTRL cells; posterior entropy per pass.
+- **Scope (stated now):**
+  - "C4 on a designed Z_11 alphabet": no per-item labels and no step values in the loss, but the state alphabet is the task's value set.
+  - The plan is given by the cue; askname init (one lineage; the askname data held intermediate questions, disclosed).
+  - OPS_CHAIN only.
+  - A pass is stage-A evidence. Stage B (d_max 4, ~$5) and stage C (d 5-8 eval) follow only on EM-C4 2/2.
+- **Literature:**
+  - TRICE 2312.02179 uses MCMC-EM over rationales; ours is exact enumeration.
+  - Correia et al. 2007.01919 is the closest method prior.
+  - DeepProbLog 1805.10872 and A-NeSI 2212.12393.
+  - Literature is asked for a novelty check on looped LMs.
+- **OC:**
+  - P(EM-C4 per seed) ~0.4.
+  - The mechanism argues against drift. The risks are an in-pass shortcut (pass d recomputing from text, caught by mem_ablate) and the 11x memory cost.
+  - P(PARK) ~0.2.
+  - Censoring: VOID-RERUN once on a build failure.
+- **Cost:** em 2 x ~$1.5 + 3 CTRLs x ~$1 ≈ $6; guard **$8**.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
