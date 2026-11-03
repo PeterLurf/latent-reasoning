@@ -348,7 +348,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 | 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **SCORED 11-03 (260-5): PLAN-FREE-C1 1/2 - plan-free causal chaining on clean d 1-4 in both; s2 fails CONTENT (min pos 0.75) + C2 (d 6 0.44); without the plan the loop follows reachability and does not stop (H-EXTEND 0.08 / 0.02); $2.23.** **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
 | 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **APPROVED by Audit 11-03 (261-1).** **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
-| 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
+| 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
 
 ## Live sections
 
@@ -23807,6 +23807,13 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (1) --cue target is new trainer / eval code: full host gates (offbit with the flag off, smoke, gradflow) and the 'target_only' assert (the cue names exactly one entity, S_d, byte-identical across passes);
   - (2) bun_s1's recipe (hold + §257 mix), --steps 8000 --stop_at 2000, with the step-0 ref under the target cue;
   - (3) the gen10 drain (s267 family) with NOFETCH on the extract dirs.
+
+**Note 262-1 (2026-11-03 03:01 EST; §262 APPROVED by Audit, guard $15; two scope items recorded before data).**
+- **(1) Closed name set:** NK keys come from the generator's fixed vocabulary of 40 single-token names (nested_words.py:33). A pass claims order-free binding over a known closed name set, not open-vocabulary names.
+  - Descriptive probe in the full stage: TEST-PERM items re-rendered with >= 5 held-out single-token GPT-2 names never used in training (asserted absent from the training name set and from every rendered training text).
+  - The NK read applies to them through the same projection W_n. Reported, not binding.
+- **(2) Retention under the co-training mix:** each arm's clean TEST2 d 1-6 is reported against dch and bun (pilot at 2k and full stage). A loss from the shared one-hop mix is then visible separately from the NK effect.
+- **Gates (Audit):** flags-off bitwise, and fp64 step-0 bitwise with the heads present, including the hold-step norms.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
