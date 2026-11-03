@@ -352,6 +352,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **APPROVED by Audit 11-03 (263-1: CONTENT binding).** **REGISTERED 11-03; score_of.py 10/10; guard $4** |
 | 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **APPROVED by Audit 11-03 (264-1; $0 reads X4a UNTRAINED-PASS, M1 V1+TEXT).** **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
+| 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **REGISTERED 11-03; score_tx.py 13/13; guard $6** |
 
 ## Live sections
 
@@ -19966,6 +19967,50 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - Censoring: VOID-RERUN once; cells that hit the name-budget cap are reported.
 - **Cost:** pilot 4 x 2k ≈ $0.8 + full 2 x 8k ≈ $1.6 + evals ≈ $2.8; guard **$4**. Queues after §264 (one filler at a time).
 
+## 266. SAME-DATA BASELINES: is bun's depth extrapolation latent-specific (X3), what does the loop add over an external one-hop program (X5), and does a text edit at the write pass propagate (C7 TEXT-SUBSTITUTE)? (C2 / C1 / C3 / C7 framing; Audit's NORTH_STAR_GAP first experiment + Audit C7_EDITABLE P1; Theory's design; Audit approves; guard **$6**; pre-registered 2026-11-03 16:29 EST, before any build or output)
+
+- **Why:** every C1 / C2 claim so far is against a one-pass comparator.
+  - NORTH_STAR_GAP: if a text CoT trained on the same REG d <= 4 data extrapolates to d 7, or a text-substitution pipeline reaches d 7 ≈ 1.0, the C2 / C1 rows are properties of the data and the plan, not of the latent loop.
+  - §227's TOPO text CoT (d 6 0.11) is not a same-data comparator: different order mode, curriculum to d 6, no distractors.
+  - C7: §247's round trip was vacuous (the write recomputes from the program text). Audit's P1 replaces the input sentence the write reads.
+- **X3 TEXT-CoT-D4 (3 training cells, GPT-2 small from the pretrained weights; RTX 3090):**
+  - **Data:** bun's REG stream, d <= 4, frames 0-5, §257 distract mix (s256 / chain / givop) at p 1.0.
+  - **Recipe:** §227 (full FT, lr 1e-4, CurGate d-stages 1..4 on step_value_ce, cg_thr 0.45, cap 6000), **24k steps**, so that d <= 4 gets >= 6k.
+  - **Cells:**
+    - tx_s1 / tx_s2: sentence steps "<S_t> has <v_t> <u>." for t = 1..d, then " The answer is <v_d>." + EOS;
+    - txv_s1: value-only steps " <v_t>" with the same answer suffix.
+  - **Disclosed asymmetry:** bun's lineage had more task training and an askname init. Text gets the pretrained init. This favours bun in-range, and is why the verdict reads the extrapolation depths.
+  - **Eval part text** (eval_text.json): free greedy decode on TEST2 d 1-10 (n 1000), max new tokens 6d + 8. Reported: final-answer acc, parsed share, generated tokens.
+- **X5 ONE-HOP-PIPELINE (eval part pipeline on bun_s1 / s2; descriptive framing):** for t = 1..d:
+  1. Render the item with S_t-1's op sentence replaced by the stated given "S_t-1 has v^_t-1 <u>." (v^ is the pipeline's own previous answer). Sentence slot kept; other sentences unchanged; render asserted to re-solve.
+  2. Ask S_t: bun at K' 1 with the cue S_t (acc_bun). Also s233_askname_s1, one pass (acc_ask, descriptive).
+  - TEST2 d 1-10, n 1000.
+- **C7 TEXT-SUBSTITUTE (eval part text_sub on bun_s1 / s2; Audit C7_EDITABLE P1, §247 bars).**
+  - **Cells:** (d, t) in (3,1), (3,2), (4,2), (4,3). For pass t only, S_t's op sentence is replaced by "S_t has x <u>.", via the same render as the pipeline. Passes t+1.. read the original text.
+  - **Conditions:**
+    - rt: x = v_t, round trip;
+    - edit: x' != v_t, seeded default_rng((26600, d, t, i)), with follow = P(final == the program recomputed with v_t := x');
+    - floor: P(intact final == that recomputed answer);
+    - neutral: S_t's sentence replaced by "<absent name> has x' <u>.", the exposure control.
+- **Scorer:** theory/score_tx.py, fixtures 13/13, with Wilson 95% CIs and a NEAR flag (Audit standing rule).
+  - **X3:** a text cell is VALID if d 1-4 >= 0.95. Over valid cells, with t7 / t8 = max d 7 / d 8 acc and bun's mean at K' 8 as the reference (0.86 / 0.53):
+    - **LATENT-SPECIFIC** if t7 <= bun7 - 0.10 and t8 <= bun8 - 0.10;
+    - else **NOT-LATENT-SPECIFIC**, and then C2 in sota_arch.json becomes "partial; not latent-specific";
+    - no valid cell -> UNINFORMATIVE.
+  - **X5:** VALID if one-hop d 1 >= 0.98. **PIPELINE-SOLVES** if d 7 >= 0.95 and d 8 >= 0.90 in both seeds. Then C1 is worded "latent value transport under a given plan; an external one-hop program of the same model solves the depths the loop loses".
+  - **C7:**
+    - EXPOSED if acc_intact - acc_neutral >= 0.30 (pooled over cells);
+    - C7-EDIT if EXPOSED and rt >= 0.95 and follow >= 0.50 and follow >= floor + 0.30;
+    - both seeds C7-EDIT -> C7 "partial: a text edit of the sentence read at pass t propagates through the latent state (scoped: the model's own input path)".
+- **Also reported:** generated tokens -> FLOPs (the C3 formulas from the wave-2 accounting) and text vs bun at matched FLOPs, per d. Descriptive.
+- **Scope:** bun only (one lineage); plan given for the loop and the pipeline; REG frames 0-5.
+- **OC:**
+  - P(X3 NOT-LATENT-SPECIFIC) ~0.4. Text CoT's per-step one-hop is local, but §227 text collapsed past its curriculum.
+  - P(PIPELINE-SOLVES) ~0.7.
+  - P(C7-EDIT) ~0.3: later passes may recompute S_t from the original text.
+  - Censoring: a text cell with parsed < 0.9 at d <= 4 is a build bug (VOID-RERUN once).
+- **Cost:** 3 × ~$1.2 text runs + ~$0.3 bun evals ≈ $4; guard **$6**. The bun evals can share §264's host.
+
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
 - **What 20k draws gave:** a 0.524 augmented share, failing I(t; M) alone (0.0514).
@@ -24025,6 +24070,37 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - **Modal outcome:** C5 PLAN-CLOCKED + C6 unchanged. ER PLAN + CY FIXED with additive ratio ≈ 1 at K' = 2d supports CC. ER COMP with additive growth under CY supports PC.
 - **Why H-INC failed (259-6) is algebraic:** with bounded write norm w, an additive accumulator has rel_inc_t in [1/(t-1), 1/sqrt(t-1)] whether or not the step is done. A fixed tau is therefore depth-correlated by construction.
 - These predictions are scored descriptively against §264's output. They are not binding.
+
+**Note 264-3 (2026-11-03 16:31 EST; §264 amended BEFORE build or output, from the wave-2 red team (#1-5); score_sc.py re-committed, fixtures 10/10).**
+- **(a) Scorer bug fixed.** With h -> 0 (a strong hold), tau was set to 0, so nothing was '< tau' and every ER read COMP and every LF read CUE. Now tau = sqrt(c max(h, c/100)), so tau >= c/10, and h < 1e-6 is flagged h_floor.
+- **(b) LF-IN replaces absent-name LF as the binding C6 schedule.** An absent name cannot be dereferenced, so CUE vs COMPLETION under garbage input was uninterpretable.
+  - New parts on the same TEST2 items re-rendered with 2 s256 inserts (IR.distract_mix types ('s256',), seed 26420, answers asserted):
+    - **STDI**: the run's cue;
+    - **LFI**: S_t for t <= d, then the inserts' computable entities X_1, X_2, X_1, ....
+  - LFI is labelled by the answer, since writing a new entity's value is legitimate computation:
+    - STABLE-ANS if acc24(LFI) >= acc24(STDI) - 0.02;
+    - DRIFT if <= STDI - 0.10.
+  - **C6 unchanged** iff (LFI STABLE-ANS or CY FIXED) in both seeds; **C6 SCOPED** iff (LFI DRIFT and CY FREEZE) in both.
+  - Absent-name LF stays as a descriptive floor.
+- **(c) ER aggregation.** d 3 (r = 1) reproduces the trained d 1 schedule and is trivially PLAN. ER's label now needs >= 2 of d 4-6; d 3 is reported only.
+  - OC revised: P(ER PLAN) ~0.95. ER is now mainly a wording check; the informative schedules are LFI and CY.
+- **(d) rel_inc denominator** stated as ||S_t-1||, not the hh_dump_inc convention ||S_t||.
+- **(e) $0 pre-reads, pre-stated in theory/read_s264_pre.py and computed only after Audit's ack (descriptive):**
+  - KHALT-DETERMINISM: P(khalt == mode) per d 1-4 on stored eval_stab_fresh.
+  - ONE-HOP DECODER: d 4 acc at K' 3.
+  - A decoder max-prob AUC for correctness at d 8, from §264's stored logits, is pre-stated here and read after §264 lands. AUC < 0.6 kills backlog H5 (latent beam).
+
+**Note 265-2 (2026-11-03 16:31 EST; §265 amended BEFORE build or output, from the wave-2 red team; score_dd.py re-committed, fixtures 12/12).**
+- **(a) Pilot GO gates on unconditional ok7 = P(passes 1-7 WS all ok) at d 8** (gain >= 0.10 vs CTRL). rel7 is descriptive: conditioning on passes 1-6 can punish a fix that rescues hard items, and rel7 is None on an empty denominator.
+- **(b) Pilot shortcut guard.** Every D cell needs eval_insert_ho H-CHAINSRC-OP acc8 >= 0.80. All inserts are add_c, so 'ignore add_c about unknown names' is an op-type shortcut the full CONTENT gate would only catch at 8k. insert_ho is added to the pilot's parts.
+- **(c) C2-EXT d 7 >= bun d 7 - 0.02**, matching d 6's tolerance. At SE ~0.011, a true-equal model failed the zero-tolerance bar half the time.
+- **(d) D1a positional control:**
+  - d4k6's inserts are placed AFTER S_4, so every target keeps its prefix and only the competitor count changes.
+  - Selector heads are chosen on passes 2-3 only, never the last op sentence.
+  - Target mass is the SHARE of the ':' query's attention on all op-sentence tokens, so raw dilution by token count does not read as fading.
+- **(e) Name budget never binds** (max 11 names used, 29 free >= 16 drawn). The cap clause is moot.
+- **(f) On GO only, a descriptive length-only control:** one cell ddl_s1 (given-only inserts, no new op sentences, 2k, ~$0.2), to attribute any gain to op count rather than length.
+- **Wilson CI + NEAR** (Audit standing rule) on the full d 8 reading.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

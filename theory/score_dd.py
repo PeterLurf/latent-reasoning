@@ -1,18 +1,21 @@
 """THEORY §265 DENSE-DISTRACT scorer (DD_v1 in THEORY §265; Theory is the only scorer; committed before output).
 Arms (warm from bun_sX; the only change is --distract_nmax: inserts n ~ U{0..nmax}, bun = 2):
   pilot 2k: ddp_s1 / ddp_s2 (nmax 8) vs ddc_s1 / ddc_s2 (nmax 2, the extra-steps CTRL);   full 8k: dd_s1 / dd_s2 (nmax 8).
-PILOT GO (mechanism-gated, Note 264-1): mean over seeds of [acc_D(d 8) - acc_C(d 8)] >= 0.10 AND mean over seeds of [rel7_D - rel7_C] >= 0.10, where
-  rel7 = P(pass-7 WS ok | passes 1-6 WS ok) on TEST2 d 8 (eval_ws_deep items), AND every D cell TEST2 d 1-4 acc >= 0.98. Else PARK.
-FULL binding per seed (vs bun_sX): C2-EXT d 8 acc >= 0.75 AND d 7 >= bun d 7; RETAIN TEST2 d 1-4 >= 0.98, d 6 >= bun d 6 - 0.02, NOT-DECODER d 4 K'2 <= 0.20, SWAP4,
+PILOT GO (mechanism-gated, Note 264-1; amended Note 265-2): mean over seeds of [acc_D(d 8) - acc_C(d 8)] >= 0.10 AND mean over seeds of [ok7_D - ok7_C] >= 0.10,
+  where ok7 = P(passes 1-7 WS all ok) on TEST2 d 8 (unconditional; rel7 = P(pass 7 ok | 1-6 ok) is descriptive, None on an empty denominator), AND every D cell
+  TEST2 d 1-4 acc >= 0.98 AND every D cell eval_insert_ho H-CHAINSRC-OP acc8 >= 0.80 (op-type shortcut guard; all inserts are add_c). Else PARK.
+FULL binding per seed (vs bun_sX): C2-EXT d 8 acc >= 0.75 AND d 7 >= bun d 7 - 0.02 (Note 265-2); RETAIN TEST2 d 1-4 >= 0.98, d 6 >= bun d 6 - 0.02, NOT-DECODER d 4 K'2 <= 0.20, SWAP4,
   LP5-D4; C6 eval_long_k128 d 1-6 acc[64], acc[128] >= acc[8] - 0.02; CONTENT H-CHAINSRC-OP acc8 >= 0.85 and min(by_pos) >= 0.80; STABLE (score_ao).
   Label DENSE-C2 if all pass, else 'FAIL: <criteria>'; per arm k/2.
 D1a ATTENTION-FADING (diagnostic, descriptive; on bun_s1 / bun_s2 eval_attn_fade.json; layout conds[c][t] = per item [12][12] target mass (the ':' query's
-  attention on S_t's op-sentence tokens, layer x head), ws_ok_d8_t7 = per item 0/1 (the d 8 items' pass-7 WS ok given 1-6 ok, None otherwise)):
-  selector heads = top-5 (layer, head) by mean target mass on d4k0 passes 2-4, even-index items; on odd items: drop_d8 = 1 - m(d8, t4) / m(d4k0, t4),
-  drop_k6 = 1 - m(d4k6, t4) / m(d4k0, t4); AUC of m(d8, t7) for ws_ok (1 vs 0). FADING if max(drop_d8, drop_k6) >= 0.30 AND AUC >= 0.65 in both seeds.
+  attention on S_t's op-sentence tokens as a SHARE of its attention on all op-sentence tokens, layer x head; Note 265-2), ws_ok_d8_t7 = per item 0/1 (the d 8 items'
+  pass-7 WS ok given 1-6 ok, None otherwise)); conditions d4k0 (passes 2-4), d4k6 (6 inserts placed AFTER S_4, so every target keeps its prefix; pass 4), d8 (4, 7):
+  selector heads = top-5 (layer, head) by mean target share on d4k0 passes 2-3 only (never the last op sentence), even-index items; on odd items:
+  drop_d8 = 1 - m(d8, t4) / m(d4k0, t4), drop_k6 = 1 - m(d4k6, t4) / m(d4k0, t4); AUC of m(d8, t7) for ws_ok (1 vs 0).
+  FADING if max(drop_d8, drop_k6) >= 0.30 AND AUC >= 0.65 in both seeds.
     python -B theory/score_dd.py [--fixtures]
 """
-import argparse, json, os, sys, tempfile
+import argparse, json, math, os, sys, tempfile
 _HR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(_HR, "theory"))
 import score_ao as AO  # noqa: E402
@@ -37,22 +40,35 @@ def rel7(ws):
         ok = [it["ws_pred"][str(t)][i] == it["v"][i][t - 1] for t in range(1, 8)]
         if all(ok[:6]):
             den += 1; num += ok[6]
-    return num / den if den else 0.0
+    return num / den if den else None
+
+
+def ok7(ws):
+    it = ws["items"]["8"]; n = len(it["sig"])
+    return sum(all(it["ws_pred"][str(t)][i] == it["v"][i][t - 1] for t in range(1, 8)) for i in range(n)) / n
+
+
+def wilson(p, n, z=1.96):
+    c = (p + z * z / (2 * n)) / (1 + z * z / n); h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n); return (c - h, c + h)
+
+
+def near(p, n, bar):
+    return abs(p - bar) <= 2 * math.sqrt(max(p * (1 - p), 1e-12) / n)
 
 
 def pilot(runs):
     rows = {}
     for s, (dn, cn) in PILOT.items():
         f = {k: jl(os.path.join(runs, r, k2 + ".json")) for k, r in (("D", dn), ("C", cn)) for k2 in ("eval_acc",)}
-        w = {k: jl(os.path.join(runs, r, "eval_ws_deep.json")) for k, r in (("D", dn), ("C", cn))}
-        if any(v is None for v in list(f.values()) + list(w.values())):
+        w = {k: jl(os.path.join(runs, r, "eval_ws_deep.json")) for k, r in (("D", dn), ("C", cn))}; ih = jl(os.path.join(runs, dn, "eval_insert_ho.json"))
+        if any(v is None for v in list(f.values()) + list(w.values()) + [ih]):
             return {"verdict": "pending"}
         aD, aC = f["D"]["by_d"], f["C"]["by_d"]
-        rows[s] = {"d8_D": aD["8"]["acc"], "d8_C": aC["8"]["acc"], "rel7_D": rel7(w["D"]), "rel7_C": rel7(w["C"]),
-                   "retain_D": all(aD[d]["acc"] >= 0.98 for d in ("1", "2", "3", "4"))}
-    gd8 = sum(r["d8_D"] - r["d8_C"] for r in rows.values()) / len(rows); g7 = sum(r["rel7_D"] - r["rel7_C"] for r in rows.values()) / len(rows)
-    go = gd8 >= 0.10 and g7 >= 0.10 and all(r["retain_D"] for r in rows.values())
-    return {"verdict": "GO" if go else "PARK", "gain_d8": gd8, "gain_rel7": g7, "seeds": rows}
+        rows[s] = {"d8_D": aD["8"]["acc"], "d8_C": aC["8"]["acc"], "ok7_D": ok7(w["D"]), "ok7_C": ok7(w["C"]), "rel7_D": rel7(w["D"]), "rel7_C": rel7(w["C"]),
+                   "retain_D": all(aD[d]["acc"] >= 0.98 for d in ("1", "2", "3", "4")), "content_D": ih["fam"]["H-CHAINSRC-OP"]["acc8"]}
+    gd8 = sum(r["d8_D"] - r["d8_C"] for r in rows.values()) / len(rows); g7 = sum(r["ok7_D"] - r["ok7_C"] for r in rows.values()) / len(rows)
+    go = gd8 >= 0.10 and g7 >= 0.10 and all(r["retain_D"] for r in rows.values()) and all(r["content_D"] >= 0.80 for r in rows.values())
+    return {"verdict": "GO" if go else "PARK", "gain_d8": gd8, "gain_ok7": g7, "seeds": rows}
 
 
 def full_seed(runs, run, ref):
@@ -61,7 +77,7 @@ def full_seed(runs, run, ref):
     if any(v is None for v in list(f.values()) + [rf]):
         return {"label": "pending"}
     a = f["eval_acc"]["by_d"]; r = rf["by_d"]; sw = f["eval_swap_kd"]["by_d"]["4"]["swap_mid"]["4"]; h = f["eval_lp5h"]["by_d"]["4"]; L = f["eval_long_k128"]["by_d"]
-    c2 = a["8"]["acc"] >= 0.75 and a["7"]["acc"] >= r["7"]["acc"]
+    c2 = a["8"]["acc"] >= 0.75 and a["7"]["acc"] >= r["7"]["acc"] - 0.02
     retain = (all(a[d]["acc"] >= 0.98 for d in ("1", "2", "3", "4")) and a["6"]["acc"] >= r["6"]["acc"] - 0.02 and a["4"]["acc_kprime"]["2"] <= 0.20
               and sw["follow_U"] >= 0.50 and sw["follow_U"] >= sw["floor"] + 0.30 and h["intact"]["4"] - h["mean_at_t"]["4"] >= 0.30)
     c6 = all(L[d]["acc"][k] >= L[d]["acc"]["8"] - 0.02 for d in ("1", "2", "3", "4", "5", "6") for k in ("64", "128"))
@@ -69,7 +85,7 @@ def full_seed(runs, run, ref):
     sok, smsg = AO.stable(runs, run)
     crit = {"C2-EXT": c2, "RETAIN": retain, "C6": c6, "CONTENT": content, "STABLE": sok is not False}; fail = [k for k, v in crit.items() if not v]
     return {"label": "DENSE-C2" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "d7": a["7"]["acc"], "d8": a["8"]["acc"], "bun_d7": r["7"]["acc"],
-            "bun_d8": r["8"]["acc"], "rel7": rel7(f["eval_ws_deep"]), "d9_12": {d: a[d]["acc"] for d in ("9", "10", "11", "12") if d in a}, "stable": (sok, smsg)}
+            "bun_d8": r["8"]["acc"], "rel7": rel7(f["eval_ws_deep"]), "d8_ci": wilson(a["8"]["acc"], 1000), "d8_near_075": near(a["8"]["acc"], 1000, 0.75), "d9_12": {d: a[d]["acc"] for d in ("9", "10", "11", "12") if d in a}, "stable": (sok, smsg)}
 
 
 def auc(pos, neg):
@@ -84,16 +100,16 @@ def fade_seed(runs, run):
         return None
     C = f["conds"]; n = len(C["d4k0"]["2"]); ev = range(0, n, 2)
     mean = lambda arr, idx, l, h: sum(arr[i][l][h] for i in idx) / len(idx)
-    sc = sorted(((sum(mean(C["d4k0"][t], ev, l, h) for t in ("2", "3", "4")), l, h) for l in range(12) for h in range(12)), reverse=True)[:5]
+    sc = sorted(((sum(mean(C["d4k0"][t], ev, l, h) for t in ("2", "3")), l, h) for l in range(12) for h in range(12)), reverse=True)[:5]
     heads = [(l, h) for _, l, h in sc]
     m = lambda c, t, idx: sum(sum(C[c][t][i][l][h] for l, h in heads) / len(heads) for i in idx) / len(idx)
     od = list(range(1, n, 2)); od8 = list(range(1, len(C["d8"]["4"]), 2)); odk = list(range(1, len(C["d4k6"]["4"]), 2))
     base = m("d4k0", "4", od); d8 = m("d8", "4", od8); k6 = m("d4k6", "4", odk)
     per = [sum(C["d8"]["7"][i][l][h] for l, h in heads) / len(heads) for i in range(len(C["d8"]["7"]))]; ok = f["ws_ok_d8_t7"]
     a = auc([p for p, o in zip(per, ok) if o == 1], [p for p, o in zip(per, ok) if o == 0])
-    drop_d8, drop_k6 = 1 - d8 / base, 1 - k6 / base
+    drop_d8, drop_k6 = (1 - d8 / base, 1 - k6 / base) if base > 0 else (None, None)
     return {"heads": heads, "m_d4k0_t4": base, "m_d8_t4": d8, "m_d4k6_t4": k6, "drop_d8": drop_d8, "drop_k6": drop_k6, "auc_t7": a,
-            "fading": max(drop_d8, drop_k6) >= 0.30 and a is not None and a >= 0.65}
+            "fading": base > 0 and max(drop_d8, drop_k6) >= 0.30 and a is not None and a >= 0.65}
 
 
 def score(runs=R):
@@ -113,7 +129,7 @@ def fixtures():
         pred = {str(t): [v[i][t - 1] if (t != 7 or i < int(p7_ok * n)) else (v[i][t - 1] + 1) % 11 for i in range(n)] for t in range(1, 9)}
         return {"items": {"8": {"sig": list(range(n)), "ws_pred": pred, "v": v}}}
 
-    def world(d8D=0.75, d8C=0.55, r7D=0.95, r7C=0.7, ret=1.0, full_d8=0.8, d7=0.9, k2=0.05, hold=1.0, co=0.95, fade=True):
+    def world(d8D=0.75, d8C=0.55, r7D=0.95, r7C=0.7, ret=1.0, full_d8=0.8, d7=0.9, k2=0.05, hold=1.0, co=0.95, fade=True, pco=0.9):
         dd = tempfile.mkdtemp()
 
         def put(run, name, obj):
@@ -124,6 +140,7 @@ def fixtures():
                              "7": {"acc": d7_}, "8": {"acc": d8}}}
         for s in ("1", "2"):
             put("ddp_s" + s, "eval_acc.json", acc(d8D, 0.9, ret)); put("ddc_s" + s, "eval_acc.json", acc(d8C, 0.86))
+            put("ddp_s" + s, "eval_insert_ho.json", {"fam": {"H-CHAINSRC-OP": {"acc8": pco, "by_pos": {"1": 0.9}}}})
             put("ddp_s" + s, "eval_ws_deep.json", ws(100, r7D)); put("ddc_s" + s, "eval_ws_deep.json", ws(100, r7C))
             put("bun_s" + s, "eval_acc.json", {"by_d": {"6": {"acc": 0.97}, "7": {"acc": 0.86}, "8": {"acc": 0.5}}})
             run = "dd_s" + s; put(run, "eval_acc.json", acc(full_d8, d7)); put(run, "eval_ws_deep.json", ws(100, 0.95))
@@ -149,7 +166,8 @@ def fixtures():
         return dd
     for name, kw, want in (("all", {}, "pilot GO; full DENSE-C2 2/2 (DENSE-C2 / DENSE-C2); D1a FADING"),
                            ("pilot d8 gain small", {"d8D": 0.6}, "pilot PARK"), ("pilot rel7 gain small", {"r7D": 0.75}, "pilot PARK"),
-                           ("pilot retain", {"ret": 0.95}, "pilot PARK"), ("full d8", {"full_d8": 0.7}, "FAIL: C2-EXT"), ("full d7", {"d7": 0.8}, "FAIL: C2-EXT"),
+                           ("pilot retain", {"ret": 0.95}, "pilot PARK"), ("pilot shortcut guard", {"pco": 0.7}, "pilot PARK"),
+                           ("full d8", {"full_d8": 0.7}, "FAIL: C2-EXT"), ("full d7", {"d7": 0.8}, "FAIL: C2-EXT"), ("full d7 within tolerance", {"d7": 0.85}, "DENSE-C2 2/2"),
                            ("decoder", {"k2": 0.5}, "FAIL: RETAIN"), ("c6", {"hold": 0.5}, "FAIL: C6"), ("content", {"co": 0.5}, "FAIL: CONTENT"),
                            ("not fading", {"fade": False}, "D1a NOT-FADING")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))

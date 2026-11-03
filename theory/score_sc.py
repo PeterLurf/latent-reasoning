@@ -3,20 +3,26 @@ Source: bun_s1 / bun_s2 eval_cue_clock.json. Layout per schedule sch in STD / ER
   items[sch][d] = {"ans": [N], "pred": [N][KM + 1] (decoder answer after K' = 0..KM passes), "rel_inc": [N][KM - 1] (t = 2..KM: ||S_t - S_t-1|| / ||S_t-1||,
                    Frobenius over every state tensor), "norm": [N][KM] (t = 1..KM: ||S_t||)}; KM = 24.
   STD = the run's cue S_min(t, d) (d 3-8); ER = EARLY-REPEAT S_min(t, d - 2) (d 3-6); LF = LATE-FRESH S_t for t <= d, then a name absent from the item, a new one per pass
-  (d 3-6); CY = CYCLE S_((t - 1) mod d) + 1 (d 3-6).
+  (d 3-6; descriptive floor since Note 264-3); CY = CYCLE S_((t - 1) mod d) + 1 (d 3-6);
+  Note 264-3: STDI / LFI on the same TEST2 items re-rendered with 2 s256 inserts (IR.distract_mix types ('s256',), seed 26420, answers asserted): STDI = the run's cue;
+  LFI = LATE-FRESH-IN: S_t for t <= d, then the inserts' computable entities X_1, X_2, X_1, ... (in-item, off-chain).
 Per seed, d 3-6 (binding for SCOPE wording, Audit 11-03):
-  c = median_t in 2..d of med_items rel_inc_t (STD); h = median_t in d+2..d+6 (STD); CONTRAST iff c >= 3 h; tau = sqrt(c h).
+  c = median_t in 2..d of med_items rel_inc_t (STD); h = median_t in d+2..d+6 (STD); CONTRAST iff c >= 3 h; tau = sqrt(c max(h, c / 100)) (Note 264-3 floor:
+  tau >= c / 10; h < 1e-6 flagged h_floor).
   ER (r = d - 2): HOLD_ER = median_t in r+2..r+4 med rel_inc (ER) < tau; EARLY = P(r = 3 halt khalt <= r + 1) (score_c5c's rule on pred[0..KM]).
       PLAN if HOLD_ER and EARLY >= 0.8; COMP if not HOLD_ER or EARLY <= 0.2; else MIXED.
-  LF: HOLD_LF = median_t in d+2..d+6 med rel_inc (LF) < tau; acc24 = P(pred[KM] == ans).
-      COMPLETION if HOLD_LF and acc24(LF) >= acc24(STD) - 0.02; CUE if not HOLD_LF or acc24(LF) <= acc24(STD) - 0.10; else MIXED.
+  LFI (binding, Note 264-3; answer-based, since writing a new computable entity is legitimate): acc24 = P(pred[KM] == ans);
+      STABLE-ANS if acc24(LFI) >= acc24(STDI) - 0.02; DRIFT if acc24(LFI) <= acc24(STDI) - 0.10; else MIXED. HOLD_LFI (rel_inc < tau) descriptive.
+  LF (absent names): the old COMPLETION / CUE label, descriptive only.
   CY: acc(k d) for k = 1..KM // d; ratio = median_items norm[KM] / norm[d].
       FIXED if acc(k d) >= acc(d) - 0.02 for every k >= 2 and ratio <= 1.5; FREEZE if some acc(k d) < acc(d) - 0.05 or ratio > 1.5; else MIXED.
-  No CONTRAST at d -> ER / LF label NO-CONTRAST at that d. Per seed a schedule's label = the label held at >= 3 of d 3-6, else MIXED.
+  No CONTRAST at d -> ER / LF label NO-CONTRAST at that d. Per seed: ER's label = the label held at >= 2 of d 4-6 (d 3, r = 1, is trivially PLAN: reported only;
+  Note 264-3); LFI / CY = the label held at >= 3 of d 3-6; else MIXED.
   VALIDITY: STD acc at K' 8 within 0.015 of the run's eval_acc by_d[d].acc at d 3-6, else VOID (harness mismatch).
 Verdict (both seeds must agree):
   C5: ER PLAN in both -> 'C5 PLAN-CLOCKED' (SOTA C5 -> partial: the stop follows the given plan's end); ER COMP in both -> 'C5 unchanged'; else 'C5 MIXED'.
-  C6: (LF COMPLETION or CY FIXED) in both -> 'C6 unchanged'; (LF CUE and CY FREEZE) in both -> 'C6 SCOPED (holds under a repeated cue)'; else 'C6 MIXED'.
+  C6: (LFI STABLE-ANS or CY FIXED) in both -> 'C6 unchanged'; (LFI DRIFT and CY FREEZE) in both -> 'C6 SCOPED (holds under a repeated cue)'; else 'C6 MIXED'.
+  rel_inc denominator: ||S_t-1|| (not hh_dump_inc's ||S_t||).
 Descriptive: ER accuracy at the r = 3 halt point (Note 264-1, Audit: does an early halt return a pre-target answer); STD d 7-8 acc at K' 8 / 12 / 16 / 24; CY flips K' d -> 2 d (wrong->right, right->wrong); ER / LF / CY acc by K'; per-schedule median rel_inc by t.
     python -B theory/score_sc.py [--fixtures]
 """
@@ -54,14 +60,16 @@ def acc(it, k):
 
 
 def at_d(I, d):
-    s = str(d); st, er, lf, cy = I["STD"][s], I["ER"][s], I["LF"][s], I["CY"][s]
+    s = str(d); st, er, lf, cy, sti, lfi = I["STD"][s], I["ER"][s], I["LF"][s], I["CY"][s], I["STDI"][s], I["LFI"][s]
     c = median(med_t(st, t) for t in range(2, d + 1)); h = median(med_t(st, t) for t in range(d + 2, d + 7))
-    contrast = c >= 3 * h; tau = math.sqrt(c * h) if c > 0 and h > 0 else 0.0
+    contrast = c >= 3 * h; tau = math.sqrt(c * max(h, c / 100)) if c > 0 else 0.0
     r = d - 2; hold_er = median(med_t(er, t) for t in range(r + 2, r + 5)) < tau
     early = sum(halt_k(p) <= r + 1 for p in er["pred"]) / len(er["pred"])
     er_lab = "PLAN" if hold_er and early >= 0.8 else "COMP" if (not hold_er or early <= 0.2) else "MIXED"
     hold_lf = median(med_t(lf, t) for t in range(d + 2, d + 7)) < tau; a_lf, a_st = acc(lf, KM), acc(st, KM)
     lf_lab = "COMPLETION" if hold_lf and a_lf >= a_st - 0.02 else "CUE" if (not hold_lf or a_lf <= a_st - 0.10) else "MIXED"
+    a_lfi, a_sti = acc(lfi, KM), acc(sti, KM); hold_lfi = median(med_t(lfi, t) for t in range(d + 2, d + 7)) < tau
+    lfi_lab = "STABLE-ANS" if a_lfi >= a_sti - 0.02 else "DRIFT" if a_lfi <= a_sti - 0.10 else "MIXED"
     if not contrast:
         er_lab = lf_lab = "NO-CONTRAST"
     ks = list(range(d, KM + 1, d)); ac = {k: acc(cy, k) for k in ks}; ratio = median(n[KM - 1] / n[d - 1] for n in cy["norm"])
@@ -69,14 +77,14 @@ def at_d(I, d):
               "FREEZE" if any(ac[k] < ac[d] - 0.05 for k in ks[1:]) or ratio > 1.5 else "MIXED")
     w2r = sum(p[d] != y and p[2 * d] == y for p, y in zip(cy["pred"], cy["ans"])) / len(cy["ans"])
     r2w = sum(p[d] == y and p[2 * d] != y for p, y in zip(cy["pred"], cy["ans"])) / len(cy["ans"])
-    return {"c": c, "h": h, "tau": tau, "contrast": contrast, "ER": er_lab, "hold_er": hold_er, "early": early, "LF": lf_lab, "hold_lf": hold_lf,
+    return {"c": c, "h": h, "h_floor": h < 1e-6, "tau": tau, "contrast": contrast, "LFI": lfi_lab, "acc24_lfi": a_lfi, "acc24_stdi": a_sti, "hold_lfi": hold_lfi, "ER": er_lab, "hold_er": hold_er, "early": early, "LF": lf_lab, "hold_lf": hold_lf,
             "acc24_lf": a_lf, "acc24_std": a_st, "CY": cy_lab, "cy_acc": ac, "cy_norm_ratio": ratio, "cy_flips_d_2d": {"w2r": w2r, "r2w": r2w}}
 
 
-def agg(per, key):
-    labs = [per[str(d)][key] for d in DS]
+def agg(per, key, ds=DS, need=3):
+    labs = [per[str(d)][key] for d in ds]
     for lab in set(labs):
-        if labs.count(lab) >= 3:
+        if labs.count(lab) >= need:
             return lab
     return "MIXED"
 
@@ -92,7 +100,8 @@ def seed(runs, run):
             "acc_by_k": {s: {str(d): [acc(I[s][str(d)], k) for k in range(KM + 1)] for d in DS} for s in ("ER", "LF", "CY")},
             "rel_inc_by_t": {s: {str(d): [med_t(I[s][str(d)], t) for t in range(2, KM + 1)] for d in DS} for s in ("STD", "ER", "LF", "CY")},
             "er_acc_at_halt": {str(d): sum(p[halt_k(p)] == y for p, y in zip(I["ER"][str(d)]["pred"], I["ER"][str(d)]["ans"])) / len(I["ER"][str(d)]["ans"]) for d in DS}}   # Note 264-1 (Audit)
-    return {"label": "VOID" if not valid else "ok", "valid": valid, "per_d": per, "ER": agg(per, "ER"), "LF": agg(per, "LF"), "CY": agg(per, "CY"), "desc": desc}
+    return {"label": "VOID" if not valid else "ok", "valid": valid, "per_d": per, "ER": agg(per, "ER", (4, 5, 6), 2), "LFI": agg(per, "LFI"), "LF": agg(per, "LF"),
+            "CY": agg(per, "CY"), "desc": desc}
 
 
 def score(runs=R):
@@ -102,9 +111,10 @@ def score(runs=R):
     if any(s["label"] == "VOID" for s in S):
         o["verdict"] = "VOID (STD does not reproduce eval_acc)"; return o
     er = [s["ER"] for s in S]; c5 = "C5 PLAN-CLOCKED" if er == ["PLAN"] * 2 else "C5 unchanged" if er == ["COMP"] * 2 else "C5 MIXED"
-    keep = [s["LF"] == "COMPLETION" or s["CY"] == "FIXED" for s in S]; scoped = [s["LF"] == "CUE" and s["CY"] == "FREEZE" for s in S]
+    keep = [s["LFI"] == "STABLE-ANS" or s["CY"] == "FIXED" for s in S]; scoped = [s["LFI"] == "DRIFT" and s["CY"] == "FREEZE" for s in S]
     c6 = "C6 unchanged" if all(keep) else "C6 SCOPED (holds under a repeated cue)" if all(scoped) else "C6 MIXED"
-    o["verdict"] = "%s; %s (ER %s / LF %s / CY %s)" % (c5, c6, "/".join(er), "/".join(s["LF"] for s in S), "/".join(s["CY"] for s in S)); return o
+    o["verdict"] = "%s; %s (ER %s / LFI %s / CY %s; LF %s)" % (c5, c6, "/".join(er), "/".join(s["LFI"] for s in S), "/".join(s["CY"] for s in S),
+                                                             "/".join(s["LF"] for s in S)); return o
 
 
 def fixtures():
@@ -117,12 +127,12 @@ def fixtures():
         norm = [[1.0 + (0.1 * t if drift else 0.0) for t in range(1, KM + 1)] for _ in range(n)]
         return {"ans": [7] * n, "pred": pred, "rel_inc": rel, "norm": norm}
 
-    def world(er="plan", lf="completion", cy="fixed", std_acc_shift=0.0, flat=False):
+    def world(er="plan", lf="completion", cy="fixed", std_acc_shift=0.0, flat=False, lfi="stable", hzero=False):
         dd = tempfile.mkdtemp()
         for run in RUNS:
-            p = os.path.join(dd, run); os.makedirs(p); I = {"STD": {}, "ER": {}, "LF": {}, "CY": {}}
+            p = os.path.join(dd, run); os.makedirs(p); I = {"STD": {}, "ER": {}, "LF": {}, "CY": {}, "STDI": {}, "LFI": {}}
             for d in (3, 4, 5, 6, 7, 8):
-                hold = 0.3 if flat else 0.01
+                hold = 0.3 if flat else 0.0 if hzero else 0.01
                 I["STD"][str(d)] = mk_items(d, 50, 0.3, hold, d, KM)
                 if d not in DS:
                     continue
@@ -130,14 +140,21 @@ def fixtures():
                 I["ER"][str(d)] = mk_items(d, 50, 0.3, hold, r, KM) if er == "plan" else mk_items(d, 50, 0.3, 0.3, KM, KM)
                 I["LF"][str(d)] = mk_items(d, 50, 0.3, hold, d, KM) if lf == "completion" else mk_items(d, 50, 0.3, 0.3, d, d + 1, drift=True)
                 I["CY"][str(d)] = mk_items(d, 50, 0.3, hold, d, KM) if cy == "fixed" else mk_items(d, 50, 0.3, 0.3, d, d + 1, drift=True)
+                I["STDI"][str(d)] = mk_items(d, 50, 0.3, hold, d, KM)
+                I["LFI"][str(d)] = mk_items(d, 50, 0.3, 0.3, d, KM) if lfi == "stable" else mk_items(d, 50, 0.3, 0.3, d, d + 1, drift=True)
+                if er == "d3only" and d == 3:
+                    I["ER"][str(d)] = mk_items(d, 50, 0.3, hold, d - 2, KM)
             json.dump({"items": I}, open(os.path.join(p, "eval_cue_clock.json"), "w"))
             json.dump({"by_d": {str(d): {"acc": 1.0 - std_acc_shift} for d in DS}}, open(os.path.join(p, "eval_acc.json"), "w"))
         return dd
     for name, kw, want in (("plan-clocked, C6 kept", {}, "C5 PLAN-CLOCKED; C6 unchanged"),
                            ("computation-driven", {"er": "comp"}, "C5 unchanged; C6 unchanged"),
-                           ("C6 scoped", {"lf": "cue", "cy": "freeze"}, "C6 SCOPED"),
-                           ("C6 kept by CY alone", {"lf": "cue"}, "C6 unchanged"),
-                           ("C6 kept by LF alone", {"cy": "freeze"}, "C6 unchanged"),
+                           ("C6 scoped", {"lfi": "drift", "cy": "freeze"}, "C6 SCOPED"),
+                           ("C6 kept by CY alone", {"lfi": "drift"}, "C6 unchanged"),
+                           ("C6 kept by LFI alone", {"cy": "freeze"}, "C6 unchanged"),
+                           ("absent-name LF is descriptive", {"lf": "cue"}, "C6 unchanged"),
+                           ("hold at numerical zero (tau floor)", {"hzero": True}, "C5 PLAN-CLOCKED"),
+                           ("d 3 alone cannot carry ER", {"er": "d3only"}, "C5 unchanged"),
                            ("void", {"std_acc_shift": 0.05}, "VOID"),
                            ("no contrast", {"flat": True}, "C5 MIXED")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
