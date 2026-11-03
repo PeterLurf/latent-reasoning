@@ -349,6 +349,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **SCORED 11-03 (260-5): PLAN-FREE-C1 1/2 - plan-free causal chaining on clean d 1-4 in both; s2 fails CONTENT (min pos 0.75) + C2 (d 6 0.44); without the plan the loop follows reachability and does not stop (H-EXTEND 0.08 / 0.02); $2.23.** **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
 | 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **APPROVED by Audit 11-03 (261-1).** **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
 | 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **PILOT PARK 11-03 (262-3): NK ablation drop 0.004 (binding unused); but CTRL (perm + one-hop ':'-CE co-training) fixes order-bound selection (pass-1 perm WS 0.98 / 0.96, conditional 0.95-0.97); ~$1.73.** **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
+| 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **REGISTERED 11-03; score_of.py 8/8; guard $4** |
 
 ## Live sections
 
@@ -19840,6 +19841,30 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Full (on GO):** ORDER-FREE (TEST-PERM d 2-4 >= 0.85 and >= CTRL + 0.20) + ablation + name-swap binding; RETAIN; C2 vs dch - 0.05 (d 6 / 7 + WS 5-6); C6 with NK in ||S||.
 - **OC:** P(GO) ~0.15; P(full | GO) ~0.4. Censoring: VOID-RERUN once.
 - **Cost:** ~$7-9 total, guard $15.
+
+## 263. ORDER-FREE: does one-hop named-lookup co-training make the loop's C1 hold under any statement order? (C1 scope; Theory's choice under the user's priority order; Audit approves; guard **$4**; pre-registered 2026-11-03, before any build or output)
+
+- **Why (Note 262-3):** the §262 CTRL pilot (perm-then-insert + 25% one-hop ':'-CE co-training, no new heads) removed order-bound step selection within 2k: permuted pass-1 WS 0.98 / 0.96, conditional pass-t WS 0.95-0.97. NK's binding was unused (dropped).
+- **Audit research pass (leads folded in):**
+  - **L1 (2505.20896, variable binding):** models pass through an early-position heuristic.
+    - Adopted (a): a LATE-PREMISE family (S_1's sentence placed last among the op sentences, the rest in chain order), binding.
+    - Adopted (b): a NAME-SWAP check, descriptive. It is behavioural: replace the cue's entity at pass t by another chain entity, and selection by name predicts the pass computes that entity; follow rate vs floor. A subspace patch is not built (no validated name-identity subspace yet; disclosed).
+  - **L2 (2502.19907, 2409.05448, order-centric augmentation):**
+    - binding on full permutation, plus a graded test (independent-only shuffle of givens / distractors vs full shuffle), descriptive;
+    - d 6 / 7 retention made binding vs bun - 0.05 (the 2k pilot dipped to d 6 0.844).
+  - Literature to verify the three IDs.
+- **Arms:** of_s1 / of_s2 = bun_s1 / s2 + perm-then-insert (perm_p 0.5) + 25% one-hop ':'-CE co-training (Note 262-2 mechanics), 8k, RTX 3090. No NK. The §262 build is reused with NK off.
+- **Binding per seed (theory/score_of.py, fixtures 8/8):**
+  - ORDER-FREE (TEST-PERM d 2-4 acc K' 8 >= 0.90 AND LATE-PREMISE d 2-4 >= 0.85);
+  - RETAIN (TEST2 d 1-4 >= 0.98, NOT-DECODER, SWAP4, LP5-D4);
+  - C2 (d 6 and d 7 >= bun - 0.05, same seed);
+  - C6 (K' 64 / 128 hold at d 1-6);
+  - STABLE.
+  - Label ORDER-FREE-C1 per seed; per arm k/2.
+  - Descriptive: name-swap, the graded shuffle, insert families, C5 r = 3, clean d 5-8.
+- **Scope:** plan given (the cue names S_t); the aux names steps in training; REG frames 0-5; one lineage.
+- **OC:** P(ORDER-FREE-C1 per seed) ~0.5 (the pilot's selection fix is strong; the C2 retention is the risk) vs ~0.05 if the 2k gain was pilot-only. Censoring: VOID-RERUN once.
+- **Cost:** 2 x ~$1.1-1.3 + evals ≈ $2.8, guard $4.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
