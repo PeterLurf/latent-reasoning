@@ -6,7 +6,8 @@ X5 ONE-HOP-PIPELINE: on bun_s1 / bun_s2, eval_pipeline.json by_d {d: {acc_bun, a
   S_t-1's op sentence is replaced by the stated given "S_t-1 has v^_t-1 <u>." (v^ = the pipeline's own previous answer); acc_bun = bun at K' 1 with the cue
   S_t; acc_ask = s233_askname_s1 one pass (descriptive).
 Bun reference: bun_s1 / bun_s2 eval_acc by_d[d].acc (K' 8), mean over seeds.
-X3 verdict: a text cell is VALID if TEST2 d 1-4 acc >= 0.95 (else UNDERTRAINED). No valid cell -> X3 UNINFORMATIVE. Over valid cells, t7 = max d 7 acc,
+X3 verdict: a text cell is VALID if TEST2 d 1-4 acc >= min(0.98, bun's min d 1-4 - 0.01) (Note 266-1, Audit; else UNDERTRAINED; an UNDERTRAINED cell is
+  extended once by +12k, pre-stated, and never counts as evidence for the latent). No valid cell -> X3 UNDERTRAINED -> VOID-EXTEND. Over valid cells, t7 = max d 7 acc,
   t8 = max d 8 acc: LATENT-SPECIFIC if t7 <= bun7 - 0.10 and t8 <= bun8 - 0.10, else NOT-LATENT-SPECIFIC.
 Wilson 95% CIs on the binding cells; NEAR appended when a bar lies within 2 SE (Audit standing rule, 11-03).
 C7 TEXT-SUBSTITUTE (Audit C7_EDITABLE P1; §247 bars), pooled over cells (d, t) (3,1) (3,2) (4,2) (4,3) per seed: EXPOSED if acc_intact - acc_neutral >= 0.30;
@@ -48,12 +49,14 @@ def score(runs=R):
     if any(v is None for v in list(tx.values()) + list(bn.values()) + list(pp.values())):
         o["verdict"] = "pending"; return o
     b7 = sum(bn[b]["by_d"]["7"]["acc"] for b in BUN) / 2; b8 = sum(bn[b]["by_d"]["8"]["acc"] for b in BUN) / 2
-    cells = {c: {"valid": all(v["by_d"][str(d)]["acc"] >= 0.95 for d in (1, 2, 3, 4)), **{"d%d" % d: v["by_d"][str(d)]["acc"] for d in range(1, 11)},
+    bmin = min(bn[b]["by_d"][str(d)]["acc"] for b in BUN for d in (1, 2, 3, 4)) if all("1" in bn[b]["by_d"] for b in BUN) else 1.0
+    # Note 266-1 (Audit): in-distribution validity gate min(0.98, bun's min d 1-4 - 0.01)
+    cells = {c: {"valid": all(v["by_d"][str(d)]["acc"] >= min(0.98, bmin - 0.01) for d in (1, 2, 3, 4)), **{"d%d" % d: v["by_d"][str(d)]["acc"] for d in range(1, 11)},
                  "parsed_min": min(v["by_d"][str(d)]["parsed"] for d in range(1, 11)), "gen_tokens": {str(d): v["by_d"][str(d)].get("gen_tokens") for d in range(1, 11)}}
              for c, v in tx.items()}
     val = [c for c in TEXT if cells[c]["valid"]]
     if not val:
-        x3 = "X3 UNINFORMATIVE (no text cell reaches d 1-4 >= 0.95)"
+        x3 = "X3 UNDERTRAINED -> VOID-EXTEND once (+12k) (no text cell reaches d 1-4 >= min(0.98, bun - 0.01))"
     else:
         t7 = max(cells[c]["d7"] for c in val); t8 = max(cells[c]["d8"] for c in val)
         x3 = "X3 %s (text max d7 %.3f / d8 %.3f vs bun %.3f / %.3f)" % ("LATENT-SPECIFIC" if t7 <= b7 - 0.10 and t8 <= b8 - 0.10 else "NOT-LATENT-SPECIFIC", t7, t8, b7, b8)
@@ -114,7 +117,8 @@ def fixtures():
         return dd
     for name, kw, want in (("latent-specific + pipeline solves", {}, "X3 LATENT-SPECIFIC"), ("pipeline solves", {}, "X5 PIPELINE-SOLVES"),
                            ("text extrapolates d7", {"t7": 0.8}, "NOT-LATENT-SPECIFIC"), ("text extrapolates d8 only", {"t8": 0.5}, "NOT-LATENT-SPECIFIC"),
-                           ("value arm extrapolates", {"tv7": 0.85}, "NOT-LATENT-SPECIFIC"), ("all undertrained", {"t14": 0.8}, "X3 UNINFORMATIVE"),
+                           ("value arm extrapolates", {"tv7": 0.85}, "NOT-LATENT-SPECIFIC"), ("all undertrained", {"t14": 0.8}, "X3 UNDERTRAINED"),
+                           ("0.97 in-range is undertrained", {"t14": 0.97}, "X3 UNDERTRAINED"),
                            ("one valid cell decides", {"und2": True, "t7": 0.5}, "X3 LATENT-SPECIFIC"), ("pipeline invalid", {"p1": 0.9}, "X5 INVALID"),
                            ("pipeline fails d8", {"p8": 0.8}, "PIPELINE-FAILS"), ("c7 edit", {}, "C7-EDIT 2/2"), ("c7 no edit", {"fo": 0.2}, "NO-EDIT/NO-EDIT"),
                            ("c7 round trip", {"rt": 0.9}, "NO-EDIT/NO-EDIT"), ("c7 unexposed", {"an": 0.9}, "UNEXPOSED/UNEXPOSED")):

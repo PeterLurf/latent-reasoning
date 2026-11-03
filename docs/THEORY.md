@@ -352,7 +352,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **APPROVED by Audit 11-03 (263-1: CONTENT binding).** **REGISTERED 11-03; score_of.py 10/10; guard $4** |
 | 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **APPROVED by Audit 11-03 (264-1; $0 reads X4a UNTRAINED-PASS, M1 V1+TEXT).** **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
-| 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **REGISTERED 11-03; score_tx.py 13/13; guard $6** |
+| 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 
 ## Live sections
 
@@ -24101,6 +24101,29 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(e) Name budget never binds** (max 11 names used, 29 free >= 16 drawn). The cap clause is moot.
 - **(f) On GO only, a descriptive length-only control:** one cell ddl_s1 (given-only inserts, no new op sentences, 2k, ~$0.2), to attribute any gain to op count rather than length.
 - **Wilson CI + NEAR** (Audit standing rule) on the full d 8 reading.
+
+**Note 264-4 (2026-11-03 16:36 EST; Audit APPROVED Notes 264-3 / 265-2; the pre-stated $0 reads of Note 264-3 (e), read_s264_pre.py, run twice with byte-identical output; descriptive).**
+- **KHALT-DETERMINISM: VARIABLE by the pre-stated rule in both seeds, but only because of d 2.**
+  - The r = 3 halt's mode is **d - 1** at every d 1-4.
+  - P(khalt == mode) = 1.000 / 0.901 / 0.981 / 0.982 (s1) and 1.000 / 0.899 / 0.976 / 0.986 (s2) for d 1 / 2 / 3 / 4.
+  - d 2 has ~10% of items halting at K' 0 (mean khalt 0.90).
+- **ONE-HOP DECODER: DECODER-LAST-HOP in both seeds** (d 4 acc at K' 3 = 1.000 / 1.000). The decoder completes the last hop itself, so the r = 3 halt lands at d - 1 because the loop's last needed pass is d - 1, not d.
+- **Reading:** on in-range items the halt is essentially a function of d, i.e. of the given plan's length (d - 1 at >= 0.976 for d 3-4). This agrees with Note 264-2's modal prediction. §264's ER / LFI / CY are what can still separate the content-check hypothesis from the pass-marker hypothesis.
+
+**Note 266-1 (2026-11-03 16:36 EST; §266 APPROVED by Audit, guard $6; one validity condition; Audit's C4 ruling on K3; C3 re-scoped (analytic) in sota_arch.json and the summary).**
+- **X3 validity (Audit):** a text cell counts only if TEST2 d 1-4 >= min(0.98, bun's min d 1-4 - 0.01) at the end.
+  - Otherwise it is UNDERTRAINED: VOID-EXTEND once (+12k, pre-stated here), and it never counts as evidence for the latent.
+  - Reported alongside: total training steps and tokens for bun's full lineage (askname -> P-2 -> ... -> bun) vs each text cell.
+  - score_tx.py re-committed, fixtures 14/14.
+- **C4 ruling on K3 PREFIX-KL (Audit):** prefix answers are the values of sub-programs of the chain, i.e. per-step targets by proxy, and they need the solution graph.
+  - They do NOT count toward C4. K3 may run as descriptive or mechanistic work only.
+  - C4 claims must come from answer-only routes in which no step value enters the loss, e.g. K1a EXACT-EM-11 (C4-eligible).
+- **C3 re-scoped (analytic; wave-2 C3 accounting, backlog §12.1; formulas cross-checked against Note 246-0 and REVIEW_CC):**
+  - Against value-only text CoT, bun at K' = d has 1.2-1.6x fewer serial layers, not ~9x. The ~9x holds only against sentence-format CoT.
+  - At K' 8, bun has more serial layers than value-only text CoT for d <= 4.
+  - FLOPs are 2.4-9.1x higher across d 1-8.
+  - The C5 stability halt needs a decode every pass, roughly 2x bun's FLOPs.
+  - C3 status: **not met (analytic; empirical comparison pending §266)**. sota_arch.json and LANGUAGE_LINE_SUMMARY updated in this commit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

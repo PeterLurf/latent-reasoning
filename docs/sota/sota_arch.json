@@ -84,8 +84,8 @@
   },
   {
    "c": "C3",
-   "status": "split",
-   "evidence": "~9x fewer serial layers, 1.5-3x more FLOPs (prompt recomputed each pass)"
+   "status": "not met (analytic; empirical pending §266)",
+   "evidence": "Analytic accounting (Note 266-1): vs value-only text CoT, 1.2-1.6x fewer serial layers at K'=d (the ~9x holds only vs sentence CoT; at K'=8 more serial layers for d<=4) and 2.4-9.1x more FLOPs (d1-8; the prompt is recomputed every pass); the C5 stability halt decodes every pass (~2x FLOPs)"
   },
   {
    "c": "C7",
