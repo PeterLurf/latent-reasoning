@@ -1,0 +1,51 @@
+{
+ "late_premise_ds": [
+  "2",
+  "3",
+  "4"
+ ],
+ "late_premise_n": [
+  6,
+  6,
+  6
+ ],
+ "late_premise_ok": true,
+ "name_swap_ds": [
+  "3",
+  "4"
+ ],
+ "name_swap_keys": [
+  "floor",
+  "floor_by_j",
+  "follow",
+  "follow_by_j",
+  "intact_acc",
+  "n"
+ ],
+ "name_swap_ok": true,
+ "shuffle_ds": [
+  "2",
+  "3",
+  "4"
+ ],
+ "shuffle_keys": {
+  "independent": [
+   "acc",
+   "changed",
+   "n"
+  ],
+  "full": [
+   "acc",
+   "changed",
+   "n",
+   "op_chain_order"
+  ]
+ },
+ "shuffle_ok": true,
+ "eval_json_parts": [
+  "late_premise",
+  "name_swap",
+  "shuffle_graded"
+ ],
+ "pass": true
+}
