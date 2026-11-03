@@ -192,6 +192,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - One-pass depth thresholds (docs/LIT_ONEPASS_DEPTH_THRESHOLD_2026-10-23.md): Lin et al. [2503.07604](https://arxiv.org/abs/2503.07604) (implicit multi-step only with fixed premise order); Physics of LMs 2.1 [2407.20311](https://arxiv.org/abs/2407.20311) (depth > width); Balesni et al. [2411.16353](https://arxiv.org/abs/2411.16353); Dziri et al. [2305.18654](https://arxiv.org/abs/2305.18654).
 
+- §263 citations (verified 2026-11-03): He et al. [2502.19907](https://arxiv.org/abs/2502.19907), order-centric augmentation (shuffle independent premises; DAG-valid step reorderings) for logical reasoning in LLMs; Wu, Geiger & Millière [2505.20896](https://arxiv.org/abs/2505.20896) (ICML 2025), a Transformer trained to dereference variable chains up to 4 deep with distractors learns binding in phases (random → early-assignment heuristic → …); Dai, Heinzerling & Inui [2409.05448](https://arxiv.org/abs/2409.05448), an Ordering-ID direction in entity activations causally determines binding (refines Binding IDs, 2310.17191).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
