@@ -348,7 +348,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 | 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **SCORED 11-03 (260-5): PLAN-FREE-C1 1/2 - plan-free causal chaining on clean d 1-4 in both; s2 fails CONTENT (min pos 0.75) + C2 (d 6 0.44); without the plan the loop follows reachability and does not stop (H-EXTEND 0.08 / 0.02); $2.23.** **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
 | 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **APPROVED by Audit 11-03 (261-1).** **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
-| 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
+| 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **PILOT PARK 11-03 (262-3): NK ablation drop 0.004 (binding unused); but CTRL (perm + one-hop ':'-CE co-training) fixes order-bound selection (pass-1 perm WS 0.98 / 0.96, conditional 0.95-0.97); ~$1.73.** **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
 
 ## Live sections
 
@@ -23831,6 +23831,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - read at block-6 input at the 40 name-token positions;
   - NK block = S[:, 12];
   - strict bun load except nk.*.
+
+**Note 262-3 (2026-11-03 14:48 EST; §262 pilot SCORED by theory/score_nk_pilot.py, run twice: PARK (the NK binding is unused); pilot_nk_s1 d25b46f6, pilot_nkc_s1 944aa9d2 (a rerun after a wall-cap stop before evals; it relied on b413's gates, same blobs); from bun_s1, 2k of 8k; §262 spend ~$1.73).**
+- **Gate fields (pooled conditional permuted pass-t WS, d 3-4, t >= 2):**
+  - NK 0.934, NK-ablated 0.929 (**drop 0.004**);
+  - CTRL 0.957.
+  - PARK by the ablation clause: the name-keyed read is not used.
+- **The informative result is the CTRL arm** (perm-then-insert + the 25% one-hop ':'-CE co-training, no new heads). In 2k it removes the order-bound step selection measured in REVIEW_NK:
+  - pass-1 WS on permuted items 0.981 / 0.962 (d 3 / 4), vs 0.10-0.38 for dch / bun;
+  - conditional pass-t WS 0.95-0.97 at every pass (vs 0.20-0.37 with S_t moved).
+  - NK is similar: pass-1 0.99 / 0.98, conditional 0.90-0.97.
+  - Clean TEST2 at 2k: CTRL d 1-4 >= 0.977, d 5 / 6 0.939 / 0.844; NK d 1-4 >= 0.997, d 5 / 6 0.974 / 0.916 (dch / bun d 6 ~0.96-0.97). So there is some C2 cost at 2k, larger in CTRL.
+- **Reading:**
+  - Training the ':' readout on one-hop named-lookup questions (v_X at every pass), mixed with permuted chain training, teaches the loop to find each step's sentence by name, without any architecture change.
+  - It succeeds where perm FT alone failed (§252 NP: pass 1 stayed at 0.10). The pieces that differ are the one-hop ':' signal and the content-selecting bun init.
+  - NK's binding adds nothing measurable. Order-free C1 looks reachable by training; not yet scored on TEST-PERM accuracy or the causal gates (pilot only).
+- **Next:** per the user's research-pass rule, Audit's leads come first. Then the proposed follow-up: a full-stage registration of the CTRL recipe (2 seeds x 8k from bun) with binding ORDER-FREE (TEST-PERM d 2-4) + RETAIN + C2 / C6, NK dropped.
+  - §261 stays parked by Audit pending this.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
