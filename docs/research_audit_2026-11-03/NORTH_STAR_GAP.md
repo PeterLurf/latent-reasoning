@@ -1,0 +1,51 @@
+# North-star gap analysis (independent, skeptical; Audit research subagent, 2026-11-03)
+
+Inputs: NORTH_STAR.md; sota_arch.json (bun, §259); RESEARCH_DIGEST + DIGEST rows 229-260; EXPERIMENT_BACKLOG.md (11-03); THEORY Notes 260-5 .. 265-1; ROADMAP_OPEN_CONDITIONS_2026-10-30. Numbers are quoted from those pages, not recomputed.
+
+## 1. Status per condition (bun_s1/s2 is the reference model)
+
+| C | Honest status | What is scoped away | Single biggest obstacle |
+|---|---|---|---|
+| C1 | Met on templated REG word programs, d ≤ 4, 2 seeds of ONE lineage (rcb→dis→dch→bun). Plan-free works on clean chains only (§260: 1/2; H-EXTEND 0.08 / 0.02, H-LIVE 0.40). | The cue names S_t every pass; chain order (TEST-PERM ~0.1, every lineage; §263 pending); phrasing (frames 6-7 0.27-0.54, §249; extra frames memorised, §250); closed 40-name set (262-1); no natural task (GSM8K latents recompute from input, §207/§208). | Step selection. Without the name the loop follows any forward read-chain and never stops at S_d (260-5). Everything else in the scorecard (content, C2, C5) was bought by that name. |
+| C6 | Met to K′128 under the hold penalty (259-4). | After pass d the cue repeats S_d, and the hold was trained on exactly those passes; §264 X1/X2 (registered, unscored) asks whether the "stability" is a cue-driven freeze. Seed-3 breaks were the rule in earlier eras (§192, §205). | Showing the fixed point belongs to the loop, not to the repeated cue. If X1 says FREEZE, C6 and C5 fall together. |
+| C4 | Not met; not in bun. Answer-only formation 1/4 (§244/§245); answer-only extension from a d ≤ 2 foothold passes the full causal bar 1/4 (§251/§255); AEX0 0/2. §263's co-training also uses simulator values (263-2). In 265 sections no C4 line has passed. | Per-pass simulator values at every layer of the lineage. | Onset drift of the pass-t ':' code on d > t items (251-8..11). The K-entries that target it (K1 EXACT-EM, K3 PREFIX-KL) are unrun. |
+| C2 | Partial: trained d ≤ 4, d6 0.97, d7 0.86, d8 ~0.5 (259-4); the gain came from breaking slot counting (§256), not from depth budget (§239/§240/§243 ×3 null). | Same template; no text-CoT trained on the same data (X3 unrun), so "latent-specific" is unproven. | Pass-7+ reliability falls with op-sentence count (264-1: 0.59 / 0.80 at d8). §265 polishes this inside the template. |
+| C3 | Split: ~9× fewer serial layers, 1.5-3× more FLOPs (246-0, analytic). | No empirical text-CoT comparator on REG; KV-LAT unbuilt; a cached-prompt redesign reaches parity only with value-only text CoT (251-12). | Prompt recompute per pass is architectural, and the honest comparator is ICoT/CODI-style no-chain models, which write nothing (§100, §155 lessons). |
+| C5 | "Met" is a training-free answer-stability rule (stop after 3 unchanged answers) layered on the C6 hold (259-11/12). Learned halt heads are in-range only (§248). | The halt is a consequence of C6, not a decision the model makes; it is +3 passes over d-1; and it may be plan-clocked (§264). | A halt signal that exists when no cue tells the loop the plan has ended. |
+| C7 | Not met. Readouts faithful, edits null: the write ignores text (247-2). | Everything: no text→state path exists in the architecture. | The R-bundle ($0 reads) will re-confirm §247; the only structural bet (R6 TOKEN-WRITE) is unranked. |
+
+Cross-cutting: medium parks (§258 NO-SEED; its decoder computes the last hop from v_1 + text, 264-1) and Qwen-0.5B does not compute the intermediate eagerly (§231). The user's goal is "one pretrained LM"; the result holds for the smallest one only.
+
+## 2. Load-bearing restrictions
+
+Ranked by how many rows flip if lifted:
+
+1. **The plan in the cue (S_t named per pass).** §260 measured the price: content selection, stopping, C2 (d7 0.25 / 0.07) all go; X1 may add C5/C6. This is the restriction that makes the scorecard look like five conditions instead of two. Backlog attacks it (P1 SELF-CUE, P2 BACKWARD-PLAN, P3 TARGET-CUE §261 parked) but all three are gated "after §263" and P1 keeps the plan names as training labels, so it is plan-free at test only.
+2. **Per-pass simulator value targets.** The digest's "master key" (per-step supervision in every success since §88) is also the C4 wall. Each lineage stage (dis, dch, bun, of) deepens the dependence; retrofitting C4 onto bun gets harder with every layer. The backlog has 12 K-entries; only K3 is in the top 10 (rank 7), K1 is rank 15. The backlog attacks it in principle and defers it in practice.
+3. **Templated REG programs, values mod 11, closed names, frames 0-5.** Phrasing is memorised (§250 MEMO); 11 prime makes every op a bijection, which K1's exact marginalisation depends on, so the C4 plan is itself template-bound. The N/T entries (N1 SHUFFLED OBJECTS rank 16, N2 BOXES, T3 ProsQA) are the only moves off the template; none is scheduled.
+4. **GPT-2 small, two seeds, one lineage.** §258 says the recipe does not seed on medium; X7 (stats and seeds) is not in the ranked table at all. Every "2/2" is one data lineage evaluated twice.
+5. **Fixed K = 8 with prompt recompute** (C3). Attacked by E2-E5 / KV-LAT, none ranked above 12.
+
+Verdict: the ranked top 10 is diagnostics (X1, X2, X5, the C2 bundle) plus polishing within restrictions 1-3 (D1/§265, A1). The diagnostics are right and cheap. The polishing is what produced §256-§263 and will keep producing scoped wins.
+
+## 3. Critique of the ranking
+
+- **The scoring rule buries big bets.** Score = prior × value / first-stage cost, floored at $0.25, so any $0 read outranks any $2 experiment by 8× before priors. That is defensible for a $15 credit line (the 10-30 roadmap) but not for the user's standing approval of >$100 credit and parallel runs (11-01). K1 at 0.9 and N1 at 0.69 are not low-value; they are expensive-first-stage.
+- **Over-weighted:** C2 polishing within the template (D1/§265 at rank 5 is already registered; D2-D9 behind it); the M-line (M1/M2/M3/M8) on medium, which is a scaled copy of the same scaffolding problem and cost $10.4 for NO-SEED; §262/§263 spent ~$4.5 on order-freeness that Note 263-2 concedes is "C1 scope only" and not a C4 route.
+- **Under-weighted:** X3 TEXT-CoT-D4 (rank 12). Every C1/C2 claim is against a one-pass comparator (CD ~0.09), never against a GPT-2 text CoT trained on the same REG d ≤ 4 data. If text CoT reaches d7 within 0.10 of bun, the C2 and C3 rows are properties of the data and §265 is work on a non-differentiator. X7 (independent seeds, a second lineage) is unranked; a reviewer will ask first. K1/K3 (C4 = value 4, the user's co-equal second priority with C2) have a combined first stage of $2.3 and sit at 7 and 15.
+- **Missing big bets:** (a) a C4-first lineage: restart from askname with answer-only objectives (K1/K3/K8) as the main line rather than pilots bolted onto bun; (b) a generator task where the plan cannot be given (N1/N2 with P2's target-only cue), since on REG "plan-free" can always be rescued by the aux names; (c) a structural C7 bet (R6/R7) instead of three more $0 confirmations of §247; (d) a decision rule for the base: if M8 on small does not transfer to medium, stop spending on medium and run S1's ladder once.
+
+## 4. Roadmap: 14 days, ~$60
+
+**Stage A, days 1-4, ~$10: find out whether bun is the right thing to polish.** Run §264 (X1+X2, $1.5, registered), X5 ONE-HOP-PIPELINE ($0.2) and X3 TEXT-CoT-D4 ($1, +$2 Coconut-KV arm) in one eval cell, plus one fresh full-lineage seed (X7, ~$5) started on day 1 so it lands by day 10. Let §263 ($4) and §265 ($4) finish; register nothing else until A is scored.
+Go/no-go: (i) X1 FREEZE → retract C5 "met" and re-scope C6; (ii) text CoT d7 ≥ bun − 0.10 → C2 is not latent-specific, cancel D2-D9 and skip Stage B's C2 work; (iii) pipeline d7 ≈ 1.0 → C1 is "value transport under an external program", which raises P2's priority over everything; (iv) X7 seed disagrees with s1/s2 on any binding gate → the scorecard goes to "1 lineage" wording before any new claim.
+
+**Stage B, days 4-10, ~$30: attack restrictions 1 and 2 in parallel, not sequentially.**
+- B1 plan-free with a goal (restriction 1): P2 BACKWARD-PLAN pilot ($0.4) from of_s* if §263 passes, else from bun; go if phase-1 ≥ 0.9 and H-EXTEND ≥ 0.6; full 2 × 8k (~$3). P2 beats P1 because the parent names are derivable from the text, so it is also the only plan-free design with a C4 path (K-RL P2r, $2.5).
+- B2 C4 (restriction 2): K3-S0 PREFIX-KL ($0.3) and K1 EXACT-EM-11 stage A ($2) together; go on WS d2 pass 1 ≥ 0.8 with the K′1-vs-K′2 shortcut exclusion; K1 stage B ($10) only on go. Pre-state now that K1 is template-bound (bijective ops) so a pass is "C4 on Z_11", and plan K2 (sampled RLOO) as the scalable version.
+- B3 base (restriction 4): M8 DECODER TEXT-DROPOUT on small ($0.3); on pass, medium ($1.5); on medium fail, stop the M-line and run S1 ($1).
+Go/no-go at day 10: at least one of B1/B2 passes its pilot, or Stage C is cancelled and the remaining credit goes to writing up the scoped result with X7's seeds.
+
+**Stage C, days 10-14, ~$20: leave the template.** N1 SHUFFLED OBJECTS ($4) or N2 BOXES ($3) trained with the Stage-B winner (P2's target-only cue; K1/K3 objective if B2 passed, else the aux as a disclosed scope), 3 seeds, with an X3-style text-CoT arm on the same data. Pass: ≥ 0.9 at d8 with the C1 gates (NOT-DECODER, SWAP, donor) and text CoT d7/8 below latent − 0.10. This is the first result that could be called "a pretrained LM, a task it was not templated for, no plan given". Fail → the scoped REG result is the paper; the open conditions get the next credit line.
+
+**First experiment: the X3 + X5 cell (~$1.4, same host as §264).** Reason: it is the cheapest test of whether the lineage's C1/C2/C3 rows are latent-specific at all. A text CoT trained on the same REG d ≤ 4 data that extrapolates to d7, or a text-substitution pipeline over askname that reaches d7 ≈ 1.0, would mean the past three weeks of C2 polishing differentiates nothing, and that the $58 should go to C4 and plan-free work instead of §265's successors. It also costs nothing in design time: both are evals on stored checkpoints with scorers the backlog already specifies. K1 is the biggest bet, but it should launch second, on day 2, with X3's answer in hand.
