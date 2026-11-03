@@ -67,6 +67,8 @@ q = ("# THEORY §261 TARGET-CUE pilot (score_tc): pilot_tc_s1 = bun_s1 (streamin
      "%s scratch.s268_stopland --step 2000 --parts %s\n"
      "%s scratch.s268_target\n") % (W, W, fs, W, fs, W, blob, GSHIP, W, blob, INIT[0], INIT[1], run, PARTS, INIT[0], run, SH, W, blob, INIT[0], INIT[1], W, INIT[0], SH, fs, " ".join(tail), run,
                                     W, PARTS, W)
+if os.environ.get("S268_NO_STEP0") == "1":                                   # attempt 4 (11-03): the step-0 evals landed in attempt 3 (host shas OK) - not re-run
+    ls_ = [l_ for l_ in q.split("\n") if "_step0" not in l_]; assert len(q.split("\n")) - len(ls_) == 2, "NO_STEP0: the NOFETCH + step0 lines"; q = "\n".join(ls_)
 open("scratch/gen_q_b412.txt.hold", "w", encoding="utf-8", newline="\n").write(q)
 assert subprocess.call([sys.executable, "scratch/check_queue_ships.py", "scratch/gen_q_b412.txt.hold"]) == 0
 os.makedirs("scratch/gate_s268", exist_ok=True); json.dump(out, open("scratch/gate_s268/predeploy.json", "w", newline="\n"), indent=1, default=str); print(sorted(dif))
