@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/workspace/Latent/scratch/gate_s268.py", line 116, in <module>
+    r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)
+        ^^^^^^^^^^^
+  File "/workspace/Latent/scratch/gate_s268.py", line 73, in offbit_aw
+    return _offbit(None, "offaw")
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Latent/scratch/gate_s268.py", line 66, in _offbit
+    o = {"cue": cue or "step (bun)", "rc": [det_in(ref_tree(), "boxes/inject_aw.py", fl, da), det_in(ROOT, "boxes/inject_aw.py", fl, db)]}
+                                                   ^^^^^^^^^^
+  File "/workspace/Latent/scratch/gate_s268.py", line 50, in ref_tree
+    if not lnk(q):
+           ^^^^^^
+  File "/workspace/Latent/scratch/gate_s268.py", line 45, in <lambda>
+    lnk = lambda q: os.path.islink(q) or os.path.isjunction(q)  # noqa: E731   a junction (local Windows smoke) is a link too: never rmtree through it
+                                         ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'posixpath' has no attribute 'isjunction'
