@@ -355,7 +355,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_ls.py 10/10; guard $8** |
-| 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
+| 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
 
 ## Live sections
 
@@ -24305,6 +24305,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(3)** train_gpu is recorded per stage. The askname 4060 -> 3090 change is disclosed.
 - **(4)** Seed-3 data order at every stage. Each stage's args differ from its s1 args_ref only in seed / init / out; an args diff per stage is committed with the cell.
 - **Queue:** interleaves with §267.
+
+**Note 269-1 (2026-11-03 17:01 EST; §269 APPROVED by Audit, guard $1.5; built on template v6, each part its own line; the acked $0 reads read_s269_logs.py (872615e3) run twice, byte-identical; descriptive).**
+- **ST2 SEED-VARIANCE: SEED-DOMINANT at d 6.** Over 21 _s1 / _s2 pairs:
+  - d 6: sigma_seed = **0.090** vs a mean item SE of 0.010;
+  - d 4: 0.011 vs 0.006.
+  - In range, seeds barely differ. At the extrapolation depths, between-seed spread is ~9x the item SE.
+  - **Consequences (adopted as backlog rules):**
+    - Any C2 claim (d >= 6) needs >= 3 seeds, compared on per-seed margins. At d 6, more than 500 items buys nothing.
+    - The 'one lineage' scope matters most exactly where C2 is claimed. §268's seed 3 is the first test.
+- **FD1 FORMATION-CENSUS: no 2k marker (E_ws: NOT PREDICTIVE, min 3 errors of 14; E_aux: NOT, 4 errors; E_clip: not logged).**
+  - Population: 15 runs (d_max 2 with logged ws). 3 formed: aw_plaw2_s1 and aux_s2 at t* 7k, p2pc_s1 at 4k.
+  - Never formed: ao_s1-s4 and ao_s2_ext, p2m_s1 / s1b (medium), p2p_s1 / s2 / old, and the two 2k ACUE pilots.
+  - At step 2000, every run's pass-2 WS (0.02-0.13) and aux (0.08-0.11) sit at chance. Formation is invisible at 2k, and onset is 4-7k.
+  - **Consequences:**
+    - SEED-FARM-2K needs a later or different marker (a 4k read, or a loss-curvature / representation marker).
+    - 2k ONSET gates are valid only as 'no drift of an already-present code', which is §267's use: the askname init carries v_1 at pass 1. They do NOT detect pass-2 formation.
+  - Disclosed: the population mixes recipes (answer-only, perm, medium), so 'formed' mostly tracks the recipe.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

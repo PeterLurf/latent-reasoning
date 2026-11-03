@@ -30,6 +30,8 @@ Load-bearing restrictions, in order:
 5. fixed K with prompt recompute.
 
 Standing statistics rules (Audit 11-03):
+- **Note 269-1 (ST2):** seed spread at d 6 is sigma 0.090, ~9x the item SE. A C2 claim needs >= 3 seeds compared on per-seed margins; > 500 items buys nothing at d 6.
+- **Note 269-1 (FD1):** pass-2 formation is invisible at 2k (all runs at chance). Formation markers must read >= 4k.
 - Wilson CIs and a NEAR flag on every binding cell;
 - "one lineage" scope until X7 exists;
 - C1 gates at d 6-7 when C1 and C2 are claimed together;
