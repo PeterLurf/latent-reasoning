@@ -73,6 +73,8 @@ FAMC=""; for c_ in $QS; do IFS=: read -r n_ r_ a_ g_ s_ e_ <<<"$c_"; FAMC="$FAMC
 for cell in $QS; do
   IFS=: read -r n run CAPC GSTOP STEPS EST <<<"$cell"; tries=0; export EXTRA_120=""; NE=1; GM=$(marks "$STEPS")
   python -c "import sys; sys.exit(0 if $GSTOP >= $CAPC + 0.05 - 1e-9 else 1)" || { log "REFUSED b$n: guard \$$GSTOP < admit cap \$$CAPC + 0.05 (Audit 11-01 v2 (2))"; exit 2; }
+  # Audit 11-03 (b412: a $0.243/h offer could never pass its $0.45 admit): PMAX <= admit / the pre-G-TIME hours (STEPS x SPS_EST + SETUP_H + EVAL_H)
+  python -c "import sys; h = $STEPS * ${SPS_EST:-1.4} / 3600 + $SETUP_H + $EVAL_H; sys.exit(0 if $PMAX <= $CAPC / h + 1e-9 else 1)" || { log "REFUSED b$n: PMAX \$$PMAX > admit \$$CAPC / the pre-G-TIME hours ($STEPS x ${SPS_EST:-1.4} s + $SETUP_H + $EVAL_H h) (Audit 11-03)"; exit 2; }
   grep -q "^$n:$run " "$ADMLOG" 2>/dev/null && { log "b$n: $run already admitted - next"; continue; }
   [ -f scratch/gen_q_b$n.txt ] || { log "b$n: scratch/gen_q_b$n.txt missing (still .hold?) - not starting"; exit 2; }
   nlq=$(grep -vc '^#' "scratch/gen_q_b$n.txt"); nw=$(echo "$WALLW" | tr ',' '\n' | grep -c .)   # Audit 11-01 (1): one wall-guard weight per queue line
