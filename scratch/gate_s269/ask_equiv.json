@@ -1,0 +1,12 @@
+{
+ "source_identical": true,
+ "n": 4000,
+ "same": 4000,
+ "classes": {
+  "i": 1239,
+  "ii": 1242,
+  "iii": 1279,
+  "iv": 240
+ },
+ "pass": true
+}

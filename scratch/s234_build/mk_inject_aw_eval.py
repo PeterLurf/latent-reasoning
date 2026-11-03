@@ -59,6 +59,8 @@ E = [
 ]
 for o, n in E:
     assert body.count(o) == 1, ("edit not applied exactly once", body.count(o), o[:90]); body = body.replace(o, n)
+for o, n in __import__("runpy").run_path("scratch/s269_build/edits_s269e.py")["E269E"]:   # §262 NK: the nk_pilot part
+    assert body.count(o) == 1, ("§262 eval edit not applied exactly once", body.count(o), o[:90]); body = body.replace(o, n)
 parts = open("scratch/s234_build/inject_aw_eval_parts.py", encoding="utf-8").read()
 i = body.index("def load(run, dev):"); body = body[:i] + parts + body[i:]
 assert "ST.tok_st(" not in body and "IO.build_model(" not in body, "leftovers"

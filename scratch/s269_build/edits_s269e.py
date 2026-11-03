@@ -1,0 +1,2 @@
+"""§262 NK: inject_aw_eval run() edits (applied by mk_inject_aw_eval.py)."""
+E269E = [('"stab_fresh", "stab")\nAW_ONLY = (', '"stab_fresh", "stab", "nk_pilot")\nAW_ONLY = ('), ('"c7", "halt", "halthead", "frames")\n', '"c7", "halt", "halthead", "frames", "nk_pilot")\n'), ('              "stab": lambda: part_stab(m, g, sets, a, dev, bs)}[p_]()', '              "stab": lambda: part_stab(m, g, sets, a, dev, bs),\n              "nk_pilot": lambda: __import__("boxes.nk", fromlist=["part_nk_pilot"]).part_nk_pilot(m, g, sets, a, dev, bs)}[p_]()   # §262 NK_v1 §4')]

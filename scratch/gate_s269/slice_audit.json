@@ -1,0 +1,25 @@
+{
+ "def": "§262 NK_v1 §2 slice audit (G-D): every consumer of the carried state S in boxes/inject_aw.py (incl. scratch/s240_build/head_s240.py's hold_step), boxes/nk.py and boxes/inject_aw_eval.py, after the §262 build. NB = h_add + h_del = 12; the NK block is S[:, NB] (13 blocks under --nk 1). 'NK-aware' = goes through InjectNK.pass_aw / write / dec_logits / aux_logits / aux_greedy (the NK read with ids) or slices S explicitly.",
+ "deltamem_untouched": "boxes/deltamem.py and boxes/deltas5.py are byte-identical to the pre-§262 tree; InjectNK hands DM.read_fixed / DM.write_seq S[:, :NB] (read_fixed reads S[:, :h_add] and S[:, h_add:h_add + h_del]; write_seq the same and returns pack_state = 12 blocks), then appends the NK block.",
+ "trainer": [
+  {"site": "inject_aw.loss_reg (passes, cue_ans / perm pass_aw, checkpoint(m.write))", "verdict": "NK-aware (m.write / m.pass_aw); S[idx] row selection keeps every block"},
+  {"site": "inject_aw.loss_reg aux_logits(S[idx]) / dec_logits(S)", "verdict": "NK-aware (InjectNK overrides; fwd_read_nk)"},
+  {"site": "inject_aw.loss_ask (§262)", "verdict": "NK-aware (m.pass_aw, m.colon_logits)"},
+  {"site": "inject_aw.ws_readout (1k bins, nk_pilot)", "verdict": "NK-aware (m.pass_aw)"},
+  {"site": "head_s240.hold_step: state_n(S) = ||S|| over all blocks; the penalty's m.write", "verdict": "includes the NK block BY DESIGN (NK_v1 §2: the hold penalty / norm guard see it); the penalty pass is NK-aware"},
+  {"site": "g_add calibration (m.write, mem.norms)", "verdict": "skipped under --init_model (the pilot); NK-aware if run"},
+  {"site": "mem_check: mem_train (loss_items), mem_eval (EV.answers_by_kprime)", "verdict": "NK-aware"}
+ ],
+ "eval_pilot_parts": [
+  {"site": "passes / answers_by_kprime / part_acc", "verdict": "NK-aware (m.write, m.dec_logits, m.aux_logits)"},
+  {"site": "nk.part_nk_pilot (ws_readout per item, nk.ablate)", "verdict": "NK-aware"}
+ ],
+ "eval_other_parts_NOT_in_the_pilot": [
+  {"site": "read_vec / part_probe (lines ~303-348)", "verdict": "DeltaMem-only by construction (slices S[:, :h_add], S[:, h_add:h_add+h_del]; compares against read_fixed): NK-blind - must be threaded or labelled DeltaMem-only before a full-stage use"},
+  {"site": "nc_norms / nc_run / part_normctr (lines ~660-698)", "verdict": "nc_run asserts S.shape[1] == h_add + h_del: RAISES on an NK model (fail-loud); 'all' norm scaling would include the NK block"},
+  {"site": "hh_hidden (line ~831; hh_dump -> halthead, halt_inc, halthead2, stab_fresh, stab)", "verdict": "calls deltas5.fwd_read directly: the NK read is BYPASSED silently - must use m.fwd_read_nk before any full-stage C5 / C6 part on an NK model"},
+  {"site": "read_mask (line ~993, CACHED-CUE hook on mem.wo)", "verdict": "masks DeltaMem's W_o contribution only; NK's W_on is not hooked"},
+  {"site": "swap_kd / lp5h / mean_s (state swaps and means over S)", "verdict": "operate on the whole S tensor: include the NK block (the intended C1 interventions swap / mean the packed state)"}
+ ],
+ "pilot_scope": "the pilot runs only eval parts acc and nk_pilot (+ the trainer's ws_readout): all NK-aware. The full stage (on GO) needs hh_hidden / read_vec / nc_run / read_mask threaded or labelled first."
+}

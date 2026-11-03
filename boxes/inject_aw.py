@@ -88,7 +88,22 @@ def tok_aw(it, aux_target="value", cue="none", write_src="all"):
         assert cue in ("step", "generic", "target") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic / target"
         o["think_cues"] = [q + SFX for q in o["think_cues"]]
         assert all(q[-1] == COLON for q in o["think_cues"]) and o["dec"] == o["think"] + SFX, "AW: inputs / decoder"
+        if cue == "step":                                                   # §262 NK: the cue's name token (QUESTION's A) sits 6 before ':' and is spine[c] (the write key)
+            assert all(q[-7] == ENC.encode(" " + it["names"]["spine"][c])[0] for c, q in enumerate(o["think_cues"], 1)), "§262: the cue name token"
     return o
+
+
+SEED_ASK_STREAM, SEED_ASK_COIN, SEED_ASK_PERM = 26210, 26211, 26212          # §262 Note 262-2: the ask items' stream / perm coin / permutation (unused elsewhere)
+
+
+def tok_ask(it, aux_target, write_src):
+    """§262 Note 262-2 one-hop ask item: ST_v1's class rule (boxes.ask_render.ask_of) on the (possibly permuted) item; every pass input = [EOT] + enc(' ' + text' +
+    ' ' + QUESTION(u, X)) + SFX (one input); trained by CE(the ':' logits, v_X) at every pass (no decoder / aux CE); NK key = X (asserted 6 before ':')."""
+    import boxes.ask_render as AR
+    cls, X, v, t2, fb = AR.ask_of(it); o = tok_aw(it, aux_target, "step", write_src)
+    q = [EOT] + ENC.encode(" " + t2 + " " + OW.QUESTION.format(u=it["unit"], A=X)) + SFX
+    assert write_src == "answer" and q[-1] == COLON and q[-7] == ENC.encode(" " + X)[0] and 0 <= int(v) < len(NUM_IDS), ("§262 ASK", X, v)
+    o["think_cues"] = [q]; o["ask"] = 1; o["ask_v"] = int(v); o["ask_X"] = X; o["ask_class"] = cls; o["ask_fallback"] = fb; o["ask_text"] = t2; return o
 
 
 def build_aw(a, dev):
@@ -101,7 +116,11 @@ def build_aw(a, dev):
         return None, g, g
     cls = InjectAW if getattr(a, "write_src", "all") == "answer" else InjectOW
     lm, hm = g.L // 2, g.D // 128                                          # §258 S0: DeltaMem at L // 2, D / 128 + D / 128 heads of 64 (small: 6, 6 + 6)
-    m = cls(g, lm, a.mem_write, hm, hm, None).to(dev); m.nopass = False
+    if getattr(a, "nk", 0):                                                 # §262 NK: InjectNK (the NK block packed into S; boxes/nk.py)
+        from boxes.nk import InjectNK
+        assert cls is InjectAW, "--nk needs --write_src answer"; m = InjectNK(g, lm, a.mem_write, hm, hm, None, a.seed).to(dev); m.nopass = False
+    else:
+        m = cls(g, lm, a.mem_write, hm, hm, None).to(dev); m.nopass = False
     assert torch.equal(m.mem.qkv.weight.detach(), g.w("h.%d.attn.c_attn.weight" % lm).detach().float().T), "G12: DeltaMem qkv = the loaded block-L/2 c_attn"
     return m, g, m
 
@@ -224,6 +243,9 @@ def main(argv=None):
     ap.add_argument("--hold_log", action="store_true", help="§240: the hold stats + gn_plain without the penalty (CTRL arms); implied by --hold_inc > 0")
     ap.add_argument("--init_model", default="", help="§237: the full params state (trunk + DeltaMem + W_o + gains) loaded strict after the build; calibration skipped")
     ap.add_argument("--init_model_sha", default="", help="§237: its sha256 prefix (asserted)")
+    ap.add_argument("--nk", type=int, default=0, choices=[0, 1], help="§262 NK_v1: the name-keyed head packed into S (boxes/nk.py; 0 = off, unchanged)")
+    ap.add_argument("--ask_p", type=float, default=0.0, help="§262 Note 262-2: the share of each batch that is one-hop ask items (':' CE on v_X at every pass; 0 = off)")
+    ap.add_argument("--ask_perm_p", type=float, default=0.5, help="§262: P(an ask item with d >= 2 is permuted before its class)")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
     import boxes.deltamem as DM_
     from boxes.fsq120 import make_opt, lr_at, driver_version, env_info
@@ -240,6 +262,9 @@ def main(argv=None):
     assert a.cue != "all" or (a.arm == "direct" and a.src == "ow"), "--cue all: CUED-DIRECT (direct, OW)"
     assert a.write_src != "answer" or (a.arm == "inject" and a.cue in ("step", "generic", "target")), "--write_src answer: LAT-AW (inject, --cue step / generic)"
     assert bool(a.init_trunk) == bool(a.init_sha), "--init_trunk needs --init_sha (G12)"
+    NASK = int(round(a.ask_p * a.bs))                                      # §262: the ask items per step (last in the batch)
+    assert not (a.nk or a.ask_p) or (a.arm == "inject" and a.cue == "step" and a.write_src == "answer" and a.src == "ow" and not a.ckpt_passes and not a.cue_ans
+                                     and NASK < a.bs and a.bs - NASK >= a.hold_far_n), "§262 --nk / --ask_p: LAT-AW (inject, cue step, write_src answer); ask items < bs"
     assert 1 <= a.d_max <= 8 and a.bs % a.micro == 0
     K = a.think_k if a.arm == "inject" else 0
     torch.manual_seed(a.seed); rng_d = np.random.default_rng(a.seed + SEED_D); rng = np.random.default_rng(a.seed)
@@ -266,7 +291,8 @@ def main(argv=None):
     assert bool(a.init_model) == bool(a.init_model_sha), "--init_model needs --init_model_sha"
     if a.init_model:                                                        # §237: the full model state, strict; the sha logged (init_model_sha256)
         sha_m = hashlib.sha256(open(a.init_model, "rb").read()).hexdigest(); assert sha_m.startswith(a.init_model_sha), ("init_model sha", sha_m, a.init_model_sha)
-        params.load_state_dict(torch.load(a.init_model, map_location=dev, weights_only=True), strict=True); a.init_model_sha256 = sha_m
+        mk_ = params.load_state_dict(torch.load(a.init_model, map_location=dev, weights_only=True), strict=not a.nk); a.init_model_sha256 = sha_m
+        assert not a.nk or (not mk_.unexpected_keys and sorted(mk_.missing_keys) == ["nk.W_n.weight", "nk.W_on.weight", "nk.W_vn.weight"]), ("§262 NK init: only nk.* new", mk_)
     f0_, f1_ = [float(x_) for x_ in a.aux_fade.split(",")]
 
     def lam_at(step):
@@ -275,7 +301,7 @@ def main(argv=None):
         return a.aux_step if step <= f0_ * sc else a.aux_step * max(0.0, (f1_ * sc - step) / max(1.0, (f1_ - f0_) * sc))
     lam_now = [lam_at(1)]
 
-    assert not (a.distract_p and a.perm_p), "--distract_p with --perm_p: not built"
+    # §262 NK_v1 §2: --distract_p with --perm_p = perm-then-insert (§252's coin / permutation first, then the §257 inserts placed by the S labels)
     INS_TEXTS = ({it["text"] for its_ in IR.insert_eval_sets(SETS["test2"][4])[0].values() for it in its_}
                  | {it["text"] for d_ in IR.held_out_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}
                  | {it["text"] for d_ in IR.held_out2_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}) if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b) + §256 held-out sets
@@ -283,15 +309,17 @@ def main(argv=None):
     MIXT = tuple(a.distract_mix.split(",")) if a.distract_mix else (); DTYPE = {}   # §257: the insert types; {type: count} in the open 1k bin
     assert not MIXT or (a.distract_p > 0 and set(MIXT) <= set(IR.MIX_TYPES)), ("--distract_mix needs --distract_p and known types", MIXT)
     TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets({d_: SETS["test2"][d_] for d_ in range(1, a.d_max + 1)}, range(1, a.d_max + 1))[0].items()
-                for it in its_} if a.perm_p else set()                     # §252 Note 252-1: the TEST-PERM texts (622fb717's family) for the disjointness assert
+                for it in its_} if (a.perm_p or a.ask_p) else set()                     # §252 Note 252-1: the TEST-PERM texts (622fb717's family) for the disjointness assert
 
     def draw_items(d):
         if a.src == "nested":
             return [tok_nested(it) for it in N7.train_items(rng, a.bs, a.n_max_train, EXCL)]
         if a.distract_p:                                                    # Note 255-5 --distract_p: per-item seeded coin / n / draw; targets, solve, disjointness asserted
-            raws = [stream.draw(d) for _ in range(a.bs)]; out_ = []
+            raws = [stream.draw(d) for _ in range(a.bs - NASK)]; out_ = []
             for k_, r_ in enumerate(raws):
                 n_ = 0
+                if a.perm_p and d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p:   # §262 perm-then-insert: §252's coin / perm
+                    r_ = PR.train_perm(r_, a.seed, step, k_)
                 if np.random.default_rng((a.seed, IR.SEED_DISTRACT_COIN, step, k_)).random() < a.distract_p:
                     r2_, n_ = IR.distract_mix(r_, a.seed, step, k_, MIXT) if MIXT else IR.distract(r_, a.seed, step, k_)   # §257 --distract_mix
                     if n_:
@@ -303,16 +331,30 @@ def main(argv=None):
                             DTYPE[t_] = DTYPE.get(t_, 0) + 1
                 DSTAT[n_] = DSTAT.get(n_, 0) + 1; out_.append(r_)
             assert not any(r_["text"] in INS_TEXTS for r_ in out_), "DISTRACT: a training text equals an INSERT eval text"
+            assert not any(r_["text"] in TP_TEXTS for r_ in out_), "§262: a training text equals a TEST-PERM text"
             return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in out_]
         if a.perm_p:                                                        # §252 --perm_p: per-item seeded coin / permutation (d >= 2), solve + disjointness asserted
-            raws = [stream.draw(d) for _ in range(a.bs)]
+            raws = [stream.draw(d) for _ in range(a.bs - NASK)]
             raws = [PR.train_perm(r_, a.seed, step, k_) if (d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p) else r_
                     for k_, r_ in enumerate(raws)]
             assert not any(r_["text"] in TP_TEXTS for r_ in raws), "§252: a training text equals a TEST-PERM text"
             return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in raws]
-        return [tok_aw(stream.draw(d), a.aux_target, a.cue, a.write_src) for _ in range(a.bs)]
+        return [tok_aw(stream.draw(d), a.aux_target, a.cue, a.write_src) for _ in range(a.bs - NASK)]
 
-    def loss_items(items, stat=None):
+    ask_stream = OW.Stream(SEED_ASK_STREAM, EXCL, frames=TRAIN_FR, mul_s_p3=a.mul_s_p3, mul_s_p=a.mul_s_p, **OWKW) if NASK else None   # §262: own stream, same EXCL
+
+    def ask_items(d):
+        """§262 Note 262-2: NASK one-hop ask items at the step's d (own stream; per item k a perm coin / permutation, then ST_v1's class; disjointness asserted)."""
+        out_ = []
+        for k_ in range(NASK):
+            r_ = ask_stream.draw(d)
+            if d >= 2 and np.random.default_rng((a.seed, SEED_ASK_COIN, step, k_)).random() < a.ask_perm_p:
+                pit, _, inv = PR.permuted(r_, np.random.default_rng((a.seed, SEED_ASK_PERM, step, k_))); PR.check(r_, pit); assert inv >= 1; pit["perm"] = 1; r_ = pit
+            o_ = tok_ask(r_, a.aux_target, a.write_src); assert o_["ask_text"] not in TP_TEXTS and o_["ask_text"] not in INS_TEXTS, "§262: an ask text equals an eval text"
+            out_.append(o_)
+        return out_
+
+    def loss_reg(items, stat=None):
         """nested170.loss_items (direct; inject with the aux on) on token-list items; stat (dict) collects the log fields (no effect on the graph)."""
         tgt = torch.tensor(NUM_IDS[[it["ans"] for it in items]], device=dev)
         if a.arm == "direct":
@@ -372,6 +414,27 @@ def main(argv=None):
             stat["la"] = stat.get("la", 0.0) + float(la.detach()) * len(items); stat["n"] = stat.get("n", 0) + len(items)
         return loss
 
+    def loss_ask(items, stat=None):
+        """§262 Note 262-2: CE(the ':' full-vocabulary LM logits, v_X) at every pass 1..K, the mean over passes (batch mean CE per pass); no decoder / aux CE."""
+        xs, msk = cue_inputs(m, items, dev); assert len(xs) == 1 and all(it.get("ask") for it in items), "§262: one input per ask item"
+        y = torch.tensor(NUM_IDS[[it["ask_v"] for it in items]], device=dev); ces = []
+        with ac():
+            S = m.mem.zero_state(len(items), dev); hl = m.lower(xs[0]) if a.cache_lower else None
+            for t in range(1, K + 1):
+                S, h_c, pos_c = m.pass_aw(S, xs[0], msk, hl); lg_c = m.colon_logits(h_c, pos_c); ces.append(Fn.cross_entropy(lg_c, y))
+                if stat is not None:
+                    stat.setdefault("ask", []).append((str(t), int((lg_c.detach().argmax(-1) == y).sum()), len(items)))
+        return torch.stack(ces).mean()
+
+    def loss_items(items, stat=None):
+        """§262: the ask items (last in the batch) take loss_ask, the rest loss_reg; the item-weighted mean (no ask items: loss_reg exactly)."""
+        rg = [it for it in items if not it.get("ask")]; ak = [it for it in items if it.get("ask")]
+        if not ak:
+            return loss_reg(items, stat)
+        assert all(it is r for it, r in zip(items, rg)), "§262: the ask items come last"
+        l_a = loss_ask(ak, stat)
+        return l_a if not rg else (loss_reg(rg, stat) * len(rg) + l_a * len(ak)) / len(items)
+
     s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, mul_s_p=a.mul_s_p, **OWKW) if a.src == "ow" else None   # §236: the run's law
     if a.distract_p and s_mc:                                               # Note 255-5 (d): the memory-check items carry 2 insert pairs (ops after the last op sentence)
         def _mc2(i_):
@@ -425,10 +488,11 @@ def main(argv=None):
             "hostprobe_sps": os.environ.get("HOSTPROBE_SPS"), "module_sha256": sha_file(os.path.abspath(__file__)), "inject_ow_sha256": sha_file(os.path.join(ROOT, "boxes", "inject_ow.py")), "inject_st_sha256": sha_file(os.path.join(ROOT, "boxes", "inject_st.py")),
             "eval_module_sha256": sha_file(os.path.join(ROOT, "boxes", "inject_aw_eval.py")), "nested170_sha256": sha_file(os.path.join(ROOT, "boxes", "nested170.py")),
             "deltamem_sha256": sha_file(os.path.join(ROOT, "boxes", "deltamem.py")), "ow_words_sha256": sha_file(os.path.join(ROOT, "boxes", "ow_words.py")),
-            "nested_words_sha256": sha_file(os.path.join(ROOT, "boxes", "nested_words.py")), "set_build_sec": set_sec, "excl_n": len(EXCL), "d_law": "d = default_rng(seed + 22331).integers(1, d_max + 1) per step",
+            "nested_words_sha256": sha_file(os.path.join(ROOT, "boxes", "nested_words.py")), "nk_sha256": sha_file(os.path.join(ROOT, "boxes", "nk.py")) if a.nk else None,
+            "ask_render_sha256": sha_file(os.path.join(ROOT, "boxes", "ask_render.py")) if a.ask_p else None, "set_build_sec": set_sec, "excl_n": len(EXCL), "d_law": "d = default_rng(seed + 22331).integers(1, d_max + 1) per step",
             "format": {"direct": "dec = [EOT] + enc(' ' + text) + enc(' The answer is:') -> the number token (plain trunk, one pass)",
                        "inject": "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + "
-                                 "enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d"}[a.arm] + (CUE_FMT[a.cue] if a.cue not in ("generic", "target") else {"generic": " | §252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass)", "target": " | §261 TC: think_t = [EOT] + enc(' ' + text + ' To find how many <u> <S_d> has, what is the next value?') (every pass)"}[a.cue]) + AW_FMT[a.write_src]}
+                                 "enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d"}[a.arm] + (CUE_FMT[a.cue] if a.cue not in ("generic", "target") else {"generic": " | §252 GP: think_t = [EOT] + enc(' ' + text + ' What is the next value?') (every pass)", "target": " | §261 TC: think_t = [EOT] + enc(' ' + text + ' To find how many <u> <S_d> has, what is the next value?') (every pass)"}[a.cue]) + AW_FMT[a.write_src] + (" | §262 NK: one name-keyed head packed into S (k = q = normalize(W_n e(name)); write key = the cue's name, v = W_vn ln_w(h_11 at ':'), delta rule; read at block 6 at name tokens + W_on S_n q, W_on = 0 at init, no fade)" if a.nk else "") + (" | §262 ASK: round(ask_p bs) one-hop ask items per step (ST_v1 classes after perm p ask_perm_p; QUESTION(u, X) + SFX at every pass; CE(':' logits, v_X) at every pass, no decoder / aux CE)" if a.ask_p else "")}
     if SETS is not None:
         info.update(SETS["shas"]); info["pair_stats"] = SETS["pair_stats"]
     if a.args_ref:
@@ -440,6 +504,7 @@ def main(argv=None):
     opt = make_opt(params, a.lr); step0 = 1; n_nonfinite = 0; hist = []; wg_hist = []; wwin = []; wlast = []; gn_log = []; aux_hist = []
     wsbin = {}                                                              # §252: {"perm" / "chain": {d: {t: [correct, n]}}} (the open 1k bin; not in the resume ckpt)
     acbin = {}                                                              # Note 251-10: {d: [correct, n, ce sum]} (the open 1k bin; not in the resume ckpt)
+    askbin = {}                                                             # §262: {pass: [correct, n]} (the open 1k bin; not in the resume ckpt)
     expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
     if a.resume:
@@ -449,6 +514,8 @@ def main(argv=None):
             torch.cuda.set_rng_state(ck["cuda_rng"].cpu(), device=dev)
         if stream is not None:
             stream.rng.bit_generator.state = ck["stream_rng"]; stream.stats = dict(ck["stream_stats"])
+        if ask_stream is not None:                                          # §262
+            ask_stream.rng.bit_generator.state = ck["ask_stream_rng"]
         step0 = ck["step"] + 1; n_nonfinite = ck["n_nonfinite"]; wg_hist = ck["wg_hist"]; gn_log = list(ck["gn_log"]); t0 = time.time() - ck["elapsed"]
         expo, binacc, vbin, dseq, iseq, d2_bins, ent, fut, wlast = ck["expo"], ck["binacc"], ck["vbin"], ck["dseq"], ck["iseq"], ck["d2_bins"], ck["ent"], ck["fut"], ck["wlast"]
         vbin_d = ck.get("vbin_d", {}); gnbin = ck.get("gnbin", {}); hbin = ck.get("hbin", {}); hbin_d = ck.get("hbin_d", {}); gn_plain_log = list(ck.get("gn_plain_log", []))
@@ -479,7 +546,7 @@ def main(argv=None):
             m.mem.gamma.fill_(0.0 if step <= a.write_mix_start * sc else min(1.0, (step - a.write_mix_start * sc) / max(1.0, (a.write_mix_end - a.write_mix_start) * sc)))
         lam_now[0] = lam_at(step)
         d = int(rng_d.integers(1, a.d_max + 1)) if a.src == "ow" else 0
-        its = draw_items(d); opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro; st_ = {}
+        its = draw_items(d) + (ask_items(d) if NASK else []); assert len(its) == a.bs; opt.zero_grad(); tot = 0.0; ch = a.bs // a.micro; st_ = {}   # §262: + the ask items
         for k_ in range(a.micro):
             lk = loss_items(its[k_ * ch:(k_ + 1) * ch], st_); (lk / a.micro).backward(); tot += float(lk.item()) / a.micro
         if HOLD:                                                            # §240 (LH_v1 §2, Note 240-1): the plain grads are complete -> gn_plain (exact)
@@ -505,6 +572,8 @@ def main(argv=None):
             wb_ = wsbin.setdefault("perm" if pp_ else "chain", {}).setdefault(dd_, {}).setdefault(tt_, [0, 0]); wb_[0] += ok_; wb_[1] += 1
         for dd_, c_, n_, s_ in st_.get("acue", []):                        # Note 251-10: ACUE acc / CE by d (per 1k bin)
             ab_ = acbin.setdefault(dd_, [0, 0, 0.0]); ab_[0] += c_; ab_[1] += n_; ab_[2] += s_
+        for tt_, c_, n_ in st_.get("ask", []):                              # §262: ask acc per pass (per 1k bin)
+            kb_ = askbin.setdefault(tt_, [0, 0]); kb_[0] += c_; kb_[1] += n_
         for vok, _n in st_.get("vacc", []):
             for t_, v_ in vok.items():
                 vb_ = vbin.setdefault(str(t_), [0.0, 0]); vb_[0] += v_; vb_[1] += 1
@@ -552,6 +621,8 @@ def main(argv=None):
                 br["ws_readout_" + k_ + "_n"] = {d_: {t_: v_[1] for t_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(wv_.items())}
             if acbin:                                                       # Note 251-10 --cue_ans
                 br["acue_by_d"] = {k_: {"acc": v_[0] / v_[1], "ce": v_[2] / v_[1], "n": v_[1]} for k_, v_ in sorted(acbin.items())}
+            if askbin:                                                      # §262 Note 262-2: the ask items' ':' acc per pass (full-vocabulary argmax == v_X)
+                br["ask_acc_by_pass"] = {t_: v_[0] / v_[1] for t_, v_ in sorted(askbin.items(), key=lambda kv: int(kv[0]))}; br["ask_n"] = askbin["1"][1]
             if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back
                 br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)
             if a.mul_s_p3 < 1.0 and stream is not None:                    # §235: cumulative accepted d 3 training items with a mul_s step / all d 3 items
@@ -565,7 +636,7 @@ def main(argv=None):
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}; wsbin = {}
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}; wsbin = {}; askbin = {}
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
@@ -581,7 +652,7 @@ def main(argv=None):
                 os.replace(cp, os.path.join(a.out, "ckpt_prev.pt"))
             torch.save({"model": params.state_dict(), "opt": opt.state_dict(), "rng_d": rng_d.bit_generator.state, "np_rng": rng.bit_generator.state,
                         "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(dev) if dev.startswith("cuda") else None,
-                        "stream_rng": stream.rng.bit_generator.state if stream is not None else None, "stream_stats": dict(stream.stats) if stream is not None else None,
+                        "stream_rng": stream.rng.bit_generator.state if stream is not None else None, "ask_stream_rng": ask_stream.rng.bit_generator.state if ask_stream is not None else None, "stream_stats": dict(stream.stats) if stream is not None else None,
                         "step": step, "n_nonfinite": n_nonfinite, "wg_hist": wg_hist, "gn_log": gn_log, "elapsed": time.time() - t0, "expo": expo, "binacc": binacc,
                         "vbin": vbin, "vbin_d": vbin_d, "gnbin": gnbin, "hbin": hbin, "hbin_d": hbin_d, "gn_plain_log": gn_plain_log, "rng_far": rng_far.bit_generator.state, "dseq": dseq, "iseq": iseq, "d2_bins": d2_bins, "ent": ent, "fut": fut, "wlast": wlast}, cp)
     if a.time_steps:

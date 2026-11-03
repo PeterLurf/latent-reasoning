@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab")
-AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "nk_pilot")
+AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames", "nk_pilot")
 
 
 def pred_of(lg):
@@ -1330,7 +1330,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "insert_ho": lambda: part_insert_ho(m, g, sets, a, dev, bs), "ws_deep": lambda: part_ws_deep(m, g, sets, a, dev, bs),
               "halt_inc": lambda: part_halt_inc(m, g, sets, a, dev, bs), "halthead2": lambda: part_halthead2(m, g, sets, a, dev, bs),
               "stab_fresh": lambda: part_stab_fresh(m, g, sets, a, dev, bs),
-              "stab": lambda: part_stab(m, g, sets, a, dev, bs)}[p_]()
+              "stab": lambda: part_stab(m, g, sets, a, dev, bs),
+              "nk_pilot": lambda: __import__("boxes.nk", fromlist=["part_nk_pilot"]).part_nk_pilot(m, g, sets, a, dev, bs)}[p_]()   # §262 NK_v1 §4
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

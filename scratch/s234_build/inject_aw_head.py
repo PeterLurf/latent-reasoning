@@ -88,7 +88,22 @@ def tok_aw(it, aux_target="value", cue="none", write_src="all"):
         assert cue in ("step", "generic", "target") and "think_cues" in o, "AW: --write_src answer needs --cue step / generic / target"
         o["think_cues"] = [q + SFX for q in o["think_cues"]]
         assert all(q[-1] == COLON for q in o["think_cues"]) and o["dec"] == o["think"] + SFX, "AW: inputs / decoder"
+        if cue == "step":                                                   # §262 NK: the cue's name token (QUESTION's A) sits 6 before ':' and is spine[c] (the write key)
+            assert all(q[-7] == ENC.encode(" " + it["names"]["spine"][c])[0] for c, q in enumerate(o["think_cues"], 1)), "§262: the cue name token"
     return o
+
+
+SEED_ASK_STREAM, SEED_ASK_COIN, SEED_ASK_PERM = 26210, 26211, 26212          # §262 Note 262-2: the ask items' stream / perm coin / permutation (unused elsewhere)
+
+
+def tok_ask(it, aux_target, write_src):
+    """§262 Note 262-2 one-hop ask item: ST_v1's class rule (boxes.ask_render.ask_of) on the (possibly permuted) item; every pass input = [EOT] + enc(' ' + text' +
+    ' ' + QUESTION(u, X)) + SFX (one input); trained by CE(the ':' logits, v_X) at every pass (no decoder / aux CE); NK key = X (asserted 6 before ':')."""
+    import boxes.ask_render as AR
+    cls, X, v, t2, fb = AR.ask_of(it); o = tok_aw(it, aux_target, "step", write_src)
+    q = [EOT] + ENC.encode(" " + t2 + " " + OW.QUESTION.format(u=it["unit"], A=X)) + SFX
+    assert write_src == "answer" and q[-1] == COLON and q[-7] == ENC.encode(" " + X)[0] and 0 <= int(v) < len(NUM_IDS), ("§262 ASK", X, v)
+    o["think_cues"] = [q]; o["ask"] = 1; o["ask_v"] = int(v); o["ask_X"] = X; o["ask_class"] = cls; o["ask_fallback"] = fb; o["ask_text"] = t2; return o
 
 
 def build_aw(a, dev):
@@ -101,7 +116,11 @@ def build_aw(a, dev):
         return None, g, g
     cls = InjectAW if getattr(a, "write_src", "all") == "answer" else InjectOW
     lm, hm = g.L // 2, g.D // 128                                          # §258 S0: DeltaMem at L // 2, D / 128 + D / 128 heads of 64 (small: 6, 6 + 6)
-    m = cls(g, lm, a.mem_write, hm, hm, None).to(dev); m.nopass = False
+    if getattr(a, "nk", 0):                                                 # §262 NK: InjectNK (the NK block packed into S; boxes/nk.py)
+        from boxes.nk import InjectNK
+        assert cls is InjectAW, "--nk needs --write_src answer"; m = InjectNK(g, lm, a.mem_write, hm, hm, None, a.seed).to(dev); m.nopass = False
+    else:
+        m = cls(g, lm, a.mem_write, hm, hm, None).to(dev); m.nopass = False
     assert torch.equal(m.mem.qkv.weight.detach(), g.w("h.%d.attn.c_attn.weight" % lm).detach().float().T), "G12: DeltaMem qkv = the loaded block-L/2 c_attn"
     return m, g, m
 
