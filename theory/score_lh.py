@@ -70,6 +70,9 @@ def norm_guard(runs, run, ctrl):
     common = sorted(set(f) & set(c))
     if not common:
         return None, "no paired norm_guard bins"
+    missing = sorted(set(f) - set(c))
+    if missing:   # Audit SCORER_BUGS MED-2: a truncated control must not pass by silent bin intersection
+        return None, "control missing norm_guard bins %s" % missing[:5]
     rat = {b: {k: f[b][k] / c[b][k] for k in ("s8", "sd2")} for b in common}
     bad = [(b, k) for b, r in rat.items() for k, v in r.items() if v > 1.25]
     shrink = [(b, k) for b, r in rat.items() for k, v in r.items() if v < 0.75]

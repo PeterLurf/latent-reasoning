@@ -101,8 +101,12 @@ def score(runs=R):
         o["seeds"][run] = {}
         for part, (fn, f) in PARTS.items():
             e = jl(os.path.join(runs, run, fn)); o["seeds"][run][part] = "pending" if e is None else f(e)
-    s1 = o["seeds"]["bun_s1"]
-    o["verdict"] = "; ".join("%s %s" % (p, s1[p] if isinstance(s1[p], str) else s1[p].get("label", s1[p])) for p in PARTS); return o
+    lab = lambda x: x if isinstance(x, str) else x.get("label", x)
+    parts = []
+    for p in PARTS:   # Audit MED-7: s1 routes; s2 confirms; a disagreement is MIXED with no routing change
+        a1, a2 = lab(o["seeds"]["bun_s1"][p]), lab(o["seeds"]["bun_s2"][p])
+        parts.append("%s %s" % (p, a1 if a2 == a1 else "%s (s2 pending)" % a1 if a2 == "pending" else "MIXED (s1 %s / s2 %s)" % (a1, a2)))
+    o["verdict"] = "; ".join(parts); return o
 
 
 def fixtures():
@@ -134,6 +138,8 @@ def fixtures():
     for run in RUNS:
         os.makedirs(os.path.join(d, run)); json.dump(base_tr, open(os.path.join(d, run, "eval_triage.json"), "w"))
     o = score(d); chk("score pending parts", ("triage SELECTION" in o["verdict"]) and ("keys pending" in o["verdict"]), True)
+    json.dump({**base_tr, "fail": {"text_fix": 5, "state_fix": 60, "both": 5, "neither": 30}}, open(os.path.join(d, "bun_s2", "eval_triage.json"), "w"))
+    o = score(d); chk("s2 disagreement is MIXED (MED-7)", "triage MIXED (s1 SELECTION / s2 MEMORY)" in o["verdict"], True)
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], "->", r[2])
     k_ = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (k_, len(res))); return k_ == len(res)

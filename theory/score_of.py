@@ -43,6 +43,8 @@ def seed(runs, run, ref):
     c6 = all(L[d]["acc"][k] >= L[d]["acc"]["8"] - 0.02 for d in ("1", "2", "3", "4", "5", "6") for k in ("64", "128"))
     co = f["eval_insert_ho"]["fam"]["H-CHAINSRC-OP"]; content = co["acc8"] >= 0.85 and min(co["by_pos"].values()) >= 0.80
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     crit = {"ORDER-FREE": of, "RETAIN": retain, "C2": c2, "C6": c6, "CONTENT": content, "STABLE": sok is not False}
     fail = [k for k, v in crit.items() if not v]
     ns = jl(os.path.join(runs, run, "eval_name_swap.json")); gr = jl(os.path.join(runs, run, "eval_shuffle_graded.json"))
@@ -60,7 +62,7 @@ def score(runs=R):
 def fixtures():
     res = []
 
-    def world(tp=0.95, lp=0.9, t2=1.0, k2=0.03, sw=0.9, d6=0.95, d7=0.85, hold=1.0, co=0.95, pos=0.9):
+    def world(tp=0.95, lp=0.9, t2=1.0, k2=0.03, sw=0.9, d6=0.95, d7=0.85, hold=1.0, co=0.95, pos=0.9, nolog=False):
         d = tempfile.mkdtemp()
         for run, ref in RUNS.items():
             os.makedirs(os.path.join(d, ref)); json.dump({"by_d": {"6": {"acc": 0.97}, "7": {"acc": 0.86}}}, open(os.path.join(d, ref, "eval_acc.json"), "w"))
@@ -73,13 +75,13 @@ def fixtures():
             json.dump({"by_d": {str(x): {"acc": {"8": 1.0, "64": 1.0, "128": hold}} for x in range(1, 7)}}, open(os.path.join(p, "eval_long_k128.json"), "w"))
             json.dump({"fam": {"H-CHAINSRC-OP": {"acc8": co, "by_pos": {"1": pos, "2": 0.95}}}}, open(os.path.join(p, "eval_insert_ho.json"), "w"))
             json.dump({"n_nonfinite": 0}, open(os.path.join(p, "train_summary.json"), "w"))
-            with open(os.path.join(p, "log.jsonl"), "w") as fh:
+            with open(os.devnull if nolog else os.path.join(p, "log.jsonl"), "w") as fh:
                 for i in range(1, 81):
                     fh.write(json.dumps({"step": i * 100, "loss": 0.01}) + chr(10))
         return d
     for name, kw, want in (("all", {}, "ORDER-FREE-C1 2/2"), ("perm fails", {"tp": 0.6}, "FAIL: ORDER-FREE"), ("late premise fails", {"lp": 0.6}, "FAIL: ORDER-FREE"),
                            ("decoder", {"k2": 0.6}, "FAIL: RETAIN"), ("swap", {"sw": 0.2}, "FAIL: RETAIN"), ("c2 d6", {"d6": 0.85}, "FAIL: C2"), ("c2 d7", {"d7": 0.7}, "FAIL: C2"),
-                           ("c6", {"hold": 0.5}, "FAIL: C6"), ("content", {"co": 0.6}, "FAIL: CONTENT"), ("content pos", {"pos": 0.7}, "FAIL: CONTENT")):
+                           ("c6", {"hold": 0.5}, "FAIL: C6"), ("content", {"co": 0.6}, "FAIL: CONTENT"), ("content pos", {"pos": 0.7}, "FAIL: CONTENT"), ("blank log is pending (MED-1)", {"nolog": True}, "pending")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], r[2])

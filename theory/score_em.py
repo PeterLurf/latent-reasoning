@@ -85,7 +85,7 @@ def cell(runs, run):
         return None
     on = onset(runs, run)
     perm = {d: {t: best_bijection(x["pred"], x["v"]) for t, x in tt.items()} for d, tt in e.get("ws_items", {}).items()}
-    return {"acc": {d: e["acc"][d]["acc"] for d in e["acc"]}, "n3": e["acc"]["3"]["n"], "ws3": e["ws"]["3"], "swap": e["swap_v"]["3"], "ablate": e["mem_ablate"]["3"]["acc"],
+    return {"acc": {d: e["acc"][d]["acc"] for d in e["acc"]}, "n3": e["acc"]["3"]["n"], "ws3": e["ws"]["3"], "swap": (e.get("swap_v") or {}).get("3"), "ablate": ((e.get("mem_ablate") or {}).get("3") or {}).get("acc"),   # Audit MED-6: CTRL cells may lack these (NA)
             "onset": on, "perm_ws": perm,
             "permuted_latent": any(perm.get(d, {}).get(t, 0) >= 0.90 and e["ws"].get(d, {}).get(t, 1) < 0.50 for d in perm for t in perm[d])}
 
@@ -107,6 +107,8 @@ def score(runs=R):
     o = {"section": 267, "cells": {r: cell(runs, r) for r in EM + CTRL}}
     if any(o["cells"][r] is None for r in EM):
         o["verdict"] = "pending"; return o
+    if any(o["cells"][r]["swap"] is None or o["cells"][r]["ablate"] is None for r in EM):
+        o["verdict"] = "pending (em cells lack swap_v / mem_ablate)"; return o
     o["seeds"] = {r: seed(o["cells"][r]) for r in EM}; labs = [o["seeds"][r]["label"] for r in EM]
     if any(l.startswith("pending") for l in labs):
         o["verdict"] = "pending"; return o
@@ -122,9 +124,11 @@ def fixtures():
         dd = tempfile.mkdtemp()
         for r in EM + CTRL:
             p = os.path.join(dd, r); os.makedirs(p)
-            json.dump({"acc": {str(d): {"acc": {1: 1.0, 2: a2, 3: a3, 4: 0.6, 5: 0.4}[d], "n": 1000} for d in range(1, 6)},
-                       "ws": {"3": {"1": ws1, "2": ws2, "3": a3}}, "swap_v": {"3": {"follow": fol, "floor": flo, "n": 1000}}, "mem_ablate": {"3": {"acc": abl, "n": 1000}}},
-                      open(os.path.join(p, "eval_em.json"), "w"))
+            ev = {"acc": {str(d): {"acc": {1: 1.0, 2: a2, 3: a3, 4: 0.6, 5: 0.4}[d], "n": 1000} for d in range(1, 6)},
+                  "ws": {"3": {"1": ws1, "2": ws2, "3": a3}}, "swap_v": {"3": {"follow": fol, "floor": flo, "n": 1000}}, "mem_ablate": {"3": {"acc": abl, "n": 1000}}}
+            if r == "emt_s1":   # Audit MED-6: TOKEN-INJECT CTRL has no memory -> no swap_v / mem_ablate
+                ev.pop("swap_v"); ev.pop("mem_ablate")
+            json.dump(ev, open(os.path.join(p, "eval_em.json"), "w"))
             with open(os.path.join(p, "log.jsonl"), "w") as fh:
                 if not missing_log:
                     for st, v in ((1000, on1), (2000, on2)):

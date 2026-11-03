@@ -83,6 +83,8 @@ def full_seed(runs, run, ref):
     c6 = all(L[d]["acc"][k] >= L[d]["acc"]["8"] - 0.02 for d in ("1", "2", "3", "4", "5", "6") for k in ("64", "128"))
     co = f["eval_insert_ho"]["fam"]["H-CHAINSRC-OP"]; content = co["acc8"] >= 0.85 and min(co["by_pos"].values()) >= 0.80
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     crit = {"C2-EXT": c2, "RETAIN": retain, "C6": c6, "CONTENT": content, "STABLE": sok is not False}; fail = [k for k, v in crit.items() if not v]
     return {"label": "DENSE-C2" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "d7": a["7"]["acc"], "d8": a["8"]["acc"], "bun_d7": r["7"]["acc"],
             "bun_d8": r["8"]["acc"], "rel7": rel7(f["eval_ws_deep"]), "d8_ci": wilson(a["8"]["acc"], 1000), "d8_near_075": near(a["8"]["acc"], 1000, 0.75), "d9_12": {d: a[d]["acc"] for d in ("9", "10", "11", "12") if d in a}, "stable": (sok, smsg)}
@@ -129,7 +131,7 @@ def fixtures():
         pred = {str(t): [v[i][t - 1] if (t != 7 or i < int(p7_ok * n)) else (v[i][t - 1] + 1) % 11 for i in range(n)] for t in range(1, 9)}
         return {"items": {"8": {"sig": list(range(n)), "ws_pred": pred, "v": v}}}
 
-    def world(d8D=0.75, d8C=0.55, r7D=0.95, r7C=0.7, ret=1.0, full_d8=0.8, d7=0.9, k2=0.05, hold=1.0, co=0.95, fade=True, pco=0.9):
+    def world(d8D=0.75, d8C=0.55, r7D=0.95, r7C=0.7, ret=1.0, full_d8=0.8, d7=0.9, k2=0.05, hold=1.0, co=0.95, fade=True, pco=0.9, nolog=False):
         dd = tempfile.mkdtemp()
 
         def put(run, name, obj):
@@ -149,7 +151,7 @@ def fixtures():
             put(run, "eval_long_k128.json", {"by_d": {str(x): {"acc": {"8": 1.0, "64": 1.0, "128": hold}} for x in range(1, 7)}})
             put(run, "eval_insert_ho.json", {"fam": {"H-CHAINSRC-OP": {"acc8": co, "by_pos": {"1": 0.9}}}})
             put(run, "train_summary.json", {"n_nonfinite": 0})
-            with open(os.path.join(dd, run, "log.jsonl"), "w") as fh:
+            with open(os.devnull if nolog else os.path.join(dd, run, "log.jsonl"), "w") as fh:
                 for i in range(1, 81):
                     fh.write(json.dumps({"step": i * 100, "loss": 0.01}) + chr(10))
             z = [[0.01] * 12 for _ in range(12)]
@@ -169,7 +171,7 @@ def fixtures():
                            ("pilot retain", {"ret": 0.95}, "pilot PARK"), ("pilot shortcut guard", {"pco": 0.7}, "pilot PARK"),
                            ("full d8", {"full_d8": 0.7}, "FAIL: C2-EXT"), ("full d7", {"d7": 0.8}, "FAIL: C2-EXT"), ("full d7 within tolerance", {"d7": 0.85}, "DENSE-C2 2/2"),
                            ("decoder", {"k2": 0.5}, "FAIL: RETAIN"), ("c6", {"hold": 0.5}, "FAIL: C6"), ("content", {"co": 0.5}, "FAIL: CONTENT"),
-                           ("not fading", {"fade": False}, "D1a NOT-FADING")):
+                           ("not fading", {"fade": False}, "D1a NOT-FADING"), ("blank log is pending (MED-1)", {"nolog": True}, "full pending")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], "->", r[2])

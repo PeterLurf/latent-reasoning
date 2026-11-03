@@ -78,6 +78,8 @@ def stage_s2(runs=R, run="p2m_s1"):
     if acc >= 0.90 and ws12 >= 0.90:
         return {"verdict": "SEED-OK", "test2_d2": acc, "ws_d2_p2": ws12, "ws6k": ws6}
     ext = jl(os.path.join(runs, run + "_ext", "eval_acc.json")); wse = ws_d2p2(runs, run + "_ext")
+    if ws12 < 0.50 and ws6 is None:   # Audit SCORER_BUGS MED-8: the rising clause needs the 6k read; missing -> pending, not NO-SEED
+        return {"verdict": "pending (6k read missing)", "test2_d2": acc, "ws_d2_p2": ws12, "ws6k": ws6}
     rising = ws6 is not None and ws12 - ws6 >= 0.10
     if 0.50 <= ws12 < 0.90 or (ws12 < 0.50 and rising):
         if ext is None or wse is None:
@@ -91,7 +93,10 @@ def stage_s3(runs=R):
     ok, a = retain(runs, "dism_s1", cue=True); w = jl(os.path.join(runs, "dism_s1", "eval_ws_deep.json"))
     if ok is None or w is None:
         return {"verdict": "pending"}
-    sok, smsg = AO.stable(runs, "dism_s1"); ok = ok and sok is not False
+    sok, smsg = AO.stable(runs, "dism_s1")
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"verdict": "pending", "stable": smsg}
+    ok = ok and sok is not False
     w6 = w["by_d"]["6"]; holds = a["6"]["acc"] >= 0.90 and a["7"]["acc"] >= 0.80 and all(w6[str(t)] >= 0.90 for t in range(1, 7))
     imp = a["8"]["acc"] >= 0.70 or a["7"]["acc"] >= 0.95
     lab = ("FAIL" if not ok else "MEDIUM-C2-IMPROVES" if (holds and imp) else "MEDIUM-C2-HOLDS" if holds else "MEDIUM-C1-ONLY")
@@ -132,7 +137,7 @@ def fixtures():
             json.dump(acc, open(os.path.join(q, "eval_acc.json"), "w")); json.dump({"by_d": {"2": {"2": ext}}}, open(os.path.join(q, "eval_ws.json"), "w"))
         return d
     cases = (("B ok", stage_b, {}, "BRIDGE-OK"), ("B d6 low", stage_b, {"d6": 0.7}, "BRIDGE-FAIL"), ("S1 ok", stage_s1, {}, "S1-OK winner askm_lr3e5"),
-             ("S1 fail", stage_s1, {"cls": 0.9}, "S1-FAIL"), ("S2 ok", stage_s2, {}, "SEED-OK"), ("S2 write missing", stage_s2, {"ws2": 0.02}, "NO-SEED"),
+             ("S1 fail", stage_s1, {"cls": 0.9}, "S1-FAIL"), ("S2 ok", stage_s2, {}, "SEED-OK"), ("S2 write missing", stage_s2, {"ws2": 0.02, "ws6": 0.02}, "NO-SEED"), ("S2 missing 6k read is pending (MED-8)", stage_s2, {"ws2": 0.02}, "pending (6k read missing)"),
              ("S2 mid -> extend", stage_s2, {"ws2": 0.7}, "EXTEND"), ("S2 low but rising -> extend", stage_s2, {"ws2": 0.3, "ws6": 0.1}, "EXTEND"),
              ("S2 extension ok", stage_s2, {"ws2": 0.7, "ext": 0.95}, "SEED-OK (after extension)"), ("S2 extension fails", stage_s2, {"ws2": 0.7, "ext": 0.6}, "NO-SEED (after extension)"),
              ("S2b reads p2m_s1b", lambda d: stage_s2(d, run="p2m_s1b"), {"s2b": 0.95}, "SEED-OK"),

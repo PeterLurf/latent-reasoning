@@ -60,6 +60,8 @@ def stage2_seed(runs, run):
     co = f["eval_cue_only"]["by_d"]
     guard = all(co[d]["answer_acc"] <= max(co[d]["majority"], min(x["by_d"][d]["acc"] for x in dirs)) + 0.05 for d in ("3", "4"))
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     perm = {d: tp["by_d"][d]["acc_kprime"]["8"] for d in ("2", "3", "4")}
     nodec = tp["by_d"]["4"]["acc_kprime"]["2"] <= 0.20
     m2 = tp["mean_at_2_d4"]; lp5p = m2["intact"]["8"] - m2["mean_at_t"]["8"]

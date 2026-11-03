@@ -38,6 +38,8 @@ def seed(runs, run, ref):
     a = f["eval_acc"]["by_d"]; ho = f["eval_insert_ho"]; co = f["eval_cue_only"]["by_d"]
     guard = all(co[d]["answer_acc"] <= max(co[d]["majority"], min(x["by_d"][d]["acc"] for x in dirs)) + 0.05 for d in ("3", "4"))
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     fam = {F: ho["fam"][F]["acc8"] >= 0.90 and min(ho["fam"][F]["by_pos"].values()) >= 0.80 for F in BIND}
     held = all(fam.values())
     sw = f["eval_swap_kd"]["by_d"]["4"]["swap_mid"]["4"]; h = f["eval_lp5h"]["by_d"]["4"]
@@ -48,7 +50,7 @@ def seed(runs, run, ref):
     ws6 = f["eval_ws_deep"]["by_d"]["6"]; credit = all(ws6[str(t)] >= 0.90 for t in (1, 2, 3, 4))
     indist = all(v["acc8"] >= 0.90 for v in ho["indist"].values())
     lab = ("VOID" if not guard else "UNSTABLE" if sok is False else "NOT-CAUSAL" if not retain else
-           "SELECTOR+C2" if (held and d5ok and amb and credit) else "SELECTOR" if held else "C2-ONLY" if amb else
+           "SELECTOR+C2" if (held and d5ok and amb and credit) else "SELECTOR" if held else "C2-ONLY" if (amb and d5ok and credit) else
            "TRAINED-INSERT-ONLY" if indist else "FAIL")
     return {"label": lab, "families": fam, "retain": retain, "nodec_k2": a["4"]["acc_kprime"]["2"], "d5": a["5"]["acc"], "d6": d6, "d6_ref": d6ref, "ws6_p1_4": [ws6[str(t)] for t in (1, 2, 3, 4)],
             "credit": credit, "indist": indist, "stable": (sok, smsg)}

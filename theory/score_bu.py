@@ -44,9 +44,14 @@ def seed(runs, bun, ctrl, ref):
     r = rf["by_d"]; w6 = f["eval_ws_deep"]["by_d"]["6"]
     c2 = a["6"]["acc"] >= r["6"]["acc"] - 0.05 and a["7"]["acc"] >= r["7"]["acc"] - 0.05 and w6["5"] >= 0.90 and w6["6"] >= 0.90
     hl = HX.hold(f["eval_long_k128"]); ng_ok, ng = LH.norm_guard(runs, bun, ctrl); lp_ok, lp = FD.lp0(runs, bun, ctrl)
+    if ng_ok is None or lp_ok is None:   # Audit SCORER_BUGS MED-2: a missing / short bunc log is pending, not FAIL: C6
+        return {"label": "pending", "norm_guard": (ng_ok, ng), "lp0": (lp_ok, lp)}
     c6 = hl["label"] == "HOLD" and ng_ok is True and lp_ok is True
     c5r = HX.halt(f["eval_halthead"]); c5 = c5r["label"] == "C5-EXTRAP"
-    sok, smsg = AO.stable(runs, bun); st = sok is not False
+    sok, smsg = AO.stable(runs, bun)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
+    st = sok is not False
     crit = {"C1": c1, "C2": c2, "C6": c6, "C5": c5, "STABLE": st}
     fail = [k for k, v in crit.items() if not v]
     bl = jl(os.path.join(runs, ctrl, "eval_long_k128.json"))     # Note 259-3: BUN-CTRL hold, descriptive (attribution of a C6 HOLD to the penalty)

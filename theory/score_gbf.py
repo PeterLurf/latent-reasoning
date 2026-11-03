@@ -50,6 +50,8 @@ def seed(runs, run):
                 e[str(dd)] = C5C.per_d(st[str(dd)]["items"], 3)
         c5_desc = HX.halt(e)["label"] if all(str(dd) in e for dd in range(1, 8)) else None
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     crit = {"C1": c1, "CONTENT": content, "C2": c2, "C6": c6, "STABLE": sok is not False}
     fail = [k for k, v in crit.items() if not v]
     return {"label": "PLAN-FREE-C1" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "d4_k2": a["4"]["acc_kprime"]["2"], "d6": a["6"]["acc"],

@@ -45,6 +45,8 @@ def one(runs, run):
     gates = {"ACC4": acc("4") >= 0.50 and acc("4") >= cd["by_d"]["4"]["acc"] + 0.25, "NOT-DECODER": acc("4", 2) <= 0.20, "SWAP4": sw_ok(s4), "LP5-D4": lp4 >= 0.30}
     d3 = acc("3") >= 0.60 and sw_ok(s3)
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     lab = ("VOID" if not guard else "UNSTABLE" if sok is False else "EXTEND" if all(gates.values()) else "EXTEND-D3-ONLY" if d3 else "NOT-EXTEND")
     return {"label": lab, "gates": gates, "d3_desc": d3, "acc": {d: acc(d) for d in ("2", "3", "4")}, "acc4_k2": acc("4", 2), "swap4": s4, "swap3_t2": s3, "lp5_d4": lp4, "stable": (sok, smsg)}
 

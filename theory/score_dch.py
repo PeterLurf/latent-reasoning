@@ -38,6 +38,8 @@ def seed(runs, run, ref):
     a = f["eval_acc"]["by_d"]; ho = f["eval_insert_ho"]; co = f["eval_cue_only"]["by_d"]
     guard = all(co[d]["answer_acc"] <= max(co[d]["majority"], min(x["by_d"][d]["acc"] for x in dirs)) + 0.05 for d in ("3", "4"))
     sok, smsg = AO.stable(runs, run)
+    if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
+        return {"label": "pending", "stable": (sok, smsg)}
     fam = {F: ho["fam"][F]["acc8"] >= 0.90 and min(ho["fam"][F]["by_pos"].values()) >= 0.80 for F in BIND}
     held = all(fam.values()); trained = all(ho["fam"][F]["acc8"] >= 0.90 for F in TRAINED)
     sw = f["eval_swap_kd"]["by_d"]["4"]["swap_mid"]["4"]; h = f["eval_lp5h"]["by_d"]["4"]

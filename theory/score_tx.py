@@ -1,6 +1,6 @@
 """THEORY §266 SAME-DATA BASELINES scorer (TX_v1 in THEORY §266; Theory is the only scorer; committed before output).
 X3 TEXT-CoT-D4: GPT-2 small text CoT trained on bun's REG d <= 4 data (same generator, frames 0-5, §257 distract mix at p 1.0), §227 CurGate recipe;
-  cells tx_s1 / tx_s2 (sentence steps "<name> has <v> <unit>.") and txv_s1 (value-only steps). eval_text.json: by_d {d: {acc, parsed, n, gen_tokens}} on TEST2
+  cells tx_s1 / tx_s2 (sentence steps "<name> has <v> <unit>.") and txv_s1 (value-only steps). eval_textcot.json: by_d {d: {acc, parsed, n, gen_tokens}} on TEST2
   d 1-10 (free greedy decode, final-answer acc).
 X5 ONE-HOP-PIPELINE: on bun_s1 / bun_s2, eval_pipeline.json by_d {d: {acc_bun, acc_ask, n}}: for t = 1..d, S_t is asked of a one-hop rendering in which
   S_t-1's op sentence is replaced by the stated given "S_t-1 has v^_t-1 <u>." (v^ = the pipeline's own previous answer); acc_bun = bun at K' 1 with the cue
@@ -45,7 +45,7 @@ def near(p, n, bar):
 
 def score(runs=R):
     o = {"section": 266}
-    tx = {c: jl(os.path.join(runs, c, "eval_text.json")) for c in TEXT}; bn = {b: jl(os.path.join(runs, b, "eval_acc.json")) for b in BUN}
+    tx = {c: jl(os.path.join(runs, c, "eval_textcot.json")) for c in TEXT}; bn = {b: jl(os.path.join(runs, b, "eval_acc.json")) for b in BUN}
     pp = {b: jl(os.path.join(runs, b, "eval_pipeline.json")) for b in BUN}
     if any(v is None for v in list(tx.values()) + list(bn.values()) + list(pp.values())):
         o["verdict"] = "pending"; return o
@@ -55,6 +55,9 @@ def score(runs=R):
     cells = {c: {"valid": all(v["by_d"][str(d)]["acc"] >= min(0.98, bmin - 0.01) for d in (1, 2, 3, 4)) and trail_ok(v), "trail": trail_desc(v), **{"d%d" % d: v["by_d"][str(d)]["acc"] for d in range(1, 11)},
                  "parsed_min": min(v["by_d"][str(d)]["parsed"] for d in range(1, 11)), "gen_tokens": {str(d): v["by_d"][str(d)].get("gen_tokens") for d in range(1, 11)}}
              for c, v in tx.items()}
+    void = [c for c in TEXT if min(tx[c]["by_d"][str(d)]["parsed"] for d in (1, 2, 3, 4)) < 0.9]   # Audit SCORER_BUGS MED-5: parse failure = build bug
+    if void:
+        o["verdict"] = "VOID-RERUN once (parsed < 0.9 at d 1-4: %s)" % ",".join(void); o["text_void"] = void; return o
     val = [c for c in TEXT if cells[c]["valid"]]
     if not val:
         x3 = "X3 UNDERTRAINED -> VOID-EXTEND once (+12k) (no text cell VALID: d 1-4 >= min(0.98, bun - 0.01) and the Note 266-2 trailing-number gate)"
@@ -83,7 +86,7 @@ def score(runs=R):
 
 
 def trail_desc(v):
-    """Note 266-2 (Audit lead, 2605.22870 'small-model text CoT copies the last number'): eval_text.json "trail" {d: {"acc_trailing": x,
+    """Note 266-2 (Audit lead, 2605.22870 'small-model text CoT copies the last number'): eval_textcot.json "trail" {d: {"acc_trailing": x,
     "copy_rate": y, "base_copy": z}} for d 1-4. acc_trailing = acc on the same items with a trailing irrelevant sentence '<absent name> has x <u>.'
     appended after the last op sentence (x random, seed 26610); copy_rate = P(pred == the prompt's last number) on the trailing rendering;
     base_copy = P(ans == that number)."""
@@ -123,15 +126,15 @@ def c7(runs):
 def fixtures():
     res = []
 
-    def world(t14=1.0, t7=0.5, t8=0.3, tv7=0.4, und2=False, p1=1.0, p7=0.99, p8=0.97, rt=1.0, fo=0.8, an=0.3, tdrop=0.0, cex=0.0):
+    def world(t14=1.0, t7=0.5, t8=0.3, tv7=0.4, und2=False, p1=1.0, p7=0.99, p8=0.97, rt=1.0, fo=0.8, an=0.3, tdrop=0.0, cex=0.0, parsed=1.0):
         dd = tempfile.mkdtemp()
 
         def put(run, name, obj):
             os.makedirs(os.path.join(dd, run), exist_ok=True); json.dump(obj, open(os.path.join(dd, run, name), "w"))
         for c in TEXT:
             a7 = tv7 if c == "txv_s1" else t7; lo = t14 if not (und2 and c != "tx_s1") else 0.5
-            put(c, "eval_text.json", {"trail": {str(d): {"acc_trailing": lo - tdrop, "copy_rate": 0.1 + cex, "base_copy": 0.1} for d in range(1, 5)},
-                                      "by_d": {str(d): {"acc": lo if d <= 4 else (0.9 if d < 7 else a7 if d == 7 else t8 if d == 8 else 0.1), "parsed": 1.0, "n": 100, "gen_tokens": 10 * d}
+            put(c, "eval_textcot.json", {"trail": {str(d): {"acc_trailing": lo - tdrop, "copy_rate": 0.1 + cex, "base_copy": 0.1} for d in range(1, 5)},
+                                      "by_d": {str(d): {"acc": lo if d <= 4 else (0.9 if d < 7 else a7 if d == 7 else t8 if d == 8 else 0.1), "parsed": parsed, "n": 100, "gen_tokens": 10 * d}
                                                for d in range(1, 11)}})
         for b in BUN:
             put(b, "eval_acc.json", {"by_d": {"7": {"acc": 0.86}, "8": {"acc": 0.53}}})
@@ -144,6 +147,7 @@ def fixtures():
                            ("0.97 in-range is undertrained", {"t14": 0.97}, "X3 UNDERTRAINED"),
                            ("trailing-number copy shortcut voids text cells", {"cex": 0.2, "t7": 0.85}, "X3 UNDERTRAINED"),
                            ("trailing sentence breaks text cells", {"tdrop": 0.2, "t7": 0.85}, "X3 UNDERTRAINED"),
+                           ("unparsed text cell is VOID-RERUN (MED-5)", {"parsed": 0.5}, "VOID-RERUN"),
                            ("one valid cell decides", {"und2": True, "t7": 0.5}, "X3 LATENT-SPECIFIC"), ("pipeline invalid", {"p1": 0.9}, "X5 INVALID"),
                            ("pipeline fails d8", {"p8": 0.8}, "PIPELINE-FAILS"), ("c7 edit", {}, "C7-EDIT 2/2"), ("c7 no edit", {"fo": 0.2}, "NO-EDIT/NO-EDIT"),
                            ("c7 round trip", {"rt": 0.9}, "NO-EDIT/NO-EDIT"), ("c7 unexposed", {"an": 0.9}, "UNEXPOSED/UNEXPOSED")):
