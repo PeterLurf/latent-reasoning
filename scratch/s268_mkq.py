@@ -1,9 +1,11 @@
 """§261 TARGET-CUE pilot (score_tc): queue b412 on one RTX 3090 (filler family s267, drain gen10) =
   pilot_tc_s1_mem / _gtime  K7 mem_check + G-TIME (the pilot flags; a crash refuses the host);
+  pilot_tc_s1_gates         scratch.s268_gates (Audit G-D b412 (1)): gate_s268 offbit_aw / offbit_gen (flags-off bitwise vs the pre-§261 tree scratch/s268_ref.tar), smoke_plain,
+                            smoke_tgt, gradflow on this host -> gates_pass.json (the TRAIN line --require's it);
   pilot_tc_s1_step0         scratch.s259_guarded --mode evalonly: the bun_s1 init (streaming copy, sha on host) under the TARGET cue (--args = the pilot's frozen args)
                             -> eval_acc + eval_ws + eval_insert_ho (no training); its model.pt copy is NOFETCH (gen10);
   pilot_tc_s1               scratch.s257_guarded --mode train: bun_s1's flags (dch_flags + --hold_inc 1.6 --hold_log; the §257 insert mix) with --init_model the bun_s1 copy,
-                            --cue target (§261), --steps 8000 --stop_at 2000 (ckpt at 2000, exit 9), micro 2 pinned;
+                            --cue target (§261), --steps 8000 --stop_at 2000 (ckpt at 2000, exit 9), micro 2 pinned; requires pilot_tc_s1_gates/gates_pass.json;
   pilot_tc_s1 (2k evals)    scratch.s268_stopland --step 2000 --parts acc,ws,insert_ho: model.pt from the 2k ckpt + the evals IN the run dir (a gen10 RUN dir; the training
                             log.jsonl kept);
   pilot_tc_s1 (gate)        scratch.s268_target: cue target + identical pass inputs (passes()' assert armed) + the tail names S_d and no other entity -> gates_pass.json.
@@ -25,7 +27,10 @@ from nobuf_sha import sha_nobuf  # noqa: E402
 INIT = ("boxes/runs_fsq/bun_s1_init/model.pt", "1ad3517b7635fddf")
 BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/insert_render.py", "boxes/perm_render.py", "boxes/s5.py", "boxes/nested170.py", "boxes/inject_ow.py",
         "boxes/deltamem.py", "boxes/core.py", "boxes/ow_words.py", "boxes/nested_words.py", "scratch/s257_guarded.py", "scratch/s259_guarded.py", "scratch/s268_stopland.py",
-        "scratch/s268_target.py", "scratch/s256_ho_shas.json", "scratch/s257_ho_shas.json"]
+        "scratch/s268_target.py", "scratch/s268_gates.py", "scratch/gate_s268.py", "scratch/gate_s257.py", "scratch/gate_s251.py", "scratch/gate_s228.py",
+        "scratch/s222_det_wrap.py", "scratch/s268_ref.tar", "scratch/s256_ho_shas.json", "scratch/s257_ho_shas.json"]
+GSHIP = ("scratch/s268_ref.tar scratch/gate_s268.py scratch/gate_s257.py scratch/gate_s251.py scratch/gate_s228.py scratch/s228_args_check.py scratch/s222_det_wrap.py "
+         "scratch/s257_guarded.py boxes/runs_fsq/bun_s1_init/model.pt scratch/s256_ho_shas.json scratch/s257_ho_shas.json")
 PARTS = "acc,ws,insert_ho"
 
 
@@ -52,14 +57,15 @@ shutil.copy(d + "/args.json", "scratch/s267_args_frozen_%s_step0.json" % run)   
 dif = {k: v for k, v in C.diff(json.load(open("boxes/runs_fsq/bun_s1/args.json")), json.load(open(d + "/args.json"))).items() if k != "pair_stats"}; out["diff_vs_bun_s1"] = dif
 blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); fs = " ".join(fl); W = "boxes/runs_fsq/" + run; SH = "scratch/s256_ho_shas.json scratch/s257_ho_shas.json"
 q = ("# THEORY §261 TARGET-CUE pilot (score_tc): pilot_tc_s1 = bun_s1 (streaming copy, sha on host) + bun_s1's args + --cue target, 8k schedule stopped at 2000; "
-     "step-0 and 2k evals (acc + ws + insert_ho) under the target cue + the target-only gate. Frozen args scratch/s267_args_frozen_pilot_tc_s1.json.\n# HOSTPROBE\n# P=1\n"
+     "host gates first (gates_pass.json required); step-0 and 2k evals (acc + ws + insert_ho) under the target cue + the target-only gate. Frozen args scratch/s267_args_frozen_pilot_tc_s1.json.\n# HOSTPROBE\n# P=1\n"
      "# NOFETCH %s_step0/model.pt\n"
      "%s_mem boxes.inject_aw %s --mem_check\n"
      "%s_gtime boxes.inject_aw %s --time_steps 60\n"
+     "%s_gates scratch.s268_gates --blob %s --gates offbit_aw,offbit_gen,smoke_plain,smoke_tgt,gradflow --ship %s\n"
      "%s_step0 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args scratch/s267_args_frozen_%s_step0.json --parts %s --ship %s scratch/s267_args_frozen_%s_step0.json %s\n"
-     "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s %s -- %s %s --args_ref scratch/s267_args_frozen_%s.json\n"
+     "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --require %s_gates/gates_pass.json --ship %s %s -- %s %s --args_ref scratch/s267_args_frozen_%s.json\n"
      "%s scratch.s268_stopland --step 2000 --parts %s\n"
-     "%s scratch.s268_target\n") % (W, W, fs, W, fs, W, blob, INIT[0], INIT[1], run, PARTS, INIT[0], run, SH, W, blob, INIT[0], INIT[1], INIT[0], SH, fs, " ".join(tail), run,
+     "%s scratch.s268_target\n") % (W, W, fs, W, fs, W, blob, GSHIP, W, blob, INIT[0], INIT[1], run, PARTS, INIT[0], run, SH, W, blob, INIT[0], INIT[1], W, INIT[0], SH, fs, " ".join(tail), run,
                                     W, PARTS, W)
 open("scratch/gen_q_b412.txt.hold", "w", encoding="utf-8", newline="\n").write(q)
 assert subprocess.call([sys.executable, "scratch/check_queue_ships.py", "scratch/gen_q_b412.txt.hold"]) == 0
