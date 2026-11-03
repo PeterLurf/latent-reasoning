@@ -26,7 +26,7 @@ Started 2026-11-03 from 11 parallel research passes:
 | 2 | X5 | ONE-HOP-PIPELINE baseline + swap-at-t curve | C1 framing | eval $0.2 | 10.0 | askname ckpt | queued |
 | 3 | X4+D3+D5+E1+H5 | C2 diagnostic bundle: first-error pass, length-matched d4, K′12/16, centroid snap, re-sweep, contrast decode, latent beam | C2 | eval $0.3 | 8.0 | – | queued |
 | 4 | M1 | ECHO-GATE: medium's pass-2 write vs echo (re-gate §258) | scale, C1 | eval $0.3 | 2.0 | p2m_s1b model.pt | **demoted (Note 264-1: decoder computes the last hop from v_1 + text, follow_ca 1.00); M3 / M2 next for medium** |
-| 5 | D1-S1 | DENSE-DISTRACT: 0–8 inserts decouple op-sentence count from depth | C2, C1 | 2k $0.2 | 6.4 | – | queued |
+| 5 | D1-S1 | DENSE-DISTRACT: 0–8 inserts decouple op-sentence count from depth | C2, C1 | 2k $0.2 | 6.4 | – | **§265 registered (+ D1a)** |
 | 6 | P1 | SELF-CUE: the loop names its next entity (plan-free at test) | C1, C5, C7 | 2k $0.35 | 5.0 | §263 read | after §263 |
 | 7 | K3-S0 | PREFIX-KL: the model's own d = t prefix answer anchors the onset code | C4 | 2k $0.3 | 4.7 | prefix builder | queued |
 | 8 | P2 | BACKWARD-PLAN: parent lookup from S_d to a given, then forward | C1, C5, C7 | 2k $0.4 | 4.4 | §263 read | after §263 |
@@ -161,6 +161,8 @@ Entries:
   - Pilot:
     - S1, 2k: GO if d 8 passes 1–4 WS ≥ 0.97 and accuracy ≥ bun + 0.10.
     - S2, 2 × 8k: d 8 ≥ 0.75. Cost $1.4.
+- **D1a ATTENTION-FADING diagnostic (Audit lead L1, 11-03; $0-0.2 eval):** the ':' query's attention mass and entropy over op sentences, at a fixed pass, d 4 vs d 4 + k inserts vs d 8. Is softmax dispersal the mechanism behind Note 264-1's op-count degradation? 2501.19399 (Scalable-Softmax), 2410.01104 (softmax is not enough). Paired with D1.
+- **D1b SSMAX LOGIT SCALE (if D1a = fading):** s·log n scaling of attention logits at the selecting layers, warm FT from bun. 2501.19399. Cost $0.6. The architectural fix for D1's symptom.
 - **D2 HOLD-INTERLEAVE**: re-ask the previous cue mid-chain, which decorrelates pass index from step.
   - 2202.05826, 2502.05171.
   - Needs an aux / hold re-index build plus a p = 0 equivalence gate. Cost $1.4.
@@ -251,6 +253,7 @@ Entries:
   - PASS if follow ≥ 0.90 and aux ≥ 0.95; PARK if < 0.5.
 - **M2 COLON-CE** ($1.3): CE on the ':' logits at pass t (generalised --ask_p). 2309.05605.
 - **M3 SHORTCUT-PRESSURE** ($4): d_max 3 and / or an S-only decoder. 2402.16837, 2411.16353, 2405.15071.
+- **M8 DECODER TEXT-DROPOUT (Audit lead L2, 11-03):** mask the op sentences in the decoder pass's input with p ~0.5 in training, so the final hop must come from memory. A training-side alternative to M3's S-only decoder (Note 264-1: medium's decoder recomputes the last hop from v_1 + text). Test on small first (bun warm, 2k, NOT-DECODER and SWAP4 vs CTRL), then medium. Cost $0.3 small / $1.5 medium.
 - **M4 READ-AT-COLON OFF** ($0.7): 2605.26797, 2605.06216.
 - **Parked:** M5 read-layer fraction, M6 LR / LoRA (2405.09673), and M7 gradient starvation (contradicted by the reads).
 - **S1 BASE READINESS LADDER** ($1): 2304.01373, 2412.15115, 2502.02737, 2502.17416.
@@ -280,5 +283,6 @@ Entries:
 
 ## Changelog
 - 2026-11-03: created from 11 research passes (~95 entries; merges noted inline). §263 ORDER-FREE running.
+- 2026-11-03 16:17: Audit leads L1 (attention fading: D1a diagnostic + D1b SSMax) and L2 (M8 decoder text-dropout) added. Next registration: D1 + D1a (§265), then P1 / P2 after §263.
 - 2026-11-03 16:15: Note 264-1 stored reads: X4a UNTRAINED-PASS (no first errors at passes 1-2; pass 7 reliability 0.91 at d 7 vs 0.59 / 0.80 at d 8, so later passes degrade with the op-sentence count, which favours D1 DENSE-DISTRACT); M1 V1+TEXT (medium's decoder ignores S's v_2; M1 demoted, M3 SHORTCUT-PRESSURE / M2 COLON-CE up).
 - 2026-11-03: Literature spot-check (docs/LIT_BACKLOG_SPOTCHECK_2026-11-03.md): all 160 ids resolve; missed priors added to X1 / K1. X1 + X2 (+ op_count, X4a, M1 stored reads) registered as §264 SCORECARD-CHECK; X5, R5 and D3 deferred to a later cell.

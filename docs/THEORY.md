@@ -351,6 +351,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **PILOT PARK 11-03 (262-3): NK ablation drop 0.004 (binding unused); but CTRL (perm + one-hop ':'-CE co-training) fixes order-bound selection (pass-1 perm WS 0.98 / 0.96, conditional 0.95-0.97); ~$1.73.** **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
 | 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **APPROVED by Audit 11-03 (263-1: CONTENT binding).** **REGISTERED 11-03; score_of.py 10/10; guard $4** |
 | 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
+| 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 
 ## Live sections
 
@@ -19926,6 +19927,44 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - P(C6 unchanged) ~0.5: gated-delta heads can be idempotent, but additive heads add on every re-write.
   - Either outcome changes how the scorecard is worded. Censoring: a VOID reruns once.
 - **Cost:** two eval cells on a 3090, ~15 min each, ≈ $0.3-0.5; guard $1.5. Queues after the s270 chain's filler exits (one filler at a time; Audit 11-03).
+
+## 265. DENSE-DISTRACT: does training at d <= 4 with up to 8 inserts (op-sentence count matched to d 8-12) lift the depth horizon? + D1a ATTENTION-FADING diagnostic (C2; backlog D1 + Audit lead L1; Theory's choice after Note 264-1; Audit approves; guard **$4**; pre-registered 2026-11-03 16:19 EST, before any build or output)
+
+- **Why (Note 264-1, X4a):** bun's errors past trained depth start in the late passes, and the same pass index degrades with more op sentences. Pass-7 reliability is 0.91 at d 7 but 0.59 / 0.80 at d 8.
+  - §241: the op-sentence count hurts, not the text length.
+  - §256 / §257: 0-2 distractor inserts unlocked extrapolation in the first place.
+  - Hypothesis: a step that must pick its op by content among many op sentences is trained only up to ~6 op sentences, at d 4 + 2 inserts. Train with up to 12 op sentences at d <= 4.
+  - Audit lead L1 (2501.19399 Scalable-Softmax; 2410.01104): softmax attention disperses as the item count grows. D1a tests whether attention fading is the mechanism; D1b (an SSMax logit scale) is the architectural sibling if it is.
+- **Arms:** warm from bun_s1 / bun_s2 final weights, bun's args. The single change is a new trainer arg **--distract_nmax** (inserts n ~ U{0..nmax}; default 2 draws bitwise-identically to rng.integers(0, 3); an equivalence gate at nmax 2).
+  - **Pilot (2k):** ddp_s1 / ddp_s2 (nmax 8) vs **CTRL** ddc_s1 / ddc_s2 (nmax 2, the same 2k of extra training). Eval parts: acc, ws_deep.
+  - **Full (8k, only on pilot GO):** dd_s1 / dd_s2 (nmax 8). Eval parts: acc, ws_deep, swap_kd, lp5h, long_k128, insert_ho, stab, op_count (§264's part).
+  - **Name budget:** the 40-name set must cover up to 8 inserts (s256 / givop take 2 new names, chain takes 1). The build asserts the budget and caps n at what fits, logging the realised n distribution (the realised-n histogram is reported).
+  - **Answers and cues** are unchanged under inserts (asserted, as in §257).
+- **PILOT GO (theory/score_dd.py, fixtures 10/10; gated on the mechanism, per the §253 lesson):** all three must hold, else PARK:
+  - mean over seeds of [d 8 acc(D) - d 8 acc(CTRL)] >= 0.10;
+  - mean over seeds of [rel7(D) - rel7(CTRL)] >= 0.10, where rel7 = P(pass-7 WS ok | passes 1-6 ok) on TEST2 d 8;
+  - every D cell keeps TEST2 d 1-4 >= 0.98.
+- **FULL binding per seed (vs bun, same seed):**
+  - **C2-EXT:** d 8 >= 0.75 (bun 0.47 / 0.59) and d 7 >= bun d 7;
+  - **RETAIN:** TEST2 d 1-4 >= 0.98, d 6 >= bun - 0.02, NOT-DECODER, SWAP4, LP5-D4;
+  - **C6:** the K' 64 / 128 hold;
+  - **CONTENT:** H-CHAINSRC-OP >= 0.85, min pos >= 0.80;
+  - **STABLE.**
+  - Label DENSE-C2 per seed; per arm k/2. Two passing seeds put dd in place of bun as the SOTA (C2 row).
+  - **Descriptive:** d 9-12, rel per pass, op_count, C5 r = 3 (scoped per §264's outcome).
+- **D1a ATTENTION-FADING (diagnostic, descriptive; new eval part attn_fade on bun_s1 / bun_s2; also run on the pilot cells):**
+  - **Measure:** fp32 attention weights from every layer x head (computed from q / k by hook, no change to the forward), for the ':' query of pass t onto S_t's op-sentence tokens (sentence spans by per-sentence tokenisation, asserted to tile the text).
+  - **Conditions:** TEST2 d 4 (k 0) passes 2-4; d 4 + 6 inserts (op_count rendering) pass 4; d 8 passes 4 and 7. n 500 each. Plus per d 8 item the pass-7 WS-ok flag (given 1-6 ok).
+  - **Selector heads:** the top 5 by mean target mass on d4k0 passes 2-4, even items. Evaluated on odd items.
+  - **FADING** if max(drop d4k0 -> d8 at pass 4, drop d4k0 -> d4k6 at pass 4) >= 0.30 AND the AUC of the pass-7 target mass for WS-ok at d 8 >= 0.65, in both seeds.
+  - Also reported: entropy over op sentences, and the same heads on the pilot cells (does D1 sharpen them?).
+  - **Consequence:** FADING promotes D1b SSMAX (backlog) to the next C2 registration whatever D1's outcome. NOT-FADING demotes it.
+- **Scope:** plan given; REG frames 0-5; the bun lineage. The trained depth stays d <= 4; inserts change only the op-sentence count.
+- **OC:**
+  - P(pilot GO) ~0.4: the X4a pattern fits, but the late-pass failure could be pass-index-bound, which D1 does not touch.
+  - P(DENSE-C2 per seed | GO) ~0.4: d 8 0.75 is a big step from 0.47 / 0.59.
+  - Censoring: VOID-RERUN once; cells that hit the name-budget cap are reported.
+- **Cost:** pilot 4 x 2k ≈ $0.8 + full 2 x 8k ≈ $1.6 + evals ≈ $2.8; guard **$4**. Queues after §264 (one filler at a time).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
