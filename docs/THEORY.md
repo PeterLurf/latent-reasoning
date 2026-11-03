@@ -347,6 +347,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 258 | LARGER-BASE DISTRACT (user via Audit; Theory's design): the §256 recipe on GPT-2 medium, staged (small BRIDGE, S0 install + bitwise gate, S1 askname-M with LR bracket, S2 P2-M with mechanism gate, S3 DIS-M); HOLDS d 6 >= 0.90 / d 7 >= 0.80, IMPROVES d 8 >= 0.70 or d 7 >= 0.95; PILOT 1 seed; LB2_v1.md | registered | **PARKED 11-02 (258-9): S2b NO-SEED at lr 1e-4 too (WS d 2 p 2 0.015); aux shows the write formed by ~10k but the ':' readout never shows v_2; ~$10.4.** **S2 NO-SEED at lr 3e-5 (258-7); S2b at lr 1e-4 registered (258-8; NO-SEED parks the medium line): medium TEST2 d 2 0.999 but WS d 2 pass 2 0.017 at 6k / 12k (aux 0.18); bridge OK; $6.22.** **APPROVED by Audit 11-01 (258-1: same-class small anchor; field check; off-host ckpts + resume).** **REGISTERED 11-01; guard $20; stage scorer before the first gate read** |
 | 259 | BUNDLE (Theory's discretion; conditional on L2 DRIFT): dis_s<k> + --hold_inc 1.6 8k FT with BUN-CTRL; post-hoc halt head; C1 RETAIN / C2 retention vs dis / C6 hold + norm guard / C5 score_hx EXTRAP; BUNDLE-PASS (scoped); BU_v1.md | registered | **SCORED 11-02 (259-4): BUNDLE 0/2 (FAIL: C5 x2) - C1 + C2 retained (d 6 0.97 / 0.96) + C6 HOLD to K' 128 (||S|| 1.02-1.14x; CTRL drifts) in one model; C5 in range only; $3.75.** **APPROVED in principle 11-01 (on L2 DRIFT; score_bu G-D before launch).** **REGISTERED 11-01 (conditional); guard $4; scorer before launch** |
 | 260 | GENERIC-BUN (Theory's choice; C1 scope, the top priority: remove the plan from the cue on the content-selecting bundle model): pilot from bun_s1 + --cue generic (2k gate), then 2 seeds 8k; binding plan-free C1 + content on held-out inserts + C2 / C6 retention | registered | **SCORED 11-03 (260-5): PLAN-FREE-C1 1/2 - plan-free causal chaining on clean d 1-4 in both; s2 fails CONTENT (min pos 0.75) + C2 (d 6 0.44); without the plan the loop follows reachability and does not stop (H-EXTEND 0.08 / 0.02); $2.23.** **APPROVED by Audit 11-02 (260-1: NOT-DECODER + SWAP-MID binding in the full stage).** **REGISTERED 11-02; pilot gate score_gb.py 5/5; guard $3 -> $3.5 (260-4)** |
+| 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
 
 ## Live sections
 
@@ -19802,6 +19803,24 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
     - C6 hold (K' 64 >= K' 8 - 0.02, d 1-4).
 - **Scope:** the per-pass aux targets still name step t's entity, so the plan is supervised in training: this tests 'no plan input at test'. Text stays in chain order.
 - **OC:** P(GO) ~0.35 (reachability used) vs ~0.05 (cue-name keyed); P(full pass | GO) ~0.5. Censoring: VOID-RERUN once.
+
+## 261. TARGET-CUE: does naming only the target (not the per-step plan) restore stopping and live-distractor rejection? (C1 scope; Audit's idea, Theory's choice under the user's priority order; Audit approves; guard **$3.5**; pre-registered 2026-11-03, before any build or output)
+
+- **Why (Note 260-5):** without the plan, the loop selects by forward reachability, follows any read-chain and does not stop at S_d (H-EXTEND 0.08 / 0.02; H-LIVE 0.40 / 0.41; d 7 0.25 / 0.07).
+  - The missing ingredient may be the target, not the plan. A real problem gives the question (the target), not the plan.
+  - A cue naming only S_d, identical every pass, gives no per-step plan but allows backward reachability: stop at S_d, reject chains that do not lead there.
+- **Pilot (cloud RTX 3090, ~$0.3):** pilot_tc_s1 = --init_model bun_s1, bun_s1's args + --cue target (' To find how many <u> <S_d> has, what is the next value? The answer is:' at every pass), --steps 8000 --stop_at 2000.
+  - Host evals under the target cue at 2k: eval_acc, eval_ws, eval_insert_ho.
+  - gates_pass 'target_only' = the cue is byte-identical across passes and names S_d and no other entity.
+  - Step-0 reference pilot_tc_s1_step0.
+  - **Gate (theory/score_tc.py, fixtures 6/6):**
+    - GO if TEST2 d 2-4 >= 0.90, WS d 3 passes 2-3 >= 0.50, H-EXTEND >= 0.60, H-LIVE >= 0.60 and target_only true;
+    - PARK if d 3 < 0.20, or H-EXTEND < 0.30 and H-LIVE < 0.50 (no better than the generic cue);
+    - else NOTE.
+- **Full (only on GO; scorer committed before launch):** tc_s1 / tc_s2 = bun_s* + --cue target, 8k.
+  - Binding: C1 (d 1-4 >= 0.95, NOT-DECODER, SWAP4, LP5-D4, target_only); CONTENT (H-CHAINSRC-OP >= 0.85, min pos >= 0.80; H-EXTEND >= 0.80; H-LIVE >= 0.80); C2 (d 6 >= 0.80); C6 (K' 64 / 128 hold d 1-6).
+- **Scope:** target given, no per-step plan at test; the aux still names steps in training; chain-order text.
+- **OC:** P(GO) ~0.4 (backward reachability usable) vs ~0.05 (it needs the per-step names). Censoring: VOID-RERUN once.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
