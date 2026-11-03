@@ -18,7 +18,81 @@ Started 2026-11-03 from 11 parallel research passes:
 **Baseline:** bun_s1/s2 (§259), plus §263 ORDER-FREE (of_s1/s2), which is running.
 - **C4 caveat (C1/C4 agent):** the §262/§263 one-hop co-training items for S_2 | S_1 are rewritten with simulator values. ORDER-FREE is therefore not a C4 route, and any C4 version needs prefix problems (K3).
 
-## 1. Ranked queue (top of backlog)
+## 1. Ranked queue (top of backlog; re-ranked 11-03 after wave 2 + Audit NORTH_STAR_GAP)
+
+**Ranking rule change (Audit NORTH_STAR_GAP).** The cost-floored score let any $0 read outrank a $2 experiment by 8x before priors, which buried the big bets. The queue therefore runs in **lanes**, worked in parallel; the score orders entries within a lane.
+
+Load-bearing restrictions, in order:
+1. the plan in the cue;
+2. per-pass simulator targets;
+3. template / mod-11;
+4. GPT-2 small with one lineage;
+5. fixed K with prompt recompute.
+
+Standing statistics rules (Audit 11-03):
+- Wilson CIs and a NEAR flag on every binding cell;
+- "one lineage" scope until X7 exists;
+- C1 gates at d 6-7 when C1 and C2 are claimed together;
+- a K'-curve for C2.
+
+**Lane A: is bun the thing to polish? (registered; runs first)**
+
+| # | ID | Experiment | $ | Status |
+|---|---|---|---|---|
+| A1 | §264 | SCORECARD-CHECK: ER / LFI / CY cue schedules; are C5 / C6 plan-clocked? (+ op_count; Theory predictions in Note 264-2) | ~0.5 | approved; amended 264-3 |
+| A2 | §266 | SAME-DATA BASELINES: X3 text CoT (sentence x2 + value-only); X5 one-hop pipeline; C7 TEXT-SUBSTITUTE | ~4 | registered |
+| A3 | X7 / B3 | one fresh FULL-LINEAGE seed (new askname + P-2 seed). Makes every "2/2" honest | ~5 | to register |
+| A4 | E0 | C3 RE-SCOPE + G-TIME: serial depth is only 1.2-1.6x better than value-only text; FLOPs 2.4-9.1x worse; bs64 slower | ~0.1 | to register (descriptive) |
+
+**Lane B: restriction 2 (C4), in parallel with A**
+
+| # | ID | Experiment | $ | Status |
+|---|---|---|---|---|
+| B1 | K1a | EXACT-EM-11, RESET-DM. Answer-only via the exact forward-DP marginal over Z_11 with no decoder in the loss. Stage A on OPS_CHAIN (the REG add_s DAG steps break Markov-ness; red team), d_max 2→3, with SWAP-V / MEM-ABLATE gates + CTRLs (noise-GRPO, em_hard, TOKEN-INJECT) | ~5 | design memo done; to register |
+| B2 | K3 S0 | PREFIX-KL. Needs an Audit C4 ruling: prefix answers are aux-by-proxy and need the solution graph; d 1 items are always mul_v | 0.6 | ruling first |
+
+**Lane C: restriction 1 (plan), after §263 reads**
+
+| # | ID | Experiment | $ | Status |
+|---|---|---|---|---|
+| C1 | PLAN-PROBE | one-pass GPT-2 heads (next entity / parent / is-ancestor) on the insert_ho branch families + TEST-PERM. The shared falsifier for P1 / P2 / P3 | 0.15 | to register |
+| C2 | §261 | TARGET-CUE pilot (approved; parked). From of_s1 if §263 passes; + H7 TC-HALT (the model's own halt) | 0.3 | parked |
+| C3 | P1 / P2 | SELF-CUE or BACKWARD-PLAN, whichever PLAN-PROBE head is >= 0.9 on the branch families. Gates need TEST-PERM + branch families; free-running runner build | 0.4 | after C1 |
+
+**Lane D: leave the template (restriction 3); the public small-benchmark target**
+
+| # | ID | Experiment | $ | Status |
+|---|---|---|---|---|
+| D1 | PROSQA-OOD | port to ProsQA's structural OOD splits (SubLAT 2610.40283: best GPT-2 7/8-hop 77%, DAG 59%, Dense 72%, vs CoT-SFT ~11%). Same base, 3 seeds, own-run CoT / No-CoT / Coconut / CODI arms, FLOPs + wall-clock, K' curves, NOT-DECODER gates (Audit EXTERNAL_SOTA) | ~5-8 | to design |
+| D2 | N1 / B4 | SHUFFLED OBJECTS depth split (BBH tracking; step-index cue = no entity plan) with text CoT / pause / Coconut arms | ~3-4 | queued |
+| D3 | NUM-100 | mod 11 → integers 0-99, still one token per value (GSM8K ladder N1) | 0.3 | queued |
+| D4 | BRANCH-DAG | parallel branches + merge in mod 11 (GSM8K ladder T1). Recency vs named retrieval | 0.35 | after §263 |
+
+**Lane E: polish inside the restrictions (registered; runs behind A-D unless a red team says otherwise)**
+- **§265 DENSE-DISTRACT + D1a:** approved; amended 265-2. Its pilot reads after §264's op_count.
+- **D12 ALPHA / SHARE READ ($0.1, bundle with a §264 host).** Then D11 RMS-MIX ($0.25), or D10 DG-ADD.
+- **H5 HOLD-FROM-d+1 + RANDOM-REPEAT and H6 DONE-READOUT:** the C5 route if §264 reads PLAN-CLOCKED. H7 TC-HALT is in Lane C.
+- **Scale:**
+  - S11 S-ONLY DECODER on medium ($1.5; decides the recipe for larger bases);
+  - S10 QWEN3-0.6B-Base port + readiness R1-R4 ($1.5);
+  - M8 decoder text-dropout on small ($0.3).
+- **C7:**
+  - P2 VOCAB-DIRECTION EDIT ($0);
+  - R6 TOKEN-WRITE / P3 EMBED-WRITE ($1-1.5), only if §266's TEXT-SUBSTITUTE fails.
+- **Publication controls:**
+  - B1 PAUSE-PASS / NO-WRITE ($2.5);
+  - B2 HELD-OUT STRUCTURE eval ($0.3);
+  - B6 checkpoint-faithfulness trajectory ($0.2).
+
+**Struck / absorbed:**
+- M1 ECHO-GATE: uninformative under Note 264-1's V1+TEXT.
+- The C2 diagnostic bundle: absorbed into §264, except D3 (deferred) and H5 beam (killed if §264's d 8 max-prob AUC < 0.6).
+- K1 as first drafted: superseded by K1a.
+- E3 TOP-K refresh: k = 16 costs more than sentence CoT.
+
+The earlier score table (11-03, first pass) is kept below for reference.
+
+### 1a. First-pass score table (11-03, superseded by the lanes above)
 
 | # | ID | Experiment | Targets | First stage, $ | Score | Depends on | Status |
 |---|---|---|---|---|---|---|---|
@@ -281,7 +355,135 @@ Entries:
 - **T10 SYMBOLIZED GSM8K-TRAIN TEMPLATES**: 2410.05229, 2312.09241. Cost $6; last rung.
 - **E9 CODI-INTO-LOOP**: 2602.22441. Cost $8; not C4.
 
+## 12. Wave-2 entries (11-03): 9 research agents + Audit's docs/research_audit_2026-11-03/
+
+Audit's four new ids: SubLAT 2610.40283, SLT 2605.25745, halting-selection 2611.02333, adaptive loops 2603.08391.
+
+### 12.1 C3 accounting (analytic; scripts in Theory's scratchpad c3flops/, cross-checked against Note 246-0 and REVIEW_CC)
+
+**Per-item cost at K' = d, d 1→8:**
+
+| | GFLOPs (d 1→8) | Serial layers (d 1 / 2 / 4 / 8) |
+|---|---|---|
+| bun | 15.3 → 219 | 24 / 30 / 42 / 66 |
+| text CoT, value-only | 6.4 → 24.0 | 24 / 36 / 60 / 108 |
+| text CoT, sentence | 8.4 → 33.1 | 120 / 180 / 300 / 540 |
+| prefill only | 6.1 → 21.9 | — |
+
+- **Ratios:**
+  - bun / value-only text: 2.4x → 9.1x.
+  - "~9x fewer serial layers" holds only against sentence CoT; vs value-only text it is 1.2-1.6x.
+  - At K' 8, bun has more serial layers for d <= 4.
+- **C5 halting:** the stability rule decodes every pass, which costs ~2x bun's FLOPs.
+- **Latency model** (not measured): bun is slower at bs 64.
+
+**Entries:**
+- **E0 C3-RESCOPE + G-TIME:** measured wall-clock with random weights. ~$0.1. 2110.12894, 2211.05102.
+- **E1 BUN-SHARED:** share blocks 0-5 over the prompt prefix and use a q-only read. -34% FLOPs, exact. $0 equivalence gates.
+- **E2 X3+ arms:** value-only text (binding), sentence, majority vote n, pause m, Coconut-KV. Pareto curves per d. 2408.00724, 2408.03314, 2412.13171.
+- **E3' ULT:** one upper-half latent row per pass, ~5% under value-only text at d 4. High C1 / C2 risk. $1.5.
+- **E4 HALT-COST:** a 1-token probe stop instead of the decoder.
+
+### 12.2 C4: EXACT-EM-11 design (memo)
+- **K1a RESET-DM (O1):**
+  - Structure:
+    - The pass-t ':' output is an 11-way categorical.
+    - S_t = write_seq(emb(v_t)) on the zero state: a Markov DeltaMem state with exactly 11 possible states.
+    - The loss is the exact forward-DP marginal over v_1..v_{d-1}. There is no decoder in the loss, which kills the Note 264-1 decoder shortcut.
+  - Cost: 1 + 11(d-1) upper-half forwards (d 2: 12, d 4: 34), batched by tiling 11x.
+  - Gradient = posterior - prior. At the askname init, pass 1 cannot be pulled toward a, because the ops are bijections.
+  - Guards: SWAP-V, MEM-ABLATE, pass-text-dropout.
+  - Symmetry (value relabelling) is broken by the tied init, the d = t items, and write = emb(number).
+  - Build: boxes/inject_em.py (--em 0 bitwise inject_aw), --em_hard, --pass_textdrop; inject_em_eval.py with part_swap_v and part_mem_ablate; an fp64 gate that the DP equals the explicit path sum at d 3.
+  - **Red-team amendments:**
+    - Stage A on OPS_CHAIN, because REG's add_s reads v_j with j <= t-2.
+    - d_max 2→3, with K'0 <= chance + 0.1.
+    - Scope: "C4 on a designed Z_11 alphabet, plan given".
+  - Prior: 2312.02179 (TRICE), 2007.01919, 1805.10872, 2212.12393.
+  - Stage A ~$2 + CTRLs $3.
+- **K1b** EM-HARD (Viterbi) and EM-SAMPLED (RLOO) ablations. MAPO 1807.02322, 2411.04282, 2310.04363. $1 each.
+- **K1c** PASS-TEXT-DROPOUT: drop the op sentences of S_<t from pass t. M8 moved into the passes. $1.
+- **K1d** TOKEN-INJECT-11: the previous value as text, exact enumeration, no DeltaMem. Upper-bound CTRL. $1.
+
+### 12.3 C2 / C6 memory design (decay memo)
+- **Already in the code:** the delta heads' beta ∈ (0, 2), so negative eigenvalues are already present (2411.12537 is not a new lever).
+- **Additive heads:** phi = elu + 1 > 0, so they can never cancel an old write, and they cannot be idempotent.
+- **Caveat:** Note 264-1's same-pass op-count gap lies outside decay's mechanism, which lowers the EV of D10 / D11.
+- **D12 ALPHA / SHARE READ** ($0.1 eval). Reads delta-head alpha / beta by pass type and the additive latest-write share by (d, t). Labels: GATED-USED / ALPHA-INERT; PREMISE-OK / PREMISE-FAIL; hold FREEZE / ECHO. It gates D10 / D11.
+- **D10 DG-ADD:** lambda = exp(-c softplus(w u + b)), c = 0 projected >= 0 (bitwise bun at init). 2412.06464, 2405.21060, 2312.06635, 2307.08621, 2405.04517. S1 2k vs CTRL, $0.5.
+- **D11 RMS-MIX READ:** oa' = oa + rho (r RMSnorm(oa) - oa), rho = 0 at init. 2210.10340, 2604.15259. $0.25; shares D10's CTRL.
+
+### 12.4 C5 halting theory (memo; predictions committed as Note 264-2)
+- **H3** ALPHA-BETA HOLD READ ($0; merges into D12).
+- **H4** SCALE-FREE INCREMENT HALT: rho_t = ||dS_t|| / median of earlier passes < 0.3. Predicted to halt at d + 3 on bun.
+- **H5** HOLD-FROM-d+1 + RANDOM-REPEAT (D2 extended): trains "already answered → null write" at every pass index. $0.4 / $1.4.
+- **H6** DONE-READOUT HALT: the hold-pass aux target becomes a DONE token, and the halt is a model output. 2607.20519, 2107.05407. $0.3 / $1.2.
+- **H7** TC-HALT on the §261 target-cue model: label HALT-OWN (khalt increasing in d, H-EXTEND halt-at-target >= 0.8). $0.3. Highest priority if §264 reads PLAN-CLOCKED.
+
+### 12.5 C1 plan lane (red team #6-10)
+- **REG items are DAGs:** add_s and *_v ops.
+- **Plan-free gates need branch families + TEST-PERM.** On clean chain-order text, "next sentence's subject" solves the plan.
+- **passes() cannot run free-running cues;** a new runner is needed.
+- **PLAN-PROBE** ($0.15): a plain GPT-2 fine-tune, 1.5k steps, with three one-pass heads (next forward entity / parent of X / is-ancestor-of-S_d), evaluated on the insert_ho branch families + TEST-PERM. If one pass cannot exceed 0.9, the in-loop plan heads won't either.
+- **Revised scores:** P1 2.9; K3 3.0 (needs a ruling); P2 2.4; P3 2.1 ("§261 first"); A1 1.2 / 2.0 / 1.0 by §263 branch. A1 notes: the causal mask encodes order (2203.16634); wpe[0] acts as a sink.
+
+### 12.6 GSM8K ladder (one change per stage)
+- **Tokenizer:** GPT-2 BPE 0-99 are single tokens. 4-digit numbers split inconsistently (" 1234" → " 12" + "34").
+- **Licences:** GSM8K, TinyGSM and iGSM are MIT. GSM-Symbolic is CC BY-NC-ND and built from the TEST set (eval only). ASDiv is NC.
+- **GPT-2 GSM8K-Aug SOTA:** PCCoT 49.48. Our pipeline: CODI 37.9 (§210).
+- **Open slots:** no latent numbers exist for ASDiv / MAWPS / iGSM / GSM-Symbolic.
+
+| Stage | Change | $ (pilot) | EV |
+|---|---|---|---|
+| NUM-100 | 0-99, one token; backward-uniform sampling | 0.3 | 8.0 |
+| DIGIT-AUX-10K | per-digit 4×10 aux + a digit-split arm (2402.14903, 2405.17399, 2307.03381) | 0.7 | 2.3 |
+| O1 | exact ÷ and 2-digit × | 0.5 / 1.5 | — |
+| BRANCH-DAG | parallel branches + merge | 0.35 | 5.7 |
+| IGSM-LOOP | med-pq, mod 23, "Define X" order as the cue (2407.20311) | 1 | 1.75 |
+| L1 = T4 | paraphrase families | 3 | — |
+| LLM-REWRITE | Claude rewrites + solver check (2309.12284) | 1.2 | 2.7 |
+| SOCRATIC-CUE GSM8K PROBE | GSM8K-Aug items with 0-99 intermediates, socratic sub-questions as cues (2110.14168, 2509.20317). Direct triage | 2 | 1.5 |
+| GSM8K-SYMBOLIZED-TRAIN | in-house templates from TRAIN only, 13-gram decontamination (2211.10435) | 3 | 0.4 |
+| E PROTOCOL | same-data text + pause arm at every stage; 13-gram filter; GSM-Plus / SVAMP / GSM-Hard OOD (2405.00332) | — | — |
+| SOCRATIC SELF-CUE | | 2 | — |
+
+The full ladder is ~$45-70, so the GSM8K-scale stage needs its own approval.
+
+### 12.7 Base model (<= 1B)
+- **Recommendation:** Qwen3-0.6B-Base (Apache-2.0, GSM8K 59.6 at 4-shot, all 40 names single tokens).
+  - Costs: a digit-split number readout (sequence-scored), QK-norm, head dim 128.
+  - Second choice: Llama-3.2-1B, which has published CODI / PCCoT comparators but a gated licence and needs 48 GB. OLMo-2-1B is the Apache alternative.
+  - Not recommended: GPT-2 large, Pythia, SmolLM2, Gemma-3-1B.
+- **Any port needs a decoder-shortcut guard:** an S-only decoder or text-dropout, a pass-t SWAP gate, and a NOT-DECODER monitor.
+- **S10** QWEN3 PORT + READINESS R1-R4: HF trunk adapter equivalence; R4 = DIRECT d 2 / 3 shortcut susceptibility. ~$1.5. 2505.09388, 2412.15115, 2608.11233.
+- **S11** S-ONLY DECODER ON MEDIUM, warm from p2m_s1b. PASS if d 2 >= 0.9, pass-2 SWAP >= 0.9 and NOT-DECODER <= 0.1. ~$1.5. Decides the recipe for larger bases.
+- **S12** QWEN3 P2 with the shortcut guard (~$4-5). **S13** a LLAMA / OLMo comparator (conditional).
+
+### 12.8 Publication set (minimum publishable claim memo)
+- **Headline H1** (defensible now, as a mechanism paper): "content selection, not depth budget, limits depth extrapolation; the causal battery holds on a pretrained LM". Scope stated up front.
+  - Missing for it: a same-data text CoT, a pause control, seeds + CIs, held-out templates, a public task.
+- **Headline H2:** H1 + a public depth split, ProsQA-OOD or shuffled objects. Fits within $30.
+- **Entries:**
+  - **B1 PAUSE-PASS / NO-WRITE control:** zero / constant / Coconut-feedback write. 2310.02226, 2404.15758. $2.5.
+  - **B2 HELD-OUT STRUCTURE eval:** frames 6-7, unseen names, GSM-Symbolic perturbations, TEST-PERM. $0.3.
+  - **B3 = X7.**
+  - **B4 = N1** with baselines.
+  - **B5 = E2.**
+  - **B6 checkpoint-faithfulness trajectory:** 2607.06648, 2602.08783.
+- **Related work to cite:**
+  - 2606.29983: loop-count vs input-length correlation (independent support for §241 / §256).
+  - 2608.18222 / 2606.18206: terminal fixed-point objectives. The hold penalty is the same idea, so cite them as prior.
+  - 2604.06374: fine-tuned pretrained LMs collapse to shortcuts. Our causal battery is the counter-evidence.
+
+### 12.9 C7 (Audit C7_EDITABLE)
+- **Literature:** edits propagate only when the thought is tied to a token embedding (2505.15778 Soft Thinking, 2605.07315 LaTER, 2606.29712 DLR), or when the reader has no other source for the value.
+- **P1 TEXT-SUBSTITUTE:** in §266.
+- **P2 VOCAB-DIRECTION EDIT** ($0): h += a (wte[x'] - wte[x^]), compared with the probe / DAS at a matched flip rate.
+- **P3 EMBED-WRITE** ($1-1.5): W_w LN(wte[decoded]), straight-through. Only if P1 fails.
+- **P4 SOFT-WRITE.**
+
 ## Changelog
+- 2026-11-03 16:34: wave 2 merged (9 agents + Audit NORTH_STAR_GAP / VALIDITY_STATS / C7_EDITABLE / EXTERNAL_SOTA). Queue re-ranked into lanes A-E. §264 / §265 amended pre-output (Notes 264-3 / 265-2); Theory's §264 predictions committed (Note 264-2); §266 SAME-DATA BASELINES registered. M1 struck; the C2 bundle absorbed into §264; K1 -> K1a (OPS_CHAIN); E3 top-k de-ranked.
 - 2026-11-03: created from 11 research passes (~95 entries; merges noted inline). §263 ORDER-FREE running.
 - 2026-11-03 16:17: Audit leads L1 (attention fading: D1a diagnostic + D1b SSMax) and L2 (M8 decoder text-dropout) added. Next registration: D1 + D1a (§265), then P1 / P2 after §263.
 - 2026-11-03 16:15: Note 264-1 stored reads: X4a UNTRAINED-PASS (no first errors at passes 1-2; pass 7 reliability 0.91 at d 7 vs 0.59 / 0.80 at d 8, so later passes degrade with the op-sentence count, which favours D1 DENSE-DISTRACT); M1 V1+TEXT (medium's decoder ignores S's v_2; M1 demoted, M3 SHORTCUT-PRESSURE / M2 COLON-CE up).
