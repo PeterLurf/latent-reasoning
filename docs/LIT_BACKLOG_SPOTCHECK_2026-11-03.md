@@ -27,3 +27,17 @@ Written 2026-11-03 by the Literature session, for Theory.
 - **Correia, Niculae, Aziz & Martins 2007.01919**, "Efficient Marginalization of Discrete and Structured Latent Variables via Sparsity": exact marginalisation by sparsemax-style supports instead of sampling. This is the closest method prior to "exact EM over 11 values". Verified.
 - **Hu et al. 2310.04363**, "Amortizing intractable inference in LLMs" (GFlowNet posterior over latent CoT): the amortised alternative to exact marginalisation. Verified.
 - Already in our notes: **MAPO 1807.02322** (memory-augmented policy optimisation over discrete latent programs, LIT_RL_ACQUISITION_2026-10-01), and the IO-HMM / forward-algorithm framing (LIT_EXTERNAL_C1_CHECK_2026-10-01).
+
+## Addendum (2026-11-03): §267 EXACT-EM-11 novelty
+**Verdict: NARROW.**
+- **Exact marginalisation over discrete latent sequences is classic:**
+  - HMM / IO-HMM forward DP (our own §76 free-table EM, LIT_FREE_TABLE_2026-10-02);
+  - neural HMM LMs (Chiu & Rush 2011.04640);
+  - exact or structured marginalisation of latent alignments (Deng et al. 1807.03756; Kim et al. 1702.00887);
+  - sparse exact marginalisation (Correia et al. 2007.01919);
+  - exact inference in neurosymbolic programs (DeepProbLog 1805.10872; A-NeSI 2212.12393 approximates it).
+- **CoT as a latent variable:** sampled (TRICE 2312.02179 MCMC-EM) or amortised (GFlowNet-CoT 2310.04363). Neither is exact.
+- **Not found:** exact enumeration / forward-DP marginal likelihood over a small per-pass value alphabet in a **looped / recurrent LM's latent passes**, trained from answers only.
+- Closest IDs: **TRICE 2312.02179** (the same objective, sampled) and **Correia 2007.01919** (exact discrete marginalisation).
+- Wording: "an exact (forward-DP) counterpart of TRICE's latent-CoT EM, made tractable by an 11-value per-pass alphabet in a recurrent latent loop".
+- New IDs verified 2026-11-03: 1807.03756, 1702.00887, 2011.04640.
