@@ -56,7 +56,7 @@ def drop(fl, keys):
 def ref_tree():
     if not os.path.isdir(REFT + "/boxes"):
         os.makedirs(REFT, exist_ok=True); tarfile.open(ROOT + "/scratch/s269_ref.tar").extractall(REFT)
-    lnk = lambda q: os.path.islink(q) or os.path.isjunction(q)  # noqa: E731   a junction (local Windows smoke) is a link too: never rmtree through it
+    lnk = lambda q: os.path.islink(q) or getattr(os.path, "isjunction", lambda _: False)(q)  # noqa: E731   a junction (local Windows smoke) is a link too; os.path.isjunction is 3.12+ (hosts: 3.11)
     for sub in ("prosqa", "boxes/runs_fsq"):
         q = REFT + "/" + sub
         if os.path.isdir(q) and not lnk(q):
