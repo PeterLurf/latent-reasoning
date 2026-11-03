@@ -2,3 +2,6 @@
 409:pilot_gb_s1 77.48.24.203:40434 58869770 $0.1619/h sps 1.3062587658564249 steps 2000 0.31
 # NOTE 2026-11-02 17:24:11 b409 wall guard raised to $0.60, s265 CAPF $0.60 (Audit): the drain loops on FETCH_INCOMPLETE pilot_gb_s1 (no model.pt by design - stop_at - but its log.jsonl's step-1200 record matches the s224 log-only RUN marker)
 realised:b409 # 58869770 (wall guard spent $0.438 at 17:34:19 at $0.1619/h + 1.6 min to the destroy at 17:35:53) (§260 GENERIC-BUN pilot: step-0 + 2k evals under the generic cue; pilot_gb_s1_2k eval_acc / eval_ws copied into pilot_gb_s1/ (sha == host); the drain ended DRAIN FAILED by design - the stop_at dir has no model.pt but matched the s224 step-1200 marker) 0.442
+410:gb_s1 50.7.159.181:21267 58891223 $0.1683/h sps 1.2501765767733255 steps 8000 0.79
+411:gb_s2 82.178.70.231:42929 58898095 $0.199/h sps 1.305127994219462 steps 8000 0.96
+realised:b410 # 58891223 (wall guard spent $0.815 at 23:22:54 at dph_total $0.1683/h + 2.4 min to destroy at 23:25:17) (§260 gb_s1: 8k under --cue generic + evals + long + plan-free gate PASS) 0.822
