@@ -1,0 +1,108 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "bfe7437d21a30db7eea18540e0129523f9066c06",
+   "disk": "bfe7437d21a30db7eea18540e0129523f9066c06"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "8c339c2cb00f2cb6c4e427a50a6426290d1b567d",
+   "disk": "8c339c2cb00f2cb6c4e427a50a6426290d1b567d"
+  },
+  "boxes/insert_render.py": {
+   "head": "eb2c1c8f81c19b843451c207e97c051db91bf792",
+   "disk": "eb2c1c8f81c19b843451c207e97c051db91bf792"
+  },
+  "boxes/perm_render.py": {
+   "head": "d9a2522c85a3b174b4558f14da80636e203f43a1",
+   "disk": "d9a2522c85a3b174b4558f14da80636e203f43a1"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  },
+  "boxes/ow_words.py": {
+   "head": "5f50a15118b35cecb82db8eb7bc154d03b718365",
+   "disk": "5f50a15118b35cecb82db8eb7bc154d03b718365"
+  },
+  "boxes/nested_words.py": {
+   "head": "36dfab2346b5f5a60727dfabb9b4e66d8cf0b244",
+   "disk": "36dfab2346b5f5a60727dfabb9b4e66d8cf0b244"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s259_guarded.py": {
+   "head": "d12bcd6c88c8e2e916b527a3007ee2fa5a7316c4",
+   "disk": "d12bcd6c88c8e2e916b527a3007ee2fa5a7316c4"
+  },
+  "scratch/s268_stopland.py": {
+   "head": "5d9b5b6c3c6a76be0462928cba441c3c03216273",
+   "disk": "5d9b5b6c3c6a76be0462928cba441c3c03216273"
+  },
+  "scratch/s268_target.py": {
+   "head": "839f7d3a2cc83a8a6436d29ff9506cb8983cd36f",
+   "disk": "839f7d3a2cc83a8a6436d29ff9506cb8983cd36f"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  }
+ },
+ "init_unbuffered_sha256_x3": [
+  "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+  "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+  "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+ ],
+ "predeploy_ok": true,
+ "diff_vs_bun_s1": {
+  "cue": [
+   "step",
+   "target"
+  ],
+  "eval_parts": [
+   "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+   "acc,ws,insert_ho"
+  ],
+  "format": [
+   "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7233 LAT-ST: think_t = [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_min(t, d))); lower cache per distinct input | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)",
+   "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7261 TC: think_t = [EOT] + enc(' ' + text + ' To find how many <u> <S_d> has, what is the next value?') (every pass) | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write)"
+  ],
+  "init_model": [
+   "boxes/runs_fsq/dch_s1_init/model.pt",
+   "boxes/runs_fsq/bun_s1_init/model.pt"
+  ],
+  "init_model_sha": [
+   "0badc805792215b3",
+   "1ad3517b7635fddf"
+  ],
+  "init_model_sha256": [
+   "0badc805792215b3ece962477a6397491f2d4f7284ba71a9f9734308f31fb5d4",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+  ],
+  "keep_final_ckpt": [
+   true,
+   false
+  ]
+ }
+}

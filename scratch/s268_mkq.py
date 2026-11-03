@@ -47,17 +47,17 @@ assert ok, ("pre-deploy", pre, inits)
 run = "pilot_tc_s1"; fl = flags(); tail = ["--ckpt_every", "1000", "--stop_at", "2000", "--eval_parts", PARTS]
 d = G8.fresh(ROOT + "/scratch/_tmp/s268/args_" + run)
 rc = G8.sh([sys.executable, "-B", "-m", "boxes.inject_aw"] + fl + tail + ["--device", "cpu", "--args_only", "--out", d], d + "/stdout.log"); assert rc == 0, rc
-shutil.copy(d + "/args.json", "scratch/s268_args_frozen_%s.json" % run)
-shutil.copy(d + "/args.json", "scratch/s268_args_frozen_%s_step0.json" % run)                # the step-0 eval's args (cue target; the eval rebuilds from them)
+shutil.copy(d + "/args.json", "scratch/s267_args_frozen_%s.json" % run)
+shutil.copy(d + "/args.json", "scratch/s267_args_frozen_%s_step0.json" % run)                # the step-0 eval's args (cue target; the eval rebuilds from them)
 dif = {k: v for k, v in C.diff(json.load(open("boxes/runs_fsq/bun_s1/args.json")), json.load(open(d + "/args.json"))).items() if k != "pair_stats"}; out["diff_vs_bun_s1"] = dif
 blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); fs = " ".join(fl); W = "boxes/runs_fsq/" + run; SH = "scratch/s256_ho_shas.json scratch/s257_ho_shas.json"
 q = ("# THEORY §261 TARGET-CUE pilot (score_tc): pilot_tc_s1 = bun_s1 (streaming copy, sha on host) + bun_s1's args + --cue target, 8k schedule stopped at 2000; "
-     "step-0 and 2k evals (acc + ws + insert_ho) under the target cue + the target-only gate. Frozen args scratch/s268_args_frozen_pilot_tc_s1.json.\n# HOSTPROBE\n# P=1\n"
+     "step-0 and 2k evals (acc + ws + insert_ho) under the target cue + the target-only gate. Frozen args scratch/s267_args_frozen_pilot_tc_s1.json.\n# HOSTPROBE\n# P=1\n"
      "# NOFETCH %s_step0/model.pt\n"
      "%s_mem boxes.inject_aw %s --mem_check\n"
      "%s_gtime boxes.inject_aw %s --time_steps 60\n"
-     "%s_step0 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args scratch/s268_args_frozen_%s_step0.json --parts %s --ship %s scratch/s268_args_frozen_%s_step0.json %s\n"
-     "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s %s -- %s %s --args_ref scratch/s268_args_frozen_%s.json\n"
+     "%s_step0 scratch.s259_guarded --mode evalonly --blob %s --model %s=%s --args scratch/s267_args_frozen_%s_step0.json --parts %s --ship %s scratch/s267_args_frozen_%s_step0.json %s\n"
+     "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s %s -- %s %s --args_ref scratch/s267_args_frozen_%s.json\n"
      "%s scratch.s268_stopland --step 2000 --parts %s\n"
      "%s scratch.s268_target\n") % (W, W, fs, W, fs, W, blob, INIT[0], INIT[1], run, PARTS, INIT[0], run, SH, W, blob, INIT[0], INIT[1], INIT[0], SH, fs, " ".join(tail), run,
                                     W, PARTS, W)
