@@ -66,7 +66,10 @@ for n, run, nk in CELLS:
         GP = "boxes/runs_fsq/pilot_nk_s1_gates/gates_pass.json"; assert os.path.exists(GP)
         ls_ = [l_ for l_ in q.split("\n") if " scratch.s269_gates " not in l_]; assert len(q.split("\n")) - len(ls_) == 1
         q = "\n".join(ls_).replace("--require %s_gates/gates_pass.json --ship " % W, "--require %s --ship %s " % (GP, GP)); assert q.count("--require %s --ship %s " % (GP, GP)) == 1
-        q = q.replace("host gates first (gates_pass.json required)", "no gates line: TRAIN requires b413's gates_pass.json (same blobs; Audit 11-03 CTRL rerun)")
+        for p_ in ("scratch/s269_gates.py", "scratch/gate_s269.py", "scratch/gate_s257.py", "scratch/gate_s251.py", "scratch/gate_s228.py", "scratch/s222_det_wrap.py",
+                   "scratch/s269_ref.tar"):                                 # gate-only files: without the gates line they don't ship (check_queue_ships caught it)
+            tk = "%s=%s " % (p_, head[p_]); assert q.count(tk) == 1, (p_, q.count(tk)); q = q.replace(tk, "")
+        q = q.replace("host gates first (gates_pass.json required)","no gates line: TRAIN requires b413's gates_pass.json (same blobs; Audit 11-03 CTRL rerun)")
     if os.environ.get("S269_ONLY") and str(n) != os.environ["S269_ONLY"]:
         continue
     open("scratch/gen_q_b%d.txt.hold" % n, "w", encoding="utf-8", newline="\n").write(q)
