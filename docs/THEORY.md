@@ -24323,6 +24323,15 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
     - 2k ONSET gates are valid only as 'no drift of an already-present code', which is §267's use: the askname init carries v_1 at pass 1. They do NOT detect pass-2 formation.
   - Disclosed: the population mixes recipes (answer-only, perm, medium), so 'formed' mostly tracks the recipe.
 
+**Note 269-2 (2026-11-03 17:02 EST; Audit ruling on Note 269-1's seed spread; standing rule, no edits to registered bars).**
+- **(1)** Registered per-seed C2 bars stay unchanged. Each reading carries an explicit seed-spread caveat (sigma_seed 0.090 at d 6).
+- **(2) Standing rule for new registrations:**
+  - Any C2 claim needs >= 3 seeds, and >= 2 lineages once §268 lands.
+  - Each seed is reported as its margin vs the bar, plus the seed-level mean ± SD.
+  - 500 items per depth suffice at d >= 6.
+- **(3) For §263 and §265:** a C2 row that passes or fails its bar by less than one sigma_seed (~0.09) is labelled **NEAR-SEED** and claimed neither way.
+- FD1 is noted. §267's ONSET gate stays valid. A seed-farm would need a marker at >= 4k.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
