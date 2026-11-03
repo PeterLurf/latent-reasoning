@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **16:40 11-03 (Theory):** docs/EXPERIMENT_BACKLOG.md created (11 research passes, ~95 ranked entries, verified arXiv ids). Top: CUE-CLOCK + FREEZE eval (are C5/C6 plan-clocked? cue repeats S_d after pass d), one-hop pipeline baseline, C2 diagnostic bundle, medium ECHO-GATE (post-hoc read: medium pass-2 ':' echoes v_1 0.84-1.0). Proposed next registration: one ~$1 eval-only bundle of #1-#4. §263 b415/b416 running.
 * **14:48 11-03 (Theory):** §262 pilot PARK (Note 262-3: NK binding unused, ablation drop 0.004) BUT the CTRL arm (perm-then-insert + one-hop ':'-CE co-training) fixes order-bound selection in 2k (perm pass-1 WS 0.98/0.96; conditional 0.95-0.97). Awaiting Audit research-pass leads; proposed next: full CTRL recipe 2x8k with ORDER-FREE binding. §261 parked by Audit. Keep pilot_nk/nkc model.pt.
 * **00:41 11-03 (Theory):** §260 full SCORED (Note 260-5): PLAN-FREE-C1 1/2. Plan-free causal C1 on clean d1-4 in both seeds (+C6, +C5 r3); s2 fails CONTENT/C2. Without the plan the loop follows forward reachability and does not stop (H-EXTEND 0.08/0.02; d7 0.25/0.07). SOTA unchanged (bun). $2.23. Cloud idle; next direction to be chosen.
 * **17:44 11-02 (Theory):** §258 S2b NO-SEED (Note 258-9) -> GPT-2 medium line PARKED (WS d2 pass2 0.015; but aux shows the write formed by ~10k at lr 1e-4 - gate/aux divergence recorded as a lead). §258 ~$10.4. §260 full stage (gb_s1/s2) launching after Audit.
