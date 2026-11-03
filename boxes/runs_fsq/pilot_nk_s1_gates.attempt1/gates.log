@@ -1,0 +1,7 @@
+offbit_aw pass False
+offbit_perm pass False
+step0 pass True
+ids pass True
+smoke_nk pass True
+smoke_ctrl pass True
+gradflow pass False

@@ -1,0 +1,25 @@
+{
+ "rc": 9,
+ "n_loss": 20,
+ "finite": true,
+ "nk": 1,
+ "ask_p": 0.25,
+ "ask_acc_by_pass_keys": [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "ask_n": 320,
+ "has_ws_readout_perm": true,
+ "distract_n": {
+  "0": 327,
+  "1": 319,
+  "2": 314
+ },
+ "pass": true
+}

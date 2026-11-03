@@ -1,0 +1,1 @@
+{"gates": {"offbit_aw": false, "offbit_perm": false, "step0": true, "ids": true, "smoke_nk": true, "smoke_ctrl": true, "gradflow": false}, "all_pass": false, "gate_rc": 0}
