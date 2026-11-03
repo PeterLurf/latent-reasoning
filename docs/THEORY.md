@@ -24352,6 +24352,27 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - a C2 K'-PROBE on stored eval_acc d 9-10 acc_kprime K' 8-12. d 10 needs K' >= 9 for its last cue. MORE-THINKING / FLAT / MIXED.
 - **(c) Gap noted for the C1 + C2 claim:** the causal gates (SWAP / LP5) stop at d 4. Per the standing rule, a C1 + C2 claim needs them at d 6-7. This is queued as an eval-only line (swap_kd / lp5h range extended to d 7) in §269b.
 
+**Note 269-4 (2026-11-03 17:22 EST; Audit APPROVED Notes 266-2 / 269-3; the acked $0 reads read_s269_redteam.py (9cd98141) run twice, byte-identical; Audit's C4 ruling on PAR prefix self-distillation; descriptive).**
+- **(a) ERROR-PROPAGATION: SERIAL (s1) / MIXED (s2).**
+  - Recovery P(pass t+1 right | first error at t) over d 5-8 is 0.077 (n 581) and 0.111 (n 377). Both are at the chance level 1/11 = 0.091.
+  - Reading: a wrong pass-t value is carried forward, and deep passes do not recompute the step from the text. This is behavioural evidence that the memory carries the chain at d 5-8.
+  - s2's MIXED is 0.011 above the SERIAL bar.
+- **(b) C5 PLAN-CLOCK: ADAPTIVE by the pre-stated rule in both seeds, but only on the P(khalt = d-1) clause.**
+  - P(khalt = d-1): 0.90 at d 2, 0.95 at d 7, 0.97-0.99 at d 3-6.
+  - |acc_halt - acc(pred[d-1])| <= 0.007 at every d 1-7.
+  - Batch-max khalt: d 5: 7 / 7; d 6: 8 / 9; d 7: 11 / 9.
+  - Reading: in accuracy, the r = 3 halt adds nothing to 'read the answer at d-1 given d'. Its departures from the clock are a few late halts, at most +4 passes.
+  - §264 (ER / LFI) remains the test of whether the halt itself is plan-driven.
+- **(c) C2 K'-PROBE: MIXED, and uninformative at this depth.**
+  - d 10 gain from K' 8 to the max of K' 9-12 is +0.008 (s1) and +0.043 (s2).
+  - But d 9 / d 10 accuracy sits near chance: 0.16-0.25 at d 9, 0.08-0.12 at d 10. A floor effect, not a test.
+  - The K'-curve question moves to d 6-7, where §264's STD schedule gives K' 8-24.
+- **(d) C4 ruling (Audit) on PAR prefix self-distillation (2610.27628): ELIGIBLE, scoped 'C4, plan given', under three conditions.**
+  1. Every intermediate target is the model's own prediction: an earlier checkpoint, or the same model on the truncated or cued sub-question. Never a simulator value, and no access to the solution graph.
+  2. The prefix / sub-question uses only information the model receives at test time; at present that is the plan cue S_k.
+  3. A pre-registered log of target accuracy vs the true v_k, reported. It may be high, but it must be model-derived.
+  - This differs from K3 (prefix answers from the solution graph / simulator, NOT eligible) because the supervision source is the model itself.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -746,7 +746,8 @@ CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO
   - Training form: hold supervision on one random pass per item.
   - Pairs with H5.
 - **PAR prefix self-distillation** (2610.27628): the iteration-k target is the model's own state after k ops, plus a per-iteration norm re-anchor; 16x extrapolation.
-  - It may be C4-eligible if the targets are self-generated; needs an Audit ruling vs Note 266-1.
+  - **Audit ruling (Note 269-4): C4-ELIGIBLE, scoped 'plan given'.** Targets must be the model's own predictions and use only test-time information, with target-vs-truth accuracy logged.
+  - This is now the strongest C4 route that keeps the accumulating state; a sibling of §267.
 - **Overshoot control** (2610.31943, 2607.14427): looped-vs-stacked gains can be overshoot confounds.
   - Report d 6-8 at matched overshoot K' = d + c.
   - A training-free state-stability stop beats a trained router (supports H1 / H4).
