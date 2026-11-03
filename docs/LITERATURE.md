@@ -194,6 +194,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - §263 citations (verified 2026-11-03): He et al. [2502.19907](https://arxiv.org/abs/2502.19907), order-centric augmentation (shuffle independent premises; DAG-valid step reorderings) for logical reasoning in LLMs; Wu, Geiger & Millière [2505.20896](https://arxiv.org/abs/2505.20896) (ICML 2025), a Transformer trained to dereference variable chains up to 4 deep with distractors learns binding in phases (random → early-assignment heuristic → …); Dai, Heinzerling & Inui [2409.05448](https://arxiv.org/abs/2409.05448), an Ordering-ID direction in entity activations causally determines binding (refines Binding IDs, 2310.17191).
 
+- Wave-2 additions (Audit; verified 2026-11-03; docs/LIT_SUBLAT_PROSQA_OOD_2026-11-03.md): Zeng & Zhang, SubLAT [2610.40283](https://arxiv.org/abs/2610.40283) (potential-guided subtrajectory balance for latent path exploration; ProsQA 7-hop / 8-hop / DAG / Dense OOD, GPT-2 SubLAT 69.34 OOD avg vs COCONUT 67.52); Xie et al., Selective Latent Thinking [2605.25745](https://arxiv.org/abs/2605.25745) (adaptive compression of CoT into latents); Pagadala [2611.02333](https://arxiv.org/abs/2611.02333) (selection rules decide adaptive halting vs readouts, Ouro-1.4B); Frey et al. [2603.08391](https://arxiv.org/abs/2603.08391) (adaptive loops and memory in transformers).
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
