@@ -23815,6 +23815,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(2) Retention under the co-training mix:** each arm's clean TEST2 d 1-6 is reported against dch and bun (pilot at 2k and full stage). A loss from the shared one-hop mix is then visible separately from the NK effect.
 - **Gates (Audit):** flags-off bitwise, and fp64 step-0 bitwise with the heads present, including the hold-step norms.
 
+**Note 262-2 (2026-11-03 03:05 EST; §262 co-training mechanics fixed before any build output, answering Experiments' build question; the same in both arms).**
+- **Items:** per step, 25% of the batch's items at the step's d. ST_v1 class rule (st_ask_name_local.ask_of: X = S_1 / S_0 / distractor / S_2-with-given-S_1), with perm p 0.5 applied before the class (as s252_askperm). Coin and seed families are new and disjoint from the perm / distract / askperm / eval families.
+- **Pass input:** every pass gets [EOT] + enc(' ' + text') + enc(' ' + QUESTION(u, X)) + SFX, the same at each of the K passes. it['text'] excludes the original question. The NK write key is X's token (asserted == X).
+- **Training signal: the ':' LM CE variant**, not the decoder target.
+  - CE(colon_logits over the full vocabulary at each pass's ':', v_X), averaged over the K passes.
+  - Decoder CE and per-pass aux are OFF for these items.
+  - **Why:** the ':' readout is the write source and the step-selection site, which is exactly what the askname one-hop competence trained (Note 252-5) and what REVIEW_NK found order-bound. The decoder target would train the decoder instead.
+- **Logging and eval:** the ':' readout acc on these items is logged as 'ask' (per pass). They are not in any TEST set or in eval_nk_pilot.
+- **Built defaults accepted:**
+  - tied W_n (D -> 64, no bias, N(0, 0.02));
+  - W_vn on ln_w(h11 at ':');
+  - W_on zero, no bias;
+  - delta write beta = 1;
+  - read at block-6 input at the 40 name-token positions;
+  - NK block = S[:, 12];
+  - strict bun load except nk.*.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
