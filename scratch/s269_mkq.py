@@ -58,7 +58,7 @@ for n, run, nk in CELLS:
          "scratch/s269_args_frozen_%s.json.\n# HOSTPROBE\n# P=1\n"
          "%s_mem boxes.inject_aw %s --mem_check\n"
          "%s_gtime boxes.inject_aw %s --time_steps 60\n"
-         "%s_gates scratch.s269_gates --blob %s --gates offbit_aw,offbit_perm,step0,ids,smoke_nk,smoke_ctrl,gradflow --ship %s\n"
+         "%s_gates scratch.s269_gates --blob %s --gates offbit_aw,offbit_perm,smoke_nk,smoke_ctrl,gradflow,step0,ids --ship %s\n"
          "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --require %s_gates/gates_pass.json --ship %s %s -- %s %s --args_ref scratch/s269_args_frozen_%s.json\n"
          "%s scratch.s268_stopland --step 2000 --parts %s\n") % (run, " + the NK head (--nk 1)" if nk else " (CTRL: no NK head)", run, W, fs, W, fs, W, blob, GSHIP,
                                                                   W, blob, INIT[0], INIT[1], W, INIT[0], SH, fs, " ".join(tail), run, W, PARTS)

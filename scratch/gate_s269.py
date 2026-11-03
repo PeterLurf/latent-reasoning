@@ -14,7 +14,7 @@ Flags: BUN = gate_s257.dch_flags(1, the bun_s1 copy) + --hold_inc 1.6 --hold_log
   smoke_ctrl   the same without --nk.
   gradflow     a gate-only instrumented copy (boxes/_inject_aw_gradprobe_s269.py: after each step's backward, the grad norms of nk.W_n / W_vn / W_on), PILOT + --nk 1, det,
                stop 3: step 1 W_on > 0 (W_n / W_vn exactly 0: W_on = 0); steps 2-3 W_n, W_vn, W_on > 0.
-    python -B scratch/gate_s269.py offbit_aw offbit_perm step0 ids smoke_nk smoke_ctrl gradflow      (host)"""
+    python -B scratch/gate_s269.py offbit_aw offbit_perm smoke_nk smoke_ctrl gradflow step0 ids      (host; the in-process parts last)"""
 import argparse
 import json
 import math
@@ -236,3 +236,9 @@ if __name__ == "__main__":
     fns = {"offbit_aw": offbit_aw, "offbit_perm": offbit_perm, "step0": step0, "ids": ids, "smoke_nk": smoke_nk, "smoke_ctrl": smoke_ctrl, "gradflow": gradflow}
     for part in [x for x in sys.argv[1:] if x in fns]:
         r = fns[part](); json.dump(r, open(os.path.join(OUT, part + ".json"), "w", newline="\n"), indent=1, default=str); print(part, "pass", r["pass"], flush=True)
+        if "torch" in sys.modules:                                          # b413: the in-process parts' cached CUDA memory (2.6 GB) starved the next subprocess part
+            import gc
+            import torch
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
