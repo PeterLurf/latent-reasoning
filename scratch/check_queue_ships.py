@@ -19,3 +19,6 @@ miss = sorted(need - plain)
 if miss:
     print("NOT SHIPPED (path=sha only):", " ".join(miss)); sys.exit(1)
 print("ships OK (%d model / init / data paths)" % len(need))
+import subprocess  # noqa: E402   Audit 11-03 (b412 attempt 3): + the host-Python-3.11 check of every .py the queue runs (scratch/check_py311.py)
+r_ = subprocess.run([sys.executable, "scratch/check_py311.py", sys.argv[1]], capture_output=True, text=True); print(r_.stdout.strip())
+sys.exit(r_.returncode)
