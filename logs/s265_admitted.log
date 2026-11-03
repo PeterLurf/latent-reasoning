@@ -5,3 +5,4 @@ realised:b409 # 58869770 (wall guard spent $0.438 at 17:34:19 at $0.1619/h + 1.6
 410:gb_s1 50.7.159.181:21267 58891223 $0.1683/h sps 1.2501765767733255 steps 8000 0.79
 411:gb_s2 82.178.70.231:42929 58898095 $0.199/h sps 1.305127994219462 steps 8000 0.96
 realised:b410 # 58891223 (wall guard spent $0.815 at 23:22:54 at dph_total $0.1683/h + 2.4 min to destroy at 23:25:17) (§260 gb_s1: 8k under --cue generic + evals + long + plan-free gate PASS) 0.822
+realised:b411 # 58898095 (wall guard spent $0.964 at 00:39:04 + 0.3 min to destroy at 00:39:19) (§260 gb_s2: 8k under --cue generic + evals + long + plan-free gate PASS) 0.965

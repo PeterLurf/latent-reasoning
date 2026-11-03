@@ -1,0 +1,16 @@
+{
+ "args.json": "4794f096eb1b000d2dacf06fd582c9eab8502d62d3c8ada8d78cee01f9ce4cfa",
+ "args_diff.json": "a8d055c38bcbf8d108564c0f01eae34588a8b2a54b12a5847d4c4b17f252e2f2",
+ "eval.json": "e1729d6ae989efa5e29b640c9e70c0c15c9195ad8d927183302cd4319aa8d2f7",
+ "eval_acc.json": "877d66a235fdff124951bf328e998981c62fafe6e85f89947fe7fa3668243fcc",
+ "eval_insert_ho.json": "87fbef2554ab096b05205b2f5488a84ae0e2566fa0f74bf36f102cb8eabc2801",
+ "eval_long_k128.json": "b29ae30eb9f364b796a1843721a33170840a1ee3b05930786a1006835a83d4cc",
+ "eval_lp5h.json": "fcce2c99e1a915bbf7e4942b722b5e8cc15cca92313de2803509eb9785816bdc",
+ "eval_stab.json": "3f6efd6cb634f2d914dea1bea76c39aca4197ddef1e28a44cbef9493a9a57c51",
+ "eval_swap_kd.json": "6312ca4892862ea4ac5199aeae75b2a5835a50b85934dd32ee830aaa67c795dc",
+ "eval_ws.json": "4bf22b62fd2796fc5724fa78eed179eb090ee55570d8608ba592dc2cbc99b471",
+ "eval_ws_deep.json": "0d7b7053c93379e163aa0e090fbf073cc2501946214e9d023fecf02d8c55725d",
+ "gates_pass.json": "2ca7ed9fbc95583a9ce3c6f60bd093a7c3a02a9d70537a617683acc8339f8999",
+ "train_summary.json": "b9c46914d5afdb6ddc8d6539c05e97e78105590453e1dddf168fd6bde0bbc763",
+ "log.jsonl": "5b25ef55dfcb9c02760dab54c8b9a04e248dda8d08786e21f9afb0d85388f3c4"
+}
