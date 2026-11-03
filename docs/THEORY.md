@@ -23878,6 +23878,9 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **CONTENT is binding:** H-CHAINSRC-OP acc8 >= 0.85 and min over positions >= 0.80 (the §257 bar). A model that is order-free but falls for chain-reading distractors would not replace bun. score_of.py re-committed, fixtures 10/10.
 - **Eval parts confirmed for the build:** acc, test_perm, late_premise, name_swap, shuffle_graded, insert_ho, long_k128, swap_kd, lp5h, stab. The gen10 / v5 template with GATES_H in the caps.
 
+**Note 263-2 (2026-11-03 16:08 EST; scope caveat recorded before any §263 output; Audit-requested).**
+- **ORDER-FREE is not a C4 route.** The one-hop ':'-CE co-training items for later steps ("How many <u> does S_2 have?" with S_1 rewritten as a stated given) are built with simulator values, so they are hand-built intermediate states, like the per-pass aux. A pass of §263 would extend C1's scope (order-free) only; C4 stays not met. A C4 version would need targets from the model's own shorter problems (backlog K3 PREFIX-KL). Source: the C1/C4 backlog research pass (docs/EXPERIMENT_BACKLOG.md).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
