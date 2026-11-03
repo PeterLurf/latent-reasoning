@@ -355,6 +355,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_ls.py 10/10; guard $8** |
+| 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
 
 ## Live sections
 
@@ -20107,6 +20108,64 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Cost:** 6 stages ≈ $5 + evals ≈ $0.6; guard **$8**. Sequential, ~12 h; one filler at a time.
   - It can interleave with §266 / §267 hosts.
   - Each stage's model.pt is mirrored off-host (it is the next stage's init).
+
+## 269. DIAGNOSTIC BUNDLE: five decision-routing reads on bun (backlog §13.1 wave-3 shortlist; Audit's cap of 5 parts; eval-only, descriptive labels that route lanes C / D / E; guard **$1.5**; pre-registered 2026-11-03 16:59 EST, before any build or output)
+
+- **Why.** Wave 3 found that several next steps hinge on facts about bun that nobody has measured. Each part below is small, and each label decides which backlog entry runs next. None is a C-claim.
+  - Expressivity theory says a single pass could express these programs, so the loop's value lies in what training finds.
+  - Memory theory says addressability, not capacity, is the open question.
+  - Note 264-1's late-pass failure can be read three ways.
+- **Model:** bun_s1, with bun_s2 as confirmation; cloud host only.
+- **Queueing (Audit conditions):** each part is its own queue line. Each is smoked locally at full item scale against the scorer's reads, and none adds trainer code. The parts use the existing passes() hooks (seqs_of_t / edit / on_state) plus read / write hooks in deltamem (read_fixed rec, write_seq).
+- **Parts** (layouts and labels in theory/score_dg.py; fixtures 15/15):
+  1. **triage (I5).**
+     - **Items:** TEST2 d 8 items whose pass-7 WS is wrong while passes 1-6 are right.
+     - **TEXT intervention:** pass 7 runs on the item re-rendered as its first 7 steps. S_8's op sentence is removed and the question is S_7, so the only other op sentence that reads S_7 is gone. The full run's S_6 is kept.
+     - **STATE intervention:** pass 7 runs on the full text, with S_6 taken from the shortened run.
+     - **Fixed** means the pass-7 readout equals v_7. The same interventions on pass-7-correct items are the non-destruction control (VALID needs >= 0.95).
+     - **Labels:** SELECTION / MEMORY / JOINT / COMPUTATION / MIXED. Shares carry Wilson CIs.
+     - **Routing:**
+       - SELECTION -> D1 / D1b / TH3 (selection margin);
+       - MEMORY -> D10 / D11 / MC3;
+       - COMPUTATION -> I3 value circuit.
+  2. **keys (MC1).**
+     - **Measure:** the ':' write keys per head family at passes 1..d, d 4 and d 8, on 1,000 items. Additive keys use phi(k); delta keys use normalised k.
+     - **Statistics:** mean cosine over cross-item pairs with the same cue entity, over pairs with the same value, and over random pairs.
+     - **Labels:** CONSTANT / NAME / VALUE / MIXED per family.
+     - **Routing:** NAME means retrieval by entity is available, so D4 BRANCH-DAG can run. VALUE or CONSTANT means MC3 ENTITY-KEYED WRITE is a prerequisite for DAG merges and GSM8K.
+     - **Prediction (wave-3 memo):** delta VALUE or CONSTANT, additive CONSTANT.
+  3. **openvocab (CG5).**
+     - **Renderings:** TEST2 d 1-4 re-rendered with:
+       - multi-token names (a pool of >= 200 names that tokenise to >= 2 GPT-2 tokens, seed 26900);
+       - overlapping name pairs in one item (Ann / Anna, Jon / Jonas, …);
+       - noun-phrase entities ("the red team", "box B").
+     - **Implementation:** the cue entity span is replaced to match, and the cue offset is recomputed and asserted. acc is read at K' 8.
+     - **Labels:** OPEN / CLOSED / PARTIAL.
+     - **Routing:** CLOSED puts T-lane entity coverage, and the P5 pointer head, ahead of GSM8K data work.
+  4. **readuse (I2).**
+     - **Setting:** TEST2 d 4 and d 8, n 500, K' 8.
+     - **Intervention:** at every pass, the block-6 DeltaMem read injection is zeroed, or replaced by its batch mean, at one position class: COLON / CUE (cue tokens other than ':') / STEP (S_t's op sentence at pass t) / OTHEROPS / REST.
+     - **Labels:** COLON-ONLY / SENTENCE-USE / MIXED.
+     - **Routing:**
+       - COLON-ONLY makes cue-row cached designs viable (E3' / CC re-priced for C3);
+       - SENTENCE-USE means the read at sentence tokens is part of selection, the candidate mechanism behind §263.
+  5. **alphahold (D12 + TH4).**
+     - **Setting:** TEST2 d 1-6, STD cue, K' 32.
+     - **Delta heads:** per-head median alpha on compute passes (t <= d) and on hold passes (t >= d + 3), plus the share of beta > 1.
+     - **Additive heads:** the write norm on compute vs hold passes, and the slope of the additive ':' read norm over t in [d+3, 32] relative to its mean.
+     - **Labels:** delta GATED-USED / ALPHA-INERT; additive FREEZE / ECHO; TH4 BOUNDED / DRIFT.
+     - **Routing:** these gate D10 DG-ADD vs D11 RMS-MIX, and test Note 264-2's hold mechanics. TH4 predicts FREEZE + BOUNDED if C6 holds by vanishing writes.
+- **Reading rule:** labels on bun_s1 route the lanes. bun_s2 confirms, and a disagreement is reported as MIXED with no routing change.
+- **Deferred to §269b:** I1 op-select heads, TH2 mirror pairs, RB3 occlusion footprint, RB2 noise radius, CG1 sub_s zero-shot, TS3 vote over re-renderings.
+- **Scope:** bun only (one lineage); plan given.
+- **OC:**
+  - P(triage = SELECTION) ~0.5 (TH3's competing-key account);
+  - P(keys delta = VALUE or CONSTANT) ~0.6;
+  - P(openvocab CLOSED) ~0.4;
+  - P(readuse SENTENCE-USE) ~0.5;
+  - P(additive FREEZE) ~0.6.
+  - Censoring: a part that crashes gets VOID-RERUN once, as its own line.
+- **Cost:** 5 parts x ~$0.1-0.2 ≈ $0.8; guard **$1.5**.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
