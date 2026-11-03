@@ -12,7 +12,9 @@ Binding per em seed (EM-C4, stage A):
   FORM    final ws d 3 passes 1, 2 >= 0.90; acc d 2 >= 0.90 and d 3 >= 0.80;
   USE     swap_v d 3 follow >= 0.80 and >= floor + 0.30; mem_ablate d 3 acc <= 0.30 (pass 3 cannot recompute the chain from text alone);
   Label EM-C4 if all hold; PARK if ws_readout['3']['1'] <= 0.30 at step 2000 in both seeds; else FAIL: <criteria>. Wilson 95% CIs + NEAR on the binding cells.
-Descriptive: CTRL cells' readings; d 4-5 acc (extrapolation with given cues); posterior entropy (log, if present).
+Descriptive: CTRL cells' readings; d 4-5 acc (extrapolation with given cues); posterior entropy (log, if present);
+  Note 267-1 (Audit): PERM-INVARIANT readout = best-bijection accuracy of the pass-t argmax vs v_t (max over permutations of Z_11, exact bitmask DP) on
+  eval_em.json "ws_items" {d: {t: {"pred": [N], "v": [N]}}}; PERMUTED-LATENT if bijection acc >= 0.90 while raw ws < 0.50 (a latent formed under relabelling).
     python -B theory/score_em.py [--fixtures]
 """
 import argparse, json, math, os, sys, tempfile
@@ -59,13 +61,33 @@ def onset(runs, run):
     return o
 
 
+def best_bijection(pred, v, k=11):
+    """max over bijections pi of Z_k of mean(pi(pred) == v), exact by DP over subsets of targets."""
+    C = [[0] * k for _ in range(k)]
+    for a, b in zip(pred, v):
+        C[a][b] += 1
+    best = {0: 0}
+    for i in range(k):
+        nxt = {}
+        for m, val in best.items():
+            for j in range(k):
+                if not m >> j & 1:
+                    m2 = m | 1 << j; w = val + C[i][j]
+                    if nxt.get(m2, -1) < w:
+                        nxt[m2] = w
+        best = nxt
+    return max(best.values()) / max(len(v), 1)
+
+
 def cell(runs, run):
     e = jl(os.path.join(runs, run, "eval_em.json"))
     if e is None:
         return None
     on = onset(runs, run)
+    perm = {d: {t: best_bijection(x["pred"], x["v"]) for t, x in tt.items()} for d, tt in e.get("ws_items", {}).items()}
     return {"acc": {d: e["acc"][d]["acc"] for d in e["acc"]}, "n3": e["acc"]["3"]["n"], "ws3": e["ws"]["3"], "swap": e["swap_v"]["3"], "ablate": e["mem_ablate"]["3"]["acc"],
-            "onset": on}
+            "onset": on, "perm_ws": perm,
+            "permuted_latent": any(perm.get(d, {}).get(t, 0) >= 0.90 and e["ws"].get(d, {}).get(t, 1) < 0.50 for d in perm for t in perm[d])}
 
 
 def seed(c):
@@ -113,6 +135,10 @@ def fixtures():
                            ("swap vs floor", {"fol": 0.85, "flo": 0.6}, "FAIL: USE"), ("in-pass recompute", {"abl": 0.6}, "FAIL: USE"),
                            ("missing log", {"missing_log": True}, "pending")):
         o = score(world(**kw)); res.append((name, want in o["verdict"], o["verdict"]))
+    import random
+    rg = random.Random(0); v = [rg.randrange(11) for _ in range(500)]; pi = list(range(11)); rg.shuffle(pi)
+    res.append(("bijection recovers a permuted code", abs(best_bijection([pi[x] for x in v], v) - 1.0) < 1e-9, "perm"))
+    res.append(("bijection of a constant readout is ~1/11", best_bijection([0] * 500, v) < 0.2, "const"))
     for r in res:
         print("FIXTURE", "PASS" if r[1] else "FAIL", r[0], "->", r[2])
     k = sum(bool(r[1]) for r in res); print("fixtures %d/%d" % (k, len(res))); return k == len(res)

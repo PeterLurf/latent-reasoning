@@ -353,7 +353,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **APPROVED by Audit 11-03 (264-1; $0 reads X4a UNTRAINED-PASS, M1 V1+TEXT).** **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 | 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
-| 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **REGISTERED 11-03; score_em.py 9/9; guard $8** |
+| 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
 
 ## Live sections
 
@@ -24179,6 +24179,21 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - FLOPs are 2.4-9.1x higher across d 1-8.
   - The C5 stability halt needs a decode every pass, roughly 2x bun's FLOPs.
   - C3 status: **not met (analytic; empirical comparison pending §266)**. sota_arch.json and LANGUAGE_LINE_SUMMARY updated in this commit.
+
+**Note 267-1 (2026-11-03 16:40 EST; §267 APPROVED by Audit, guard $8; three conditions before output; Literature novelty NARROW).**
+- **(1) Identifiability (descriptive):** a PERM-INVARIANT readout is added.
+  - It is the best-bijection accuracy of the pass-t argmax vs v_t, maximised over permutations of Z_11 by an exact bitmask DP.
+  - eval_em.json carries ws_items {d: {t: {pred, v}}}.
+  - PERMUTED-LATENT if bijection acc >= 0.90 while raw ws < 0.50. This separates 'learned a latent, permuted' from 'no latent'.
+  - The binding gates are unchanged. score_em.py is re-committed, fixtures 11/11.
+- **(2) Scope:** a pass reads 'C4 with a designed discrete latent alphabet (Z_11) and reset (Markov) memory'.
+  - It is NOT C4 for the bun architecture, and it says nothing yet about DeltaMem's accumulating state.
+- **(3) ONSET** is read on the raw logged values at the 1k and 2k bins, with no smoothing. Censoring follows the OC rule.
+- **Build gates as listed,** plus GATES_H and the drain hours in the caps.
+- **Literature (LIT_BACKLOG_SPOTCHECK addendum): NARROW.**
+  - Exact forward-DP marginalisation over discrete latent sequences is classic: HMMs (our §76), neural HMM LMs 2011.04640, latent alignment 1807.03756 / 1702.00887, Correia 2007.01919 and DeepProbLog.
+  - Latent CoT has been done only by sampling (TRICE 2312.02179) or amortisation (2310.04363).
+  - Wording: 'an exact (forward-DP) counterpart of TRICE's latent-CoT EM, made tractable by an 11-value per-pass alphabet in a recurrent latent loop'.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
