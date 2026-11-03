@@ -740,6 +740,36 @@ CA4 (K16) SHARED-STEP SIAMESE (S_1 consistency across pairs sharing S_0,S_1 sent
 CA5 (K17) IDENTITY-SUFFIX UPWEIGHT — needs Audit ruling $0.4
 CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO; DISTILL-TO-DM sub-arm needs ruling) ~$2 after §267 | 2402.14740
 
+## 14. Audit literature sweep Oct-Nov 2026 (docs/research_audit_2026-11-03/wave2/LIT_SWEEP_OCT_NOV_2026.md) + REDTEAM_BUN: new leads
+- **HOLD-RANDOM-PASS** (2610.19768): states form at loop k but are not retained beyond the trained range; supervising one random pass retains 99.8%.
+  - A read on bun: pin S_t at the first-correct pass vs at t + 2.
+  - Training form: hold supervision on one random pass per item.
+  - Pairs with H5.
+- **PAR prefix self-distillation** (2610.27628): the iteration-k target is the model's own state after k ops, plus a per-iteration norm re-anchor; 16x extrapolation.
+  - It may be C4-eligible if the targets are self-generated; needs an Audit ruling vs Note 266-1.
+- **Overshoot control** (2610.31943, 2607.14427): looped-vs-stacked gains can be overshoot confounds.
+  - Report d 6-8 at matched overshoot K' = d + c.
+  - A training-free state-stability stop beats a trained router (supports H1 / H4).
+- **Asymmetric Looped Transformers** (2610.28489): a C3 reference design for KV-cached latent passes (E1 / E3', design doc 03).
+- **C5 reporting** (2610.32246, 2605.21642): report the batch-max passes, not only the mean (now in read_s269_redteam (b)).
+- **Further references:**
+  - LoopOPD 2610.10623: a self-teacher C4 route.
+  - ELR 2610.12582: a pass-index clock, i.e. an X1 positive control.
+  - 2610.05815: a Deep ProsQA split exists (D1).
+- **Double-Take** (2610.13073): diagnoses §247's C7 null. A write whose key and value both come from the state is self-associative and cannot bind text to state; key-from-text with value-from-state lifted recall from 0.10 to 0.92.
+  - Supports R6 / MC3 (design doc 01).
+  - C7 ladder: capacity -> + text-keyed binding -> + change-sensitive write.
+- **StateBench hierarchy** (2611.03094, Petty / Merrill / Sabharwal): REG is the aperiodic tier.
+  - Tier-3 (soluble) items inside our template are a cheap eval; they pair with N1 (S5) for the 'what the loop computes' statement.
+- **Looped Transformers as Optimizers** (2609.37379) and **Kronecker delta** (2610.26834): a delta-step write with learned decay / step and a bounded state norm without the hold penalty.
+  - beta_t -> 0 gives a halt signal independent of the repeated cue, which addresses the §264 plan-clock worry. Pairs with D10 / D11.
+- **Other references:** G-MemLLM 2602.00015 (gated slot bank on GPT-2 124M; a sanity bar for A3); DAMI 2610.41994 (gate-init timescales; may relate to seed basin variance).
+- **REDTEAM_BUN (Audit):**
+  - bun was never evaluated on insert_ho; now in §269 part 6.
+  - The C1 gates stop at d 4; queued in §269b.
+  - C2 K'-probe at d 9-10 (pre-stated read).
+  - Predicted end state if fears land: C1 at d 4 under a plan, C2 depth-only, C6 under a repeated cue, C5 partial. §264, §266 and §269 settle each.
+
 ## Changelog
 - 2026-11-03 16:56: wave 3 merged (21 Fable agents: interpretability, formation dynamics, lineage compression, efficiency, statistics, memory capacity, compositional generalisation, verbalizer, test-time scaling, hybrid, expressivity theory, benchmark scouting, history taxonomy, robustness, alternative paradigms, multi-task, RL post-training, number representation, plan-free stopping, scaling, C4 with accumulating memory). Shortlist in §13.1; process rules in §13.0.
 - 2026-11-03 16:34: wave 2 merged (9 agents + Audit NORTH_STAR_GAP / VALIDITY_STATS / C7_EDITABLE / EXTERNAL_SOTA). Queue re-ranked into lanes A-E. §264 / §265 amended pre-output (Notes 264-3 / 265-2); Theory's §264 predictions committed (Note 264-2); §266 SAME-DATA BASELINES registered. M1 struck; the C2 bundle absorbed into §264; K1 -> K1a (OPS_CHAIN); E3 top-k de-ranked.

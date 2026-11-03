@@ -24332,6 +24332,26 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(3) For §263 and §265:** a C2 row that passes or fails its bar by less than one sigma_seed (~0.09) is labelled **NEAR-SEED** and claimed neither way.
 - FD1 is noted. §267's ONSET gate stays valid. A seed-farm would need a marker at >= 4k.
 
+**Note 266-2 (2026-11-03 17:21 EST; §266 amended BEFORE build or output, from Audit's Oct-Nov literature sweep and REDTEAM_BUN; score_tx.py re-committed, fixtures 16/16).**
+- **(a) Trailing-number copy gate.** 2605.22870 finds that small-model text CoT can reduce to 'copy the last number'. Each text cell's eval_text.json now also carries trail {d: {acc_trailing, copy_rate, base_copy}} for d 1-4:
+  - acc_trailing: the same items with a trailing irrelevant sentence '<absent name> has x <u>.' appended after the last op sentence (seed 26610);
+  - copy_rate: P(pred == the prompt's last number);
+  - base_copy: P(ans == that number).
+  - A text cell is VALID only if, averaged over d 1-4, the accuracy drop is <= 0.05 and copy_rate - base_copy <= 0.05. Otherwise it is UNDERTRAINED / VOID-EXTEND and is not evidence either way.
+  - The same part runs on bun (pipeline host) and is reported descriptively.
+- **(b) PIPELINE-MATCHES (stated reading).** If X5's pipeline at d 7 and d 8 is >= the bun mean - 0.02 in both seeds, C1 is worded 'a one-hop executor of a given plan'.
+
+**Note 269-3 (2026-11-03 17:21 EST; Audit REDTEAM_BUN, verified in code by Audit: bun's eval_parts never included insert_ho, and swap_kd / lp5h loop over d 3..d_max only).**
+- **(a) §269 gains a 6th part, insert_ho on bun_s1 / s2.**
+  - It is an existing eval part with no new code, run as its own queue line.
+  - It measures the SOTA's CONTENT clause on bun itself, not inherited from dch. Until it lands, the sota_arch.json limit 'content selection not re-scored on bun' stands.
+  - Scored with the §257 bar (H-CHAINSRC-OP acc8 >= 0.85, min pos >= 0.80), descriptive for bun.
+- **(b) Pre-stated $0 reads** in theory/read_s269_redteam.py (committed, not run; awaiting Audit's ack):
+  - ERROR-PROPAGATION on eval_ws_deep (SERIAL / RECOMPUTE / MIXED);
+  - the C5 PLAN-CLOCK read on eval_stab_fresh: P(khalt = d-1), acc_halt vs acc(pred[d-1]), batch-max khalt; STATIC-CLOCK / ADAPTIVE;
+  - a C2 K'-PROBE on stored eval_acc d 9-10 acc_kprime K' 8-12. d 10 needs K' >= 9 for its last cue. MORE-THINKING / FLAT / MIXED.
+- **(c) Gap noted for the C1 + C2 claim:** the causal gates (SWAP / LP5) stop at d 4. Per the standing rule, a C1 + C2 claim needs them at d 6-7. This is queued as an eval-only line (swap_kd / lp5h range extended to d 7) in §269b.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
