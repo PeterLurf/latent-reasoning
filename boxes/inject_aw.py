@@ -228,6 +228,7 @@ def main(argv=None):
     ap.add_argument("--eval_bs", type=int, default=250); ap.add_argument("--eval_parts", default="acc"); ap.add_argument("--device", default="cuda:0"); ap.add_argument("--out", required=True)
     ap.add_argument("--distract_mix", default="", help="§257 DC2_v1: insert types drawn uniformly per insert (s256,chain,givop) under --distract_p ('' = §256 rule)")
     ap.add_argument("--distract_p", type=float, default=0.0, help="Note 255-5: P(an item gets U{0,1,2} irrelevant new-name op sentences) (0 = off, unchanged)")
+    ap.add_argument("--distract_nmax", type=int, default=2, help="§265: inserts n ~ U{0..nmax} (default 2 = the pre-§265 draw, bitwise); capped at the 40-name budget")
     ap.add_argument("--perm_p", type=float, default=0.0, help="§252: P(a d >= 2 training item is re-rendered dependency-violating) (0 = off, unchanged)")
     ap.add_argument("--cue", default="none", choices=["none", "step", "all", "generic", "target"], help="§233: step = LAT-ST (the S_min(t, d) cue at pass t), all = CUED-DIRECT (cues S_1..S_d on the decoder); none = inject_ow")
     ap.add_argument("--write_src", default="all", choices=["all", "answer"], help="§234: answer = + ' The answer is:' on every pass input, only the ':' state writes")
@@ -306,6 +307,7 @@ def main(argv=None):
                  | {it["text"] for d_ in IR.held_out_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}
                  | {it["text"] for d_ in IR.held_out2_sets(SETS["test2"][4])[0].values() for its_ in d_.values() for it in its_}) if (a.distract_p and a.d_max >= 4) else set()   # Note 255-5 (b) + §256 held-out sets
     DSTAT = {}                                                              # Note 255-5: {n: count} in the open 1k bin
+    DCAP = {}                                                               # §265: {drawn n: count} of the name-budget-capped draws in the open 1k bin
     MIXT = tuple(a.distract_mix.split(",")) if a.distract_mix else (); DTYPE = {}   # §257: the insert types; {type: count} in the open 1k bin
     assert not MIXT or (a.distract_p > 0 and set(MIXT) <= set(IR.MIX_TYPES)), ("--distract_mix needs --distract_p and known types", MIXT)
     TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets({d_: SETS["test2"][d_] for d_ in range(1, a.d_max + 1)}, range(1, a.d_max + 1))[0].items()
@@ -321,7 +323,7 @@ def main(argv=None):
                 if a.perm_p and d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p:   # §262 perm-then-insert: §252's coin / perm
                     r_ = PR.train_perm(r_, a.seed, step, k_)
                 if np.random.default_rng((a.seed, IR.SEED_DISTRACT_COIN, step, k_)).random() < a.distract_p:
-                    r2_, n_ = IR.distract_mix(r_, a.seed, step, k_, MIXT) if MIXT else IR.distract(r_, a.seed, step, k_)   # §257 --distract_mix
+                    r2_, n_ = IR.distract_mix(r_, a.seed, step, k_, MIXT, nmax=a.distract_nmax) if MIXT else IR.distract(r_, a.seed, step, k_, nmax=a.distract_nmax)   # §257 --distract_mix; §265 nmax
                     if n_:
                         t_new, t_old = tok_aw(r2_, a.aux_target, a.cue, a.write_src), tok_aw(r_, a.aux_target, a.cue, a.write_src)
                         assert t_new["aux"] == t_old["aux"] and t_new["ans"] == t_old["ans"] and len(t_new["think_cues"]) == len(t_old["think_cues"]) and all(
@@ -330,6 +332,8 @@ def main(argv=None):
                         for t_ in r2_.get("distract_types", ()):                # §257: per-type insert counts
                             DTYPE[t_] = DTYPE.get(t_, 0) + 1
                 DSTAT[n_] = DSTAT.get(n_, 0) + 1; out_.append(r_)
+                if r_.get("distract_capped") is not None:                       # §265: a draw the name budget capped
+                    DCAP[r_["distract_capped"]] = DCAP.get(r_["distract_capped"], 0) + 1
             assert not any(r_["text"] in INS_TEXTS for r_ in out_), "DISTRACT: a training text equals an INSERT eval text"
             assert not any(r_["text"] in TP_TEXTS for r_ in out_), "§262: a training text equals a TEST-PERM text"
             return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in out_]
@@ -438,7 +442,7 @@ def main(argv=None):
     s_mc = OW.Stream(SEED_MEMCHECK, frames=OW.FRAME_TRAIN, mul_s_p=a.mul_s_p, **OWKW) if a.src == "ow" else None   # §236: the run's law
     if a.distract_p and s_mc:                                               # Note 255-5 (d): the memory-check items carry 2 insert pairs (ops after the last op sentence)
         def _mc2(i_):
-            r_ = s_mc.draw(a.d_max); g_, o_, m_ = IR.draw_pairs(r_, 2, np.random.default_rng((a.seed, IR.SEED_DISTRACT + 2, i_)))
+            r_ = s_mc.draw(a.d_max); g_, o_, m_ = IR.draw_pairs(r_, max(2, a.distract_nmax), np.random.default_rng((a.seed, IR.SEED_DISTRACT + 2, i_)))   # §265: the nmax-insert shape
             return IR.assemble(r_, g_, [(("after", "S%d" % r_["d"]), x_) for x_ in o_], m_)
         MC_TR = sorted([tok_aw(_mc2(i_), a.aux_target, a.cue, a.write_src) for i_ in range(256)], key=lambda it: -st_len(it))
     else:
@@ -613,6 +617,8 @@ def main(argv=None):
                 br["aux_vacc_by_d_pass_n"] = {d_: {k_: v_[1] for k_, v_ in sorted(tv.items(), key=lambda kv: int(kv[0]))} for d_, tv in sorted(vbin_d.items())}
             if a.distract_p:                                                # Note 255-5: the bin's insert-count distribution
                 br["distract_n"] = {str(k_): v_ for k_, v_ in sorted(DSTAT.items())}; DSTAT.clear()
+                if DCAP:                                                    # §265: the capped draws (drawn n: count)
+                    br["distract_capped"] = {str(k_): v_ for k_, v_ in sorted(DCAP.items())}; DCAP.clear()
                 if MIXT:                                                    # §257: the bin's insert-type distribution
                     br["distract_types"] = dict(sorted(DTYPE.items())); DTYPE.clear()
             for k_ in ("perm", "chain") if a.perm_p else ():                # §252 Note 252-1: ws_readout_perm / ws_readout_chain = {d: {pass: acc}} (+ _n)

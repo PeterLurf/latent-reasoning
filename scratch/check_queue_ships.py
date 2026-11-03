@@ -2,6 +2,7 @@
 only): (1) the path of every '--model' / '--init' '<path>=<hex>' value, and (2) every '--blob' path that is NOT a .py module (data files: .json / .tar / ...; .py modules
 ship as queue-module dependencies), must also appear somewhere in the queue as a plain token. Exit 1 + the missing paths, else 0.
     python scratch/check_queue_ships.py scratch/gen_q_b<n>.txt"""
+import os
 import re
 import sys
 
@@ -25,6 +26,16 @@ for ln in lines:
             flag = t; continue
         if flag == "--blob" and re.match(r"^scratch/[^=]+\.py=[0-9a-f]{8,}$", t) and t.split("=")[0] not in shipped and t.split("=")[0] not in plain:
             need.add(t.split("=")[0])
+gm = []                                                                     # v6 (Audit 11-03 §3.3, b413 a1): a gates line's bitwise parts must run with --micro >= 2
+for ln in lines:
+    if len(ln) >= 2 and re.match(r"^scratch\.s\d+_gates$", ln[1]) and os.path.exists(ln[1].replace(".", "/") + ".py"):
+        gs = re.findall(r"scratch/gate_s\d+\.py", open(ln[1].replace(".", "/") + ".py", encoding="utf-8").read())
+        for g_ in sorted(set(gs)):
+            src = open(g_, encoding="utf-8").read() if os.path.exists(g_) else ""; mc = re.search(r'COM = \[[^\]]*"--micro", "(\d+)"', src)
+            if not mc or int(mc.group(1)) < 2:
+                gm.append("%s (%s: COM without --micro >= 2)" % (ln[0], g_))
+if gm:
+    print("GATES MICRO:", "; ".join(gm)); sys.exit(1)
 miss = sorted(need - plain)
 if miss:
     print("NOT SHIPPED (path=sha only):", " ".join(miss)); sys.exit(1)

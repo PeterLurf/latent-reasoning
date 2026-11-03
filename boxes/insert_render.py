@@ -167,28 +167,39 @@ def set_shas(sets):
     return {fam: {p: hashlib.sha256("\n".join(x["text"] for x in its).encode()).hexdigest() for p, its in d.items()} for fam, d in sets.items()}
 
 
-def distract(it, seed, step, k):
+def _budget(it, n):
+    """§265: the inserts that fit the 40-name budget (2 new names each) -> (n capped, capped?)."""
+    used = set(it["names"]["spine"]) | set(it["names"]["givens"]) | set(it["names"]["distractors"]); free = sum(1 for x in OW.NAMES if x not in used)
+    return min(n, free // 2), n > free // 2
+
+
+def distract(it, seed, step, k, nmax=2, n=None):
     """--distract_p's training re-render of item k at step (the caller draws the p coin): n ~ U{0, 1, 2} pairs (default_rng((seed, 25195, step, k))); each new op at a
     uniformly drawn gap of the op block (before S1, between S_t and S_t+1, or after S_d; chain order of S_1..S_d kept). -> (item, n)."""
-    rng = np.random.default_rng((seed, SEED_DISTRACT, step, k)); n = int(rng.integers(0, 3))
+    rng = np.random.default_rng((seed, SEED_DISTRACT, step, k)); n_draw = int(rng.integers(0, nmax + 1)); n = n_draw if n is None else n   # §265 nmax / §264 forced n
+    n, capped = _budget(it, n)
     if n == 0:
         return it, 0
     giv, ops, meta = draw_pairs(it, n, rng); d = it["d"]; gaps = [("before", "S1")] + [("after", "S%d" % t) for t in range(1, d + 1)]   # the d + 1 gaps of the op block
-    o = assemble(it, giv, [(gaps[int(rng.integers(0, len(gaps)))], op) for op in ops], meta); o["distract_n"] = n; return o, n
+    o = assemble(it, giv, [(gaps[int(rng.integers(0, len(gaps)))], op) for op in ops], meta); o["distract_n"] = n
+    if capped:
+        o["distract_capped"] = n_draw
+    return o, n
 
 
 SEED_MIX, SEED_HO2 = 25205, 25210                                           # §257 (DC2_v1): --distract_mix draws; the §257 held-out sets (unused elsewhere in boxes/ + scratch/, grep 11-01)
 MIX_TYPES = ("s256", "chain", "givop")
 
 
-def distract_mix(it, seed, step, k, types=MIX_TYPES):
+def distract_mix(it, seed, step, k, types=MIX_TYPES, nmax=2, n=None):
     """§257 --distract_mix: the training re-render of item k at step (the caller draws the p coin): n ~ U{0, 1, 2} inserts (default_rng((seed, 25205, step, k))), each of a
     type drawn uniformly from `types` ('chain' only when d >= 2):
       s256   a new given Y at the end of the given block + "X has c more than Y" (add_c) at a uniform gap of the op block (the §256 rule: v 1..9, c 1..10 - v);
       chain  "X has c more than S_j" (add_c, c 1..9, no new given) directly after S_j's sentence, j ~ U{1..d-1} (placed last, so nothing lands between S_j and it);
       givop  a new given Y directly before its "X has c more than Y" (v 1..9, c 1..10 - v), the pair at a uniform gap of the op block.
     Names new and distinct; frames FRAME_TRAIN; S_1..S_d keep their order; solve asserted. -> (item, n); item["distract_types"] / ["distract_meta"] / ["insert_labels"]."""
-    rng = np.random.default_rng((seed, SEED_MIX, step, k)); n = int(rng.integers(0, 3))
+    rng = np.random.default_rng((seed, SEED_MIX, step, k)); n_draw = int(rng.integers(0, nmax + 1)); n = n_draw if n is None else n   # §265 nmax / §264 forced n
+    n, capped = _budget(it, n)
     if n == 0:
         return it, 0
     d = it["d"]; u = it["unit"]; sp = it["names"]["spine"]; av = [t for t in types if t != "chain" or d >= 2]
@@ -214,6 +225,8 @@ def distract_mix(it, seed, step, k, types=MIX_TYPES):
     for i, m_ in enumerate(meta):
         m_["op_idx"] = lab.index("NO%d" % i); m_["given_idx"] = lab.index("NG%d" % i) if "NG%d" % i in lab else None
     o = dict(it); o["text"] = " ".join([x[1] for x in seq] + [q]); o["insert_labels"] = lab; o["distract_n"] = n; o["distract_types"] = ty; o["distract_meta"] = meta
+    if capped:
+        o["distract_capped"] = n_draw
     assert OW.solve(o["text"]) == it["answer"], ("distract_mix: solve != answer", it["sig"]); return o, n
 
 
