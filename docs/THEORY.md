@@ -350,8 +350,8 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 261 | TARGET-CUE (Audit's idea, Theory's choice; C1 scope): the cue names only the asked entity S_d, identical every pass (no per-step plan); pilot from bun_s1 (2k gate incl. H-EXTEND / H-LIVE), then 2 seeds 8k | registered | **APPROVED by Audit 11-03 (261-1).** **REGISTERED 11-03; pilot gate score_tc.py 6/6; guard $3.5** |
 | 262 | NAME-KEYED MEMORY (ARCH_UPGRADES top pick; Audit G-D in principle): tied-key name-bound memory blocks packed into S, ids threaded, from bun + perm-then-insert + shared one-hop name-lookup co-training vs CTRL (no heads); pilot gate on conditional permuted pass-t WS + NK-ablation causal drop; NK_v1.md | registered | **PILOT PARK 11-03 (262-3): NK ablation drop 0.004 (binding unused); but CTRL (perm + one-hop ':'-CE co-training) fixes order-bound selection (pass-1 perm WS 0.98 / 0.96, conditional 0.95-0.97); ~$1.73.** **APPROVED by Audit 11-03 (262-1: closed 40-name set + held-out-name probe; clean TEST2 retention vs dch / bun).** **REGISTERED 11-03; pilot gate score_nk_pilot.py 6/6; guard $15** |
 | 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **APPROVED by Audit 11-03 (263-1: CONTENT binding).** **REGISTERED 11-03; score_of.py 10/10; guard $4** |
-| 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
-| 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
+| 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **APPROVED by Audit 11-03 (264-1; $0 reads X4a UNTRAINED-PASS, M1 V1+TEXT).** **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
+| 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
 
 ## Live sections
 
@@ -23999,6 +23999,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Disclosure: this swap is at K = 8 (the whole state), not a pass-2 swap. A pass-2 SWAP gate (backlog M1) would separate 'pass 2 writes v_2' from 'the decoder ignores it'. The stored aux = 1.00 says the write is decodable, and this read says the decoder does not use it.
   - Consequence for the backlog: M2 COLON-CE (train the ':' readout at pass t) and M3 SHORTCUT-PRESSURE (an S-only decoder) target exactly this decoder shortcut. M1's pass-2 swap is now less informative than M3.
 - **Citation (Literature, docs/LIT_HALTING_DEFS_2026-11-03.md):** §264's rel_inc / tau rule is a relative-increment settle criterion in the spirit of FPRM's residual halting (2606.18206: r = ||z - f(z)||inf / ||f(z)||inf, fixed tau 0.1). Here tau is set per model as sqrt(c h). It is NOT Viakhirev's 'settle' (2608.18222), which needs a lambda_max reading. Viakhirev's Prop. 1(b), that a finite constant window certifies nothing, is why LF / CY pair rel_inc with the K' 24 accuracy condition.
+
+**Note 265-1 (2026-11-03 16:19 EST; §265 APPROVED by Audit, guard $4; build conditions, no design change).**
+- **Host gates:** --distract_nmax is new trainer code.
+  - Flags-off bitwise vs the pre-§265 tree at the default nmax 2 (the rng-equivalence gate).
+  - A smoke at nmax 8.
+  - gradflow.
+  - GATES_H in the caps.
+- **Memory:** mem_check at the d 4 + 8-insert input shape, with micro pinned (the §251 lesson).
+- **attn_fade is read-only:** decoder logits are asserted equal with and without the hooks on a batch.
+- **Order:** queues after §264.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
