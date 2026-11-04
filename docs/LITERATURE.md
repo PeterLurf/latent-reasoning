@@ -196,6 +196,15 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 
 - Wave-2 additions (Audit; verified 2026-11-03; docs/LIT_SUBLAT_PROSQA_OOD_2026-11-03.md): Zeng & Zhang, SubLAT [2610.40283](https://arxiv.org/abs/2610.40283) (potential-guided subtrajectory balance for latent path exploration; ProsQA 7-hop / 8-hop / DAG / Dense OOD, GPT-2 SubLAT 69.34 OOD avg vs COCONUT 67.52); Xie et al., Selective Latent Thinking [2605.25745](https://arxiv.org/abs/2605.25745) (adaptive compression of CoT into latents); Pagadala [2611.02333](https://arxiv.org/abs/2611.02333) (selection rules decide adaptive halting vs readouts, Ouro-1.4B); Frey et al. [2603.08391](https://arxiv.org/abs/2603.08391) (adaptive loops and memory in transformers).
 
+## 14. Added 2026-11-04 (Literature; details in docs/LIT_WAVE4_N1_MC3_2026-11-04.md)
+- Schlag, Munkhdalai & Schmidhuber 2020, *Learning Associative Inference Using Fast Weight Memory* (FWM), [2011.07831](https://arxiv.org/abs/2011.07831): a delta-style write at every step with keys like entity ⊗ relation and 3-query chained reads, on catbAbI. The closest prior to MC3's entity-keyed write; Thm B.1 gives the convex-mix update.
+- Schlag & Schmidhuber 2018, *Learning to Reason with Third-Order Tensor Products* (TPR-RNN), [1811.12143](https://arxiv.org/abs/1811.12143): per-sentence tensor-product writes on bAbI. The parent of FWM.
+- Munkhdalai et al. 2019, *Metalearned Neural Memory*, [1907.09720](https://arxiv.org/abs/1907.09720); Le, Tran & Venkatesh 2020, *Self-Attentive Associative Memory*, [2002.03519](https://arxiv.org/abs/2002.03519): further fast-weight / associative memories for relational reasoning.
+- PAR, [2610.27628](https://arxiv.org/abs/2610.27628): a retrofitted looped Qwen2.5-0.5B on swap-S5, trained on ≤32 moves, 95.5% at 512; per-iteration progress supervision; norm anchoring is needed (16x → under 2.2x without it). The nearest prior to N1.
+- Merrill & Sabharwal, *Exact Expressive Power of Transformers with Padding*, [2505.18948](https://arxiv.org/abs/2505.18948) (theorem): padding gives TC⁰, O(log^d n) loops give TC^d.
+- *A Fine-Grained Hierarchy and Benchmark for State Tracking in Language Models* (StateBench), [2611.03094](https://arxiv.org/abs/2611.03094) (theorem + benchmark).
+- *On the "Induction Bias" in Sequence Models*, [2602.18333](https://arxiv.org/abs/2602.18333): transformers share little state tracking across lengths.
+
 ## Internal sources (from NEXT_STEPS.md)
 
 - *Branch edits in continuous thought*, report dated 23 Sep 2026 (`report/latent_branch_report.pdf`).
