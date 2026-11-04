@@ -1,12 +1,12 @@
 {
- "as_of": "2026-11-02",
- "name": "BUNDLE loop (dch + hold penalty)",
- "section": "259",
+ "as_of": "2026-11-04",
+ "name": "ORDER-FREE loop (bun + perm-then-insert + one-hop name-lookup co-training)",
+ "section": "263",
  "best_runs": [
-  "bun_s1",
-  "bun_s2"
+  "of_s1",
+  "of_s2"
  ],
- "verdict": "C1 + C2 (partial) + C6 + C5 (training-free halting) in one model (Notes 259-4, 259-12)",
+ "verdict": "C1 (op-order-free) + C2 (partial) + C6 + C5 (training-free halting) in one model (Notes 259-4, 259-12, 263-3)",
  "base": {
   "model": "GPT-2 small",
   "layers": 12,
@@ -54,28 +54,32 @@
   {
    "stage": "bun (§259)",
    "what": "+ hold-increment penalty (lambda 1.6, from step 500), 8k from dch"
+  },
+  {
+   "stage": "of (§263)",
+   "what": "+ op sentences permuted (perm_p 0.5, then inserts) + 25% one-hop name-lookup \":\" CE co-training, 8k from bun"
   }
  ],
  "scorecard": [
   {
    "c": "C1",
    "status": "met, scoped",
-   "evidence": "TEST2 d1-4 1.000; NOT-DECODER 0.020 / 0.019; SWAP4 / LP5 pass; content step selection inherited from dch (held-out distractors 0.95 / 0.96, §257); still order-bound"
+   "evidence": "TEST2 d1-4 retained; NOT-DECODER / SWAP4 / LP5 pass; TEST-PERM (op sentences in any order) d4 0.982 / 0.961, LATE-PREMISE >= 0.979; name-swap: the cue name selects among computed entities (follow 1.000); content selection on insert_ho passes (Note 263-3). Not free under full all-sentence shuffle (d4 0.46 / 0.38)."
   },
   {
    "c": "C2",
    "status": "partial, scoped",
-   "evidence": "trained d<=4: d6 0.972 / 0.956, d7 0.857 / 0.852, d8 0.47 / 0.59 (Note 259-4)"
+   "evidence": "trained d<=4: d6 0.971 / 0.959, d7 0.909 / 0.895 (bun 0.857 / 0.852; d6 NEAR-SEED, gain under one sigma_seed, not claimed) (Note 263-3)"
   },
   {
    "c": "C6",
    "status": "met, scoped",
-   "evidence": "acc K'128 = K'8 at d1-6 (d6 0.972 / 0.958); ||S|| ratio 1.02-1.14x; no-penalty control drifts (Note 259-4)"
+   "evidence": "K'64 / K'128 hold at d1-6 retained on of (Note 263-3; mechanism and norm control from bun, Note 259-4)"
   },
   {
    "c": "C5",
    "status": "met, scoped",
-   "evidence": "training-free answer-stability halting (stop when the answer is unchanged for 3 passes; relies on the C6 hold; +3 passes over d-1): on a fresh draw, halts at d-1 with accuracy kept at unseen d5-7 in both seeds (d7 0.880 / 0.875 vs 0.883 / 0.881) (Notes 259-11 / 259-12)"
+   "evidence": "training-free r=3 answer-stability halting: C5-EXTRAP on of in both seeds (acc_halt = acc_k8 within 0.002 at d5-7; d7 0.908 / 0.893) (Note 263-3; rule from Notes 259-11 / 259-12)"
   },
   {
    "c": "C4",
@@ -95,14 +99,14 @@
  ],
  "limits": [
   "Plan given by the step cue",
-  "Sentences must be in chain order",
+  "Op sentences may be in any order, but givens / S_0 must keep their trained placement relative to the ops (full shuffle d4 0.46 / 0.38)",
   "Templated word programs (REG frames 0-5), values mod 11",
   "Chain-reading distractors tested only right after the step they read",
-  "GPT-2 small only (§258 medium: no pass-2 write at lr 3e-5; lr 1e-4 retry running)",
-  "Content selection not re-scored on bun (inherited from dch)"
+  "GPT-2 small only (§258 medium parked: no pass-2 write)"
  ],
  "next": [
-  "§258 S2b medium at lr 1e-4",
-  "C4 / C3 / C7 remain; §258 medium S2b running"
+  "§264-§269 eval-only reads and §268 lineage seed (on bun)",
+  "full-sentence perm (perm over all sentences) as the next C1-scope step",
+  "C4 / C3 / C7 remain"
  ]
 }
