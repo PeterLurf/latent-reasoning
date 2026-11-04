@@ -1,0 +1,10 @@
+{
+ "source": "https://raw.githubusercontent.com/suzgunmirac/BIG-Bench-Hard/main/bbh/tracking_shuffled_objects_{three,five,seven}_objects.json",
+ "fetched": "2026-11-04 (curl, main branch)",
+ "licence": "MIT (suzgunmirac/BIG-Bench-Hard)",
+ "sha256": {
+  "tracking_shuffled_objects_three_objects.json": "546cc7bf10c6a01a6a4c17ae28a4966485f21f29fd5d111f37858ec78e354f6b",
+  "tracking_shuffled_objects_five_objects.json": "2063a46a4fb484236ed4310523606543a3e1dd4a4dc34eda65d407910ece25a5",
+  "tracking_shuffled_objects_seven_objects.json": "b59fd05b850c37cf57cb514ae1e6975c00b1638ade2291722056b2af3c54084d"
+ }
+}

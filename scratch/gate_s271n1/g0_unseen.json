@@ -1,0 +1,30 @@
+{
+ "empty_fit_n3": {
+  "bag_MAP": 0.5,
+  "last2_MAP": 0.5,
+  "expected": 0.5,
+  "unseen": {
+   "bag": 1.0,
+   "last2": 1.0
+  },
+  "ok": true
+ },
+ "empty_fit_n5": {
+  "bag_MAP": 0.25,
+  "last2_MAP": 0.25,
+  "expected": 0.25,
+  "unseen": {
+   "bag": 1.0,
+   "last2": 1.0
+  },
+  "ok": true
+ },
+ "real_fit_5_8": {
+  "f": 0.32654028436018956,
+  "arg": "bag_MAP",
+  "unseen": {
+   "bag": 0.011374407582938388
+  }
+ },
+ "pass": true
+}
