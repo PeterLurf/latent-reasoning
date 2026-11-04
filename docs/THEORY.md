@@ -24616,6 +24616,28 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - C2-EXT d 8 >= 0.75 and CONTENT are absolute bars, unaffected.
 - **Unchanged:** arms, seeds, steps, bars, scorer (score_dd.py), guard $4. Throughput may fall slightly (more chunks); if the guard projection exceeds $4, the pilot drops to the pre-stated minimum before any launch.
 
+**Note 263-4 (QB0 PRE-STATEMENT; committed 2026-11-04 02:33 EST before any full output (only <= 20-item parse smokes, 20/20 agree, no accuracies); full text docs/research_qb0_2026-11-04/QB0_prestatement.md; script theory/read_qb0.py; $0 CPU, generator output only, one process, <= 3 cores; awaiting Audit's ack).**
+- **Question (07_REDTEAM HIGH-1).** Does a question-blind policy suffice on the training law? This is a property of the DATA GENERATOR, not evidence about any model.
+- **Policies** (none reads the question; exact tie rules in the file):
+  - LP: the end of the longest read-chain;
+  - RT: 07_REDTEAM's walk from the first given (follow readers, prefer non-sinks, stop at no-reader; seeded ties, seed 27150);
+  - RT-S: RT starting from the first given that has a reader.
+- **Populations:**
+  - replays of the trainers' own draws from step 1: bun's law (T-bun) and of's law (T-of chain items; T-of ask items separately);
+  - >= 1,000 items per d 1-4;
+  - an exactness gate against each run's first log bin, the exclusion-set size and the set shas; any mismatch aborts the run.
+- **(A) BINDING:**
+  - Label QB-SUFFICIENT (>= 0.99) / PARTIAL (0.90-0.99) / INSUFFICIENT (< 0.90) per policy x population x d.
+  - **Headline: is any policy QB-SUFFICIENT at each of d 2, 3, 4 on T-bun?**
+  - **Prediction: YES, via LP at exactly 1.000** (derived from the builders).
+  - Meaning if YES: plan-free arms trained on this law get no gradient pressure toward question use on chain items at d >= 2, so a retargeting lever (--retarget_p) is a **required design guard**. This is not a statement about any model.
+  - of's ask items: one-hop question pressure per d = 1 - best policy (predicted ~0.68 / 0.85 / 0.85 at d 2-4). If >= 0.5 at each of d 2-4, retargeting is required for bun-based arms and recommended for of-based ones; otherwise required for both.
+- **(B) DESCRIPTIVE ONLY: agreement with gb (Note 260-5).**
+  - Not a blind test: gb's numbers are published.
+  - By construction every policy disagrees with gb on H-LIVE (LP / RT-S 1.000, RT ~0.76 vs gb 0.40). So QB0 as THE mechanism of §260's plan-free collapse is predicted refuted for all three policies.
+  - "Recency / newest live read-chain" is a **post-hoc conjecture**, with no binding use until it is pre-stated on a fresh test.
+  - TEST2 d 5-8 are excluded: they measure depth extrapolation, not selection.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
