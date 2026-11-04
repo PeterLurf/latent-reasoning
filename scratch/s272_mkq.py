@@ -54,7 +54,8 @@ for n, run, k in CELLS:
                "--out", d], d + "/stdout.log"); assert rc == 0, (run, rc)
     shutil.copy(d + "/args.json", "scratch/s272_args_frozen_%s.json" % run)
     dif = {kk: v for kk, v in C.diff(json.load(open("boxes/runs_fsq/of_s%d/args.json" % k)), json.load(open(d + "/args.json"))).items() if kk != "pair_stats"}
-    assert set(dif) - {"out", "args_ref"} == {"perm_scope"}, ("Audit MED-2: the args diff vs of_s%d must be perm_scope only" % k, sorted(dif))
+    late = {kk for kk, v in dif.items() if kk == "distract_nmax" and list(v) == [None, 2]}   # §265's flag, absent in of_s<k>'s args; 2 = its default (the old rng.integers(0, 3) law)
+    assert set(dif) - {"out", "args_ref"} - late == {"perm_scope"}, ("Audit MED-2: the args diff vs of_s%d must be perm_scope only" % k, sorted(dif))
     out["args"][run] = {"keys": sorted(dif), "diff": dif}; fs = " ".join(fl); W = "boxes/runs_fsq/" + run; WO = "boxes/runs_fsq/of_s%d_fp" % k
     body = ("%s_mem boxes.inject_aw %s --mem_check\n%s_gtime boxes.inject_aw %s --time_steps 60\n"
             "%s scratch.s257_guarded --mode train --blob %s --init %s=%s --ship %s %s -- %s %s --args_ref scratch/s272_args_frozen_%s.json\n"

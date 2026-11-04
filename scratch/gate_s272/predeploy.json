@@ -1,0 +1,151 @@
+{
+ "blobs": {
+  "boxes/inject_aw.py": {
+   "head": "5a5cbf7a1f6278fa63a9836c3454b5deaad676a2",
+   "disk": "5a5cbf7a1f6278fa63a9836c3454b5deaad676a2"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "27d06a458c057203e52c7771e875ccc157498d1b",
+   "disk": "27d06a458c057203e52c7771e875ccc157498d1b"
+  },
+  "boxes/fp_parts.py": {
+   "head": "d31997d84b1a324f020613e2ef603b8846002534",
+   "disk": "d31997d84b1a324f020613e2ef603b8846002534"
+  },
+  "boxes/of_parts.py": {
+   "head": "95c65433d1a68a019d60dd364639707bd13c5e4c",
+   "disk": "95c65433d1a68a019d60dd364639707bd13c5e4c"
+  },
+  "boxes/sc_parts.py": {
+   "head": "97f842e573242bf07ebe902c51363fca9083ae0a",
+   "disk": "97f842e573242bf07ebe902c51363fca9083ae0a"
+  },
+  "boxes/ask_render.py": {
+   "head": "11b7729ee64722689f92d45bf1f746c105082776",
+   "disk": "11b7729ee64722689f92d45bf1f746c105082776"
+  },
+  "boxes/insert_render.py": {
+   "head": "e8d6d162ddd6b4d2508b2285c1732d18273e0f18",
+   "disk": "e8d6d162ddd6b4d2508b2285c1732d18273e0f18"
+  },
+  "boxes/perm_render.py": {
+   "head": "2ed02fd5e74b387a6614c4069a3bc4760f12ffb7",
+   "disk": "2ed02fd5e74b387a6614c4069a3bc4760f12ffb7"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/inject_st.py": {
+   "head": "cba8d5e8931a9da9e863e883723d690f744ab154",
+   "disk": "cba8d5e8931a9da9e863e883723d690f744ab154"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/deltas5.py": {
+   "head": "546bad3a7c1929728d6c72d1f5695f5c9b726ded",
+   "disk": "546bad3a7c1929728d6c72d1f5695f5c9b726ded"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  },
+  "boxes/ow_words.py": {
+   "head": "5f50a15118b35cecb82db8eb7bc154d03b718365",
+   "disk": "5f50a15118b35cecb82db8eb7bc154d03b718365"
+  },
+  "boxes/nested_words.py": {
+   "head": "36dfab2346b5f5a60727dfabb9b4e66d8cf0b244",
+   "disk": "36dfab2346b5f5a60727dfabb9b4e66d8cf0b244"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s271_guarded.py": {
+   "head": "7695f4f352501adf3e96cdef4825bf298535fc50",
+   "disk": "7695f4f352501adf3e96cdef4825bf298535fc50"
+  },
+  "scratch/s262_long.py": {
+   "head": "a18d9b509be1f33873967ba10fb1c6c2fa9017fa",
+   "disk": "a18d9b509be1f33873967ba10fb1c6c2fa9017fa"
+  },
+  "scratch/s256_ho_shas.json": {
+   "head": "70929e24138bd1ea895ad31cd07515bedf057b19",
+   "disk": "70929e24138bd1ea895ad31cd07515bedf057b19"
+  },
+  "scratch/s257_ho_shas.json": {
+   "head": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba",
+   "disk": "ce6558dbd7e6ce4934efb6fd8d937eb8bc6539ba"
+  }
+ },
+ "init_unbuffered_sha256_x3": {
+  "1": [
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+   "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+  ],
+  "2": [
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac",
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac",
+   "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac"
+  ]
+ },
+ "of_unbuffered_sha256_x3": {
+  "1": [
+   "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a",
+   "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a",
+   "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a"
+  ],
+  "2": [
+   "c07e1f7194d5af853fd75e2aa40dcb3d350806628b28a6d885f83871e0c57800",
+   "c07e1f7194d5af853fd75e2aa40dcb3d350806628b28a6d885f83871e0c57800",
+   "c07e1f7194d5af853fd75e2aa40dcb3d350806628b28a6d885f83871e0c57800"
+  ]
+ },
+ "predeploy_ok": true,
+ "args": {
+  "fp_s1": {
+   "keys": [
+    "distract_nmax",
+    "perm_scope"
+   ],
+   "diff": {
+    "distract_nmax": [
+     null,
+     2
+    ],
+    "perm_scope": [
+     null,
+     "all"
+    ]
+   }
+  },
+  "fp_s2": {
+   "keys": [
+    "distract_nmax",
+    "perm_scope"
+   ],
+   "diff": {
+    "distract_nmax": [
+     null,
+     2
+    ],
+    "perm_scope": [
+     null,
+     "all"
+    ]
+   }
+  }
+ }
+}
