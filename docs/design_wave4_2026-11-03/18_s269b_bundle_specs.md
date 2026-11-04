@@ -357,9 +357,9 @@ One run = 8 cued passes + decoder on 500 items, about 3-4 s on a 3090 (the lower
 
 - 2410.05229 Mirzadeh et al., GSM-Symbolic (GSM-NoOp: one irrelevant clause drops accuracy) -> noop.
 - 2302.00093 Shi et al., Large Language Models Can Be Easily Distracted by Irrelevant Context -> noop `sent`.
-- 2402.08939 Li et al., GSM-Plus (perturbation robustness benchmark; distractor insertion and rephrasing rows) -> noop / tta framing. (The backlog filed this id under TS3; it is a perturbation benchmark, not a TTA method.)
+- 2402.19255 Li et al., GSM-Plus (perturbation robustness benchmark; distractor insertion and rephrasing rows) -> noop / tta framing. (ID corrected 11-04 per Literature e573e123.)
 - 2109.05925 Kumar et al., Adversarial Examples for Evaluating Math Word Problem Solvers (question reordering, paraphrase) -> tta `perm` arm rationale.
-- 2402.19255 Chen et al., Premise Order Matters in Reasoning with LLMs -> why `perm` waits for §263.
+- 2402.08939 Chen et al., Premise Order Matters in Reasoning with LLMs -> why `perm` waits for §263. (ID corrected 11-04 per Literature e573e123.)
 - 2203.11171 Wang et al., Self-Consistency Improves Chain of Thought Reasoning -> vote@N / oracle@N definitions.
 - 2510.07745 You et al., Parallel Test-Time Scaling for Latent Reasoning Models (uncertainty-based latent sampling + a latent reward model) -> sclat; TS4 routing.
 - 2505.11484 Xu et al., SoftCoT++ (test-time scaling with diversified continuous thoughts) -> sclat.
