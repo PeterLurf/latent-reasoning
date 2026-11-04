@@ -794,3 +794,13 @@ CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO
 - 2026-11-03 16:17: Audit leads L1 (attention fading: D1a diagnostic + D1b SSMax) and L2 (M8 decoder text-dropout) added. Next registration: D1 + D1a (§265), then P1 / P2 after §263.
 - 2026-11-03 16:15: Note 264-1 stored reads: X4a UNTRAINED-PASS (no first errors at passes 1-2; pass 7 reliability 0.91 at d 7 vs 0.59 / 0.80 at d 8, so later passes degrade with the op-sentence count, which favours D1 DENSE-DISTRACT); M1 V1+TEXT (medium's decoder ignores S's v_2; M1 demoted, M3 SHORTCUT-PRESSURE / M2 COLON-CE up).
 - 2026-11-03: Literature spot-check (docs/LIT_BACKLOG_SPOTCHECK_2026-11-03.md): all 160 ids resolve; missed priors added to X1 / K1. X1 + X2 (+ op_count, X4a, M1 stored reads) registered as §264 SCORECARD-CHECK; X5, R5 and D3 deferred to a later cell.
+
+## 15. Wave-4 red-team leads (Theory, 2026-11-04)
+
+- **QB0 QUESTION-BLIND SUFFICIENCY (C1 plan-free lane; source 07_REDTEAM.md HIGH-1, cdb1fb46).**
+  - Finding: in of's training law (insert_render.py:194-230), every insert is a sink, S_d is never read, and the question always asks the spine end. So the question-blind rule "follow the readers, skip sinks, stop at no-reader" is correct on 100% of training items.
+  - This is a candidate mechanism for §260's plan-free collapse (H-EXTEND / H-LIVE / chain-live families fail, trained types ~1.0). It also means the P9 / H8 / TH5 / PLAN-PROBE designs get no training pressure toward question-conditioning.
+  - Cheapest decisive step, $0 CPU: simulate the blind policy on the training stream and on each eval family, and report P(blind correct). Pre-state it before running.
+  - Then the lever: `--retarget_p` re-points a share of training questions at an intermediate S_j or an insert's end, keeping the text fixed. The blind policy must be wrong on those items by construction. Any lane-07 arm should train with it.
+- **NO-REPLICATE (09_REDTEAM F1):** compressed-lineage seeds that share aw_plaw2_s1 are one lineage. They cannot satisfy the >= 2-lineages rule.
+- **PAPER (14_REDTEAM, Literature 82d38794):** headline = breaking positional slot counting (not content selection). Core model bun; of is the order-free extension. Claim the out-of-range accuracy, not the halting rule.
