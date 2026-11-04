@@ -63,6 +63,12 @@ from boxes.so_tok import tok_so, VAL_IDS, val_index  # noqa: E402
 SO_CUE = {"index": "index", "entity": "entity", "generic": "generic"}       # --cue -> tok_so's cue
 
 
+def si_weight(it, t):
+    """Note 271-5: DIRECT-SI's per-(item, t) CE weight = 1 / n_tok, n_tok = the loop's aux target length at t (len(aux[t - 1]) = (y_a != -100).sum for that row in
+    aux_logits, which pads with -100 only past the row): the name token gets the loop's per-token share of CE_t."""
+    return 1.0 / len(it["aux"][t - 1])
+
+
 def so_format(a):
     """args.json 'format' under --src so."""
     cue = {"index": "SI ' After swap <L(min(t, m))>, who <verb> <o*>?'", "entity": "EN ' After <a_t> and <b_t> trade, who <verb> <o*>?'",
@@ -136,7 +142,7 @@ E = [
 ('    def loss_reg(items, stat=None):\n',
  '    def si_aux(items, stat, zero):\n'
  '        """Note 271-1 DIRECT-SI: per item i and t <= m (aux_d_max filter as the loop\'s), the one-pass item think_cues[t - 1] = [EOT] + enc(\' \' + text + cue_si(it, t))\n'
- '        + SFX -> CE(the \':\' logits, VAL_IDS[S_t]); -> mean_items(mean_t w_t CE_t), w_t = AUX_W[t - 1] under --aux_reweight (the loop\'s aux law); stat: aux / vacc."""\n'
+ '        + SFX -> CE(the \':\' logits, VAL_IDS[S_t]); -> mean_items(mean_t w_t CE_t / n_tok(i, t)), w_t = AUX_W[t - 1] under --aux_reweight (the loop\'s aux law), n_tok = si_weight (Note 271-5); stat: aux / vacc."""\n'
  '        pairs = [(i, t) for i, it in enumerate(items) for t in range(1, len(it["think_cues"]) + 1) if not a.aux_d_max or it["d"] <= a.aux_d_max]\n'
  '        assert all(it["cue"] == "index" and len(it["think_cues"]) == it["d"] for it in items), "DIRECT-SI: SI cues, one per swap"\n'
  '        if not pairs:\n'
@@ -144,7 +150,7 @@ E = [
  '        y = torch.tensor(VOC[[val_index(items[i]["raw"]["values"][t]) for i, t in pairs]], device=dev)\n'
  '        lg_s = direct_logits(g, [{"dec": items[i]["think_cues"][t - 1]} for i, t in pairs], dev, ac); ce = Fn.cross_entropy(lg_s, y, reduction="none"); per = [[] for _ in items]\n'
  '        for r_, (i, t) in enumerate(pairs):\n'
- '            per[i].append(ce[r_] * AUX_W[t - 1] if a.aux_reweight else ce[r_])\n'
+ '            w_ = si_weight(items[i], t); per[i].append(ce[r_] * w_ * AUX_W[t - 1] if a.aux_reweight else ce[r_] * w_)   # Note 271-5: x 1 / n_tok\n'
  '        aux = torch.stack([torch.stack(p_).mean() for p_ in per if p_]).mean()\n'
  '        if stat is not None:\n'
  '            ok_ = (lg_s.detach().argmax(-1) == y).float(); vok = {t: float(ok_[[r_ for r_, (_, t_) in enumerate(pairs) if t_ == t]].mean()) for t in sorted({t for _, t in pairs})}\n'

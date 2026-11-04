@@ -1,0 +1,8 @@
+{
+ "pairs": 2560,
+ "bad": 0,
+ "n_tok_min": 9,
+ "n_tok_max": 12,
+ "n_tok_mean": 10.676953125,
+ "pass": true
+}

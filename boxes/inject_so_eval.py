@@ -287,7 +287,7 @@ def part_swap_so(m, g, sets, a, dev, bs):
     for (n, mm, t) in SWAP_CELLS:
         c = "%d_%d_%d" % (n, mm, t); R, Dn, pairs, tries = swap_build(n, mm, t, a); km = max(K, mm); ks = sorted({K, km})
         if not pairs:
-            out["by_cell"][c] = {"n_pairs": 0, "n_tries": tries, "t": t, "m": mm, "note": "no kept pair = VOID cell"}; continue
+            out["by_cell"][c] = {"n_pairs": 0, "n_tries": tries, "t": t, "m": mm, "follow_cf": None, "mean_floor": None, "note": "no kept pair = VOID cell"}; continue   # Audit LOW (c)
         own = np.array([vi(p_["rec"]["answer"]) for p_ in pairs]); dfin = np.array([vi(p_["don"]["answer"]) for p_ in pairs])
         stale = np.array([vi(p_["don"]["values"][t]) for p_ in pairs]); cf = np.array([vi(p_["cf"]) for p_ in pairs])
         ST_ = grab_states_so(m, Dn, dev, bs, (t,))[t]; mt = ST_.mean(0)
@@ -479,10 +479,11 @@ def bbh_dir(a):
 
 def bbh_load(d):
     """-> ({subset: [(raw example, parsed or None)]}, {file: sha256}); shas checked against bbh_sha.json when present."""
-    shas = {}; out = {}; ref = os.path.join(d, "bbh_sha.json"); ref = json.load(open(ref, encoding="utf-8"))["sha256"] if os.path.exists(ref) else {}
+    shas = {}; out = {}; ref = os.path.join(d, "bbh_sha.json"); assert os.path.exists(ref), ("Audit MED-2: bbh_sha.json missing", d)
+    ref = json.load(open(ref, encoding="utf-8"))["sha256"]
     for s in BBH_SUBSETS:
         f = "tracking_shuffled_objects_%s_objects.json" % s; p = os.path.join(d, f); shas[f] = sha_file(p)
-        assert f not in ref or ref[f] == shas[f], ("BBH sha mismatch vs bbh_sha.json", f)
+        assert ref.get(f) == shas[f], ("BBH sha mismatch vs bbh_sha.json", f)
         ex = json.load(open(p, encoding="utf-8"))["examples"]; out[s] = [(e, bbh_parse(e["input"], e["target"])) for e in ex]
     return out, shas
 
