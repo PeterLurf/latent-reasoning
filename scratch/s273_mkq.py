@@ -34,6 +34,9 @@ pre = "scratch.s273_hist --tar %s=%s --trainer %s=%s%s --runner %s --ship %s --"
 body = ("%s_mem %s %s --mem_check\n%s_gtime %s %s --time_steps 60\n%s %s %s\n") % (W, pre, fl, W, pre, fl, W, pre, fl)
 steps = int(F["argv"][F["argv"].index("--steps") + 1]); train_h = round(steps * x.sps / 3600 + 0.3, 2)
 caps = CC.caps_line([0.1, 0.1, train_h], 0.3, 0.0, x.sps, 0.854, "RTX_3090", CC.fetch_gb(body))
+proj_h = 0.4 + 0.1 + 0.1 + train_h + 0.3                                    # setup + mem + gtime + train (+0.3 margin) + eval
+hw = round(1.5 * proj_h, 2); assert hw >= 1.3 * proj_h, (hw, proj_h)       # Audit 11-04 LOW: host-side hard wall only as a backstop (>= 1.3 x projected)
+caps = caps + "\n# HARD_WALL_H %s\n# IDLE_H 1.5" % hw
 q = ("# THEORY §268 LINEAGE-SEED stage %s (score_x7): %s = the s1 stage's trainer version (git %s, %s sha %s) + its args with seed 3 and the s3 init chain "
      "(args diff vs %s_s1/args.json: %s). Frozen args scratch/s273_args_frozen_%s.json. Ships: %s.\n# HOSTPROBE\n# P=1\n%s\n%s") % (
     x.stage, run, c, trainer, msha, run.replace("_s3", ""), sorted(F["diff"]), run, ship, caps, body)
