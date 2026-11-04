@@ -1,0 +1,37 @@
+{
+ "date": "2026-11-04",
+ "script": "scratch/host_idle_stop.sh",
+ "hosts": "throwaway GTX 1660S $0.057/h 59130200 (A) / 59130203 (B) / 59132178 (G2), all on 171.239.253.82",
+ "G0_self_stop": {
+  "pass": true,
+  "A": "armed 16:27:23 UTC, IDLE_STOP 16:27:53 (1st poll after QUEUE_DONE aged > 0.02 h), PUT http 200, actual_status exited/stopped; after start: logs/survive.txt intact"
+ },
+ "G0_scope_MED2": {
+  "pass": true,
+  "test": "A's CONTAINER_API_KEY PUT {state:stopped} on B's id 59130203 -> http 401 'Authorization Error ... constraint on id'; B stayed running",
+  "assert": "CONTAINER_ID read only from /proc/1/environ, must be numeric, else exit 2"
+ },
+ "G1_scp_in_flight_MED1": {
+  "pass": true,
+  "B": "FETCH_ACTIVE aged 50 min, IDLE_H 0.02, poll 30; throttled scp of /tmp/f_big.bin 16:27:13-16:32:43 UTC (timeout 330 s) -> no stop while 'scp -f' ran; IDLE_STOP 16:32:59 (next poll)"
+ },
+ "G1_fresh_marker": {
+  "pass": true,
+  "A": "FETCH_ACTIVE touched at arm, IDLE_H 0.02, 4 polls over 125 s: no IDLE_STOP"
+ },
+ "G2_onstart_relaunch_LOWb": {
+  "pass": true,
+  "G2": "created with vdeploy_toy's --onstart-cmd; self-stopped 16:47:49 (http 200); vast start -> onstart relaunched host_idle_stop from logs/idle_stop.args at 16:48:28 with 'grace 45 min' (IDLE_STOP renamed)"
+ },
+ "G2_watcher_start_drain_destroy": {
+  "pass": true,
+  "G2": "manual vast stop with logs/IDLE_STOP present; gen9_s224 watcher 11:49:27 EST HOST_SELF_STOPPED -> vast start; 11:59:49 drain (FETCH_ACTIVE touched, logs fetched to logs/vast_171.239.253.82_14252) -> DESTROYED_VERIFIED; pods.txt lines written"
+ },
+ "syntax": "bash -n OK: host_idle_stop.sh, gen_vast_job.sh, vdeploy_toy.sh, drain_gen_partial_s224.sh, auto_drain_gen9_s224.sh",
+ "notes": [
+  "first poll is immediate: a host whose queue is already QUEUE_DONE > IDLE_H stops within seconds (seen on G2)",
+  "HARD_WALL_H default 0 (off); only set from a queue header '# HARD_WALL_H'; generators must assert >= 1.3 x projected h (MED-3) before using it - none do yet"
+ ],
+ "also_ported": "same two edits in auto_drain_gen10_s267.sh / drain_gen_partial_s267.sh (the drain the current fillers arm via gen_deploy_120_s267.sh)",
+ "cost": "3 throwaway GTX 1660S hosts ~25 min total, ~$0.03"
+}

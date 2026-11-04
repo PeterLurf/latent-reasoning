@@ -1,0 +1,5 @@
+16:47:49 armed: tag gen_g2 idle_h 0.02 wall_h 0 poll 30
+16:47:49 IDLE_STOP QUEUE_DONE idle > 0.02 h, no fetch
+16:47:51 stop request 1 http 200
+16:48:28 restarted after IDLE_STOP: grace 45 min
+16:49:29 restarted after IDLE_STOP: grace 45 min

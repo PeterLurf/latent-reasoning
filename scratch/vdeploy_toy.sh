@@ -26,7 +26,7 @@ EXTRA=""; [ "$W" = scratch/queue_worker3.sh ] && EXTRA="scratch/queue_worker3.sh
 [ "$W" = scratch/p8na_vast_par.sh ] && EXTRA="scratch/p8na_vast_par.sh prosqa/eval_na_p8.py prosqa/eval_p8.py prosqa/analyze.py prosqa/gpt2c.py prosqa/p8data/p8_test.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/f1s_vast_job.sh ] && EXTRA="scratch/f1s_vast_job.sh prosqa/ail_gpt2.py prosqa/ail_f1s.py prosqa/p8data/f1s_train.json prosqa/p8data/f1s_test_shallow.json prosqa/p8data/p8_na_test.json"
 [ "$W" = scratch/ail_vast_job.sh ] && EXTRA="scratch/ail_vast_job.sh prosqa/ail_gpt2.py prosqa/p8data/p8_train.json prosqa/p8data/p8_test.json"
-[ "$W" = scratch/gen_vast_job.sh ] && EXTRA="scratch/gen_vast_job.sh c1/__init__.py c1/p80_p0.py c1/p90_split_S4_k2.json boxes/__init__.py boxes/core.py boxes/s5.py boxes/memcap.py boxes/latent86.py scratch/s71_gen bench/data/s5/S5=2048.csv"
+[ "$W" = scratch/gen_vast_job.sh ] && EXTRA="scratch/gen_vast_job.sh scratch/host_idle_stop.sh c1/__init__.py c1/p80_p0.py c1/p90_split_S4_k2.json boxes/__init__.py boxes/core.py boxes/s5.py boxes/memcap.py boxes/latent86.py scratch/s71_gen bench/data/s5/S5=2048.csv"
 [ "$W" = scratch/g78_vast_job.sh ] && EXTRA="scratch/g78_vast_job.sh gsmlen/train78.py gsmlen/d78"
 [ "$W" = scratch/bm_vast_job.sh ] && EXTRA="scratch/bm_vast_job.sh bm/__init__.py bm/data_b.py bm/model_b.py bm/run_b.py bm/data.py bm/model.py bm/run.py bm/data_pool_b"
 V="C:/Users/peter/.local/vastai/vast.sh"
@@ -38,7 +38,8 @@ cd "$(dirname "$0")/.."
 CAPLOCK=scratch/.vdeploy_cap.lock; for w in $(seq 1 60); do mkdir $CAPLOCK 2>/dev/null && break; sleep 5; done
 NLIVE=$(bash "$V" show instances --raw 2>/dev/null | python -c "import json,sys;print(len(json.load(sys.stdin)))" 2>/dev/null)
 if [ -z "$NLIVE" ] || [ "$NLIVE" -ge 16 ]; then rmdir $CAPLOCK 2>/dev/null; echo "CREATE FAILED (fleet cap: ${NLIVE:-unknown} live >= 16)"; exit 1; fi
-T0C=$(date +%s); CR=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 30 --ssh --direct --label $LBL --raw 2>&1)
+ONSTART_IDLE='cd /workspace/Latent 2>/dev/null && [ -f logs/idle_stop.args ] && (setsid nohup bash scratch/host_idle_stop.sh $(cat logs/idle_stop.args) > /dev/null 2>&1 < /dev/null &)'   # Audit LOW b: relaunch the idle stop after a container restart
+T0C=$(date +%s); CR=$(bash "$V" create instance $O --image pytorch/pytorch:2.5.1-cuda12.4-cudnn9-devel --disk 30 --ssh --direct --label $LBL --onstart-cmd "$ONSTART_IDLE" --raw 2>&1)
 ID=$(echo "$CR" | grep -o '"new_contract": *[0-9]*' | grep -o '[0-9]*$')
 sleep 3; rmdir $CAPLOCK 2>/dev/null                                      # the new instance is listed before the next deploy counts
 [ -n "$ID" ] || { echo "CREATE FAILED (create call $(( $(date +%s) - T0C )) s, $(( T0C - T00 )) s after vdeploy start): $(echo "$CR" | tr '\n' ' ' | sed -E 's/api_key=[^&" ]*/api_key=REDACTED/g; s/[0-9a-fA-F]{40,}/<redacted>/g' | cut -c1-400)"; exit 1; }   # no key in logs

@@ -13,7 +13,7 @@ H=$1; P=$2; TAG=$3; ID=$4
 cd "$(dirname "$0")/.."
 S="ssh -o ConnectTimeout=20 -o ServerAliveInterval=15 -i $HOME/.ssh/runpod_ed25519 -p $P root@$H"
 . scratch/s224_done_marker.sh || { echo "FETCH_INCOMPLETE $ID (scratch/s224_done_marker.sh)"; exit 1; }
-REM="$(cat scratch/s224_done_marker.sh)"$'\n'"cd /workspace/Latent || exit 3; L=logs/queue_${TAG}.out; [ -f \$L ] || exit 4
+REM="$(cat scratch/s224_done_marker.sh)"$'\n'"cd /workspace/Latent || exit 3; touch logs/FETCH_ACTIVE; L=logs/queue_${TAG}.out; [ -f \$L ] || exit 4
 echo QD=\$(tail -n 1 \$L | grep -c QUEUE_DONE); echo PROCS=\$(ps -eo args | grep -a -c -E '^[^ ]*python[^ ]* -u -m ')
 for j in \$(grep -h ' evaluated ' \$L | awk '{print \$3}' | sort -u); do echo \$(s224_mark \$j) \$j; done; echo END_OK"
 st=$($S "$REM" 2>/dev/null)

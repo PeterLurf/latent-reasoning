@@ -17,7 +17,7 @@
 #   - Unreachable on 3 polls in a row, or the log unchanged for 3 h: print and exit.
 # Exits with ALL_DRAINED when the list is empty.
 cd "$(dirname "$0")/.."
-declare -A size stale fails base dfail
+declare -A size stale fails base dfail lstart
 PODS=("$@")
 while :; do
   left=()
@@ -28,6 +28,13 @@ while :; do
       na=$(bash C:/Users/peter/.local/vastai/vast.sh show instance "$id" --raw 2>/dev/null | python -c "import json,sys;d=json.load(sys.stdin);print(str(d.get('public_ipaddr') or '').strip(), d['ports']['22/tcp'][0]['HostPort'])" 2>/dev/null)
       if [ -n "$na" ] && [ "$na" != "$h $p" ]; then
         echo "$(date +%T) $t ADDRESS CHANGED $h:$p -> ${na/ /:} (vast show instance $id)"; read -r h p <<<"$na"; hp="$h $p $t $id $pre"; fails[$t]=0; left+=("$hp"); continue
+      fi
+      ast=$(bash C:/Users/peter/.local/vastai/vast.sh show instance "$id" --raw 2>/dev/null | python -c "import json,sys;print(json.load(sys.stdin).get('actual_status'))" 2>/dev/null)
+      if [ "$ast" = exited ] || [ "$ast" = stopped ]; then   # 11-04: host-side idle stop (scratch/host_idle_stop.sh) stopped it; disk intact -> start, drain on a later poll
+        now_=$(date +%s); if [ $(( now_ - ${lstart[$t]:-0} )) -ge 1800 ]; then lstart[$t]=$now_
+          sr=$(bash C:/Users/peter/.local/vastai/vast.sh start instance "$id" 2>&1 | tail -1 | cut -c1-120); echo "$(date +%T) $t HOST_SELF_STOPPED ($ast): start instance $id -> $sr"
+          echo "$id vast | $t HOST_SELF_STOPPED $(date '+%Y-%m-%d %H:%M') start requested by the drain watcher ($sr)" >> scratch/pods.txt; fi
+        fails[$t]=0; left+=("$hp"); continue   # a stopped host never counts toward the 3 h unreachable exit
       fi
       fails[$t]=$(( ${fails[$t]:-0} + 1 )); [ ${fails[$t]} -eq 3 ] && echo "$(date +%T) $t UNREACHABLE (3 polls; still polling)"; [ ${fails[$t]} -ge 18 ] && { echo "$(date +%T) $t UNREACHABLE 3 h: exiting"; exit 0; }
       left+=("$hp"); continue

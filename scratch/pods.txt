@@ -1876,3 +1876,10 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 59073385 vast offer 56034042 created 2026-11-04 02:28: label gen-b422, queue scratch/gen_q_b422.txt (logged at create by vdeploy_toy.sh)
 59073385 vast | gen_b422 DESTROYED_VERIFIED 2026-11-04 02:52 after verified per-run fetch (boxes/runs_fsq/s233_askname_s3 boxes/runs_fsq/s233_askname_s3_gtime boxes/runs_fsq/s233_askname_s3_mem)
 59066408 vast | gen_b417 DESTROYED_VERIFIED 2026-11-04 11:17 after verified per-run fetch (boxes/runs_fsq/bun_s1_sc_gtime boxes/runs_fsq/bun_s1_sc_mem boxes/runs_fsq/dd_gates); FAILED (no §224 done marker): boxes/runs_fsq/bun_s1_sc boxes/runs_fsq/bun_s2_sc; partial ckpt kept: boxes/runs_fsq/bun_s1_sc.void_partial boxes/runs_fsq/bun_s2_sc.void_partial
+59130200 vast offer created 2026-11-04 11:20: label idlestop-g0 (host idle-stop gate G0, GTX 1660S $0.057/h, throwaway; destroy after test)
+59130203 vast offer created 2026-11-04 11:20: label idlestop-g0 (host idle-stop gate G0, GTX 1660S $0.057/h, throwaway; destroy after test)
+59130200 vast | idlestop-g0 DESTROYED_VERIFIED 59130200 2026-11-04 11:38 (G0/G1 gate host, nothing to fetch)
+59130203 vast | idlestop-g0 DESTROYED_VERIFIED 59130203 2026-11-04 11:38 (G0/G1 gate host, nothing to fetch)
+59132178 vast offer 25240859 created 2026-11-04 11:39: label idlestop-g2 (idle-stop gate G2, GTX 1660S $0.057/h, throwaway)
+59132178 vast | gen_g2 HOST_SELF_STOPPED 2026-11-04 11:49 start requested by the drain watcher (starting instance 59132178.)
+59132178 vast | gen_g2 DESTROYED_VERIFIED 2026-11-04 11:59 after verified per-run fetch ()
