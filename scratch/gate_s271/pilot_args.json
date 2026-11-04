@@ -1,0 +1,228 @@
+{
+ "args": {
+  "ddp_s1": {
+   "keys": [
+    "ask_p",
+    "ask_perm_p",
+    "distract_nmax",
+    "eval_parts",
+    "init_model",
+    "init_model_sha",
+    "init_model_sha256",
+    "keep_final_ckpt",
+    "nk",
+    "perm_scope"
+   ],
+   "diff": {
+    "ask_p": [
+     null,
+     0.0
+    ],
+    "ask_perm_p": [
+     null,
+     0.5
+    ],
+    "distract_nmax": [
+     null,
+     8
+    ],
+    "eval_parts": [
+     "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+     "acc"
+    ],
+    "init_model": [
+     "boxes/runs_fsq/dch_s1_init/model.pt",
+     "boxes/runs_fsq/bun_s1_init/model.pt"
+    ],
+    "init_model_sha": [
+     "0badc805792215b3",
+     "1ad3517b7635fddf"
+    ],
+    "init_model_sha256": [
+     "0badc805792215b3ece962477a6397491f2d4f7284ba71a9f9734308f31fb5d4",
+     "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+    ],
+    "keep_final_ckpt": [
+     true,
+     false
+    ],
+    "nk": [
+     null,
+     0
+    ],
+    "perm_scope": [
+     null,
+     "op"
+    ]
+   }
+  },
+  "ddp_s2": {
+   "keys": [
+    "ask_p",
+    "ask_perm_p",
+    "distract_nmax",
+    "eval_parts",
+    "init_model",
+    "init_model_sha",
+    "init_model_sha256",
+    "keep_final_ckpt",
+    "nk",
+    "perm_scope"
+   ],
+   "diff": {
+    "ask_p": [
+     null,
+     0.0
+    ],
+    "ask_perm_p": [
+     null,
+     0.5
+    ],
+    "distract_nmax": [
+     null,
+     8
+    ],
+    "eval_parts": [
+     "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+     "acc"
+    ],
+    "init_model": [
+     "boxes/runs_fsq/dch_s2_init/model.pt",
+     "boxes/runs_fsq/bun_s2_init/model.pt"
+    ],
+    "init_model_sha": [
+     "d759f9a2d1014f21",
+     "09337f63aec57959"
+    ],
+    "init_model_sha256": [
+     "d759f9a2d1014f21490af2066417431a399963dc4eb9f17656c260f50de53748",
+     "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac"
+    ],
+    "keep_final_ckpt": [
+     true,
+     false
+    ],
+    "nk": [
+     null,
+     0
+    ],
+    "perm_scope": [
+     null,
+     "op"
+    ]
+   }
+  },
+  "ddc_s1": {
+   "keys": [
+    "ask_p",
+    "ask_perm_p",
+    "distract_nmax",
+    "eval_parts",
+    "init_model",
+    "init_model_sha",
+    "init_model_sha256",
+    "keep_final_ckpt",
+    "nk",
+    "perm_scope"
+   ],
+   "diff": {
+    "ask_p": [
+     null,
+     0.0
+    ],
+    "ask_perm_p": [
+     null,
+     0.5
+    ],
+    "distract_nmax": [
+     null,
+     2
+    ],
+    "eval_parts": [
+     "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+     "acc"
+    ],
+    "init_model": [
+     "boxes/runs_fsq/dch_s1_init/model.pt",
+     "boxes/runs_fsq/bun_s1_init/model.pt"
+    ],
+    "init_model_sha": [
+     "0badc805792215b3",
+     "1ad3517b7635fddf"
+    ],
+    "init_model_sha256": [
+     "0badc805792215b3ece962477a6397491f2d4f7284ba71a9f9734308f31fb5d4",
+     "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925"
+    ],
+    "keep_final_ckpt": [
+     true,
+     false
+    ],
+    "nk": [
+     null,
+     0
+    ],
+    "perm_scope": [
+     null,
+     "op"
+    ]
+   }
+  },
+  "ddc_s2": {
+   "keys": [
+    "ask_p",
+    "ask_perm_p",
+    "distract_nmax",
+    "eval_parts",
+    "init_model",
+    "init_model_sha",
+    "init_model_sha256",
+    "keep_final_ckpt",
+    "nk",
+    "perm_scope"
+   ],
+   "diff": {
+    "ask_p": [
+     null,
+     0.0
+    ],
+    "ask_perm_p": [
+     null,
+     0.5
+    ],
+    "distract_nmax": [
+     null,
+     2
+    ],
+    "eval_parts": [
+     "acc,swap_kd,lp5h,cue_only,ws_deep,halthead",
+     "acc"
+    ],
+    "init_model": [
+     "boxes/runs_fsq/dch_s2_init/model.pt",
+     "boxes/runs_fsq/bun_s2_init/model.pt"
+    ],
+    "init_model_sha": [
+     "d759f9a2d1014f21",
+     "09337f63aec57959"
+    ],
+    "init_model_sha256": [
+     "d759f9a2d1014f21490af2066417431a399963dc4eb9f17656c260f50de53748",
+     "09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac"
+    ],
+    "keep_final_ckpt": [
+     true,
+     false
+    ],
+    "nk": [
+     null,
+     0
+    ],
+    "perm_scope": [
+     null,
+     "op"
+    ]
+   }
+  }
+ }
+}

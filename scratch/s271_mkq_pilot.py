@@ -63,6 +63,8 @@ for n, run, k, nmax in CELLS:
             "%s scratch.s268_stopland --step 2000 --parts %s\n") % (W, fs, W, fs, W, W, fs, W, blob, INIT[k][0], INIT[k][1], GP, INIT[k][0], SH, fs, " ".join(tail), run,
                                                                     W, PARTS)
     caps = CC.caps_line([0.1, 0.1, 0.15, 1.1, 0.4], 0.6, 0.15, 2.0, 0.854, "RTX_3090", CC.fetch_gb(body))
+    proj_h = 0.4 + 0.1 + 0.1 + 0.15 + 1.1 + 0.4 + 0.6 + 0.15; hw = round(1.5 * proj_h, 2); assert hw >= 1.3 * proj_h   # Audit 11-04 LOW: host hard wall = backstop
+    caps += "\n# HARD_WALL_H %s\n# IDLE_H 1.5" % hw
     q = ("# THEORY §265 DENSE-DISTRACT pilot (score_dd): %s = bun_s%d (streaming copy, sha on host) + bun's args%s + --micro 4 (memory-forced, all 4 cells, Note 265-3); 8k "
          "cosine stopped at 2000; a per-host gate (smoke_dd + mem_check <= 22.5 GiB at micro 4; rc 7 = GATE-FAIL config -> no train, no redeploy) writes %s, which TRAIN "
          "requires (offbit_aw / gradflow from b417 via G1b); stopland evals %s. Frozen args scratch/s271_args_frozen_%s.json.\n# HOSTPROBE\n# P=1\n%s\n%s") % (
