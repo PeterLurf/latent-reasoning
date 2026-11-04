@@ -1,0 +1,9 @@
+{
+ "rc": 1,
+ "n_loss": 9,
+ "finite": true,
+ "distract_n": {},
+ "distract_capped": null,
+ "nmax": 8,
+ "pass": false
+}

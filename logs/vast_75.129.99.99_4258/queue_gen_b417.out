@@ -1,0 +1,17 @@
+06:18:19 gpt2 bin from the HF hub: ok
+06:24:32 data sha 6ee3ef95405dc43b094824dff8973753c587fe95a00762d2023bd64a941504f2 a0087fe4a7496a47f76d9436e6bb089c8a8869f3f343f71057355e127d0c33da
+NVIDIA GeForce RTX 3090, 595.71.05
+06:24:36 modules import: boxes.inject_aw scratch.s271_gates scratch.s271_guarded 
+HOSTCHECK PASS (5 s)
+06:27:24 HOSTPROBE 0.7536 s/step (limit 0.854; b225 reference 0.657)
+06:27:24 start boxes/runs_fsq/bun_s1_sc_mem
+06:33:38 evaluated boxes/runs_fsq/bun_s1_sc_mem rc 0 no-eval
+06:33:38 start boxes/runs_fsq/bun_s1_sc_gtime
+06:41:00 evaluated boxes/runs_fsq/bun_s1_sc_gtime rc 0
+06:41:00 start boxes/runs_fsq/dd_gates
+07:18:07 evaluated boxes/runs_fsq/dd_gates rc 1
+07:18:07 start boxes/runs_fsq/bun_s1_sc
+07:50:59 evaluated boxes/runs_fsq/bun_s1_sc rc 0
+07:50:59 start boxes/runs_fsq/bun_s2_sc
+08:23:49 evaluated boxes/runs_fsq/bun_s2_sc rc 0
+08:23:49 QUEUE_DONE

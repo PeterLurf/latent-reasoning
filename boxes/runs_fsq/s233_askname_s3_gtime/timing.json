@@ -1,0 +1,11 @@
+{
+ "arm": "direct",
+ "think_k": 0,
+ "d_max": 2,
+ "steps_timed": 60,
+ "sec_per_step": 0.08732123772303263,
+ "est_hours_steps": 0.1940471949400725,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "micro": 1,
+ "peak_gib": 4.646454334259033
+}

@@ -1,0 +1,32 @@
+{
+ "arm": "inject",
+ "cue": "step",
+ "think_k": 8,
+ "d_max": 4,
+ "seed": 2,
+ "parts": {
+  "cue_clock": {
+   "file": "eval_cue_clock.json",
+   "sec": 1760
+  },
+  "op_count": {
+   "file": "eval_op_count.json",
+   "sec": 106
+  },
+  "attn_fade": {
+   "file": "eval_attn_fade.json",
+   "sec": 37
+  }
+ },
+ "eval_dtype": "fp32",
+ "eval_gpu": "NVIDIA GeForce RTX 3090",
+ "eval_bs": 250,
+ "write_src": "answer",
+ "ds": [
+  2,
+  3,
+  4
+ ],
+ "module_sha256": "1e3e57c372c60995b06742c95fa9f3e07eb328e782244a806e3e439aa7e522c7",
+ "train": null
+}

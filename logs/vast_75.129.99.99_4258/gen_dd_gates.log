@@ -1,0 +1,8 @@
+=== 06:41:00 scratch.s271_gates
+               total        used        free      shared  buff/cache   available
+Mem:              93           2          13           0          78          90
+Swap:              7           0           7
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  3.7G   27G  13% /
+1 MiB, 24576 MiB
+HOST_SHAS {"args.json": "135942152e6ebbdae60a1e5ca8825bb4e5b1ee50f101ee0e42094245445a3334", "eval.json": "376448c119b93862bd0d2008d406d506b05055ffd985c075e90f8d4f8089751d", "log.jsonl": "4652e9a0e64ddaf73c156468fe136b0b4de933c3a4de07272cfe81bc5bc98ca4", "gates.log": "1b16e3128854b122e405813006178a572a13a632ff41b49392c2821446d75b46", "gates/gradflow.json": "59565d246d46aae9957c1b746813ef56ff32682ae1f3900fd4314f137c1fea1b", "gates/offbit_aw.json": "e39ed71fcb4bae72aa57c7b003c8b50fc4fd5de8044419509eb803192206d562", "gates/smoke_dd.json": "63663fab45d1b4037388866eabd160ed2dbecb0e627b81a43f1870c7a6afb1b3"}

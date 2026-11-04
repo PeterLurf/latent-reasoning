@@ -1,0 +1,13 @@
+{
+ "rc": 9,
+ "n_calls": 64,
+ "ds": [
+  1,
+  2,
+  3
+ ],
+ "n_eligible": 40,
+ "all_nonzero": true,
+ "aux_finite": true,
+ "pass": true
+}

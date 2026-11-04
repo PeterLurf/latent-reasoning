@@ -1,0 +1,9 @@
+{
+ "args.json": "01206725b8cf754de1bc0f71d613726bc650f239fbdb9238901241fee843386f",
+ "ask_meta.json": "c1e4c57a22cd0f8485865e8799ddea20e471ee58389489174ee013d7275692ee",
+ "eval.json": "4b307f52d665443f2fee517918ed59a3c2372c98c8eebcb280a89dffc19ce21c",
+ "eval_acc.json": "fb90d10b9edcfdfe34ee65cd3c66533ade02442916a52e9c9330d0688f668837",
+ "mem_check.json": "3b88e4fe6f8a0d0923f79effaa0ac47c703ab72d494e81ab4fe3e3c7050abf5c",
+ "train_summary.json": "0d80b20abfc798fea5eb6b91117e103d1c7eca2ad113936a07ea1077ce3f43bf",
+ "log.jsonl": "8a40a30c5fcc3b92f9f12429282a4d4582c80dda1ea467b04009dee0c472536f"
+}

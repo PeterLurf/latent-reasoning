@@ -1,0 +1,3 @@
+# §251 ledger (fill_s271); last field = $
+417:bun_s1_sc 75.129.99.99:4258 59066408 $0.2083/h sps 1.4104786276817323 steps 100 0.51
+# 11:2x 11-04 landing (Experiments, after 03:30 reboot): eval_cue_clock/op_count/attn_fade copied bun_s<k>_sc -> bun_s<k> (3 streaming shas == host_shas); bun_s1 model.pt sha256 1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925; bun_s2 09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac (== pilot INIT)
