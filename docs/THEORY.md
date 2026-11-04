@@ -356,6 +356,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
+| 270 | FULL-PERM (closes §263's scope gap; Theory's choice): of_sX args + --perm_scope all (all statements permuted, q last; chain + ask items), from bun_sX_init, 8k x 2 seeds; binding FULL-ORDER (fresh full_perm d 2-4 >= 0.85) + RETAIN-ORDER (TEST-PERM / LATE-PREMISE) + RETAIN + C2-RETAIN vs of - 0.05 (NEAR-SEED) + C6 + CONTENT; FP_v1.md | registered | **REGISTERED 11-04; score_fp.py spec (19 fixtures) to be committed before output; guard $4; awaiting Audit G-D** |
 
 ## Live sections
 
@@ -20166,6 +20167,31 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - P(additive FREEZE) ~0.6.
   - Censoring: a part that crashes gets VOID-RERUN once, as its own line.
 - **Cost:** 5 parts x ~$0.1-0.2 ≈ $0.8; guard **$1.5**.
+
+## 270. FULL-PERM: does extending the §263 recipe's permutation to all statements (S_0 / givens / distractors interleaved with ops) make C1 hold under any statement order? (C1 scope: closes §263's scope gap, incremental; Theory's choice; Audit approves; guard **$4**; pre-registered 2026-11-04 00:40 EST, before any build or output; full spec docs/research_fullperm_2026-11-04/FP_v1.md)
+
+- **Why (Note 263-3, POST-HOC for this design):** of_s1 / of_s2 are order-free over op sentences (TEST-PERM d 4 0.982 / 0.961), but the graded full shuffle gives d 4 0.462 / 0.376. Independent-only shuffle: 0.967 / 0.878.
+- **Math backing (FP_v1 §1; tags there):**
+  - A1 PROVED: any statement order with q last is a valid item (`OW.solve`).
+  - A3 DERIVED: four layout invariants N1-N4 hold in every §263 training item (chain and ask items) and are broken by full shuffle. A4: full-shuffle orders are >= 80% off-support at d 4.
+  - A5 PROVED: uniform all-statement perm induces uniform op order, so TEST-PERM coverage is kept.
+  - H-B CONJECTURE: §263 selects by name among positions with the trained op layout. H-A (minor) CONJECTURE: S_0 is read partly by position.
+  - Code finding: ask items are permuted op-only, so every trained S_0 lookup had S_0 first. Givens are asked in <= 1/9 of ask items.
+- **Arms:** fp_s1 / fp_s2 = of_sX args.json + `--perm_scope all` (applies at both perm call sites: chain and ask items; same coin; q stays last; inserts after perm). **Init bun_sX_init** (as of), so the args diff vs of_sX is {perm_scope} only, and of_sX is the already-run same-seed control. No CTRL arm. No ask-class extension (conditional §270b if errors concentrate in displaced-given items). 8k, RTX 3090.
+- **New eval part `full_perm`** (boxes/fp_parts.py; seed family 27010, distinct from training 27000 / 27001, TEST-PERM 25150 + d, shuffle_graded 26310 / 26311). REG TEST2 d 2-6, all statements permuted, q last; layout flags per item. Also run eval-only on of_s1 / s2 (paired baseline). Training disjointness: text sets plus a sentence-multiset assert vs TEST2 d 1-8.
+- **Binding per seed (theory/score_fp.py, 19 fixtures before output):**
+  - FULL-ORDER: full_perm d 2-4 at K' 8 >= 0.85.
+  - RETAIN-ORDER: TEST-PERM d 2-4 >= 0.90 and LATE-PREMISE d 2-4 >= 0.85.
+  - RETAIN as §263 (TEST2 d 1-4 >= 0.98, NOT-DECODER, SWAP4, LP5-D4).
+  - C2-RETAIN: d 6 / d 7 >= of_sX - 0.05, with NEAR-SEED rows (sigma_seed 0.090).
+  - C6, CONTENT, STABLE.
+  - Label FULL-ORDER-C1. 2/2 = claim (scope "any statement order, question last"); 1/2 SPLIT; 0/2 FAIL. Wilson CI + NEAR on every binding cell; letters on raw values.
+  - C2 is retention-only (2 seeds < 3), so no d 6-7 causal gates (Audit rule 3 applies only to a C1 + C2 claim).
+- **Predictions (Theory, pre-output):** P1 FULL-ORDER 2/2 0.50; P2 paired d 4 gain vs of >= +0.30 0.75; P3 TEST-PERM kept 0.85; P4 TEST2 kept 0.85; P5 C2 retention 0.55; P6 of's full-perm errors >= 2x in N3 / N4-breaking items 0.65.
+- **OC:** P(2/2 | effect) ~0.40; P(pass per seed | no effect) <= 0.01 (2/2 <= 0.001); overall P(2/2) ~0.24. Literature 4a8ce800: "perm_scope all goes beyond DAG-valid permutations (2502.19907); open bet"; no 'first'. **Censoring:** fixed-K' readouts (no censored items); a run / eval that never lands gets one VOID-RERUN, then FAIL.
+- **Scope:** plan given; REG frames 0-5; inserts in their trained local placement; question last; d <= 4 binding; one lineage (bun -> of -> fp).
+- **Cost:** 2 x (8k x 1.65 s = 3.7 h x $0.21 = $0.77 + ~$0.65 evals / setup) + $0.1 of eval-only ~= $3.0; cell cap $1.6; **guard $4**; wall cap 6.5 h per cell; off-host ckpt mirror. Build gates G1 OFFBIT (scope op bitwise = §263 batches; args diff), G2 RENDER, G3 DISJOINT, G5 SMOKE at full data scale (FP_v1 §7). The build serial must not reuse `scratch/s270_*` (Experiments' §263 serial).
+- **Priority:** after N1 v1 (Audit 11-04: incremental step, does not jump the pioneer line). It may run in parallel if hosts allow.
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
