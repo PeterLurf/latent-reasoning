@@ -1,0 +1,10 @@
+=== 22:28:30 scratch.s271_guarded
+               total        used        free      shared  buff/cache   available
+Mem:             251          22          89           0         139         228
+Swap:              7           0           7
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  4.2G   26G  14% /
+1 MiB, 24576 MiB
+PART full_perm done 76 s
+DONE boxes/runs_fsq/of_s2_fp
+HOST_SHAS {"args.json": "cec1080306b527927f7f54cf6476dfe0c5c5c5ecdc7f25eee63806163d4f973b", "eval.json": "37323e92ddb03cbba3d500327e43cc8ccc60bcc7c6c2ae744017e9cb97b64e90", "eval_full_perm.json": "ad2ebaa16238b597b4a1197b44826b4e6e0b4fbc4488b0ad3424ea8833b4d2af", "log.jsonl": "2294fcf2c36f273df81e94df6cead96c82761dfe0b2088e7f51cdf1b824ea41d"}

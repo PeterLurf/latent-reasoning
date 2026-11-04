@@ -1895,3 +1895,4 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 59134720 vast | gen_b423 DESTROYED_VERIFIED 2026-11-04 18:07 after verified per-run fetch (boxes/runs_fsq/fp_s1 boxes/runs_fsq/fp_s1_gtime boxes/runs_fsq/fp_s1_mem boxes/runs_fsq/of_s1_fp)
 59155594 vast | gen_b420 DESTROYED_VERIFIED 2026-11-04 18:07 after verified per-run fetch (boxes/runs_fsq/ddc_s1 boxes/runs_fsq/ddc_s1_gates boxes/runs_fsq/ddc_s1_gtime boxes/runs_fsq/ddc_s1_mem)
 59139888 vast | gen_b424 DESTROYED_VERIFIED 2026-11-04 18:07 after verified per-run fetch (boxes/runs_fsq/fp_s2 boxes/runs_fsq/fp_s2_gtime boxes/runs_fsq/fp_s2_mem boxes/runs_fsq/of_s2_fp)
+59147416 vast | gen_b419 HOST_SELF_STOPPED 2026-11-04 18:08 start requested by the drain watcher (starting instance 59147416.)

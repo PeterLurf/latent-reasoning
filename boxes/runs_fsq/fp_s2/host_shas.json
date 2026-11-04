@@ -1,0 +1,18 @@
+{
+ "args.json": "3faf958ad1a0fd7f0a903bb62817bcc0fcbf380dee807075768e9cd66f37af9d",
+ "args_diff.json": "96f5e1b6c7297792d047a5ffc247cc3248bc46e6703c5de476d926b5f1dcb240",
+ "eval.json": "084b46c500a6c7b3c7c096296a0ba005ec0ba8becd2e946f45c7a8d08596bdb1",
+ "eval_acc.json": "f6e20b57c3ba71f60bc3bc67307d0aaa7afc7e84d3f3d46c02318538a7ae7e15",
+ "eval_full_perm.json": "7326d3555cf8c3462c86b3ba3d036f5491a4d4228f241c8159509c5e041367cf",
+ "eval_insert_ho.json": "008d2d6eafaefc3df6a1e9d97661acdeb95271b2c53136cda19ee3213ff4896a",
+ "eval_late_premise.json": "d360b7356eb2b1271b5c42e9b85e6ed6874c91c3a1dcbe82fbf3bd3b3ec7a575",
+ "eval_long_k128.json": "fa9c4109572e46578c0dba3e57281282ef87284e4d61856f3e942f45b288c806",
+ "eval_lp5h.json": "8b476a6ff6554c1104bc22e2f6d53665edacd5d6bc24be8d65c137ad93cb812e",
+ "eval_name_swap.json": "3221637b44be5d73016e7fdc984b6c2e75e7685f660111a0a23050ac75636dee",
+ "eval_shuffle_graded.json": "9296c25ae97b5dda42c6b708a82729a18b20ab6d895072e3a3a3e285a7232903",
+ "eval_stab.json": "b58be497f681ddc4d1dae120b77660d066d89bee43af49d3c5a230e2ecb80cdf",
+ "eval_swap_kd.json": "ed7dd6c94da52d2d8e5affcac2812b8279cc9455d5e1f59f09b62726fb48987a",
+ "eval_test_perm.json": "f227dc1e0128c1ce94eaef2c4f878317074f6327d30a748078c2ec0ea4f85c7c",
+ "train_summary.json": "03064027a38137e454680a9d39900c9c61ac2ff542704cfa41fe50ea9b90e1ef",
+ "log.jsonl": "67f145a79ef6e385f0c47c9415ee7ce5f2dec118bfd6ad0153139b1d6c3d4dd4"
+}
