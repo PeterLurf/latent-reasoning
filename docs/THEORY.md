@@ -24696,6 +24696,8 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Mechanism read (CONJECTURE, for the backlog):** the loop is a cue-indexed step map, S_t+1 = F(S_t, cue_t), with no learned 'done' state. C5 and C6 are both properties of the cue schedule, not of the state. A model that holds under arbitrary cues needs a state-side stop: an absorbing 'done' flag or an answer-latch. This is the C6 lead for the next registration choice.
 - Descriptive: STD d7 acc 0.857-0.859 / 0.852 at K' 8-24 (flat); d8 0.47 / 0.59. Cost: b417 eval-only on the §264 guard (Experiments ledger).
 
+**Note 268-2 (2026-11-04 11:4x EST; §268 stage 1 gate by theory/score_x7.py on the landing dfed19ae (b422 s233_askname_s3); fixtures 10/10; two runs byte-identical; theory/results/score_x7.json).** askname gate PASS: TEST2 d 1 1.000 (>= 0.98; d 2-7 0.991-1.000, d 8 0.966). Verdict "pending (aw_plaw2_s3)": the next stage, aw_plaw2_s3, launches from this init under the §268 guard (Experiments). Disclosed per Note 268-1: s1 trained on a 4060, s3 on a 3090.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
