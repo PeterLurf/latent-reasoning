@@ -16,6 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scratch"))
 
 
+GPT2_SHA = "7c5d3f4b8b76583b"                                               # prosqa/ckpt/gpt2_pretrained.bin (gen_vast_job.sh)
 RUNS = {"askname": ["docs/research_steptold_2026-10-24/st_ask_name_local.py"]}
 
 
@@ -53,7 +54,7 @@ def main():
     tar, tsha = take(own, "--tar").split("="); trainer, trsha = take(own, "--trainer").split("="); key = take(own, "--runner")
     run = RUNS[key] if key in RUNS else ["-m", key.split(":", 1)[1]]; assert key in RUNS or key.startswith("m:"), key; inits = multi(own, "--init")
     assert sha(os.path.join(ROOT, tar)).startswith(tsha), ("tar sha", tar)
-    commit = os.path.basename(tar).split("_")[-1].split(".")[0]; t = os.path.join(ROOT, "scratch", "_hist", commit)
+    commit = os.path.basename(tar).split("_")[-1].split(".")[0]; t = os.path.join(ROOT, "scratch", "_hist", commit + "_" + tsha)   # Audit LOW (e): keyed by the tar sha
     if not os.path.isdir(os.path.join(t, "boxes")):
         os.makedirs(t, exist_ok=True); tarfile.open(os.path.join(ROOT, tar)).extractall(t)
     for sub in ("prosqa", os.path.join("boxes", "runs_fsq")):
@@ -64,6 +65,7 @@ def main():
             except OSError:                                                 # local Windows smoke without the symlink privilege: a junction
                 assert os.name == "nt"; subprocess.check_call(["cmd", "/c", "mklink", "/J", q, os.path.join(ROOT, sub)], stdout=subprocess.DEVNULL)
     assert sha(os.path.join(t, trainer)).startswith(trsha), ("trainer version", trainer)
+    assert sha(os.path.join(ROOT, "prosqa", "ckpt", "gpt2_pretrained.bin")).startswith(GPT2_SHA), "GPT-2 weights sha"   # Audit LOW (d)
     for x in inits:
         p, s = x.split("="); assert sha(os.path.join(ROOT, p)).startswith(s), ("init sha", p)
     os.makedirs(out, exist_ok=True); print("S273_HIST", commit, trainer, " ".join(run), flush=True)

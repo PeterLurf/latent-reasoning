@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# §251 ANSWER-EXTEND launch chain (caps: admit $1.05 / guard $1.12 per arm; CAPF 4.5 (env CAPF overrides; Note 251-2 rerun: 5.5); EVAL_H 0.5): the cells ONE AT A TIME, each "<QS>|<WALLW>"
+# §268 LINEAGE-SEED launch chain (family s273): the cells ONE AT A TIME, each "<QS>|<WALLW>"; launch with CAPF=8 (the §268 guard; the default 4.5 is a §251 leftover)
 #   nohup bash scratch/s273_chain.sh "376:aex_s1:1.05:1.12:16000:1.05|0.1,0.1,4.0" "377:aex_s2:1.05:1.12:16000:1.05|0.1,0.1,4.0" "378:aex0_s1:1.05:1.12:16000:1.05|0.1,0.1,4.0" "379:aex0_s2:1.05:1.12:16000:1.05|0.1,0.1,4.0" >> logs/fill_s273.out 2>&1 &
 cd "$(dirname "$0")/.." || exit 2
 for c in "$@"; do
