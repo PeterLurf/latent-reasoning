@@ -24685,6 +24685,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - QB0 is re-run **per d (2-4)** on the retargeted stream, with LP < 0.90 at each d.
   - A **recency policy** is added to that check, since 2205.11502 warns that generators carry many removable-only-together cues.
 
+**Note 264-5 (2026-11-04 11:3x EST; §264 SCORED by theory/score_sc.py on the landing dfed19ae (bun_s1_sc / bun_s2_sc, 6/6 files = host_shas, checked by Theory and Experiments); fixtures 10/10; two runs byte-identical; theory/results/score_sc.json; one lineage).**
+- **Verdict: 'C5 unchanged; C6 SCOPED (holds under a repeated cue)'.** Both seeds agree on every label: ER COMP/COMP, LFI DRIFT/DRIFT, CY FREEZE/FREEZE (LF CUE/CUE, descriptive). VALIDITY ok in both (STD at K' 8 matches eval_acc at d 3-6). CONTRAST at every d (c 0.59-0.90 vs h 0.0013-0.0022).
+- **C5 (ER):** with the plan cut 2 steps early, the loop does not stop at the plan's end: EARLY (r = 3 halt at <= r + 1) is 0.007-0.021 at d 4-6 in both seeds (0.28 at the trivial d 3). The stability halt is not plan-clocked, so the Note 259-12 / 263-3 C5 row stands.
+- **C6 (LFI binding, CY):** the K' 64 / 128 hold is a fixed point of a **repeated** final cue, not an internal stop.
+  - LFI (fresh in-item entities after pass d): acc24 0.10-0.14 vs STDI 0.82-1.00 at d 3-6.
+  - CY (cycling the plan): acc(2d) 0.08-0.57, acc(3d) 0.11-0.43, vs acc(d) 0.96-1.00.
+  - So the state keeps computing whenever the cue changes. The "hold" is the cue S_d re-read, which yields the same answer.
+- **Scope wording (binding, SOTA C6 row):** "stable under the trained cue schedule (final cue repeated); not stable under a changing cue". Measured on bun; of shares the cue mechanism, but that is untested there (descriptive inference only).
+- **Mechanism read (CONJECTURE, for the backlog):** the loop is a cue-indexed step map, S_t+1 = F(S_t, cue_t), with no learned 'done' state. C5 and C6 are both properties of the cue schedule, not of the state. A model that holds under arbitrary cues needs a state-side stop: an absorbing 'done' flag or an answer-latch. This is the C6 lead for the next registration choice.
+- Descriptive: STD d7 acc 0.857-0.859 / 0.852 at K' 8-24 (flat); d8 0.47 / 0.59. Cost: b417 eval-only on the §264 guard (Experiments ledger).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as

@@ -74,7 +74,7 @@
   {
    "c": "C6",
    "status": "met, scoped",
-   "evidence": "K'64 / K'128 hold at d1-6 retained on of (Note 263-3; mechanism and norm control from bun, Note 259-4)"
+   "evidence": "K'64 / K'128 hold at d1-6 retained on of (Note 263-3; mechanism and norm control from bun, Note 259-4); scope (Note 264-5, bun): stable only under the trained cue schedule (final cue repeated); a changing cue keeps computing (fresh-entity acc24 0.10-0.14, cycled plan acc(2d) 0.08-0.57)"
   },
   {
    "c": "C5",
