@@ -99,6 +99,7 @@ Warm-from-of (of + 8k) adds the confound of 8k more steps. That would need a CTR
   - training rng `default_rng((seed, 27000, step, k))`; ask items `default_rng((seed, 27001, step, k))` (replaces SEED_ASK_PERM's draw under scope all; the ask coin is unchanged);
   - then the §257 inserts as now (perm-then-insert, placed by S labels). Inserts are not shuffled; disclosed;
   - **q stays last.** `OW.solve` parses the question as the last sentence, the per-pass cue is appended after the text in both formats, and moving q would change the readout format, not the order. The claim is scoped "any order of the statements, question last".
+- **Note 270-1 (MED-2):** the multiset check below is reject-and-resample (next stream item), not an assert. A cumulative `multiset_rejects` counter goes to log.jsonl and train_summary.json, and G3 reports the reject rate. This is a disclosed small difference vs of.
 - **Disjointness (existing excl protocol plus two asserts, scope all only):**
   - training texts ∉ TP_TEXTS ∪ INS_TEXTS (as now) ∪ FP_TEXTS (the new eval part's texts, d 2-6) ∪ SG_TEXTS (shuffle_graded's two families);
   - no training base item shares its sentence multiset (`tuple(sorted(statements))`) with any TEST2 d 1-8 item. The stream's sig EXCL keys on the forward text, so it does not cover reorders by itself. This assert closes that gap.

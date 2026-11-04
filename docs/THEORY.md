@@ -357,6 +357,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
 | 270 | FULL-PERM (closes §263's scope gap; Theory's choice): of_sX args + --perm_scope all (all statements permuted, q last; chain + ask items), from bun_sX_init, 8k x 2 seeds; binding FULL-ORDER (fresh full_perm d 2-4 >= 0.85) + RETAIN-ORDER (TEST-PERM / LATE-PREMISE) + RETAIN + C2-RETAIN vs of - 0.05 (NEAR-SEED) + C6 + CONTENT; FP_v1.md | registered | **APPROVED by Audit 11-04 (270-1: CI on every proportion bar; multiset reject-and-resample; cell cap $1.8).** **REGISTERED 11-04; score_fp.py 23/23; guard $4** |
+| 271 | N1 SHUFFLED-OBJECTS (pioneer line, wave-4 doc 02 after red team + Literature): LOOP-SI x 3 from of_s1 vs DIRECT-OF x 3 (one pass, same trunk / data / evals); train m <= 4, test m 1-12; per-pass causal battery (CWS, redrawn-donor SWAP-MID, NOT-DECODER, K'-curve, hold parity); kappa vs shortcut floors; staged S1 mechanism gate -> S2 -> S3; N1_v1.md | registered | **REGISTERED 11-04; guards $2.5 / $6.5 / $2.0; score_n1.py before S1 output; awaiting Audit G-D** |
 
 ## Live sections
 
@@ -20192,6 +20193,57 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
 - **Scope:** plan given; REG frames 0-5; inserts in their trained local placement; question last; d <= 4 binding; one lineage (bun -> of -> fp).
 - **Cost:** 2 x (8k x 1.65 s = 3.7 h x $0.21 = $0.77 + ~$0.65 evals / setup) + $0.1 of eval-only ~= $3.0; cell cap $1.6; **guard $4**; wall cap 6.5 h per cell; off-host ckpt mirror. Build gates G1 OFFBIT (scope op bitwise = §263 batches; args diff), G2 RENDER, G3 DISJOINT, G5 SMOKE at full data scale (FP_v1 §7). The build serial must not reuse `scratch/s270_*` (Experiments' §263 serial).
 - **Priority:** after N1 v1 (Audit 11-04: incremental step, does not jump the pioneer line). It may run in parallel if hosts allow.
+
+## 271. N1 SHUFFLED-OBJECTS: does the looped LM track a pointer through m swaps beyond training depth, where one pass trained identically does not, with a per-pass causal battery? (C1 / C2, new task family; Theory's pioneer line (wave-4 doc 02, red-teamed 9ce85dca, Literature NARROW e573e123); Audit approves; staged guards **$2.5 / $6.5 / $2.0**; pre-registered 2026-11-04 00:4x EST, before any build or output; full spec docs/research_n1_2026-11-04/N1_v1.md)
+
+- **Task:** BBH-style shuffled objects (n 3-5 people, m swaps, "who has o* at the end"). NUM ("Swap 3: …", offset labels in training so every label 1-12 is seen) and ORD ("First / Then / Finally") renders. Train m <= 4; test m 1-12. The cue names a swap label ("After swap L, who has the o*?"), not an entity, so the model locates and applies the swap itself.
+- **Math backing (N1_v1 §4):**
+  - M-1 PROVED pointer law: P(S_m = S_j) = 1/n + ((n-1)/n) λ^(m-j), λ = (n-3)/(n-1).
+  - M-2 DERIVED-UNDER-ASSUMPTIONS: NC1-hardness, conditional; O(log m) loops suffice (2505.18948), so "m passes" belongs to this design.
+  - M-3 PROVED chain rule from per-pass CWS to depth.
+  - M-4 PROVED: v0's X2 passes at chance, hence floor-normalised kappa.
+  - M-5 PROVED hold-parity trap, hence K' 63.
+  - M-6 PROVED: the option-wise BBH protocol is exact.
+  - M-7 DATA-SIM shortcut floors.
+  - M-8 CONJECTURE: the TH6 asymmetry is an open bet.
+- **Arms:**
+  - LOOP-SI x 3 seeds from **of_s1** (args diff vs of_s1: init + task flags only; K 8, hold_inc 1.6 kept).
+  - DIRECT-OF x 3: of_s1's own trunk, one pass, identical data and eval battery. It is the control, receives every exposure, and can fail via D-L1.
+  - Descriptive: LOOP-EN x 1, TEXT-CoT x 1; GENERIC x 1 (S3, only if C2-1 passes).
+- **Stages:**
+  - **S1** ($1.30 expected, guard $2.5): LOOP-SI s1 to 4k of 8k, plus DIRECT-OF x 3. **GO = mechanism gate**, all four rows:
+    - n 5 m 1-4 >= 0.90;
+    - CWS passes 2-4 >= 0.90;
+    - redrawn-donor SWAP-MID follow >= 0.50 and >= MEAN + 0.30;
+    - K'2 answers S_2 >= 0.80 and S_4 <= 0.10.
+    - Simulated P(GO): 0.86 with the mechanism, 0.000 with memory unused.
+    - PARK if L1p < 0.50; EXTEND (s1 to 8k) on a near miss.
+    - DIRECT gate: DIRECT-OF kappa(n 5, m 8) >= 0.70 in >= 2/3 seeds relabels the run DEPTH-SPLIT.
+  - **S2** ($4.63, guard $6.5): s1 resumes to 8k; s2 and s3; LOOP-EN; TEXT-CoT.
+  - **S3** ($1.2, guard $2.0): conditional, as above.
+  - Expected ~$7.1; guards total $11.0.
+- **Binding (per seed; arm >= 2/3 LOOP-SI seeds; theory/score_n1.py committed with fixtures before S1 output):**
+  - L1: NUM n 5 m 1-4 >= 0.95.
+  - C2-1: n 5 MOVED m 6 >= 0.85, m 8 >= 0.80; NEAR-SEED within 0.090.
+  - KC K'-curve: K' 0 / 1 <= floor + 0.05; K' 4 <= 0.302; K'8 - K'4 >= 0.40.
+  - M1: CWS_t >= 0.90 at t 5-8.
+  - M2 / M3: SWAP-MID at depth and in range. M3 is the precondition for reading C2-1.
+  - M4: NOT-DECODER.
+  - M5: k_touch strata.
+  - H1: hold incl. K' 63 parity.
+  - X1: DIRECT-OF kappa <= 0.25 in 3/3 seeds, read only if D-L1 passes.
+  - Label **N1-PASS**.
+  - **Amended at registration:** L2 (ORD in-range >= 0.90) binds the separate label **ORD-SCOPE** and is the precondition for B1 (BBH), not N1-PASS.
+  - Separate labels: C2-KPRIME (m 10 at K' 12 vs K' 8); TH6-SUPPORTED (X2 kappa gap, 3/3 seeds, open bet).
+  - Pre-stated NORM-DRIFT-CANDIDATE diagnostic if C2-1 fails.
+- **Predictions / OC (N1_v1 §7-8, DATA-SIM):** X2 lowered to P 0.20 (Literature: solvability is not length extrapolation; red team F1: the v0 X2 passed at chance). P(GO | mechanism) 0.86; P(GO | memory unused) 0.000. **Censoring:** never-reached = FAIL; one VOID-RERUN per loop cell (N1_v1 §9).
+- **Novelty (Literature e573e123, NARROW):** "the first depth split on a natural-language shuffled-objects task in which a looped pretrained LM is also scored with a per-pass causal battery (WS, mid-chain SWAP, NOT-DECODER)". PAR 2610.27628 already shows looped depth extrapolation on symbolic swap-S5. BBH is reported as "fine-tuned on synthetic swaps, zero-shot BBH format", never as SOTA.
+- **Scope:** one lineage (of_s1); chain-ordered swap sentences; step-index cue; hand-built per-pass aux targets, so C4 is not claimed.
+- **Build (Experiments, N1_v1 §10):**
+  - new modules: boxes/so_words.py, inject_so.py, inject_so_eval.py;
+  - flags default-preserving; existing modules byte-identical;
+  - gates G0-G6, with the floors frozen at G0 and written back into this section before S1.
+- **Priority:** before §270 (Audit 11-04).
 
 **Note 214-1 (2026-10-17 12:20 EDT; amends §214's G-P3 before launch, after Audit's ruling; no schedule change).**
 - **The registered G-P3** ("20k logged training draws reproduce exact A lastR … I(t; M) 0.046 ± 0.005") is **mis-specified for its sample**. The augmentation coin is drawn per *batch*, so 20k item draws carry only about 313 coins.
