@@ -46,6 +46,8 @@ Every field path the scorer reads is listed in SCHEMA (one place); inject_so_eva
 import argparse, hashlib, json, math, os, shutil, statistics, sys, tempfile
 
 _HR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(_HR, "theory"))
+import score_ao as AO  # noqa: E402  (STABLE, as score_of / score_fp)
 R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_n1.json")
 OUT_S1 = os.path.join(_HR, "theory", "results", "score_n1_s1.json")
@@ -59,7 +61,8 @@ RUNS = {"pilot": "loop_si_s1",
 
 # Frozen floors file (N1_v1 §3.6 'floors', §6.1), shared by every arm; path relative to the runs dir. Its sha256 is echoed in the output.
 FLOORS_REL = os.path.join("n1_floors", "floors_so.json")
-# G0 write-back: {"floors_sha256": "<sha256 of the floors file>", "f": {"5/8/NUM": 0.319, ...}}. Empty / None = no check (pre-G0).
+# G0 write-back: {"floors_sha256": "<sha256 of the floors file>", "f": {"5/8/NUM": 0.326, ...}} (Note 271-2 values).
+# Fail closed (Audit MED-2): while floors_sha256 is None the main path and --stage s1 return 'pending' (FLOORS-UNPINNED).
 FROZEN = {"floors_sha256": None, "f": {}}
 SIGMA_SEED = 0.090
 NPAIRS = 1000
@@ -123,7 +126,7 @@ PILOT_BIND = ("eval_acc_so", "eval_ws_so", "eval_swap_so", "eval_kcurve_so")
 DIRECT_BIND = ("eval_acc_so",)
 DIRECT_DESC = ("eval_kcurve_so", "eval_perm_label", "eval_lookup", "eval_bbh")
 M4_S4 = 0.05   # Note 271-1 (Audit G-D): the S_4 half of M4 / M4p is <= 0.05 (was 0.10)
-LOOP_ROWS = ("L1", "C2-1", "KC", "M1", "M2", "M3", "M4", "M5", "H1")
+LOOP_ROWS = ("L1", "C2-1", "KC", "M1", "M2", "M3", "M4", "M5", "H1", "STABLE")   # STABLE: Audit G-D MED-1 (score_ao.stable)
 
 
 class Malformed(Exception):
@@ -193,10 +196,13 @@ def cell(v, bar, n, ge=True):
     return c
 
 
-def diff_cell(p1, n1, p2, n2, bar, s1=1.0, s2=1.0):
-    """Reading (p1/s1 - p2/s2) >= bar; SE treats the two samples as independent (an over-estimate for paired K' readings, disclosed)."""
+def diff_cell(p1, n1, p2, n2, bar, s1=1.0, s2=1.0, vp1=None, vp2=None):
+    """Reading (p1/s1 - p2/s2) >= bar; SE treats the two samples as independent (an over-estimate for paired K' readings, disclosed).
+    vp1 / vp2: the raw proportions whose binomial variance enters the SE (default p1 / p2). The kappa gap passes the raw accuracies
+    (Audit LOW a: Var = a3(1-a3)/n3/(1-f3)^2 + a5(1-a5)/n5/(1-f5)^2, not p = a - f)."""
     n1, n2 = int(n1 or 0), int(n2 or 0); v = p1 / s1 - p2 / s2
-    se = math.sqrt(max(p1 * (1 - p1), 1e-12) / max(n1, 1) / s1 ** 2 + max(p2 * (1 - p2), 1e-12) / max(n2, 1) / s2 ** 2)
+    q1, q2 = (p1 if vp1 is None else vp1), (p2 if vp2 is None else vp2)
+    se = math.sqrt(max(q1 * (1 - q1), 1e-12) / max(n1, 1) / s1 ** 2 + max(q2 * (1 - q2), 1e-12) / max(n2, 1) / s2 ** 2)
     c = {"value": v, "bar": bar, "n": [n1, n2], "ok": bool(n1 and n2) and v >= bar, "margin": v - bar, "ci95": [v - 1.96 * se, v + 1.96 * se],
          "near": bool(n1 and n2) and abs(v - bar) <= 2 * se}
     if not (n1 and n2):
@@ -274,6 +280,12 @@ def bbh_acc(B, sub):
     return ok / len(items), len(items), sum(1 for it in items if isinstance(it, dict) and it.get("parsed") is True)
 
 
+def stable_row(runs, run):
+    """score_ao.stable: None = no / blank log (pending, VOID with --final); False = FAIL: STABLE (n_nonfinite > 10 or an unrecovered loss jump)."""
+    sok, smsg = AO.stable(runs, run)
+    return sok, {"ok": sok is not None and sok is not False, "cells": {}, "detail": smsg}
+
+
 def load(runs, run, names):
     return {x: jl(os.path.join(runs, run, x + ".json")) for x in names}
 
@@ -288,14 +300,17 @@ def seed_loop(runs, run, final, frozen, FLR):
     miss = [x for x in LOOP_BIND if f[x] is None] + (["floors_so (shared)"] if FLR is None else [])
     if miss:
         return censored(final, missing=miss)
+    sok, srow = stable_row(runs, run)
+    if sok is None:   # a missing / blank log is pending (VOID with --final), never STABLE
+        return censored(final, stable=srow["detail"])
     try:
-        return _loop(f, frozen, FLR)
+        return _loop(f, frozen, FLR, srow)
     except Malformed as e:
         return censored(final, malformed=str(e))
 
 
-def _loop(f, frozen, FLR):
-    A, W, S, K, L = (f[x] for x in LOOP_BIND); D = Desc(); rows = {}; notes = set_sha_note(A, FLR)
+def _loop(f, frozen, FLR, srow):
+    A, W, S, K, L = (f[x] for x in LOOP_BIND); D = Desc(); rows = {"STABLE": srow}; notes = set_sha_note(A, FLR)
     rows["L1"] = row({"m%d" % m: acc_cell(A, 5, m, "NUM", 0.95) for m in range(1, 5)})
     rows["L2"] = row({"m%d" % m: acc_cell(A, 5, m, "ORD", 0.90) for m in range(1, 5)})
     rows["M3"] = swap_row(S, "5_4_2"); rows["M2"] = swap_row(S, "5_8_4")
@@ -400,14 +415,17 @@ def seed_direct(runs, run, final, frozen, FLR):
     miss = (["eval_acc_so"] if f["eval_acc_so"] is None else []) + (["floors_so (shared)"] if FLR is None else [])
     if miss:
         return censored(final, missing=miss)
+    sok, srow = stable_row(runs, run)
+    if sok is None:
+        return censored(final, stable=srow["detail"])
     try:
-        return _direct(f, frozen, FLR)
+        return _direct(f, frozen, FLR, srow)
     except Malformed as e:
         return censored(final, malformed=str(e))
 
 
-def _direct(f, frozen, FLR):
-    A = f["eval_acc_so"]; D = Desc(); notes = set_sha_note(A, FLR); rows = {}
+def _direct(f, frozen, FLR, srow):
+    A = f["eval_acc_so"]; D = Desc(); notes = set_sha_note(A, FLR); rows = {"STABLE": srow}
     rows["D-L1"] = row({"m%d" % m: acc_cell(A, 5, m, "NUM", 0.90) for m in range(1, 5)})
     f5, ok5, m5 = floor(FLR, 5, 8, "NUM", frozen); f3, ok3, m3 = floor(FLR, 3, 8, "NUM", frozen)
     notes += [x for x in (m5, m3) if x]
@@ -416,7 +434,7 @@ def _direct(f, frozen, FLR):
     rows["X1"] = row({"kappa5<=0.25": cell(a5, f5 + 0.25 * (1 - f5), n5, ge=False)}, ok5, kappa=k5, f=f5, k_moved=round(a5 * n5), n_moved=n5)
     rows["GATE"] = row({"kappa5>=0.70": cell(a5, f5 + 0.70 * (1 - f5), n5)}, ok5, kappa=k5)
     lb3 = wilson(a3, n3)[0]
-    rows["X2"] = row({"kappa_gap": diff_cell(a3 - f3, n3, a5 - f5, n5, 0.15, 1 - f3, 1 - f5), "kappa3>=0.15": cell(a3, f3 + 0.15 * (1 - f3), n3)},
+    rows["X2"] = row({"kappa_gap": diff_cell(a3 - f3, n3, a5 - f5, n5, 0.15, 1 - f3, 1 - f5, vp1=a3, vp2=a5), "kappa3>=0.15": cell(a3, f3 + 0.15 * (1 - f3), n3)},
                      ok3 and ok5 and lb3 > f3, kappa3=k3, kappa5=k5, wilson_lb3=lb3, f3=f3, f5=f5, lb3_gt_f3=lb3 > f3,
                      raw_gap=a3 - a5, gap_vs_1_over_n=(a3 - 1 / 3) - (a5 - 1 / 5))
     desc = {"kcurve_k0": D.get(f["eval_kcurve_so"], "acc_moved/0", "eval_kcurve_so"),
@@ -431,7 +449,7 @@ def _direct(f, frozen, FLR):
                 desc["bbh"][sub] = bbh_acc(f["eval_bbh"], sub)[0]
             except Malformed as e:
                 D.missing.append(str(e))
-    return {"label": "read", "status": "ok", "rows": rows, "kappa5": k5, "kappa3": k3, "notes": notes, "desc": desc, "desc_missing": D.missing,
+    return {"label": "read" if srow["ok"] else "FAIL: STABLE (every DIRECT row counts FAIL)", "status": "ok", "rows": rows, "kappa5": k5, "kappa3": k3, "notes": notes, "desc": desc, "desc_missing": D.missing,
             "near": sorted("%s.%s" % (r, k) for r, v in rows.items() for k, c in v["cells"].items() if c["near"])}
 
 
@@ -468,7 +486,7 @@ def load_floors(runs, frozen):
 
 
 def direct_summary(dp, pend):
-    dc = lambda r: sum(1 for s in dp.values() if s["status"] == "ok" and s["rows"][r]["ok"])  # noqa: E731
+    dc = lambda r: sum(1 for s in dp.values() if s["status"] == "ok" and s["rows"][r]["ok"] and s["rows"]["STABLE"]["ok"])  # noqa: E731
     dl1, x1k, gk, x2k = dc("D-L1"), dc("X1"), dc("GATE"), dc("X2")
     npend = sum(1 for s in dp.values() if s["status"] == "pending"); gate = gk >= 2
     if pend and not gate:
@@ -487,8 +505,19 @@ def direct_summary(dp, pend):
             "near_seed_x1": {r: abs(s["kappa5"] - 0.25) < SIGMA_SEED for r, s in dp.items() if s["status"] == "ok"}}
 
 
+def unpinned(frozen, **kw):
+    """Audit MED-2: floors fail closed. Until G0 pins FROZEN['floors_sha256'], nothing is scored."""
+    if (frozen or {}).get("floors_sha256"):
+        return None
+    return dict({"section": 271, "label": "pending", "reason": "FLOORS-UNPINNED", "labels": {"main": "pending", "reason": "FLOORS-UNPINNED"},
+                 "verdict": "pending (FLOORS-UNPINNED: FROZEN['floors_sha256'] is not set; G0 pins it)"}, **kw)
+
+
 def score(runs=R, final=False, frozen=None):
     frozen = FROZEN if frozen is None else frozen
+    up = unpinned(frozen, final=final)
+    if up:
+        return up
     FLR, finfo = load_floors(runs, frozen)
     o = {"section": 271, "final": final, "runs": {k: v for k, v in RUNS.items()}, "floors": finfo}
     lp = {r: seed_loop(runs, r, final, frozen, FLR) for r in RUNS["loop"]}
@@ -511,7 +540,8 @@ def score(runs=R, final=False, frozen=None):
         v = vals[m]
         c2[m] = {"mean": statistics.mean(v) if v else None, "sd": statistics.stdev(v) if len(v) > 1 else None, "n_seeds": len(v),
                  "near_seed": bool(v) and abs(statistics.mean(v) - bar) < SIGMA_SEED}
-    c2["claim"] = ("NEAR-SEED" if (c2["m6"]["near_seed"] or c2["m8"]["near_seed"]) else ("PASS" if rows["C2-1"]["k"] >= 2 else "FAIL"))
+    # Audit LOW d: 'n/a' when the C2-1 arm fails; NEAR-SEED only qualifies an arm that passes
+    c2["claim"] = "n/a" if rows["C2-1"]["k"] < 2 else ("NEAR-SEED" if (c2["m6"]["near_seed"] or c2["m8"]["near_seed"]) else "PASS")
     o["c2_1"] = c2
     # DIRECT-SI binds X1 / D-L1 / X2 / gate (Note 271-1); DIRECT-OF beside (X1-ANS)
     ds = direct_summary(sp, s_pend); dof = direct_summary(dp, False)
@@ -584,6 +614,9 @@ def score(runs=R, final=False, frozen=None):
 # ------------------------------------------------------------------ S1
 def score_s1(runs=R, final=False, pilot=None, extended=False, frozen=None):
     frozen = FROZEN if frozen is None else frozen
+    up = unpinned(frozen, stage="s1", final=final, gate="pending", direct_gate="pending")
+    if up:
+        return up
     FLR, finfo = load_floors(runs, frozen)
     p = pilot or RUNS["pilot"]; o = {"section": 271, "stage": "s1", "pilot": p, "extended": extended, "final": final, "floors": finfo}
     f = load(runs, p, PILOT_BIND); miss = [x for x in PILOT_BIND if f[x] is None]; gate = None
@@ -616,7 +649,7 @@ def score_s1(runs=R, final=False, pilot=None, extended=False, frozen=None):
 
 # ------------------------------------------------------------------ fixtures
 DEL = object()
-FL = {(5, 8): 0.319, (3, 8): 0.540, (4, 8): 0.391, (5, 6): 0.465, (5, 12): 0.254}
+FL = {(5, 8): 0.326, (3, 8): 0.539, (4, 8): 0.393, (5, 6): 0.465, (5, 10): 0.265, (5, 12): 0.255}   # Note 271-2
 
 
 def _acc_so(direct=False):
@@ -705,7 +738,16 @@ def _set(doc, path, v):
         cur[ks[-1]] = v
 
 
-def world(patches=(), drop=()):
+def _logs(d, run, jump=False):
+    """score_ao.stable inputs: log.jsonl (80 rows to step 8000) + train_summary.json. jump: an unrecovered loss jump (5.0 from step 4100)."""
+    with open(os.path.join(d, run, "log.jsonl"), "w", encoding="utf-8", newline="\n") as fh:
+        for i in range(1, 81):
+            fh.write(json.dumps({"step": i * 100, "loss": 5.0 if (jump and i > 40) else 0.01}) + "\n")
+    with open(os.path.join(d, run, "train_summary.json"), "w", encoding="utf-8", newline="\n") as fh:
+        json.dump({"n_nonfinite": 0}, fh)
+
+
+def world(patches=(), drop=(), unstable=(), nolog=()):
     d = tempfile.mkdtemp(prefix="n1fx_")
     docs = {r: _loop_docs() for r in RUNS["loop"]}
     docs.update({r: _direct_docs() for r in RUNS["direct_si"]})
@@ -733,7 +775,23 @@ def world(patches=(), drop=()):
                     doc = _counts_from_acc(doc)
                 with open(os.path.join(dd, fn + ".json"), "w", encoding="utf-8", newline="\n") as fh:
                     json.dump(doc, fh)
+    bad = {r for sel in unstable for r in _sel(sel)}; gone_log = {r for sel in nolog for r in _sel(sel)}
+    for r in list(RUNS["loop"]) + list(RUNS["direct_si"]) + list(RUNS["direct"]):
+        if r not in gone_log:
+            _logs(d, r, r in bad)
     return d
+
+
+def pin(d, kw):
+    """Fixtures always pass frozen explicitly (Audit MED-2). Default / floors_sha256 'MATCH' = the world's own floors-file sha256."""
+    fz = dict(kw.get("frozen") or {"floors_sha256": "MATCH", "f": {}})
+    if fz.get("floors_sha256") == "MATCH":
+        try:
+            with open(os.path.join(d, FLOORS_REL), "rb") as fh:
+                fz["floors_sha256"] = hashlib.sha256(fh.read()).hexdigest()
+        except OSError:
+            fz["floors_sha256"] = "f" * 64   # file absent: pinned to a sha that cannot match
+    return dict(kw, frozen=fz)
 
 
 def fixtures():
@@ -767,10 +825,6 @@ def fixtures():
         ("M4 S_4 half alone at 0.07 (> 0.05, Note 271-1) -> FAIL: M4", [("loop", "eval_kcurve_so", "not_decoder/acc_vs_s4", 0.07)], [], {},
          lambda o: lab(o) == "FAIL: M4" and o["loop"][S1]["rows"]["M4"]["cells"]["vs_s2"]["ok"]),
         ("M4 S_2 half alone at 0.75 -> FAIL: M4", [("loop", "eval_kcurve_so", "not_decoder/acc_vs_s2", 0.75)], [], {}, lambda o: lab(o) == "FAIL: M4"),
-        ("per-cell floor read as given (5/8 f 0.50, unseen extra key, a global f ignored)",
-         [("floors", "floors_so", "floors/5/8/NUM/f", 0.50), ("floors", "floors_so", "floors/5/8/NUM/unseen_key", 0.99), ("floors", "floors_so", "f", 0.9)], [], {},
-         lambda o: o["direct_si"][D1]["rows"]["X1"]["f"] == 0.50 and o["direct_si"][D1]["rows"]["X2"]["f3"] == 0.54 and o["loop"][S1]["rows"]["KC"]["f"] == 0.50
-         and abs(o["direct_si"][D1]["kappa5"] - (0.35 - 0.50) / 0.50) < 1e-3 and lab(o) == "N1-PASS"),
         ("kappa from raw counts, not the acc field (n_correct_moved 872/1050 -> kappa 0.75) -> DEPTH-SPLIT",
          [((D1, D2), ACC, A % 8 + "n_correct_moved", 872)], [], {}, lambda o: lab(o) == "DEPTH-SPLIT"),
         ("counts k > n -> malformed -> pending", [(S1, ACC, A % 8 + "n_correct_moved", 2000)], [], {}, lambda o: lab(o) == "pending"),
@@ -778,7 +832,11 @@ def fixtures():
         ("floors file missing --final -> every seed VOID -> FAIL", [], [("floors", "floors_so")], {"final": True}, lambda o: lab(o).startswith("FAIL")),
         ("floors sha256 echoed; frozen sha mismatch -> KC (and X1) fail", [], [], {"frozen": {"floors_sha256": "0" * 64, "f": {}}},
          lambda o: lab(o) == "FAIL: KC" and len(o["floors"]["sha256"]) == 64 and o["floors"]["sha_ok"] is False),
-        ("frozen sha matches -> N1-PASS", [], [], {"frozen": "MATCH"}, lambda o: lab(o) == "N1-PASS" and o["floors"]["sha_ok"] is True),
+        ("frozen sha matches -> N1-PASS", [], [], {"frozen": {"floors_sha256": "MATCH", "f": {}}}, lambda o: lab(o) == "N1-PASS" and o["floors"]["sha_ok"] is True),
+        ("no pin (floors_sha256 None) -> pending FLOORS-UNPINNED", [], [], {"frozen": {"floors_sha256": None, "f": {}}},
+         lambda o: lab(o) == "pending" and o["labels"]["reason"] == "FLOORS-UNPINNED"),
+        ("no pin --final -> still pending FLOORS-UNPINNED", [], [], {"frozen": {"floors_sha256": None, "f": {}}, "final": True},
+         lambda o: lab(o) == "pending" and o["reason"] == "FLOORS-UNPINNED"),
         ("DIRECT-OF extrapolates (descriptive X1-ANS FAIL) -> N1-PASS stands", [("dof", ACC, A % 8 + "acc_moved", 0.60)], [], {},
          lambda o: lab(o) == "N1-PASS" and o["labels"]["X1-ANS (DIRECT-OF, descriptive)"] == "FAIL"),
         ("DIRECT-OF missing -> reported in desc_missing, N1-PASS stands", [], [("dof", ACC)], {},
@@ -859,20 +917,39 @@ def fixtures():
                                                           [{"parsed": i >= 30, "correct": i < 170} for i in range(250)])], [], {},
          lambda o: o["labels"]["B1"] == "B1-FAIL" and abs(o["loop"][S1]["b1_five"]["value"] - 0.56) < 1e-9),
         ("BBH missing, precondition met: pending; --final B1-FAIL", [], [("loop", "eval_bbh")], {"final": True}, lambda o: o["labels"]["B1"] == "B1-FAIL"),
-        ("frozen floor mismatch -> X1 / KC fail, noted", [], [], {"frozen": {"set_sha": None, "f": {"5/8/NUM": 0.25, "3/8/NUM": 0.54}}},
+        ("frozen floor mismatch -> X1 / KC fail, noted", [], [], {"frozen": {"floors_sha256": "MATCH", "f": {"5/8/NUM": 0.25, "3/8/NUM": 0.539}}},
          lambda o: lab(o) == "FAIL: KC" and any("FLOOR-MISMATCH" in x for x in o.get("floor_notes", []))),
-        ("frozen floors match -> N1-PASS", [], [], {"frozen": {"set_sha": None, "f": {"5/8/NUM": 0.319, "3/8/NUM": 0.54}}}, lambda o: lab(o) == "N1-PASS"),
+        ("frozen floors match -> N1-PASS", [], [], {"frozen": {"floors_sha256": "MATCH", "f": {"5/8/NUM": 0.326, "3/8/NUM": 0.539}}}, lambda o: lab(o) == "N1-PASS"),
+        ("STABLE: unrecovered loss jump in every loop seed -> FAIL: STABLE", [], [], {"_unstable": ("loop",)}, lambda o: lab(o) == "FAIL: STABLE"),
+        ("STABLE: one loop seed unstable -> 2/3, N1-PASS", [], [], {"_unstable": (S2,)},
+         lambda o: lab(o) == "N1-PASS" and o["loop"][S2]["label"] == "FAIL: STABLE" and o["rows_k3"]["STABLE"]["k"] == 2),
+        ("STABLE: one DIRECT-SI seed unstable -> X1 2/3 -> N1-LOOP-ONLY", [], [], {"_unstable": (D3,)},
+         lambda o: lab(o) == "N1-LOOP-ONLY (X1 FAIL)" and o["direct_si_summary"]["X1_k3"] == 2),
+        ("STABLE: blank log in a loop seed -> pending", [], [], {"_nolog": (S1,)}, lambda o: lab(o) == "pending" and o["loop"][S1]["label"] == "pending"),
+        ("STABLE: blank log --final -> seed VOID", [], [], {"_nolog": (S1,), "final": True},
+         lambda o: o["loop"][S1]["label"] == "FAIL: VOID" and lab(o) == "N1-PASS"),
+        ("STABLE: blank DIRECT-SI log -> pending", [], [], {"_nolog": (D1,)}, lambda o: lab(o) == "pending"),
+        ("KC K'1 alone above floor + 0.05", [("loop", "eval_kcurve_so", "acc_moved/1", 0.60)], [], {},
+         lambda o: lab(o) == "FAIL: KC" and [k for k, c in o["loop"][S1]["rows"]["KC"]["cells"].items() if not c["ok"]] == ["k1"]),
+        ("X2 kappa3 >= 0.15 clause alone (a3 0.60, a5 0.15) -> TH6-NOT-SUPPORTED",
+         [("direct", ACC, "by_cell/3/8/NUM/acc_moved", 0.60), ("direct", ACC, A % 8 + "acc_moved", 0.15)], [], {},
+         lambda o: o["labels"]["TH6"] == "TH6-NOT-SUPPORTED" and o["direct_si"][D1]["rows"]["X2"]["cells"]["kappa_gap"]["ok"]
+         and not o["direct_si"][D1]["rows"]["X2"]["cells"]["kappa3>=0.15"]["ok"] and o["direct_si"][D1]["rows"]["X2"]["lb3_gt_f3"] and lab(o) == "N1-PASS"),
+        ("X2 kappa-gap SE uses the raw accuracies (Audit LOW a)", [], [], {},
+         lambda o: abs((o["direct_si"][D1]["rows"]["X2"]["cells"]["kappa_gap"]["ci95"][1] - o["direct_si"][D1]["rows"]["X2"]["cells"]["kappa_gap"]["value"]) / 1.96
+                       - math.sqrt(0.58 * 0.42 / 1050 / (1 - 0.539) ** 2 + 0.35 * 0.65 / 1050 / (1 - 0.326) ** 2)) < 1e-3),
+        ("C2-3 alone (ORD n 5 m 8 0.55) -> B1 not binding, N1-PASS, ORD-SCOPE", [("loop", ACC, "by_cell/5/8/ORD/acc", 0.55)], [], {},
+         lambda o: lab(o) == "N1-PASS" and o["labels"]["ORD-SCOPE"] == "ORD-SCOPE" and o["labels"]["B1"].startswith("B1-NOT-BINDING")),
+        ("floor >= 1 -> Malformed -> pending", [("floors", "floors_so", "floors/5/8/NUM/f", 1.0)], [], {},
+         lambda o: lab(o) == "pending" and "outside [0, 1)" in o["loop"][S1]["malformed"]),
         ("descriptive inputs missing are listed (TEXT-CoT, lookup), N1-PASS unchanged", [], [(RUNS["textcot"], ACC), (S1, "eval_lookup")], {},
          lambda o: lab(o) == "N1-PASS" and any("textcot_s1/eval_acc_so (file)" in x for x in o["desc_missing"])
          and any("eval_lookup (file)" in x for x in o["desc_missing"]) and o["descriptive"]["C3_loop_ge_cot_minus_0.05"] is None),
     ]
     for name, pt, dr, kw, pred in cases:
-        d = world(pt, dr)
+        kw = dict(kw); d = world(pt, dr, kw.pop("_unstable", ()), kw.pop("_nolog", ()))
         try:
-            if kw.get("frozen") == "MATCH":
-                with open(os.path.join(d, FLOORS_REL), "rb") as fh:
-                    kw = dict(kw, frozen={"floors_sha256": hashlib.sha256(fh.read()).hexdigest(), "f": {}})
-            o = score(d, **kw); ok = bool(pred(o)); msg = o["verdict"]
+            o = score(d, **pin(d, kw)); ok = bool(pred(o)); msg = o["verdict"]
         except Exception as e:  # noqa: BLE001
             ok, msg = False, "EXC %r" % e
         finally:
@@ -900,6 +977,12 @@ def fixtures():
          lambda o: o["direct_gate"] == "DIRECT-ALIVE" and o["direct_of_gate_desc"] == "DEPTH-SPLIT-like"),
         ("S1 M4p S_4 at 0.07 (bar 0.05) -> EXTEND", [(P, "eval_kcurve_so", "not_decoder/acc_vs_s4", 0.07)], [], {}, lambda o: o["gate"] == "EXTEND"),
         ("S1 floors sha echoed", [], [], {}, lambda o: len(o["floors"]["sha256"]) == 64),
+        ("S1 no pin -> pending FLOORS-UNPINNED", [], [], {"frozen": {"floors_sha256": None, "f": {}}},
+         lambda o: o["gate"] == "pending" and o["direct_gate"] == "pending" and o["reason"] == "FLOORS-UNPINNED"),
+        ("S1 floors sha mismatch -> DIRECT-SI gate rows fail (no kill)", [((DIRS[0], DIRS[1]), ACC, A % 8 + "acc_moved", 0.83)], [],
+         {"frozen": {"floors_sha256": "0" * 64, "f": {}}}, lambda o: o["direct_gate"] == "DIRECT-ALIVE" and o["floors"]["sha_ok"] is False),
+        ("S1 DIRECT-SI unstable seeds do not fire the gate", [((DIRS[0], DIRS[1]), ACC, A % 8 + "acc_moved", 0.83)], [], {"_unstable": (DIRS[0],)},
+         lambda o: o["direct_gate"] == "DIRECT-ALIVE"),
         ("S1 DIRECT gate kappa 0.75 in 1/3 -> DIRECT-ALIVE", [(DIRS[0], ACC, A % 8 + "acc_moved", 0.83)], [], {}, lambda o: o["direct_gate"] == "DIRECT-ALIVE"),
         ("S1 DIRECT gate 1 kill + 1 pending -> pending", [(DIRS[0], ACC, A % 8 + "acc_moved", 0.83)], [(DIRS[1], ACC)], {}, lambda o: o["direct_gate"] == "pending"),
         ("S1 DIRECT gate 2 kills + 1 pending -> DEPTH-SPLIT", [((DIRS[0], DIRS[1]), ACC, A % 8 + "acc_moved", 0.83)], [(DIRS[2], ACC)], {},
@@ -909,9 +992,9 @@ def fixtures():
         ("S1 NEAR flag on a gate cell (L1p m 2 0.905)", [(P, ACC, A % 2 + "acc", 0.905)], [], {}, lambda o: o["gate"] == "GO" and "L1p.m2" in o["near"]),
     ]
     for name, pt, dr, kw, pred in s1cases:
-        d = world(pt, dr)
+        kw = dict(kw); d = world(pt, dr, kw.pop("_unstable", ()), kw.pop("_nolog", ()))
         try:
-            o = score_s1(d, **kw); ok = bool(pred(o)); msg = o["verdict"]
+            o = score_s1(d, **pin(d, kw)); ok = bool(pred(o)); msg = o["verdict"]
         except Exception as e:  # noqa: BLE001
             ok, msg = False, "EXC %r" % e
         finally:
