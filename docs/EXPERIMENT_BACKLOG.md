@@ -804,3 +804,11 @@ CA6 (K18) EM-ACCUM (§267 DP with accumulating state; partial enumeration + RLOO
   - Then the lever: `--retarget_p` re-points a share of training questions at an intermediate S_j or an insert's end, keeping the text fixed. The blind policy must be wrong on those items by construction. Any lane-07 arm should train with it.
 - **NO-REPLICATE (09_REDTEAM F1):** compressed-lineage seeds that share aw_plaw2_s1 are one lineage. They cannot satisfy the >= 2-lineages rule.
 - **PAPER (14_REDTEAM, Literature 82d38794):** headline = breaking positional slot counting (not content selection). Core model bun; of is the order-free extension. Claim the out-of-range accuracy, not the halting rule.
+- **SC0 MEDIUM DISCRIMINATOR (scale lane; 19_REDTEAM F1-F3).**
+  - The 19 diagnosis ("the text decoder's last-hop shortcut kills the pass-2 gradient") does not separate small from medium: aw_plaw2 (small) also solves d 2 at K' 1 = 1.00 (Note 251-7), yet its pass-2 WS formed.
+  - Cheapest decisive step: an eval-only battery on the stored p2m_s1b model.pt (~$0.15):
+    - aux-read pass-2 swap;
+    - WT2 write-transplant (item A's pass-2 write applied to B's S_1; separates hop from operand-carry);
+    - the aux-2 prompt on S_1.
+  - If medium already computes pass 2 causally, the scale port needs new gates, not a new decoder.
+  - Qwen stages 2-4 are not approved as written: tokenization gates, GPU-class attribution, and a fresh S-only small control (SO-F-S on 3090) come first.
