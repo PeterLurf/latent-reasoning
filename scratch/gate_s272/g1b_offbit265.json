@@ -1,0 +1,70 @@
+{
+ "N": 300,
+ "ref_commit": "d7e60d3d",
+ "runs": {
+  "ref_ddp_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "a0b7bea71619479f6d0567f2f83224cbbb7fb776a2763eae9d3ae32b72372bc7"
+  },
+  "new_ddp_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "a0b7bea71619479f6d0567f2f83224cbbb7fb776a2763eae9d3ae32b72372bc7",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  },
+  "ref_ddp_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "729cba195ed1e96900c85a305ac0bda4311dbe77accdf75ce0808478f24b97d8"
+  },
+  "new_ddp_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "729cba195ed1e96900c85a305ac0bda4311dbe77accdf75ce0808478f24b97d8",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  },
+  "ref_ddc_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "ec726c3181f6dfa087a034bccec75ccdc506c038313f7f540686d1e4ce99b7ea"
+  },
+  "new_ddc_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "ec726c3181f6dfa087a034bccec75ccdc506c038313f7f540686d1e4ce99b7ea",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  },
+  "ref_ddc_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "e541f61b91c5285ee3eba5a4c43aafbb5a7604f5c7d1a14e7b280067a05de6c7"
+  },
+  "new_ddc_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "e541f61b91c5285ee3eba5a4c43aafbb5a7604f5c7d1a14e7b280067a05de6c7",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  }
+ },
+ "eval_diff": {
+  "removed": [
+   "-PARTS = (\"acc\", \"lp5\", \"mean_s\", \"cue_only\", \"cue_wrong\", \"swap_k\", \"swap_1\", \"probe\", \"ws\", \"lp5h\", \"swap_kd\", \"opclas",
+   "-AW_ONLY = (\"test_perm\", \"insert_ho\", \"ws_deep\", \"halt_inc\", \"halthead2\", \"stab_fresh\", \"stab\", \"probe\", \"ws\", \"opclass\"",
+   "-              \"attn_fade\": lambda: __import__(\"boxes.sc_parts\", fromlist=[\"part_attn_fade\"]).part_attn_fade(m, g, sets,"
+  ],
+  "added": [
+   "+PARTS = (\"acc\", \"lp5\", \"mean_s\", \"cue_only\", \"cue_wrong\", \"swap_k\", \"swap_1\", \"probe\", \"ws\", \"lp5h\", \"swap_kd\", \"opclass\", \"swap_prod\", \"lenstep\", \"normctr\", \"",
+   "+AW_ONLY = (\"test_perm\", \"insert_ho\", \"ws_deep\", \"halt_inc\", \"halthead2\", \"stab_fresh\", \"stab\", \"probe\", \"ws\", \"opclass\", \"lenstep\", \"normctr\", \"ws_long\", \"c7\",",
+   "+              \"attn_fade\": lambda: __import__(\"boxes.sc_parts\", fromlist=[\"part_attn_fade\"]).part_attn_fade(m, g, sets, a, dev, bs),   # \u00a7264 / \u00a7265",
+   "+              \"full_perm\": lambda: __import__(\"boxes.fp_parts\", fromlist=[\"part_full_perm\"]).part_full_perm(m, g, sets, a, dev, bs)}[p_]()   # \u00a7270 FULL-PERM"
+  ],
+  "only_full_perm": true
+ },
+ "new_inject_aw_blob": "5a5cbf7a1f6278fa63a9836c3454b5deaad676a2",
+ "pass": true
+}

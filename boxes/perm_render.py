@@ -59,3 +59,25 @@ def train_perm(it, seed, step, k):
     """--perm_p's re-render of training item k at step (d >= 2; the caller draws the coin): the training seed family, solve asserted."""
     pit, _, inv = permuted(it, np.random.default_rng((seed, SEED_PERM_TRAIN, step, k))); check(it, pit); assert inv >= 1
     pit["perm"] = 1; return pit
+
+
+# §270 FULL-PERM (FP_v1 §2 / §7): --perm_scope all permutes EVERY statement (S_0, G_t, S_t, D_k) over all slots; the question stays last (NW._finish appends it).
+SEED_PERM_ALL_TRAIN, SEED_ASK_PERM_ALL = 27000, 27001                       # unused elsewhere in boxes / theory / scratch *.py (grep 2026-11-04)
+
+
+def permuted_all(it, rng):
+    """-> (the re-rendered item, its order): a non-identity rng.permutation of all of it["order"] (redrawn from the same rng while identity); d < 2: unchanged."""
+    order = list(it["order"])
+    if it["d"] < 2:
+        return render(it, order), order
+    while True:
+        p = rng.permutation(len(order))
+        if (p != np.arange(len(order))).any():
+            break
+    new = [order[q] for q in p]; return render(it, new), new
+
+
+def train_perm_all(it, seed, step, k, fam=SEED_PERM_ALL_TRAIN):
+    """--perm_scope all's re-render of training item k at step (d >= 2; the caller draws the coin): default_rng((seed, fam, step, k)); fields + solve asserted."""
+    pit, new = permuted_all(it, np.random.default_rng((seed, fam, step, k))); check(it, pit); assert new != list(it["order"])
+    pit["perm"] = 1; return pit

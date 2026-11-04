@@ -33,8 +33,8 @@ import boxes.ow_words as OW  # noqa: E402
 from boxes.nested170 import NUM_IDS, EOT, pad  # noqa: E402
 
 KMAX = 14; NULLC = contextlib.nullcontext
-PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "nk_pilot", "late_premise", "name_swap", "shuffle_graded", "cue_clock", "op_count", "attn_fade")
-AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames", "nk_pilot", "late_premise", "name_swap", "shuffle_graded", "cue_clock", "op_count", "attn_fade")
+PARTS = ("acc", "lp5", "mean_s", "cue_only", "cue_wrong", "swap_k", "swap_1", "probe", "ws", "lp5h", "swap_kd", "opclass", "swap_prod", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "transfer", "frames", "test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "nk_pilot", "late_premise", "name_swap", "shuffle_graded", "cue_clock", "op_count", "attn_fade", "full_perm")
+AW_ONLY = ("test_perm", "insert_ho", "ws_deep", "halt_inc", "halthead2", "stab_fresh", "stab", "probe", "ws", "opclass", "lenstep", "normctr", "ws_long", "c7", "halt", "halthead", "frames", "nk_pilot", "late_premise", "name_swap", "shuffle_graded", "cue_clock", "op_count", "attn_fade", "full_perm")
 
 
 def pred_of(lg):
@@ -1337,7 +1337,8 @@ def run(out, parts, dev, bs, model=None, sets=None, train=None):
               "shuffle_graded": lambda: __import__("boxes.of_parts", fromlist=["part_shuffle_graded"]).part_shuffle_graded(m, g, sets, a, dev, bs),   # §263 ORDER-FREE
               "cue_clock": lambda: __import__("boxes.sc_parts", fromlist=["part_cue_clock"]).part_cue_clock(m, g, sets, a, dev, bs),
               "op_count": lambda: __import__("boxes.sc_parts", fromlist=["part_op_count"]).part_op_count(m, g, sets, a, dev, bs),
-              "attn_fade": lambda: __import__("boxes.sc_parts", fromlist=["part_attn_fade"]).part_attn_fade(m, g, sets, a, dev, bs)}[p_]()   # §264 / §265
+              "attn_fade": lambda: __import__("boxes.sc_parts", fromlist=["part_attn_fade"]).part_attn_fade(m, g, sets, a, dev, bs),   # §264 / §265
+              "full_perm": lambda: __import__("boxes.fp_parts", fromlist=["part_full_perm"]).part_full_perm(m, g, sets, a, dev, bs)}[p_]()   # §270 FULL-PERM
         r_.update(meta); r_["sec"] = round(time.time() - t1)
         json.dump(r_, open(os.path.join(out, "eval_%s.json" % p_), "w", newline="\n")); print("PART", p_, "done", r_["sec"], "s", flush=True)
     summ = {"arm": a["arm"], "cue": a.get("cue", "none"), "think_k": a["think_k"], "d_max": a["d_max"], "seed": a["seed"], "parts": {}, **meta}

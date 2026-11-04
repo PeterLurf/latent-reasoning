@@ -1,0 +1,31 @@
+{
+ "a": {
+  "rc": 9,
+  "n_loss": 3,
+  "finite": true,
+  "perm_scope": "all",
+  "excl_n": 206599,
+  "pass": true
+ },
+ "pass": true,
+ "b": {
+  "keys": [
+   "acc",
+   "acc_k2",
+   "by_flag",
+   "changed",
+   "n"
+  ],
+  "n": 1000,
+  "by_flag_keys": [
+   "given_after_consumer",
+   "n3",
+   "n4",
+   "n_viol",
+   "s0_pos"
+  ],
+  "in_unit": true,
+  "items_n": 1000,
+  "pass": true
+ }
+}

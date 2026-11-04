@@ -1,0 +1,45 @@
+{
+ "N": 300,
+ "ref_commit": "7cfd033a",
+ "runs": {
+  "ref_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "e8515b683e206e3793747c32e9d0285020274791ac8bc67edd1e5061f262fb92"
+  },
+  "ref_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "5d7c4cab7de3c534ae7db290e2bf839a2979cb4d8337368ca36859a038ceebfb"
+  },
+  "omit_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "e8515b683e206e3793747c32e9d0285020274791ac8bc67edd1e5061f262fb92",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  },
+  "omit_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "5d7c4cab7de3c534ae7db290e2bf839a2979cb4d8337368ca36859a038ceebfb",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  },
+  "op_s1": {
+   "rc": 0,
+   "n": 300,
+   "sha": "e8515b683e206e3793747c32e9d0285020274791ac8bc67edd1e5061f262fb92",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  },
+  "op_s2": {
+   "rc": 0,
+   "n": 300,
+   "sha": "5d7c4cab7de3c534ae7db290e2bf839a2979cb4d8337368ca36859a038ceebfb",
+   "equal_ref": true,
+   "first_mismatch_step": null
+  }
+ },
+ "pass": true
+}

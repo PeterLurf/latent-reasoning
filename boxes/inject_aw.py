@@ -247,6 +247,8 @@ def main(argv=None):
     ap.add_argument("--nk", type=int, default=0, choices=[0, 1], help="§262 NK_v1: the name-keyed head packed into S (boxes/nk.py; 0 = off, unchanged)")
     ap.add_argument("--ask_p", type=float, default=0.0, help="§262 Note 262-2: the share of each batch that is one-hop ask items (':' CE on v_X at every pass; 0 = off)")
     ap.add_argument("--ask_perm_p", type=float, default=0.5, help="§262: P(an ask item with d >= 2 is permuted before its class)")
+    ap.add_argument("--perm_scope", choices=("op", "all"), default="op", help="§270 FP_v1: what --perm_p / --ask_p permute: op = the op sentences over their slots "
+                    "(unchanged); all = every statement over all slots (seeds 27000 / 27001; same coins), question last")
     a = ap.parse_args(argv); a.task = "ow_topo" if a.src == "ow" else "nested"
     import boxes.deltamem as DM_
     from boxes.fsq120 import make_opt, lr_at, driver_version, env_info
@@ -267,6 +269,8 @@ def main(argv=None):
     assert not (a.nk or a.ask_p) or (a.arm == "inject" and a.cue == "step" and a.write_src == "answer" and a.src == "ow" and not a.ckpt_passes and not a.cue_ans
                                      and NASK < a.bs and a.bs - NASK >= a.hold_far_n), "§262 --nk / --ask_p: LAT-AW (inject, cue step, write_src answer); ask items < bs"
     assert 1 <= a.d_max <= 8 and a.bs % a.micro == 0
+    assert a.perm_scope == "op" or a.perm_p or a.ask_p, "§270 --perm_scope all needs --perm_p or --ask_p"
+    PALL = a.perm_scope == "all"
     K = a.think_k if a.arm == "inject" else 0
     torch.manual_seed(a.seed); rng_d = np.random.default_rng(a.seed + SEED_D); rng = np.random.default_rng(a.seed)
     rng_far = np.random.default_rng(a.seed + 24800)                         # §240: T_far ~ U{hold_far_lo..hold_far_hi}, one draw per step (HOLD only)
@@ -312,16 +316,35 @@ def main(argv=None):
     assert not MIXT or (a.distract_p > 0 and set(MIXT) <= set(IR.MIX_TYPES)), ("--distract_mix needs --distract_p and known types", MIXT)
     TP_TEXTS = {it["text"] for d_, its_ in PR.test_perm_sets({d_: SETS["test2"][d_] for d_ in range(1, a.d_max + 1)}, range(1, a.d_max + 1))[0].items()
                 for it in its_} if (a.perm_p or a.ask_p) else set()                     # §252 Note 252-1: the TEST-PERM texts (622fb717's family) for the disjointness assert
+    if PALL:                                                                # §270 FP_v1 §2: + the full_perm / shuffle_graded texts; no base item shares a TEST2 d 1-8 statement multiset
+        import boxes.fp_parts as FPP
+        FP_TEXTS = FPP.fp_texts(SETS["test2"]) | FPP.sg_texts(SETS["test2"]); T2_MSIG = {FPP.msig(it) for d_ in range(1, 9) for it in SETS["test2"][d_]}
+
+    MSREJ = [0]                                                             # §270 Note 270-1 (1): cumulative multiset rejects (since process start; not in the resume ckpt)
+
+    def sdraw(st_, d):
+        """stream draw; under scope all a base item whose statement multiset equals a TEST2 d 1-8 item's is rejected and the next item drawn (op: one plain draw)."""
+        for _ in range(1000):                                               # Audit LOW (c): a retry cap (op: the first draw returns)
+            r_ = st_.draw(d)
+            if not PALL or FPP.msig(r_) not in T2_MSIG:
+                return r_
+            MSREJ[0] += 1
+        raise AssertionError("§270 sdraw: 1000 consecutive multiset rejects")
+
+    def pall_check(base, final_texts):
+        """§270 scope all: the base items' multisets are not TEST2's (sdraw resampled them); the final texts are not full_perm / shuffle_graded texts."""
+        assert not any(FPP.msig(r_) in T2_MSIG for r_ in base), "§270: a base item shares its statement multiset with a TEST2 d 1-8 item"
+        assert not any(t_ in FP_TEXTS for t_ in final_texts), "§270: a training text equals a full_perm / shuffle_graded eval text"
 
     def draw_items(d):
         if a.src == "nested":
             return [tok_nested(it) for it in N7.train_items(rng, a.bs, a.n_max_train, EXCL)]
         if a.distract_p:                                                    # Note 255-5 --distract_p: per-item seeded coin / n / draw; targets, solve, disjointness asserted
-            raws = [stream.draw(d) for _ in range(a.bs - NASK)]; out_ = []
+            raws = [sdraw(stream, d) for _ in range(a.bs - NASK)]; out_ = []
             for k_, r_ in enumerate(raws):
                 n_ = 0
                 if a.perm_p and d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p:   # §262 perm-then-insert: §252's coin / perm
-                    r_ = PR.train_perm(r_, a.seed, step, k_)
+                    r_ = PR.train_perm_all(r_, a.seed, step, k_) if PALL else PR.train_perm(r_, a.seed, step, k_)   # §270: scope all, the same coin
                 if np.random.default_rng((a.seed, IR.SEED_DISTRACT_COIN, step, k_)).random() < a.distract_p:
                     r2_, n_ = IR.distract_mix(r_, a.seed, step, k_, MIXT, nmax=a.distract_nmax) if MIXT else IR.distract(r_, a.seed, step, k_, nmax=a.distract_nmax)   # §257 --distract_mix; §265 nmax
                     if n_:
@@ -336,12 +359,17 @@ def main(argv=None):
                     DCAP[r_["distract_capped"]] = DCAP.get(r_["distract_capped"], 0) + 1
             assert not any(r_["text"] in INS_TEXTS for r_ in out_), "DISTRACT: a training text equals an INSERT eval text"
             assert not any(r_["text"] in TP_TEXTS for r_ in out_), "§262: a training text equals a TEST-PERM text"
+            if PALL:
+                pall_check(raws, [r_["text"] for r_ in out_])
             return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in out_]
         if a.perm_p:                                                        # §252 --perm_p: per-item seeded coin / permutation (d >= 2), solve + disjointness asserted
-            raws = [stream.draw(d) for _ in range(a.bs - NASK)]
-            raws = [PR.train_perm(r_, a.seed, step, k_) if (d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p) else r_
+            raws = [sdraw(stream, d) for _ in range(a.bs - NASK)]; base_ = raws
+            tp_ = PR.train_perm_all if PALL else PR.train_perm               # §270: scope all, the same coin
+            raws = [tp_(r_, a.seed, step, k_) if (d >= 2 and np.random.default_rng((a.seed, PR.SEED_PERM_TRAIN + 1, step, k_)).random() < a.perm_p) else r_
                     for k_, r_ in enumerate(raws)]
             assert not any(r_["text"] in TP_TEXTS for r_ in raws), "§252: a training text equals a TEST-PERM text"
+            if PALL:
+                pall_check(base_, [r_["text"] for r_ in raws])
             return [tok_aw(r_, a.aux_target, a.cue, a.write_src) for r_ in raws]
         return [tok_aw(stream.draw(d), a.aux_target, a.cue, a.write_src) for _ in range(a.bs - NASK)]
 
@@ -351,10 +379,15 @@ def main(argv=None):
         """§262 Note 262-2: NASK one-hop ask items at the step's d (own stream; per item k a perm coin / permutation, then ST_v1's class; disjointness asserted)."""
         out_ = []
         for k_ in range(NASK):
-            r_ = ask_stream.draw(d)
+            r_ = sdraw(ask_stream, d); b_ = r_
             if d >= 2 and np.random.default_rng((a.seed, SEED_ASK_COIN, step, k_)).random() < a.ask_perm_p:
-                pit, _, inv = PR.permuted(r_, np.random.default_rng((a.seed, SEED_ASK_PERM, step, k_))); PR.check(r_, pit); assert inv >= 1; pit["perm"] = 1; r_ = pit
+                if PALL:                                                    # §270: scope all (default_rng((seed, 27001, step, k)) replaces SEED_ASK_PERM's draw; same coin)
+                    r_ = PR.train_perm_all(r_, a.seed, step, k_, PR.SEED_ASK_PERM_ALL)
+                else:
+                    pit, _, inv = PR.permuted(r_, np.random.default_rng((a.seed, SEED_ASK_PERM, step, k_))); PR.check(r_, pit); assert inv >= 1; pit["perm"] = 1; r_ = pit
             o_ = tok_ask(r_, a.aux_target, a.write_src); assert o_["ask_text"] not in TP_TEXTS and o_["ask_text"] not in INS_TEXTS, "§262: an ask text equals an eval text"
+            if PALL:
+                pall_check([b_], [o_["ask_text"]])
             out_.append(o_)
         return out_
 
@@ -428,6 +461,8 @@ def main(argv=None):
                 S, h_c, pos_c = m.pass_aw(S, xs[0], msk, hl); lg_c = m.colon_logits(h_c, pos_c); ces.append(Fn.cross_entropy(lg_c, y))
                 if stat is not None:
                     stat.setdefault("ask", []).append((str(t), int((lg_c.detach().argmax(-1) == y).sum()), len(items)))
+            if stat is not None and PALL:                                   # §270 (log-only): the pass-K ':' acc by ask class
+                stat.setdefault("askc", []).extend(zip([it["ask_class"] for it in items], (lg_c.detach().argmax(-1) == y).tolist()))
         return torch.stack(ces).mean()
 
     def loss_items(items, stat=None):
@@ -509,6 +544,7 @@ def main(argv=None):
     wsbin = {}                                                              # §252: {"perm" / "chain": {d: {t: [correct, n]}}} (the open 1k bin; not in the resume ckpt)
     acbin = {}                                                              # Note 251-10: {d: [correct, n, ce sum]} (the open 1k bin; not in the resume ckpt)
     askbin = {}                                                             # §262: {pass: [correct, n]} (the open 1k bin; not in the resume ckpt)
+    askcbin = {}                                                            # §270 (scope all, log-only): {ask class: [correct at pass K, n]} (the open 1k bin)
     expo = {}; binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; gn_plain_log = []; dseq = []; iseq = []; d2_bins = []; ent = {"buf": [], "entry_d1": None}; fut = {"checked": [], "stop": None}
     log = open(os.path.join(a.out, "log.jsonl"), "a" if a.resume else "w", newline="\n"); t0 = time.time()
     if a.resume:
@@ -578,6 +614,8 @@ def main(argv=None):
             ab_ = acbin.setdefault(dd_, [0, 0, 0.0]); ab_[0] += c_; ab_[1] += n_; ab_[2] += s_
         for tt_, c_, n_ in st_.get("ask", []):                              # §262: ask acc per pass (per 1k bin)
             kb_ = askbin.setdefault(tt_, [0, 0]); kb_[0] += c_; kb_[1] += n_
+        for cl_, ok_ in st_.get("askc", []):                               # §270 (scope all): pass-K ask acc by class
+            kc_ = askcbin.setdefault(str(cl_), [0, 0]); kc_[0] += int(ok_); kc_[1] += 1
         for vok, _n in st_.get("vacc", []):
             for t_, v_ in vok.items():
                 vb_ = vbin.setdefault(str(t_), [0.0, 0]); vb_[0] += v_; vb_[1] += 1
@@ -629,6 +667,10 @@ def main(argv=None):
                 br["acue_by_d"] = {k_: {"acc": v_[0] / v_[1], "ce": v_[2] / v_[1], "n": v_[1]} for k_, v_ in sorted(acbin.items())}
             if askbin:                                                      # §262 Note 262-2: the ask items' ':' acc per pass (full-vocabulary argmax == v_X)
                 br["ask_acc_by_pass"] = {t_: v_[0] / v_[1] for t_, v_ in sorted(askbin.items(), key=lambda kv: int(kv[0]))}; br["ask_n"] = askbin["1"][1]
+            if askcbin:                                                     # §270 (scope all, log-only): the pass-K ask acc by class
+                br["ask_by_class"] = {k_: {"acc": v_[0] / v_[1], "n": v_[1]} for k_, v_ in sorted(askcbin.items())}
+            if PALL:                                                        # §270 Note 270-1 (1): cumulative resampled base items (chain + ask streams)
+                br["multiset_rejects"] = MSREJ[0]
             if WS_ITEMS is not None:                                        # §234 WS-READOUT: TEST2 d 1..d_max (first 200 each), fp32, no_grad, never fed back
                 br["ws_readout"] = ws_readout(m, WS_ITEMS, dev, K)
             if a.mul_s_p3 < 1.0 and stream is not None:                    # §235: cumulative accepted d 3 training items with a mul_s step / all d 3 items
@@ -642,7 +684,7 @@ def main(argv=None):
             log.write(json.dumps(br) + "\n"); log.flush()
             if "2" in bd and step % 1000 == 0:
                 d2_bins.append([step, bd["2"]["acc"]])
-            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}; wsbin = {}; askbin = {}
+            binacc = {}; vbin = {}; vbin_d = {}; gnbin = {}; hbin = {}; hbin_d = {}; dseq = []; iseq = []; acbin = {}; wsbin = {}; askbin = {}; askcbin = {}
         if FUT and step in FUT and fut["stop"] is None:                     # LAT_v1 §4 futility (the d = 2 train acc of complete 1k bins)
             l4 = [v_ for _, v_ in d2_bins[-4:]]; sl = float(np.polyfit(np.arange(len(l4)), l4, 1)[0]) if len(l4) >= 2 else None
             accl = l4[-1] if l4 else None; rising = sl is not None and sl > 0.02
@@ -678,6 +720,8 @@ def main(argv=None):
     train = {"train_sec": train_sec, "last_step": step, "n_nonfinite": n_nonfinite, "entry_d1": ent["entry_d1"], "futility": fut if FUT else None,
              "clip_rate": float((gl > 1.0).mean()), "grad_norm_preclip": {"median": float(np.median(gl)), "p90": float(np.percentile(gl, 90))},
              "write_grad_spikes_floor": [x_ for x_ in wg_hist if x_["spike_100x_floor"]], "micro": a.micro, "train_gpu": info["train_gpu"]}
+    if PALL:                                                                # §270 Note 270-1 (1)
+        train["multiset_rejects"] = MSREJ[0]
     json.dump(train, open(os.path.join(a.out, "train_summary.json"), "w", newline="\n"), indent=1)
     if a.src == "nested":
         return 0
