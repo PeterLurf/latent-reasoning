@@ -1,9 +1,10 @@
 """§265 DENSE-DISTRACT pilot (THEORY §265 / Note 265-1; score_dd): queues b418 ddp_s1 / b419 ddp_s2 (--distract_nmax 8) and b420 ddc_s1 / b421 ddc_s2 (CTRL, nmax default 2),
 one RTX 3090 host each (filler family s271), warm from bun_s<k> (bun_s<k>_init = the streaming copy of bun_s<k>/model.pt, sha on host) under bun's args; the 8k cosine
-stopped at 2000 (the §262 pilot pattern: TRAIN --stop_at 2000, then scratch.s268_stopland evals acc / ws_deep / attn_fade). TRAIN --require's b417's landed
-boxes/runs_fsq/dd_gates/gates_pass.json (offbit_aw / smoke_dd / gradflow on the same trainer blob; shipped). mem_check line at d 4 + 8 inserts for the nmax-8 cells (Note 265-1).
+stopped at 2000 (the §262 pilot pattern: TRAIN --stop_at 2000, then scratch.s268_stopland evals acc / ws_deep / attn_fade). TRAIN --require's the cell's own
+<run>_gates/gates_pass.json (scratch.gate_s271p on the host: smoke_dd + mem_check at micro 4, Note 265-3); b417's dd_gates wrote no gates_pass.json (smoke_dd = the
+micro-2 OOM), its offbit_aw / gradflow carry via G1b. mem_check line at d 4 + 8 inserts for the nmax-8 cells (Note 265-1).
 Frozen args scratch/s271_args_frozen_<run>.json (--args_only, local CPU) + their diff vs bun_s<k>/args.json -> scratch/gate_s271/pilot_args.json.
-Pre-deploy: unbuffered blob ids == HEAD; the inits' streaming shas (majority of 3); gates_pass.json present; ships checked; queue dry-run.
+Pre-deploy: unbuffered blob ids == HEAD; the inits' streaming shas (majority of 3); ships checked; queue dry-run.
     python -B scratch/s271_mkq_pilot.py"""
 import hashlib
 import json
