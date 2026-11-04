@@ -3,7 +3,7 @@
 **Purpose:** what is running, where, how to check or stop it, what waits to be scored, and the standing rules. Update
 it whenever a job starts or finishes. History before this rewrite (dated state blocks, 09-28 reorganisation, theory-pa
 hosts, Pilot sections): `docs/archive/CURRENT_TASKS_history_to_2026-10-03.md`.
-**Last updated: 2026-11-04 18:0x EST** (local = UTC − 4; Vast hosts log UTC).
+**Last updated: 2026-11-04 19:1x EST** (local = UTC − 4; Vast hosts log UTC).
 
 **Read first in a new session:** this file → `docs/NORTH_STAR.md` → `docs/THEORY.md` (§97 on; §0–§96 verbatim in `docs/archive/THEORY_s0-s96.md`, search "## N.") (registrations and
 results, § numbers) → `docs/PROTOCOL12.md` (experiments-side results) → `docs/README.md` (index).
@@ -26,6 +26,7 @@ so send to the pipe addresses their messages come from.
 
 ## Running now (10:2x 2026-10-21; credit ~$85; Vast: b316 A1 $0.235/h + b319 §219 T2 $0.201/h)
 
+* **19:1x 11-04 EST (Experiments):** RUNNING: §268 b428 aw_plaw2_s3 (77.48.24.203:40029, $0.207/h, proj $0.51, idle stop armed wall 4.54 h; lands ~20:20). §271 S1 HELD, AUDIT G-D NEEDED: b425 attempt 1 died in the host import check (gate_s274 -> gate_s251 chdir to D:/Latent; ~$0.06; ledger line). Fix 1b4a0db8 (gate_s274 sets LATENT_ROOT) + f3c755c4 (ship/pin gate_s228, which the dry-run had masked). Queues regenerated as .hold (af768740; shas daa3ea63 / 3f8b1c34 / fc76113f); token diff vs the reviewed 30f0690e = only those two changes. On PASS: flip, then two chains (b425 EVAL_H=0.6; b426+b427 EVAL_H=0.5 - one EVAL_H per chain, the v6 template refuses a mismatch). Theory to score: §270 (score_fp), §265 pilot (score_dd).
 * **18:2x 11-04 EST (Experiments):** §265 PILOT COMPLETE 4/4 (ddp_s2 09b5ad65 - the first host saved by the idle stop) -> Theory score_dd pilot; §270 complete -> score_fp. 0 hosts live; s273 b428 searching offers, s274 §271 S1 queued behind it.
 * **18:1x 11-04 EST (Experiments):** LANDED UNREAD -> Theory: §270 COMPLETE (fp_s1 27a22eba, fp_s2 1e78f663; of_s<k>_fp paired baselines) -> score_fp. §265 pilot 3/4 (ddp_s1 3e73a3a7, ddc_s1 / ddc_s2 27a22eba); ddp_s2 (b419) restarting after its self stop, drain armed -> then score_dd pilot. Peers restarted unnamed (claude-00/59/a4/b7), so this line is the hand-off.
 * **18:0x 11-04 EST (Experiments):** REBOOT #3 at 16:20 (Experiments back 17:58; peers restarted as unnamed claude-00/59/a4/b7). All daemons died. FINISHED ON HOSTS, drains re-armed 18:0x (gen10_s267; Experiments owns, nobody else arm): §270 b423 fp_s1 + b424 fp_s2 -> score_fp; §265 pilot b419 ddp_s2 (SELF-STOPPED by the idle stop; the watcher starts it), b420 ddc_s1, b421 ddc_s2 (+ b418 landed 3e73a3a7) -> score_dd pilot. CHAINS restarted: s273 b428 aw_plaw2_s3 (searching offers), then s274 §271 S1 b425-b427. autoexclude restarted. Credit $77.46.
