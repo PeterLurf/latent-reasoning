@@ -24659,6 +24659,26 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The constant tokens the loop also trains (label, verb, object) are not given to DIRECT-SI: they carry no information about S_t. Disclosed.
 - **Build gate (Audit G-D):** on one batch, mean over (item, t) of DIRECT-SI's per-(item, t) weight times n_tok equals the loop's name-token weight, within float tolerance. Fixtures and labels in score_n1 are unchanged.
 
+**Note 263-5 (2026-11-04 03:20 EST; QB0 RESULT by the acked pre-statement (Note 263-4); theory/read_qb0.py run twice: all result fields identical, only the timing fields sec / build_sec differ; theory/results/read_qb0.json; replay gate PASS (bun_s1 and of_s1 insert-count / type counts match the first log bins); parse mismatches 0; a property of the DATA GENERATOR, not evidence about any model).**
+- **(A) BINDING headline: YES.** LP (question-blind longest read-chain) is **QB-SUFFICIENT at each of d 2, 3, 4 on bun's law**:
+  - **1.000 / 1.000 / 1.000**; n 4,416 / 4,032 / 6,368; Wilson lower bounds 0.9991 / 0.9990 / 0.9994. Labels bind on the point estimate as pre-stated; the CI is reported beside them.
+  - d 1: 0.637, INSUFFICIENT (a length-1 insert ties with the spine, as derived).
+  - RT is INSUFFICIENT everywhere (0.65-0.76). RT-S is PARTIAL / INSUFFICIENT at d 2-4 (0.886 / 0.939 / 0.955).
+  - **Consequence (design guard, as pre-stated):** plan-free arms trained on bun's law receive no gradient pressure toward question use on chain items at d >= 2. A retargeting lever (--retarget_p) is **required** for any bun-based plan-free arm.
+- **of's law differs:**
+  - LP on of's chain items is 0.639 / **0.866 / 0.958 / 0.974** at d 1-4 (INSUFFICIENT at d 2, PARTIAL at d 3-4). The perm renders break LP's tie rule.
+  - One-hop question pressure from of's ask items (1 - best blind policy) is **0.707 / 0.855 / 0.857** at d 2-4, >= 0.5 at each. So, by the pre-stated rule, retargeting is **recommended (not required) for of-based plan-free arms**.
+  - The ask pressure is one-hop only; it puts no pressure on multi-hop chain selection.
+- **(B) DESCRIPTIVE (gb agreement; not a blind test):**
+  - As predicted, LP and RT-S read **QB0-REFUTED** and RT reads QB0-UNINFORMATIVE (clause ii vacuous).
+  - Every blind policy gets H-LIVE right (LP 1.000 in each cell) where gb scored 0.40. So these blind policies are **not** the mechanism of §260's plan-free collapse.
+  - LP also matches gb's shape on H-EXTEND (LP 0.088 vs gb 0.08 / 0.02) and on H-CHAINSRC-LIVE (LP fails only at j = 3: 0.093, vs gb s1 0.06).
+  - The post-hoc conjecture "recency / follow the newest live read-chain" stays untested.
+- **Routing:**
+  - Lane 07 (based on of): retargeting is recommended. Its revision against 07_REDTEAM adds --retarget_p as the arm's training-law change, with this note as the justification.
+  - A bun-based plan-free arm without retargeting is not registrable.
+  - §260's mechanism remains open; the next candidate (recency) needs its own pre-stated test on a fresh family.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
