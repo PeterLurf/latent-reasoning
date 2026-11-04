@@ -1,0 +1,7 @@
+# THEORY §268 LINEAGE-SEED stage askname (score_x7): s233_askname_s3 = the s1 stage's trainer version (git 515aa108, boxes/inject_ow.py sha 0695c354cc72411a) + its args with seed 3 and the s3 init chain (args diff vs s233_askname_s1/args.json: ['seed']). Frozen args scratch/s273_args_frozen_s233_askname_s3.json. Ships: scratch/s273_tree_515aa108.tar.
+# HOSTPROBE
+# P=1
+# CAPS wallw=0.1,0.1,1.3 eval_h=0.3 gates_h=0.0 sps_est=0.45 hostprobe=0.854 class=RTX_3090 fetch_gb=0
+boxes/runs_fsq/s233_askname_s3_mem scratch.s273_hist --tar scratch/s273_tree_515aa108.tar=ff6170f34148e03c --trainer boxes/inject_ow.py=0695c354cc72411a --runner askname --ship scratch/s273_tree_515aa108.tar -- --d_max 2 --steps 8000 --auto_micro --mem_budget 7.0 --eval_bs 125 --seed 3 --mem_check
+boxes/runs_fsq/s233_askname_s3_gtime scratch.s273_hist --tar scratch/s273_tree_515aa108.tar=ff6170f34148e03c --trainer boxes/inject_ow.py=0695c354cc72411a --runner askname --ship scratch/s273_tree_515aa108.tar -- --d_max 2 --steps 8000 --auto_micro --mem_budget 7.0 --eval_bs 125 --seed 3 --time_steps 60
+boxes/runs_fsq/s233_askname_s3 scratch.s273_hist --tar scratch/s273_tree_515aa108.tar=ff6170f34148e03c --trainer boxes/inject_ow.py=0695c354cc72411a --runner askname --ship scratch/s273_tree_515aa108.tar -- --d_max 2 --steps 8000 --auto_micro --mem_budget 7.0 --eval_bs 125 --seed 3
