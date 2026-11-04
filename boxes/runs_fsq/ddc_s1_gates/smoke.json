@@ -1,0 +1,13 @@
+{
+ "rc": 9,
+ "n_loss": 20,
+ "finite": true,
+ "distract_n": {
+  "0": 451,
+  "1": 413,
+  "2": 416
+ },
+ "micro": 4,
+ "nmax": 2,
+ "pass": true
+}

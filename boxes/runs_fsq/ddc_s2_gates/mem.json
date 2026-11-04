@@ -1,0 +1,8 @@
+{
+ "path": "boxes/runs_fsq/ddc_s2_mem/mem_check.json",
+ "peak_gib_train": 8.70462666451931,
+ "peak_gib_eval": 5.108080863952637,
+ "micro": 4,
+ "limit_gib": 22.5,
+ "pass": true
+}

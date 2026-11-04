@@ -1,0 +1,24 @@
+{
+ "pass": true,
+ "smoke": {
+  "rc": 9,
+  "n_loss": 20,
+  "finite": true,
+  "distract_n": {
+   "0": 451,
+   "1": 413,
+   "2": 416
+  },
+  "micro": 4,
+  "nmax": 2,
+  "pass": true
+ },
+ "mem": {
+  "path": "boxes/runs_fsq/ddc_s1_mem/mem_check.json",
+  "peak_gib_train": 8.828043565154076,
+  "peak_gib_eval": 5.108080863952637,
+  "micro": 4,
+  "limit_gib": 22.5,
+  "pass": true
+ }
+}

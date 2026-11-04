@@ -1,0 +1,8 @@
+=== 21:04:53 scratch.gate_s271p
+               total        used        free      shared  buff/cache   available
+Mem:             125          61          23           0          41          63
+Swap:              9           0           8
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  3.2G   27G  11% /
+44 MiB, 24576 MiB
+GATE_S271P {"smoke": {"rc": 9, "n_loss": 20, "finite": true, "distract_n": {"0": 403, "1": 437, "2": 440}, "micro": 4, "nmax": 2, "pass": true}, "mem": {"path": "boxes/runs_fsq/ddc_s2_mem/mem_check.json", "peak_gib_train": 8.70462666451931, "peak_gib_eval": 5.108080863952637, "micro": 4, "limit_gib": 22.5, "pass": true}, "pass": true}

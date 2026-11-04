@@ -1,0 +1,8 @@
+=== 20:59:08 boxes.inject_aw
+               total        used        free      shared  buff/cache   available
+Mem:             125          61          23           0          41          63
+Swap:              9           0           8
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  3.2G   27G  11% /
+44 MiB, 24576 MiB
+TIMING 1.573882273832957

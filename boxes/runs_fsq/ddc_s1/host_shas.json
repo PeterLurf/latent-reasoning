@@ -1,0 +1,10 @@
+{
+ "args.json": "7b813cdb0cf48aa6c0622cafda67991fa3e4ade4f96cd7813b6f7fee145023eb",
+ "args_diff.json": "e62f8d60e295500cb7db9cc66277c1f47b73b80f1945b83c22251a6975b91a94",
+ "ckpt_stop_sha256.json": "dc2e9b1f86707fa7d8bba88bba511fb89861e4a98eb426808d90d455f066f517",
+ "eval.json": "5285accf233b1fa3a95b957821a5e543c78c7be6fd0ee6bbf4f6fd4582579cbf",
+ "eval_acc.json": "54052b4fb37c17d4eb96ffb12e32d5eb3dd00dac90b88810eedff0e1aa3b2e53",
+ "eval_attn_fade.json": "0c1ef96d45b25ec90575afb933bbf393ae459a68ab0f6b8eaf34e324c04b3c69",
+ "eval_ws_deep.json": "98ba719cf0da3f167feddc9c10bd3df4f864e4a862fc71d6890aa1d1c47c14fa",
+ "log.jsonl": "615378b0c1f6012d478a6ebc48971e077e67322397a645563329e37bffd81a7f"
+}

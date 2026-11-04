@@ -1,0 +1,18 @@
+{
+ "args.json": "b2c95fedfacd4a36a37cad3b044381943f00d754b56f4502c1f6622ba0af9b17",
+ "args_diff.json": "3d011c3b5615c05e12760937bc5dc3024adc3ea18a2a3f3db5741152b1af25a7",
+ "eval.json": "b77bb1e09508e29e687c993653f74770f72647e1fc18d9021e52a676201c5382",
+ "eval_acc.json": "f068ce2748a4dd3a244f72eb360c35918b5556000784aa8c269835db1507530b",
+ "eval_full_perm.json": "fe65c86f20840a3f8a7f29459cc3c2cd79557f333d46d9a3eb3924b370d4d9f6",
+ "eval_insert_ho.json": "1e1079c8c58b0425dc985b661885ddf23d3d44d98f1b9d84192408681804973b",
+ "eval_late_premise.json": "ba4ecbab8a7e313794cfc19e499891453ded404ec257e1c26826aa90830de6e5",
+ "eval_long_k128.json": "49e615097c03f9bc23780b7e99e74c4e788f4506dd64185ec490c2fe6b25e83b",
+ "eval_lp5h.json": "39e75b5abd774868a95a530eb38dbe534ac011bfbbd1e04fd4949321b8c7b803",
+ "eval_name_swap.json": "2cf3d4f159e6bce64b92477aac3b9dd0f783289a1679f1dac2a7807e1359380e",
+ "eval_shuffle_graded.json": "057548ff962e288e4f6e8f67d3d9c157adb40dc252b4ff5f4aeff0544bd65ffa",
+ "eval_stab.json": "ac89f4c2185c4f7dfc0edb60246144cb5ee4a44e0035ded1841ef5431e9ec8ab",
+ "eval_swap_kd.json": "740e6981ad9a00ba0d6c8eff67bdcd5d35fd331adb37ffbfeb4ac1904b74beb1",
+ "eval_test_perm.json": "ed21371a3d2d3c896c3a216f700eb1249e9e25d159de4744de01ade357a86ac4",
+ "train_summary.json": "e952a85146af8dc9c25eb516fe425e563c1f9fe29187e400c9669c88cf1eaede",
+ "log.jsonl": "76e6c9b2ffadf6c882b6b3aed8d61949b7f463db726bbcb1451879a3ba0c1f5e"
+}

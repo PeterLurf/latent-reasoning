@@ -1890,3 +1890,8 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 59151822 vast offer 53246719 created 2026-11-04 14:29: label gen-b420, queue scratch/gen_q_b420.txt (logged at create by vdeploy_toy.sh)
 59155594 vast offer 55351991 created 2026-11-04 15:06: label gen-b420, queue scratch/gen_q_b420.txt (logged at create by vdeploy_toy.sh)
 59144059 vast | gen_b418 DESTROYED_VERIFIED 2026-11-04 15:38 after verified per-run fetch (boxes/runs_fsq/ddp_s1 boxes/runs_fsq/ddp_s1_gtime boxes/runs_fsq/ddp_s1_mem); FAILED (no §224 done marker): boxes/runs_fsq/ddp_s1_gates
+59158819 vast offer 28824264 created 2026-11-04 15:40: label gen-b421, queue scratch/gen_q_b421.txt (logged at create by vdeploy_toy.sh)
+59158819 vast | gen_b421 DESTROYED_VERIFIED 2026-11-04 18:06 after verified per-run fetch (boxes/runs_fsq/ddc_s2 boxes/runs_fsq/ddc_s2_gates boxes/runs_fsq/ddc_s2_gtime boxes/runs_fsq/ddc_s2_mem)
+59134720 vast | gen_b423 DESTROYED_VERIFIED 2026-11-04 18:07 after verified per-run fetch (boxes/runs_fsq/fp_s1 boxes/runs_fsq/fp_s1_gtime boxes/runs_fsq/fp_s1_mem boxes/runs_fsq/of_s1_fp)
+59155594 vast | gen_b420 DESTROYED_VERIFIED 2026-11-04 18:07 after verified per-run fetch (boxes/runs_fsq/ddc_s1 boxes/runs_fsq/ddc_s1_gates boxes/runs_fsq/ddc_s1_gtime boxes/runs_fsq/ddc_s1_mem)
+59139888 vast | gen_b424 DESTROYED_VERIFIED 2026-11-04 18:07 after verified per-run fetch (boxes/runs_fsq/fp_s2 boxes/runs_fsq/fp_s2_gtime boxes/runs_fsq/fp_s2_mem boxes/runs_fsq/of_s2_fp)
