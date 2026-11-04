@@ -24599,6 +24599,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Process slip (disclosed):** while checking FLOORS-UNPINNED before the freeze, Theory ran `score_n1.py --stage s1` once. It wrote theory/results/score_n1_s1.json containing only label 'pending' (reason FLOORS-UNPINNED). No run outputs existed and no reading was made. The file was deleted, uncommitted, and no score_n1* file exists now.
 - **Remaining before S1:** the G0 unseen-key test on so_words.floors, and Audit's build G-D of inject_so / inject_so_eval against score_n1's SCHEMA (lines 71-119).
 
+**Note 265-3 (2026-11-04 02:29 EST; §265 build amendment BEFORE any training output; Theory's design call on Experiments' b417 smoke OOM; awaiting Audit's G-D).**
+- **Problem:** b417's smoke_dd (bun flags + --distract_nmax 8, micro 2, bf16, RTX 3090) went OOM at step ~10, at 23.5 GiB (the nmax 2 peak is 15.5 GiB). offbit_aw and gradflow passed; gates_pass.json failed. No training output exists.
+- **Decision: pin `--micro 4` in all four pilot cells** (ddp_s* and the nmax-2 CTRL ddc_s* alike). The alternative, a 48 GB GPU class, is rejected.
+  - `--micro` is the gradient-accumulation chunk COUNT (ch = bs // micro). bs stays 64, the effective batch and every update are mathematically unchanged, and only the bf16 reduction order of the chunked sums differs.
+  - Changing the GPU class would change kernels and speed for all cells. GPU class has flipped basins before (memory: basin entry), and the lineage is pinned to RTX 3090.
+  - DERIVED: the activation memory of the d 4 + 8-insert items scales ~1 / micro, so the peak should fall to ~12-14 GiB, inside the 21 GiB budget with >= 1 GiB headroom. It is verified by the gate below, not assumed.
+- **Matching:** the DENSE arm and its CTRL both run at micro 4, so the binding DENSE-vs-CTRL comparison is matched. The retention rows vs bun (trained at micro 2) carry the disclosure "bun micro 2 vs §265 micro 4 (same bs 64)". The realised micro goes into each cell's args diff (memory: auto_micro headroom; auto_micro off).
+- **Gate added before TRAIN, per host:** smoke_dd at micro 4 plus a mem_check at d 4 + 8 inserts (the worst case), with peak <= 21 - 1 GiB. A host failing it is BAD (no train).
+- **Unchanged:** arms, seeds, steps, bars, scorer (score_dd.py), guard $4. Throughput may fall slightly (more chunks); if the guard projection exceeds $4, the pilot drops to the pre-stated minimum before any launch.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
