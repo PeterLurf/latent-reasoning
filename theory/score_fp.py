@@ -90,7 +90,8 @@ def seed(runs, run, ref, bun, final=False):
     crit = {"FULL-ORDER": full, "RETAIN-ORDER": rord, "RETAIN": retain, "C2-RETAIN": c2, "C6": c6, "CONTENT": content, "STABLE": sok is not False}
     fail = [k for k, v in crit.items() if not v]
     c2rows = {"d6": c2_row(a["6"]["acc"], r["6"]["acc"] - 0.05, n_of(a, "6")), "d7": c2_row(a["7"]["acc"], r["7"]["acc"] - 0.05, n_of(a, "7"))}
-    ofp = jl(os.path.join(runs, ref, "eval_full_perm.json")); bn = jl(os.path.join(runs, bun, "eval_acc.json"))
+    ofp = jl(os.path.join(runs, ref + "_fp", "eval_full_perm.json"));   # Audit §270 code G-D: eval-only of_sX full_perm lands in of_sX_fp/ (never in of_sX/, whose log.jsonl it would overwrite)
+    bn = jl(os.path.join(runs, bun, "eval_acc.json"))
     paired = {d: fp[d]["acc"] - ofp["by_d"][d]["acc"] for d in fp if ofp and d in ofp.get("by_d", {})} if ofp else None
     desc_missing = ([ref + "/eval_full_perm"] if ofp is None else []) + ([bun + "/eval_acc"] if bn is None else [])   # Audit LOW (b): reported, never binding
     return {"label": "FULL-ORDER-C1" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "cells": cells,
@@ -123,7 +124,8 @@ def fixtures():
                 os.makedirs(os.path.join(d, rr))
                 if not (noofacc and rr == ref):
                     json.dump({"by_d": {"6": {"acc": v6}, "7": {"acc": v7}}}, open(os.path.join(d, rr, "eval_acc.json"), "w"))
-            json.dump({"by_d": {x: {"acc": 0.45} for x in ("2", "3", "4")}}, open(os.path.join(d, ref, "eval_full_perm.json"), "w"))
+            os.makedirs(os.path.join(d, ref + "_fp"), exist_ok=True)
+            json.dump({"by_d": {x: {"acc": 0.45} for x in ("2", "3", "4")}}, open(os.path.join(d, ref + "_fp", "eval_full_perm.json"), "w"))
             p = os.path.join(d, run); os.makedirs(p)
             fv = 0.5 if (fail_s2 and run == "fp_s2") else fpv
             json.dump({"by_d": {**{x: {"acc": (t2d3 if (x == "3" and t2d3 is not None) else t2), "acc_kprime": {"2": k2 if x == "4" else 1.0}} for x in ("1", "2", "3", "4")},
@@ -165,6 +167,8 @@ def fixtures():
              ("missing of eval_acc is pending", {"noofacc": True}, {}, "pending"))
     for name, kw, sk, want in cases:
         o = score(world(**kw), **sk); res.append((name, want in o["verdict"], o["verdict"]))
+    o = score(world()); pr = o["seeds"]["fp_s1"].get("paired_vs_of_desc")
+    res.append(("paired baseline read from of_sX_fp (Audit G-D)", bool(pr) and abs(pr["4"] - 0.50) < 1e-9 and not o["seeds"]["fp_s1"].get("desc_missing"), str(pr)))
     o = score(world(fpv=0.86)); near = o["seeds"]["fp_s1"]
     res.append(("d4 0.86 n1000 PASS letter + NEAR flag", near["label"] == "FULL-ORDER-C1" and "full_perm_d4" in near["near"], near["label"] + " near=" + ",".join(near["near"])))
     for r in res:
