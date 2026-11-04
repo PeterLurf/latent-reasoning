@@ -1883,3 +1883,10 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 59132178 vast offer 25240859 created 2026-11-04 11:39: label idlestop-g2 (idle-stop gate G2, GTX 1660S $0.057/h, throwaway)
 59132178 vast | gen_g2 HOST_SELF_STOPPED 2026-11-04 11:49 start requested by the drain watcher (starting instance 59132178.)
 59132178 vast | gen_g2 DESTROYED_VERIFIED 2026-11-04 11:59 after verified per-run fetch ()
+59134720 vast offer 45751724 created 2026-11-04 12:02: label gen-b423, queue scratch/gen_q_b423.txt (logged at create by vdeploy_toy.sh)
+59139888 vast offer 19025016 created 2026-11-04 12:44: label gen-b424, queue scratch/gen_q_b424.txt (logged at create by vdeploy_toy.sh)
+59144059 vast offer 48412778 created 2026-11-04 13:20: label gen-b418, queue scratch/gen_q_b418.txt (logged at create by vdeploy_toy.sh)
+59147416 vast offer 51414289 created 2026-11-04 13:51: label gen-b419, queue scratch/gen_q_b419.txt (logged at create by vdeploy_toy.sh)
+59151822 vast offer 53246719 created 2026-11-04 14:29: label gen-b420, queue scratch/gen_q_b420.txt (logged at create by vdeploy_toy.sh)
+59155594 vast offer 55351991 created 2026-11-04 15:06: label gen-b420, queue scratch/gen_q_b420.txt (logged at create by vdeploy_toy.sh)
+59144059 vast | gen_b418 DESTROYED_VERIFIED 2026-11-04 15:38 after verified per-run fetch (boxes/runs_fsq/ddp_s1 boxes/runs_fsq/ddp_s1_gtime boxes/runs_fsq/ddp_s1_mem); FAILED (no §224 done marker): boxes/runs_fsq/ddp_s1_gates
