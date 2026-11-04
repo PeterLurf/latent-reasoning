@@ -32,7 +32,7 @@ def tree(commit):
     """git archive <commit> boxes -> scratch/_tmp/s273/<commit>/ (boxes/runs_fsq and prosqa linked to D:/Latent's; never rmtree through a link)."""
     t = ROOT + "/scratch/_tmp/s273/" + commit
     if not os.path.isdir(t + "/boxes"):
-        os.makedirs(t, exist_ok=True); tp = t + ".tar"; subprocess.check_call(["git", "archive", "-o", tp, commit, "boxes"] + ([WRAP] if commit == "515aa108" else []))
+        os.makedirs(t, exist_ok=True); tp = t + ".tar"; subprocess.check_call(["git", "archive", "-o", tp, commit, ":(glob)boxes/*.py"] + ([WRAP] if commit == "515aa108" else []))
         tarfile.open(tp).extractall(t)
     for sub in ("prosqa", "boxes/runs_fsq"):
         q = t + "/" + sub
