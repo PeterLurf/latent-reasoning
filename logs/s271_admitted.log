@@ -1,3 +1,7 @@
 # §251 ledger (fill_s271); last field = $
 417:bun_s1_sc 75.129.99.99:4258 59066408 $0.2083/h sps 1.4104786276817323 steps 100 0.51
 # 11:2x 11-04 landing (Experiments, after 03:30 reboot): eval_cue_clock/op_count/attn_fade copied bun_s<k>_sc -> bun_s<k> (3 streaming shas == host_shas); bun_s1 model.pt sha256 1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925; bun_s2 09337f63aec5795925db15f7c4a828ebbabed000e9ca3ece6bcd3ad217b44dac (== pilot INIT)
+418:ddp_s1 142.163.160.58:40018 59144059 $0.2083/h sps 2.017174792289734 steps 2000 0.48
+419:ddp_s2 75.129.99.99:4298 59147416 $0.2083/h sps 2.216976515452067 steps 2000 0.51
+420:ddc_s1 37.191.136.34:17002 59155594 $0.2056/h sps 1.4752429087956747 steps 2000 0.42
+# 15:5x 11-04 landing (Experiments): 418:ddp_s1 landed 3e73a3a7 (8/8 host shas); ddp_s1_gates NOT fetched (no s267 marker for *_gates then; host destroyed) - gate passed (TRAIN --require'd gates_pass.json); mem evidence ddp_s1_mem/mem_check.json landed; score_dd reads no gates dir (Audit)
