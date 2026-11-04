@@ -356,7 +356,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
-| 270 | FULL-PERM (closes §263's scope gap; Theory's choice): of_sX args + --perm_scope all (all statements permuted, q last; chain + ask items), from bun_sX_init, 8k x 2 seeds; binding FULL-ORDER (fresh full_perm d 2-4 >= 0.85) + RETAIN-ORDER (TEST-PERM / LATE-PREMISE) + RETAIN + C2-RETAIN vs of - 0.05 (NEAR-SEED) + C6 + CONTENT; FP_v1.md | registered | **REGISTERED 11-04; score_fp.py 20/20 (committed before output); guard $4; awaiting Audit G-D** |
+| 270 | FULL-PERM (closes §263's scope gap; Theory's choice): of_sX args + --perm_scope all (all statements permuted, q last; chain + ask items), from bun_sX_init, 8k x 2 seeds; binding FULL-ORDER (fresh full_perm d 2-4 >= 0.85) + RETAIN-ORDER (TEST-PERM / LATE-PREMISE) + RETAIN + C2-RETAIN vs of - 0.05 (NEAR-SEED) + C6 + CONTENT; FP_v1.md | registered | **APPROVED by Audit 11-04 (270-1: CI on every proportion bar; multiset reject-and-resample; cell cap $1.8).** **REGISTERED 11-04; score_fp.py 23/23; guard $4** |
 
 ## Live sections
 
@@ -20185,7 +20185,7 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
   - RETAIN as §263 (TEST2 d 1-4 >= 0.98, NOT-DECODER, SWAP4, LP5-D4).
   - C2-RETAIN: d 6 / d 7 >= of_sX - 0.05, with NEAR-SEED rows (sigma_seed 0.090).
   - C6, CONTENT, STABLE.
-  - Label FULL-ORDER-C1. 2/2 = claim (scope "any statement order, question last"); 1/2 SPLIT; 0/2 FAIL. Wilson CI + NEAR on every binding cell; letters on raw values.
+  - Label FULL-ORDER-C1. 2/2 = claim (scope "any statement order, question last"); 1/2 SPLIT; 0/2 FAIL. Wilson CI + NEAR on every proportion-bar cell (Note 270-1); letters on raw values. A 2/2 reads "replicated once, one lineage".
   - C2 is retention-only (2 seeds < 3), so no d 6-7 causal gates (Audit rule 3 applies only to a C1 + C2 claim).
 - **Predictions (Theory, pre-output):** P1 FULL-ORDER 2/2 0.50; P2 paired d 4 gain vs of >= +0.30 0.75; P3 TEST-PERM kept 0.85; P4 TEST2 kept 0.85; P5 C2 retention 0.55; P6 of's full-perm errors >= 2x in N3 / N4-breaking items 0.65.
 - **OC:** P(2/2 | effect) ~0.40; P(pass per seed | no effect) <= 0.01 (2/2 <= 0.001); overall P(2/2) ~0.24. Literature 4a8ce800: "perm_scope all goes beyond DAG-valid permutations (2502.19907); open bet"; no 'first'. **Censoring:** fixed-K' readouts (no censored items); a run / eval that never lands gets one VOID-RERUN, then FAIL.
@@ -24447,6 +24447,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **Cost:** realised ~$3.99 vs a $3.0 cell cap / $4 guard. The ~$1.0 over the cap is post-landing idle time after the 17:40 reboot killed the guards (Experiments disclosed it to Audit).
 - **Literature (4a8ce800):** contradicts none of the four papers. CONFIRMS Premise Order 2402.08939. CONFIRMS 2502.19907 within its augmented scope, but QUALIFIES it: perm alone failed here (§252 / §254) and needed the one-hop lookup co-training, and the gain does not transfer to unaugmented orders. Relation to 2505.20896 is a behavioural analogy only. No 'first' claim on order invariance. All-sentence perm goes beyond DAG-valid permutations and is an open bet. $0 lead: Dai 2409.05448 Ordering-ID patch on bun vs of.
 - **Next (routing):** the full-shuffle drop is the new C1-scope gap. Remaining order-bound piece: where givens and S_0 sit relative to the ops. A cheap follow-up is the same recipe with perm extended to all sentences (perm_scope all). It needs its own registration and does not repeat the §263 loop unless decisive. Keep of_s1 / of_s2 model.pt (new lineage head). bun model.pt stays until §264-§269 eval-only parts finish.
+
+**Note 270-1 (§270; 2026-11-04 00:45 EST; Audit G-D APPROVED (PASS-WITH-NOTES, auto-approved under the $30 rule, guard $4); amended BEFORE build or output; score_fp.py fixtures 23/23).**
+- **MED-1 (CI coverage).** score_fp now gives a cell (Wilson 95% CI + NEAR) to every proportion bar:
+  - TEST2, NOT-DECODER, full_perm, TEST-PERM, LATE-PREMISE (as before);
+  - SWAP4 follow_U against max(0.50, floor + 0.30), n = n_pairs;
+  - CONTENT acc8 and each by_pos;
+  - C6 at every d 1-6 x K' 64 / 128 against acc K'8 - 0.02.
+  - LP5-D4 (a difference of two accuracies) and STABLE stay raw booleans. C2-RETAIN is a raw boolean, and its two rows carry c2_rows CIs and NEAR-SEED.
+  - The registration's "every binding cell" now reads "every proportion-bar cell".
+  - Disclosed: insert_ho and long_k128 record no per-cell n, so those cells use n 1000. Their CIs are approximate; letters are unaffected.
+- **MED-2 (multiset disjointness).** Under --perm_scope all, a training base item whose sentence multiset matches a TEST2 d 1-8 item is **rejected and resampled** (next stream item), not asserted. The trainer logs a hit counter (multiset_rejects, cumulative) to log.jsonl and train_summary.json. This filter is a small difference vs of, which had none. It is disclosed and does not enter the args diff. G3 reports the reject rate on 2k steps.
+- **LOW:**
+  - (a) Fixtures added: STABLE failing (unrecovered loss jump), the SWAP4 floor + 0.30 clause, and a missing of eval_acc (-> pending).
+  - (b) --final prints and records `desc_missing` when of_sX eval_full_perm or bun eval_acc is absent. P2 / P6 are then reported unreadable, never silently None.
+  - (c) Each fp_sX is pinned to the GPU class of its same-seed of_sX (RTX 3090), and the eval_gpu / host speed is recorded beside of's.
+  - (d) A 2/2 is worded "replicated once (2 seeds), one lineage". The fixture count is 23 (FP_v1's 19 + 4).
+  - (e) The cell cap is raised to **$1.8** inside the unchanged $4 guard; s1-like speed is ~3.9 h.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 

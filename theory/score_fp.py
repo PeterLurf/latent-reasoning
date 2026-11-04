@@ -67,13 +67,23 @@ def seed(runs, run, ref, bun, final=False):
     for d in ("1", "2", "3", "4"):
         cells["test2_d" + d] = cell(a[d]["acc"], 0.98, n_of(a, d))
     cells["not_decoder_d4"] = cell(a["4"]["acc_kprime"]["2"], 0.20, n_of(a, "4"), ge=False)
+    # Audit G-D MED-1: every proportion bar gets a cell (Wilson CI + NEAR); LP5-D4 (a difference of two accuracies) stays a raw boolean
+    sw_n = f["eval_swap_kd"]["by_d"]["4"].get("n_pairs", 1000)   # insert_ho / long_k128 record no per-cell n: those cells use n 1000 (disclosed, Note 270-1)
+    cells["swap4_follow"] = cell(sw["follow_U"], max(0.50, sw["floor"] + 0.30), sw_n)
+    co = f["eval_insert_ho"]["fam"]["H-CHAINSRC-OP"]
+    cells["content_acc8"] = cell(co["acc8"], 0.85, co.get("n", 1000))
+    for k_, v_ in co["by_pos"].items():
+        cells["content_pos" + str(k_)] = cell(v_, 0.80, co.get("n_by_pos", {}).get(k_, 1000) if isinstance(co.get("n_by_pos"), dict) else 1000)
+    for d in ("1", "2", "3", "4", "5", "6"):
+        for k_ in ("64", "128"):
+            cells["c6_d%s_k%s" % (d, k_)] = cell(L[d]["acc"][k_], L[d]["acc"]["8"] - 0.02, L[d].get("n", 1000))
     full = all(cells["full_perm_d" + d]["ok"] for d in ("2", "3", "4"))
     rord = all(cells[k + d]["ok"] for k in ("test_perm_d", "late_premise_d") for d in ("2", "3", "4"))
-    retain = (all(cells["test2_d" + d]["ok"] for d in ("1", "2", "3", "4")) and cells["not_decoder_d4"]["ok"] and sw["follow_U"] >= 0.50
-              and sw["follow_U"] >= sw["floor"] + 0.30 and h["intact"]["4"] - h["mean_at_t"]["4"] >= 0.30)
+    retain = (all(cells["test2_d" + d]["ok"] for d in ("1", "2", "3", "4")) and cells["not_decoder_d4"]["ok"] and cells["swap4_follow"]["ok"]
+              and h["intact"]["4"] - h["mean_at_t"]["4"] >= 0.30)
     c2 = a["6"]["acc"] >= r["6"]["acc"] - 0.05 and a["7"]["acc"] >= r["7"]["acc"] - 0.05
-    c6 = all(L[d]["acc"][k] >= L[d]["acc"]["8"] - 0.02 for d in ("1", "2", "3", "4", "5", "6") for k in ("64", "128"))
-    co = f["eval_insert_ho"]["fam"]["H-CHAINSRC-OP"]; content = co["acc8"] >= 0.85 and min(co["by_pos"].values()) >= 0.80
+    c6 = all(cells["c6_d%s_k%s" % (d, k)]["ok"] for d in ("1", "2", "3", "4", "5", "6") for k in ("64", "128"))
+    content = all(v["ok"] for k, v in cells.items() if k.startswith("content_"))
     sok, smsg = AO.stable(runs, run)
     if sok is None:   # Audit SCORER_BUGS MED-1: a missing / blank log is pending, never STABLE
         return {"label": "FAIL: VOID" if final else "pending", "stable": (sok, smsg)}
@@ -82,11 +92,12 @@ def seed(runs, run, ref, bun, final=False):
     c2rows = {"d6": c2_row(a["6"]["acc"], r["6"]["acc"] - 0.05, n_of(a, "6")), "d7": c2_row(a["7"]["acc"], r["7"]["acc"] - 0.05, n_of(a, "7"))}
     ofp = jl(os.path.join(runs, ref, "eval_full_perm.json")); bn = jl(os.path.join(runs, bun, "eval_acc.json"))
     paired = {d: fp[d]["acc"] - ofp["by_d"][d]["acc"] for d in fp if ofp and d in ofp.get("by_d", {})} if ofp else None
+    desc_missing = ([ref + "/eval_full_perm"] if ofp is None else []) + ([bun + "/eval_acc"] if bn is None else [])   # Audit LOW (b): reported, never binding
     return {"label": "FULL-ORDER-C1" if not fail else "FAIL: " + ",".join(fail), "crit": crit, "cells": cells,
             "near": sorted(k for k, v in cells.items() if v["near"]), "c2_rows": c2rows,
             "c2_claim": "NEAR-SEED" if any(v["label"] == "NEAR-SEED" for v in c2rows.values()) else ("PASS" if c2 else "FAIL"),
             "full_perm_desc": {d: {k: v for k, v in fp[d].items() if k != "items"} for d in fp},
-            "paired_vs_of_desc": paired, "of_d6": r["6"]["acc"], "of_d7": r["7"]["acc"],
+            "paired_vs_of_desc": paired, "desc_missing": desc_missing, "of_d6": r["6"]["acc"], "of_d7": r["7"]["acc"],
             "bun_d6_desc": bn["by_d"]["6"]["acc"] if bn else None, "bun_d7_desc": bn["by_d"]["7"]["acc"] if bn else None,
             "graded_desc": jl(os.path.join(runs, run, "eval_shuffle_graded.json")), "stable": (sok, smsg)}
 
@@ -94,6 +105,9 @@ def seed(runs, run, ref, bun, final=False):
 def score(runs=R, final=False):
     o = {"section": 270, "final": final, "seeds": {r: seed(runs, r, ref, bun, final) for r, (ref, bun) in RUNS.items()}}
     labs = [v["label"] for v in o["seeds"].values()]
+    dm = sorted({m for v in o["seeds"].values() for m in v.get("desc_missing", [])})
+    if final and dm:
+        o["desc_missing"] = dm; print("NOTE (--final): descriptive inputs missing, P2 / P6 not readable:", ", ".join(dm))
     o["verdict"] = "pending" if "pending" in labs else "FULL-ORDER-C1 %d/2 (%s); C2 claim %s" % (labs.count("FULL-ORDER-C1"), " / ".join(labs),
                                                                                             "/".join(v.get("c2_claim", "?") for v in o["seeds"].values())); return o
 
@@ -102,11 +116,13 @@ def fixtures():
     res = []
 
     def world(fpv=0.95, fp2=None, tp=0.95, lp=0.9, t2=1.0, t2d3=None, k2=0.03, sw=0.9, lp5=0.1, d6=0.95, d7=0.85, hold=1.0, co=0.95, pos=0.9,
-              nolog=False, nofp=False, of6=0.97, of7=0.86, bun6=0.70, bun7=0.60, fail_s2=False):
+              nolog=False, nofp=False, of6=0.97, of7=0.86, bun6=0.70, bun7=0.60, fail_s2=False, swfloor=0.1, nanlog=False, noofacc=False):
         d = tempfile.mkdtemp()
         for run, (ref, bun) in RUNS.items():
             for rr, v6, v7 in ((ref, of6, of7), (bun, bun6, bun7)):
-                os.makedirs(os.path.join(d, rr)); json.dump({"by_d": {"6": {"acc": v6}, "7": {"acc": v7}}}, open(os.path.join(d, rr, "eval_acc.json"), "w"))
+                os.makedirs(os.path.join(d, rr))
+                if not (noofacc and rr == ref):
+                    json.dump({"by_d": {"6": {"acc": v6}, "7": {"acc": v7}}}, open(os.path.join(d, rr, "eval_acc.json"), "w"))
             json.dump({"by_d": {x: {"acc": 0.45} for x in ("2", "3", "4")}}, open(os.path.join(d, ref, "eval_full_perm.json"), "w"))
             p = os.path.join(d, run); os.makedirs(p)
             fv = 0.5 if (fail_s2 and run == "fp_s2") else fpv
@@ -116,14 +132,14 @@ def fixtures():
                 json.dump({"by_d": {x: {"acc": (fp2 if (x == "2" and fp2 is not None) else fv), "n": 1000} for x in ("2", "3", "4")}}, open(os.path.join(p, "eval_full_perm.json"), "w"))
             json.dump({"by_d": {x: {"acc_kprime": {"8": tp}} for x in ("2", "3", "4")}}, open(os.path.join(p, "eval_test_perm.json"), "w"))
             json.dump({"by_d": {x: {"acc": lp} for x in ("2", "3", "4")}}, open(os.path.join(p, "eval_late_premise.json"), "w"))
-            json.dump({"by_d": {"4": {"swap_mid": {"4": {"follow_U": sw, "floor": 0.1}}}}}, open(os.path.join(p, "eval_swap_kd.json"), "w"))
+            json.dump({"by_d": {"4": {"swap_mid": {"4": {"follow_U": sw, "floor": swfloor}}}}}, open(os.path.join(p, "eval_swap_kd.json"), "w"))
             json.dump({"by_d": {"4": {"intact": {"4": 1.0}, "mean_at_t": {"4": lp5}}}}, open(os.path.join(p, "eval_lp5h.json"), "w"))
             json.dump({"by_d": {str(x): {"acc": {"8": 1.0, "64": 1.0, "128": hold}} for x in range(1, 7)}}, open(os.path.join(p, "eval_long_k128.json"), "w"))
             json.dump({"fam": {"H-CHAINSRC-OP": {"acc8": co, "by_pos": {"1": pos, "2": 0.95}}}}, open(os.path.join(p, "eval_insert_ho.json"), "w"))
             json.dump({"n_nonfinite": 0}, open(os.path.join(p, "train_summary.json"), "w"))
             with open(os.devnull if nolog else os.path.join(p, "log.jsonl"), "w") as fh:
                 for i in range(1, 81):
-                    fh.write(json.dumps({"step": i * 100, "loss": 0.01}) + chr(10))
+                    fh.write(json.dumps({"step": i * 100, "loss": 5.0 if (nanlog and i > 40) else 0.01}) + chr(10))
         return d
     cases = (("all", {}, {}, "FULL-ORDER-C1 2/2"),
              ("full_perm d4 0.84", {"fpv": 0.84}, {}, "FAIL: FULL-ORDER"),
@@ -143,7 +159,10 @@ def fixtures():
              ("blank log is pending (MED-1)", {"nolog": True}, {}, "pending"),
              ("missing full_perm is pending", {"nofp": True}, {}, "pending"),
              ("missing full_perm --final is VOID", {"nofp": True}, {"final": True}, "FULL-ORDER-C1 0/2 (FAIL: VOID / FAIL: VOID)"),
-             ("one seed fails", {"fail_s2": True}, {}, "FULL-ORDER-C1 1/2"))
+             ("one seed fails", {"fail_s2": True}, {}, "FULL-ORDER-C1 1/2"),
+             ("STABLE fails (unrecovered loss jump)", {"nanlog": True}, {}, "STABLE"),
+             ("SWAP4 floor + 0.30 clause", {"sw": 0.75, "swfloor": 0.5}, {}, "FAIL: RETAIN"),
+             ("missing of eval_acc is pending", {"noofacc": True}, {}, "pending"))
     for name, kw, sk, want in cases:
         o = score(world(**kw), **sk); res.append((name, want in o["verdict"], o["verdict"]))
     o = score(world(fpv=0.86)); near = o["seeds"]["fp_s1"]
