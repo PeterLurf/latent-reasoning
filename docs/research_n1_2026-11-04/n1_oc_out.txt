@@ -1,0 +1,105 @@
+== A. MOVED share and shortcut floors f(n, m) on MOVED (fit: N_FIT 200000 draws/cell, seed 27110, MOVED subset; eval: N_EVAL 100000 draws/cell, seed 27111; unseen key -> non-initial uniform 1/(n-1)) ==
+   S_m-1 and bag_MAP-with-unseen-scored-wrong (the v1 rule) are diagnostics in parentheses, not in f.
+n3 m 4 MOVED 0.566 f 0.692 (bag_MAP) fitMOVED 113596 bagkeys 11 | (S4_trunc = answer, m<=4) 1.000 (S_m-1) 0.261 (bag_MAP unseen=wrong) 0.692 bag_MAP 0.692 last2_MAP 0.590 last2_only 0.304 lastS0partner 0.524 mostfreq 0.526 non_initial_unif 0.500
+n3 m 6 MOVED 0.649 f 0.583 (bag_MAP) fitMOVED 129851 bagkeys 24 | (S_m-1) 0.319 (bag_MAP unseen=wrong) 0.583 S4_trunc 0.324 bag_MAP 0.583 last2_MAP 0.511 last2_only 0.335 lastS0partner 0.506 mostfreq 0.507 non_initial_unif 0.500
+n3 m 8 MOVED 0.667 f 0.539 (bag_MAP) fitMOVED 133179 bagkeys 41 | (S_m-1) 0.331 (bag_MAP unseen=wrong) 0.539 S4_trunc 0.333 bag_MAP 0.539 last2_MAP 0.500 last2_only 0.333 lastS0partner 0.502 mostfreq 0.502 non_initial_unif 0.500
+n3 m10 MOVED 0.664 f 0.513 (bag_MAP) fitMOVED 133363 bagkeys 62 | (S_m-1) 0.333 (bag_MAP unseen=wrong) 0.513 S4_trunc 0.331 bag_MAP 0.513 last2_MAP 0.500 last2_only 0.331 lastS0partner 0.501 mostfreq 0.500 non_initial_unif 0.500
+n3 m12 MOVED 0.666 f 0.504 (bag_MAP) fitMOVED 133150 bagkeys 86 | (S_m-1) 0.332 (bag_MAP unseen=wrong) 0.504 S4_trunc 0.332 bag_MAP 0.504 last2_MAP 0.502 last2_only 0.333 lastS0partner 0.502 mostfreq 0.497 non_initial_unif 0.500
+n4 m 4 MOVED 0.490 f 0.672 (bag_MAP) fitMOVED 98218 bagkeys 57 | (S4_trunc = answer, m<=4) 1.000 (S_m-1) 0.352 (bag_MAP unseen=wrong) 0.672 bag_MAP 0.672 last2_MAP 0.592 last2_only 0.198 lastS0partner 0.338 mostfreq 0.337 non_initial_unif 0.333
+n4 m 6 MOVED 0.655 f 0.476 (bag_MAP) fitMOVED 131080 bagkeys 308 | (S_m-1) 0.451 (bag_MAP unseen=wrong) 0.476 S4_trunc 0.282 bag_MAP 0.476 last2_MAP 0.386 last2_only 0.216 lastS0partner 0.349 mostfreq 0.353 non_initial_unif 0.333
+n4 m 8 MOVED 0.718 f 0.393 (bag_MAP) fitMOVED 143616 bagkeys 997 | (S_m-1) 0.485 (bag unseen share) 0.000 (bag_MAP unseen=wrong) 0.393 S4_trunc 0.246 bag_MAP 0.393 last2_MAP 0.343 last2_only 0.221 lastS0partner 0.341 mostfreq 0.337 non_initial_unif 0.333
+n4 m10 MOVED 0.741 f 0.352 (bag_MAP) fitMOVED 147894 bagkeys 2374 | (S_m-1) 0.493 (bag unseen share) 0.001 (bag_MAP unseen=wrong) 0.352 S4_trunc 0.246 bag_MAP 0.352 last2_MAP 0.336 last2_only 0.223 lastS0partner 0.338 mostfreq 0.338 non_initial_unif 0.333
+n4 m12 MOVED 0.747 f 0.339 (bag_MAP) fitMOVED 149170 bagkeys 4521 | (S_m-1) 0.496 (bag unseen share) 0.003 (bag_MAP unseen=wrong) 0.338 S4_trunc 0.250 bag_MAP 0.339 last2_MAP 0.334 last2_only 0.223 lastS0partner 0.335 mostfreq 0.335 non_initial_unif 0.333
+n5 m 4 MOVED 0.402 f 0.706 (bag_MAP) fitMOVED 80758 bagkeys 129 | (S4_trunc = answer, m<=4) 1.000 (S_m-1) 0.396 (bag_MAP unseen=wrong) 0.706 bag_MAP 0.706 last2_MAP 0.627 last2_only 0.165 lastS0partner 0.212 mostfreq 0.249 non_initial_unif 0.250
+n5 m 6 MOVED 0.601 f 0.465 (bag_MAP) fitMOVED 119980 bagkeys 1994 | (S_m-1) 0.516 (bag unseen share) 0.000 (bag_MAP unseen=wrong) 0.465 S4_trunc 0.294 bag_MAP 0.465 last2_MAP 0.358 last2_only 0.144 lastS0partner 0.251 mostfreq 0.272 non_initial_unif 0.250
+n5 m 8 MOVED 0.708 f 0.326 (bag_MAP) fitMOVED 141639 bagkeys 12241 | (S_m-1) 0.564 (bag unseen share) 0.009 (bag_MAP unseen=wrong) 0.323 S4_trunc 0.203 bag_MAP 0.326 last2_MAP 0.288 last2_only 0.146 lastS0partner 0.256 mostfreq 0.264 non_initial_unif 0.250
+n5 m10 MOVED 0.760 f 0.265 (bag_MAP) fitMOVED 151577 bagkeys 36992 | (S_m-1) 0.583 (bag unseen share) 0.078 (bag_MAP unseen=wrong) 0.246 S4_trunc 0.192 bag_MAP 0.265 last2_MAP 0.261 last2_only 0.151 lastS0partner 0.254 mostfreq 0.258 non_initial_unif 0.250
+n5 m12 MOVED 0.782 f 0.255 (last2_MAP) fitMOVED 156158 bagkeys 69256 | (S_m-1) 0.592 (bag unseen share) 0.232 (bag_MAP unseen=wrong) 0.195 S4_trunc 0.185 bag_MAP 0.253 last2_MAP 0.255 last2_only 0.150 lastS0partner 0.251 mostfreq 0.254 non_initial_unif 0.250
+== B. perfect loop at K' < m: P(S_K' = S_8 | MOVED), n5 m8 (200,000 draws) ==
+K'0 0.000 K'1 0.100 K'2 0.149 K'3 0.176 K'4 0.202 K'5 0.249 K'6 0.352 K'7 0.561 K'8 1.000
+== D. M4 stratum at n5 m4 (exact enumeration of 5 x 10^4 equally likely (S_0, swap) configurations) ==
+P(S2 != S4) = 30000/50000 = 0.6000 (closed form 1 - [1/5 + (4/5)(1/2)^2] = 0.6): in 500 items n ~ Bin(500, 0.6), mean 300.0, SD 11.0, 95% range 279-321
+P(S2 != S4 and MOVED) = 0.3372 -> mean 168.6 of 500 (if the stratum were restricted to MOVED items)
+== C. F2 swap law: donor = same s0, redrawn swaps same m; keep iff cf not in {own, dfin, donor S_t} (200,000 tries) ==
+n5 m8 t4: kept share 0.486 -> tries for 1000 ~ 2059
+n5 m4 t2: kept share 0.384 -> tries for 1000 ~ 2604
+n5 m6 t3: kept share 0.455 -> tries for 1000 ~ 2200
+n3 m4 t2: kept share 0.295 -> tries for 1000 ~ 3388
+n5 m12 t6: kept share 0.505 -> tries for 1000 ~ 1981
+== E. OC tables (binomial items; seed effects stated per table; test sets fixed, so n_moved and the build floor estimate f_hat are ONE draw per replicate, shared by the 3 seeds) ==
+MOVED shares n5 m8 0.708 (x1500 = 1061), n5 m6 0.601 (x500 = 301), n3 m8 0.667 (x1500 = 1000); f(5,8) 0.326, f(3,8) 0.539
+E1. C2-1 (per seed m6 >= 0.85 & m8 >= 0.80; >= 2/3 of 3 seeds); sigma_seed 0.090 clipped, shared across m; m6 = m8 + 0.05:
+  true m8 0.30: P(seed) 0.000  P(>=2/3) 0.000  P(3/3) 0.000
+  true m8 0.60: P(seed) 0.011  P(>=2/3) 0.000  P(3/3) 0.000
+  true m8 0.70: P(seed) 0.116  P(>=2/3) 0.037  P(3/3) 0.002
+  true m8 0.75: P(seed) 0.260  P(>=2/3) 0.168  P(3/3) 0.018
+  true m8 0.80: P(seed) 0.462  P(>=2/3) 0.444  P(3/3) 0.099
+  true m8 0.85: P(seed) 0.675  P(>=2/3) 0.752  P(3/3) 0.308
+  true m8 0.90: P(seed) 0.842  P(>=2/3) 0.933  P(3/3) 0.596
+  true m8 0.95: P(seed) 0.939  P(>=2/3) 0.989  P(3/3) 0.829
+E2. X2 (DIRECT arm, 3/3 seeds: K3 - K5 >= 0.15 & K3 >= 0.15 & Wilson LB(acc3) > f_hat3); sigma_seed clipped; rho = corr of n3 / n5 seed effects:
+  sig 0.09 rho 0.0 null: both at floor     : P(seed) 0.171  P(>=2/3) 0.079  P(3/3) 0.006
+  sig 0.09 rho 0.0 null: equal kappa 0.10  : P(seed) 0.232  P(>=2/3) 0.140  P(3/3) 0.014
+  sig 0.09 rho 0.0 effect 0.25             : P(seed) 0.589  P(>=2/3) 0.630  P(3/3) 0.209
+  sig 0.09 rho 0.0 effect 0.35             : P(seed) 0.777  P(>=2/3) 0.871  P(3/3) 0.473
+  sig 0.09 rho 0.0 effect 0.50             : P(seed) 0.925  P(>=2/3) 0.983  P(3/3) 0.792
+  sig 0.09 rho 0.5 null: both at floor     : P(seed) 0.131  P(>=2/3) 0.049  P(3/3) 0.003
+  sig 0.09 rho 0.5 null: equal kappa 0.10  : P(seed) 0.174  P(>=2/3) 0.084  P(3/3) 0.006
+  sig 0.09 rho 0.5 effect 0.25             : P(seed) 0.601  P(>=2/3) 0.646  P(3/3) 0.224
+  sig 0.09 rho 0.5 effect 0.35             : P(seed) 0.824  P(>=2/3) 0.915  P(3/3) 0.563
+  sig 0.09 rho 0.5 effect 0.50             : P(seed) 0.968  P(>=2/3) 0.997  P(3/3) 0.908
+  sig 0.03 rho 0.0 null: both at floor     : P(seed) 0.020  P(>=2/3) 0.002  P(3/3) 0.000
+  sig 0.03 rho 0.0 null: equal kappa 0.10  : P(seed) 0.053  P(>=2/3) 0.013  P(3/3) 0.001
+  sig 0.03 rho 0.0 effect 0.25             : P(seed) 0.826  P(>=2/3) 0.906  P(3/3) 0.584
+  sig 0.03 rho 0.0 effect 0.35             : P(seed) 0.984  P(>=2/3) 0.999  P(3/3) 0.953
+  sig 0.03 rho 0.0 effect 0.50             : P(seed) 1.000  P(>=2/3) 1.000  P(3/3) 1.000
+  sig 0.03 rho 0.5 null: both at floor     : P(seed) 0.012  P(>=2/3) 0.001  P(3/3) 0.000
+  sig 0.03 rho 0.5 null: equal kappa 0.10  : P(seed) 0.025  P(>=2/3) 0.004  P(3/3) 0.000
+  sig 0.03 rho 0.5 effect 0.25             : P(seed) 0.853  P(>=2/3) 0.925  P(3/3) 0.644
+  sig 0.03 rho 0.5 effect 0.35             : P(seed) 0.995  P(>=2/3) 1.000  P(3/3) 0.986
+  sig 0.03 rho 0.5 effect 0.50             : P(seed) 1.000  P(>=2/3) 1.000  P(3/3) 1.000
+E3. X1 binds on DIRECT-SI (one pass, trained on the per-swap SI questions; read at its swap-m question): kappa(n5 m8 MOVED) <= 0.25 in 3/3 seeds; 1500 items/cell; true acc = f + kappa (1 - f); f_hat = build floor on the cell's own MOVED items:
+  sigma 0.090 clipped (primary)       : P(X1 pass) k0.00 0.903  k0.10 0.650  k0.20 0.269  k0.25 0.128  k0.30 0.047  k0.35 0.013  k0.45 0.000
+  sigma 0.050 clipped                 : P(X1 pass) k0.00 0.998  k0.10 0.915  k0.20 0.411  k0.25 0.134  k0.30 0.022  k0.35 0.002  k0.45 0.000
+  sigma 0.36 logit (= 0.09 at p 0.5)  : P(X1 pass) k0.00 0.921  k0.10 0.658  k0.20 0.269  k0.25 0.129  k0.30 0.047  k0.35 0.013  k0.45 0.000
+  no seed effect                      : P(X1 pass) k0.00 1.000  k0.10 1.000  k0.20 0.906  k0.25 0.206  k0.30 0.001  k0.35 0.000  k0.45 0.000
+  DIRECT-SI at its shortcut floor (kappa 0): P(X1 pass) 0.903  (per seed P(kappa <= 0.25) 0.967)
+  DIRECT-SI partially extrapolating (kappa 0.35): P(X1 pass) 0.013  (per seed P(kappa <= 0.25) 0.232)
+E4. M2/M3 SWAP-MID (1000 pairs; follow >= 0.50 and >= MEAN floor + 0.30, MEAN floor 0.15 measured); sigma 0.090 clipped:
+  true follow 0.20: P(seed) 0.001  P(>=2/3) 0.000
+  true follow 0.40: P(seed) 0.138  P(>=2/3) 0.052
+  true follow 0.45: P(seed) 0.294  P(>=2/3) 0.209
+  true follow 0.55: P(seed) 0.709  P(>=2/3) 0.795
+  true follow 0.65: P(seed) 0.950  P(>=2/3) 0.993
+  true follow 0.80: P(seed) 1.000  P(>=2/3) 1.000
+E5. M5 n_hi 260 n_lo 470: equal true 0.85: false fail per seed 0.0002
+E5. M5 n_hi 260 n_lo 470: equal true 0.95: false fail per seed 0.0000
+E6. S1 GO gate OC (pilot = seed 1 only). GO = all of:
+    L1p: NUM n5 m1-4 acc >= 0.90 each m (500 items each);
+    CWS: passes 2-4 at n5 m4, CWS_t = #(WS_t & WS_t-1) / #WS_t-1 >= 0.90 each, conditional binomials on the realised
+         #WS_t-1 (500 items at pass 1); per item: correct-after-correct w.p. c, correct-after-wrong w.p. rec;
+    M3: SWAP-MID (5,4,t2) follow >= 0.50 and >= MEAN + 0.30 (1000 pairs; MEAN ~ Bin(1000, 0.15)/1000);
+    M4: K'2 on the S2 != S4 stratum of the n5 m4 cell, n_strat ~ Bin(500, 0.600): acc vs S2 >= 0.80 AND acc vs S4 <= 0.05;
+        p(S4) = (1 - p(S2)) q (q = share of K'2 errors that land on S4; 1/4 = uniform over the other 4 names).
+    Seed effect (sigma_seed, 'clip' = added on the probability scale then clipped; 'logit' = added to the logit):
+    shared part u ~ N(0, sigma sqrt(rho)) on every row + row-specific v_r ~ N(0, sigma sqrt(1 - rho)) per row
+    (rows: L1p [shared by m1-4], CWS [shared by passes], M3, M4[p(S2)]); items binomial, independent per row.
+  mechanism present (acc 0.97, CWS c 0.96 rec 0.25, follow 0.75, K'2->S2 0.90, q 0.25), sigma 0.090 clip, rho 0.5 [PRIMARY]:
+     P(GO) 0.534 | marginal pass: L1p 0.740 CWS 0.706 M3 0.997 M4 0.816 (M4 S2-half 0.862, S4-half 0.848)
+  sensitivity (mechanism present unless stated):
+     sigma 0.011 clip, rho 0.5 (in-range seed spread, Note 269-1 d 4; Theory 271-2): P(GO) 0.991
+     rho 1 (one shared seed effect)                            : P(GO) 0.688
+     rho 0 (row effects independent)                           : P(GO) 0.425
+     sigma 0.050 clip, rho 1 (v1 noise level)                  : P(GO) 0.811
+     sigma 0.36 logit, rho 0.5                                 : P(GO) 0.938
+     no seed effect (items only)                               : P(GO) 0.994
+     q 0.5 (K'2 errors biased to S4)                           : P(GO) 0.386
+     CWS c 0.98                                                : P(GO) 0.570
+     CWS c 0.94                                                : P(GO) 0.487
+     acc 0.99, c 0.98, follow 0.85, K'2->S2 0.95               : P(GO) 0.653
+     M4 stratum restricted to MOVED (n ~ Bin(500, 0.337))      : P(GO) 0.524
+     weak mechanism (0.93, c 0.90, follow 0.50, K'2->S2 0.70)  : P(GO) 0.070
+  memory unused (decoder output invariant to the carried state; K'2 preds == K'8 preds item by item):
+     acc(m4, K'8) 0.90: P(L1p m4 pass and M4 S4-half pass) 0.000  (analytic: L1p m4 >= 0.90 forces acc vs S4 on the stratum >= (450 - (500 - n))/n ~ 0.83 at n 300)
+     acc(m4, K'8) 0.97: P(L1p m4 pass and M4 S4-half pass) 0.000  (analytic: L1p m4 >= 0.90 forces acc vs S4 on the stratum >= (450 - (500 - n))/n ~ 0.83 at n 300)
+     acc(m4, K'8) 1.00: P(L1p m4 pass and M4 S4-half pass) 0.000  (analytic: L1p m4 >= 0.90 forces acc vs S4 on the stratum >= (450 - (500 - n))/n ~ 0.83 at n 300)

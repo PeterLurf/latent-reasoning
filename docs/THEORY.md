@@ -357,7 +357,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
 | 270 | FULL-PERM (closes §263's scope gap; Theory's choice): of_sX args + --perm_scope all (all statements permuted, q last; chain + ask items), from bun_sX_init, 8k x 2 seeds; binding FULL-ORDER (fresh full_perm d 2-4 >= 0.85) + RETAIN-ORDER (TEST-PERM / LATE-PREMISE) + RETAIN + C2-RETAIN vs of - 0.05 (NEAR-SEED) + C6 + CONTENT; FP_v1.md | registered | **APPROVED by Audit 11-04 (270-1: CI on every proportion bar; multiset reject-and-resample; cell cap $1.8).** **REGISTERED 11-04; score_fp.py 23/23; guard $4** |
-| 271 | N1 SHUFFLED-OBJECTS (pioneer line, wave-4 doc 02 after red team + Literature): LOOP-SI x 3 from of_s1 vs **DIRECT-SI x 3** (binding control: one pass, same trunk, trained on the same per-swap cue questions; Note 271-1) + DIRECT-OF x 3 (answer-only, descriptive); train m <= 4, test m 1-12; per-pass causal battery (CWS, redrawn-donor SWAP-MID, NOT-DECODER, K'-curve, hold parity); kappa vs shortcut floors; staged S1 mechanism gate -> S2 -> S3; N1_v1.md | registered | **APPROVED by Audit 11-04 (271-1: + DIRECT-SI matched-supervision control, X1 binds on it; M4 S_4 <= 0.05; guards $3.0 / $7.5 / $2.0).** **REGISTERED 11-04; score_n1.py + Audit code G-D before S1 output; MED-2/3/4 pending before G0** |
+| 271 | N1 SHUFFLED-OBJECTS (pioneer line, wave-4 doc 02 after red team + Literature): LOOP-SI x 3 from of_s1 vs **DIRECT-SI x 3** (binding control: one pass, same trunk, trained on the same per-swap cue questions; Note 271-1) + DIRECT-OF x 3 (answer-only, descriptive); train m <= 4, test m 1-12; per-pass causal battery (CWS, redrawn-donor SWAP-MID, NOT-DECODER, K'-curve, hold parity); kappa vs shortcut floors; staged S1 mechanism gate -> S2 -> S3; N1_v1.md | registered | **APPROVED by Audit 11-04 (271-1: + DIRECT-SI matched-supervision control, X1 binds on it; M4 S_4 <= 0.05; guards $3.0 / $7.5 / $2.0).** **REGISTERED 11-04; score_n1.py + Audit code G-D before S1 output; MED-2/3/4 closed (271-2: floors pinned, f(5,8) 0.326; P(GO | mechanism) 0.991 in-range sigma / 0.534 conservative)** |
 
 ## Live sections
 
@@ -24531,6 +24531,34 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **G0 addition (Audit):** an args / data diff showing DIRECT-SI's item mix and label set match the loop's cue questions, and DIRECT-SI's training steps (one pass) matched to the loop's step count.
 - **Pending before G0:** MED-2 (fit N and seed pinned for the shortcut floors; unseen keys fall back to non-initial uniform), MED-3 (OC scripts committed to docs/research_n1_2026-11-04/) and MED-4 (GO simulation per pass and per row, both M4 halves, true stratum n, independent noise plus a seed effect; P(GO) restated). These go in Note 271-2.
 - **score_n1.py** gets its own Audit code G-D before any S1 output, including Audit's three extra fixtures.
+
+**Note 271-2 (§271; 2026-11-04 01:02 EST; closes Audit G-D MED-2 / MED-3 / MED-4 before G0; scripts docs/research_n1_2026-11-04/n1_oc.py, n1_kp.py, output n1_oc_out.txt (numpy only, python -I, two runs byte-identical); DATA-SIM, pre-output).**
+- **MED-2 (floor fit pinned):**
+  - Fit per cell (n, m): random.Random(27110), N_FIT = 200,000 draws of that cell's own §3.1 law, MOVED subset. Each key predicts its modal answer; ties go to the smallest normalised index.
+  - **An unseen key predicts non-initial uniform (credit 1/(n-1)).**
+  - At build, f is computed on each cell's own test items with the same fit, then frozen in score_n1 FROZEN with the floor file sha.
+  - The seeds 27110 / 27111 / 27112 are unused (grep).
+- **Floor table (MOVED):**
+  - f(3,8) 0.539, f(4,8) 0.393, f(5,6) 0.465, **f(5,8) 0.326**, f(5,10) 0.265: bag-MAP.
+  - f(5,12) 0.255: last-2-MAP. At (5,12), 23% of bag keys are unseen; bag-MAP is now 0.253 vs uniform 0.250.
+  - X1 and KC use f(5,8) 0.326 (was 0.319); X2 uses f(3,8) / f(5,8).
+  - Disclosed: the bag and last-2 keys label names by first appearance, so they carry some order information and raise f. Including them is correct: the floor is "best non-serial-tracking rule", and first-appearance order is readable in one pass. A higher f makes X1 (kappa <= 0.25) easier to pass, so X1 is also reported against the order-free bag floor, descriptively.
+- **MED-4 (GO sim):**
+  - CWS is simulated as conditional binomials per pass 2-4 (500 items, recovery 0.25). M4 has both halves (S_2 >= 0.80, S_4 <= 0.05; K'2 errors land on S_4 with q 0.25).
+  - **M4 stratum n ~ Bin(500, 3/5), mean 300** (exact enumeration: P(S_2 != S_4) = 3/5). The old 230 was a hard-coded value in v0's script.
+  - Seed effect: shared part rho 0.5 plus a per-row part, and independent item noise.
+- **P(GO | mechanism), restated:**
+  - **0.991** at the in-range seed spread sigma 0.011 (DATA: Note 269-1 measured d 4 sigma 0.011; every GO row is in-range: m 1-4, passes 2-4, K'2 at m 4).
+  - **0.534** at the extrapolation spread sigma 0.090 (d 6), conservative.
+  - Sensitivity: rho 1 0.688; rho 0 0.425; sigma 0.05 0.811; no seed effect 0.994; q 0.5 0.386; weak mechanism 0.070.
+  - The 0.86 in §271 / N1_v1 §5 is superseded. The EXTEND branch (seed 1 to 8k, re-gate) covers a near miss.
+- **P(GO | memory unused) = 0 by construction.** The decoder input carries no pass count or cue, so with the state ignored, K'2 preds = K'8 preds item by item. L1p at m 4 >= 0.90 then forces acc vs S_4 on the stratum >= (450 - 200)/300 ~ 0.83, far above 0.05. This is the M4 + L1p conjunction on the same 500 items. CWS alone does not exclude it: a one-pass reader of each cue can pass CWS.
+- **DIRECT-SI X1 OC** (n 5 m 8 MOVED, ~1,061 items, sigma 0.09):
+  - P(X1 pass 3/3 | at floor, kappa 0) 0.903;
+  - | kappa 0.10: 0.650; | kappa 0.25: 0.128; | kappa 0.35: 0.013.
+- **X2 null:** both at floor gives 3/3 at 0.006. C2-1, M2 / M3 and M5 are unchanged within 0.003.
+- **N1_v1 errata:** M-7 / §8 f(5,8) 0.319 -> 0.326, f(5,12) 0.254 -> 0.255 (last-2-MAP); §5 GO 0.86 -> 0.991 / 0.534, M4 bar 0.10 -> 0.05, stratum ~300 confirmed.
+- **MED-3 closed:** the scripts are committed in this commit.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
