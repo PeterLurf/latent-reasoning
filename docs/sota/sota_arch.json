@@ -64,7 +64,7 @@
   {
    "c": "C1",
    "status": "met, scoped",
-   "evidence": "TEST2 d1-4 retained; NOT-DECODER / SWAP4 / LP5 pass; TEST-PERM (op sentences in any order) d4 0.982 / 0.961, LATE-PREMISE >= 0.979; name-swap: the cue name selects among computed entities (follow 1.000); content selection on insert_ho passes (Note 263-3). Not free under full all-sentence shuffle (d4 0.46 / 0.38)."
+   "evidence": "TEST2 d1-4 retained; NOT-DECODER / SWAP4 / LP5 pass; TEST-PERM (op sentences in any order) d4 0.982 / 0.961, LATE-PREMISE >= 0.979; name-swap: the cue name selects among computed entities (follow 1.000 at j=1, an already-computed entity; at floor for not-yet-computed j>=3; overall 0.53 / 0.37 at d3 / d4); content selection on insert_ho passes (Note 263-3). Not free under full all-sentence shuffle (d4 0.46 / 0.38)."
   },
   {
    "c": "C2",
@@ -79,7 +79,7 @@
   {
    "c": "C5",
    "status": "met, scoped",
-   "evidence": "training-free r=3 answer-stability halting: C5-EXTRAP on of in both seeds (acc_halt = acc_k8 within 0.002 at d5-7; d7 0.908 / 0.893) (Note 263-3; rule from Notes 259-11 / 259-12)"
+   "evidence": "training-free r=3 answer-stability halting: C5-EXTRAP on of in both seeds, same-draw (the standard TEST2 eval_stab draw, not a fresh draw as bun's Note 259-11; computed in memory, reproduced by Audit) (acc_halt = acc_k8 within 0.002 at d5-7; d7 0.908 / 0.893) (Note 263-3; rule from Notes 259-11 / 259-12)"
   },
   {
    "c": "C4",
@@ -99,7 +99,7 @@
  ],
  "limits": [
   "Plan given by the step cue",
-  "Op sentences may be in any order, but givens / S_0 must keep their trained placement relative to the ops (full shuffle d4 0.46 / 0.38)",
+  "Op sentences may be in any order, but givens / S_0 must keep their trained placement relative to the ops (full shuffle d4 0.46 / 0.38; shuffling only the givens / distractors: d4 0.967 / 0.878)",
   "Templated word programs (REG frames 0-5), values mod 11",
   "Chain-reading distractors tested only right after the step they read",
   "GPT-2 small only (§258 medium parked: no pass-2 write)"
