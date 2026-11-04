@@ -224,5 +224,12 @@
     ]
    }
   }
+ },
+ "disclosed_not_in_diff": {
+  "micro": [
+   2,
+   4
+  ],
+  "why": "s228_args_check treats micro as CONTROL; Note 265-3 pins --micro 4 on all 4 TRAIN lines (b417 smoke OOM 23.5 GiB at micro 2); Audit LOW 11-04"
  }
 }
