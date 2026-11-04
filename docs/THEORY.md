@@ -357,7 +357,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
 | 270 | FULL-PERM (closes §263's scope gap; Theory's choice): of_sX args + --perm_scope all (all statements permuted, q last; chain + ask items), from bun_sX_init, 8k x 2 seeds; binding FULL-ORDER (fresh full_perm d 2-4 >= 0.85) + RETAIN-ORDER (TEST-PERM / LATE-PREMISE) + RETAIN + C2-RETAIN vs of - 0.05 (NEAR-SEED) + C6 + CONTENT; FP_v1.md | registered | **APPROVED by Audit 11-04 (270-1: CI on every proportion bar; multiset reject-and-resample; cell cap $1.8).** **REGISTERED 11-04; score_fp.py 23/23; guard $4** |
-| 271 | N1 SHUFFLED-OBJECTS (pioneer line, wave-4 doc 02 after red team + Literature): LOOP-SI x 3 from of_s1 vs DIRECT-OF x 3 (one pass, same trunk / data / evals); train m <= 4, test m 1-12; per-pass causal battery (CWS, redrawn-donor SWAP-MID, NOT-DECODER, K'-curve, hold parity); kappa vs shortcut floors; staged S1 mechanism gate -> S2 -> S3; N1_v1.md | registered | **REGISTERED 11-04; guards $2.5 / $6.5 / $2.0; score_n1.py before S1 output; awaiting Audit G-D** |
+| 271 | N1 SHUFFLED-OBJECTS (pioneer line, wave-4 doc 02 after red team + Literature): LOOP-SI x 3 from of_s1 vs DIRECT-OF x 3 (one pass, same trunk / data / evals); train m <= 4, test m 1-12; per-pass causal battery (CWS, redrawn-donor SWAP-MID, NOT-DECODER, K'-curve, hold parity); kappa vs shortcut floors; staged S1 mechanism gate -> S2 -> S3; N1_v1.md | registered | **APPROVED by Audit 11-04 (271-1: + DIRECT-SI matched-supervision control, X1 binds on it; M4 S_4 <= 0.05; guards $3.0 / $7.5 / $2.0).** **REGISTERED 11-04; score_n1.py + Audit code G-D before S1 output; MED-2/3/4 pending before G0** |
 
 ## Live sections
 
@@ -24516,6 +24516,20 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - (c) Each fp_sX is pinned to the GPU class of its same-seed of_sX (RTX 3090), and the eval_gpu / host speed is recorded beside of's.
   - (d) A 2/2 is worded "replicated once (2 seeds), one lineage". The fixture count is 23 (FP_v1's 19 + 4).
   - (e) The cell cap is raised to **$1.8** inside the unchanged $4 guard; s1-like speed is ~3.9 h.
+
+**Note 271-1 (§271; 2026-11-04 00:5x EST; Audit G-D APPROVED (PASS-WITH-NOTES; realistic ~$8-8.5 -> ~$9.3 with the arm below, auto-approved under the $30 rule); amended BEFORE build or output; no n1_* dirs exist).**
+- **Timestamp (LOW c):** §271's "00:4x EST" is the commit clock of 87d7f27a, 2026-11-04 00:47:06 -0500.
+- **MED-1 (matched supervision): the control changes before output.** The loop trains per-pass CE on S_1..S_m, but DIRECT-OF cannot (`--arm direct` asserts no aux_step, inject_aw.py:256). So "one pass trained identically" was false, and X1 mixed the effect of the loop with the effect of intermediate-state supervision.
+  - New arm **DIRECT-SI** x 3 (direct_si_s1..s3), in S1: the same one-pass trunk (of_s1), trained also on the per-swap questions "After swap L(t), who has the o*? The answer is:" -> S_t for t <= m. These are the loop's cue questions, each answered in one pass, at the same item share and labels. ~$0.25 per seed.
+  - **X1 now binds on DIRECT-SI:** kappa <= 0.25 in 3/3 seeds at n 5 m 8 MOVED, read only if DIRECT-SI's D-L1 holds (else VOID-CONTROL).
+  - The S1 DIRECT gate and X2 (TH6) are read on DIRECT-SI. DIRECT-OF (answer-only supervision) stays as descriptive X1-ANS.
+  - Wording: N1-PASS reads "the loop extrapolates where one pass trained on the same per-step questions, from the same weights, does not".
+  - Residual (beside F4): DIRECT-SI's per-step questions are separate one-pass items, not a carried state. That is the contrast being tested.
+- **MED-6 (cost):** realistic S1 ~$2.0 + DIRECT-SI $0.75 -> **S1 guard $3.0**; S2 ~$5.3, ~$6.9 with the pre-stated VOID-RERUN -> **S2 guard $7.5**. If a rerun is needed and the projection still exceeds the guard, LOOP-EN is dropped first. S3 guard $2.0. **Guards total $12.5; expected ~$9.3.**
+- **LOW a:** M4's S_4 half is tightened to **<= 0.05**, as the red team asked; no deviation. A true loop stopped at K' 2 answers S_2, and the stratum excludes S_2 = S_4, so its S_4 rate is ~0.
+- **LOW b:** M1 (CWS) is labelled **necessary, not sufficient**: the aux CE trains that readout. Causal weight rests on M2 / M3 (SWAP-MID) and M4.
+- **Pending before G0:** MED-2 (fit N and seed pinned for the shortcut floors; unseen keys fall back to non-initial uniform), MED-3 (OC scripts committed to docs/research_n1_2026-11-04/) and MED-4 (GO simulation per pass and per row, both M4 halves, true stratum n, independent noise plus a seed effect; P(GO) restated). These go in Note 271-2.
+- **score_n1.py** gets its own Audit code G-D before any S1 output, including Audit's three extra fixtures.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
