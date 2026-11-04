@@ -1,0 +1,456 @@
+{
+ "blobs": {
+  "boxes/inject_so.py": {
+   "head": "7f81f46f8cb02bd578d4851227fc85cd56d12b14",
+   "disk": "7f81f46f8cb02bd578d4851227fc85cd56d12b14"
+  },
+  "boxes/inject_so_eval.py": {
+   "head": "bd0775dd9c62f12d95c72ebce4b60bf316a383b0",
+   "disk": "bd0775dd9c62f12d95c72ebce4b60bf316a383b0"
+  },
+  "boxes/so_words.py": {
+   "head": "476449c73fdf0820ec74e7e8a070f25c94432430",
+   "disk": "476449c73fdf0820ec74e7e8a070f25c94432430"
+  },
+  "boxes/so_tok.py": {
+   "head": "be2a41b52008958fe8723ff46c5b33ad64633974",
+   "disk": "be2a41b52008958fe8723ff46c5b33ad64633974"
+  },
+  "boxes/inject_aw.py": {
+   "head": "5a5cbf7a1f6278fa63a9836c3454b5deaad676a2",
+   "disk": "5a5cbf7a1f6278fa63a9836c3454b5deaad676a2"
+  },
+  "boxes/inject_aw_eval.py": {
+   "head": "27d06a458c057203e52c7771e875ccc157498d1b",
+   "disk": "27d06a458c057203e52c7771e875ccc157498d1b"
+  },
+  "boxes/inject_ow.py": {
+   "head": "10468c7027e7e4c5a7fcd282de4032a557be8472",
+   "disk": "10468c7027e7e4c5a7fcd282de4032a557be8472"
+  },
+  "boxes/inject_st.py": {
+   "head": "cba8d5e8931a9da9e863e883723d690f744ab154",
+   "disk": "cba8d5e8931a9da9e863e883723d690f744ab154"
+  },
+  "boxes/nested170.py": {
+   "head": "2d8090399ea5a942db0f882d2f2df5ec280b8883",
+   "disk": "2d8090399ea5a942db0f882d2f2df5ec280b8883"
+  },
+  "boxes/deltamem.py": {
+   "head": "78dc0adc6cb6bfba4bd9d5189586d6926a358625",
+   "disk": "78dc0adc6cb6bfba4bd9d5189586d6926a358625"
+  },
+  "boxes/deltas5.py": {
+   "head": "546bad3a7c1929728d6c72d1f5695f5c9b726ded",
+   "disk": "546bad3a7c1929728d6c72d1f5695f5c9b726ded"
+  },
+  "boxes/core.py": {
+   "head": "434307d179783aa4951bb02bd96e96452132d978",
+   "disk": "434307d179783aa4951bb02bd96e96452132d978"
+  },
+  "boxes/s5.py": {
+   "head": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64",
+   "disk": "fe7a4bf9a9adc84910a633a42c8f6f8a8ad52c64"
+  },
+  "boxes/ow_words.py": {
+   "head": "5f50a15118b35cecb82db8eb7bc154d03b718365",
+   "disk": "5f50a15118b35cecb82db8eb7bc154d03b718365"
+  },
+  "boxes/nested_words.py": {
+   "head": "36dfab2346b5f5a60727dfabb9b4e66d8cf0b244",
+   "disk": "36dfab2346b5f5a60727dfabb9b4e66d8cf0b244"
+  },
+  "scratch/s257_guarded.py": {
+   "head": "5fdb0fa2aacc755dba996153ebfeeaa48810db69",
+   "disk": "5fdb0fa2aacc755dba996153ebfeeaa48810db69"
+  },
+  "scratch/s274_guarded.py": {
+   "head": "719071647f970b3ee2f255d9940ebd652a78187f",
+   "disk": "719071647f970b3ee2f255d9940ebd652a78187f"
+  },
+  "scratch/s274_stopland.py": {
+   "head": "ccdbfa6245e0d2de5462cc52705b6ee9bc5e2e76",
+   "disk": "ccdbfa6245e0d2de5462cc52705b6ee9bc5e2e76"
+  },
+  "scratch/gate_s274.py": {
+   "head": "39b615d75f2f1ab9b29f623e4a67fc982e0b360b",
+   "disk": "39b615d75f2f1ab9b29f623e4a67fc982e0b360b"
+  },
+  "scratch/gate_s251.py": {
+   "head": "d2a22107a3b5614f98bea5a41e92363dec3ada3d",
+   "disk": "d2a22107a3b5614f98bea5a41e92363dec3ada3d"
+  }
+ },
+ "init_unbuffered_sha256_x3": {
+  "boxes/runs_fsq/of_s1_init/model.pt": [
+   "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a",
+   "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a",
+   "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a"
+  ],
+  "boxes/runs_fsq/of_s1_trunk/model.pt": [
+   "f7c2a5a3ff7427ff2a60423114ec5da888f767133ccccb2ba82657d067e7635d",
+   "f7c2a5a3ff7427ff2a60423114ec5da888f767133ccccb2ba82657d067e7635d",
+   "f7c2a5a3ff7427ff2a60423114ec5da888f767133ccccb2ba82657d067e7635d"
+  ]
+ },
+ "predeploy_ok": true,
+ "args": {
+  "nloop_s1_vs_of_s1": {
+   "ask_p": [
+    0.25,
+    0.0
+   ],
+   "ask_render_sha256": [
+    "20dbc08183aed81591c70a809b2d3ac4af59045fa405a5863c7224134b0fbb0a",
+    null
+   ],
+   "cue": [
+    "step",
+    "index"
+   ],
+   "distract_mix": [
+    "s256,chain,givop",
+    ""
+   ],
+   "distract_nmax": [
+    null,
+    2
+   ],
+   "distract_p": [
+    1.0,
+    0.0
+   ],
+   "eval_parts": [
+    "acc,test_perm,insert_ho,swap_kd,lp5h,stab",
+    "acc_so,ws_so,swap_so,kcurve_so"
+   ],
+   "excl_n": [
+    206599,
+    42500
+   ],
+   "floors2_sha": [
+    "bfcaf2e3ccf4503a87c411e6d7c03d9b65ba8628ab034c4af2749ea5c537a900",
+    null
+   ],
+   "format": [
+    "think [EOT] + enc(' ' + text) (padded writes masked), K passes; dec as direct, read-only on S_K; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, read-only on S_t, t <= d | \u00a7233 LAT-ST: think_t = [EOT] + enc(' ' + text + ' ' + QUESTION(u, S_min(t, d))); lower cache per distinct input | \u00a7234 AW: + ' The answer is:' on every pass input; only the ':' state writes (gathered single-token write) | \u00a7262 ASK: round(ask_p bs) one-hop ask items per step (ST_v1 classes after perm p ask_perm_p; QUESTION(u, X) + SFX at every pass; CE(':' logits, v_X) at every pass, no decoder / aux CE)",
+    "\u00a7271 INJECT (src so): pass t input = [EOT] + enc(' ' + text + CUE(min(t, m))) + enc(' The answer is:'), CUE = SI ' After swap <L(min(t, m))>, who <verb> <o*>?'; only the ':' state writes; K passes; dec = [EOT] + enc(' ' + text) + SFX read-only on S_K -> VAL_IDS[S_m]; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, R_step[t] = 'After swap <L(t)>, <S_t> <verb> <o*>.', read-only on S_t, t <= m"
+   ],
+   "frameset10_sha": [
+    "359971a0b33af92894a44f5cf463350dfc19ed5a55df653202abd4269dcf9ac8",
+    null
+   ],
+   "frameset11_sha": [
+    "abacccfb8dcc3476291981d8990154847757562d17d48abb5bcaf48ff6f20195",
+    null
+   ],
+   "frameset12_sha": [
+    "ff5e1e690c5e6ce695c9a2f18e3ac987ca94344d6e382b95e7d09986c1ab7077",
+    null
+   ],
+   "frameset13_sha": [
+    "b12685d30e01758111c698907e704c326137214c63e936669f2062689f0a4c01",
+    null
+   ],
+   "frameset14_sha": [
+    "951eadb2312623589011d030567df5dd5d871cb4d088226455e8a191d4e47c7e",
+    null
+   ],
+   "frameset15_sha": [
+    "25d2b4e99aa35ac24e07f487449f3ddf039725d04a46eb44f4bfe1ba72792c4d",
+    null
+   ],
+   "frameset8_sha": [
+    "a7d5f3032d00fa3076c05b6b183206d9c43bd07d48a3f40f5c245b44c2f52d66",
+    null
+   ],
+   "frameset9_sha": [
+    "2fd76d4f71b372a0f90edcde2c46f7c2f82569efe4a6282dc2273988ccdd9a6d",
+    null
+   ],
+   "init_model": [
+    "boxes/runs_fsq/bun_s1_init/model.pt",
+    "boxes/runs_fsq/of_s1_init/model.pt"
+   ],
+   "init_model_sha": [
+    "1ad3517b7635fddf",
+    "9453d5ff26015853"
+   ],
+   "init_model_sha256": [
+    "1ad3517b7635fddfba23dbc471ec949338fccea50896a703d3859dcdbafce925",
+    "9453d5ff260158535b2085a6aaf955eec3a68fa36c43175629e237c3bba55c3a"
+   ],
+   "inject_aw_eval_sha256": [
+    null,
+    "1b9ec454b6fd7eee981d19a1c02c6c1443f983e0fdf2480ee2e0df55c81766fe"
+   ],
+   "inject_aw_sha256": [
+    null,
+    "01a9f9c2e7586cc833c3d602c3b080ed2996811d0f05286587ff01c65493439d"
+   ],
+   "pairs2_sha": [
+    "2fe9f87e1242de93accaa3235d012867fef54e030515dae5eda7b68debedf0b3",
+    null
+   ],
+   "perm_p": [
+    0.5,
+    0.0
+   ],
+   "perm_scope": [
+    null,
+    "op"
+   ],
+   "s226_test_sha": [
+    "c44e57eb8dfc5ebf98d18758f07ac9df36db649ebc40525209613af596dd1f53",
+    null
+   ],
+   "s227_decode_sha": [
+    "a08728a4a24d08527047312c378244c735f8b3f925e60b8ae46566744a9bb4ea",
+    null
+   ],
+   "set_law": [
+    "reg",
+    null
+   ],
+   "so_direct_si": [
+    null,
+    0
+   ],
+   "so_eval_module_sha256": [
+    null,
+    "83583a6d2c2aef8c926212907e0abfd3a7cfe6b512e4bed38edd2e5151249d48"
+   ],
+   "so_modes": [
+    null,
+    "num,ord"
+   ],
+   "so_n": [
+    null,
+    "3,4,5"
+   ],
+   "so_names_excl": [
+    null,
+    "Eve,Bob"
+   ],
+   "so_offset": [
+    null,
+    1
+   ],
+   "so_set_shas": [
+    null,
+    {
+     "test|3|1|num": "cfaccc9127dfa114db5f453b2e8e6de9ee1968db4d4843b8e51e0cd827ab5fec",
+     "test|3|1|ord": "c1d33a64a7a19962650598cd5854a4acc6fccbff1baece1f58a7a7d4fece3c65",
+     "test|3|2|num": "1367cae632d1d8a943599fbb4af43fb7a2f22dcea32a4b5ad21db79664de5d20",
+     "test|3|2|ord": "151a9af3b883bc84dc04ae8f542f0cf04fa89e275adc7d94b0f0472880450950",
+     "test|3|3|num": "08654eabbd556c1bd2bbfb89a1761cbd12c53955dda863fe66b16568d3600828",
+     "test|3|3|ord": "52ddbe13142b526ed4a770db664c3f29254f5ce2a8669a4da922a5b6bafd814e",
+     "test|3|4|num": "43d8609822a6a113342e8aaf20b57ab681816fe45ecd5b75d85b0b90ee872cfd",
+     "test|3|4|ord": "3cc491e772ef7dfb7c34562b34fd587e55c4ccb315603bbb0f72995b94f058fb",
+     "test|3|5|num": "d87370388d13b795d25a8798dc8adbb7f682e17535f491e9052a3ecad7d8beb1",
+     "test|3|5|ord": "3663aca6ff6b0433b1d82a560b94c033e9a6a59934ec0035ef798559676b1542",
+     "test|3|6|num": "c283b2e255db1145a03a04e7af80994be74ca2b808c950ae30709afad5229b64",
+     "test|3|6|ord": "237d493c25bd66292f0cca02f2f6e6fab52176335adc9bf0e803aa37cf14127d",
+     "test|3|7|num": "9efe71bcf54558ff12df13820d9dc3fa5c2317c0c4f7df9d1e4548003ce7f886",
+     "test|3|7|ord": "c4928917555b2802d686bb0a03f4bde4f0d799da67b4b09442b6c0237fb0d01a",
+     "test|3|8|num": "c769007debbc303a806e8426c22cecc6102646ac2c17d03f4b0332cf76f1b727",
+     "test|3|8|ord": "ee7d60aad002462ae356501bdd40f16b1acdeffaaf5925435d7399457ff01a5e",
+     "test|3|9|num": "fdbb8470e10081e4b64e52e5aa5c53c4f7a58f6fa45cb59dfd54689270b844e9",
+     "test|3|9|ord": "928a17b240b7f32d44595f22efdc34051c05d1d5aa2fbde26e2896d1d41b3c76",
+     "test|3|10|num": "1ad7e77b2c1c4505eb25d9225c4a44981f8284f8e18687633dfba4e0109f0755",
+     "test|3|10|ord": "1eda3a645bb4a2940035eff74a0c12fbe2ed0e890864de0b9e8a8b77c949bb40",
+     "test|3|11|num": "2cb5d49a7077cec46c9e57245b28fb2d0b30390e8949d20df00fbe428fb95fe7",
+     "test|3|11|ord": "c0ca6dc586b77f6d0ffa3a0cc65faaf5f32f4a000524e96c7e55628056c95591",
+     "test|3|12|num": "6e5088c0b16ca165a25f3914c840251af8a7fd4fbf2d3be3cd4aa31edf7c6dc1",
+     "test|3|12|ord": "9fe490bf523ecc034a4f460e82863b27b12e7899b64ccdfa310ffe2581ca134c",
+     "test|4|1|num": "718d27998cd9a82a7ad28411e1f3a92cadeb567a974129076295198392dbaca7",
+     "test|4|1|ord": "52fff324763dfecded4dccfc3e50d38c4afd0cbbfc46a5d8c85a0fb9efd2b9ca",
+     "test|4|2|num": "749533f80f504a32ca65b441d6155cb248ced5716631508afb0fe26fecf40c53",
+     "test|4|2|ord": "5ab40c2192ddc8410d1dffeec26a2b309fef6c9f27f2aaf474aa135e28729c68",
+     "test|4|3|num": "18452789b9844ee17a7a6a0292d596c4fb3b32423cb9167af8bc09de18dae5f6",
+     "test|4|3|ord": "e64137a222fecdf557d2473df84f70d9f2a80f71e687deb2b51bd69a88d1d675",
+     "test|4|4|num": "b9baae45afdbfb3e65ccb96fc66c5bc527c25b28c9cd2e266fca6c2af78ca883",
+     "test|4|4|ord": "08fb95faf8535bb62aef1f218fe5fe6caf9af08dd1d41c41f489aae3da382927",
+     "test|4|5|num": "f979847c73d9ac824c06a66b859bccbf909dd829d3c3b2bcbebb68dd41e3abae",
+     "test|4|5|ord": "f2bb22e55b914f3b707744d04cd4d084af43812c2086260c994fc3e3ee7ecdc3",
+     "test|4|6|num": "be8ba0f7990abac86078def0b09321493570dd2a92810408fb87b2ab5051a67d",
+     "test|4|6|ord": "8d6d5907a559a2dc3398a37be64e38440cdf5ecf7224e92d76255e4574814be6",
+     "test|4|7|num": "7baf0c7986ad9fe97b585bf186e0f38a570395beb03d59b594659301e2778108",
+     "test|4|7|ord": "c7067ff66c82968f64c3c5c41af4d5a577cd6421250cba53837058ac9ff35d53",
+     "test|4|8|num": "94c533d2815ca5fcb53d2a5617dcc6d7feb4d96b9d77a5b6a8a509aa472cbae1",
+     "test|4|8|ord": "17e919d48407f68ba1445cf1a0c457d30ffa30de643ed36de2fcae2bc3350de9",
+     "test|4|9|num": "ea5024106529856346956f6ca823ab1d85eed816061721437df87e66492143b0",
+     "test|4|9|ord": "cbe1758c014bc6393dbd7e30e31766faf10bf62c76c8f67095333e26addec087",
+     "test|4|10|num": "d2462bcdce4be20a39bfb4c6187bed6b981615d4bdf47e61f9479464735154a3",
+     "test|4|10|ord": "d028b295b5eb307688c68d8105bcc1643c58485d6fdcbff21180a3e99828873c",
+     "test|4|11|num": "31405ab4b565a3cdf4ffb9702749c9bad1ff5162bb02aff8c0bc9f0ba6818d1d",
+     "test|4|11|ord": "ffcabf506d1818e2349d8164f1ee86f0df53b21f13009d4dcdb6b159b4125e4c",
+     "test|4|12|num": "33f1faf8923167efddd90090c175febf83e7e3e0b0b321dcfd62cf95c2f8b176",
+     "test|4|12|ord": "24f7b31a8978f363e8bc4d607c8f34895674d6965274e3fc87027f8554817276",
+     "test|5|1|num": "7e632451079a7857d3718ab9489b9d06bf547b1aebad9581a565f5a9c00af331",
+     "test|5|1|ord": "f79a6d898254c39d35336eeb0d2d0d3edd03fab313e8f371c492bb8179ec9416",
+     "test|5|2|num": "a544a1055806fd13f8558617d641264c8e99ced67aec4c7cf2a431846401a243",
+     "test|5|2|ord": "073c852d2c1fa3fee5edbcdb178e7808a6c696e49818baeca2000bfbe9547155",
+     "test|5|3|num": "f5aefa0356486f6c326e3b5b2f8523ccb825a95f03c9248295736a16c7010396",
+     "test|5|3|ord": "050d24a6634232ad9d2b1ebb8e51c91b314869b0f5995f1a69c0c1b4029411f9",
+     "test|5|4|num": "bf337ef6b4eaaeb89ce366ccbc5ade59ef5efe7e0204c967c08bf70787da53e9",
+     "test|5|4|ord": "fd32ef93e60fb33edca8969fb685bedaf9d3655148f8a5725bb0c80ff339c67d",
+     "test|5|5|num": "f5fe875faed931efd65a8b28d3357ca6afeca9b453b113b63bb6199495bbb205",
+     "test|5|5|ord": "5b63b7750c27217fc44350f5cb71a6e3e0f738dc506d720ba032222d4aa3ced7",
+     "test|5|6|num": "dd820815186405a8af1998c38453171b4a81aa70477178dc958dd9e438c73c2a",
+     "test|5|6|ord": "65cadc264f4a53bb777d630a38fef5016e6d57b8aa6d4a80d79df7226ce9303c",
+     "test|5|7|num": "905f4d7ff9bf0f215520f990c618c8d016a7032807c64fef4da2df9622a6eece",
+     "test|5|7|ord": "ea523e1ce66c8356b8b3d8d27accc594cbb96193bf081a61aef70c59261de655",
+     "test|5|8|num": "4e40917f1df9f9ed4c260d8af1248fb5e68962ce51937b8d3a682792643efebe",
+     "test|5|8|ord": "6bafc5c0a28d7d09e03c906ff8417bd03aa83b96b5d806a9c45913a22e1e804f",
+     "test|5|9|num": "9d7cb3935d734395afecd44f9f9b31d9f0b653437fe01aba04c57a6194277901",
+     "test|5|9|ord": "588f3135f8c4d7ef4436ff154409e01a22561dc2e76337f2a0a6f614e82e9a3f",
+     "test|5|10|num": "5c42506588a4887f0deff963959a3c0a4aa8058a90bfc166d2faca90a7ff5ff6",
+     "test|5|10|ord": "f2fadaa215ca66d16efa87c03cbd5eba7a5a57734308f6f08e7281a3541b8821",
+     "test|5|11|num": "6e19c47418c5dd97593efb83bba5a0ac91fbaa98fbf6d559aed220d49905d470",
+     "test|5|11|ord": "6159941046438537395fca98d67539d003c8b3b816607fd77a4362332fcc999c",
+     "test|5|12|num": "e503f063149b89348bfffa0f617bc6d80b3e0384d1b093c6bd7e0fec79f8619e",
+     "test|5|12|ord": "23a2148617503a553ee222870594ace03ffadef6b60520e457effd034f26d558",
+     "transfer|1": "2a5bcb682e5ffe6597d82303d85c80985b6224fc07f231c7d59bc2226c55ad28",
+     "transfer|2": "8a4c53cf5db19f3a561475263fc7847236150340b1d482e1e688d49cd7c66ec7",
+     "transfer|3": "f940ae37dcdf1e774f271e3cd0b3a1dbf7033600473141b2a2bc71edc1414bb9",
+     "transfer|4": "a34c44cff95c15dcb639fc93bd2e455560274c28c7dfad35897e67f5e3b5264a",
+     "transfer|5": "bca1fecb2712ba94ed4ac74afe73c9da8f0700165d624070966fa56c3f644e26",
+     "transfer|6": "1d71c9d4316b6851a4796ba4ab6b3a32d28fb21ca99b3a7259bb7779f1f95b27",
+     "transfer|7": "6c4b18923e921721f61348c102c15a8327804ecb796dc076ff9ebbbbab92d7c6",
+     "transfer|8": "fb4cc067740ee60e61d987e9e215afa805e0fa1fbbec0023b3efcd25218e68b1",
+     "offset": "66a1516c37d54afacb8b2c5bdfca19c6880db0109cc3be18894ea9b96549d01e"
+    }
+   ],
+   "so_tok_sha256": [
+    null,
+    "1a9ec939b502af04673048e63d2e5ee85480f65429189ef26301fa9d07728aee"
+   ],
+   "so_train_names": [
+    null,
+    [
+     "Ann",
+     "Jim",
+     "Dan",
+     "Finn",
+     "Gus",
+     "Hal",
+     "Ivy",
+     "Jon",
+     "Kim",
+     "Leo",
+     "Mia",
+     "Ned",
+     "Joe",
+     "Pam",
+     "Ray",
+     "Sam",
+     "Tom",
+     "Kate",
+     "Val",
+     "Wes",
+     "Zoe",
+     "Amy",
+     "Ben",
+     "Cal",
+     "Dee",
+     "Eli",
+     "Fay",
+     "Gil",
+     "Ian",
+     "Joy",
+     "Ken",
+     "Lou",
+     "Max",
+     "Nan",
+     "Pat",
+     "Ron",
+     "Sue",
+     "Ted"
+    ]
+   ],
+   "so_words_sha256": [
+    null,
+    "7530fce6ecba6656285f594ecb8b6c79d4b3d6bc931137982936b11d99b2a6f1"
+   ],
+   "src": [
+    "ow",
+    "so"
+   ],
+   "task": [
+    "ow_topo",
+    "so"
+   ],
+   "test2_sha": [
+    "3b9101c3df4dd3933be45a61d29a3a807081b95d9c7e74e0e6895500a8dc6e91",
+    null
+   ],
+   "transfer_sha": [
+    "24c0a508e128a7f77e366664a2ee4c3d8981fd427fad9a753a180209213dce7c",
+    null
+   ]
+  },
+  "ndsi_s1_vs_ndof_s1": {
+   "aux_reweight": [
+    false,
+    true
+   ],
+   "aux_step": [
+    0.0,
+    1.0
+   ],
+   "format": [
+    "\u00a7271 DIRECT: dec = [EOT] + enc(' ' + text) + enc(' The answer is:') -> CE on VAL_IDS[S_m] (plain trunk, one pass)",
+    "\u00a7271 DIRECT: dec = [EOT] + enc(' ' + text) + enc(' The answer is:') -> CE on VAL_IDS[S_m] (plain trunk, one pass) | Note 271-1 DIRECT-SI: + per item, for t <= m, the one-pass item [EOT] + enc(' ' + text + SI cue(t)) + SFX -> CE on VAL_IDS[S_t]; lambda(step) * mean_items mean_t (AUX_W[t - 1] if aux_reweight) CE_t"
+   ],
+   "so_direct_si": [
+    0,
+    1
+   ]
+  }
+ },
+ "steps_lr_bs_equal": {
+  "nloop_s1": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  },
+  "ndof_s1": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  },
+  "ndsi_s1": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  },
+  "ndof_s2": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  },
+  "ndsi_s2": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  },
+  "ndof_s3": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  },
+  "ndsi_s3": {
+   "steps": 8000,
+   "lr": 0.0001,
+   "bs": 64,
+   "d_max": 4
+  }
+ }
+}

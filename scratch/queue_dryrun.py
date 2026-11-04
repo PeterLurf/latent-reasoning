@@ -89,11 +89,14 @@ def main():
                     fails.append((tagl, "parts", "unknown parts %s" % bad))
             flag = flag if flag in ("--blob", "--ship") else None
         tf = t[2:] if mod == "boxes.inject_aw" else (t[t.index("--") + 1:] if "--" in t and mod.endswith("_guarded") and "train" in t else None)
+        if mod.endswith("_guarded") and "train" in t and "--" not in t:   # 11-04: a lost separator ('----arm') skipped the flag check silently
+            fails.append((tagl, "flags", "train wrapper line has no standalone '--' before the trainer flags"))
         if tf is not None:
             tf = [x for i, x in enumerate(tf) if x not in ("--mem_check",) and not (i > 0 and tf[i - 1] == "--time_steps") and x != "--time_steps"]
             key = " ".join(tf)
             if key not in flag_seen:
-                flag_seen.add(key); d_ = "scratch/_tmp/qdry_args"; rc, msg = run(T, ["-m", "boxes.inject_aw"] + tf + ["--device", "cpu", "--args_only", "--out", d_], timeout=1800)
+                trainer = "boxes.inject_so" if mod == "scratch.s274_guarded" else "boxes.inject_aw"   # 11-04: s274_guarded trains inject_so (§271 N1)
+                flag_seen.add(key); d_ = "scratch/_tmp/qdry_args"; rc, msg = run(T, ["-m", trainer] + tf + ["--device", "cpu", "--args_only", "--out", d_], timeout=1800)
                 if rc:
                     fails.append((tagl, "flags", msg))
         if re.match(r"^scratch\.s\d+_gates$", mod) and os.path.isfile(os.path.join(T, mod.replace(".", "/") + ".py")):
