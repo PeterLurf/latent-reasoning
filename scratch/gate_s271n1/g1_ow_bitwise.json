@@ -1,0 +1,9 @@
+{
+ "what": "G1 (N1_v1 \u00a710): inject_so --src ow vs inject_aw, CPU fp32, OMP 1 thread, --time_steps 6, of-recipe flags (scratch/n1_build/smoke/g1_t1.sh in wt_s272)",
+ "records": 8,
+ "equal_ignoring_sec": true,
+ "aw_log_sha256": "8b96d6ceee0cb82c366e480890d97cca4384dedde6247a5e519413b698563f64",
+ "so_log_sha256": "cad48f94bc05f51f1ccacbd87918a58d99f3c39d059f5b346e2fd062a83f66ee",
+ "note": "4-thread run: data identical, losses drift ~1e-6 from step 4 (thread nondeterminism, not proven aw-vs-aw)",
+ "pass": true
+}
