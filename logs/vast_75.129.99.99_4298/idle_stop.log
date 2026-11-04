@@ -1,0 +1,4 @@
+18:55:24 armed: tag gen_b419 idle_h 1.5 wall_h 4.5 poll 300
+22:45:25 IDLE_STOP QUEUE_DONE idle > 1.5 h, no fetch
+22:45:26 stop request 1 http 200
+23:09:22 restarted after IDLE_STOP: grace 45 min

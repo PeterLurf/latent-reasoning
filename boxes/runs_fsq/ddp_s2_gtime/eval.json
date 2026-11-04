@@ -1,0 +1,11 @@
+{
+ "arm": "inject",
+ "think_k": 8,
+ "d_max": 4,
+ "steps_timed": 60,
+ "sec_per_step": 2.216976515452067,
+ "est_hours_steps": 4.926614478782371,
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "micro": 4,
+ "peak_gib": 13.206449508666992
+}
