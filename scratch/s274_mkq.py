@@ -27,7 +27,7 @@ FLOORS = ("boxes/runs_fsq/n1_floors/floors_so.json", "1db54c39016c8d23")
 BBH = ["scratch/n1_build/bbh/bbh_sha.json"] + ["scratch/n1_build/bbh/tracking_shuffled_objects_%s_objects.json" % s for s in ("three", "five", "seven")]
 BLOB = ["boxes/inject_so.py", "boxes/inject_so_eval.py", "boxes/so_words.py", "boxes/so_tok.py", "boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/inject_ow.py",
         "boxes/inject_st.py", "boxes/nested170.py", "boxes/deltamem.py", "boxes/deltas5.py", "boxes/core.py", "boxes/s5.py", "boxes/ow_words.py", "boxes/nested_words.py",
-        "scratch/s257_guarded.py", "scratch/s274_guarded.py", "scratch/s274_stopland.py", "scratch/gate_s274.py", "scratch/gate_s251.py"]
+        "scratch/s257_guarded.py", "scratch/s274_guarded.py", "scratch/s274_stopland.py", "scratch/gate_s274.py", "scratch/gate_s251.py", "scratch/gate_s228.py"]
 ALL_PARTS = "acc_so,ws_so,swap_so,kcurve_so,long_so,perm_label,lookup,bbh,beta_so,floors"; GATE_PARTS = "acc_so,ws_so,swap_so,kcurve_so"
 
 
@@ -103,7 +103,7 @@ q = ("# THEORY §271 N1 S1 LOOP-SI seed 1 (score_n1 S1 GO gate): of_s1's recipe 
      "G6 time (300 steps) before TRAIN; stopland evals %s (inject_so_eval). Frozen args scratch/s274_args_frozen_nloop_s1.json.\n# HOSTPROBE\n# P=1\n%s\n"
      "%s_mem boxes.inject_so %s --mem_check\n%s_gtime boxes.inject_so %s --time_steps 300\n"
      "%s_gates scratch.gate_s274 --arms loop -- %s ;; x\n"
-     "%s scratch.s274_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s scratch/s257_guarded.py scratch/gate_s251.py -- %s %s --args_ref scratch/s274_args_frozen_nloop_s1.json\n"
+     "%s scratch.s274_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s scratch/s257_guarded.py scratch/gate_s251.py scratch/gate_s228.py -- %s %s --args_ref scratch/s274_args_frozen_nloop_s1.json\n"
      "%s scratch.s274_stopland --step 4000 --parts %s\n") % (GATE_PARTS, caps_loop, W, fs, W, fs, W, " ".join(noinit(lf)), W, blob, OFI[0], OFI[1], GP, OFI[0], DATA, fs,
                                                           " ".join(ltail), W, GATE_PARTS)
 open("scratch/gen_q_b425.txt.hold", "w", encoding="utf-8", newline="\n").write(q)
@@ -113,7 +113,7 @@ for n, nm, si in ((426, "ndof", 0), (427, "ndsi", 1)):
         W1, f1, W1, f1, W1, "direct_si" if si else "direct_of", " ".join(noinit(direct_flags(1, si))))
     for k in (1, 2, 3):
         Wk = "boxes/runs_fsq/%s_s%d" % (nm, k); fk = " ".join(direct_flags(k, si))
-        body += "%s scratch.s274_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s scratch/s257_guarded.py scratch/gate_s251.py scratch/s274_stopland.py -- %s --ckpt_every 1000 --eval_parts %s --args_ref scratch/s274_args_frozen_%s_s%d.json\n" % (
+        body += "%s scratch.s274_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s scratch/s257_guarded.py scratch/gate_s251.py scratch/gate_s228.py scratch/s274_stopland.py -- %s --ckpt_every 1000 --eval_parts %s --args_ref scratch/s274_args_frozen_%s_s%d.json\n" % (
             Wk, blob, TRK[0], TRK[1], GP, TRK[0], DATA, fk, ALL_PARTS, nm, k)
     caps = CC.caps_line([0.1, 0.1, 0.1, 1.0, 1.0, 1.0], 0.5, 0.1, 0.3, 0.854, "RTX_3090", 0.1) + hard_wall([0.1, 0.1, 0.1, 1.0, 1.0, 1.0], 0.5, 0.1)
     q = ("# THEORY §271 N1 S1 %s seeds 1-3 (one host, sequential; score_n1 D-L1 / X1 / DIRECT gate): one pass from of_s1's trunk (of_s1_trunk %s)%s; G3 gradflow %s first; "
