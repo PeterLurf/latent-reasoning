@@ -405,7 +405,7 @@ The args diff is committed with each cell, and a single-change check is run agai
 - 2407.20311 Ye et al., Physics of LMs 2.1 (the motivation for CA3, not a method).
 - 2610.27628 PAR, prefix self-distillation (the ANC route; Note 269-4(d)).
 - **New, NOT fetched this session (Literature to verify ids and titles before registration):** 1606.09282 Li and Hoiem, Learning without Forgetting (KL to the old model's outputs, the ANC form); 1802.01483 Li et al., L2-SP (anchoring to the pretrained point).
-- Not found (draft): a stop-gradient on a recurrent-memory write source used against onset drift of a pretrained code. Narrow novelty; Literature to spot-check.
+- Novelty NARROW (Literature, docs/LIT_C4DRIFT_SG_2026-11-04.md; replaces the draft's "not found"): SG-WRITE detaches the pass-t write source for items not yet answered at pass t, a per-item variant of the truncated backprop of 2502.05171 / 2506.21734 / 2510.04871 / 2609.19717, used here as a localisation test of answer-gradient drift. Looped Flows 2609.11801 (App. B) conjectures the same mechanism without testing it. Ours adds the per-item mask (d_i > t), drift localisation, and a loss-free detached pass (M4's erosion branch rests on it). ANC is LwF-style KL (1606.09282) and LPFT is 2202.10054: no novelty claimed for either. 1802.01483 (L2-SP) verified.
 
 ## 17. Known risks (the lead's own critique; an independent red team is still required)
 
