@@ -13,6 +13,11 @@ Wilson 95% CIs on the binding cells; NEAR appended when a bar lies within 2 SE (
 C7 TEXT-SUBSTITUTE (Audit C7_EDITABLE P1; §247 bars), pooled over cells (d, t) (3,1) (3,2) (4,2) (4,3) per seed: EXPOSED if acc_intact - acc_neutral >= 0.30;
   C7-EDIT if EXPOSED and rt >= 0.95 and follow >= 0.50 and follow >= floor + 0.30; else NO-EDIT / UNEXPOSED. Both seeds C7-EDIT -> C7 partial (scoped).
 X5 PIPELINE-MATCHES (Note 266-2, Audit): pipeline acc_bun at d 7 and d 8 >= the bun mean - 0.02 in both seeds -> C1 is worded 'a one-hop executor of a given plan'.
+X3P PLAN-GIVEN (Note 266-3, BINDING for X3; Audit F4 / 14_REDTEAM): eval-only on tx_s1 / tx_s2, eval_textcot_plan.json (same schema as eval_textcot.json, incl.
+  trail): greedy decode with the per-step plan forced: at the start of text step t (t = 1..d) the cued name S_t is inserted, the model completes the step; after
+  step d " The answer is" is inserted and the number read. Same models / items / decode otherwise. VALID gate as above (in-range + Note 266-2 trailing gate,
+  both on the plan decode). X3 verdict (LATENT-SPECIFIC / NOT-LATENT-SPECIFIC) is read over VALID plan cells; no valid plan cell -> X3 VOID (UNDERTRAINED-PLAN):
+  never LATENT-SPECIFIC. The free-decode cells (tx_s1 / tx_s2 / txv_s1) are reported as descriptive 'x3_free' with the pre-stated rule.
 X5 verdict: VALID if acc_bun d 1 >= 0.98 in both seeds; PIPELINE-SOLVES if acc_bun d 7 >= 0.95 and d 8 >= 0.90 in both seeds, else PIPELINE-FAILS.
     python -B theory/score_tx.py [--fixtures]
 """
@@ -21,6 +26,7 @@ _HR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(_HR, "boxes", "runs_fsq")
 OUT = os.path.join(_HR, "theory", "results", "score_tx.json")
 TEXT = ("tx_s1", "tx_s2", "txv_s1")
+PLAN = ("tx_s1", "tx_s2")   # Note 266-3: plan-given decode (eval_textcot_plan.json); txv has no names to force
 BUN = ("bun_s1", "bun_s2")
 
 
@@ -45,25 +51,39 @@ def near(p, n, bar):
 
 def score(runs=R):
     o = {"section": 266}
-    tx = {c: jl(os.path.join(runs, c, "eval_textcot.json")) for c in TEXT}; bn = {b: jl(os.path.join(runs, b, "eval_acc.json")) for b in BUN}
+    tx = {c: jl(os.path.join(runs, c, "eval_textcot.json")) for c in TEXT}; txp = {c: jl(os.path.join(runs, c, "eval_textcot_plan.json")) for c in PLAN}; bn = {b: jl(os.path.join(runs, b, "eval_acc.json")) for b in BUN}
     pp = {b: jl(os.path.join(runs, b, "eval_pipeline.json")) for b in BUN}
-    if any(v is None for v in list(tx.values()) + list(bn.values()) + list(pp.values())):
+    if any(v is None for v in list(tx.values()) + list(txp.values()) + list(bn.values()) + list(pp.values())):
         o["verdict"] = "pending"; return o
     b7 = sum(bn[b]["by_d"]["7"]["acc"] for b in BUN) / 2; b8 = sum(bn[b]["by_d"]["8"]["acc"] for b in BUN) / 2
     bmin = min(bn[b]["by_d"][str(d)]["acc"] for b in BUN for d in (1, 2, 3, 4)) if all("1" in bn[b]["by_d"] for b in BUN) else 1.0
     # Note 266-1 (Audit): in-distribution validity gate min(0.98, bun's min d 1-4 - 0.01)
+    mk = lambda v: {"valid": all(v["by_d"][str(d)]["acc"] >= min(0.98, bmin - 0.01) for d in (1, 2, 3, 4)) and trail_ok(v), "trail": trail_desc(v), **{"d%d" % d: v["by_d"][str(d)]["acc"] for d in range(1, 11)},
+                     "parsed_min": min(v["by_d"][str(d)]["parsed"] for d in range(1, 11)), "gen_tokens": {str(d): v["by_d"][str(d)].get("gen_tokens") for d in range(1, 11)}}
+    pcells = {c: mk(v) for c, v in txp.items()}
     cells = {c: {"valid": all(v["by_d"][str(d)]["acc"] >= min(0.98, bmin - 0.01) for d in (1, 2, 3, 4)) and trail_ok(v), "trail": trail_desc(v), **{"d%d" % d: v["by_d"][str(d)]["acc"] for d in range(1, 11)},
                  "parsed_min": min(v["by_d"][str(d)]["parsed"] for d in range(1, 11)), "gen_tokens": {str(d): v["by_d"][str(d)].get("gen_tokens") for d in range(1, 11)}}
              for c, v in tx.items()}
     void = [c for c in TEXT if min(tx[c]["by_d"][str(d)]["parsed"] for d in (1, 2, 3, 4)) < 0.9]   # Audit SCORER_BUGS MED-5: parse failure = build bug
+    void += [c + "/plan" for c in PLAN if min(txp[c]["by_d"][str(d)]["parsed"] for d in (1, 2, 3, 4)) < 0.9]
     if void:
         o["verdict"] = "VOID-RERUN once (parsed < 0.9 at d 1-4: %s)" % ",".join(void); o["text_void"] = void; return o
     val = [c for c in TEXT if cells[c]["valid"]]
+    # Note 266-3: the free-decode reading is descriptive (pre-stated rule kept visible)
     if not val:
-        x3 = "X3 UNDERTRAINED -> VOID-EXTEND once (+12k) (no text cell VALID: d 1-4 >= min(0.98, bun - 0.01) and the Note 266-2 trailing-number gate)"
+        x3f = "x3_free UNDERTRAINED"
+    else:
+        f7 = max(cells[c]["d7"] for c in val); f8 = max(cells[c]["d8"] for c in val)
+        x3f = "x3_free %s (free text max d7 %.3f / d8 %.3f)" % ("LATENT-SPECIFIC" if f7 <= b7 - 0.10 and f8 <= b8 - 0.10 else "NOT-LATENT-SPECIFIC", f7, f8)
+    o["x3_free_desc"] = x3f
+    fcells = cells
+    cells, tx = pcells, txp   # X3 binds on the plan-given decode (Note 266-3)
+    val = [c for c in PLAN if cells[c]["valid"]]
+    if not val:
+        x3 = "X3 VOID (UNDERTRAINED-PLAN: no plan-given cell VALID: d 1-4 >= min(0.98, bun - 0.01) and the Note 266-2 trailing-number gate) -> VOID-EXTEND once (+12k)"
     else:
         t7 = max(cells[c]["d7"] for c in val); t8 = max(cells[c]["d8"] for c in val)
-        x3 = "X3 %s (text max d7 %.3f / d8 %.3f vs bun %.3f / %.3f)" % ("LATENT-SPECIFIC" if t7 <= b7 - 0.10 and t8 <= b8 - 0.10 else "NOT-LATENT-SPECIFIC", t7, t8, b7, b8)
+        x3 = "X3 %s (plan-given text max d7 %.3f / d8 %.3f vs bun %.3f / %.3f)" % ("LATENT-SPECIFIC" if t7 <= b7 - 0.10 and t8 <= b8 - 0.10 else "NOT-LATENT-SPECIFIC", t7, t8, b7, b8)
         for c in val:
             n_ = tx[c]["by_d"]["7"]["n"]
             cells[c]["ci"] = {"d7": wilson(cells[c]["d7"], n_), "d8": wilson(cells[c]["d8"], tx[c]["by_d"]["8"]["n"])}
@@ -82,7 +102,7 @@ def score(runs=R):
     if c is None:
         o["verdict"] = "pending"; return o
     o["c7"] = c; x5 = x5 + (" (PIPELINE-MATCHES)" if o.get("pipeline_matches") else "") + "; " + c["verdict"]
-    o.update({"bun_d7": b7, "bun_d8": b8, "text": cells, "pipeline": {b: pp[b]["by_d"] for b in BUN}, "x3": x3, "x5": x5, "verdict": x3 + "; " + x5}); return o
+    o.update({"bun_d7": b7, "bun_d8": b8, "text_plan": cells, "text_free_desc": fcells, "pipeline": {b: pp[b]["by_d"] for b in BUN}, "x3": x3, "x5": x5, "verdict": x3 + "; " + x5 + "; " + x3f}); return o
 
 
 def trail_desc(v):
@@ -126,7 +146,8 @@ def c7(runs):
 def fixtures():
     res = []
 
-    def world(t14=1.0, t7=0.5, t8=0.3, tv7=0.4, und2=False, p1=1.0, p7=0.99, p8=0.97, rt=1.0, fo=0.8, an=0.3, tdrop=0.0, cex=0.0, parsed=1.0):
+    def world(t14=1.0, t7=0.5, t8=0.3, tv7=0.4, und2=False, p1=1.0, p7=0.99, p8=0.97, rt=1.0, fo=0.8, an=0.3, tdrop=0.0, cex=0.0, parsed=1.0,
+              q14=None, q7=None, q8=None, qcex=None, qparsed=None):
         dd = tempfile.mkdtemp()
 
         def put(run, name, obj):
@@ -136,17 +157,31 @@ def fixtures():
             put(c, "eval_textcot.json", {"trail": {str(d): {"acc_trailing": lo - tdrop, "copy_rate": 0.1 + cex, "base_copy": 0.1} for d in range(1, 5)},
                                       "by_d": {str(d): {"acc": lo if d <= 4 else (0.9 if d < 7 else a7 if d == 7 else t8 if d == 8 else 0.1), "parsed": parsed, "n": 100, "gen_tokens": 10 * d}
                                                for d in range(1, 11)}})
+        for c in PLAN:   # Note 266-3 plan-given decode; defaults mirror the free cells
+            l2 = t14 if q14 is None else q14; a7 = t7 if q7 is None else q7; a8 = t8 if q8 is None else q8
+            ce = cex if qcex is None else qcex; pr = parsed if qparsed is None else qparsed
+            if und2 and c != "tx_s1" and q14 is None:
+                l2 = 0.5
+            put(c, "eval_textcot_plan.json", {"trail": {str(d): {"acc_trailing": l2 - tdrop, "copy_rate": 0.1 + ce, "base_copy": 0.1} for d in range(1, 5)},
+                                           "by_d": {str(d): {"acc": l2 if d <= 4 else (0.9 if d < 7 else a7 if d == 7 else a8 if d == 8 else 0.1), "parsed": pr, "n": 100, "gen_tokens": 8 * d}
+                                                    for d in range(1, 11)}})
         for b in BUN:
             put(b, "eval_acc.json", {"by_d": {"7": {"acc": 0.86}, "8": {"acc": 0.53}}})
             put(b, "eval_text_sub.json", {"cells": {k: {"n": 100, "rt": rt, "follow": fo, "floor": 0.1, "acc_intact": 1.0, "acc_neutral": an} for k in ("3_1", "3_2", "4_2", "4_3")}})
             put(b, "eval_pipeline.json", {"by_d": {str(d): {"acc_bun": p1 if d == 1 else p7 if d == 7 else p8 if d == 8 else 0.99, "acc_ask": 0.9, "n": 100} for d in range(1, 11)}})
         return dd
     for name, kw, want in (("latent-specific + pipeline solves", {}, "X3 LATENT-SPECIFIC"), ("pipeline solves", {}, "X5 PIPELINE-SOLVES"),
-                           ("text extrapolates d7", {"t7": 0.8}, "NOT-LATENT-SPECIFIC"), ("text extrapolates d8 only", {"t8": 0.5}, "NOT-LATENT-SPECIFIC"),
-                           ("value arm extrapolates", {"tv7": 0.85}, "NOT-LATENT-SPECIFIC"), ("all undertrained", {"t14": 0.8}, "X3 UNDERTRAINED"),
-                           ("0.97 in-range is undertrained", {"t14": 0.97}, "X3 UNDERTRAINED"),
-                           ("trailing-number copy shortcut voids text cells", {"cex": 0.2, "t7": 0.85}, "X3 UNDERTRAINED"),
-                           ("trailing sentence breaks text cells", {"tdrop": 0.2, "t7": 0.85}, "X3 UNDERTRAINED"),
+                           ("text extrapolates d7", {"t7": 0.8}, "X3 NOT-LATENT-SPECIFIC"), ("text extrapolates d8 only", {"t8": 0.5}, "X3 NOT-LATENT-SPECIFIC"),
+                           ("value arm extrapolates (free, descriptive)", {"tv7": 0.85}, "x3_free NOT-LATENT-SPECIFIC"), ("all undertrained", {"t14": 0.8}, "X3 VOID (UNDERTRAINED-PLAN"),
+                           ("0.97 in-range is undertrained", {"t14": 0.97}, "X3 VOID (UNDERTRAINED-PLAN"),
+                           ("trailing-number copy shortcut voids text cells", {"cex": 0.2, "t7": 0.85}, "X3 VOID (UNDERTRAINED-PLAN"),
+                           ("trailing sentence breaks text cells", {"tdrop": 0.2, "t7": 0.85}, "X3 VOID (UNDERTRAINED-PLAN"),
+                           ("266-3: plan arm VALID fail (copy) -> X3 VOID even if free text is valid", {"qcex": 0.2}, "X3 VOID (UNDERTRAINED-PLAN"),
+                           ("266-3: plan arm in-range fail -> VOID, never LATENT-SPECIFIC", {"q14": 0.9}, "X3 VOID (UNDERTRAINED-PLAN"),
+                           ("266-3: plan-given text wins at d7 -> NOT-LATENT-SPECIFIC though free text loses", {"q7": 0.85}, "X3 NOT-LATENT-SPECIFIC"),
+                           ("266-3: plan-given text wins at d8 only -> NOT-LATENT-SPECIFIC", {"q8": 0.5}, "X3 NOT-LATENT-SPECIFIC"),
+                           ("266-3: free text wins but plan-given loses -> X3 LATENT-SPECIFIC, free reading descriptive", {"t7": 0.85, "q7": 0.5}, "X3 LATENT-SPECIFIC"),
+                           ("266-3: unparsed plan decode is VOID-RERUN", {"qparsed": 0.5}, "VOID-RERUN"),
                            ("unparsed text cell is VOID-RERUN (MED-5)", {"parsed": 0.5}, "VOID-RERUN"),
                            ("one valid cell decides", {"und2": True, "t7": 0.5}, "X3 LATENT-SPECIFIC"), ("pipeline invalid", {"p1": 0.9}, "X5 INVALID"),
                            ("pipeline fails d8", {"p8": 0.8}, "PIPELINE-FAILS"), ("c7 edit", {}, "C7-EDIT 2/2"), ("c7 no edit", {"fo": 0.2}, "NO-EDIT/NO-EDIT"),

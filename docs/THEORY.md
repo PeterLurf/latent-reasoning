@@ -352,7 +352,7 @@ task (C2). C3 / C5 / C7 are reported where cheap, not designed for.
 | 263 | ORDER-FREE (Theory's choice after Note 262-3 + Audit research-pass leads L1 / L2): the §262 CTRL recipe (perm-then-insert + one-hop ':'-CE co-training, no NK) 2 seeds x 8k from bun; binding ORDER-FREE (full TEST-PERM d 2-4 >= 0.90 + LATE-PREMISE >= 0.85) + RETAIN + C2 vs bun - 0.05 (d 6 / 7) + C6 | registered | **SCORED 11-04 (263-3): ORDER-FREE-C1 2/2 - TEST-PERM d 4 0.982 / 0.961, LATE-PREMISE >= 0.979, C2 d 6 NEAR-SEED / d 7 PASS (0.909 / 0.895 vs bun 0.857 / 0.852), C6 + C5 r3 kept; name-swap selects by name; full all-sentence shuffle d 4 0.46 / 0.38 (scope: op order only); ~$3.99 (idle overrun after reboot); SOTA -> of.** **APPROVED by Audit 11-03 (263-1: CONTENT binding).** **REGISTERED 11-03; score_of.py 10/10; guard $4** |
 | 264 | SCORECARD-CHECK (backlog red team X1 / X2; eval-only on bun): cue schedules STD / EARLY-REPEAT / LATE-FRESH / CYCLE separate the model's own halt / hold from the given plan's end; binding for C5 / C6 scope wording; + $0 stored reads (X4a first-error, M1 echo split) | registered | **APPROVED by Audit 11-03 (264-1; $0 reads X4a UNTRAINED-PASS, M1 V1+TEXT).** **REGISTERED 11-03; score_sc.py 7/7; guard $1.5** |
 | 265 | DENSE-DISTRACT (backlog D1 + Audit L1; after Note 264-1): warm from bun, --distract_nmax 8 (op-sentence count of d 8-12 at d <= 4) vs nmax-2 CTRL; pilot GO on d 8 acc + pass-7 conditional WS gains; full binding C2-EXT d 8 >= 0.75 + RETAIN + C6 + CONTENT; + D1a attention-fading diagnostic | registered | **APPROVED by Audit 11-03 (265-1: host gates, mem_check at d4+8, read-only hooks).** **REGISTERED 11-03; score_dd.py 10/10; guard $4** |
-| 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
+| 266 | SAME-DATA BASELINES (Audit NORTH_STAR_GAP first experiment): X3 text CoT on bun's REG d <= 4 data (sentence x2 seeds + value-only) vs bun at d 7 / 8 (LATENT-SPECIFIC rule); X5 one-hop text-substitution pipeline with bun at K' 1; C7 TEXT-SUBSTITUTE edit at the write pass (Audit C7 P1) | registered | **AMENDED 11-04 pre-output (266-3: X3 binds on a plan-given decode of tx_s1 / s2; free arms descriptive; guard $6.5).** **APPROVED by Audit 11-03 (266-1: in-distribution validity gate; VOID-EXTEND once).** **REGISTERED 11-03; score_tx.py 14/14; guard $6** |
 | 267 | EXACT-EM-11 stage A (backlog K1a; C4 lane): 11-way categorical pass states, RESET-DM write, exact forward-DP marginal over Z_11 step values, no step value / decoder in the loss; OPS_CHAIN d_max 3 from askname; binding ONSET (no drift at 1k / 2k) + FORM + USE (swap_v, mem_ablate); CTRLs em_hard / token-inject / AO-chain | registered | **APPROVED by Audit 11-03 (267-1: perm-invariant readout, scope wording, raw ONSET).** **REGISTERED 11-03; score_em.py 11/11; guard $8** |
 | 268 | LINEAGE-SEED (X7; Audit VALIDITY_STATS): seed 3 of bun's whole lineage (askname -> P-2 -> rcb -> dis -> dch -> bun, s1 args, RTX 3090); stage gates (P-2 gated on pass-2 WS); final §259 bars vs bun mean - 0.05; REPLICATES lifts the 'one lineage' scope | registered | **APPROVED by Audit 11-03 (268-1: one cell per stage, ~22-23 h, args diff per stage).** **REGISTERED 11-03; score_x7.py (renamed from score_ls, Note 269-5) 10/10; guard $8** |
 | 269 | DIAGNOSTIC BUNDLE (wave-3 shortlist, Audit cap 5): triage of pass-7-at-d8 errors (selection / memory / computation), write-key geometry (name vs value keyed), open-vocab entities, read-use map by position class, delta alpha / additive hold-write; eval-only on bun, routing labels | registered | **APPROVED by Audit 11-03 (269-1; $0 reads: ST2 SEED-DOMINANT at d 6, sigma 0.090; FD1 no 2k marker).** **REGISTERED 11-03; score_dg.py 15/15; guard $1.5** |
@@ -19997,6 +19997,7 @@ So the INJECT state is written from the ':' state of a per-pass "How many <u> do
     - edit: x' != v_t, seeded default_rng((26600, d, t, i)), with follow = P(final == the program recomputed with v_t := x');
     - floor: P(intact final == that recomputed answer);
     - neutral: S_t's sentence replaced by "<absent name> has x' <u>.", the exposure control.
+- **Amended by Note 266-3 (before output):** X3 binds on a plan-given decode of tx_s1 / tx_s2 (per-step name forced; eval_textcot_plan.json); the free-decode arms are descriptive; guard $6.5.
 - **Scorer:** theory/score_tx.py, fixtures 13/13, with Wilson 95% CIs and a NEAR flag (Audit standing rule).
   - **X3:** a text cell is VALID if d 1-4 >= 0.95. Over valid cells, with t7 / t8 = max d 7 / d 8 acc and bun's mean at K' 8 as the reference (0.86 / 0.53):
     - **LATENT-SPECIFIC** if t7 <= bun7 - 0.10 and t8 <= bun8 - 0.10;
@@ -24559,6 +24560,27 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **X2 null:** both at floor gives 3/3 at 0.006. C2-1, M2 / M3 and M5 are unchanged within 0.003.
 - **N1_v1 errata:** M-7 / §8 f(5,8) 0.319 -> 0.326, f(5,12) 0.254 -> 0.255 (last-2-MAP); §5 GO 0.86 -> 0.991 / 0.534, M4 bar 0.10 -> 0.05, stratum ~300 confirmed.
 - **MED-3 closed:** the scripts are committed in this commit.
+
+**Note 266-3 (2026-11-04 01:3x EST; §266 amended BEFORE build or output (Audit confirmed output-free: no tx / txv / textcot / s266 dirs or queues; Experiments confirmed 01:3x: nothing built, staged or queued); approved in principle by Audit with conditions (1)-(6); source: wave-4 doc 14 red team F4, cb2a8cf0; score_tx.py fixtures 23/23).**
+- **Problem (F4).** X3's text CoT must generate its own plan, while the loop receives S_t in every pass's cue. §260 (Note 260-5) shows the plan-free loop falls to d 7 0.25 / 0.07. A LATENT-SPECIFIC reading against a self-planning text arm is therefore confounded by the plan.
+- **(1) Plan form: per-step name prefix, forced at decode.** It matches the loop's per-step cue in content and timing.
+  - At the start of text step t (t = 1..d), the cued name S_t is inserted. The model completes " has <v_t> <u>.". After step d, " The answer is" is inserted and the number read.
+  - Rejected alternative: printing S_1..S_d in the prompt matches the information but not the timing.
+- **(2) Same everything else.** The sentence arms tx_s1 / tx_s2 are already trained, under teacher forcing, on targets that begin with the gold S_t. So the plan-given arm is an **eval-only decode on the same trained models**: same data, steps, LR, seed rule, items and greedy decode.
+  - Args diff: none (same checkpoints); only the decode inserts the names.
+  - txv_s1 (value-only) has no name to force and stays free-decode, descriptive.
+  - New eval part: eval_textcot_plan.json on tx_s1 / tx_s2, same schema as eval_textcot.json including trail.
+- **(3) VALID gate** (in-range d 1-4 >= min(0.98, bun - 0.01) and the Note 266-2 trailing-number gate) is applied to the plan decode. No valid plan cell -> **X3 VOID (UNDERTRAINED-PLAN)** -> VOID-EXTEND once. Never LATENT-SPECIFIC.
+- **X3 now binds on the plan-given cells:** LATENT-SPECIFIC iff max plan-given d 7 <= bun7 - 0.10 and max d 8 <= bun8 - 0.10, over valid plan cells.
+- **(4) Fixtures:**
+  - plan-arm VALID fail -> VOID (copy shortcut and in-range variants);
+  - plan-given wins at d 7 or at d 8 only -> NOT-LATENT-SPECIFIC;
+  - free text wins but plan-given loses -> LATENT-SPECIFIC, with the free reading descriptive;
+  - unparsed plan decode -> VOID-RERUN.
+  - score_tx.py is 23/23.
+- **(5) Cost:** the plan arm is eval-only (~$0.1-0.2 on the text hosts). The guard rises from $6 to **$6.5**; cell cap for the plan eval $0.3. Under $30.
+- **(6) The free-decode arms are descriptive** (x3_free, pre-stated rule kept). The original OC line "P(X3 NOT-LATENT-SPECIFIC) ~0.4" referred to the free arm. Theory's pre-output prediction for the plan-given arm: **P(NOT-LATENT-SPECIFIC) ~0.6**. A given plan makes each text step a local one-hop rewrite, which is the X5 pipeline's operation, and X5's own prior is PIPELINE-SOLVES ~0.7.
+- **Reading if NOT-LATENT-SPECIFIC under the plan:** C2's extrapolation is a property of given-plan one-hop execution, not specific to the latent state. The C2 row in sota_arch.json would read "partial; not latent-specific (plan-given text matches)".
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
