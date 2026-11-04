@@ -20,10 +20,10 @@ import gate_s257 as G7  # noqa: E402
 import s228_args_check as C  # noqa: E402
 
 INIT = {1: ("boxes/runs_fsq/bun_s1_init/model.pt", "1ad3517b7635fddf"), 2: ("boxes/runs_fsq/bun_s2_init/model.pt", "09337f63aec57959")}
-GP = "boxes/runs_fsq/dd_gates/gates_pass.json"
+G1B = "scratch/gate_s272/g1b_offbit265.json"                                   # offbit_aw / gradflow carry over from b417 via G1b (Audit 11-04)
 BLOB = ["boxes/inject_aw.py", "boxes/inject_aw_eval.py", "boxes/sc_parts.py", "boxes/insert_render.py", "boxes/perm_render.py", "boxes/s5.py", "boxes/nested170.py",
         "boxes/inject_ow.py", "boxes/inject_st.py", "boxes/deltamem.py", "boxes/deltas5.py", "boxes/core.py", "boxes/ow_words.py", "boxes/nested_words.py",
-        "scratch/s257_guarded.py", "scratch/s271_guarded.py", "scratch/s268_stopland.py", "scratch/s256_ho_shas.json", "scratch/s257_ho_shas.json"]
+        "scratch/s257_guarded.py", "scratch/s271_guarded.py", "scratch/s268_stopland.py", "scratch/gate_s271p.py", "scratch/s256_ho_shas.json", "scratch/s257_ho_shas.json"]
 PARTS = "acc,ws_deep,attn_fade"
 CELLS = ((418, "ddp_s1", 1, 8), (419, "ddp_s2", 2, 8), (420, "ddc_s1", 1, None), (421, "ddc_s2", 2, None))
 
@@ -36,14 +36,17 @@ def nobuf_blob(p):
 
 
 def flags(k, nmax):
-    return G7.dch_flags(k, *INIT[k]) + ["--hold_inc", "1.6", "--hold_log"] + (["--distract_nmax", str(nmax)] if nmax else [])
+    """bun's flags with --micro 4 pinned (Note 265-3 / Audit 11-04: b417's smoke_dd OOMed at nmax 8 / micro 2 on a 3090; all 4 cells matched; disclosed)."""
+    fl = G7.dch_flags(k, *INIT[k]) + ["--hold_inc", "1.6", "--hold_log"] + (["--distract_nmax", str(nmax)] if nmax else [])
+    i = fl.index("--micro"); assert fl[i + 1] == "2"; fl[i + 1] = "4"; return fl
 
 
 head = {p: subprocess.check_output(["git", "rev-parse", "HEAD:" + p]).decode().strip() for p in BLOB}; pre = {p: {"head": head[p], "disk": nobuf_blob(p)} for p in BLOB}
 inits = {k: [sha_nobuf(os.path.abspath(v[0])) for _ in range(3)] for k, v in INIT.items()}
-ok = (all(v["head"] == v["disk"] for v in pre.values()) and all(sum(s_.startswith(INIT[k][1]) for s_ in inits[k]) >= 2 for k in INIT) and os.path.exists(GP)
-      and json.load(open(GP)).get("pass", True) is not False)
-out = {"blobs": pre, "init_unbuffered_sha256_x3": inits, "gates_pass": GP, "predeploy_ok": ok, "args": {}}
+g1b = json.load(open(G1B))
+ok = (all(v["head"] == v["disk"] for v in pre.values()) and all(sum(s_.startswith(INIT[k][1]) for s_ in inits[k]) >= 2 for k in INIT) and g1b["pass"]
+      and head["boxes/inject_aw.py"] == g1b["new_inject_aw_blob"])
+out = {"blobs": pre, "init_unbuffered_sha256_x3": inits, "g1b": G1B, "g1b_blob": g1b["new_inject_aw_blob"], "predeploy_ok": ok, "args": {}}
 assert ok, ("pre-deploy", out)
 blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); SH = "scratch/s256_ho_shas.json scratch/s257_ho_shas.json"
 for n, run, k, nmax in CELLS:
@@ -52,14 +55,16 @@ for n, run, k, nmax in CELLS:
     shutil.copy(d + "/args.json", "scratch/s271_args_frozen_%s.json" % run)
     dif = {kk: v for kk, v in C.diff(json.load(open("boxes/runs_fsq/bun_s%d/args.json" % k)), json.load(open(d + "/args.json"))).items() if kk != "pair_stats"}
     out["args"][run] = {"keys": sorted(dif), "diff": dif}; fs = " ".join(fl); W = "boxes/runs_fsq/" + run
-    memx = " --distract_nmax 8" if nmax else ""
+    GP = W + "_gates/gates_pass.json"
     body = ("%s_mem boxes.inject_aw %s --mem_check\n%s_gtime boxes.inject_aw %s --time_steps 60\n"
-            "%s scratch.s271_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s %s -- %s %s --args_ref scratch/s271_args_frozen_%s.json\n"
-            "%s scratch.s268_stopland --step 2000 --parts %s\n") % (W, fs, W, fs, W, blob, INIT[k][0], INIT[k][1], GP, GP, INIT[k][0], SH, fs, " ".join(tail), run, W, PARTS)
-    assert memx in body
-    caps = CC.caps_line([0.1, 0.1, 1.0, 0.4], 0.6, 0.0, 1.9, 0.854, "RTX_3090", CC.fetch_gb(body))
-    q = ("# THEORY §265 DENSE-DISTRACT pilot (score_dd): %s = bun_s%d (streaming copy, sha on host) + bun's args%s; 8k cosine stopped at 2000; TRAIN requires b417's "
-         "landed %s; stopland evals %s. Frozen args scratch/s271_args_frozen_%s.json.\n# HOSTPROBE\n# P=1\n%s\n%s") % (
+            "%s_gates scratch.gate_s271p --mem %s_mem/mem_check.json -- %s\n"
+            "%s scratch.s271_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s -- %s %s --args_ref scratch/s271_args_frozen_%s.json\n"
+            "%s scratch.s268_stopland --step 2000 --parts %s\n") % (W, fs, W, fs, W, W, fs, W, blob, INIT[k][0], INIT[k][1], GP, INIT[k][0], SH, fs, " ".join(tail), run,
+                                                                    W, PARTS)
+    caps = CC.caps_line([0.1, 0.1, 0.15, 1.1, 0.4], 0.6, 0.15, 2.0, 0.854, "RTX_3090", CC.fetch_gb(body))
+    q = ("# THEORY §265 DENSE-DISTRACT pilot (score_dd): %s = bun_s%d (streaming copy, sha on host) + bun's args%s + --micro 4 (memory-forced, all 4 cells, Note 265-3); 8k "
+         "cosine stopped at 2000; a per-host gate (smoke_dd + mem_check <= 22.5 GiB at micro 4; rc 7 = GATE-FAIL config -> no train, no redeploy) writes %s, which TRAIN "
+         "requires (offbit_aw / gradflow from b417 via G1b); stopland evals %s. Frozen args scratch/s271_args_frozen_%s.json.\n# HOSTPROBE\n# P=1\n%s\n%s") % (
         run, k, " + --distract_nmax %d" % nmax if nmax else " (CTRL: nmax default 2)", GP, PARTS, run, caps, body)
     p = "scratch/gen_q_b%d.txt.hold" % n; open(p, "w", encoding="utf-8", newline="\n").write(q)
     assert subprocess.call([sys.executable, "scratch/check_queue_ships.py", p]) == 0
