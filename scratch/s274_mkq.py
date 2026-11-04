@@ -81,12 +81,23 @@ for k in (1, 2, 3):
         ad["%s_s%d" % (nm, k)] = frozen("%s_s%d" % (nm, k), direct_flags(k, si), ["--ckpt_every", "1000", "--eval_parts", ALL_PARTS])
 dsi = {kk: v for kk, v in C.diff(ad["ndof_s1"], ad["ndsi_s1"]).items() if kk not in ("pair_stats", "out")}
 out["args"]["ndsi_s1_vs_ndof_s1"] = dsi
-assert set(dsi) <= {"so_direct_si", "aux_step", "aux_reweight", "aux_fade"}, ("Audit (2): DIRECT-SI vs DIRECT-OF", sorted(dsi))
+assert set(dsi) - {"format"} <= {"so_direct_si", "aux_step", "aux_reweight", "aux_fade"}, ("Audit (2): DIRECT-SI vs DIRECT-OF", sorted(dsi))
+# 'format' = the trainer's descriptive string (names the SI loss when --so_direct_si 1); kept in the recorded diff, excluded from the assert (11-04)
+assert "format" not in dsi or dsi["format"][1].startswith(dsi["format"][0]), ("format: the SI text extends the OF text", dsi["format"])
 eq = {r: {k_: a_.get(k_) for k_ in ("steps", "lr", "bs", "d_max")} for r, a_ in [("nloop_s1", al)] + list(ad.items())}
 assert len({json.dumps(v, sort_keys=True) for v in eq.values()}) == 1, ("Audit (3): steps / lr / bs / d_max equal across arms", eq)
 out["steps_lr_bs_equal"] = eq
 # ---- queues
 caps_loop = CC.caps_line([0.1, 0.25, 0.25, 2.3, 0.6], 0.6, 0.25, 1.9, 0.854, "RTX_3090", 0.1)
+
+
+def hard_wall(wallw, eval_h, gates_h):
+    """Audit 11-04 LOW: '# HARD_WALL_H' = 1.5 x the projected host hours (setup 0.4 + lines + eval + gates), asserted >= 1.3 x; host idle stop backstop."""
+    proj = 0.4 + sum(wallw) + eval_h + gates_h; hw = round(1.5 * proj, 2); assert hw >= 1.3 * proj
+    return "\n# HARD_WALL_H %s\n# IDLE_H 1.5" % hw
+
+
+caps_loop += hard_wall([0.1, 0.25, 0.25, 2.3, 0.6], 0.6, 0.25)
 W = "boxes/runs_fsq/nloop_s1"; fs = " ".join(lf); GP = W + "_gates/gates_pass.json"
 q = ("# THEORY §271 N1 S1 LOOP-SI seed 1 (score_n1 S1 GO gate): of_s1's recipe + --src so --cue index, 8k cosine stopped at 4000; host gates G3 gradflow (loop), G4 mem, "
      "G6 time (300 steps) before TRAIN; stopland evals %s (inject_so_eval). Frozen args scratch/s274_args_frozen_nloop_s1.json.\n# HOSTPROBE\n# P=1\n%s\n"
@@ -104,7 +115,7 @@ for n, nm, si in ((426, "ndof", 0), (427, "ndsi", 1)):
         Wk = "boxes/runs_fsq/%s_s%d" % (nm, k); fk = " ".join(direct_flags(k, si))
         body += "%s scratch.s274_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s scratch/s257_guarded.py -- %s --ckpt_every 1000 --eval_parts %s --args_ref scratch/s274_args_frozen_%s_s%d.json\n" % (
             Wk, blob, TRK[0], TRK[1], GP, TRK[0], DATA, fk, ALL_PARTS, nm, k)
-    caps = CC.caps_line([0.1, 0.1, 0.1, 1.0, 1.0, 1.0], 0.5, 0.1, 0.3, 0.854, "RTX_3090", 0.1)
+    caps = CC.caps_line([0.1, 0.1, 0.1, 1.0, 1.0, 1.0], 0.5, 0.1, 0.3, 0.854, "RTX_3090", 0.1) + hard_wall([0.1, 0.1, 0.1, 1.0, 1.0, 1.0], 0.5, 0.1)
     q = ("# THEORY §271 N1 S1 %s seeds 1-3 (one host, sequential; score_n1 D-L1 / X1 / DIRECT gate): one pass from of_s1's trunk (of_s1_trunk %s)%s; G3 gradflow %s first; "
          "full eval battery in-process. Frozen args scratch/s274_args_frozen_%s_s<k>.json.\n# HOSTPROBE\n# P=1\n%s\n%s") % (
         "DIRECT-SI" if si else "DIRECT-OF", TRK[1], " + --so_direct_si 1 --aux_step 1 --aux_reweight --aux_fade 48000,48000 (Notes 271-1 / 271-5)" if si else "",
