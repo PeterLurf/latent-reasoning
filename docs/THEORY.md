@@ -24582,6 +24582,23 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
 - **(6) The free-decode arms are descriptive** (x3_free, pre-stated rule kept). The original OC line "P(X3 NOT-LATENT-SPECIFIC) ~0.4" referred to the free arm. Theory's pre-output prediction for the plan-given arm: **P(NOT-LATENT-SPECIFIC) ~0.6**. A given plan makes each text step a local one-hop rewrite, which is the X5 pipeline's operation, and X5's own prior is PIPELINE-SOLVES ~0.7.
 - **Reading if NOT-LATENT-SPECIFIC under the plan:** C2's extrapolation is a property of given-plan one-hop execution, not specific to the latent state. The C2 row in sota_arch.json would read "partial; not latent-specific (plan-given text matches)".
 
+**Note 271-3 (§271; 2026-11-04 01:37 EST; G0 shortcut floors FROZEN in theory/score_n1.py before any S1 output; floors from Experiments' G0 build, generator frozen in its worktree; descriptive).**
+- **File:** boxes/runs_fsq/n1_floors/floors_so.json.
+  - sha256 **1db54c39016c8d23600b6a900716e90db6331fa803387d5cfd8318f9beee84af**, re-hashed by Theory, matches.
+  - set_sha (so_test) a44c1936a78c90ec...
+  - Rule: Note 271-2 (Random(27110), N_FIT 200k per (n, m), MOVED, ties to the smallest index, an unseen key credited 1 / (n-1)).
+- **FROZEN table:** 74 cells (NUM / ORD / TRANSFER / OFFSET, m 2-12), f rounded to 1e-6.
+  - The m 1 cells are omitted: no MOVED items exist at m 1 (MOVED needs k_touch >= 2), so f is undefined there. No kappa row reads them.
+  - The scorer's fixtures still pass 108/108. Reads on the real file give sha_ok True.
+- **Binding floors (TEST MOVED items):**
+  - f(5,8,NUM) **0.316** (bag-MAP, n_moved 1,036; DATA-SIM was 0.326; a fresh 20k check gives 0.330). Used by X1 and KC.
+  - f(3,8,NUM) **0.542** (n_moved 993). Used by X2.
+  - f(5,6) 0.497, f(5,10) 0.277 (mostfreq), f(5,12) 0.277 (last2-MAP); TRANSFER (5,8) 0.324.
+  - The built f(5,8) is 0.010 below the DATA-SIM value. A lower floor makes X1 (DIRECT-SI kappa <= 0.25) slightly harder to pass, the conservative direction for the loop claim.
+- **Observation (descriptive, no rule change):** at m 2-3 the shortcuts reach f 0.96-1.0 on MOVED items (last-2 rules recover the answer exactly). So in-range accuracy at m <= 3 says nothing about tracking. This is why S1's GO rests on the mechanism rows (CWS, SWAP-MID, K'2 NOT-DECODER), and no kappa row reads m <= 4.
+- **Process slip (disclosed):** while checking FLOORS-UNPINNED before the freeze, Theory ran `score_n1.py --stage s1` once. It wrote theory/results/score_n1_s1.json containing only label 'pending' (reason FLOORS-UNPINNED). No run outputs existed and no reading was made. The file was deleted, uncommitted, and no score_n1* file exists now.
+- **Remaining before S1:** the G0 unseen-key test on so_words.floors, and Audit's build G-D of inject_so / inject_so_eval against score_n1's SCHEMA (lines 71-119).
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
