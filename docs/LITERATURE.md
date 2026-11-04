@@ -206,6 +206,7 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 - *On the "Induction Bias" in Sequence Models*, [2602.18333](https://arxiv.org/abs/2602.18333): transformers share little state tracking across lengths.
 - *Monitoring latent reasoning in looped language models*, [2610.18127](https://arxiv.org/abs/2610.18127): five mechanistic lenses on eight looped LMs (carry vs re-read loops). Check for causal lenses before claiming 'no causal battery' (LIT_PAPER_NOVELTY_H1_2026-11-04).
 - *Operational Proto-Introspection in Looped Language Models*, [2607.18553](https://arxiv.org/abs/2607.18553): probes and interventions on a frozen Ouro-2.6B; no validated capability gain from the interventions.
+- Question-blind / shortcut sufficiency (LIT_QB0_QUESTION_BLIND_2026-11-04): Kaushik & Lipton [1808.04926](https://arxiv.org/abs/1808.04926) (passage-only > 50% on 14/20 bAbI tasks); Chen & Durrett [1904.12106](https://arxiv.org/abs/1904.12106); Min et al. [1906.02900](https://arxiv.org/abs/1906.02900); Trivedi et al., DiRe [2005.00789](https://arxiv.org/abs/2005.00789) (disconnected-reasoning probe + contrastive support sufficiency transform); Gardner et al., contrast sets [2004.02709](https://arxiv.org/abs/2004.02709); Zhang et al. [2205.11502](https://arxiv.org/abs/2205.11502) (statistical features of synthetic generators cannot all be removed jointly).
 
 ## Internal sources (from NEXT_STEPS.md)
 
