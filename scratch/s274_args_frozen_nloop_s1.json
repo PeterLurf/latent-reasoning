@@ -94,7 +94,7 @@
  "so_eval_module_sha256": "83583a6d2c2aef8c926212907e0abfd3a7cfe6b512e4bed38edd2e5151249d48",
  "nk_sha256": null,
  "ask_render_sha256": null,
- "set_build_sec": 5,
+ "set_build_sec": 4,
  "excl_n": 42500,
  "d_law": "d = default_rng(seed + 22331).integers(1, d_max + 1) per step",
  "format": "\u00a7271 INJECT (src so): pass t input = [EOT] + enc(' ' + text + CUE(min(t, m))) + enc(' The answer is:'), CUE = SI ' After swap <L(min(t, m))>, who <verb> <o*>?'; only the ':' state writes; K passes; dec = [EOT] + enc(' ' + text) + SFX read-only on S_K -> VAL_IDS[S_m]; aux [EOT, ' Step', ' t', ' :'] + enc(' ' + R_step[t]) + EOT, R_step[t] = 'After swap <L(t)>, <S_t> <verb> <o*>.', read-only on S_t, t <= m",
