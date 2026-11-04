@@ -48,7 +48,7 @@ ok = (all(v["head"] == v["disk"] for v in pre.values()) and all(sum(s_.startswit
       and head["boxes/inject_aw.py"] == g1b["new_inject_aw_blob"])
 out = {"blobs": pre, "init_unbuffered_sha256_x3": inits, "g1b": G1B, "g1b_blob": g1b["new_inject_aw_blob"], "predeploy_ok": ok, "args": {}}
 assert ok, ("pre-deploy", out)
-blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); SH = "scratch/s256_ho_shas.json scratch/s257_ho_shas.json"
+blob = " ".join("%s=%s" % (p, head[p]) for p in BLOB); SH = "scratch/s256_ho_shas.json scratch/s257_ho_shas.json scratch/s257_guarded.py"   # s271_guarded / s268_stopland import s257_guarded (b417 shipped it via its gates line)
 for n, run, k, nmax in CELLS:
     fl = flags(k, nmax); tail = ["--ckpt_every", "1000", "--stop_at", "2000", "--eval_parts", "acc"]; d = G8.fresh(ROOT + "/scratch/_tmp/s271p/args_" + run)
     rc = G8.sh([sys.executable, "-B", "-m", "boxes.inject_aw"] + fl + tail + ["--device", "cpu", "--args_only", "--out", d], d + "/stdout.log"); assert rc == 0, (run, rc)
