@@ -24678,6 +24678,12 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - Lane 07 (based on of): retargeting is recommended. Its revision against 07_REDTEAM adds --retarget_p as the arm's training-law change, with this note as the justification.
   - A bun-based plan-free arm without retargeting is not registrable.
   - §260's mechanism remains open; the next candidate (recency) needs its own pre-stated test on a fresh family.
+- **Audit reproduced (11-04):** headline and ask pressure recomputed from raw by_class d1-d4 values.
+- **Literature (1eb574d4): novelty NARROW.** QB0 is a known phenomenon (passage-only bAbI 1808.04926; single-hop HotpotQA 1906.02900 / 1906.07132; DiRe 2005.00789). Retargeting belongs to counterfactual augmentation / contrast sets (1909.12434, 2004.02709). Claim it as a **design guard, not a contribution**; ours adds only an exact enumeration of blind policies over the generator.
+- **Lane 07 revision requirements (Audit + Literature):**
+  - --retarget_p is a binding precondition, with the share and targets pre-stated.
+  - QB0 is re-run **per d (2-4)** on the retargeted stream, with LP < 0.90 at each d.
+  - A **recency policy** is added to that check, since 2205.11502 warns that generators carry many removable-only-together cues.
 
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
