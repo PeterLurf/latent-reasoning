@@ -204,6 +204,8 @@ Worked through as proposals in `docs/IDEAS_ADJACENT_2026-09-29.md`. arXiv IDs ve
 - Merrill & Sabharwal, *Exact Expressive Power of Transformers with Padding*, [2505.18948](https://arxiv.org/abs/2505.18948) (theorem): padding gives TC⁰, O(log^d n) loops give TC^d.
 - *A Fine-Grained Hierarchy and Benchmark for State Tracking in Language Models* (StateBench), [2611.03094](https://arxiv.org/abs/2611.03094) (theorem + benchmark).
 - *On the "Induction Bias" in Sequence Models*, [2602.18333](https://arxiv.org/abs/2602.18333): transformers share little state tracking across lengths.
+- *Monitoring latent reasoning in looped language models*, [2610.18127](https://arxiv.org/abs/2610.18127): five mechanistic lenses on eight looped LMs (carry vs re-read loops). Check for causal lenses before claiming 'no causal battery' (LIT_PAPER_NOVELTY_H1_2026-11-04).
+- *Operational Proto-Introspection in Looped Language Models*, [2607.18553](https://arxiv.org/abs/2607.18553): probes and interventions on a frozen Ouro-2.6B; no validated capability gain from the interventions.
 
 ## Internal sources (from NEXT_STEPS.md)
 
