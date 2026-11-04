@@ -24649,6 +24649,16 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - The loop reads the pass-m ':' logit of X's first token, as in §3.5.
   - If the training cues do not use family verbs, the BBH cue uses the training template instead.
 
+**Note 271-5 (2026-11-04 03:11 EST; §271 DIRECT-SI weight matched BEFORE any S1 output; Audit's finding, option (A); amends Note 271-4 (1)).**
+- **Finding (Audit, verified by Theory in code):**
+  - The loop's per-step aux CE (inject_so.py:331) is the per-token MEAN over the teacher-forced step sentence " After swap L, S_t has the o*." + EOT (~10-11 tokens). The S_t name token carries ~1 / n_tok of CE_t.
+  - DIRECT-SI's si_aux (inject_so.py:275-291) puts the full CE_t on the single S_t token at ':'.
+  - So DIRECT-SI got ~10x the name-token weight. That would make the S1 DIRECT gate (-> DEPTH-SPLIT) fire too easily, and it is not "trained on the same per-step questions" in weight.
+- **Fix (A):** DIRECT-SI's CE for (item, t) is scaled by **1 / n_tok(item, t)**, where n_tok = the count of non-ignored target tokens of that item's loop aux target at t (the same tokenisation as aux_logits' y_a). The S_t name token's weight is then the loop's.
+  - Note 271-4 (1) is reworded: "matched in content and per-name-token weight; the format differs (bare name at ':' vs the name inside the step sentence)".
+  - The constant tokens the loop also trains (label, verb, object) are not given to DIRECT-SI: they carry no information about S_t. Disclosed.
+- **Build gate (Audit G-D):** on one batch, mean over (item, t) of DIRECT-SI's per-(item, t) weight times n_tok equals the loop's name-token weight, within float tolerance. Fixtures and labels in score_n1 are unchanged.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
