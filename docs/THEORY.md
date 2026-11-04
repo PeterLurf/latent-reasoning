@@ -24638,6 +24638,17 @@ No loss, eval, probe or log content of either cell was seen. The relaunch is the
   - "Recency / newest live read-chain" is a **post-hoc conjecture**, with no binding use until it is pre-stated on a fresh test.
   - TEST2 d 5-8 are excluded: they measure depth extrapolation, not selection.
 
+**Note 271-4 (2026-11-04 03:07 EST; §271 build interpretation calls confirmed by Theory before any S1 output; build 38bfc954 under Audit G-D).**
+- **(1) DIRECT-SI supervision, confirmed.**
+  - One extra one-pass item per (item, t <= m) on the loop's exact pass-t SI input.
+  - Label S_t (name token, full-vocab CE at ':'), weighted lam_at(step) * mean_t AUX_W[t-1] * CE_t on top of the answer CE.
+  - Args = DIRECT-OF + --so_direct_si 1 --aux_step 1 --aux_reweight.
+  - Disclosed residual: the loop's aux target is the R_step sentence ("After swap L(t), S_t has the o*.", CE read at the S_t name position), while DIRECT-SI's is the bare name at ':'. Both supervise the same quantity, the holder after swap t, at the same weight. The residual is format only.
+- **(2) BBH per-option cue (a departure from N1_v1 §3.5 wording), confirmed on one condition.** The cue must be produced by the SAME template function the training cues use for each family's verb phrase ("who has the X" / "who is dancing with X" / "who is playing X"), byte-identical to the training cue format apart from the object and the swap count.
+  - The build G-D checks one rendered BBH cue per family against a training cue.
+  - The loop reads the pass-m ':' logit of X's first token, as in §3.5.
+  - If the training cues do not use family verbs, the BBH cue uses the training template instead.
+
 ## Notes on archived sections (append new notes here; the full sections are in the archive)
 
 **Note 94-3 (§94; 2026-10-03 23:55 EDT; Step 0 probes on the 13 new §94 models, run by the experiments session, settings as
