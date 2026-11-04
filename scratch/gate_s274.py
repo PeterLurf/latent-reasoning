@@ -14,6 +14,7 @@ import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(ROOT, "scratch"))
+os.environ.setdefault("LATENT_ROOT", ROOT)   # 11-04: gate_s251 chdirs to LATENT_ROOT (default D:/Latent) at import; b425's host import check died on it
 from gate_s251 import PROBE  # noqa: E402
 
 DPROBE = r'''
