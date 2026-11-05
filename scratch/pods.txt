@@ -1898,3 +1898,6 @@ PRICE EXCEPTION 2026-10-06 04:58 gen-b41 offer 53010473 RTX 3090 595.71 $0.267: 
 59147416 vast | gen_b419 HOST_SELF_STOPPED 2026-11-04 18:08 start requested by the drain watcher (starting instance 59147416.)
 59174905 vast offer 43731725 created 2026-11-04 18:11: label gen-b428, queue scratch/gen_q_b428.txt (logged at create by vdeploy_toy.sh)
 59147416 vast | gen_b419 DESTROYED_VERIFIED 2026-11-04 18:14 after verified per-run fetch (boxes/runs_fsq/ddp_s2 boxes/runs_fsq/ddp_s2_gates boxes/runs_fsq/ddp_s2_gtime boxes/runs_fsq/ddp_s2_mem)
+59176598 vast offer 35466852 created 2026-11-04 18:28: label gen-b425, queue scratch/gen_q_b425.txt (logged at create by vdeploy_toy.sh)
+59176598 vast | gen_b425 DESTROYED_VERIFIED 2026-11-04 18:44 after verified per-run fetch ()
+59174905 vast | gen_b428 DESTROYED_VERIFIED 2026-11-04 20:22 after verified per-run fetch (boxes/runs_fsq/aw_plaw2_s3 boxes/runs_fsq/aw_plaw2_s3_gtime boxes/runs_fsq/aw_plaw2_s3_mem)

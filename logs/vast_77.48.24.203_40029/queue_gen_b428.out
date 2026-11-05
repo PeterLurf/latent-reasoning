@@ -1,0 +1,12 @@
+23:14:58 gpt2 bin from the HF hub: ok
+NVIDIA GeForce RTX 3090, 595.84
+23:14:58 modules import: scratch.s273_hist 
+HOSTCHECK PASS (5 s)
+23:17:20 HOSTPROBE 0.6133 s/step (limit 0.854; b225 reference 0.657)
+23:17:20 start boxes/runs_fsq/aw_plaw2_s3_mem
+23:18:18 evaluated boxes/runs_fsq/aw_plaw2_s3_mem rc 0 no-eval
+23:18:18 start boxes/runs_fsq/aw_plaw2_s3_gtime
+23:19:47 evaluated boxes/runs_fsq/aw_plaw2_s3_gtime rc 0
+23:19:47 start boxes/runs_fsq/aw_plaw2_s3
+01:13:26 evaluated boxes/runs_fsq/aw_plaw2_s3 rc 0
+01:13:26 QUEUE_DONE

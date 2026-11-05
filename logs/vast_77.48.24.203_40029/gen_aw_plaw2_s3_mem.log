@@ -1,0 +1,11 @@
+=== 23:17:20 scratch.s273_hist
+               total        used        free      shared  buff/cache   available
+Mem:             251           4         157           0          89         244
+Swap:              7           0           7
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  1.8G   29G   6% /
+1 MiB, 24576 MiB
+S273_HIST 56fe2c78 boxes/inject_aw.py -m boxes.inject_aw
+MEM train 1 250 14.387624844908714
+MEM eval 1 250 5.166850566864014
+HOST_SHAS {"mem_check.json": "a4ae87137b941f69651229ed757049efdd859de7f298ff08bcbbdbd3ec23e32b"}
