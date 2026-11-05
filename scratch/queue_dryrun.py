@@ -64,6 +64,10 @@ def main():
     lines = [ln.split() for ln in open(q, encoding="utf-8") if ln.strip() and not ln.startswith("#")]
     for li, t in enumerate(lines):
         out, mod = t[0], t[1]; tagl = "%d %s %s" % (li + 1, out, mod)
+        # 11-04: gen_vast_job runs each line through bash -c ('python -u -m <mod> <rest>'); a token bash cannot parse (b425: ';;') kills the line unlogged
+        sx = subprocess.run(["bash", "-n", "-c", "python -u -m " + " ".join(t[1:])], capture_output=True, text=True)
+        if sx.returncode:
+            fails.append((tagl, "shell", "bash -n: " + (sx.stderr.strip().splitlines() or ["?"])[-1][:160]))
         rc, msg = run(T, ["-c", "import importlib, sys; importlib.import_module(sys.argv[1])", mod])
         if rc:
             fails.append((tagl, "import", msg))

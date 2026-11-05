@@ -1,0 +1,34 @@
+=== 03:12:56 scratch.s274_guarded
+               total        used        free      shared  buff/cache   available
+Mem:              31           1           8           0          21          29
+Swap:              7           0           7
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  3.2G   27G  11% /
+1 MiB, 24576 MiB
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/scratch/s274_guarded.py", line 90, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/Latent/scratch/s274_guarded.py", line 85, in main
+    assert os.path.exists(f), ("required eval-only output missing", f)
+           ^^^^^^^^^^^^^^^^^
+AssertionError: ('required eval-only output missing', 'boxes/runs_fsq/nloop_s1_gates/gates_pass.json')
+=== 03:12:56 scratch.s274_stopland
+               total        used        free      shared  buff/cache   available
+Mem:              31           1           8           0          21          29
+Swap:              7           0           7
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  3.2G   27G  11% /
+1 MiB, 24576 MiB
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/Latent/scratch/s274_stopland.py", line 30, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/Latent/scratch/s274_stopland.py", line 20, in main
+    a = json.load(open(out + "/args.json")); assert a.get("stop_at") == st and a["steps"] > st, ("stopland: the run's stop_at / steps", a.get("stop_at"), a["steps"], st)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'boxes/runs_fsq/nloop_s1/args.json'

@@ -1,6 +1,6 @@
 """§271 N1 host gate G3 GRADFLOW (N1_v1 §10; CUDA bf16 autocast as training) -> <out>/gradflow_*.json and <out>/gates_pass.json only if all pass. Queue line (the runner
 appends --device <d> --out <dir>):
-  <dir> scratch.gate_s274 --arms loop[,direct_of,direct_si] -- <the LOOP-SI flags without inits> ;; <the DIRECT flags without inits>
+  <dir> scratch.gate_s274 --arms loop[,direct_of,direct_si] -- <the LOOP-SI flags without inits> :: <the DIRECT flags without inits> (';;' still parsed; not valid in a queue line)
   loop       a gate-only copy of boxes/inject_so.py with gate_s251.PROBE after 'loss = la + lam_now[0] * aux' (per-term grads), stop 8: every probed call with d >= 2 has
              nonzero answer-loss grads on DeltaMem qkv / gate / ln_w / wo; the aux grad norm is finite and > 0.
   direct_of  a gate-only copy with a probe after the DIRECT 'loss = la' line: the answer-loss grad on the trunk is finite and > 0 (stop 4).
@@ -48,7 +48,7 @@ def main():
     argv = sys.argv[1:]; dev = argv[argv.index("--device") + 1]; out = os.path.join(ROOT, argv[argv.index("--out") + 1])
     for f in ("--device", "--out"):
         k = argv.index(f); del argv[k:k + 2]
-    i = argv.index("--"); arms = argv[argv.index("--arms") + 1].split(","); rest = argv[i + 1:]; j = rest.index(";;"); fl_loop, fl_dir = rest[:j], rest[j + 1:]
+    i = argv.index("--"); arms = argv[argv.index("--arms") + 1].split(","); rest = argv[i + 1:]; j = rest.index("::" if "::" in rest else ";;"); fl_loop, fl_dir = rest[:j], rest[j + 1:]   # 11-04: '::' in queues (gen_vast_job runs each line via bash -c; a bare ';;' is a syntax error, b425 attempt 2)
     os.makedirs(out, exist_ok=True); res = {}
     if "loop" in arms:
         copy("_inject_so_gradprobe_s274.py", "            loss = la + lam_now[0] * aux\n", PROBE)

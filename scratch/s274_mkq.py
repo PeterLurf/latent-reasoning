@@ -102,14 +102,14 @@ W = "boxes/runs_fsq/nloop_s1"; fs = " ".join(lf); GP = W + "_gates/gates_pass.js
 q = ("# THEORY §271 N1 S1 LOOP-SI seed 1 (score_n1 S1 GO gate): of_s1's recipe + --src so --cue index, 8k cosine stopped at 4000; host gates G3 gradflow (loop), G4 mem, "
      "G6 time (300 steps) before TRAIN; stopland evals %s (inject_so_eval). Frozen args scratch/s274_args_frozen_nloop_s1.json.\n# HOSTPROBE\n# P=1\n%s\n"
      "%s_mem boxes.inject_so %s --mem_check\n%s_gtime boxes.inject_so %s --time_steps 300\n"
-     "%s_gates scratch.gate_s274 --arms loop -- %s ;; x\n"
+     "%s_gates scratch.gate_s274 --arms loop -- %s :: x\n"
      "%s scratch.s274_guarded --mode train --blob %s --init %s=%s --require %s --ship %s %s scratch/s257_guarded.py scratch/gate_s251.py scratch/gate_s228.py -- %s %s --args_ref scratch/s274_args_frozen_nloop_s1.json\n"
      "%s scratch.s274_stopland --step 4000 --parts %s\n") % (GATE_PARTS, caps_loop, W, fs, W, fs, W, " ".join(noinit(lf)), W, blob, OFI[0], OFI[1], GP, OFI[0], DATA, fs,
                                                           " ".join(ltail), W, GATE_PARTS)
 open("scratch/gen_q_b425.txt.hold", "w", encoding="utf-8", newline="\n").write(q)
 for n, nm, si in ((426, "ndof", 0), (427, "ndsi", 1)):
     W1 = "boxes/runs_fsq/%s_s1" % nm; f1 = " ".join(direct_flags(1, si)); GP = W1 + "_gates/gates_pass.json"
-    body = ("%s_mem boxes.inject_so %s --mem_check\n%s_gtime boxes.inject_so %s --time_steps 300\n%s_gates scratch.gate_s274 --arms %s -- x ;; %s\n") % (
+    body = ("%s_mem boxes.inject_so %s --mem_check\n%s_gtime boxes.inject_so %s --time_steps 300\n%s_gates scratch.gate_s274 --arms %s -- x :: %s\n") % (
         W1, f1, W1, f1, W1, "direct_si" if si else "direct_of", " ".join(noinit(direct_flags(1, si))))
     for k in (1, 2, 3):
         Wk = "boxes/runs_fsq/%s_s%d" % (nm, k); fk = " ".join(direct_flags(k, si))

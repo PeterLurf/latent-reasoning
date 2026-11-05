@@ -1,0 +1,11 @@
+=== 03:08:25 boxes.inject_so
+               total        used        free      shared  buff/cache   available
+Mem:              31           1           8           0          21          29
+Swap:              7           0           7
+Filesystem      Size  Used Avail Use% Mounted on
+overlay          30G  3.2G   27G  11% /
+1 MiB, 24576 MiB
+{'step': 100, 'loss': 7.760376118421554, 'sec': 88, 'aux_lambda': 1.0, 'answer_ce': 5.605239218473434, 'aux_ce': 2.155136946439743, 'gamma': 1.0, 'fade': 0.20000000298023224, 'write_grad_norm': 0.17559151381254196, 'write_grad_spike_100x_floor': False, 'gn_plain_mean100': 14.45855963230133, 'gn_preclip': 6.088105201721191, 'gn_preclip_mean100': 14.45855981349945, 'clip_frac_100': 1.0}
+{'step': 200, 'loss': 3.042228684425354, 'sec': 176, 'aux_lambda': 1.0, 'answer_ce': 2.58379026889801, 'aux_ce': 0.4584384137392044, 'gamma': 1.0, 'fade': 0.4000000059604645, 'write_grad_norm': 0.16778659150004388, 'write_grad_spike_100x_floor': False, 'gn_plain_mean100': 7.4408831214904785, 'gn_preclip': 7.2449798583984375, 'gn_preclip_mean100': 7.440883102416993, 'clip_frac_100': 1.0}
+{'step': 300, 'loss': 2.2344118368625643, 'sec': 262, 'aux_lambda': 1.0, 'answer_ce': 1.902099626660347, 'aux_ce': 0.33231221079826356, 'gamma': 1.0, 'fade': 0.6000000238418579, 'write_grad_norm': 0.1435508728772402, 'write_grad_spike_100x_floor': False, 'gn_plain_mean100': 6.673440322875977, 'gn_preclip': 6.986231803894043, 'gn_preclip_mean100': 6.673440318107605, 'clip_frac_100': 1.0}
+TIMING 0.8739574750264486
